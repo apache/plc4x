@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -140,7 +141,11 @@ func (m *_BVLC) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCParse(readBuffer utils.ReadBuffer) (BVLC, error) {
+func BVLCParse(theBytes []byte) (BVLC, error) {
+	return BVLCParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BVLCParseWithBuffer(readBuffer utils.ReadBuffer) (BVLC, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLC"); pullErr != nil {
@@ -187,31 +192,31 @@ func BVLCParse(readBuffer utils.ReadBuffer) (BVLC, error) {
 	var typeSwitchError error
 	switch {
 	case bvlcFunction == 0x00: // BVLCResult
-		_childTemp, typeSwitchError = BVLCResultParse(readBuffer)
+		_childTemp, typeSwitchError = BVLCResultParseWithBuffer(readBuffer)
 	case bvlcFunction == 0x01: // BVLCWriteBroadcastDistributionTable
-		_childTemp, typeSwitchError = BVLCWriteBroadcastDistributionTableParse(readBuffer, bvlcPayloadLength)
+		_childTemp, typeSwitchError = BVLCWriteBroadcastDistributionTableParseWithBuffer(readBuffer, bvlcPayloadLength)
 	case bvlcFunction == 0x02: // BVLCReadBroadcastDistributionTable
-		_childTemp, typeSwitchError = BVLCReadBroadcastDistributionTableParse(readBuffer)
+		_childTemp, typeSwitchError = BVLCReadBroadcastDistributionTableParseWithBuffer(readBuffer)
 	case bvlcFunction == 0x03: // BVLCReadBroadcastDistributionTableAck
-		_childTemp, typeSwitchError = BVLCReadBroadcastDistributionTableAckParse(readBuffer, bvlcPayloadLength)
+		_childTemp, typeSwitchError = BVLCReadBroadcastDistributionTableAckParseWithBuffer(readBuffer, bvlcPayloadLength)
 	case bvlcFunction == 0x04: // BVLCForwardedNPDU
-		_childTemp, typeSwitchError = BVLCForwardedNPDUParse(readBuffer, bvlcPayloadLength)
+		_childTemp, typeSwitchError = BVLCForwardedNPDUParseWithBuffer(readBuffer, bvlcPayloadLength)
 	case bvlcFunction == 0x05: // BVLCRegisterForeignDevice
-		_childTemp, typeSwitchError = BVLCRegisterForeignDeviceParse(readBuffer)
+		_childTemp, typeSwitchError = BVLCRegisterForeignDeviceParseWithBuffer(readBuffer)
 	case bvlcFunction == 0x06: // BVLCReadForeignDeviceTable
-		_childTemp, typeSwitchError = BVLCReadForeignDeviceTableParse(readBuffer)
+		_childTemp, typeSwitchError = BVLCReadForeignDeviceTableParseWithBuffer(readBuffer)
 	case bvlcFunction == 0x07: // BVLCReadForeignDeviceTableAck
-		_childTemp, typeSwitchError = BVLCReadForeignDeviceTableAckParse(readBuffer, bvlcPayloadLength)
+		_childTemp, typeSwitchError = BVLCReadForeignDeviceTableAckParseWithBuffer(readBuffer, bvlcPayloadLength)
 	case bvlcFunction == 0x08: // BVLCDeleteForeignDeviceTableEntry
-		_childTemp, typeSwitchError = BVLCDeleteForeignDeviceTableEntryParse(readBuffer)
+		_childTemp, typeSwitchError = BVLCDeleteForeignDeviceTableEntryParseWithBuffer(readBuffer)
 	case bvlcFunction == 0x09: // BVLCDistributeBroadcastToNetwork
-		_childTemp, typeSwitchError = BVLCDistributeBroadcastToNetworkParse(readBuffer, bvlcPayloadLength)
+		_childTemp, typeSwitchError = BVLCDistributeBroadcastToNetworkParseWithBuffer(readBuffer, bvlcPayloadLength)
 	case bvlcFunction == 0x0A: // BVLCOriginalUnicastNPDU
-		_childTemp, typeSwitchError = BVLCOriginalUnicastNPDUParse(readBuffer, bvlcPayloadLength)
+		_childTemp, typeSwitchError = BVLCOriginalUnicastNPDUParseWithBuffer(readBuffer, bvlcPayloadLength)
 	case bvlcFunction == 0x0B: // BVLCOriginalBroadcastNPDU
-		_childTemp, typeSwitchError = BVLCOriginalBroadcastNPDUParse(readBuffer, bvlcPayloadLength)
+		_childTemp, typeSwitchError = BVLCOriginalBroadcastNPDUParseWithBuffer(readBuffer, bvlcPayloadLength)
 	case bvlcFunction == 0x0C: // BVLCSecureBVLL
-		_childTemp, typeSwitchError = BVLCSecureBVLLParse(readBuffer, bvlcPayloadLength)
+		_childTemp, typeSwitchError = BVLCSecureBVLLParseWithBuffer(readBuffer, bvlcPayloadLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [bvlcFunction=%v]", bvlcFunction)
 	}

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataInProcess) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataInProcessParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInProcess, error) {
+func BACnetConstructedDataInProcessParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInProcess, error) {
+	return BACnetConstructedDataInProcessParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataInProcessParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInProcess, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInProcess"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataInProcessParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("inProcess"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for inProcess")
 	}
-	_inProcess, _inProcessErr := BACnetApplicationTagParse(readBuffer)
+	_inProcess, _inProcessErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _inProcessErr != nil {
 		return nil, errors.Wrap(_inProcessErr, "Error parsing 'inProcess' field of BACnetConstructedDataInProcess")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataInProcessParse(readBuffer utils.ReadBuffer, tagNumber 
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataInProcess) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataInProcess) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataInProcess) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,7 @@
 package s7
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
@@ -114,8 +115,15 @@ func (m plcField) GetBitOffset() uint8 {
 func (m plcField) GetQuantity() uint16 {
 	return m.NumElements
 }
+func (m plcField) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
 
-func (m plcField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m plcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(m.FieldType.GetName()); err != nil {
 		return err
 	}
@@ -145,7 +153,15 @@ func (m plcField) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
-func (m PlcStringField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m PlcStringField) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m PlcStringField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(m.FieldType.GetName()); err != nil {
 		return err
 	}

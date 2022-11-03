@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataAckedTransitions) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAckedTransitionsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAckedTransitions, error) {
+func BACnetConstructedDataAckedTransitionsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAckedTransitions, error) {
+	return BACnetConstructedDataAckedTransitionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataAckedTransitionsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAckedTransitions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAckedTransitions"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataAckedTransitionsParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("ackedTransitions"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ackedTransitions")
 	}
-	_ackedTransitions, _ackedTransitionsErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_ackedTransitions, _ackedTransitionsErr := BACnetEventTransitionBitsTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _ackedTransitionsErr != nil {
 		return nil, errors.Wrap(_ackedTransitionsErr, "Error parsing 'ackedTransitions' field of BACnetConstructedDataAckedTransitions")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataAckedTransitionsParse(readBuffer utils.ReadBuffer, tag
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataAckedTransitions) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAckedTransitions) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataAckedTransitions) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

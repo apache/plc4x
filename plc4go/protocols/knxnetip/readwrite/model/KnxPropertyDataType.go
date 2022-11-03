@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,10 +32,10 @@ import (
 type KnxPropertyDataType uint8
 
 type IKnxPropertyDataType interface {
+	utils.Serializable
 	Number() uint8
 	SizeInBytes() uint8
 	Name() string
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -1039,7 +1041,11 @@ func (m KnxPropertyDataType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxPropertyDataTypeParse(readBuffer utils.ReadBuffer) (KnxPropertyDataType, error) {
+func KnxPropertyDataTypeParse(theBytes []byte) (KnxPropertyDataType, error) {
+	return KnxPropertyDataTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func KnxPropertyDataTypeParseWithBuffer(readBuffer utils.ReadBuffer) (KnxPropertyDataType, error) {
 	val, err := readBuffer.ReadUint8("KnxPropertyDataType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxPropertyDataType")
@@ -1052,7 +1058,15 @@ func KnxPropertyDataTypeParse(readBuffer utils.ReadBuffer) (KnxPropertyDataType,
 	}
 }
 
-func (e KnxPropertyDataType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e KnxPropertyDataType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e KnxPropertyDataType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("KnxPropertyDataType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

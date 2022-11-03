@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -143,7 +144,11 @@ func (m *_ModbusPDUWriteSingleCoilResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUWriteSingleCoilResponseParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteSingleCoilResponse, error) {
+func ModbusPDUWriteSingleCoilResponseParse(theBytes []byte, response bool) (ModbusPDUWriteSingleCoilResponse, error) {
+	return ModbusPDUWriteSingleCoilResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func ModbusPDUWriteSingleCoilResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteSingleCoilResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteSingleCoilResponse"); pullErr != nil {
@@ -180,7 +185,15 @@ func ModbusPDUWriteSingleCoilResponseParse(readBuffer utils.ReadBuffer, response
 	return _child, nil
 }
 
-func (m *_ModbusPDUWriteSingleCoilResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUWriteSingleCoilResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ModbusPDUWriteSingleCoilResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

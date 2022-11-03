@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -136,7 +137,11 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTOpen, error) {
+func BACnetConfirmedServiceRequestVTOpenParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTOpen, error) {
+	return BACnetConfirmedServiceRequestVTOpenParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceRequestLength) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestVTOpenParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTOpen, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTOpen"); pullErr != nil {
@@ -149,7 +154,7 @@ func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, servi
 	if pullErr := readBuffer.PullContext("vtClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for vtClass")
 	}
-	_vtClass, _vtClassErr := BACnetVTClassTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_vtClass, _vtClassErr := BACnetVTClassTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _vtClassErr != nil {
 		return nil, errors.Wrap(_vtClassErr, "Error parsing 'vtClass' field of BACnetConfirmedServiceRequestVTOpen")
 	}
@@ -162,7 +167,7 @@ func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, servi
 	if pullErr := readBuffer.PullContext("localVtSessionIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for localVtSessionIdentifier")
 	}
-	_localVtSessionIdentifier, _localVtSessionIdentifierErr := BACnetApplicationTagParse(readBuffer)
+	_localVtSessionIdentifier, _localVtSessionIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _localVtSessionIdentifierErr != nil {
 		return nil, errors.Wrap(_localVtSessionIdentifierErr, "Error parsing 'localVtSessionIdentifier' field of BACnetConfirmedServiceRequestVTOpen")
 	}
@@ -187,7 +192,15 @@ func BACnetConfirmedServiceRequestVTOpenParse(readBuffer utils.ReadBuffer, servi
 	return _child, nil
 }
 
-func (m *_BACnetConfirmedServiceRequestVTOpen) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestVTOpen) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestVTOpen) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

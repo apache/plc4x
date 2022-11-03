@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type CEMIPriority uint8
 
 type ICEMIPriority interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +109,11 @@ func (m CEMIPriority) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CEMIPriorityParse(readBuffer utils.ReadBuffer) (CEMIPriority, error) {
+func CEMIPriorityParse(theBytes []byte) (CEMIPriority, error) {
+	return CEMIPriorityParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func CEMIPriorityParseWithBuffer(readBuffer utils.ReadBuffer) (CEMIPriority, error) {
 	val, err := readBuffer.ReadUint8("CEMIPriority", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CEMIPriority")
@@ -120,7 +126,15 @@ func CEMIPriorityParse(readBuffer utils.ReadBuffer) (CEMIPriority, error) {
 	}
 }
 
-func (e CEMIPriority) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e CEMIPriority) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e CEMIPriority) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("CEMIPriority", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

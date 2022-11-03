@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -128,7 +129,11 @@ func (m *_BACnetLogDataLogDataEntry) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogDataLogDataEntryParse(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntry, error) {
+func BACnetLogDataLogDataEntryParse(theBytes []byte) (BACnetLogDataLogDataEntry, error) {
+	return BACnetLogDataLogDataEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLogDataLogDataEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntry"); pullErr != nil {
@@ -142,7 +147,7 @@ func BACnetLogDataLogDataEntryParse(readBuffer utils.ReadBuffer) (BACnetLogDataL
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -161,23 +166,23 @@ func BACnetLogDataLogDataEntryParse(readBuffer utils.ReadBuffer) (BACnetLogDataL
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetLogDataLogDataEntryBooleanValue
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryBooleanValueParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryBooleanValueParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(1): // BACnetLogDataLogDataEntryRealValue
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryRealValueParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryRealValueParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(2): // BACnetLogDataLogDataEntryEnumeratedValue
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryEnumeratedValueParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryEnumeratedValueParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(3): // BACnetLogDataLogDataEntryUnsignedValue
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryUnsignedValueParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryUnsignedValueParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(4): // BACnetLogDataLogDataEntryIntegerValue
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryIntegerValueParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryIntegerValueParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(5): // BACnetLogDataLogDataEntryBitStringValue
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryBitStringValueParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryBitStringValueParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(6): // BACnetLogDataLogDataEntryNullValue
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryNullValueParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryNullValueParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(7): // BACnetLogDataLogDataEntryFailure
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryFailureParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryFailureParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(8): // BACnetLogDataLogDataEntryAnyValue
-		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryAnyValueParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataEntryAnyValueParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}

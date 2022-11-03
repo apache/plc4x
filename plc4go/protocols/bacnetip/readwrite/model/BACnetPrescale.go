@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,7 +108,11 @@ func (m *_BACnetPrescale) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPrescaleParse(readBuffer utils.ReadBuffer) (BACnetPrescale, error) {
+func BACnetPrescaleParse(theBytes []byte) (BACnetPrescale, error) {
+	return BACnetPrescaleParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetPrescaleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPrescale, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPrescale"); pullErr != nil {
@@ -120,7 +125,7 @@ func BACnetPrescaleParse(readBuffer utils.ReadBuffer) (BACnetPrescale, error) {
 	if pullErr := readBuffer.PullContext("multiplier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for multiplier")
 	}
-	_multiplier, _multiplierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_multiplier, _multiplierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _multiplierErr != nil {
 		return nil, errors.Wrap(_multiplierErr, "Error parsing 'multiplier' field of BACnetPrescale")
 	}
@@ -133,7 +138,7 @@ func BACnetPrescaleParse(readBuffer utils.ReadBuffer) (BACnetPrescale, error) {
 	if pullErr := readBuffer.PullContext("moduloDivide"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for moduloDivide")
 	}
-	_moduloDivide, _moduloDivideErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_moduloDivide, _moduloDivideErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _moduloDivideErr != nil {
 		return nil, errors.Wrap(_moduloDivideErr, "Error parsing 'moduloDivide' field of BACnetPrescale")
 	}
@@ -153,7 +158,15 @@ func BACnetPrescaleParse(readBuffer utils.ReadBuffer) (BACnetPrescale, error) {
 	}, nil
 }
 
-func (m *_BACnetPrescale) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPrescale) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPrescale) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPrescale"); pushErr != nil {

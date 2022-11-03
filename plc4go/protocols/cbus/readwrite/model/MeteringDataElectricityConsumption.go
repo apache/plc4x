@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,7 +124,11 @@ func (m *_MeteringDataElectricityConsumption) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MeteringDataElectricityConsumptionParse(readBuffer utils.ReadBuffer) (MeteringDataElectricityConsumption, error) {
+func MeteringDataElectricityConsumptionParse(theBytes []byte) (MeteringDataElectricityConsumption, error) {
+	return MeteringDataElectricityConsumptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MeteringDataElectricityConsumptionParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringDataElectricityConsumption, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeteringDataElectricityConsumption"); pullErr != nil {
@@ -152,7 +157,15 @@ func MeteringDataElectricityConsumptionParse(readBuffer utils.ReadBuffer) (Meter
 	return _child, nil
 }
 
-func (m *_MeteringDataElectricityConsumption) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MeteringDataElectricityConsumption) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_MeteringDataElectricityConsumption) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

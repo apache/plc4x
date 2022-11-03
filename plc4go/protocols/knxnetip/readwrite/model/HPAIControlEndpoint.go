@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -120,7 +121,11 @@ func (m *_HPAIControlEndpoint) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HPAIControlEndpointParse(readBuffer utils.ReadBuffer) (HPAIControlEndpoint, error) {
+func HPAIControlEndpointParse(theBytes []byte) (HPAIControlEndpoint, error) {
+	return HPAIControlEndpointParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func HPAIControlEndpointParseWithBuffer(readBuffer utils.ReadBuffer) (HPAIControlEndpoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HPAIControlEndpoint"); pullErr != nil {
@@ -140,7 +145,7 @@ func HPAIControlEndpointParse(readBuffer utils.ReadBuffer) (HPAIControlEndpoint,
 	if pullErr := readBuffer.PullContext("hostProtocolCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hostProtocolCode")
 	}
-	_hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParse(readBuffer)
+	_hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParseWithBuffer(readBuffer)
 	if _hostProtocolCodeErr != nil {
 		return nil, errors.Wrap(_hostProtocolCodeErr, "Error parsing 'hostProtocolCode' field of HPAIControlEndpoint")
 	}
@@ -153,7 +158,7 @@ func HPAIControlEndpointParse(readBuffer utils.ReadBuffer) (HPAIControlEndpoint,
 	if pullErr := readBuffer.PullContext("ipAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipAddress")
 	}
-	_ipAddress, _ipAddressErr := IPAddressParse(readBuffer)
+	_ipAddress, _ipAddressErr := IPAddressParseWithBuffer(readBuffer)
 	if _ipAddressErr != nil {
 		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field of HPAIControlEndpoint")
 	}
@@ -181,7 +186,15 @@ func HPAIControlEndpointParse(readBuffer utils.ReadBuffer) (HPAIControlEndpoint,
 	}, nil
 }
 
-func (m *_HPAIControlEndpoint) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_HPAIControlEndpoint) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_HPAIControlEndpoint) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HPAIControlEndpoint"); pushErr != nil {

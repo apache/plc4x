@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,9 +32,9 @@ import (
 type MeteringCommandTypeContainer uint8
 
 type IMeteringCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() MeteringCommandType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -232,7 +234,11 @@ func (m MeteringCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MeteringCommandTypeContainerParse(readBuffer utils.ReadBuffer) (MeteringCommandTypeContainer, error) {
+func MeteringCommandTypeContainerParse(theBytes []byte) (MeteringCommandTypeContainer, error) {
+	return MeteringCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MeteringCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("MeteringCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MeteringCommandTypeContainer")
@@ -245,7 +251,15 @@ func MeteringCommandTypeContainerParse(readBuffer utils.ReadBuffer) (MeteringCom
 	}
 }
 
-func (e MeteringCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e MeteringCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e MeteringCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("MeteringCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

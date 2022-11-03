@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -135,7 +136,11 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusPointToPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandNormal, error) {
+func CBusPointToPointToMultiPointCommandNormalParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandNormal, error) {
+	return CBusPointToPointToMultiPointCommandNormalParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func CBusPointToPointToMultiPointCommandNormalParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandNormal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointToMultiPointCommandNormal"); pullErr != nil {
@@ -148,7 +153,7 @@ func CBusPointToPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
-	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of CBusPointToPointToMultiPointCommandNormal")
 	}
@@ -161,7 +166,7 @@ func CBusPointToPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for salData")
 	}
-	_salData, _salDataErr := SALDataParse(readBuffer, ApplicationId(application.ApplicationId()))
+	_salData, _salDataErr := SALDataParseWithBuffer(readBuffer, ApplicationId(application.ApplicationId()))
 	if _salDataErr != nil {
 		return nil, errors.Wrap(_salDataErr, "Error parsing 'salData' field of CBusPointToPointToMultiPointCommandNormal")
 	}
@@ -186,7 +191,15 @@ func CBusPointToPointToMultiPointCommandNormalParse(readBuffer utils.ReadBuffer,
 	return _child, nil
 }
 
-func (m *_CBusPointToPointToMultiPointCommandNormal) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusPointToPointToMultiPointCommandNormal) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CBusPointToPointToMultiPointCommandNormal) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

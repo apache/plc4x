@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -120,7 +121,11 @@ func (m *_BACnetGroupChannelValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetGroupChannelValueParse(readBuffer utils.ReadBuffer) (BACnetGroupChannelValue, error) {
+func BACnetGroupChannelValueParse(theBytes []byte) (BACnetGroupChannelValue, error) {
+	return BACnetGroupChannelValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetGroupChannelValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetGroupChannelValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetGroupChannelValue"); pullErr != nil {
@@ -133,7 +138,7 @@ func BACnetGroupChannelValueParse(readBuffer utils.ReadBuffer) (BACnetGroupChann
 	if pullErr := readBuffer.PullContext("channel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for channel")
 	}
-	_channel, _channelErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_channel, _channelErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _channelErr != nil {
 		return nil, errors.Wrap(_channelErr, "Error parsing 'channel' field of BACnetGroupChannelValue")
 	}
@@ -149,7 +154,7 @@ func BACnetGroupChannelValueParse(readBuffer utils.ReadBuffer) (BACnetGroupChann
 		if pullErr := readBuffer.PullContext("overridingPriority"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for overridingPriority")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -168,7 +173,7 @@ func BACnetGroupChannelValueParse(readBuffer utils.ReadBuffer) (BACnetGroupChann
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := BACnetChannelValueParse(readBuffer)
+	_value, _valueErr := BACnetChannelValueParseWithBuffer(readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetGroupChannelValue")
 	}
@@ -189,7 +194,15 @@ func BACnetGroupChannelValueParse(readBuffer utils.ReadBuffer) (BACnetGroupChann
 	}, nil
 }
 
-func (m *_BACnetGroupChannelValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetGroupChannelValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetGroupChannelValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetGroupChannelValue"); pushErr != nil {

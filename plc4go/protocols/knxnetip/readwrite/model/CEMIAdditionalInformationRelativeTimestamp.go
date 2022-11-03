@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -145,7 +146,11 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer) (CEMIAdditionalInformationRelativeTimestamp, error) {
+func CEMIAdditionalInformationRelativeTimestampParse(theBytes []byte) (CEMIAdditionalInformationRelativeTimestamp, error) {
+	return CEMIAdditionalInformationRelativeTimestampParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func CEMIAdditionalInformationRelativeTimestampParseWithBuffer(readBuffer utils.ReadBuffer) (CEMIAdditionalInformationRelativeTimestamp, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformationRelativeTimestamp"); pullErr != nil {
@@ -167,7 +172,7 @@ func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("relativeTimestamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for relativeTimestamp")
 	}
-	_relativeTimestamp, _relativeTimestampErr := RelativeTimestampParse(readBuffer)
+	_relativeTimestamp, _relativeTimestampErr := RelativeTimestampParseWithBuffer(readBuffer)
 	if _relativeTimestampErr != nil {
 		return nil, errors.Wrap(_relativeTimestampErr, "Error parsing 'relativeTimestamp' field of CEMIAdditionalInformationRelativeTimestamp")
 	}
@@ -189,7 +194,15 @@ func CEMIAdditionalInformationRelativeTimestampParse(readBuffer utils.ReadBuffer
 	return _child, nil
 }
 
-func (m *_CEMIAdditionalInformationRelativeTimestamp) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CEMIAdditionalInformationRelativeTimestamp) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CEMIAdditionalInformationRelativeTimestamp) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

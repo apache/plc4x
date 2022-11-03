@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -159,7 +160,11 @@ func (m *_RequestObsolete) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestObsolete, error) {
+func RequestObsoleteParse(theBytes []byte, cBusOptions CBusOptions) (RequestObsolete, error) {
+	return RequestObsoleteParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func RequestObsoleteParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestObsolete, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestObsolete"); pullErr != nil {
@@ -190,7 +195,7 @@ func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) 
 		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
 		}
-		_val, _err := AlphaParse(readBuffer)
+		_val, _err := AlphaParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -221,7 +226,15 @@ func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) 
 	return _child, nil
 }
 
-func (m *_RequestObsolete) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_RequestObsolete) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_RequestObsolete) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

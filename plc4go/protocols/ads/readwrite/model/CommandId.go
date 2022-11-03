@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type CommandId uint16
 
 type ICommandId interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -143,7 +145,11 @@ func (m CommandId) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CommandIdParse(readBuffer utils.ReadBuffer) (CommandId, error) {
+func CommandIdParse(theBytes []byte) (CommandId, error) {
+	return CommandIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func CommandIdParseWithBuffer(readBuffer utils.ReadBuffer) (CommandId, error) {
 	val, err := readBuffer.ReadUint16("CommandId", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CommandId")
@@ -156,7 +162,15 @@ func CommandIdParse(readBuffer utils.ReadBuffer) (CommandId, error) {
 	}
 }
 
-func (e CommandId) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e CommandId) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e CommandId) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("CommandId", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

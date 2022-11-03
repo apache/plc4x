@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -137,7 +138,11 @@ func (m *_FirmataMessageAnalogIO) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer, response bool) (FirmataMessageAnalogIO, error) {
+func FirmataMessageAnalogIOParse(theBytes []byte, response bool) (FirmataMessageAnalogIO, error) {
+	return FirmataMessageAnalogIOParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func FirmataMessageAnalogIOParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataMessageAnalogIO, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataMessageAnalogIO"); pullErr != nil {
@@ -192,7 +197,15 @@ func FirmataMessageAnalogIOParse(readBuffer utils.ReadBuffer, response bool) (Fi
 	return _child, nil
 }
 
-func (m *_FirmataMessageAnalogIO) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_FirmataMessageAnalogIO) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_FirmataMessageAnalogIO) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataSetpoint) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSetpointParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetpoint, error) {
+func BACnetConstructedDataSetpointParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetpoint, error) {
+	return BACnetConstructedDataSetpointParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataSetpointParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetpoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSetpoint"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataSetpointParse(readBuffer utils.ReadBuffer, tagNumber u
 	if pullErr := readBuffer.PullContext("setpoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for setpoint")
 	}
-	_setpoint, _setpointErr := BACnetApplicationTagParse(readBuffer)
+	_setpoint, _setpointErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _setpointErr != nil {
 		return nil, errors.Wrap(_setpointErr, "Error parsing 'setpoint' field of BACnetConstructedDataSetpoint")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataSetpointParse(readBuffer utils.ReadBuffer, tagNumber u
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataSetpoint) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataSetpoint) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataSetpoint) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

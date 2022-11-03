@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -132,7 +133,11 @@ func (m *_CIPEncapsulationReadResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CIPEncapsulationReadResponseParse(readBuffer utils.ReadBuffer, packetLen uint16) (CIPEncapsulationReadResponse, error) {
+func CIPEncapsulationReadResponseParse(theBytes []byte, packetLen uint16) (CIPEncapsulationReadResponse, error) {
+	return CIPEncapsulationReadResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), packetLen) // TODO: get endianness from mspec
+}
+
+func CIPEncapsulationReadResponseParseWithBuffer(readBuffer utils.ReadBuffer, packetLen uint16) (CIPEncapsulationReadResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CIPEncapsulationReadResponse"); pullErr != nil {
@@ -145,7 +150,7 @@ func CIPEncapsulationReadResponseParse(readBuffer utils.ReadBuffer, packetLen ui
 	if pullErr := readBuffer.PullContext("response"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for response")
 	}
-	_response, _responseErr := DF1ResponseMessageParse(readBuffer, uint16(packetLen))
+	_response, _responseErr := DF1ResponseMessageParseWithBuffer(readBuffer, uint16(packetLen))
 	if _responseErr != nil {
 		return nil, errors.Wrap(_responseErr, "Error parsing 'response' field of CIPEncapsulationReadResponse")
 	}
@@ -167,7 +172,15 @@ func CIPEncapsulationReadResponseParse(readBuffer utils.ReadBuffer, packetLen ui
 	return _child, nil
 }
 
-func (m *_CIPEncapsulationReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CIPEncapsulationReadResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CIPEncapsulationReadResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

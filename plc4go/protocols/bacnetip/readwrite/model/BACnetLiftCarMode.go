@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetLiftCarMode uint16
 
 type IBACnetLiftCarMode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -173,7 +175,11 @@ func (m BACnetLiftCarMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLiftCarModeParse(readBuffer utils.ReadBuffer) (BACnetLiftCarMode, error) {
+func BACnetLiftCarModeParse(theBytes []byte) (BACnetLiftCarMode, error) {
+	return BACnetLiftCarModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLiftCarModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLiftCarMode, error) {
 	val, err := readBuffer.ReadUint16("BACnetLiftCarMode", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLiftCarMode")
@@ -186,7 +192,15 @@ func BACnetLiftCarModeParse(readBuffer utils.ReadBuffer) (BACnetLiftCarMode, err
 	}
 }
 
-func (e BACnetLiftCarMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLiftCarMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetLiftCarMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetLiftCarMode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

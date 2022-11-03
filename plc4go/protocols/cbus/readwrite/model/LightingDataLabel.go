@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -159,7 +160,11 @@ func (m *_LightingDataLabel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LightingDataLabelParse(readBuffer utils.ReadBuffer, commandTypeContainer LightingCommandTypeContainer) (LightingDataLabel, error) {
+func LightingDataLabelParse(theBytes []byte, commandTypeContainer LightingCommandTypeContainer) (LightingDataLabel, error) {
+	return LightingDataLabelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), commandTypeContainer) // TODO: get endianness from mspec
+}
+
+func LightingDataLabelParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer LightingCommandTypeContainer) (LightingDataLabel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LightingDataLabel"); pullErr != nil {
@@ -179,7 +184,7 @@ func LightingDataLabelParse(readBuffer utils.ReadBuffer, commandTypeContainer Li
 	if pullErr := readBuffer.PullContext("labelOptions"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for labelOptions")
 	}
-	_labelOptions, _labelOptionsErr := LightingLabelOptionsParse(readBuffer)
+	_labelOptions, _labelOptionsErr := LightingLabelOptionsParseWithBuffer(readBuffer)
 	if _labelOptionsErr != nil {
 		return nil, errors.Wrap(_labelOptionsErr, "Error parsing 'labelOptions' field of LightingDataLabel")
 	}
@@ -194,7 +199,7 @@ func LightingDataLabelParse(readBuffer utils.ReadBuffer, commandTypeContainer Li
 		if pullErr := readBuffer.PullContext("language"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for language")
 		}
-		_val, _err := LanguageParse(readBuffer)
+		_val, _err := LanguageParseWithBuffer(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'language' field of LightingDataLabel")
 		}
@@ -226,7 +231,15 @@ func LightingDataLabelParse(readBuffer utils.ReadBuffer, commandTypeContainer Li
 	return _child, nil
 }
 
-func (m *_LightingDataLabel) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_LightingDataLabel) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_LightingDataLabel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

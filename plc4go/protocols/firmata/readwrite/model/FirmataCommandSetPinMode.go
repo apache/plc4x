@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -135,7 +136,11 @@ func (m *_FirmataCommandSetPinMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (FirmataCommandSetPinMode, error) {
+func FirmataCommandSetPinModeParse(theBytes []byte, response bool) (FirmataCommandSetPinMode, error) {
+	return FirmataCommandSetPinModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func FirmataCommandSetPinModeParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataCommandSetPinMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandSetPinMode"); pullErr != nil {
@@ -155,7 +160,7 @@ func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (
 	if pullErr := readBuffer.PullContext("mode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for mode")
 	}
-	_mode, _modeErr := PinModeParse(readBuffer)
+	_mode, _modeErr := PinModeParseWithBuffer(readBuffer)
 	if _modeErr != nil {
 		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field of FirmataCommandSetPinMode")
 	}
@@ -180,7 +185,15 @@ func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (
 	return _child, nil
 }
 
-func (m *_FirmataCommandSetPinMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_FirmataCommandSetPinMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_FirmataCommandSetPinMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -136,7 +137,11 @@ func (m *_S7PayloadUserDataItem) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItem, error) {
+func S7PayloadUserDataItemParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItem, error) {
+	return S7PayloadUserDataItemParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cpuFunctionType, cpuSubfunction) // TODO: get endianness from mspec
+}
+
+func S7PayloadUserDataItemParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItem"); pullErr != nil {
@@ -149,7 +154,7 @@ func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uin
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
 	}
-	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
+	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(readBuffer)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of S7PayloadUserDataItem")
 	}
@@ -162,7 +167,7 @@ func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uin
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
 	}
-	_transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
+	_transportSize, _transportSizeErr := DataTransportSizeParseWithBuffer(readBuffer)
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field of S7PayloadUserDataItem")
 	}
@@ -189,41 +194,41 @@ func S7PayloadUserDataItemParse(readBuffer utils.ReadBuffer, cpuFunctionType uin
 	var typeSwitchError error
 	switch {
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x03: // S7PayloadDiagnosticMessage
-		_childTemp, typeSwitchError = S7PayloadDiagnosticMessageParse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadDiagnosticMessageParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x05: // S7PayloadAlarm8
-		_childTemp, typeSwitchError = S7PayloadAlarm8Parse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadAlarm8ParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x06: // S7PayloadNotify
-		_childTemp, typeSwitchError = S7PayloadNotifyParse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadNotifyParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x0c: // S7PayloadAlarmAckInd
-		_childTemp, typeSwitchError = S7PayloadAlarmAckIndParse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadAlarmAckIndParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x11: // S7PayloadAlarmSQ
-		_childTemp, typeSwitchError = S7PayloadAlarmSQParse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadAlarmSQParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x12: // S7PayloadAlarmS
-		_childTemp, typeSwitchError = S7PayloadAlarmSParse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadAlarmSParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x13: // S7PayloadAlarmSC
-		_childTemp, typeSwitchError = S7PayloadAlarmSCParse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadAlarmSCParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x00 && cpuSubfunction == 0x16: // S7PayloadNotify8
-		_childTemp, typeSwitchError = S7PayloadNotify8Parse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadNotify8ParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x04 && cpuSubfunction == 0x01: // S7PayloadUserDataItemCpuFunctionReadSzlRequest
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlRequestParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x01: // S7PayloadUserDataItemCpuFunctionReadSzlResponse
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlResponseParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x04 && cpuSubfunction == 0x02: // S7PayloadUserDataItemCpuFunctionMsgSubscription
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x02 && dataLength == 0x00: // S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseParse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x02 && dataLength == 0x02: // S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x02 && dataLength == 0x05: // S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x04 && cpuSubfunction == 0x0b: // S7PayloadUserDataItemCpuFunctionAlarmAck
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmAckParse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmAckParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x0b: // S7PayloadUserDataItemCpuFunctionAlarmAckResponse
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x04 && cpuSubfunction == 0x13: // S7PayloadUserDataItemCpuFunctionAlarmQuery
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmQueryParse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmQueryParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionType == 0x08 && cpuSubfunction == 0x13: // S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
-		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer, cpuFunctionType, cpuSubfunction)
+		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(readBuffer, cpuFunctionType, cpuSubfunction)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [cpuFunctionType=%v, cpuSubfunction=%v, dataLength=%v]", cpuFunctionType, cpuSubfunction, dataLength)
 	}

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_COTPPacketDisconnectRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPPacketDisconnectRequestParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketDisconnectRequest, error) {
+func COTPPacketDisconnectRequestParse(theBytes []byte, cotpLen uint16) (COTPPacketDisconnectRequest, error) {
+	return COTPPacketDisconnectRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cotpLen) // TODO: get endianness from mspec
+}
+
+func COTPPacketDisconnectRequestParseWithBuffer(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketDisconnectRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacketDisconnectRequest"); pullErr != nil {
@@ -176,7 +181,7 @@ func COTPPacketDisconnectRequestParse(readBuffer utils.ReadBuffer, cotpLen uint1
 	if pullErr := readBuffer.PullContext("protocolClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for protocolClass")
 	}
-	_protocolClass, _protocolClassErr := COTPProtocolClassParse(readBuffer)
+	_protocolClass, _protocolClassErr := COTPProtocolClassParseWithBuffer(readBuffer)
 	if _protocolClassErr != nil {
 		return nil, errors.Wrap(_protocolClassErr, "Error parsing 'protocolClass' field of COTPPacketDisconnectRequest")
 	}
@@ -202,7 +207,15 @@ func COTPPacketDisconnectRequestParse(readBuffer utils.ReadBuffer, cotpLen uint1
 	return _child, nil
 }
 
-func (m *_COTPPacketDisconnectRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_COTPPacketDisconnectRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_COTPPacketDisconnectRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

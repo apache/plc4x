@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -151,7 +152,11 @@ func (m *_BACnetLogData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogData, error) {
+func BACnetLogDataParse(theBytes []byte, tagNumber uint8) (BACnetLogData, error) {
+	return BACnetLogDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetLogDataParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogData"); pullErr != nil {
@@ -164,7 +169,7 @@ func BACnetLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLog
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetLogData")
 	}
@@ -178,7 +183,7 @@ func BACnetLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLog
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -197,11 +202,11 @@ func BACnetLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLog
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetLogDataLogStatus
-		_childTemp, typeSwitchError = BACnetLogDataLogStatusParse(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetLogDataLogStatusParseWithBuffer(readBuffer, tagNumber)
 	case peekedTagNumber == uint8(1): // BACnetLogDataLogData
-		_childTemp, typeSwitchError = BACnetLogDataLogDataParse(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataParseWithBuffer(readBuffer, tagNumber)
 	case peekedTagNumber == uint8(2): // BACnetLogDataLogDataTimeChange
-		_childTemp, typeSwitchError = BACnetLogDataLogDataTimeChangeParse(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetLogDataLogDataTimeChangeParseWithBuffer(readBuffer, tagNumber)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
@@ -214,7 +219,7 @@ func BACnetLogDataParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLog
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetLogData")
 	}

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetEventTransitionBits uint8
 
 type IBACnetEventTransitionBits interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -101,7 +103,11 @@ func (m BACnetEventTransitionBits) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventTransitionBitsParse(readBuffer utils.ReadBuffer) (BACnetEventTransitionBits, error) {
+func BACnetEventTransitionBitsParse(theBytes []byte) (BACnetEventTransitionBits, error) {
+	return BACnetEventTransitionBitsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEventTransitionBitsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventTransitionBits, error) {
 	val, err := readBuffer.ReadUint8("BACnetEventTransitionBits", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetEventTransitionBits")
@@ -114,7 +120,15 @@ func BACnetEventTransitionBitsParse(readBuffer utils.ReadBuffer) (BACnetEventTra
 	}
 }
 
-func (e BACnetEventTransitionBits) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetEventTransitionBits) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetEventTransitionBits) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetEventTransitionBits", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,8 +32,8 @@ import (
 type TemperatureBroadcastCommandType uint8
 
 type ITemperatureBroadcastCommandType interface {
+	utils.Serializable
 	NumberOfArguments() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -111,7 +113,11 @@ func (m TemperatureBroadcastCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TemperatureBroadcastCommandTypeParse(readBuffer utils.ReadBuffer) (TemperatureBroadcastCommandType, error) {
+func TemperatureBroadcastCommandTypeParse(theBytes []byte) (TemperatureBroadcastCommandType, error) {
+	return TemperatureBroadcastCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TemperatureBroadcastCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (TemperatureBroadcastCommandType, error) {
 	val, err := readBuffer.ReadUint8("TemperatureBroadcastCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TemperatureBroadcastCommandType")
@@ -124,7 +130,15 @@ func TemperatureBroadcastCommandTypeParse(readBuffer utils.ReadBuffer) (Temperat
 	}
 }
 
-func (e TemperatureBroadcastCommandType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e TemperatureBroadcastCommandType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e TemperatureBroadcastCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("TemperatureBroadcastCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -139,7 +140,11 @@ func (m *_BACnetTimerStateChangeValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimerStateChangeValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValue, error) {
+func BACnetTimerStateChangeValueParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValue, error) {
+	return BACnetTimerStateChangeValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument) // TODO: get endianness from mspec
+}
+
+func BACnetTimerStateChangeValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValue"); pullErr != nil {
@@ -153,7 +158,7 @@ func BACnetTimerStateChangeValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -182,39 +187,39 @@ func BACnetTimerStateChangeValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == 0x0 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueNull
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueNullParse(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetTimerStateChangeValueNullParseWithBuffer(readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueBoolean
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueBooleanParse(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetTimerStateChangeValueBooleanParseWithBuffer(readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueUnsigned
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueUnsignedParse(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetTimerStateChangeValueUnsignedParseWithBuffer(readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueInteger
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueIntegerParse(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetTimerStateChangeValueIntegerParseWithBuffer(readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x4 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueReal
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueRealParse(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetTimerStateChangeValueRealParseWithBuffer(readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x5 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueDouble
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueDoubleParse(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetTimerStateChangeValueDoubleParseWithBuffer(readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueOctetString
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueOctetStringParse(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetTimerStateChangeValueOctetStringParseWithBuffer(readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueCharacterString
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueCharacterStringParse(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetTimerStateChangeValueCharacterStringParseWithBuffer(readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x8 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueBitString
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueBitStringParse(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetTimerStateChangeValueBitStringParseWithBuffer(readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueEnumerated
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueEnumeratedParse(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetTimerStateChangeValueEnumeratedParseWithBuffer(readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueDate
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueDateParse(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetTimerStateChangeValueDateParseWithBuffer(readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueTime
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueTimeParse(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetTimerStateChangeValueTimeParseWithBuffer(readBuffer, objectTypeArgument)
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueObjectidentifier
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueObjectidentifierParse(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetTimerStateChangeValueObjectidentifierParseWithBuffer(readBuffer, objectTypeArgument)
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetTimerStateChangeValueNoValue
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueNoValueParse(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetTimerStateChangeValueNoValueParseWithBuffer(readBuffer, objectTypeArgument)
 	case peekedTagNumber == uint8(1) && peekedIsContextTag == bool(true): // BACnetTimerStateChangeValueConstructedValue
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueConstructedValueParse(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetTimerStateChangeValueConstructedValueParseWithBuffer(readBuffer, objectTypeArgument)
 	case peekedTagNumber == uint8(2) && peekedIsContextTag == bool(true): // BACnetTimerStateChangeValueDateTime
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueDateTimeParse(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetTimerStateChangeValueDateTimeParseWithBuffer(readBuffer, objectTypeArgument)
 	case peekedTagNumber == uint8(3) && peekedIsContextTag == bool(true): // BACnetTimerStateChangeValueLightingCommand
-		_childTemp, typeSwitchError = BACnetTimerStateChangeValueLightingCommandParse(readBuffer, objectTypeArgument)
+		_childTemp, typeSwitchError = BACnetTimerStateChangeValueLightingCommandParseWithBuffer(readBuffer, objectTypeArgument)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v, peekedIsContextTag=%v]", peekedTagNumber, peekedIsContextTag)
 	}

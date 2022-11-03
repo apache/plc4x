@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type DeviceDescriptorMediumType uint8
 
 type IDeviceDescriptorMediumType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -119,7 +121,11 @@ func (m DeviceDescriptorMediumType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DeviceDescriptorMediumTypeParse(readBuffer utils.ReadBuffer) (DeviceDescriptorMediumType, error) {
+func DeviceDescriptorMediumTypeParse(theBytes []byte) (DeviceDescriptorMediumType, error) {
+	return DeviceDescriptorMediumTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DeviceDescriptorMediumTypeParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceDescriptorMediumType, error) {
 	val, err := readBuffer.ReadUint8("DeviceDescriptorMediumType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DeviceDescriptorMediumType")
@@ -132,7 +138,15 @@ func DeviceDescriptorMediumTypeParse(readBuffer utils.ReadBuffer) (DeviceDescrip
 	}
 }
 
-func (e DeviceDescriptorMediumType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e DeviceDescriptorMediumType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e DeviceDescriptorMediumType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("DeviceDescriptorMediumType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

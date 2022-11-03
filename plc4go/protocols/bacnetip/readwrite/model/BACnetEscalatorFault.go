@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetEscalatorFault uint16
 
 type IBACnetEscalatorFault interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -143,7 +145,11 @@ func (m BACnetEscalatorFault) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEscalatorFaultParse(readBuffer utils.ReadBuffer) (BACnetEscalatorFault, error) {
+func BACnetEscalatorFaultParse(theBytes []byte) (BACnetEscalatorFault, error) {
+	return BACnetEscalatorFaultParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEscalatorFaultParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEscalatorFault, error) {
 	val, err := readBuffer.ReadUint16("BACnetEscalatorFault", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetEscalatorFault")
@@ -156,7 +162,15 @@ func BACnetEscalatorFaultParse(readBuffer utils.ReadBuffer) (BACnetEscalatorFaul
 	}
 }
 
-func (e BACnetEscalatorFault) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetEscalatorFault) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetEscalatorFault) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetEscalatorFault", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

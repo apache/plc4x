@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataRecordsSinceNotification) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataRecordsSinceNotificationParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRecordsSinceNotification, error) {
+func BACnetConstructedDataRecordsSinceNotificationParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRecordsSinceNotification, error) {
+	return BACnetConstructedDataRecordsSinceNotificationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataRecordsSinceNotificationParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRecordsSinceNotification, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRecordsSinceNotification"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataRecordsSinceNotificationParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("recordsSinceNotifications"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for recordsSinceNotifications")
 	}
-	_recordsSinceNotifications, _recordsSinceNotificationsErr := BACnetApplicationTagParse(readBuffer)
+	_recordsSinceNotifications, _recordsSinceNotificationsErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _recordsSinceNotificationsErr != nil {
 		return nil, errors.Wrap(_recordsSinceNotificationsErr, "Error parsing 'recordsSinceNotifications' field of BACnetConstructedDataRecordsSinceNotification")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataRecordsSinceNotificationParse(readBuffer utils.ReadBuf
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataRecordsSinceNotification) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataRecordsSinceNotification) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataRecordsSinceNotification) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

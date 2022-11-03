@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetLogDataLogDataEntryBitStringValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogDataLogDataEntryBitStringValueParse(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryBitStringValue, error) {
+func BACnetLogDataLogDataEntryBitStringValueParse(theBytes []byte) (BACnetLogDataLogDataEntryBitStringValue, error) {
+	return BACnetLogDataLogDataEntryBitStringValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLogDataLogDataEntryBitStringValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryBitStringValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryBitStringValue"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetLogDataLogDataEntryBitStringValueParse(readBuffer utils.ReadBuffer) (
 	if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bitStringValue")
 	}
-	_bitStringValue, _bitStringValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(5)), BACnetDataType(BACnetDataType_BIT_STRING))
+	_bitStringValue, _bitStringValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(5)), BACnetDataType(BACnetDataType_BIT_STRING))
 	if _bitStringValueErr != nil {
 		return nil, errors.Wrap(_bitStringValueErr, "Error parsing 'bitStringValue' field of BACnetLogDataLogDataEntryBitStringValue")
 	}
@@ -157,7 +162,15 @@ func BACnetLogDataLogDataEntryBitStringValueParse(readBuffer utils.ReadBuffer) (
 	return _child, nil
 }
 
-func (m *_BACnetLogDataLogDataEntryBitStringValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogDataLogDataEntryBitStringValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLogDataLogDataEntryBitStringValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

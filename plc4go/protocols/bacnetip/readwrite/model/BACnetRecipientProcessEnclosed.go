@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -120,7 +121,11 @@ func (m *_BACnetRecipientProcessEnclosed) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRecipientProcessEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetRecipientProcessEnclosed, error) {
+func BACnetRecipientProcessEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetRecipientProcessEnclosed, error) {
+	return BACnetRecipientProcessEnclosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetRecipientProcessEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetRecipientProcessEnclosed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetRecipientProcessEnclosed"); pullErr != nil {
@@ -133,7 +138,7 @@ func BACnetRecipientProcessEnclosedParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetRecipientProcessEnclosed")
 	}
@@ -146,7 +151,7 @@ func BACnetRecipientProcessEnclosedParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("recipientProcess"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for recipientProcess")
 	}
-	_recipientProcess, _recipientProcessErr := BACnetRecipientProcessParse(readBuffer)
+	_recipientProcess, _recipientProcessErr := BACnetRecipientProcessParseWithBuffer(readBuffer)
 	if _recipientProcessErr != nil {
 		return nil, errors.Wrap(_recipientProcessErr, "Error parsing 'recipientProcess' field of BACnetRecipientProcessEnclosed")
 	}
@@ -159,7 +164,7 @@ func BACnetRecipientProcessEnclosedParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetRecipientProcessEnclosed")
 	}
@@ -181,7 +186,15 @@ func BACnetRecipientProcessEnclosedParse(readBuffer utils.ReadBuffer, tagNumber 
 	}, nil
 }
 
-func (m *_BACnetRecipientProcessEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetRecipientProcessEnclosed) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetRecipientProcessEnclosed) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetRecipientProcessEnclosed"); pushErr != nil {

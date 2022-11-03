@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -215,7 +216,11 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadDeviceIdentificationResponse, error) {
+func ModbusPDUReadDeviceIdentificationResponseParse(theBytes []byte, response bool) (ModbusPDUReadDeviceIdentificationResponse, error) {
+	return ModbusPDUReadDeviceIdentificationResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func ModbusPDUReadDeviceIdentificationResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadDeviceIdentificationResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadDeviceIdentificationResponse"); pullErr != nil {
@@ -237,7 +242,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("level"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for level")
 	}
-	_level, _levelErr := ModbusDeviceInformationLevelParse(readBuffer)
+	_level, _levelErr := ModbusDeviceInformationLevelParseWithBuffer(readBuffer)
 	if _levelErr != nil {
 		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
@@ -257,7 +262,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("conformityLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for conformityLevel")
 	}
-	_conformityLevel, _conformityLevelErr := ModbusDeviceInformationConformityLevelParse(readBuffer)
+	_conformityLevel, _conformityLevelErr := ModbusDeviceInformationConformityLevelParseWithBuffer(readBuffer)
 	if _conformityLevelErr != nil {
 		return nil, errors.Wrap(_conformityLevelErr, "Error parsing 'conformityLevel' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
@@ -270,7 +275,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("moreFollows"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for moreFollows")
 	}
-	_moreFollows, _moreFollowsErr := ModbusDeviceInformationMoreFollowsParse(readBuffer)
+	_moreFollows, _moreFollowsErr := ModbusDeviceInformationMoreFollowsParseWithBuffer(readBuffer)
 	if _moreFollowsErr != nil {
 		return nil, errors.Wrap(_moreFollowsErr, "Error parsing 'moreFollows' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
@@ -305,7 +310,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
-			_item, _err := ModbusDeviceInformationObjectParse(readBuffer)
+			_item, _err := ModbusDeviceInformationObjectParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'objects' field of ModbusPDUReadDeviceIdentificationResponse")
 			}
@@ -334,7 +339,15 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	return _child, nil
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

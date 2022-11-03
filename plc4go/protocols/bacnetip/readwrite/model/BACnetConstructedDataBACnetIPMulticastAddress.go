@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataBACnetIPMulticastAddress) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBACnetIPMulticastAddressParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPMulticastAddress, error) {
+func BACnetConstructedDataBACnetIPMulticastAddressParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPMulticastAddress, error) {
+	return BACnetConstructedDataBACnetIPMulticastAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataBACnetIPMulticastAddressParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPMulticastAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPMulticastAddress"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataBACnetIPMulticastAddressParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("ipMulticastAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipMulticastAddress")
 	}
-	_ipMulticastAddress, _ipMulticastAddressErr := BACnetApplicationTagParse(readBuffer)
+	_ipMulticastAddress, _ipMulticastAddressErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _ipMulticastAddressErr != nil {
 		return nil, errors.Wrap(_ipMulticastAddressErr, "Error parsing 'ipMulticastAddress' field of BACnetConstructedDataBACnetIPMulticastAddress")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataBACnetIPMulticastAddressParse(readBuffer utils.ReadBuf
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataBACnetIPMulticastAddress) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataBACnetIPMulticastAddress) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataBACnetIPMulticastAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

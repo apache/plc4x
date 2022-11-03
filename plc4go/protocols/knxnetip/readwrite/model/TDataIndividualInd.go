@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -103,7 +104,11 @@ func (m *_TDataIndividualInd) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TDataIndividualIndParse(readBuffer utils.ReadBuffer, size uint16) (TDataIndividualInd, error) {
+func TDataIndividualIndParse(theBytes []byte, size uint16) (TDataIndividualInd, error) {
+	return TDataIndividualIndParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), size) // TODO: get endianness from mspec
+}
+
+func TDataIndividualIndParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (TDataIndividualInd, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TDataIndividualInd"); pullErr != nil {
@@ -126,7 +131,15 @@ func TDataIndividualIndParse(readBuffer utils.ReadBuffer, size uint16) (TDataInd
 	return _child, nil
 }
 
-func (m *_TDataIndividualInd) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TDataIndividualInd) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TDataIndividualInd) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

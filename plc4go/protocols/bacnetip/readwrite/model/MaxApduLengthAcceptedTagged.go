@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -111,7 +112,11 @@ func (m *_MaxApduLengthAcceptedTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MaxApduLengthAcceptedTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (MaxApduLengthAcceptedTagged, error) {
+func MaxApduLengthAcceptedTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (MaxApduLengthAcceptedTagged, error) {
+	return MaxApduLengthAcceptedTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func MaxApduLengthAcceptedTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (MaxApduLengthAcceptedTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MaxApduLengthAcceptedTagged"); pullErr != nil {
@@ -124,7 +129,7 @@ func MaxApduLengthAcceptedTaggedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of MaxApduLengthAcceptedTagged")
 	}
@@ -166,7 +171,15 @@ func MaxApduLengthAcceptedTaggedParse(readBuffer utils.ReadBuffer, tagNumber uin
 	}, nil
 }
 
-func (m *_MaxApduLengthAcceptedTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MaxApduLengthAcceptedTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_MaxApduLengthAcceptedTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("MaxApduLengthAcceptedTagged"); pushErr != nil {

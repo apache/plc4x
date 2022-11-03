@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -114,7 +115,11 @@ func (m *_DIBSuppSvcFamilies) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DIBSuppSvcFamiliesParse(readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, error) {
+func DIBSuppSvcFamiliesParse(theBytes []byte) (DIBSuppSvcFamilies, error) {
+	return DIBSuppSvcFamiliesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DIBSuppSvcFamiliesParseWithBuffer(readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DIBSuppSvcFamilies"); pullErr != nil {
@@ -147,7 +152,7 @@ func DIBSuppSvcFamiliesParse(readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, e
 		_serviceIdsLength := uint16(structureLength) - uint16(uint16(2))
 		_serviceIdsEndPos := positionAware.GetPos() + uint16(_serviceIdsLength)
 		for positionAware.GetPos() < _serviceIdsEndPos {
-			_item, _err := ServiceIdParse(readBuffer)
+			_item, _err := ServiceIdParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'serviceIds' field of DIBSuppSvcFamilies")
 			}
@@ -169,7 +174,15 @@ func DIBSuppSvcFamiliesParse(readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, e
 	}, nil
 }
 
-func (m *_DIBSuppSvcFamilies) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_DIBSuppSvcFamilies) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_DIBSuppSvcFamilies) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DIBSuppSvcFamilies"); pushErr != nil {

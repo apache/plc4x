@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -132,7 +133,11 @@ func (m *_ModbusPDUWriteFileRecordResponseItem) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUWriteFileRecordResponseItemParse(readBuffer utils.ReadBuffer) (ModbusPDUWriteFileRecordResponseItem, error) {
+func ModbusPDUWriteFileRecordResponseItemParse(theBytes []byte) (ModbusPDUWriteFileRecordResponseItem, error) {
+	return ModbusPDUWriteFileRecordResponseItemParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ModbusPDUWriteFileRecordResponseItemParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusPDUWriteFileRecordResponseItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteFileRecordResponseItem"); pullErr != nil {
@@ -188,7 +193,15 @@ func ModbusPDUWriteFileRecordResponseItemParse(readBuffer utils.ReadBuffer) (Mod
 	}, nil
 }
 
-func (m *_ModbusPDUWriteFileRecordResponseItem) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUWriteFileRecordResponseItem) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ModbusPDUWriteFileRecordResponseItem) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ModbusPDUWriteFileRecordResponseItem"); pushErr != nil {

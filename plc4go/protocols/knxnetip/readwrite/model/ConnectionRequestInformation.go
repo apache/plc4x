@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -102,7 +103,11 @@ func (m *_ConnectionRequestInformation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ConnectionRequestInformationParse(readBuffer utils.ReadBuffer) (ConnectionRequestInformation, error) {
+func ConnectionRequestInformationParse(theBytes []byte) (ConnectionRequestInformation, error) {
+	return ConnectionRequestInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ConnectionRequestInformationParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionRequestInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionRequestInformation"); pullErr != nil {
@@ -135,9 +140,9 @@ func ConnectionRequestInformationParse(readBuffer utils.ReadBuffer) (ConnectionR
 	var typeSwitchError error
 	switch {
 	case connectionType == 0x03: // ConnectionRequestInformationDeviceManagement
-		_childTemp, typeSwitchError = ConnectionRequestInformationDeviceManagementParse(readBuffer)
+		_childTemp, typeSwitchError = ConnectionRequestInformationDeviceManagementParseWithBuffer(readBuffer)
 	case connectionType == 0x04: // ConnectionRequestInformationTunnelConnection
-		_childTemp, typeSwitchError = ConnectionRequestInformationTunnelConnectionParse(readBuffer)
+		_childTemp, typeSwitchError = ConnectionRequestInformationTunnelConnectionParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [connectionType=%v]", connectionType)
 	}

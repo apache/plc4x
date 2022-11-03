@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataRequestedShedLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataRequestedShedLevelParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRequestedShedLevel, error) {
+func BACnetConstructedDataRequestedShedLevelParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRequestedShedLevel, error) {
+	return BACnetConstructedDataRequestedShedLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataRequestedShedLevelParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRequestedShedLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRequestedShedLevel"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataRequestedShedLevelParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("requestedShedLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for requestedShedLevel")
 	}
-	_requestedShedLevel, _requestedShedLevelErr := BACnetShedLevelParse(readBuffer)
+	_requestedShedLevel, _requestedShedLevelErr := BACnetShedLevelParseWithBuffer(readBuffer)
 	if _requestedShedLevelErr != nil {
 		return nil, errors.Wrap(_requestedShedLevelErr, "Error parsing 'requestedShedLevel' field of BACnetConstructedDataRequestedShedLevel")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataRequestedShedLevelParse(readBuffer utils.ReadBuffer, t
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataRequestedShedLevel) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataRequestedShedLevel) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataRequestedShedLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

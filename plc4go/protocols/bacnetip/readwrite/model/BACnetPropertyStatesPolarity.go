@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetPropertyStatesPolarity) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesPolarityParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesPolarity, error) {
+func BACnetPropertyStatesPolarityParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesPolarity, error) {
+	return BACnetPropertyStatesPolarityParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesPolarityParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesPolarity, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesPolarity"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetPropertyStatesPolarityParse(readBuffer utils.ReadBuffer, peekedTagNum
 	if pullErr := readBuffer.PullContext("polarity"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for polarity")
 	}
-	_polarity, _polarityErr := BACnetPolarityTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_polarity, _polarityErr := BACnetPolarityTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _polarityErr != nil {
 		return nil, errors.Wrap(_polarityErr, "Error parsing 'polarity' field of BACnetPropertyStatesPolarity")
 	}
@@ -157,7 +162,15 @@ func BACnetPropertyStatesPolarityParse(readBuffer utils.ReadBuffer, peekedTagNum
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesPolarity) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesPolarity) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesPolarity) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

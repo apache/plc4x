@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,8 +32,8 @@ import (
 type MeasurementCommandType uint8
 
 type IMeasurementCommandType interface {
+	utils.Serializable
 	NumberOfArguments() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -111,7 +113,11 @@ func (m MeasurementCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MeasurementCommandTypeParse(readBuffer utils.ReadBuffer) (MeasurementCommandType, error) {
+func MeasurementCommandTypeParse(theBytes []byte) (MeasurementCommandType, error) {
+	return MeasurementCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MeasurementCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (MeasurementCommandType, error) {
 	val, err := readBuffer.ReadUint8("MeasurementCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MeasurementCommandType")
@@ -124,7 +130,15 @@ func MeasurementCommandTypeParse(readBuffer utils.ReadBuffer) (MeasurementComman
 	}
 }
 
-func (e MeasurementCommandType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e MeasurementCommandType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e MeasurementCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("MeasurementCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

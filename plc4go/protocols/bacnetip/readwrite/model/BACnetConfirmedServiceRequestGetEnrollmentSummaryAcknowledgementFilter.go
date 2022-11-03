@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter uint8
 
 type IBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -101,7 +103,11 @@ func (m BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, error) {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParse(theBytes []byte) (BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, error) {
+	return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter")
@@ -114,7 +120,15 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParse
 	}
 }
 
-func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetOptionalCharacterStringNull) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetOptionalCharacterStringNullParse(readBuffer utils.ReadBuffer) (BACnetOptionalCharacterStringNull, error) {
+func BACnetOptionalCharacterStringNullParse(theBytes []byte) (BACnetOptionalCharacterStringNull, error) {
+	return BACnetOptionalCharacterStringNullParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetOptionalCharacterStringNullParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetOptionalCharacterStringNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalCharacterStringNull"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetOptionalCharacterStringNullParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
 	}
-	_nullValue, _nullValueErr := BACnetApplicationTagParse(readBuffer)
+	_nullValue, _nullValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _nullValueErr != nil {
 		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetOptionalCharacterStringNull")
 	}
@@ -157,7 +162,15 @@ func BACnetOptionalCharacterStringNullParse(readBuffer utils.ReadBuffer) (BACnet
 	return _child, nil
 }
 
-func (m *_BACnetOptionalCharacterStringNull) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetOptionalCharacterStringNull) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetOptionalCharacterStringNull) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -136,7 +137,11 @@ func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) GetLengthInByte
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataUTCTimeSynchronizationRecipientsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUTCTimeSynchronizationRecipients, error) {
+func BACnetConstructedDataUTCTimeSynchronizationRecipientsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUTCTimeSynchronizationRecipients, error) {
+	return BACnetConstructedDataUTCTimeSynchronizationRecipientsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataUTCTimeSynchronizationRecipientsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUTCTimeSynchronizationRecipients, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUTCTimeSynchronizationRecipients"); pullErr != nil {
@@ -153,7 +158,7 @@ func BACnetConstructedDataUTCTimeSynchronizationRecipientsParse(readBuffer utils
 	var utcTimeSynchronizationRecipients []BACnetRecipient
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetRecipientParse(readBuffer)
+			_item, _err := BACnetRecipientParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'utcTimeSynchronizationRecipients' field of BACnetConstructedDataUTCTimeSynchronizationRecipients")
 			}
@@ -181,7 +186,15 @@ func BACnetConstructedDataUTCTimeSynchronizationRecipientsParse(readBuffer utils
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

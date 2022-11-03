@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetHostAddressName) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetHostAddressNameParse(readBuffer utils.ReadBuffer) (BACnetHostAddressName, error) {
+func BACnetHostAddressNameParse(theBytes []byte) (BACnetHostAddressName, error) {
+	return BACnetHostAddressNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetHostAddressNameParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetHostAddressName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetHostAddressName"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetHostAddressNameParse(readBuffer utils.ReadBuffer) (BACnetHostAddressN
 	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for name")
 	}
-	_name, _nameErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
+	_name, _nameErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _nameErr != nil {
 		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of BACnetHostAddressName")
 	}
@@ -157,7 +162,15 @@ func BACnetHostAddressNameParse(readBuffer utils.ReadBuffer) (BACnetHostAddressN
 	return _child, nil
 }
 
-func (m *_BACnetHostAddressName) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetHostAddressName) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetHostAddressName) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

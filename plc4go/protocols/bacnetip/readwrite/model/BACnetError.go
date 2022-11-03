@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,7 +98,11 @@ func (m *_BACnetError) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (BACnetError, error) {
+func BACnetErrorParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (BACnetError, error) {
+	return BACnetErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), errorChoice) // TODO: get endianness from mspec
+}
+
+func BACnetErrorParseWithBuffer(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (BACnetError, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetError"); pullErr != nil {
@@ -117,21 +122,21 @@ func BACnetErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedSe
 	var typeSwitchError error
 	switch {
 	case errorChoice == BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE: // SubscribeCOVPropertyMultipleError
-		_childTemp, typeSwitchError = SubscribeCOVPropertyMultipleErrorParse(readBuffer, errorChoice)
+		_childTemp, typeSwitchError = SubscribeCOVPropertyMultipleErrorParseWithBuffer(readBuffer, errorChoice)
 	case errorChoice == BACnetConfirmedServiceChoice_ADD_LIST_ELEMENT: // ChangeListAddError
-		_childTemp, typeSwitchError = ChangeListAddErrorParse(readBuffer, errorChoice)
+		_childTemp, typeSwitchError = ChangeListAddErrorParseWithBuffer(readBuffer, errorChoice)
 	case errorChoice == BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT: // ChangeListRemoveError
-		_childTemp, typeSwitchError = ChangeListRemoveErrorParse(readBuffer, errorChoice)
+		_childTemp, typeSwitchError = ChangeListRemoveErrorParseWithBuffer(readBuffer, errorChoice)
 	case errorChoice == BACnetConfirmedServiceChoice_CREATE_OBJECT: // CreateObjectError
-		_childTemp, typeSwitchError = CreateObjectErrorParse(readBuffer, errorChoice)
+		_childTemp, typeSwitchError = CreateObjectErrorParseWithBuffer(readBuffer, errorChoice)
 	case errorChoice == BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE: // WritePropertyMultipleError
-		_childTemp, typeSwitchError = WritePropertyMultipleErrorParse(readBuffer, errorChoice)
+		_childTemp, typeSwitchError = WritePropertyMultipleErrorParseWithBuffer(readBuffer, errorChoice)
 	case errorChoice == BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER: // ConfirmedPrivateTransferError
-		_childTemp, typeSwitchError = ConfirmedPrivateTransferErrorParse(readBuffer, errorChoice)
+		_childTemp, typeSwitchError = ConfirmedPrivateTransferErrorParseWithBuffer(readBuffer, errorChoice)
 	case errorChoice == BACnetConfirmedServiceChoice_VT_CLOSE: // VTCloseError
-		_childTemp, typeSwitchError = VTCloseErrorParse(readBuffer, errorChoice)
+		_childTemp, typeSwitchError = VTCloseErrorParseWithBuffer(readBuffer, errorChoice)
 	case 0 == 0: // BACnetErrorGeneral
-		_childTemp, typeSwitchError = BACnetErrorGeneralParse(readBuffer, errorChoice)
+		_childTemp, typeSwitchError = BACnetErrorGeneralParseWithBuffer(readBuffer, errorChoice)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [errorChoice=%v]", errorChoice)
 	}

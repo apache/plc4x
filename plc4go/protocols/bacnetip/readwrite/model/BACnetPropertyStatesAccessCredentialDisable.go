@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetPropertyStatesAccessCredentialDisable) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesAccessCredentialDisableParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAccessCredentialDisable, error) {
+func BACnetPropertyStatesAccessCredentialDisableParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesAccessCredentialDisable, error) {
+	return BACnetPropertyStatesAccessCredentialDisableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesAccessCredentialDisableParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAccessCredentialDisable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAccessCredentialDisable"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetPropertyStatesAccessCredentialDisableParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("accessCredentialDisable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessCredentialDisable")
 	}
-	_accessCredentialDisable, _accessCredentialDisableErr := BACnetAccessCredentialDisableTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_accessCredentialDisable, _accessCredentialDisableErr := BACnetAccessCredentialDisableTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _accessCredentialDisableErr != nil {
 		return nil, errors.Wrap(_accessCredentialDisableErr, "Error parsing 'accessCredentialDisable' field of BACnetPropertyStatesAccessCredentialDisable")
 	}
@@ -157,7 +162,15 @@ func BACnetPropertyStatesAccessCredentialDisableParse(readBuffer utils.ReadBuffe
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesAccessCredentialDisable) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesAccessCredentialDisable) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesAccessCredentialDisable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

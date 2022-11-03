@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) GetLengthI
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryEnumerated, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryEnumerated, error) {
+	return BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryEnumerated, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryEnumerated"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParse(readBuffer 
 	if pullErr := readBuffer.PullContext("enumeratedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for enumeratedValue")
 	}
-	_enumeratedValue, _enumeratedValueErr := BACnetApplicationTagParse(readBuffer)
+	_enumeratedValue, _enumeratedValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _enumeratedValueErr != nil {
 		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field of BACnetFaultParameterFaultExtendedParametersEntryEnumerated")
 	}
@@ -157,7 +162,15 @@ func BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParse(readBuffer 
 	return _child, nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

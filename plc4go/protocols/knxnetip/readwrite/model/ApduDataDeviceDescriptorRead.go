@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +125,11 @@ func (m *_ApduDataDeviceDescriptorRead) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataDeviceDescriptorReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataDeviceDescriptorRead, error) {
+func ApduDataDeviceDescriptorReadParse(theBytes []byte, dataLength uint8) (ApduDataDeviceDescriptorRead, error) {
+	return ApduDataDeviceDescriptorReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), dataLength) // TODO: get endianness from mspec
+}
+
+func ApduDataDeviceDescriptorReadParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataDeviceDescriptorRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataDeviceDescriptorRead"); pullErr != nil {
@@ -155,7 +160,15 @@ func ApduDataDeviceDescriptorReadParse(readBuffer utils.ReadBuffer, dataLength u
 	return _child, nil
 }
 
-func (m *_ApduDataDeviceDescriptorRead) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataDeviceDescriptorRead) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApduDataDeviceDescriptorRead) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

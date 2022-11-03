@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable uint8
 
 type IBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -101,7 +103,11 @@ func (m BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) Ge
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, error) {
+func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParse(theBytes []byte) (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, error) {
+	return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable")
@@ -114,7 +120,15 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParse(r
 	}
 }
 
-func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

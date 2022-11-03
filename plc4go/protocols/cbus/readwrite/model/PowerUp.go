@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -106,7 +107,11 @@ func (m *_PowerUp) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func PowerUpParse(readBuffer utils.ReadBuffer) (PowerUp, error) {
+func PowerUpParse(theBytes []byte) (PowerUp, error) {
+	return PowerUpParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func PowerUpParseWithBuffer(readBuffer utils.ReadBuffer) (PowerUp, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PowerUp"); pullErr != nil {
@@ -141,7 +146,15 @@ func PowerUpParse(readBuffer utils.ReadBuffer) (PowerUp, error) {
 	return &_PowerUp{}, nil
 }
 
-func (m *_PowerUp) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_PowerUp) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_PowerUp) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("PowerUp"); pushErr != nil {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -137,7 +138,11 @@ func (m *_NLMRejectRouterToNetwork) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMRejectRouterToNetwork, error) {
+func NLMRejectRouterToNetworkParse(theBytes []byte, apduLength uint16, messageType uint8) (NLMRejectRouterToNetwork, error) {
+	return NLMRejectRouterToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength, messageType) // TODO: get endianness from mspec
+}
+
+func NLMRejectRouterToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMRejectRouterToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMRejectRouterToNetwork"); pullErr != nil {
@@ -150,7 +155,7 @@ func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint1
 	if pullErr := readBuffer.PullContext("rejectReason"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for rejectReason")
 	}
-	_rejectReason, _rejectReasonErr := NLMRejectRouterToNetworkRejectReasonParse(readBuffer)
+	_rejectReason, _rejectReasonErr := NLMRejectRouterToNetworkRejectReasonParseWithBuffer(readBuffer)
 	if _rejectReasonErr != nil {
 		return nil, errors.Wrap(_rejectReasonErr, "Error parsing 'rejectReason' field of NLMRejectRouterToNetwork")
 	}
@@ -182,7 +187,15 @@ func NLMRejectRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint1
 	return _child, nil
 }
 
-func (m *_NLMRejectRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_NLMRejectRouterToNetwork) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_NLMRejectRouterToNetwork) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

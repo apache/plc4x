@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,7 +118,11 @@ func (m *_BACnetAuthenticationPolicy) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAuthenticationPolicyParse(readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicy, error) {
+func BACnetAuthenticationPolicyParse(theBytes []byte) (BACnetAuthenticationPolicy, error) {
+	return BACnetAuthenticationPolicyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAuthenticationPolicyParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicy, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAuthenticationPolicy"); pullErr != nil {
@@ -130,7 +135,7 @@ func BACnetAuthenticationPolicyParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	if pullErr := readBuffer.PullContext("policy"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for policy")
 	}
-	_policy, _policyErr := BACnetAuthenticationPolicyListParse(readBuffer, uint8(uint8(0)))
+	_policy, _policyErr := BACnetAuthenticationPolicyListParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _policyErr != nil {
 		return nil, errors.Wrap(_policyErr, "Error parsing 'policy' field of BACnetAuthenticationPolicy")
 	}
@@ -143,7 +148,7 @@ func BACnetAuthenticationPolicyParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	if pullErr := readBuffer.PullContext("orderEnforced"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for orderEnforced")
 	}
-	_orderEnforced, _orderEnforcedErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
+	_orderEnforced, _orderEnforcedErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _orderEnforcedErr != nil {
 		return nil, errors.Wrap(_orderEnforcedErr, "Error parsing 'orderEnforced' field of BACnetAuthenticationPolicy")
 	}
@@ -156,7 +161,7 @@ func BACnetAuthenticationPolicyParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	if pullErr := readBuffer.PullContext("timeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeout")
 	}
-	_timeout, _timeoutErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeout, _timeoutErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeoutErr != nil {
 		return nil, errors.Wrap(_timeoutErr, "Error parsing 'timeout' field of BACnetAuthenticationPolicy")
 	}
@@ -177,7 +182,15 @@ func BACnetAuthenticationPolicyParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	}, nil
 }
 
-func (m *_BACnetAuthenticationPolicy) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAuthenticationPolicy) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetAuthenticationPolicy) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAuthenticationPolicy"); pushErr != nil {

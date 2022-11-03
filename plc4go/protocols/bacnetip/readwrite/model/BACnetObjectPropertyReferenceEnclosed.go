@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -120,7 +121,11 @@ func (m *_BACnetObjectPropertyReferenceEnclosed) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetObjectPropertyReferenceEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetObjectPropertyReferenceEnclosed, error) {
+func BACnetObjectPropertyReferenceEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetObjectPropertyReferenceEnclosed, error) {
+	return BACnetObjectPropertyReferenceEnclosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetObjectPropertyReferenceEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetObjectPropertyReferenceEnclosed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetObjectPropertyReferenceEnclosed"); pullErr != nil {
@@ -133,7 +138,7 @@ func BACnetObjectPropertyReferenceEnclosedParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetObjectPropertyReferenceEnclosed")
 	}
@@ -146,7 +151,7 @@ func BACnetObjectPropertyReferenceEnclosedParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("objectPropertyReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectPropertyReference")
 	}
-	_objectPropertyReference, _objectPropertyReferenceErr := BACnetObjectPropertyReferenceParse(readBuffer)
+	_objectPropertyReference, _objectPropertyReferenceErr := BACnetObjectPropertyReferenceParseWithBuffer(readBuffer)
 	if _objectPropertyReferenceErr != nil {
 		return nil, errors.Wrap(_objectPropertyReferenceErr, "Error parsing 'objectPropertyReference' field of BACnetObjectPropertyReferenceEnclosed")
 	}
@@ -159,7 +164,7 @@ func BACnetObjectPropertyReferenceEnclosedParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetObjectPropertyReferenceEnclosed")
 	}
@@ -181,7 +186,15 @@ func BACnetObjectPropertyReferenceEnclosedParse(readBuffer utils.ReadBuffer, tag
 	}, nil
 }
 
-func (m *_BACnetObjectPropertyReferenceEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetObjectPropertyReferenceEnclosed) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetObjectPropertyReferenceEnclosed) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetObjectPropertyReferenceEnclosed"); pushErr != nil {

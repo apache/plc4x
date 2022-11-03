@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +125,11 @@ func (m *_TunnelingResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TunnelingResponseParse(readBuffer utils.ReadBuffer) (TunnelingResponse, error) {
+func TunnelingResponseParse(theBytes []byte) (TunnelingResponse, error) {
+	return TunnelingResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TunnelingResponseParseWithBuffer(readBuffer utils.ReadBuffer) (TunnelingResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TunnelingResponse"); pullErr != nil {
@@ -137,7 +142,7 @@ func TunnelingResponseParse(readBuffer utils.ReadBuffer) (TunnelingResponse, err
 	if pullErr := readBuffer.PullContext("tunnelingResponseDataBlock"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for tunnelingResponseDataBlock")
 	}
-	_tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParse(readBuffer)
+	_tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParseWithBuffer(readBuffer)
 	if _tunnelingResponseDataBlockErr != nil {
 		return nil, errors.Wrap(_tunnelingResponseDataBlockErr, "Error parsing 'tunnelingResponseDataBlock' field of TunnelingResponse")
 	}
@@ -159,7 +164,15 @@ func TunnelingResponseParse(readBuffer utils.ReadBuffer) (TunnelingResponse, err
 	return _child, nil
 }
 
-func (m *_TunnelingResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TunnelingResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TunnelingResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

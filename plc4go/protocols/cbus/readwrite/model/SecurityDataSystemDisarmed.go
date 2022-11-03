@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -102,7 +103,11 @@ func (m *_SecurityDataSystemDisarmed) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataSystemDisarmedParse(readBuffer utils.ReadBuffer) (SecurityDataSystemDisarmed, error) {
+func SecurityDataSystemDisarmedParse(theBytes []byte) (SecurityDataSystemDisarmed, error) {
+	return SecurityDataSystemDisarmedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityDataSystemDisarmedParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataSystemDisarmed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataSystemDisarmed"); pullErr != nil {
@@ -123,7 +128,15 @@ func SecurityDataSystemDisarmedParse(readBuffer utils.ReadBuffer) (SecurityDataS
 	return _child, nil
 }
 
-func (m *_SecurityDataSystemDisarmed) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataSystemDisarmed) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataSystemDisarmed) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

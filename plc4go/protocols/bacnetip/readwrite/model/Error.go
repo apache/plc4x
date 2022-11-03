@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,7 +108,11 @@ func (m *_Error) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorParse(readBuffer utils.ReadBuffer) (Error, error) {
+func ErrorParse(theBytes []byte) (Error, error) {
+	return ErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ErrorParseWithBuffer(readBuffer utils.ReadBuffer) (Error, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Error"); pullErr != nil {
@@ -120,7 +125,7 @@ func ErrorParse(readBuffer utils.ReadBuffer) (Error, error) {
 	if pullErr := readBuffer.PullContext("errorClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorClass")
 	}
-	_errorClass, _errorClassErr := ErrorClassTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_errorClass, _errorClassErr := ErrorClassTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _errorClassErr != nil {
 		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field of Error")
 	}
@@ -133,7 +138,7 @@ func ErrorParse(readBuffer utils.ReadBuffer) (Error, error) {
 	if pullErr := readBuffer.PullContext("errorCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorCode")
 	}
-	_errorCode, _errorCodeErr := ErrorCodeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_errorCode, _errorCodeErr := ErrorCodeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _errorCodeErr != nil {
 		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field of Error")
 	}
@@ -153,7 +158,15 @@ func ErrorParse(readBuffer utils.ReadBuffer) (Error, error) {
 	}, nil
 }
 
-func (m *_Error) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_Error) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_Error) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Error"); pushErr != nil {

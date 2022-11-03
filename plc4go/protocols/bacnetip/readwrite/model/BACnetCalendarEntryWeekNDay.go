@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetCalendarEntryWeekNDay) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetCalendarEntryWeekNDayParse(readBuffer utils.ReadBuffer) (BACnetCalendarEntryWeekNDay, error) {
+func BACnetCalendarEntryWeekNDayParse(theBytes []byte) (BACnetCalendarEntryWeekNDay, error) {
+	return BACnetCalendarEntryWeekNDayParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetCalendarEntryWeekNDayParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCalendarEntryWeekNDay, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCalendarEntryWeekNDay"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetCalendarEntryWeekNDayParse(readBuffer utils.ReadBuffer) (BACnetCalend
 	if pullErr := readBuffer.PullContext("weekNDay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for weekNDay")
 	}
-	_weekNDay, _weekNDayErr := BACnetWeekNDayTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_weekNDay, _weekNDayErr := BACnetWeekNDayTaggedParseWithBuffer(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _weekNDayErr != nil {
 		return nil, errors.Wrap(_weekNDayErr, "Error parsing 'weekNDay' field of BACnetCalendarEntryWeekNDay")
 	}
@@ -157,7 +162,15 @@ func BACnetCalendarEntryWeekNDayParse(readBuffer utils.ReadBuffer) (BACnetCalend
 	return _child, nil
 }
 
-func (m *_BACnetCalendarEntryWeekNDay) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetCalendarEntryWeekNDay) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetCalendarEntryWeekNDay) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

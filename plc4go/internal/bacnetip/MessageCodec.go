@@ -24,10 +24,23 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
+
+// ApplicationLayerMessageCodec is a wrapper for MessageCodec which takes care of segmentation, retries etc.
+type ApplicationLayerMessageCodec struct {
+	TransactionStateMachine
+}
+
+func NewApplicationLayerMessageCodec(transportInstance transports.TransportInstance, deviceInventory *DeviceInventory) *ApplicationLayerMessageCodec {
+	return &ApplicationLayerMessageCodec{
+		TransactionStateMachine{
+			MessageCodec:    NewMessageCodec(transportInstance),
+			deviceInventory: deviceInventory,
+		},
+	}
+}
 
 type MessageCodec struct {
 	_default.DefaultCodec
@@ -48,14 +61,13 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	// Cast the message to the correct type of struct
 	bvlcPacket := message.(model.BVLC)
 	// Serialize the request
-	wb := utils.NewWriteBufferByteBased()
-	err := bvlcPacket.Serialize(wb)
+	theBytes, err := bvlcPacket.Serialize()
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(wb.GetBytes())
+	err = m.GetTransportInstance().Write(theBytes)
 	if err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
@@ -83,8 +95,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		rb := utils.NewReadBufferByteBased(data)
-		bvlcPacket, err := model.BVLCParse(rb)
+		bvlcPacket, err := model.BVLCParse(data)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

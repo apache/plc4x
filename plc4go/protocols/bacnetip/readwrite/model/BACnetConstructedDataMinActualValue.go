@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataMinActualValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMinActualValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinActualValue, error) {
+func BACnetConstructedDataMinActualValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinActualValue, error) {
+	return BACnetConstructedDataMinActualValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataMinActualValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinActualValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinActualValue"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataMinActualValueParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("minActualValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for minActualValue")
 	}
-	_minActualValue, _minActualValueErr := BACnetApplicationTagParse(readBuffer)
+	_minActualValue, _minActualValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _minActualValueErr != nil {
 		return nil, errors.Wrap(_minActualValueErr, "Error parsing 'minActualValue' field of BACnetConstructedDataMinActualValue")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataMinActualValueParse(readBuffer utils.ReadBuffer, tagNu
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataMinActualValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMinActualValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataMinActualValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

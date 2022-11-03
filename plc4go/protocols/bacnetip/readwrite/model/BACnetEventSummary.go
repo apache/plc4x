@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -157,7 +158,11 @@ func (m *_BACnetEventSummary) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (BACnetEventSummary, error) {
+func BACnetEventSummaryParse(theBytes []byte) (BACnetEventSummary, error) {
+	return BACnetEventSummaryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEventSummaryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventSummary"); pullErr != nil {
@@ -170,7 +175,7 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (BACnetEventSummary, e
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetEventSummary")
 	}
@@ -183,7 +188,7 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (BACnetEventSummary, e
 	if pullErr := readBuffer.PullContext("eventState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventState")
 	}
-	_eventState, _eventStateErr := BACnetEventStateTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_eventState, _eventStateErr := BACnetEventStateTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _eventStateErr != nil {
 		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field of BACnetEventSummary")
 	}
@@ -196,7 +201,7 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (BACnetEventSummary, e
 	if pullErr := readBuffer.PullContext("acknowledgedTransitions"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for acknowledgedTransitions")
 	}
-	_acknowledgedTransitions, _acknowledgedTransitionsErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_acknowledgedTransitions, _acknowledgedTransitionsErr := BACnetEventTransitionBitsTaggedParseWithBuffer(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _acknowledgedTransitionsErr != nil {
 		return nil, errors.Wrap(_acknowledgedTransitionsErr, "Error parsing 'acknowledgedTransitions' field of BACnetEventSummary")
 	}
@@ -209,7 +214,7 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (BACnetEventSummary, e
 	if pullErr := readBuffer.PullContext("eventTimestamps"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventTimestamps")
 	}
-	_eventTimestamps, _eventTimestampsErr := BACnetEventTimestampsEnclosedParse(readBuffer, uint8(uint8(3)))
+	_eventTimestamps, _eventTimestampsErr := BACnetEventTimestampsEnclosedParseWithBuffer(readBuffer, uint8(uint8(3)))
 	if _eventTimestampsErr != nil {
 		return nil, errors.Wrap(_eventTimestampsErr, "Error parsing 'eventTimestamps' field of BACnetEventSummary")
 	}
@@ -222,7 +227,7 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (BACnetEventSummary, e
 	if pullErr := readBuffer.PullContext("notifyType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for notifyType")
 	}
-	_notifyType, _notifyTypeErr := BACnetNotifyTypeTaggedParse(readBuffer, uint8(uint8(4)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_notifyType, _notifyTypeErr := BACnetNotifyTypeTaggedParseWithBuffer(readBuffer, uint8(uint8(4)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _notifyTypeErr != nil {
 		return nil, errors.Wrap(_notifyTypeErr, "Error parsing 'notifyType' field of BACnetEventSummary")
 	}
@@ -235,7 +240,7 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (BACnetEventSummary, e
 	if pullErr := readBuffer.PullContext("eventEnable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventEnable")
 	}
-	_eventEnable, _eventEnableErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(5)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_eventEnable, _eventEnableErr := BACnetEventTransitionBitsTaggedParseWithBuffer(readBuffer, uint8(uint8(5)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _eventEnableErr != nil {
 		return nil, errors.Wrap(_eventEnableErr, "Error parsing 'eventEnable' field of BACnetEventSummary")
 	}
@@ -248,7 +253,7 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (BACnetEventSummary, e
 	if pullErr := readBuffer.PullContext("eventPriorities"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventPriorities")
 	}
-	_eventPriorities, _eventPrioritiesErr := BACnetEventPrioritiesParse(readBuffer, uint8(uint8(6)))
+	_eventPriorities, _eventPrioritiesErr := BACnetEventPrioritiesParseWithBuffer(readBuffer, uint8(uint8(6)))
 	if _eventPrioritiesErr != nil {
 		return nil, errors.Wrap(_eventPrioritiesErr, "Error parsing 'eventPriorities' field of BACnetEventSummary")
 	}
@@ -273,7 +278,15 @@ func BACnetEventSummaryParse(readBuffer utils.ReadBuffer) (BACnetEventSummary, e
 	}, nil
 }
 
-func (m *_BACnetEventSummary) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventSummary) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetEventSummary) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEventSummary"); pushErr != nil {

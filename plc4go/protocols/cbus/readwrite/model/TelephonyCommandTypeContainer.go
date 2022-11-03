@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,9 +32,9 @@ import (
 type TelephonyCommandTypeContainer uint8
 
 type ITelephonyCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() TelephonyCommandType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -582,7 +584,11 @@ func (m TelephonyCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyCommandTypeContainerParse(readBuffer utils.ReadBuffer) (TelephonyCommandTypeContainer, error) {
+func TelephonyCommandTypeContainerParse(theBytes []byte) (TelephonyCommandTypeContainer, error) {
+	return TelephonyCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TelephonyCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("TelephonyCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TelephonyCommandTypeContainer")
@@ -595,7 +601,15 @@ func TelephonyCommandTypeContainerParse(readBuffer utils.ReadBuffer) (TelephonyC
 	}
 }
 
-func (e TelephonyCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e TelephonyCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e TelephonyCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("TelephonyCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

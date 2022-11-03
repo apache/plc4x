@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -120,7 +121,11 @@ func (m *_BACnetDateRangeEnclosed) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDateRangeEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetDateRangeEnclosed, error) {
+func BACnetDateRangeEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetDateRangeEnclosed, error) {
+	return BACnetDateRangeEnclosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetDateRangeEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetDateRangeEnclosed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetDateRangeEnclosed"); pullErr != nil {
@@ -133,7 +138,7 @@ func BACnetDateRangeEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetDateRangeEnclosed")
 	}
@@ -146,7 +151,7 @@ func BACnetDateRangeEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	if pullErr := readBuffer.PullContext("dateRange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateRange")
 	}
-	_dateRange, _dateRangeErr := BACnetDateRangeParse(readBuffer)
+	_dateRange, _dateRangeErr := BACnetDateRangeParseWithBuffer(readBuffer)
 	if _dateRangeErr != nil {
 		return nil, errors.Wrap(_dateRangeErr, "Error parsing 'dateRange' field of BACnetDateRangeEnclosed")
 	}
@@ -159,7 +164,7 @@ func BACnetDateRangeEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetDateRangeEnclosed")
 	}
@@ -181,7 +186,15 @@ func BACnetDateRangeEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	}, nil
 }
 
-func (m *_BACnetDateRangeEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetDateRangeEnclosed) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetDateRangeEnclosed) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetDateRangeEnclosed"); pushErr != nil {

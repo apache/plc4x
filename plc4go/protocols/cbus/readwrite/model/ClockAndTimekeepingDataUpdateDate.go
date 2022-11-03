@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -167,7 +168,11 @@ func (m *_ClockAndTimekeepingDataUpdateDate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ClockAndTimekeepingDataUpdateDateParse(readBuffer utils.ReadBuffer) (ClockAndTimekeepingDataUpdateDate, error) {
+func ClockAndTimekeepingDataUpdateDateParse(theBytes []byte) (ClockAndTimekeepingDataUpdateDate, error) {
+	return ClockAndTimekeepingDataUpdateDateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ClockAndTimekeepingDataUpdateDateParseWithBuffer(readBuffer utils.ReadBuffer) (ClockAndTimekeepingDataUpdateDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ClockAndTimekeepingDataUpdateDate"); pullErr != nil {
@@ -228,7 +233,15 @@ func ClockAndTimekeepingDataUpdateDateParse(readBuffer utils.ReadBuffer) (ClockA
 	return _child, nil
 }
 
-func (m *_ClockAndTimekeepingDataUpdateDate) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ClockAndTimekeepingDataUpdateDate) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ClockAndTimekeepingDataUpdateDate) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

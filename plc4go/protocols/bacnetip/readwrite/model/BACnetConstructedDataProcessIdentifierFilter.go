@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataProcessIdentifierFilterParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProcessIdentifierFilter, error) {
+func BACnetConstructedDataProcessIdentifierFilterParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProcessIdentifierFilter, error) {
+	return BACnetConstructedDataProcessIdentifierFilterParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataProcessIdentifierFilterParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProcessIdentifierFilter, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProcessIdentifierFilter"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataProcessIdentifierFilterParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("processIdentifierFilter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for processIdentifierFilter")
 	}
-	_processIdentifierFilter, _processIdentifierFilterErr := BACnetProcessIdSelectionParse(readBuffer)
+	_processIdentifierFilter, _processIdentifierFilterErr := BACnetProcessIdSelectionParseWithBuffer(readBuffer)
 	if _processIdentifierFilterErr != nil {
 		return nil, errors.Wrap(_processIdentifierFilterErr, "Error parsing 'processIdentifierFilter' field of BACnetConstructedDataProcessIdentifierFilter")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataProcessIdentifierFilterParse(readBuffer utils.ReadBuff
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataProcessIdentifierFilter) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataProcessIdentifierFilter) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataProcessIdentifierFilter) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

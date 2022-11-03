@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -127,7 +128,11 @@ func (m *_ApduDataContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataContainer, error) {
+func ApduDataContainerParse(theBytes []byte, dataLength uint8) (ApduDataContainer, error) {
+	return ApduDataContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), dataLength) // TODO: get endianness from mspec
+}
+
+func ApduDataContainerParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataContainer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataContainer"); pullErr != nil {
@@ -140,7 +145,7 @@ func ApduDataContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (Apdu
 	if pullErr := readBuffer.PullContext("dataApdu"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dataApdu")
 	}
-	_dataApdu, _dataApduErr := ApduDataParse(readBuffer, uint8(dataLength))
+	_dataApdu, _dataApduErr := ApduDataParseWithBuffer(readBuffer, uint8(dataLength))
 	if _dataApduErr != nil {
 		return nil, errors.Wrap(_dataApduErr, "Error parsing 'dataApdu' field of ApduDataContainer")
 	}
@@ -164,7 +169,15 @@ func ApduDataContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (Apdu
 	return _child, nil
 }
 
-func (m *_ApduDataContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApduDataContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

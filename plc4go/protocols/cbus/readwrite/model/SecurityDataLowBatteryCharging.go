@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -148,7 +149,11 @@ func (m *_SecurityDataLowBatteryCharging) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataLowBatteryChargingParse(readBuffer utils.ReadBuffer) (SecurityDataLowBatteryCharging, error) {
+func SecurityDataLowBatteryChargingParse(theBytes []byte) (SecurityDataLowBatteryCharging, error) {
+	return SecurityDataLowBatteryChargingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityDataLowBatteryChargingParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataLowBatteryCharging, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataLowBatteryCharging"); pullErr != nil {
@@ -187,7 +192,15 @@ func SecurityDataLowBatteryChargingParse(readBuffer utils.ReadBuffer) (SecurityD
 	return _child, nil
 }
 
-func (m *_SecurityDataLowBatteryCharging) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataLowBatteryCharging) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataLowBatteryCharging) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetChannelValueTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueTimeParse(readBuffer utils.ReadBuffer) (BACnetChannelValueTime, error) {
+func BACnetChannelValueTimeParse(theBytes []byte) (BACnetChannelValueTime, error) {
+	return BACnetChannelValueTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetChannelValueTimeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueTime"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetChannelValueTimeParse(readBuffer utils.ReadBuffer) (BACnetChannelValu
 	if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeValue")
 	}
-	_timeValue, _timeValueErr := BACnetApplicationTagParse(readBuffer)
+	_timeValue, _timeValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _timeValueErr != nil {
 		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field of BACnetChannelValueTime")
 	}
@@ -157,7 +162,15 @@ func BACnetChannelValueTimeParse(readBuffer utils.ReadBuffer) (BACnetChannelValu
 	return _child, nil
 }
 
-func (m *_BACnetChannelValueTime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetChannelValueTime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetChannelValueTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

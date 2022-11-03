@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -161,7 +162,11 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestWriteGroup, error) {
+func BACnetUnconfirmedServiceRequestWriteGroupParse(theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestWriteGroup, error) {
+	return BACnetUnconfirmedServiceRequestWriteGroupParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceRequestLength) // TODO: get endianness from mspec
+}
+
+func BACnetUnconfirmedServiceRequestWriteGroupParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestWriteGroup, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWriteGroup"); pullErr != nil {
@@ -174,7 +179,7 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("groupNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for groupNumber")
 	}
-	_groupNumber, _groupNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_groupNumber, _groupNumberErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _groupNumberErr != nil {
 		return nil, errors.Wrap(_groupNumberErr, "Error parsing 'groupNumber' field of BACnetUnconfirmedServiceRequestWriteGroup")
 	}
@@ -187,7 +192,7 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("writePriority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for writePriority")
 	}
-	_writePriority, _writePriorityErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_writePriority, _writePriorityErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _writePriorityErr != nil {
 		return nil, errors.Wrap(_writePriorityErr, "Error parsing 'writePriority' field of BACnetUnconfirmedServiceRequestWriteGroup")
 	}
@@ -200,7 +205,7 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("changeList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for changeList")
 	}
-	_changeList, _changeListErr := BACnetGroupChannelValueListParse(readBuffer, uint8(uint8(2)))
+	_changeList, _changeListErr := BACnetGroupChannelValueListParseWithBuffer(readBuffer, uint8(uint8(2)))
 	if _changeListErr != nil {
 		return nil, errors.Wrap(_changeListErr, "Error parsing 'changeList' field of BACnetUnconfirmedServiceRequestWriteGroup")
 	}
@@ -216,7 +221,7 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 		if pullErr := readBuffer.PullContext("inhibitDelay"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for inhibitDelay")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -249,7 +254,15 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(readBuffer utils.ReadBuffer,
 	return _child, nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWriteGroup) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetUnconfirmedServiceRequestWriteGroup) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWriteGroup) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

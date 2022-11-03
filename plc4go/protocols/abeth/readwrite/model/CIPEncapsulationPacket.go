@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -159,7 +160,11 @@ func (m *_CIPEncapsulationPacket) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationPacket, error) {
+func CIPEncapsulationPacketParse(theBytes []byte) (CIPEncapsulationPacket, error) {
+	return CIPEncapsulationPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func CIPEncapsulationPacketParseWithBuffer(readBuffer utils.ReadBuffer) (CIPEncapsulationPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CIPEncapsulationPacket"); pullErr != nil {
@@ -253,13 +258,13 @@ func CIPEncapsulationPacketParse(readBuffer utils.ReadBuffer) (CIPEncapsulationP
 	var typeSwitchError error
 	switch {
 	case commandType == 0x0101: // CIPEncapsulationConnectionRequest
-		_childTemp, typeSwitchError = CIPEncapsulationConnectionRequestParse(readBuffer)
+		_childTemp, typeSwitchError = CIPEncapsulationConnectionRequestParseWithBuffer(readBuffer)
 	case commandType == 0x0201: // CIPEncapsulationConnectionResponse
-		_childTemp, typeSwitchError = CIPEncapsulationConnectionResponseParse(readBuffer)
+		_childTemp, typeSwitchError = CIPEncapsulationConnectionResponseParseWithBuffer(readBuffer)
 	case commandType == 0x0107: // CIPEncapsulationReadRequest
-		_childTemp, typeSwitchError = CIPEncapsulationReadRequestParse(readBuffer)
+		_childTemp, typeSwitchError = CIPEncapsulationReadRequestParseWithBuffer(readBuffer)
 	case commandType == 0x0207: // CIPEncapsulationReadResponse
-		_childTemp, typeSwitchError = CIPEncapsulationReadResponseParse(readBuffer, packetLen)
+		_childTemp, typeSwitchError = CIPEncapsulationReadResponseParseWithBuffer(readBuffer, packetLen)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}

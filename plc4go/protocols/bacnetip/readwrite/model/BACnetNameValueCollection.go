@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +125,11 @@ func (m *_BACnetNameValueCollection) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNameValueCollection, error) {
+func BACnetNameValueCollectionParse(theBytes []byte, tagNumber uint8) (BACnetNameValueCollection, error) {
+	return BACnetNameValueCollectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetNameValueCollectionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNameValueCollection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNameValueCollection"); pullErr != nil {
@@ -137,7 +142,7 @@ func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetNameValueCollection")
 	}
@@ -154,7 +159,7 @@ func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	var members []BACnetNameValue
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetNameValueParse(readBuffer)
+			_item, _err := BACnetNameValueParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'members' field of BACnetNameValueCollection")
 			}
@@ -170,7 +175,7 @@ func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetNameValueCollection")
 	}
@@ -192,7 +197,15 @@ func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}, nil
 }
 
-func (m *_BACnetNameValueCollection) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetNameValueCollection) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetNameValueCollection) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetNameValueCollection"); pushErr != nil {

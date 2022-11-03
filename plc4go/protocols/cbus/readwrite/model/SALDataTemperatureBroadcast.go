@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +127,11 @@ func (m *_SALDataTemperatureBroadcast) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataTemperatureBroadcastParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTemperatureBroadcast, error) {
+func SALDataTemperatureBroadcastParse(theBytes []byte, applicationId ApplicationId) (SALDataTemperatureBroadcast, error) {
+	return SALDataTemperatureBroadcastParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataTemperatureBroadcastParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTemperatureBroadcast, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataTemperatureBroadcast"); pullErr != nil {
@@ -139,7 +144,7 @@ func SALDataTemperatureBroadcastParse(readBuffer utils.ReadBuffer, applicationId
 	if pullErr := readBuffer.PullContext("temperatureBroadcastData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for temperatureBroadcastData")
 	}
-	_temperatureBroadcastData, _temperatureBroadcastDataErr := TemperatureBroadcastDataParse(readBuffer)
+	_temperatureBroadcastData, _temperatureBroadcastDataErr := TemperatureBroadcastDataParseWithBuffer(readBuffer)
 	if _temperatureBroadcastDataErr != nil {
 		return nil, errors.Wrap(_temperatureBroadcastDataErr, "Error parsing 'temperatureBroadcastData' field of SALDataTemperatureBroadcast")
 	}
@@ -161,7 +166,15 @@ func SALDataTemperatureBroadcastParse(readBuffer utils.ReadBuffer, applicationId
 	return _child, nil
 }
 
-func (m *_SALDataTemperatureBroadcast) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataTemperatureBroadcast) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SALDataTemperatureBroadcast) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

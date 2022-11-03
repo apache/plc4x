@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -102,7 +103,11 @@ func (m *_SecurityDataLowBatteryDetected) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataLowBatteryDetectedParse(readBuffer utils.ReadBuffer) (SecurityDataLowBatteryDetected, error) {
+func SecurityDataLowBatteryDetectedParse(theBytes []byte) (SecurityDataLowBatteryDetected, error) {
+	return SecurityDataLowBatteryDetectedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityDataLowBatteryDetectedParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataLowBatteryDetected, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataLowBatteryDetected"); pullErr != nil {
@@ -123,7 +128,15 @@ func SecurityDataLowBatteryDetectedParse(readBuffer utils.ReadBuffer) (SecurityD
 	return _child, nil
 }
 
-func (m *_SecurityDataLowBatteryDetected) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataLowBatteryDetected) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataLowBatteryDetected) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

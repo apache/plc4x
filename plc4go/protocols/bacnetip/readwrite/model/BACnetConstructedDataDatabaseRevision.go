@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataDatabaseRevision) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDatabaseRevisionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDatabaseRevision, error) {
+func BACnetConstructedDataDatabaseRevisionParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDatabaseRevision, error) {
+	return BACnetConstructedDataDatabaseRevisionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataDatabaseRevisionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDatabaseRevision, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDatabaseRevision"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataDatabaseRevisionParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("databaseRevision"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for databaseRevision")
 	}
-	_databaseRevision, _databaseRevisionErr := BACnetApplicationTagParse(readBuffer)
+	_databaseRevision, _databaseRevisionErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _databaseRevisionErr != nil {
 		return nil, errors.Wrap(_databaseRevisionErr, "Error parsing 'databaseRevision' field of BACnetConstructedDataDatabaseRevision")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataDatabaseRevisionParse(readBuffer utils.ReadBuffer, tag
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataDatabaseRevision) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDatabaseRevision) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataDatabaseRevision) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

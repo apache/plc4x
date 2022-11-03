@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -142,7 +143,11 @@ func (m *_NLMInitalizeRoutingTableAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMInitalizeRoutingTableAckParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMInitalizeRoutingTableAck, error) {
+func NLMInitalizeRoutingTableAckParse(theBytes []byte, apduLength uint16, messageType uint8) (NLMInitalizeRoutingTableAck, error) {
+	return NLMInitalizeRoutingTableAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength, messageType) // TODO: get endianness from mspec
+}
+
+func NLMInitalizeRoutingTableAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMInitalizeRoutingTableAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMInitalizeRoutingTableAck"); pullErr != nil {
@@ -170,7 +175,7 @@ func NLMInitalizeRoutingTableAckParse(readBuffer utils.ReadBuffer, apduLength ui
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfPorts); curItem++ {
-			_item, _err := NLMInitalizeRoutingTablePortMappingParse(readBuffer)
+			_item, _err := NLMInitalizeRoutingTablePortMappingParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'portMappings' field of NLMInitalizeRoutingTableAck")
 			}
@@ -197,7 +202,15 @@ func NLMInitalizeRoutingTableAckParse(readBuffer utils.ReadBuffer, apduLength ui
 	return _child, nil
 }
 
-func (m *_NLMInitalizeRoutingTableAck) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_NLMInitalizeRoutingTableAck) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_NLMInitalizeRoutingTableAck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

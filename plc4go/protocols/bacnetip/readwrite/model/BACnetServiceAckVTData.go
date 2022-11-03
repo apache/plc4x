@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -146,7 +147,11 @@ func (m *_BACnetServiceAckVTData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckVTDataParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckVTData, error) {
+func BACnetServiceAckVTDataParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckVTData, error) {
+	return BACnetServiceAckVTDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceAckLength) // TODO: get endianness from mspec
+}
+
+func BACnetServiceAckVTDataParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckVTData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckVTData"); pullErr != nil {
@@ -159,7 +164,7 @@ func BACnetServiceAckVTDataParse(readBuffer utils.ReadBuffer, serviceAckLength u
 	if pullErr := readBuffer.PullContext("vtSessionIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for vtSessionIdentifier")
 	}
-	_vtSessionIdentifier, _vtSessionIdentifierErr := BACnetApplicationTagParse(readBuffer)
+	_vtSessionIdentifier, _vtSessionIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _vtSessionIdentifierErr != nil {
 		return nil, errors.Wrap(_vtSessionIdentifierErr, "Error parsing 'vtSessionIdentifier' field of BACnetServiceAckVTData")
 	}
@@ -172,7 +177,7 @@ func BACnetServiceAckVTDataParse(readBuffer utils.ReadBuffer, serviceAckLength u
 	if pullErr := readBuffer.PullContext("vtNewData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for vtNewData")
 	}
-	_vtNewData, _vtNewDataErr := BACnetApplicationTagParse(readBuffer)
+	_vtNewData, _vtNewDataErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _vtNewDataErr != nil {
 		return nil, errors.Wrap(_vtNewDataErr, "Error parsing 'vtNewData' field of BACnetServiceAckVTData")
 	}
@@ -185,7 +190,7 @@ func BACnetServiceAckVTDataParse(readBuffer utils.ReadBuffer, serviceAckLength u
 	if pullErr := readBuffer.PullContext("vtDataFlag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for vtDataFlag")
 	}
-	_vtDataFlag, _vtDataFlagErr := BACnetApplicationTagParse(readBuffer)
+	_vtDataFlag, _vtDataFlagErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _vtDataFlagErr != nil {
 		return nil, errors.Wrap(_vtDataFlagErr, "Error parsing 'vtDataFlag' field of BACnetServiceAckVTData")
 	}
@@ -211,7 +216,15 @@ func BACnetServiceAckVTDataParse(readBuffer utils.ReadBuffer, serviceAckLength u
 	return _child, nil
 }
 
-func (m *_BACnetServiceAckVTData) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetServiceAckVTData) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetServiceAckVTData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

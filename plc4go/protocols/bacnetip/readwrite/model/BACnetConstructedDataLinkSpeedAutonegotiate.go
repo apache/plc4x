@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLinkSpeedAutonegotiateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLinkSpeedAutonegotiate, error) {
+func BACnetConstructedDataLinkSpeedAutonegotiateParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLinkSpeedAutonegotiate, error) {
+	return BACnetConstructedDataLinkSpeedAutonegotiateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLinkSpeedAutonegotiateParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLinkSpeedAutonegotiate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLinkSpeedAutonegotiate"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataLinkSpeedAutonegotiateParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("linkSpeedAutonegotiate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for linkSpeedAutonegotiate")
 	}
-	_linkSpeedAutonegotiate, _linkSpeedAutonegotiateErr := BACnetApplicationTagParse(readBuffer)
+	_linkSpeedAutonegotiate, _linkSpeedAutonegotiateErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _linkSpeedAutonegotiateErr != nil {
 		return nil, errors.Wrap(_linkSpeedAutonegotiateErr, "Error parsing 'linkSpeedAutonegotiate' field of BACnetConstructedDataLinkSpeedAutonegotiate")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataLinkSpeedAutonegotiateParse(readBuffer utils.ReadBuffe
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

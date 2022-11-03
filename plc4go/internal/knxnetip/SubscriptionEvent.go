@@ -24,7 +24,6 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	internalMode "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"time"
 )
 
@@ -44,17 +43,16 @@ func NewSubscriptionEvent(fields map[string]apiModel.PlcField, types map[string]
 // GetAddress Decode the binary data in the address according to the field requested
 func (m SubscriptionEvent) GetAddress(name string) string {
 	rawAddress := m.addresses[name]
-	rawAddressReadBuffer := utils.NewReadBufferByteBased(rawAddress)
 	field := m.DefaultPlcSubscriptionEvent.GetField(name)
 	var groupAddress driverModel.KnxGroupAddress
 	var err error
 	switch field.(type) {
 	case GroupAddress3LevelPlcField:
-		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddressReadBuffer, 3)
+		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddress, 3)
 	case GroupAddress2LevelPlcField:
-		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddressReadBuffer, 2)
+		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddress, 2)
 	case GroupAddress1LevelPlcField:
-		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddressReadBuffer, 1)
+		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddress, 1)
 	}
 	if err != nil {
 		return ""

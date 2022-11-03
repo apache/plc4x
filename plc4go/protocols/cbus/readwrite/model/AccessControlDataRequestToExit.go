@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -103,7 +104,11 @@ func (m *_AccessControlDataRequestToExit) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AccessControlDataRequestToExitParse(readBuffer utils.ReadBuffer) (AccessControlDataRequestToExit, error) {
+func AccessControlDataRequestToExitParse(theBytes []byte) (AccessControlDataRequestToExit, error) {
+	return AccessControlDataRequestToExitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AccessControlDataRequestToExitParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlDataRequestToExit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AccessControlDataRequestToExit"); pullErr != nil {
@@ -124,7 +129,15 @@ func AccessControlDataRequestToExitParse(readBuffer utils.ReadBuffer) (AccessCon
 	return _child, nil
 }
 
-func (m *_AccessControlDataRequestToExit) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AccessControlDataRequestToExit) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AccessControlDataRequestToExit) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

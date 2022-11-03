@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetRecipientDevice) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRecipientDeviceParse(readBuffer utils.ReadBuffer) (BACnetRecipientDevice, error) {
+func BACnetRecipientDeviceParse(theBytes []byte) (BACnetRecipientDevice, error) {
+	return BACnetRecipientDeviceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetRecipientDeviceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRecipientDevice, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetRecipientDevice"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetRecipientDeviceParse(readBuffer utils.ReadBuffer) (BACnetRecipientDev
 	if pullErr := readBuffer.PullContext("deviceValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceValue")
 	}
-	_deviceValue, _deviceValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_deviceValue, _deviceValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _deviceValueErr != nil {
 		return nil, errors.Wrap(_deviceValueErr, "Error parsing 'deviceValue' field of BACnetRecipientDevice")
 	}
@@ -157,7 +162,15 @@ func BACnetRecipientDeviceParse(readBuffer utils.ReadBuffer) (BACnetRecipientDev
 	return _child, nil
 }
 
-func (m *_BACnetRecipientDevice) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetRecipientDevice) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetRecipientDevice) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

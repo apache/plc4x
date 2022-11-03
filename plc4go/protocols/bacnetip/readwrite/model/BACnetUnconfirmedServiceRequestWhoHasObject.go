@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -128,7 +129,11 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWhoHasObjectParse(readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHasObject, error) {
+func BACnetUnconfirmedServiceRequestWhoHasObjectParse(theBytes []byte) (BACnetUnconfirmedServiceRequestWhoHasObject, error) {
+	return BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHasObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWhoHasObject"); pullErr != nil {
@@ -142,7 +147,7 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -161,9 +166,9 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectParse(readBuffer utils.ReadBuffe
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(2): // BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
-		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(3): // BACnetUnconfirmedServiceRequestWhoHasObjectName
-		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestWhoHasObjectNameParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestWhoHasObjectNameParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}

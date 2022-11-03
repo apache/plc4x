@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,7 +108,11 @@ func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAssignedLandingCallsLandingCallsListEntryParse(readBuffer utils.ReadBuffer) (BACnetAssignedLandingCallsLandingCallsListEntry, error) {
+func BACnetAssignedLandingCallsLandingCallsListEntryParse(theBytes []byte) (BACnetAssignedLandingCallsLandingCallsListEntry, error) {
+	return BACnetAssignedLandingCallsLandingCallsListEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAssignedLandingCallsLandingCallsListEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAssignedLandingCallsLandingCallsListEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAssignedLandingCallsLandingCallsListEntry"); pullErr != nil {
@@ -120,7 +125,7 @@ func BACnetAssignedLandingCallsLandingCallsListEntryParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("floorNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for floorNumber")
 	}
-	_floorNumber, _floorNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_floorNumber, _floorNumberErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _floorNumberErr != nil {
 		return nil, errors.Wrap(_floorNumberErr, "Error parsing 'floorNumber' field of BACnetAssignedLandingCallsLandingCallsListEntry")
 	}
@@ -133,7 +138,7 @@ func BACnetAssignedLandingCallsLandingCallsListEntryParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("direction"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for direction")
 	}
-	_direction, _directionErr := BACnetLiftCarDirectionTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_direction, _directionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _directionErr != nil {
 		return nil, errors.Wrap(_directionErr, "Error parsing 'direction' field of BACnetAssignedLandingCallsLandingCallsListEntry")
 	}
@@ -153,7 +158,15 @@ func BACnetAssignedLandingCallsLandingCallsListEntryParse(readBuffer utils.ReadB
 	}, nil
 }
 
-func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAssignedLandingCallsLandingCallsListEntry"); pushErr != nil {

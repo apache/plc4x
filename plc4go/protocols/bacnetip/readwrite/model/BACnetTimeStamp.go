@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -128,7 +129,11 @@ func (m *_BACnetTimeStamp) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimeStampParse(readBuffer utils.ReadBuffer) (BACnetTimeStamp, error) {
+func BACnetTimeStampParse(theBytes []byte) (BACnetTimeStamp, error) {
+	return BACnetTimeStampParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetTimeStampParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimeStamp, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeStamp"); pullErr != nil {
@@ -142,7 +147,7 @@ func BACnetTimeStampParse(readBuffer utils.ReadBuffer) (BACnetTimeStamp, error) 
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -161,11 +166,11 @@ func BACnetTimeStampParse(readBuffer utils.ReadBuffer) (BACnetTimeStamp, error) 
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetTimeStampTime
-		_childTemp, typeSwitchError = BACnetTimeStampTimeParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetTimeStampTimeParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(1): // BACnetTimeStampSequence
-		_childTemp, typeSwitchError = BACnetTimeStampSequenceParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetTimeStampSequenceParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(2): // BACnetTimeStampDateTime
-		_childTemp, typeSwitchError = BACnetTimeStampDateTimeParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetTimeStampDateTimeParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}

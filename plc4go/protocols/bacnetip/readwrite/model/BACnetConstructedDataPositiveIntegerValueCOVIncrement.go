@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetLengthInByte
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPositiveIntegerValueCOVIncrementParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueCOVIncrement, error) {
+func BACnetConstructedDataPositiveIntegerValueCOVIncrementParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueCOVIncrement, error) {
+	return BACnetConstructedDataPositiveIntegerValueCOVIncrementParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataPositiveIntegerValueCOVIncrementParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueCOVIncrement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueCOVIncrement"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataPositiveIntegerValueCOVIncrementParse(readBuffer utils
 	if pullErr := readBuffer.PullContext("covIncrement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for covIncrement")
 	}
-	_covIncrement, _covIncrementErr := BACnetApplicationTagParse(readBuffer)
+	_covIncrement, _covIncrementErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _covIncrementErr != nil {
 		return nil, errors.Wrap(_covIncrementErr, "Error parsing 'covIncrement' field of BACnetConstructedDataPositiveIntegerValueCOVIncrement")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataPositiveIntegerValueCOVIncrementParse(readBuffer utils
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

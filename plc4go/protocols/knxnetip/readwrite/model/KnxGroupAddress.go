@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,7 +98,11 @@ func (m *_KnxGroupAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxGroupAddressParse(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddress, error) {
+func KnxGroupAddressParse(theBytes []byte, numLevels uint8) (KnxGroupAddress, error) {
+	return KnxGroupAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), numLevels) // TODO: get endianness from mspec
+}
+
+func KnxGroupAddressParseWithBuffer(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxGroupAddress"); pullErr != nil {
@@ -117,11 +122,11 @@ func KnxGroupAddressParse(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGrou
 	var typeSwitchError error
 	switch {
 	case numLevels == uint8(1): // KnxGroupAddressFreeLevel
-		_childTemp, typeSwitchError = KnxGroupAddressFreeLevelParse(readBuffer, numLevels)
+		_childTemp, typeSwitchError = KnxGroupAddressFreeLevelParseWithBuffer(readBuffer, numLevels)
 	case numLevels == uint8(2): // KnxGroupAddress2Level
-		_childTemp, typeSwitchError = KnxGroupAddress2LevelParse(readBuffer, numLevels)
+		_childTemp, typeSwitchError = KnxGroupAddress2LevelParseWithBuffer(readBuffer, numLevels)
 	case numLevels == uint8(3): // KnxGroupAddress3Level
-		_childTemp, typeSwitchError = KnxGroupAddress3LevelParse(readBuffer, numLevels)
+		_childTemp, typeSwitchError = KnxGroupAddress3LevelParseWithBuffer(readBuffer, numLevels)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [numLevels=%v]", numLevels)
 	}

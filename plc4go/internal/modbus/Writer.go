@@ -25,7 +25,6 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"math"
@@ -76,8 +75,8 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 
 		// Get the value from the request and serialize it to a byte array
 		value := writeRequest.GetValue(fieldName)
-		io := utils.NewWriteBufferByteBased()
-		if err := readWriteModel.DataItemSerialize(io, value, modbusField.Datatype, modbusField.Quantity); err != nil {
+		data, err := readWriteModel.DataItemSerialize(value, modbusField.Datatype, modbusField.Quantity)
+		if err != nil {
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
@@ -85,7 +84,6 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 			}
 			return
 		}
-		data := io.GetBytes()
 
 		// Calculate the number of words needed to send the data
 		numWords := uint16(math.Ceil(float64(len(data)) / 2))

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetPropertyStatesWriteStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesWriteStatusParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesWriteStatus, error) {
+func BACnetPropertyStatesWriteStatusParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesWriteStatus, error) {
+	return BACnetPropertyStatesWriteStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesWriteStatusParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesWriteStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesWriteStatus"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetPropertyStatesWriteStatusParse(readBuffer utils.ReadBuffer, peekedTag
 	if pullErr := readBuffer.PullContext("writeStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for writeStatus")
 	}
-	_writeStatus, _writeStatusErr := BACnetWriteStatusTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_writeStatus, _writeStatusErr := BACnetWriteStatusTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _writeStatusErr != nil {
 		return nil, errors.Wrap(_writeStatusErr, "Error parsing 'writeStatus' field of BACnetPropertyStatesWriteStatus")
 	}
@@ -157,7 +162,15 @@ func BACnetPropertyStatesWriteStatusParse(readBuffer utils.ReadBuffer, peekedTag
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesWriteStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesWriteStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesWriteStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

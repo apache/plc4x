@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetPropertyStatesLifeSafetyState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesLifeSafetyStateParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyState, error) {
+func BACnetPropertyStatesLifeSafetyStateParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyState, error) {
+	return BACnetPropertyStatesLifeSafetyStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesLifeSafetyStateParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLifeSafetyState"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetPropertyStatesLifeSafetyStateParse(readBuffer utils.ReadBuffer, peeke
 	if pullErr := readBuffer.PullContext("lifeSafetyState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lifeSafetyState")
 	}
-	_lifeSafetyState, _lifeSafetyStateErr := BACnetLifeSafetyStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_lifeSafetyState, _lifeSafetyStateErr := BACnetLifeSafetyStateTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lifeSafetyStateErr != nil {
 		return nil, errors.Wrap(_lifeSafetyStateErr, "Error parsing 'lifeSafetyState' field of BACnetPropertyStatesLifeSafetyState")
 	}
@@ -157,7 +162,15 @@ func BACnetPropertyStatesLifeSafetyStateParse(readBuffer utils.ReadBuffer, peeke
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesLifeSafetyState) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesLifeSafetyState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesLifeSafetyState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

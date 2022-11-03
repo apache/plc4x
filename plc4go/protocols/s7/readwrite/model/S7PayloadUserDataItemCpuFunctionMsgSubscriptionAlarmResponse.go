@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -179,7 +180,11 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetLengt
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse, error) {
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse, error) {
+	return S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cpuFunctionType, cpuSubfunction) // TODO: get endianness from mspec
+}
+
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse"); pullErr != nil {
@@ -206,7 +211,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParse(readBuffe
 	if pullErr := readBuffer.PullContext("alarmType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for alarmType")
 	}
-	_alarmType, _alarmTypeErr := AlarmTypeParse(readBuffer)
+	_alarmType, _alarmTypeErr := AlarmTypeParseWithBuffer(readBuffer)
 	if _alarmTypeErr != nil {
 		return nil, errors.Wrap(_alarmTypeErr, "Error parsing 'alarmType' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse")
 	}
@@ -246,7 +251,15 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParse(readBuffe
 	return _child, nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

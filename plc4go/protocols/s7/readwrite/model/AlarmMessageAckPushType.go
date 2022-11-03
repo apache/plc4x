@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -132,7 +133,11 @@ func (m *_AlarmMessageAckPushType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmMessageAckPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageAckPushType, error) {
+func AlarmMessageAckPushTypeParse(theBytes []byte) (AlarmMessageAckPushType, error) {
+	return AlarmMessageAckPushTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AlarmMessageAckPushTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmMessageAckPushType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageAckPushType"); pullErr != nil {
@@ -145,7 +150,7 @@ func AlarmMessageAckPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageAckP
 	if pullErr := readBuffer.PullContext("TimeStamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TimeStamp")
 	}
-	_TimeStamp, _TimeStampErr := DateAndTimeParse(readBuffer)
+	_TimeStamp, _TimeStampErr := DateAndTimeParseWithBuffer(readBuffer)
 	if _TimeStampErr != nil {
 		return nil, errors.Wrap(_TimeStampErr, "Error parsing 'TimeStamp' field of AlarmMessageAckPushType")
 	}
@@ -180,7 +185,7 @@ func AlarmMessageAckPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageAckP
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
-			_item, _err := AlarmMessageAckObjectPushTypeParse(readBuffer)
+			_item, _err := AlarmMessageAckObjectPushTypeParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field of AlarmMessageAckPushType")
 			}
@@ -204,7 +209,15 @@ func AlarmMessageAckPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageAckP
 	}, nil
 }
 
-func (m *_AlarmMessageAckPushType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AlarmMessageAckPushType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AlarmMessageAckPushType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessageAckPushType"); pushErr != nil {

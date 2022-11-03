@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_ParameterChangeReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterChangeReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ParameterChangeReply, error) {
+func ParameterChangeReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (ParameterChangeReply, error) {
+	return ParameterChangeReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions, requestContext) // TODO: get endianness from mspec
+}
+
+func ParameterChangeReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ParameterChangeReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterChangeReply"); pullErr != nil {
@@ -135,7 +140,7 @@ func ParameterChangeReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOpti
 	if pullErr := readBuffer.PullContext("parameterChange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for parameterChange")
 	}
-	_parameterChange, _parameterChangeErr := ParameterChangeParse(readBuffer)
+	_parameterChange, _parameterChangeErr := ParameterChangeParseWithBuffer(readBuffer)
 	if _parameterChangeErr != nil {
 		return nil, errors.Wrap(_parameterChangeErr, "Error parsing 'parameterChange' field of ParameterChangeReply")
 	}
@@ -160,7 +165,15 @@ func ParameterChangeReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOpti
 	return _child, nil
 }
 
-func (m *_ParameterChangeReply) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ParameterChangeReply) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ParameterChangeReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

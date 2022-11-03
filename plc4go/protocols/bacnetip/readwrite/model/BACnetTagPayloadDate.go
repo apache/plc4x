@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -224,7 +225,11 @@ func (m *_BACnetTagPayloadDate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTagPayloadDateParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadDate, error) {
+func BACnetTagPayloadDateParse(theBytes []byte) (BACnetTagPayloadDate, error) {
+	return BACnetTagPayloadDateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetTagPayloadDateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTagPayloadDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadDate"); pullErr != nil {
@@ -329,7 +334,15 @@ func BACnetTagPayloadDateParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadDat
 	}, nil
 }
 
-func (m *_BACnetTagPayloadDate) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTagPayloadDate) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadDate"); pushErr != nil {

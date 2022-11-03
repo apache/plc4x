@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -110,7 +111,11 @@ func (m *_BACnetNameValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNameValueParse(readBuffer utils.ReadBuffer) (BACnetNameValue, error) {
+func BACnetNameValueParse(theBytes []byte) (BACnetNameValue, error) {
+	return BACnetNameValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetNameValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNameValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNameValue"); pullErr != nil {
@@ -123,7 +128,7 @@ func BACnetNameValueParse(readBuffer utils.ReadBuffer) (BACnetNameValue, error) 
 	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for name")
 	}
-	_name, _nameErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
+	_name, _nameErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _nameErr != nil {
 		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of BACnetNameValue")
 	}
@@ -139,7 +144,7 @@ func BACnetNameValueParse(readBuffer utils.ReadBuffer) (BACnetNameValue, error) 
 		if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for value")
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(1), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
+		_val, _err := BACnetConstructedDataParseWithBuffer(readBuffer, uint8(1), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -165,7 +170,15 @@ func BACnetNameValueParse(readBuffer utils.ReadBuffer) (BACnetNameValue, error) 
 	}, nil
 }
 
-func (m *_BACnetNameValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetNameValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetNameValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetNameValue"); pushErr != nil {

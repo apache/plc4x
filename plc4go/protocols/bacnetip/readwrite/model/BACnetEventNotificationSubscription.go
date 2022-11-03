@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -130,7 +131,11 @@ func (m *_BACnetEventNotificationSubscription) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetEventNotificationSubscription, error) {
+func BACnetEventNotificationSubscriptionParse(theBytes []byte) (BACnetEventNotificationSubscription, error) {
+	return BACnetEventNotificationSubscriptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEventNotificationSubscriptionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventNotificationSubscription, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventNotificationSubscription"); pullErr != nil {
@@ -143,7 +148,7 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACn
 	if pullErr := readBuffer.PullContext("recipient"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for recipient")
 	}
-	_recipient, _recipientErr := BACnetRecipientEnclosedParse(readBuffer, uint8(uint8(0)))
+	_recipient, _recipientErr := BACnetRecipientEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _recipientErr != nil {
 		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field of BACnetEventNotificationSubscription")
 	}
@@ -156,7 +161,7 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACn
 	if pullErr := readBuffer.PullContext("processIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for processIdentifier")
 	}
-	_processIdentifier, _processIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_processIdentifier, _processIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _processIdentifierErr != nil {
 		return nil, errors.Wrap(_processIdentifierErr, "Error parsing 'processIdentifier' field of BACnetEventNotificationSubscription")
 	}
@@ -172,7 +177,7 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACn
 		if pullErr := readBuffer.PullContext("issueConfirmedNotifications"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for issueConfirmedNotifications")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_BOOLEAN)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(2), BACnetDataType_BOOLEAN)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -191,7 +196,7 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACn
 	if pullErr := readBuffer.PullContext("timeRemaining"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeRemaining")
 	}
-	_timeRemaining, _timeRemainingErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeRemaining, _timeRemainingErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeRemainingErr != nil {
 		return nil, errors.Wrap(_timeRemainingErr, "Error parsing 'timeRemaining' field of BACnetEventNotificationSubscription")
 	}
@@ -213,7 +218,15 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACn
 	}, nil
 }
 
-func (m *_BACnetEventNotificationSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventNotificationSubscription) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetEventNotificationSubscription) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEventNotificationSubscription"); pushErr != nil {

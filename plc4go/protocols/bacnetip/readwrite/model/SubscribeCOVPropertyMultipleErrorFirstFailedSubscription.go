@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -140,7 +141,11 @@ func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) GetLengthInB
 	return m.GetLengthInBits() / 8
 }
 
-func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer utils.ReadBuffer, tagNumber uint8) (SubscribeCOVPropertyMultipleErrorFirstFailedSubscription, error) {
+func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(theBytes []byte, tagNumber uint8) (SubscribeCOVPropertyMultipleErrorFirstFailedSubscription, error) {
+	return SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (SubscribeCOVPropertyMultipleErrorFirstFailedSubscription, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SubscribeCOVPropertyMultipleErrorFirstFailedSubscription"); pullErr != nil {
@@ -153,7 +158,7 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of SubscribeCOVPropertyMultipleErrorFirstFailedSubscription")
 	}
@@ -166,7 +171,7 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 	if pullErr := readBuffer.PullContext("monitoredObjectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for monitoredObjectIdentifier")
 	}
-	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _monitoredObjectIdentifierErr != nil {
 		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field of SubscribeCOVPropertyMultipleErrorFirstFailedSubscription")
 	}
@@ -179,7 +184,7 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 	if pullErr := readBuffer.PullContext("monitoredPropertyReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for monitoredPropertyReference")
 	}
-	_monitoredPropertyReference, _monitoredPropertyReferenceErr := BACnetPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
+	_monitoredPropertyReference, _monitoredPropertyReferenceErr := BACnetPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _monitoredPropertyReferenceErr != nil {
 		return nil, errors.Wrap(_monitoredPropertyReferenceErr, "Error parsing 'monitoredPropertyReference' field of SubscribeCOVPropertyMultipleErrorFirstFailedSubscription")
 	}
@@ -192,7 +197,7 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
 	}
-	_errorType, _errorTypeErr := ErrorEnclosedParse(readBuffer, uint8(uint8(2)))
+	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(readBuffer, uint8(uint8(2)))
 	if _errorTypeErr != nil {
 		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of SubscribeCOVPropertyMultipleErrorFirstFailedSubscription")
 	}
@@ -205,7 +210,7 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of SubscribeCOVPropertyMultipleErrorFirstFailedSubscription")
 	}
@@ -229,7 +234,15 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer ut
 	}, nil
 }
 
-func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SubscribeCOVPropertyMultipleErrorFirstFailedSubscription"); pushErr != nil {

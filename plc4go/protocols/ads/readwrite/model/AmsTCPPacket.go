@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +106,11 @@ func (m *_AmsTCPPacket) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AmsTCPPacketParse(readBuffer utils.ReadBuffer) (AmsTCPPacket, error) {
+func AmsTCPPacketParse(theBytes []byte) (AmsTCPPacket, error) {
+	return AmsTCPPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AmsTCPPacketParseWithBuffer(readBuffer utils.ReadBuffer) (AmsTCPPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsTCPPacket"); pullErr != nil {
@@ -142,7 +147,7 @@ func AmsTCPPacketParse(readBuffer utils.ReadBuffer) (AmsTCPPacket, error) {
 	if pullErr := readBuffer.PullContext("userdata"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for userdata")
 	}
-	_userdata, _userdataErr := AmsPacketParse(readBuffer)
+	_userdata, _userdataErr := AmsPacketParseWithBuffer(readBuffer)
 	if _userdataErr != nil {
 		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field of AmsTCPPacket")
 	}
@@ -162,7 +167,15 @@ func AmsTCPPacketParse(readBuffer utils.ReadBuffer) (AmsTCPPacket, error) {
 	}, nil
 }
 
-func (m *_AmsTCPPacket) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AmsTCPPacket) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AmsTCPPacket) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AmsTCPPacket"); pushErr != nil {

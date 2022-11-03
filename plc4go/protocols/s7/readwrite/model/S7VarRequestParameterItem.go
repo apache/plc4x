@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,7 +100,11 @@ func (m *_S7VarRequestParameterItem) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7VarRequestParameterItemParse(readBuffer utils.ReadBuffer) (S7VarRequestParameterItem, error) {
+func S7VarRequestParameterItemParse(theBytes []byte) (S7VarRequestParameterItem, error) {
+	return S7VarRequestParameterItemParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func S7VarRequestParameterItemParseWithBuffer(readBuffer utils.ReadBuffer) (S7VarRequestParameterItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7VarRequestParameterItem"); pullErr != nil {
@@ -125,7 +130,7 @@ func S7VarRequestParameterItemParse(readBuffer utils.ReadBuffer) (S7VarRequestPa
 	var typeSwitchError error
 	switch {
 	case itemType == 0x12: // S7VarRequestParameterItemAddress
-		_childTemp, typeSwitchError = S7VarRequestParameterItemAddressParse(readBuffer)
+		_childTemp, typeSwitchError = S7VarRequestParameterItemAddressParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [itemType=%v]", itemType)
 	}

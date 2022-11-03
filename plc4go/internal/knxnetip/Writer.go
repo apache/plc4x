@@ -26,7 +26,6 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Writer struct {
@@ -60,9 +59,9 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 
 		// Get the value from the request and serialize it to a byte array
 		value := writeRequest.GetValue(fieldName)
-		io := utils.NewWriteBufferByteBased()
 		fieldType, _ := readWriteModel.KnxDatapointTypeByName(knxNetIpField.GetTypeName())
-		if err := readWriteModel.KnxDatapointSerialize(io, value, fieldType); err != nil {
+		// TODO: why do we ignore the bytes here?
+		if _, err := readWriteModel.KnxDatapointSerialize(value, fieldType); err != nil {
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,

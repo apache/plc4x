@@ -224,7 +224,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			}
 			// Serialize the response to XML
 			xmlWriteBuffer := utils.NewXmlWriteBuffer()
-			err := readRequestResult.GetResponse().(utils.Serializable).Serialize(xmlWriteBuffer)
+			err := readRequestResult.GetResponse().(utils.Serializable).SerializeWithWriteBuffer(xmlWriteBuffer)
 			if err != nil {
 				return errors.Wrap(err, "error serializing response")
 			}
@@ -249,7 +249,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			}
 			// Serialize the response to XML
 			xmlWriteBuffer := utils.NewXmlWriteBuffer()
-			err := writeResponseResult.GetResponse().(utils.Serializable).Serialize(xmlWriteBuffer)
+			err := writeResponseResult.GetResponse().(utils.Serializable).SerializeWithWriteBuffer(xmlWriteBuffer)
 			if err != nil {
 				return errors.Wrap(err, "error serializing response")
 			}
@@ -285,9 +285,9 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		if m.byteOrder == binary.BigEndian {
 			expectedWriteBuffer = utils.NewWriteBufferByteBased()
 		} else {
-			expectedWriteBuffer = utils.NewLittleEndianWriteBufferByteBased()
+			expectedWriteBuffer = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 		}
-		err = expectedSerializable.Serialize(expectedWriteBuffer)
+		err = expectedSerializable.SerializeWithWriteBuffer(expectedWriteBuffer)
 		if err != nil {
 			return errors.Wrap(err, "error serializing expectedMessage")
 		}
@@ -311,11 +311,13 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			return errors.Wrap(err, "error getting bytes from transport")
 		}
 
-		var bufferFactory func([]byte) utils.ReadBufferByteBased
+		var bufferFactory func([]byte, ...utils.ReadBufferByteBasedOptions) utils.ReadBufferByteBased
 		if m.byteOrder == binary.BigEndian {
 			bufferFactory = utils.NewReadBufferByteBased
 		} else {
-			bufferFactory = utils.NewLittleEndianReadBufferByteBased
+			bufferFactory = func(bytes []byte, options ...utils.ReadBufferByteBasedOptions) utils.ReadBufferByteBased {
+				return utils.NewReadBufferByteBased(bytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+			}
 		}
 		// Compare the bytes read with the ones we expect
 		log.Trace().Msg("Comparing outputs")
@@ -371,9 +373,9 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		if m.byteOrder == binary.BigEndian {
 			wb = utils.NewWriteBufferByteBased()
 		} else {
-			wb = utils.NewLittleEndianWriteBufferByteBased()
+			wb = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 		}
-		err = expectedSerializable.Serialize(wb)
+		err = expectedSerializable.SerializeWithWriteBuffer(wb)
 		if err != nil {
 			return errors.Wrap(err, "error serializing expectedMessage")
 		}

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -100,7 +101,11 @@ func (m *_CustomManufacturer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CustomManufacturerParse(readBuffer utils.ReadBuffer, numBytes uint8) (CustomManufacturer, error) {
+func CustomManufacturerParse(theBytes []byte, numBytes uint8) (CustomManufacturer, error) {
+	return CustomManufacturerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), numBytes) // TODO: get endianness from mspec
+}
+
+func CustomManufacturerParseWithBuffer(readBuffer utils.ReadBuffer, numBytes uint8) (CustomManufacturer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CustomManufacturer"); pullErr != nil {
@@ -127,7 +132,15 @@ func CustomManufacturerParse(readBuffer utils.ReadBuffer, numBytes uint8) (Custo
 	}, nil
 }
 
-func (m *_CustomManufacturer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CustomManufacturer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CustomManufacturer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CustomManufacturer"); pushErr != nil {

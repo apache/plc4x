@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +106,11 @@ func (m *_SALDataRoomControlSystem) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataRoomControlSystemParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataRoomControlSystem, error) {
+func SALDataRoomControlSystemParse(theBytes []byte, applicationId ApplicationId) (SALDataRoomControlSystem, error) {
+	return SALDataRoomControlSystemParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataRoomControlSystemParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataRoomControlSystem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataRoomControlSystem"); pullErr != nil {
@@ -131,7 +136,15 @@ func SALDataRoomControlSystemParse(readBuffer utils.ReadBuffer, applicationId Ap
 	return _child, nil
 }
 
-func (m *_SALDataRoomControlSystem) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataRoomControlSystem) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SALDataRoomControlSystem) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

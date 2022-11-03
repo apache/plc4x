@@ -251,8 +251,7 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		if err != nil {
 			return nil, errors.Wrapf(err, "Unable to parse address: %s", query)
 		}
-		rb := utils.NewReadBufferByteBased(addressData)
-		s7Address, err := readWriteModel.S7AddressAnyParse(rb)
+		s7Address, err := readWriteModel.S7AddressAnyParse(addressData)
 		if err != nil {
 			return nil, errors.Wrapf(err, "Unable to parse address: %s", query)
 		}

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -148,7 +149,11 @@ func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckAtomicReadFileStreamOrRecordParse(readBuffer utils.ReadBuffer) (BACnetServiceAckAtomicReadFileStreamOrRecord, error) {
+func BACnetServiceAckAtomicReadFileStreamOrRecordParse(theBytes []byte) (BACnetServiceAckAtomicReadFileStreamOrRecord, error) {
+	return BACnetServiceAckAtomicReadFileStreamOrRecordParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetServiceAckAtomicReadFileStreamOrRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetServiceAckAtomicReadFileStreamOrRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicReadFileStreamOrRecord"); pullErr != nil {
@@ -162,14 +167,14 @@ func BACnetServiceAckAtomicReadFileStreamOrRecordParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetServiceAckAtomicReadFileStreamOrRecord")
 	}
@@ -194,9 +199,9 @@ func BACnetServiceAckAtomicReadFileStreamOrRecordParse(readBuffer utils.ReadBuff
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == 0x0: // BACnetServiceAckAtomicReadFileStream
-		_childTemp, typeSwitchError = BACnetServiceAckAtomicReadFileStreamParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetServiceAckAtomicReadFileStreamParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x1: // BACnetServiceAckAtomicReadFileRecord
-		_childTemp, typeSwitchError = BACnetServiceAckAtomicReadFileRecordParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetServiceAckAtomicReadFileRecordParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
@@ -209,7 +214,7 @@ func BACnetServiceAckAtomicReadFileStreamOrRecordParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetServiceAckAtomicReadFileStreamOrRecord")
 	}

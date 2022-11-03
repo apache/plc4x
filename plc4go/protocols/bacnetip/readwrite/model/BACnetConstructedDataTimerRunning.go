@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataTimerRunning) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTimerRunningParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerRunning, error) {
+func BACnetConstructedDataTimerRunningParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerRunning, error) {
+	return BACnetConstructedDataTimerRunningParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataTimerRunningParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerRunning, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimerRunning"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataTimerRunningParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("timerRunning"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timerRunning")
 	}
-	_timerRunning, _timerRunningErr := BACnetApplicationTagParse(readBuffer)
+	_timerRunning, _timerRunningErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _timerRunningErr != nil {
 		return nil, errors.Wrap(_timerRunningErr, "Error parsing 'timerRunning' field of BACnetConstructedDataTimerRunning")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataTimerRunningParse(readBuffer utils.ReadBuffer, tagNumb
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataTimerRunning) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataTimerRunning) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataTimerRunning) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

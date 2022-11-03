@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -131,7 +132,11 @@ func (m *_BACnetWriteAccessSpecification) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetWriteAccessSpecification, error) {
+func BACnetWriteAccessSpecificationParse(theBytes []byte) (BACnetWriteAccessSpecification, error) {
+	return BACnetWriteAccessSpecificationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetWriteAccessSpecificationParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetWriteAccessSpecification, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetWriteAccessSpecification"); pullErr != nil {
@@ -144,7 +149,7 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetWri
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetWriteAccessSpecification")
 	}
@@ -157,7 +162,7 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetWri
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(1)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetWriteAccessSpecification")
 	}
@@ -174,7 +179,7 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetWri
 	var listOfPropertyWriteDefinition []BACnetPropertyWriteDefinition
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
-			_item, _err := BACnetPropertyWriteDefinitionParse(readBuffer, objectIdentifier.GetObjectType())
+			_item, _err := BACnetPropertyWriteDefinitionParseWithBuffer(readBuffer, objectIdentifier.GetObjectType())
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfPropertyWriteDefinition' field of BACnetWriteAccessSpecification")
 			}
@@ -190,7 +195,7 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetWri
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(1)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetWriteAccessSpecification")
 	}
@@ -212,7 +217,15 @@ func BACnetWriteAccessSpecificationParse(readBuffer utils.ReadBuffer) (BACnetWri
 	}, nil
 }
 
-func (m *_BACnetWriteAccessSpecification) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetWriteAccessSpecification) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetWriteAccessSpecification) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetWriteAccessSpecification"); pushErr != nil {

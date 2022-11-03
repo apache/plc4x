@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,8 +32,8 @@ import (
 type EnableControlCommandType uint8
 
 type IEnableControlCommandType interface {
+	utils.Serializable
 	NumberOfArguments() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -111,7 +113,11 @@ func (m EnableControlCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func EnableControlCommandTypeParse(readBuffer utils.ReadBuffer) (EnableControlCommandType, error) {
+func EnableControlCommandTypeParse(theBytes []byte) (EnableControlCommandType, error) {
+	return EnableControlCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func EnableControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (EnableControlCommandType, error) {
 	val, err := readBuffer.ReadUint8("EnableControlCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading EnableControlCommandType")
@@ -124,7 +130,15 @@ func EnableControlCommandTypeParse(readBuffer utils.ReadBuffer) (EnableControlCo
 	}
 }
 
-func (e EnableControlCommandType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e EnableControlCommandType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e EnableControlCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("EnableControlCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

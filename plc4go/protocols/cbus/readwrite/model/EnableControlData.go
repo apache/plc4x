@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -134,7 +135,11 @@ func (m *_EnableControlData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func EnableControlDataParse(readBuffer utils.ReadBuffer) (EnableControlData, error) {
+func EnableControlDataParse(theBytes []byte) (EnableControlData, error) {
+	return EnableControlDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func EnableControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (EnableControlData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EnableControlData"); pullErr != nil {
@@ -152,7 +157,7 @@ func EnableControlDataParse(readBuffer utils.ReadBuffer) (EnableControlData, err
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := EnableControlCommandTypeContainerParse(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := EnableControlCommandTypeContainerParseWithBuffer(readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of EnableControlData")
 	}
@@ -192,7 +197,15 @@ func EnableControlDataParse(readBuffer utils.ReadBuffer) (EnableControlData, err
 	}, nil
 }
 
-func (m *_EnableControlData) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_EnableControlData) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_EnableControlData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("EnableControlData"); pushErr != nil {

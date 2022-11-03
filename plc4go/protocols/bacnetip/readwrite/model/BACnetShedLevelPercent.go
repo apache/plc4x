@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetShedLevelPercent) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetShedLevelPercentParse(readBuffer utils.ReadBuffer) (BACnetShedLevelPercent, error) {
+func BACnetShedLevelPercentParse(theBytes []byte) (BACnetShedLevelPercent, error) {
+	return BACnetShedLevelPercentParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetShedLevelPercentParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetShedLevelPercent, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetShedLevelPercent"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetShedLevelPercentParse(readBuffer utils.ReadBuffer) (BACnetShedLevelPe
 	if pullErr := readBuffer.PullContext("percent"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for percent")
 	}
-	_percent, _percentErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_percent, _percentErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _percentErr != nil {
 		return nil, errors.Wrap(_percentErr, "Error parsing 'percent' field of BACnetShedLevelPercent")
 	}
@@ -157,7 +162,15 @@ func BACnetShedLevelPercentParse(readBuffer utils.ReadBuffer) (BACnetShedLevelPe
 	return _child, nil
 }
 
-func (m *_BACnetShedLevelPercent) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetShedLevelPercent) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetShedLevelPercent) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

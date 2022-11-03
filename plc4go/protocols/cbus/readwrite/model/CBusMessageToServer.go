@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +125,11 @@ func (m *_CBusMessageToServer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusMessageToServerParse(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToServer, error) {
+func CBusMessageToServerParse(theBytes []byte, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToServer, error) {
+	return CBusMessageToServerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), isResponse, requestContext, cBusOptions) // TODO: get endianness from mspec
+}
+
+func CBusMessageToServerParseWithBuffer(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusMessageToServer"); pullErr != nil {
@@ -137,7 +142,7 @@ func CBusMessageToServerParse(readBuffer utils.ReadBuffer, isResponse bool, requ
 	if pullErr := readBuffer.PullContext("request"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for request")
 	}
-	_request, _requestErr := RequestParse(readBuffer, cBusOptions)
+	_request, _requestErr := RequestParseWithBuffer(readBuffer, cBusOptions)
 	if _requestErr != nil {
 		return nil, errors.Wrap(_requestErr, "Error parsing 'request' field of CBusMessageToServer")
 	}
@@ -162,7 +167,15 @@ func CBusMessageToServerParse(readBuffer utils.ReadBuffer, isResponse bool, requ
 	return _child, nil
 }
 
-func (m *_CBusMessageToServer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusMessageToServer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CBusMessageToServer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

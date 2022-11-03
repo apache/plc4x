@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -169,7 +170,11 @@ func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetLengthI
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataChannelListOfObjectPropertyReferencesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChannelListOfObjectPropertyReferences, error) {
+func BACnetConstructedDataChannelListOfObjectPropertyReferencesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChannelListOfObjectPropertyReferences, error) {
+	return BACnetConstructedDataChannelListOfObjectPropertyReferencesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataChannelListOfObjectPropertyReferencesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChannelListOfObjectPropertyReferences, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataChannelListOfObjectPropertyReferences"); pullErr != nil {
@@ -190,7 +195,7 @@ func BACnetConstructedDataChannelListOfObjectPropertyReferencesParse(readBuffer 
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
-		_val, _err := BACnetApplicationTagParse(readBuffer)
+		_val, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -213,7 +218,7 @@ func BACnetConstructedDataChannelListOfObjectPropertyReferencesParse(readBuffer 
 	var references []BACnetDeviceObjectPropertyReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetDeviceObjectPropertyReferenceParse(readBuffer)
+			_item, _err := BACnetDeviceObjectPropertyReferenceParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'references' field of BACnetConstructedDataChannelListOfObjectPropertyReferences")
 			}
@@ -242,7 +247,15 @@ func BACnetConstructedDataChannelListOfObjectPropertyReferencesParse(readBuffer 
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

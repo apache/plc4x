@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -130,7 +131,11 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) GetLe
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, error) {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParse(theBytes []byte, tagNumber uint8) (BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, error) {
+	return BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter"); pullErr != nil {
@@ -143,7 +148,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParse(readBu
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
 	}
@@ -156,7 +161,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParse(readBu
 	if pullErr := readBuffer.PullContext("minPriority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for minPriority")
 	}
-	_minPriority, _minPriorityErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_minPriority, _minPriorityErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _minPriorityErr != nil {
 		return nil, errors.Wrap(_minPriorityErr, "Error parsing 'minPriority' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
 	}
@@ -169,7 +174,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParse(readBu
 	if pullErr := readBuffer.PullContext("maxPriority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxPriority")
 	}
-	_maxPriority, _maxPriorityErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_maxPriority, _maxPriorityErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _maxPriorityErr != nil {
 		return nil, errors.Wrap(_maxPriorityErr, "Error parsing 'maxPriority' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
 	}
@@ -182,7 +187,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParse(readBu
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
 	}
@@ -205,7 +210,15 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParse(readBu
 	}, nil
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter"); pushErr != nil {

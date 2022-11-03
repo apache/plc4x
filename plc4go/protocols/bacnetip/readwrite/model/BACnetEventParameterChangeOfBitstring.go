@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -166,7 +167,11 @@ func (m *_BACnetEventParameterChangeOfBitstring) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventParameterChangeOfBitstringParse(readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfBitstring, error) {
+func BACnetEventParameterChangeOfBitstringParse(theBytes []byte) (BACnetEventParameterChangeOfBitstring, error) {
+	return BACnetEventParameterChangeOfBitstringParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEventParameterChangeOfBitstringParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfBitstring, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfBitstring"); pullErr != nil {
@@ -179,7 +184,7 @@ func BACnetEventParameterChangeOfBitstringParse(readBuffer utils.ReadBuffer) (BA
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(0)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfBitstring")
 	}
@@ -192,7 +197,7 @@ func BACnetEventParameterChangeOfBitstringParse(readBuffer utils.ReadBuffer) (BA
 	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
 	}
-	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
 		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterChangeOfBitstring")
 	}
@@ -205,7 +210,7 @@ func BACnetEventParameterChangeOfBitstringParse(readBuffer utils.ReadBuffer) (BA
 	if pullErr := readBuffer.PullContext("bitmask"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bitmask")
 	}
-	_bitmask, _bitmaskErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BIT_STRING))
+	_bitmask, _bitmaskErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BIT_STRING))
 	if _bitmaskErr != nil {
 		return nil, errors.Wrap(_bitmaskErr, "Error parsing 'bitmask' field of BACnetEventParameterChangeOfBitstring")
 	}
@@ -218,7 +223,7 @@ func BACnetEventParameterChangeOfBitstringParse(readBuffer utils.ReadBuffer) (BA
 	if pullErr := readBuffer.PullContext("listOfBitstringValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfBitstringValues")
 	}
-	_listOfBitstringValues, _listOfBitstringValuesErr := BACnetEventParameterChangeOfBitstringListOfBitstringValuesParse(readBuffer, uint8(uint8(2)))
+	_listOfBitstringValues, _listOfBitstringValuesErr := BACnetEventParameterChangeOfBitstringListOfBitstringValuesParseWithBuffer(readBuffer, uint8(uint8(2)))
 	if _listOfBitstringValuesErr != nil {
 		return nil, errors.Wrap(_listOfBitstringValuesErr, "Error parsing 'listOfBitstringValues' field of BACnetEventParameterChangeOfBitstring")
 	}
@@ -231,7 +236,7 @@ func BACnetEventParameterChangeOfBitstringParse(readBuffer utils.ReadBuffer) (BA
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(0)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfBitstring")
 	}
@@ -257,7 +262,15 @@ func BACnetEventParameterChangeOfBitstringParse(readBuffer utils.ReadBuffer) (BA
 	return _child, nil
 }
 
-func (m *_BACnetEventParameterChangeOfBitstring) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventParameterChangeOfBitstring) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetEventParameterChangeOfBitstring) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetAccessRuleTimeRangeSpecifier uint8
 
 type IBACnetAccessRuleTimeRangeSpecifier interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -95,7 +97,11 @@ func (m BACnetAccessRuleTimeRangeSpecifier) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessRuleTimeRangeSpecifierParse(readBuffer utils.ReadBuffer) (BACnetAccessRuleTimeRangeSpecifier, error) {
+func BACnetAccessRuleTimeRangeSpecifierParse(theBytes []byte) (BACnetAccessRuleTimeRangeSpecifier, error) {
+	return BACnetAccessRuleTimeRangeSpecifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAccessRuleTimeRangeSpecifierParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessRuleTimeRangeSpecifier, error) {
 	val, err := readBuffer.ReadUint8("BACnetAccessRuleTimeRangeSpecifier", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessRuleTimeRangeSpecifier")
@@ -108,7 +114,15 @@ func BACnetAccessRuleTimeRangeSpecifierParse(readBuffer utils.ReadBuffer) (BACne
 	}
 }
 
-func (e BACnetAccessRuleTimeRangeSpecifier) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAccessRuleTimeRangeSpecifier) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetAccessRuleTimeRangeSpecifier) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetAccessRuleTimeRangeSpecifier", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

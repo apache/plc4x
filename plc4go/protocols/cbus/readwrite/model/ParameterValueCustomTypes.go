@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +125,11 @@ func (m *_ParameterValueCustomTypes) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterValueCustomTypesParse(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueCustomTypes, error) {
+func ParameterValueCustomTypesParse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueCustomTypes, error) {
+	return ParameterValueCustomTypesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), parameterType, numBytes) // TODO: get endianness from mspec
+}
+
+func ParameterValueCustomTypesParseWithBuffer(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueCustomTypes, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueCustomTypes"); pullErr != nil {
@@ -137,7 +142,7 @@ func ParameterValueCustomTypesParse(readBuffer utils.ReadBuffer, parameterType P
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := CustomTypesParse(readBuffer, uint8(numBytes))
+	_value, _valueErr := CustomTypesParseWithBuffer(readBuffer, uint8(numBytes))
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueCustomTypes")
 	}
@@ -161,7 +166,15 @@ func ParameterValueCustomTypesParse(readBuffer utils.ReadBuffer, parameterType P
 	return _child, nil
 }
 
-func (m *_ParameterValueCustomTypes) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ParameterValueCustomTypes) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ParameterValueCustomTypes) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

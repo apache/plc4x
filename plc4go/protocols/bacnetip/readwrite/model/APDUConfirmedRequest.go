@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -291,7 +292,11 @@ func (m *_APDUConfirmedRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUConfirmedRequest, error) {
+func APDUConfirmedRequestParse(theBytes []byte, apduLength uint16) (APDUConfirmedRequest, error) {
+	return APDUConfirmedRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength) // TODO: get endianness from mspec
+}
+
+func APDUConfirmedRequestParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDUConfirmedRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUConfirmedRequest"); pullErr != nil {
@@ -342,7 +347,7 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 	if pullErr := readBuffer.PullContext("maxSegmentsAccepted"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxSegmentsAccepted")
 	}
-	_maxSegmentsAccepted, _maxSegmentsAcceptedErr := MaxSegmentsAcceptedParse(readBuffer)
+	_maxSegmentsAccepted, _maxSegmentsAcceptedErr := MaxSegmentsAcceptedParseWithBuffer(readBuffer)
 	if _maxSegmentsAcceptedErr != nil {
 		return nil, errors.Wrap(_maxSegmentsAcceptedErr, "Error parsing 'maxSegmentsAccepted' field of APDUConfirmedRequest")
 	}
@@ -355,7 +360,7 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 	if pullErr := readBuffer.PullContext("maxApduLengthAccepted"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxApduLengthAccepted")
 	}
-	_maxApduLengthAccepted, _maxApduLengthAcceptedErr := MaxApduLengthAcceptedParse(readBuffer)
+	_maxApduLengthAccepted, _maxApduLengthAcceptedErr := MaxApduLengthAcceptedParseWithBuffer(readBuffer)
 	if _maxApduLengthAcceptedErr != nil {
 		return nil, errors.Wrap(_maxApduLengthAcceptedErr, "Error parsing 'maxApduLengthAccepted' field of APDUConfirmedRequest")
 	}
@@ -403,7 +408,7 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 		if pullErr := readBuffer.PullContext("serviceRequest"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for serviceRequest")
 		}
-		_val, _err := BACnetConfirmedServiceRequestParse(readBuffer, uint32(apduLength)-uint32(apduHeaderReduction))
+		_val, _err := BACnetConfirmedServiceRequestParseWithBuffer(readBuffer, uint32(apduLength)-uint32(apduHeaderReduction))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -472,7 +477,15 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 	return _child, nil
 }
 
-func (m *_APDUConfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_APDUConfirmedRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

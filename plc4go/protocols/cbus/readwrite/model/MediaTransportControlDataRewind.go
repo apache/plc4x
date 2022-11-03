@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -196,7 +197,11 @@ func (m *_MediaTransportControlDataRewind) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlDataRewindParse(readBuffer utils.ReadBuffer) (MediaTransportControlDataRewind, error) {
+func MediaTransportControlDataRewindParse(theBytes []byte) (MediaTransportControlDataRewind, error) {
+	return MediaTransportControlDataRewindParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MediaTransportControlDataRewindParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataRewind, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataRewind"); pullErr != nil {
@@ -265,7 +270,15 @@ func MediaTransportControlDataRewindParse(readBuffer utils.ReadBuffer) (MediaTra
 	return _child, nil
 }
 
-func (m *_MediaTransportControlDataRewind) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataRewind) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_MediaTransportControlDataRewind) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

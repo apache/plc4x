@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -143,7 +144,11 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUWriteMultipleHoldingRegistersResponseParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteMultipleHoldingRegistersResponse, error) {
+func ModbusPDUWriteMultipleHoldingRegistersResponseParse(theBytes []byte, response bool) (ModbusPDUWriteMultipleHoldingRegistersResponse, error) {
+	return ModbusPDUWriteMultipleHoldingRegistersResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func ModbusPDUWriteMultipleHoldingRegistersResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteMultipleHoldingRegistersResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteMultipleHoldingRegistersResponse"); pullErr != nil {
@@ -180,7 +185,15 @@ func ModbusPDUWriteMultipleHoldingRegistersResponseParse(readBuffer utils.ReadBu
 	return _child, nil
 }
 
-func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

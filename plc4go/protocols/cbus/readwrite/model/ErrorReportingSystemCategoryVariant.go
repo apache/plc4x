@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type ErrorReportingSystemCategoryVariant uint8
 
 type IErrorReportingSystemCategoryVariant interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +109,11 @@ func (m ErrorReportingSystemCategoryVariant) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingSystemCategoryVariantParse(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryVariant, error) {
+func ErrorReportingSystemCategoryVariantParse(theBytes []byte) (ErrorReportingSystemCategoryVariant, error) {
+	return ErrorReportingSystemCategoryVariantParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ErrorReportingSystemCategoryVariantParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryVariant, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingSystemCategoryVariant", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingSystemCategoryVariant")
@@ -120,7 +126,15 @@ func ErrorReportingSystemCategoryVariantParse(readBuffer utils.ReadBuffer) (Erro
 	}
 }
 
-func (e ErrorReportingSystemCategoryVariant) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ErrorReportingSystemCategoryVariant) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ErrorReportingSystemCategoryVariant) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ErrorReportingSystemCategoryVariant", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

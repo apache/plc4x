@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -162,7 +163,11 @@ func (m *_AlarmMessageQueryType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageQueryType, error) {
+func AlarmMessageQueryTypeParse(theBytes []byte) (AlarmMessageQueryType, error) {
+	return AlarmMessageQueryTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AlarmMessageQueryTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmMessageQueryType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageQueryType"); pullErr != nil {
@@ -189,7 +194,7 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageQueryT
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
 	}
-	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
+	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(readBuffer)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of AlarmMessageQueryType")
 	}
@@ -202,7 +207,7 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageQueryT
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
 	}
-	_transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
+	_transportSize, _transportSizeErr := DataTransportSizeParseWithBuffer(readBuffer)
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field of AlarmMessageQueryType")
 	}
@@ -232,7 +237,7 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageQueryT
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
-			_item, _err := AlarmMessageObjectQueryTypeParse(readBuffer)
+			_item, _err := AlarmMessageObjectQueryTypeParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field of AlarmMessageQueryType")
 			}
@@ -257,7 +262,15 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageQueryT
 	}, nil
 }
 
-func (m *_AlarmMessageQueryType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AlarmMessageQueryType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AlarmMessageQueryType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessageQueryType"); pushErr != nil {

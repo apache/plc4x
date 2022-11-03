@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -135,7 +136,11 @@ func (m *_BACnetServiceAckAtomicReadFile) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckAtomicReadFile, error) {
+func BACnetServiceAckAtomicReadFileParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckAtomicReadFile, error) {
+	return BACnetServiceAckAtomicReadFileParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceAckLength) // TODO: get endianness from mspec
+}
+
+func BACnetServiceAckAtomicReadFileParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckAtomicReadFile, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicReadFile"); pullErr != nil {
@@ -148,7 +153,7 @@ func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer, serviceAck
 	if pullErr := readBuffer.PullContext("endOfFile"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for endOfFile")
 	}
-	_endOfFile, _endOfFileErr := BACnetApplicationTagParse(readBuffer)
+	_endOfFile, _endOfFileErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _endOfFileErr != nil {
 		return nil, errors.Wrap(_endOfFileErr, "Error parsing 'endOfFile' field of BACnetServiceAckAtomicReadFile")
 	}
@@ -161,7 +166,7 @@ func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer, serviceAck
 	if pullErr := readBuffer.PullContext("accessMethod"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessMethod")
 	}
-	_accessMethod, _accessMethodErr := BACnetServiceAckAtomicReadFileStreamOrRecordParse(readBuffer)
+	_accessMethod, _accessMethodErr := BACnetServiceAckAtomicReadFileStreamOrRecordParseWithBuffer(readBuffer)
 	if _accessMethodErr != nil {
 		return nil, errors.Wrap(_accessMethodErr, "Error parsing 'accessMethod' field of BACnetServiceAckAtomicReadFile")
 	}
@@ -186,7 +191,15 @@ func BACnetServiceAckAtomicReadFileParse(readBuffer utils.ReadBuffer, serviceAck
 	return _child, nil
 }
 
-func (m *_BACnetServiceAckAtomicReadFile) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetServiceAckAtomicReadFile) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetServiceAckAtomicReadFile) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

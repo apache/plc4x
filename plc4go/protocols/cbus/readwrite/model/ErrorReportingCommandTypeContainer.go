@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,9 +32,9 @@ import (
 type ErrorReportingCommandTypeContainer uint8
 
 type IErrorReportingCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() ErrorReportingCommandType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -176,7 +178,11 @@ func (m ErrorReportingCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingCommandTypeContainerParse(readBuffer utils.ReadBuffer) (ErrorReportingCommandTypeContainer, error) {
+func ErrorReportingCommandTypeContainerParse(theBytes []byte) (ErrorReportingCommandTypeContainer, error) {
+	return ErrorReportingCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ErrorReportingCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingCommandTypeContainer")
@@ -189,7 +195,15 @@ func ErrorReportingCommandTypeContainerParse(readBuffer utils.ReadBuffer) (Error
 	}
 }
 
-func (e ErrorReportingCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ErrorReportingCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ErrorReportingCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ErrorReportingCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

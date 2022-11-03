@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -180,7 +181,11 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAcknowledgeAlarm, error) {
+func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAcknowledgeAlarm, error) {
+	return BACnetConfirmedServiceRequestAcknowledgeAlarmParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceRequestLength) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestAcknowledgeAlarmParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAcknowledgeAlarm, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); pullErr != nil {
@@ -193,7 +198,7 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("acknowledgingProcessIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for acknowledgingProcessIdentifier")
 	}
-	_acknowledgingProcessIdentifier, _acknowledgingProcessIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_acknowledgingProcessIdentifier, _acknowledgingProcessIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _acknowledgingProcessIdentifierErr != nil {
 		return nil, errors.Wrap(_acknowledgingProcessIdentifierErr, "Error parsing 'acknowledgingProcessIdentifier' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
 	}
@@ -206,7 +211,7 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("eventObjectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventObjectIdentifier")
 	}
-	_eventObjectIdentifier, _eventObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_eventObjectIdentifier, _eventObjectIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _eventObjectIdentifierErr != nil {
 		return nil, errors.Wrap(_eventObjectIdentifierErr, "Error parsing 'eventObjectIdentifier' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
 	}
@@ -219,7 +224,7 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("eventStateAcknowledged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventStateAcknowledged")
 	}
-	_eventStateAcknowledged, _eventStateAcknowledgedErr := BACnetEventStateTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_eventStateAcknowledged, _eventStateAcknowledgedErr := BACnetEventStateTaggedParseWithBuffer(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _eventStateAcknowledgedErr != nil {
 		return nil, errors.Wrap(_eventStateAcknowledgedErr, "Error parsing 'eventStateAcknowledged' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
 	}
@@ -232,7 +237,7 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timestamp")
 	}
-	_timestamp, _timestampErr := BACnetTimeStampEnclosedParse(readBuffer, uint8(uint8(3)))
+	_timestamp, _timestampErr := BACnetTimeStampEnclosedParseWithBuffer(readBuffer, uint8(uint8(3)))
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
 	}
@@ -245,7 +250,7 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("acknowledgmentSource"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for acknowledgmentSource")
 	}
-	_acknowledgmentSource, _acknowledgmentSourceErr := BACnetContextTagParse(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
+	_acknowledgmentSource, _acknowledgmentSourceErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _acknowledgmentSourceErr != nil {
 		return nil, errors.Wrap(_acknowledgmentSourceErr, "Error parsing 'acknowledgmentSource' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
 	}
@@ -258,7 +263,7 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("timeOfAcknowledgment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeOfAcknowledgment")
 	}
-	_timeOfAcknowledgment, _timeOfAcknowledgmentErr := BACnetTimeStampEnclosedParse(readBuffer, uint8(uint8(5)))
+	_timeOfAcknowledgment, _timeOfAcknowledgmentErr := BACnetTimeStampEnclosedParseWithBuffer(readBuffer, uint8(uint8(5)))
 	if _timeOfAcknowledgmentErr != nil {
 		return nil, errors.Wrap(_timeOfAcknowledgmentErr, "Error parsing 'timeOfAcknowledgment' field of BACnetConfirmedServiceRequestAcknowledgeAlarm")
 	}
@@ -287,7 +292,15 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(readBuffer utils.ReadBuf
 	return _child, nil
 }
 
-func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

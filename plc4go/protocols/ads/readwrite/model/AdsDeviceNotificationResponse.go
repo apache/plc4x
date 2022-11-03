@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -114,7 +115,11 @@ func (m *_AdsDeviceNotificationResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDeviceNotificationResponseParse(readBuffer utils.ReadBuffer) (AdsDeviceNotificationResponse, error) {
+func AdsDeviceNotificationResponseParse(theBytes []byte) (AdsDeviceNotificationResponse, error) {
+	return AdsDeviceNotificationResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AdsDeviceNotificationResponseParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDeviceNotificationResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDeviceNotificationResponse"); pullErr != nil {
@@ -135,7 +140,15 @@ func AdsDeviceNotificationResponseParse(readBuffer utils.ReadBuffer) (AdsDeviceN
 	return _child, nil
 }
 
-func (m *_AdsDeviceNotificationResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDeviceNotificationResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsDeviceNotificationResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

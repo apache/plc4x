@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,8 +32,8 @@ import (
 type ErrorReportingCommandType uint8
 
 type IErrorReportingCommandType interface {
+	utils.Serializable
 	NumberOfArguments() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -141,7 +143,11 @@ func (m ErrorReportingCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingCommandTypeParse(readBuffer utils.ReadBuffer) (ErrorReportingCommandType, error) {
+func ErrorReportingCommandTypeParse(theBytes []byte) (ErrorReportingCommandType, error) {
+	return ErrorReportingCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ErrorReportingCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingCommandType, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingCommandType")
@@ -154,7 +160,15 @@ func ErrorReportingCommandTypeParse(readBuffer utils.ReadBuffer) (ErrorReporting
 	}
 }
 
-func (e ErrorReportingCommandType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ErrorReportingCommandType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ErrorReportingCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ErrorReportingCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

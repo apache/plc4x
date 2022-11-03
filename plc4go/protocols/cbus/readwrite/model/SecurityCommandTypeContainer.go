@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,9 +32,9 @@ import (
 type SecurityCommandTypeContainer uint8
 
 type ISecurityCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() SecurityCommandType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -1800,7 +1802,11 @@ func (m SecurityCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityCommandTypeContainerParse(readBuffer utils.ReadBuffer) (SecurityCommandTypeContainer, error) {
+func SecurityCommandTypeContainerParse(theBytes []byte) (SecurityCommandTypeContainer, error) {
+	return SecurityCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("SecurityCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SecurityCommandTypeContainer")
@@ -1813,7 +1819,15 @@ func SecurityCommandTypeContainerParse(readBuffer utils.ReadBuffer) (SecurityCom
 	}
 }
 
-func (e SecurityCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e SecurityCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e SecurityCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("SecurityCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

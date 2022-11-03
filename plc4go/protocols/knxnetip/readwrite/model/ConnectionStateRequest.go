@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -140,7 +141,11 @@ func (m *_ConnectionStateRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ConnectionStateRequestParse(readBuffer utils.ReadBuffer) (ConnectionStateRequest, error) {
+func ConnectionStateRequestParse(theBytes []byte) (ConnectionStateRequest, error) {
+	return ConnectionStateRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ConnectionStateRequestParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionStateRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionStateRequest"); pullErr != nil {
@@ -177,7 +182,7 @@ func ConnectionStateRequestParse(readBuffer utils.ReadBuffer) (ConnectionStateRe
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hpaiControlEndpoint")
 	}
-	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(readBuffer)
+	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParseWithBuffer(readBuffer)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field of ConnectionStateRequest")
 	}
@@ -201,7 +206,15 @@ func ConnectionStateRequestParse(readBuffer utils.ReadBuffer) (ConnectionStateRe
 	return _child, nil
 }
 
-func (m *_ConnectionStateRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ConnectionStateRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ConnectionStateRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetSilencedState uint16
 
 type IBACnetSilencedState interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -113,7 +115,11 @@ func (m BACnetSilencedState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSilencedStateParse(readBuffer utils.ReadBuffer) (BACnetSilencedState, error) {
+func BACnetSilencedStateParse(theBytes []byte) (BACnetSilencedState, error) {
+	return BACnetSilencedStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetSilencedStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSilencedState, error) {
 	val, err := readBuffer.ReadUint16("BACnetSilencedState", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetSilencedState")
@@ -126,7 +132,15 @@ func BACnetSilencedStateParse(readBuffer utils.ReadBuffer) (BACnetSilencedState,
 	}
 }
 
-func (e BACnetSilencedState) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetSilencedState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetSilencedState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetSilencedState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

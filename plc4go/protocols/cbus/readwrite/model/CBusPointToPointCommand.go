@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -141,7 +142,11 @@ func (m *_CBusPointToPointCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommand, error) {
+func CBusPointToPointCommandParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointCommand, error) {
+	return CBusPointToPointCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func CBusPointToPointCommandParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommand"); pullErr != nil {
@@ -175,9 +180,9 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusO
 	var typeSwitchError error
 	switch {
 	case isDirect == bool(true): // CBusPointToPointCommandDirect
-		_childTemp, typeSwitchError = CBusPointToPointCommandDirectParse(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = CBusPointToPointCommandDirectParseWithBuffer(readBuffer, cBusOptions)
 	case isDirect == bool(false): // CBusPointToPointCommandIndirect
-		_childTemp, typeSwitchError = CBusPointToPointCommandIndirectParse(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = CBusPointToPointCommandIndirectParseWithBuffer(readBuffer, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [isDirect=%v]", isDirect)
 	}
@@ -190,7 +195,7 @@ func CBusPointToPointCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusO
 	if pullErr := readBuffer.PullContext("calData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for calData")
 	}
-	_calData, _calDataErr := CALDataParse(readBuffer, nil)
+	_calData, _calDataErr := CALDataParseWithBuffer(readBuffer, nil)
 	if _calDataErr != nil {
 		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of CBusPointToPointCommand")
 	}

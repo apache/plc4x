@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLightingOutputTrackingValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingOutputTrackingValue, error) {
+func BACnetConstructedDataLightingOutputTrackingValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingOutputTrackingValue, error) {
+	return BACnetConstructedDataLightingOutputTrackingValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLightingOutputTrackingValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingOutputTrackingValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingOutputTrackingValue"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataLightingOutputTrackingValueParse(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("trackingValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for trackingValue")
 	}
-	_trackingValue, _trackingValueErr := BACnetApplicationTagParse(readBuffer)
+	_trackingValue, _trackingValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _trackingValueErr != nil {
 		return nil, errors.Wrap(_trackingValueErr, "Error parsing 'trackingValue' field of BACnetConstructedDataLightingOutputTrackingValue")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataLightingOutputTrackingValueParse(readBuffer utils.Read
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataLightingOutputTrackingValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLightingOutputTrackingValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataLightingOutputTrackingValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

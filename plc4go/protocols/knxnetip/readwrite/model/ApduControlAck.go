@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -103,7 +104,11 @@ func (m *_ApduControlAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduControlAckParse(readBuffer utils.ReadBuffer) (ApduControlAck, error) {
+func ApduControlAckParse(theBytes []byte) (ApduControlAck, error) {
+	return ApduControlAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ApduControlAckParseWithBuffer(readBuffer utils.ReadBuffer) (ApduControlAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControlAck"); pullErr != nil {
@@ -124,7 +129,15 @@ func ApduControlAckParse(readBuffer utils.ReadBuffer) (ApduControlAck, error) {
 	return _child, nil
 }
 
-func (m *_ApduControlAck) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduControlAck) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApduControlAck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

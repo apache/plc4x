@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -144,7 +145,11 @@ func (m *_BACnetFaultParameterFaultStatusFlags) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultStatusFlagsParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultStatusFlags, error) {
+func BACnetFaultParameterFaultStatusFlagsParse(theBytes []byte) (BACnetFaultParameterFaultStatusFlags, error) {
+	return BACnetFaultParameterFaultStatusFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetFaultParameterFaultStatusFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultStatusFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultStatusFlags"); pullErr != nil {
@@ -157,7 +162,7 @@ func BACnetFaultParameterFaultStatusFlagsParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(5)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(5)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetFaultParameterFaultStatusFlags")
 	}
@@ -170,7 +175,7 @@ func BACnetFaultParameterFaultStatusFlagsParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("statusFlagsReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for statusFlagsReference")
 	}
-	_statusFlagsReference, _statusFlagsReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
+	_statusFlagsReference, _statusFlagsReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _statusFlagsReferenceErr != nil {
 		return nil, errors.Wrap(_statusFlagsReferenceErr, "Error parsing 'statusFlagsReference' field of BACnetFaultParameterFaultStatusFlags")
 	}
@@ -183,7 +188,7 @@ func BACnetFaultParameterFaultStatusFlagsParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(5)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(5)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetFaultParameterFaultStatusFlags")
 	}
@@ -207,7 +212,15 @@ func BACnetFaultParameterFaultStatusFlagsParse(readBuffer utils.ReadBuffer) (BAC
 	return _child, nil
 }
 
-func (m *_BACnetFaultParameterFaultStatusFlags) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFaultParameterFaultStatusFlags) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetFaultParameterFaultStatusFlags) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

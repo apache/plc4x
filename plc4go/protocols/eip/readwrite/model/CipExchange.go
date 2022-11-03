@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -139,7 +140,11 @@ func (m *_CipExchange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (CipExchange, error) {
+func CipExchangeParse(theBytes []byte, exchangeLen uint16) (CipExchange, error) {
+	return CipExchangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), exchangeLen) // TODO: get endianness from mspec
+}
+
+func CipExchangeParseWithBuffer(readBuffer utils.ReadBuffer, exchangeLen uint16) (CipExchange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipExchange"); pullErr != nil {
@@ -186,7 +191,7 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (CipExcha
 	if pullErr := readBuffer.PullContext("service"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for service")
 	}
-	_service, _serviceErr := CipServiceParse(readBuffer, uint16(uint16(exchangeLen)-uint16(uint16(10))))
+	_service, _serviceErr := CipServiceParseWithBuffer(readBuffer, uint16(uint16(exchangeLen)-uint16(uint16(10))))
 	if _serviceErr != nil {
 		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field of CipExchange")
 	}
@@ -206,7 +211,15 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (CipExcha
 	}, nil
 }
 
-func (m *_CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CipExchange) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CipExchange) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CipExchange"); pushErr != nil {

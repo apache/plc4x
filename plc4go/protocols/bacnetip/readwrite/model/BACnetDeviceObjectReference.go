@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -110,7 +111,11 @@ func (m *_BACnetDeviceObjectReference) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDeviceObjectReferenceParse(readBuffer utils.ReadBuffer) (BACnetDeviceObjectReference, error) {
+func BACnetDeviceObjectReferenceParse(theBytes []byte) (BACnetDeviceObjectReference, error) {
+	return BACnetDeviceObjectReferenceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetDeviceObjectReferenceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDeviceObjectReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetDeviceObjectReference"); pullErr != nil {
@@ -126,7 +131,7 @@ func BACnetDeviceObjectReferenceParse(readBuffer utils.ReadBuffer) (BACnetDevice
 		if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(0), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -145,7 +150,7 @@ func BACnetDeviceObjectReferenceParse(readBuffer utils.ReadBuffer) (BACnetDevice
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetDeviceObjectReference")
 	}
@@ -165,7 +170,15 @@ func BACnetDeviceObjectReferenceParse(readBuffer utils.ReadBuffer) (BACnetDevice
 	}, nil
 }
 
-func (m *_BACnetDeviceObjectReference) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetDeviceObjectReference) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetDeviceObjectReference) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetDeviceObjectReference"); pushErr != nil {

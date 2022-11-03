@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -155,7 +156,11 @@ func (m *_AirConditioningDataZoneTemperature) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AirConditioningDataZoneTemperatureParse(readBuffer utils.ReadBuffer) (AirConditioningDataZoneTemperature, error) {
+func AirConditioningDataZoneTemperatureParse(theBytes []byte) (AirConditioningDataZoneTemperature, error) {
+	return AirConditioningDataZoneTemperatureParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AirConditioningDataZoneTemperatureParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningDataZoneTemperature, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningDataZoneTemperature"); pullErr != nil {
@@ -175,7 +180,7 @@ func AirConditioningDataZoneTemperatureParse(readBuffer utils.ReadBuffer) (AirCo
 	if pullErr := readBuffer.PullContext("zoneList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for zoneList")
 	}
-	_zoneList, _zoneListErr := HVACZoneListParse(readBuffer)
+	_zoneList, _zoneListErr := HVACZoneListParseWithBuffer(readBuffer)
 	if _zoneListErr != nil {
 		return nil, errors.Wrap(_zoneListErr, "Error parsing 'zoneList' field of AirConditioningDataZoneTemperature")
 	}
@@ -188,7 +193,7 @@ func AirConditioningDataZoneTemperatureParse(readBuffer utils.ReadBuffer) (AirCo
 	if pullErr := readBuffer.PullContext("temperature"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for temperature")
 	}
-	_temperature, _temperatureErr := HVACTemperatureParse(readBuffer)
+	_temperature, _temperatureErr := HVACTemperatureParseWithBuffer(readBuffer)
 	if _temperatureErr != nil {
 		return nil, errors.Wrap(_temperatureErr, "Error parsing 'temperature' field of AirConditioningDataZoneTemperature")
 	}
@@ -201,7 +206,7 @@ func AirConditioningDataZoneTemperatureParse(readBuffer utils.ReadBuffer) (AirCo
 	if pullErr := readBuffer.PullContext("sensorStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for sensorStatus")
 	}
-	_sensorStatus, _sensorStatusErr := HVACSensorStatusParse(readBuffer)
+	_sensorStatus, _sensorStatusErr := HVACSensorStatusParseWithBuffer(readBuffer)
 	if _sensorStatusErr != nil {
 		return nil, errors.Wrap(_sensorStatusErr, "Error parsing 'sensorStatus' field of AirConditioningDataZoneTemperature")
 	}
@@ -226,7 +231,15 @@ func AirConditioningDataZoneTemperatureParse(readBuffer utils.ReadBuffer) (AirCo
 	return _child, nil
 }
 
-func (m *_AirConditioningDataZoneTemperature) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AirConditioningDataZoneTemperature) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AirConditioningDataZoneTemperature) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

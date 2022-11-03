@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -127,7 +128,11 @@ func (m *_BACnetRejectReasonTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRejectReasonTaggedParse(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetRejectReasonTagged, error) {
+func BACnetRejectReasonTaggedParse(theBytes []byte, actualLength uint32) (BACnetRejectReasonTagged, error) {
+	return BACnetRejectReasonTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), actualLength) // TODO: get endianness from mspec
+}
+
+func BACnetRejectReasonTaggedParseWithBuffer(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetRejectReasonTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetRejectReasonTagged"); pullErr != nil {
@@ -173,7 +178,15 @@ func BACnetRejectReasonTaggedParse(readBuffer utils.ReadBuffer, actualLength uin
 	}, nil
 }
 
-func (m *_BACnetRejectReasonTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetRejectReasonTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetRejectReasonTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetRejectReasonTagged"); pushErr != nil {

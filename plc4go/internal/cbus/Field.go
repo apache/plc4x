@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
@@ -287,7 +288,15 @@ func (s statusField) GetQuantity() uint16 {
 	return s.numElements
 }
 
-func (s statusField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (s statusField) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := s.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (s statusField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(s.fieldType.GetName()); err != nil {
 		return err
 	}
@@ -322,9 +331,17 @@ func (c calField) GetUnitAddress() readWriteModel.UnitAddress {
 	return c.unitAddress
 }
 
-func (c calField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (c calField) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := c.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (c calField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if unitAddress := c.unitAddress; unitAddress != nil {
-		return c.unitAddress.Serialize(writeBuffer)
+		return c.unitAddress.SerializeWithWriteBuffer(writeBuffer)
 	}
 	return nil
 }
@@ -357,16 +374,24 @@ func (c calRecallField) GetQuantity() uint16 {
 	return c.numElements
 }
 
-func (c calRecallField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (c calRecallField) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := c.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (c calRecallField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(c.fieldType.GetName()); err != nil {
 		return err
 	}
 
-	if err := c.calField.Serialize(writeBuffer); err != nil {
+	if err := c.calField.SerializeWithWriteBuffer(writeBuffer); err != nil {
 		return err
 	}
 
-	if err := c.parameter.Serialize(writeBuffer); err != nil {
+	if err := c.parameter.SerializeWithWriteBuffer(writeBuffer); err != nil {
 		return err
 	}
 
@@ -404,16 +429,24 @@ func (c calIdentifyField) GetQuantity() uint16 {
 	return c.numElements
 }
 
-func (c calIdentifyField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (c calIdentifyField) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := c.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (c calIdentifyField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(c.fieldType.GetName()); err != nil {
 		return err
 	}
 
-	if err := c.calField.Serialize(writeBuffer); err != nil {
+	if err := c.calField.SerializeWithWriteBuffer(writeBuffer); err != nil {
 		return err
 	}
 
-	if err := c.attribute.Serialize(writeBuffer); err != nil {
+	if err := c.attribute.SerializeWithWriteBuffer(writeBuffer); err != nil {
 		return err
 	}
 
@@ -451,16 +484,24 @@ func (c calGetstatusField) GetQuantity() uint16 {
 	return c.numElements
 }
 
-func (c calGetstatusField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (c calGetstatusField) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := c.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (c calGetstatusField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(c.fieldType.GetName()); err != nil {
 		return err
 	}
 
-	if err := c.calField.Serialize(writeBuffer); err != nil {
+	if err := c.calField.SerializeWithWriteBuffer(writeBuffer); err != nil {
 		return err
 	}
 
-	if err := c.parameter.Serialize(writeBuffer); err != nil {
+	if err := c.parameter.SerializeWithWriteBuffer(writeBuffer); err != nil {
 		return err
 	}
 
@@ -502,12 +543,20 @@ func (s salField) GetQuantity() uint16 {
 	return s.numElements
 }
 
-func (s salField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (s salField) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := s.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (s salField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(s.fieldType.GetName()); err != nil {
 		return err
 	}
 
-	if err := s.application.Serialize(writeBuffer); err != nil {
+	if err := s.application.SerializeWithWriteBuffer(writeBuffer); err != nil {
 		return err
 	}
 
@@ -557,18 +606,26 @@ func (s salMonitorField) GetApplication() *readWriteModel.ApplicationIdContainer
 	return s.application
 }
 
-func (s salMonitorField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (s salMonitorField) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := s.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (s salMonitorField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(s.fieldType.GetName()); err != nil {
 		return err
 	}
 
 	if unitAddress := s.unitAddress; unitAddress != nil {
-		if err := (*unitAddress).Serialize(writeBuffer); err != nil {
+		if err := (*unitAddress).SerializeWithWriteBuffer(writeBuffer); err != nil {
 			return err
 		}
 	}
 	if application := s.application; application != nil {
-		if err := application.Serialize(writeBuffer); err != nil {
+		if err := application.SerializeWithWriteBuffer(writeBuffer); err != nil {
 			return err
 		}
 	}
@@ -615,18 +672,26 @@ func (m mmiMonitorField) GetApplication() *readWriteModel.ApplicationIdContainer
 	return m.application
 }
 
-func (m mmiMonitorField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m mmiMonitorField) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m mmiMonitorField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(m.fieldType.GetName()); err != nil {
 		return err
 	}
 
 	if unitAddress := m.unitAddress; unitAddress != nil {
-		if err := (*unitAddress).Serialize(writeBuffer); err != nil {
+		if err := (*unitAddress).SerializeWithWriteBuffer(writeBuffer); err != nil {
 			return err
 		}
 	}
 	if application := m.application; application != nil {
-		if err := application.Serialize(writeBuffer); err != nil {
+		if err := application.SerializeWithWriteBuffer(writeBuffer); err != nil {
 			return err
 		}
 	}
@@ -673,19 +738,27 @@ func (u unitInfoField) GetQuantity() uint16 {
 	return u.numElements
 }
 
-func (u unitInfoField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (u unitInfoField) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := u.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (u unitInfoField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(u.fieldType.GetName()); err != nil {
 		return err
 	}
 
 	if unitAddress := u.unitAddress; unitAddress != nil {
-		if err := (*unitAddress).Serialize(writeBuffer); err != nil {
+		if err := (*unitAddress).SerializeWithWriteBuffer(writeBuffer); err != nil {
 			return err
 		}
 	}
 
 	if attribute := u.attribute; attribute != nil {
-		if err := (*attribute).Serialize(writeBuffer); err != nil {
+		if err := (*attribute).SerializeWithWriteBuffer(writeBuffer); err != nil {
 			return err
 		}
 	}

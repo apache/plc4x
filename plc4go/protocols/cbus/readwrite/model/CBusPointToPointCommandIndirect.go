@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -145,7 +146,11 @@ func (m *_CBusPointToPointCommandIndirect) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommandIndirect, error) {
+func CBusPointToPointCommandIndirectParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointCommandIndirect, error) {
+	return CBusPointToPointCommandIndirectParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func CBusPointToPointCommandIndirectParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommandIndirect, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommandIndirect"); pullErr != nil {
@@ -158,7 +163,7 @@ func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, cBusOptio
 	if pullErr := readBuffer.PullContext("bridgeAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bridgeAddress")
 	}
-	_bridgeAddress, _bridgeAddressErr := BridgeAddressParse(readBuffer)
+	_bridgeAddress, _bridgeAddressErr := BridgeAddressParseWithBuffer(readBuffer)
 	if _bridgeAddressErr != nil {
 		return nil, errors.Wrap(_bridgeAddressErr, "Error parsing 'bridgeAddress' field of CBusPointToPointCommandIndirect")
 	}
@@ -171,7 +176,7 @@ func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, cBusOptio
 	if pullErr := readBuffer.PullContext("networkRoute"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkRoute")
 	}
-	_networkRoute, _networkRouteErr := NetworkRouteParse(readBuffer)
+	_networkRoute, _networkRouteErr := NetworkRouteParseWithBuffer(readBuffer)
 	if _networkRouteErr != nil {
 		return nil, errors.Wrap(_networkRouteErr, "Error parsing 'networkRoute' field of CBusPointToPointCommandIndirect")
 	}
@@ -184,7 +189,7 @@ func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, cBusOptio
 	if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unitAddress")
 	}
-	_unitAddress, _unitAddressErr := UnitAddressParse(readBuffer)
+	_unitAddress, _unitAddressErr := UnitAddressParseWithBuffer(readBuffer)
 	if _unitAddressErr != nil {
 		return nil, errors.Wrap(_unitAddressErr, "Error parsing 'unitAddress' field of CBusPointToPointCommandIndirect")
 	}
@@ -210,7 +215,15 @@ func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, cBusOptio
 	return _child, nil
 }
 
-func (m *_CBusPointToPointCommandIndirect) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusPointToPointCommandIndirect) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CBusPointToPointCommandIndirect) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

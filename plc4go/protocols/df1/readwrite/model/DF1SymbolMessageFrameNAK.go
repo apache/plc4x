@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -103,7 +104,11 @@ func (m *_DF1SymbolMessageFrameNAK) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DF1SymbolMessageFrameNAKParse(readBuffer utils.ReadBuffer) (DF1SymbolMessageFrameNAK, error) {
+func DF1SymbolMessageFrameNAKParse(theBytes []byte) (DF1SymbolMessageFrameNAK, error) {
+	return DF1SymbolMessageFrameNAKParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DF1SymbolMessageFrameNAKParseWithBuffer(readBuffer utils.ReadBuffer) (DF1SymbolMessageFrameNAK, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1SymbolMessageFrameNAK"); pullErr != nil {
@@ -124,7 +129,15 @@ func DF1SymbolMessageFrameNAKParse(readBuffer utils.ReadBuffer) (DF1SymbolMessag
 	return _child, nil
 }
 
-func (m *_DF1SymbolMessageFrameNAK) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_DF1SymbolMessageFrameNAK) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_DF1SymbolMessageFrameNAK) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -133,7 +134,11 @@ func (m *_S7PayloadWriteVarResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadWriteVarResponseParse(readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (S7PayloadWriteVarResponse, error) {
+func S7PayloadWriteVarResponseParse(theBytes []byte, messageType uint8, parameter S7Parameter) (S7PayloadWriteVarResponse, error) {
+	return S7PayloadWriteVarResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), messageType, parameter) // TODO: get endianness from mspec
+}
+
+func S7PayloadWriteVarResponseParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (S7PayloadWriteVarResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadWriteVarResponse"); pullErr != nil {
@@ -154,7 +159,7 @@ func S7PayloadWriteVarResponseParse(readBuffer utils.ReadBuffer, messageType uin
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(CastS7ParameterWriteVarResponse(parameter).GetNumItems()); curItem++ {
-			_item, _err := S7VarPayloadStatusItemParse(readBuffer)
+			_item, _err := S7VarPayloadStatusItemParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field of S7PayloadWriteVarResponse")
 			}
@@ -180,7 +185,15 @@ func S7PayloadWriteVarResponseParse(readBuffer utils.ReadBuffer, messageType uin
 	return _child, nil
 }
 
-func (m *_S7PayloadWriteVarResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7PayloadWriteVarResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7PayloadWriteVarResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetLiftGroupMode uint8
 
 type IBACnetLiftGroupMode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -125,7 +127,11 @@ func (m BACnetLiftGroupMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLiftGroupModeParse(readBuffer utils.ReadBuffer) (BACnetLiftGroupMode, error) {
+func BACnetLiftGroupModeParse(theBytes []byte) (BACnetLiftGroupMode, error) {
+	return BACnetLiftGroupModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLiftGroupModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLiftGroupMode, error) {
 	val, err := readBuffer.ReadUint8("BACnetLiftGroupMode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLiftGroupMode")
@@ -138,7 +144,15 @@ func BACnetLiftGroupModeParse(readBuffer utils.ReadBuffer) (BACnetLiftGroupMode,
 	}
 }
 
-func (e BACnetLiftGroupMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLiftGroupMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetLiftGroupMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetLiftGroupMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -128,7 +129,11 @@ func (m *_BACnetEventParameter) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventParameterParse(readBuffer utils.ReadBuffer) (BACnetEventParameter, error) {
+func BACnetEventParameterParse(theBytes []byte) (BACnetEventParameter, error) {
+	return BACnetEventParameterParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEventParameterParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameter, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameter"); pullErr != nil {
@@ -142,7 +147,7 @@ func BACnetEventParameterParse(readBuffer utils.ReadBuffer) (BACnetEventParamete
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -161,43 +166,43 @@ func BACnetEventParameterParse(readBuffer utils.ReadBuffer) (BACnetEventParamete
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetEventParameterChangeOfBitstring
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfBitstringParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfBitstringParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(1): // BACnetEventParameterChangeOfState
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfStateParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfStateParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(2): // BACnetEventParameterChangeOfValue
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfValueParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfValueParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(3): // BACnetEventParameterCommandFailure
-		_childTemp, typeSwitchError = BACnetEventParameterCommandFailureParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterCommandFailureParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(4): // BACnetEventParameterFloatingLimit
-		_childTemp, typeSwitchError = BACnetEventParameterFloatingLimitParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterFloatingLimitParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(5): // BACnetEventParameterOutOfRange
-		_childTemp, typeSwitchError = BACnetEventParameterOutOfRangeParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterOutOfRangeParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(8): // BACnetEventParameterChangeOfLifeSavety
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfLifeSavetyParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfLifeSavetyParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(9): // BACnetEventParameterExtended
-		_childTemp, typeSwitchError = BACnetEventParameterExtendedParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterExtendedParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(10): // BACnetEventParameterBufferReady
-		_childTemp, typeSwitchError = BACnetEventParameterBufferReadyParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterBufferReadyParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(11): // BACnetEventParameterUnsignedRange
-		_childTemp, typeSwitchError = BACnetEventParameterUnsignedRangeParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterUnsignedRangeParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(13): // BACnetEventParameterAccessEvent
-		_childTemp, typeSwitchError = BACnetEventParameterAccessEventParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterAccessEventParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(14): // BACnetEventParameterDoubleOutOfRange
-		_childTemp, typeSwitchError = BACnetEventParameterDoubleOutOfRangeParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterDoubleOutOfRangeParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(15): // BACnetEventParameterSignedOutOfRange
-		_childTemp, typeSwitchError = BACnetEventParameterSignedOutOfRangeParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterSignedOutOfRangeParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(16): // BACnetEventParameterUnsignedOutOfRange
-		_childTemp, typeSwitchError = BACnetEventParameterUnsignedOutOfRangeParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterUnsignedOutOfRangeParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(17): // BACnetEventParameterChangeOfCharacterString
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfCharacterStringParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfCharacterStringParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(18): // BACnetEventParameterChangeOfStatusFlags
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfStatusFlagsParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfStatusFlagsParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(20): // BACnetEventParameterNone
-		_childTemp, typeSwitchError = BACnetEventParameterNoneParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterNoneParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(21): // BACnetEventParameterChangeOfDiscreteValue
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfDiscreteValueParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfDiscreteValueParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(22): // BACnetEventParameterChangeOfTimer
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfTimerParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfTimerParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}

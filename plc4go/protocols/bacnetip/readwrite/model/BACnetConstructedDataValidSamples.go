@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataValidSamples) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataValidSamplesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValidSamples, error) {
+func BACnetConstructedDataValidSamplesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValidSamples, error) {
+	return BACnetConstructedDataValidSamplesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataValidSamplesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValidSamples, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataValidSamples"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataValidSamplesParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("validSamples"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for validSamples")
 	}
-	_validSamples, _validSamplesErr := BACnetApplicationTagParse(readBuffer)
+	_validSamples, _validSamplesErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _validSamplesErr != nil {
 		return nil, errors.Wrap(_validSamplesErr, "Error parsing 'validSamples' field of BACnetConstructedDataValidSamples")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataValidSamplesParse(readBuffer utils.ReadBuffer, tagNumb
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataValidSamples) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataValidSamples) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataValidSamples) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

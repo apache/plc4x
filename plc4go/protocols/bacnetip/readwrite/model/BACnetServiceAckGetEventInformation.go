@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -135,7 +136,11 @@ func (m *_BACnetServiceAckGetEventInformation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetEventInformation, error) {
+func BACnetServiceAckGetEventInformationParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckGetEventInformation, error) {
+	return BACnetServiceAckGetEventInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceAckLength) // TODO: get endianness from mspec
+}
+
+func BACnetServiceAckGetEventInformationParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetEventInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEventInformation"); pullErr != nil {
@@ -148,7 +153,7 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, servi
 	if pullErr := readBuffer.PullContext("listOfEventSummaries"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfEventSummaries")
 	}
-	_listOfEventSummaries, _listOfEventSummariesErr := BACnetEventSummariesListParse(readBuffer, uint8(uint8(0)))
+	_listOfEventSummaries, _listOfEventSummariesErr := BACnetEventSummariesListParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _listOfEventSummariesErr != nil {
 		return nil, errors.Wrap(_listOfEventSummariesErr, "Error parsing 'listOfEventSummaries' field of BACnetServiceAckGetEventInformation")
 	}
@@ -161,7 +166,7 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, servi
 	if pullErr := readBuffer.PullContext("moreEvents"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for moreEvents")
 	}
-	_moreEvents, _moreEventsErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
+	_moreEvents, _moreEventsErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _moreEventsErr != nil {
 		return nil, errors.Wrap(_moreEventsErr, "Error parsing 'moreEvents' field of BACnetServiceAckGetEventInformation")
 	}
@@ -186,7 +191,15 @@ func BACnetServiceAckGetEventInformationParse(readBuffer utils.ReadBuffer, servi
 	return _child, nil
 }
 
-func (m *_BACnetServiceAckGetEventInformation) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetServiceAckGetEventInformation) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetServiceAckGetEventInformation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

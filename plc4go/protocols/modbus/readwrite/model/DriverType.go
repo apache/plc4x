@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type DriverType uint32
 
 type IDriverType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -101,7 +103,11 @@ func (m DriverType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DriverTypeParse(readBuffer utils.ReadBuffer) (DriverType, error) {
+func DriverTypeParse(theBytes []byte) (DriverType, error) {
+	return DriverTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DriverTypeParseWithBuffer(readBuffer utils.ReadBuffer) (DriverType, error) {
 	val, err := readBuffer.ReadUint32("DriverType", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DriverType")
@@ -114,7 +120,15 @@ func DriverTypeParse(readBuffer utils.ReadBuffer) (DriverType, error) {
 	}
 }
 
-func (e DriverType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e DriverType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e DriverType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint32("DriverType", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

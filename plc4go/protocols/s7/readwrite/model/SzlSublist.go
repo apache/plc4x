@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type SzlSublist uint8
 
 type ISzlSublist interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -197,7 +199,11 @@ func (m SzlSublist) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SzlSublistParse(readBuffer utils.ReadBuffer) (SzlSublist, error) {
+func SzlSublistParse(theBytes []byte) (SzlSublist, error) {
+	return SzlSublistParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SzlSublistParseWithBuffer(readBuffer utils.ReadBuffer) (SzlSublist, error) {
 	val, err := readBuffer.ReadUint8("SzlSublist", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SzlSublist")
@@ -210,7 +216,15 @@ func SzlSublistParse(readBuffer utils.ReadBuffer) (SzlSublist, error) {
 	}
 }
 
-func (e SzlSublist) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e SzlSublist) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e SzlSublist) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("SzlSublist", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

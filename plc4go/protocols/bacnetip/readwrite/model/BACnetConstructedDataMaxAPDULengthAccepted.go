@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataMaxAPDULengthAccepted) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMaxAPDULengthAcceptedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxAPDULengthAccepted, error) {
+func BACnetConstructedDataMaxAPDULengthAcceptedParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxAPDULengthAccepted, error) {
+	return BACnetConstructedDataMaxAPDULengthAcceptedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataMaxAPDULengthAcceptedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxAPDULengthAccepted, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaxAPDULengthAccepted"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataMaxAPDULengthAcceptedParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("maxApduLengthAccepted"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxApduLengthAccepted")
 	}
-	_maxApduLengthAccepted, _maxApduLengthAcceptedErr := BACnetApplicationTagParse(readBuffer)
+	_maxApduLengthAccepted, _maxApduLengthAcceptedErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _maxApduLengthAcceptedErr != nil {
 		return nil, errors.Wrap(_maxApduLengthAcceptedErr, "Error parsing 'maxApduLengthAccepted' field of BACnetConstructedDataMaxAPDULengthAccepted")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataMaxAPDULengthAcceptedParse(readBuffer utils.ReadBuffer
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataMaxAPDULengthAccepted) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMaxAPDULengthAccepted) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataMaxAPDULengthAccepted) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

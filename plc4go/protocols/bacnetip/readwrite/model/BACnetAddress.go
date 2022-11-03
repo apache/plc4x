@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -140,7 +141,11 @@ func (m *_BACnetAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAddressParse(readBuffer utils.ReadBuffer) (BACnetAddress, error) {
+func BACnetAddressParse(theBytes []byte) (BACnetAddress, error) {
+	return BACnetAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAddressParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAddress"); pullErr != nil {
@@ -153,7 +158,7 @@ func BACnetAddressParse(readBuffer utils.ReadBuffer) (BACnetAddress, error) {
 	if pullErr := readBuffer.PullContext("networkNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkNumber")
 	}
-	_networkNumber, _networkNumberErr := BACnetApplicationTagParse(readBuffer)
+	_networkNumber, _networkNumberErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _networkNumberErr != nil {
 		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field of BACnetAddress")
 	}
@@ -176,7 +181,7 @@ func BACnetAddressParse(readBuffer utils.ReadBuffer) (BACnetAddress, error) {
 	if pullErr := readBuffer.PullContext("macAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for macAddress")
 	}
-	_macAddress, _macAddressErr := BACnetApplicationTagParse(readBuffer)
+	_macAddress, _macAddressErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _macAddressErr != nil {
 		return nil, errors.Wrap(_macAddressErr, "Error parsing 'macAddress' field of BACnetAddress")
 	}
@@ -201,7 +206,15 @@ func BACnetAddressParse(readBuffer utils.ReadBuffer) (BACnetAddress, error) {
 	}, nil
 }
 
-func (m *_BACnetAddress) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAddress) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAddress"); pushErr != nil {

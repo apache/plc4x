@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetAccessCredentialDisableReason uint16
 
 type IBACnetAccessCredentialDisableReason interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -149,7 +151,11 @@ func (m BACnetAccessCredentialDisableReason) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessCredentialDisableReasonParse(readBuffer utils.ReadBuffer) (BACnetAccessCredentialDisableReason, error) {
+func BACnetAccessCredentialDisableReasonParse(theBytes []byte) (BACnetAccessCredentialDisableReason, error) {
+	return BACnetAccessCredentialDisableReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAccessCredentialDisableReasonParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessCredentialDisableReason, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessCredentialDisableReason", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessCredentialDisableReason")
@@ -162,7 +168,15 @@ func BACnetAccessCredentialDisableReasonParse(readBuffer utils.ReadBuffer) (BACn
 	}
 }
 
-func (e BACnetAccessCredentialDisableReason) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAccessCredentialDisableReason) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetAccessCredentialDisableReason) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetAccessCredentialDisableReason", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

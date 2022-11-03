@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -156,7 +157,11 @@ func (m *_InterfaceOptions1) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func InterfaceOptions1Parse(readBuffer utils.ReadBuffer) (InterfaceOptions1, error) {
+func InterfaceOptions1Parse(theBytes []byte) (InterfaceOptions1, error) {
+	return InterfaceOptions1ParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func InterfaceOptions1ParseWithBuffer(readBuffer utils.ReadBuffer) (InterfaceOptions1, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("InterfaceOptions1"); pullErr != nil {
@@ -258,7 +263,15 @@ func InterfaceOptions1Parse(readBuffer utils.ReadBuffer) (InterfaceOptions1, err
 	}, nil
 }
 
-func (m *_InterfaceOptions1) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_InterfaceOptions1) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_InterfaceOptions1) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("InterfaceOptions1"); pushErr != nil {

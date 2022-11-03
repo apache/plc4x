@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	"encoding/binary"
 	"fmt"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -120,7 +121,15 @@ func (m plcField) GetProperties() []property {
 	return m.Properties
 }
 
-func (m plcField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m plcField) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m plcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("BacNetPlcField"); err != nil {
 		return err
 	}

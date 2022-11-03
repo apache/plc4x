@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -110,7 +111,11 @@ func (m *_BACnetReadAccessResult) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetReadAccessResultParse(readBuffer utils.ReadBuffer) (BACnetReadAccessResult, error) {
+func BACnetReadAccessResultParse(theBytes []byte) (BACnetReadAccessResult, error) {
+	return BACnetReadAccessResultParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetReadAccessResultParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetReadAccessResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetReadAccessResult"); pullErr != nil {
@@ -123,7 +128,7 @@ func BACnetReadAccessResultParse(readBuffer utils.ReadBuffer) (BACnetReadAccessR
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetReadAccessResult")
 	}
@@ -139,7 +144,7 @@ func BACnetReadAccessResultParse(readBuffer utils.ReadBuffer) (BACnetReadAccessR
 		if pullErr := readBuffer.PullContext("listOfResults"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for listOfResults")
 		}
-		_val, _err := BACnetReadAccessResultListOfResultsParse(readBuffer, uint8(1), objectIdentifier.GetObjectType())
+		_val, _err := BACnetReadAccessResultListOfResultsParseWithBuffer(readBuffer, uint8(1), objectIdentifier.GetObjectType())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -165,7 +170,15 @@ func BACnetReadAccessResultParse(readBuffer utils.ReadBuffer) (BACnetReadAccessR
 	}, nil
 }
 
-func (m *_BACnetReadAccessResult) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetReadAccessResult) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetReadAccessResult) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetReadAccessResult"); pushErr != nil {

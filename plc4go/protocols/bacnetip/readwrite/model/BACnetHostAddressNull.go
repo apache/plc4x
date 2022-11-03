@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetHostAddressNull) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetHostAddressNullParse(readBuffer utils.ReadBuffer) (BACnetHostAddressNull, error) {
+func BACnetHostAddressNullParse(theBytes []byte) (BACnetHostAddressNull, error) {
+	return BACnetHostAddressNullParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetHostAddressNullParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetHostAddressNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetHostAddressNull"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetHostAddressNullParse(readBuffer utils.ReadBuffer) (BACnetHostAddressN
 	if pullErr := readBuffer.PullContext("none"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for none")
 	}
-	_none, _noneErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_NULL))
+	_none, _noneErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_NULL))
 	if _noneErr != nil {
 		return nil, errors.Wrap(_noneErr, "Error parsing 'none' field of BACnetHostAddressNull")
 	}
@@ -157,7 +162,15 @@ func BACnetHostAddressNullParse(readBuffer utils.ReadBuffer) (BACnetHostAddressN
 	return _child, nil
 }
 
-func (m *_BACnetHostAddressNull) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetHostAddressNull) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetHostAddressNull) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

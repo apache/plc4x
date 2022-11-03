@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +127,11 @@ func (m *_SALDataAccessControl) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataAccessControlParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAccessControl, error) {
+func SALDataAccessControlParse(theBytes []byte, applicationId ApplicationId) (SALDataAccessControl, error) {
+	return SALDataAccessControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataAccessControlParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAccessControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataAccessControl"); pullErr != nil {
@@ -139,7 +144,7 @@ func SALDataAccessControlParse(readBuffer utils.ReadBuffer, applicationId Applic
 	if pullErr := readBuffer.PullContext("accessControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessControlData")
 	}
-	_accessControlData, _accessControlDataErr := AccessControlDataParse(readBuffer)
+	_accessControlData, _accessControlDataErr := AccessControlDataParseWithBuffer(readBuffer)
 	if _accessControlDataErr != nil {
 		return nil, errors.Wrap(_accessControlDataErr, "Error parsing 'accessControlData' field of SALDataAccessControl")
 	}
@@ -161,7 +166,15 @@ func SALDataAccessControlParse(readBuffer utils.ReadBuffer, applicationId Applic
 	return _child, nil
 }
 
-func (m *_SALDataAccessControl) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataAccessControl) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SALDataAccessControl) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -153,7 +154,11 @@ func (m *_CBusCommandDeviceManagement) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusCommandDeviceManagementParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandDeviceManagement, error) {
+func CBusCommandDeviceManagementParse(theBytes []byte, cBusOptions CBusOptions) (CBusCommandDeviceManagement, error) {
+	return CBusCommandDeviceManagementParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func CBusCommandDeviceManagementParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandDeviceManagement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandDeviceManagement"); pullErr != nil {
@@ -166,7 +171,7 @@ func CBusCommandDeviceManagementParse(readBuffer utils.ReadBuffer, cBusOptions C
 	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
 	}
-	_paramNo, _paramNoErr := ParameterParse(readBuffer)
+	_paramNo, _paramNoErr := ParameterParseWithBuffer(readBuffer)
 	if _paramNoErr != nil {
 		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CBusCommandDeviceManagement")
 	}
@@ -207,7 +212,15 @@ func CBusCommandDeviceManagementParse(readBuffer utils.ReadBuffer, cBusOptions C
 	return _child, nil
 }
 
-func (m *_CBusCommandDeviceManagement) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusCommandDeviceManagement) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CBusCommandDeviceManagement) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

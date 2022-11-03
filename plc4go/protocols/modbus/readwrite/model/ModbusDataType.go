@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,8 +32,8 @@ import (
 type ModbusDataType uint8
 
 type IModbusDataType interface {
+	utils.Serializable
 	DataTypeSize() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -371,7 +373,11 @@ func (m ModbusDataType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusDataTypeParse(readBuffer utils.ReadBuffer) (ModbusDataType, error) {
+func ModbusDataTypeParse(theBytes []byte) (ModbusDataType, error) {
+	return ModbusDataTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ModbusDataTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusDataType, error) {
 	val, err := readBuffer.ReadUint8("ModbusDataType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ModbusDataType")
@@ -384,7 +390,15 @@ func ModbusDataTypeParse(readBuffer utils.ReadBuffer) (ModbusDataType, error) {
 	}
 }
 
-func (e ModbusDataType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ModbusDataType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ModbusDataType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ModbusDataType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

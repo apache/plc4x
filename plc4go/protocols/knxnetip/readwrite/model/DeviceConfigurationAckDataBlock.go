@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -120,7 +121,11 @@ func (m *_DeviceConfigurationAckDataBlock) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DeviceConfigurationAckDataBlockParse(readBuffer utils.ReadBuffer) (DeviceConfigurationAckDataBlock, error) {
+func DeviceConfigurationAckDataBlockParse(theBytes []byte) (DeviceConfigurationAckDataBlock, error) {
+	return DeviceConfigurationAckDataBlockParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DeviceConfigurationAckDataBlockParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceConfigurationAckDataBlock, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationAckDataBlock"); pullErr != nil {
@@ -154,7 +159,7 @@ func DeviceConfigurationAckDataBlockParse(readBuffer utils.ReadBuffer) (DeviceCo
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for status")
 	}
-	_status, _statusErr := StatusParse(readBuffer)
+	_status, _statusErr := StatusParseWithBuffer(readBuffer)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of DeviceConfigurationAckDataBlock")
 	}
@@ -175,7 +180,15 @@ func DeviceConfigurationAckDataBlockParse(readBuffer utils.ReadBuffer) (DeviceCo
 	}, nil
 }
 
-func (m *_DeviceConfigurationAckDataBlock) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_DeviceConfigurationAckDataBlock) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_DeviceConfigurationAckDataBlock) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DeviceConfigurationAckDataBlock"); pushErr != nil {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataMaximumValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMaximumValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaximumValue, error) {
+func BACnetConstructedDataMaximumValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaximumValue, error) {
+	return BACnetConstructedDataMaximumValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataMaximumValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaximumValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaximumValue"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataMaximumValueParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("maximumValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maximumValue")
 	}
-	_maximumValue, _maximumValueErr := BACnetApplicationTagParse(readBuffer)
+	_maximumValue, _maximumValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _maximumValueErr != nil {
 		return nil, errors.Wrap(_maximumValueErr, "Error parsing 'maximumValue' field of BACnetConstructedDataMaximumValue")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataMaximumValueParse(readBuffer utils.ReadBuffer, tagNumb
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataMaximumValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMaximumValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataMaximumValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTimeOfDeviceRestartParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeOfDeviceRestart, error) {
+func BACnetConstructedDataTimeOfDeviceRestartParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeOfDeviceRestart, error) {
+	return BACnetConstructedDataTimeOfDeviceRestartParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataTimeOfDeviceRestartParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeOfDeviceRestart, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeOfDeviceRestart"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataTimeOfDeviceRestartParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("timeOfDeviceRestart"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeOfDeviceRestart")
 	}
-	_timeOfDeviceRestart, _timeOfDeviceRestartErr := BACnetTimeStampParse(readBuffer)
+	_timeOfDeviceRestart, _timeOfDeviceRestartErr := BACnetTimeStampParseWithBuffer(readBuffer)
 	if _timeOfDeviceRestartErr != nil {
 		return nil, errors.Wrap(_timeOfDeviceRestartErr, "Error parsing 'timeOfDeviceRestart' field of BACnetConstructedDataTimeOfDeviceRestart")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataTimeOfDeviceRestartParse(readBuffer utils.ReadBuffer, 
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataTimeOfDeviceRestart) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataTimeOfDeviceRestart) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataTimeOfDeviceRestart) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

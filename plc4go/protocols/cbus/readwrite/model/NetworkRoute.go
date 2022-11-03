@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -112,7 +113,11 @@ func (m *_NetworkRoute) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NetworkRouteParse(readBuffer utils.ReadBuffer) (NetworkRoute, error) {
+func NetworkRouteParse(theBytes []byte) (NetworkRoute, error) {
+	return NetworkRouteParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func NetworkRouteParseWithBuffer(readBuffer utils.ReadBuffer) (NetworkRoute, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NetworkRoute"); pullErr != nil {
@@ -125,7 +130,7 @@ func NetworkRouteParse(readBuffer utils.ReadBuffer) (NetworkRoute, error) {
 	if pullErr := readBuffer.PullContext("networkPCI"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkPCI")
 	}
-	_networkPCI, _networkPCIErr := NetworkProtocolControlInformationParse(readBuffer)
+	_networkPCI, _networkPCIErr := NetworkProtocolControlInformationParseWithBuffer(readBuffer)
 	if _networkPCIErr != nil {
 		return nil, errors.Wrap(_networkPCIErr, "Error parsing 'networkPCI' field of NetworkRoute")
 	}
@@ -146,7 +151,7 @@ func NetworkRouteParse(readBuffer utils.ReadBuffer) (NetworkRoute, error) {
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(networkPCI.GetStackDepth())-uint16(uint16(1))); curItem++ {
-			_item, _err := BridgeAddressParse(readBuffer)
+			_item, _err := BridgeAddressParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'additionalBridgeAddresses' field of NetworkRoute")
 			}
@@ -168,7 +173,15 @@ func NetworkRouteParse(readBuffer utils.ReadBuffer) (NetworkRoute, error) {
 	}, nil
 }
 
-func (m *_NetworkRoute) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_NetworkRoute) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_NetworkRoute) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NetworkRoute"); pushErr != nil {

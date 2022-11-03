@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,7 +108,11 @@ func (m *_BACnetLogMultipleRecord) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogMultipleRecordParse(readBuffer utils.ReadBuffer) (BACnetLogMultipleRecord, error) {
+func BACnetLogMultipleRecordParse(theBytes []byte) (BACnetLogMultipleRecord, error) {
+	return BACnetLogMultipleRecordParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLogMultipleRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLogMultipleRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogMultipleRecord"); pullErr != nil {
@@ -120,7 +125,7 @@ func BACnetLogMultipleRecordParse(readBuffer utils.ReadBuffer) (BACnetLogMultipl
 	if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timestamp")
 	}
-	_timestamp, _timestampErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(0)))
+	_timestamp, _timestampErr := BACnetDateTimeEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetLogMultipleRecord")
 	}
@@ -133,7 +138,7 @@ func BACnetLogMultipleRecordParse(readBuffer utils.ReadBuffer) (BACnetLogMultipl
 	if pullErr := readBuffer.PullContext("logData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for logData")
 	}
-	_logData, _logDataErr := BACnetLogDataParse(readBuffer, uint8(uint8(1)))
+	_logData, _logDataErr := BACnetLogDataParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _logDataErr != nil {
 		return nil, errors.Wrap(_logDataErr, "Error parsing 'logData' field of BACnetLogMultipleRecord")
 	}
@@ -153,7 +158,15 @@ func BACnetLogMultipleRecordParse(readBuffer utils.ReadBuffer) (BACnetLogMultipl
 	}, nil
 }
 
-func (m *_BACnetLogMultipleRecord) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogMultipleRecord) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLogMultipleRecord) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLogMultipleRecord"); pushErr != nil {

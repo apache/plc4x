@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type ReturnCode uint32
 
 type IReturnCode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -815,7 +817,11 @@ func (m ReturnCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReturnCodeParse(readBuffer utils.ReadBuffer) (ReturnCode, error) {
+func ReturnCodeParse(theBytes []byte) (ReturnCode, error) {
+	return ReturnCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ReturnCodeParseWithBuffer(readBuffer utils.ReadBuffer) (ReturnCode, error) {
 	val, err := readBuffer.ReadUint32("ReturnCode", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ReturnCode")
@@ -828,7 +834,15 @@ func ReturnCodeParse(readBuffer utils.ReadBuffer) (ReturnCode, error) {
 	}
 }
 
-func (e ReturnCode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ReturnCode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ReturnCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint32("ReturnCode", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

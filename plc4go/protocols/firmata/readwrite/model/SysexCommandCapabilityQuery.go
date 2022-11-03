@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,7 +108,11 @@ func (m *_SysexCommandCapabilityQuery) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandCapabilityQueryParse(readBuffer utils.ReadBuffer, response bool) (SysexCommandCapabilityQuery, error) {
+func SysexCommandCapabilityQueryParse(theBytes []byte, response bool) (SysexCommandCapabilityQuery, error) {
+	return SysexCommandCapabilityQueryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func SysexCommandCapabilityQueryParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandCapabilityQuery, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandCapabilityQuery"); pullErr != nil {
@@ -128,7 +133,15 @@ func SysexCommandCapabilityQueryParse(readBuffer utils.ReadBuffer, response bool
 	return _child, nil
 }
 
-func (m *_SysexCommandCapabilityQuery) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SysexCommandCapabilityQuery) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SysexCommandCapabilityQuery) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

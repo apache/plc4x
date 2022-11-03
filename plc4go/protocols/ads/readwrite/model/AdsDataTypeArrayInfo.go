@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +125,11 @@ func (m *_AdsDataTypeArrayInfo) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDataTypeArrayInfoParse(readBuffer utils.ReadBuffer) (AdsDataTypeArrayInfo, error) {
+func AdsDataTypeArrayInfoParse(theBytes []byte) (AdsDataTypeArrayInfo, error) {
+	return AdsDataTypeArrayInfoParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AdsDataTypeArrayInfoParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDataTypeArrayInfo, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDataTypeArrayInfo"); pullErr != nil {
@@ -163,7 +168,15 @@ func AdsDataTypeArrayInfoParse(readBuffer utils.ReadBuffer) (AdsDataTypeArrayInf
 	}, nil
 }
 
-func (m *_AdsDataTypeArrayInfo) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDataTypeArrayInfo) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsDataTypeArrayInfo) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsDataTypeArrayInfo"); pushErr != nil {

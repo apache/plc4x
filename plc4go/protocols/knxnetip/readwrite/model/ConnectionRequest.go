@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -146,7 +147,11 @@ func (m *_ConnectionRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ConnectionRequestParse(readBuffer utils.ReadBuffer) (ConnectionRequest, error) {
+func ConnectionRequestParse(theBytes []byte) (ConnectionRequest, error) {
+	return ConnectionRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ConnectionRequestParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionRequest"); pullErr != nil {
@@ -159,7 +164,7 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (ConnectionRequest, err
 	if pullErr := readBuffer.PullContext("hpaiDiscoveryEndpoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hpaiDiscoveryEndpoint")
 	}
-	_hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(readBuffer)
+	_hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParseWithBuffer(readBuffer)
 	if _hpaiDiscoveryEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiDiscoveryEndpointErr, "Error parsing 'hpaiDiscoveryEndpoint' field of ConnectionRequest")
 	}
@@ -172,7 +177,7 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (ConnectionRequest, err
 	if pullErr := readBuffer.PullContext("hpaiDataEndpoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hpaiDataEndpoint")
 	}
-	_hpaiDataEndpoint, _hpaiDataEndpointErr := HPAIDataEndpointParse(readBuffer)
+	_hpaiDataEndpoint, _hpaiDataEndpointErr := HPAIDataEndpointParseWithBuffer(readBuffer)
 	if _hpaiDataEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiDataEndpointErr, "Error parsing 'hpaiDataEndpoint' field of ConnectionRequest")
 	}
@@ -185,7 +190,7 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (ConnectionRequest, err
 	if pullErr := readBuffer.PullContext("connectionRequestInformation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for connectionRequestInformation")
 	}
-	_connectionRequestInformation, _connectionRequestInformationErr := ConnectionRequestInformationParse(readBuffer)
+	_connectionRequestInformation, _connectionRequestInformationErr := ConnectionRequestInformationParseWithBuffer(readBuffer)
 	if _connectionRequestInformationErr != nil {
 		return nil, errors.Wrap(_connectionRequestInformationErr, "Error parsing 'connectionRequestInformation' field of ConnectionRequest")
 	}
@@ -209,7 +214,15 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (ConnectionRequest, err
 	return _child, nil
 }
 
-func (m *_ConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ConnectionRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ConnectionRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

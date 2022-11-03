@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type ParameterType uint8
 
 type IParameterType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -149,7 +151,11 @@ func (m ParameterType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterTypeParse(readBuffer utils.ReadBuffer) (ParameterType, error) {
+func ParameterTypeParse(theBytes []byte) (ParameterType, error) {
+	return ParameterTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ParameterTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ParameterType, error) {
 	val, err := readBuffer.ReadUint8("ParameterType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ParameterType")
@@ -162,7 +168,15 @@ func ParameterTypeParse(readBuffer utils.ReadBuffer) (ParameterType, error) {
 	}
 }
 
-func (e ParameterType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ParameterType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ParameterType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ParameterType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

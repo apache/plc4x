@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataDoorOpenTooLongTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDoorOpenTooLongTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorOpenTooLongTime, error) {
+func BACnetConstructedDataDoorOpenTooLongTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorOpenTooLongTime, error) {
+	return BACnetConstructedDataDoorOpenTooLongTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataDoorOpenTooLongTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorOpenTooLongTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorOpenTooLongTime"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataDoorOpenTooLongTimeParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("doorOpenTooLongTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doorOpenTooLongTime")
 	}
-	_doorOpenTooLongTime, _doorOpenTooLongTimeErr := BACnetApplicationTagParse(readBuffer)
+	_doorOpenTooLongTime, _doorOpenTooLongTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _doorOpenTooLongTimeErr != nil {
 		return nil, errors.Wrap(_doorOpenTooLongTimeErr, "Error parsing 'doorOpenTooLongTime' field of BACnetConstructedDataDoorOpenTooLongTime")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataDoorOpenTooLongTimeParse(readBuffer utils.ReadBuffer, 
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataDoorOpenTooLongTime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDoorOpenTooLongTime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataDoorOpenTooLongTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

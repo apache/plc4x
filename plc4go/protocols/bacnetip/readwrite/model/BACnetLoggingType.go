@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetLoggingType uint8
 
 type IBACnetLoggingType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +109,11 @@ func (m BACnetLoggingType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLoggingTypeParse(readBuffer utils.ReadBuffer) (BACnetLoggingType, error) {
+func BACnetLoggingTypeParse(theBytes []byte) (BACnetLoggingType, error) {
+	return BACnetLoggingTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLoggingTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLoggingType, error) {
 	val, err := readBuffer.ReadUint8("BACnetLoggingType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLoggingType")
@@ -120,7 +126,15 @@ func BACnetLoggingTypeParse(readBuffer utils.ReadBuffer) (BACnetLoggingType, err
 	}
 }
 
-func (e BACnetLoggingType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLoggingType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetLoggingType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetLoggingType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package values
 
 import (
+	"encoding/binary"
 	"fmt"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -39,9 +40,8 @@ func NewPlcBREAL(value *big.Float) PlcBREAL {
 }
 
 func (m PlcBREAL) GetRaw() []byte {
-	buf := utils.NewWriteBufferByteBased()
-	_ = m.Serialize(buf)
-	return buf.GetBytes()
+	theBytes, _ := m.Serialize()
+	return theBytes
 }
 
 func (m PlcBREAL) GetBoolean() bool {
@@ -185,7 +185,15 @@ func (m PlcBREAL) isLowerOrEqual(other float64) bool {
 	return m.value.Cmp(big.NewFloat(other)) <= 0
 }
 
-func (m PlcBREAL) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m PlcBREAL) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m PlcBREAL) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	// TODO: fix this a insert a valid bit length calculation
 	return writeBuffer.WriteBigFloat("PlcBREAL", uint8(m.value.MinPrec()), m.value)
 }

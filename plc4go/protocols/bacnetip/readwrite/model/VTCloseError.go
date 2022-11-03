@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -138,7 +139,11 @@ func (m *_VTCloseError) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func VTCloseErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (VTCloseError, error) {
+func VTCloseErrorParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (VTCloseError, error) {
+	return VTCloseErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), errorChoice) // TODO: get endianness from mspec
+}
+
+func VTCloseErrorParseWithBuffer(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (VTCloseError, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("VTCloseError"); pullErr != nil {
@@ -151,7 +156,7 @@ func VTCloseErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedS
 	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
 	}
-	_errorType, _errorTypeErr := ErrorEnclosedParse(readBuffer, uint8(uint8(0)))
+	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _errorTypeErr != nil {
 		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of VTCloseError")
 	}
@@ -167,7 +172,7 @@ func VTCloseErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedS
 		if pullErr := readBuffer.PullContext("listOfVtSessionIdentifiers"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for listOfVtSessionIdentifiers")
 		}
-		_val, _err := VTCloseErrorListOfVTSessionIdentifiersParse(readBuffer, uint8(1))
+		_val, _err := VTCloseErrorListOfVTSessionIdentifiersParseWithBuffer(readBuffer, uint8(1))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -196,7 +201,15 @@ func VTCloseErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedS
 	return _child, nil
 }
 
-func (m *_VTCloseError) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_VTCloseError) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_VTCloseError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

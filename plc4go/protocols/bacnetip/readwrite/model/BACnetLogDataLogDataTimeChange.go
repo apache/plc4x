@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +125,11 @@ func (m *_BACnetLogDataLogDataTimeChange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogDataLogDataTimeChangeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogDataLogDataTimeChange, error) {
+func BACnetLogDataLogDataTimeChangeParse(theBytes []byte, tagNumber uint8) (BACnetLogDataLogDataTimeChange, error) {
+	return BACnetLogDataLogDataTimeChangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetLogDataLogDataTimeChangeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogDataLogDataTimeChange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataTimeChange"); pullErr != nil {
@@ -137,7 +142,7 @@ func BACnetLogDataLogDataTimeChangeParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("timeChange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeChange")
 	}
-	_timeChange, _timeChangeErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
+	_timeChange, _timeChangeErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
 	if _timeChangeErr != nil {
 		return nil, errors.Wrap(_timeChangeErr, "Error parsing 'timeChange' field of BACnetLogDataLogDataTimeChange")
 	}
@@ -161,7 +166,15 @@ func BACnetLogDataLogDataTimeChangeParse(readBuffer utils.ReadBuffer, tagNumber 
 	return _child, nil
 }
 
-func (m *_BACnetLogDataLogDataTimeChange) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogDataLogDataTimeChange) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLogDataLogDataTimeChange) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

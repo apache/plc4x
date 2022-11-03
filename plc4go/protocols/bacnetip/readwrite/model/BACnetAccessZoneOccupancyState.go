@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetAccessZoneOccupancyState uint16
 
 type IBACnetAccessZoneOccupancyState interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -131,7 +133,11 @@ func (m BACnetAccessZoneOccupancyState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessZoneOccupancyStateParse(readBuffer utils.ReadBuffer) (BACnetAccessZoneOccupancyState, error) {
+func BACnetAccessZoneOccupancyStateParse(theBytes []byte) (BACnetAccessZoneOccupancyState, error) {
+	return BACnetAccessZoneOccupancyStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAccessZoneOccupancyStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessZoneOccupancyState, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessZoneOccupancyState", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessZoneOccupancyState")
@@ -144,7 +150,15 @@ func BACnetAccessZoneOccupancyStateParse(readBuffer utils.ReadBuffer) (BACnetAcc
 	}
 }
 
-func (e BACnetAccessZoneOccupancyState) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAccessZoneOccupancyState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetAccessZoneOccupancyState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetAccessZoneOccupancyState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

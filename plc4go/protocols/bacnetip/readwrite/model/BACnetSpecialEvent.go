@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,7 +118,11 @@ func (m *_BACnetSpecialEvent) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSpecialEventParse(readBuffer utils.ReadBuffer) (BACnetSpecialEvent, error) {
+func BACnetSpecialEventParse(theBytes []byte) (BACnetSpecialEvent, error) {
+	return BACnetSpecialEventParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetSpecialEventParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSpecialEvent, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetSpecialEvent"); pullErr != nil {
@@ -130,7 +135,7 @@ func BACnetSpecialEventParse(readBuffer utils.ReadBuffer) (BACnetSpecialEvent, e
 	if pullErr := readBuffer.PullContext("period"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for period")
 	}
-	_period, _periodErr := BACnetSpecialEventPeriodParse(readBuffer)
+	_period, _periodErr := BACnetSpecialEventPeriodParseWithBuffer(readBuffer)
 	if _periodErr != nil {
 		return nil, errors.Wrap(_periodErr, "Error parsing 'period' field of BACnetSpecialEvent")
 	}
@@ -143,7 +148,7 @@ func BACnetSpecialEventParse(readBuffer utils.ReadBuffer) (BACnetSpecialEvent, e
 	if pullErr := readBuffer.PullContext("listOfTimeValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfTimeValues")
 	}
-	_listOfTimeValues, _listOfTimeValuesErr := BACnetSpecialEventListOfTimeValuesParse(readBuffer, uint8(uint8(2)))
+	_listOfTimeValues, _listOfTimeValuesErr := BACnetSpecialEventListOfTimeValuesParseWithBuffer(readBuffer, uint8(uint8(2)))
 	if _listOfTimeValuesErr != nil {
 		return nil, errors.Wrap(_listOfTimeValuesErr, "Error parsing 'listOfTimeValues' field of BACnetSpecialEvent")
 	}
@@ -156,7 +161,7 @@ func BACnetSpecialEventParse(readBuffer utils.ReadBuffer) (BACnetSpecialEvent, e
 	if pullErr := readBuffer.PullContext("eventPriority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventPriority")
 	}
-	_eventPriority, _eventPriorityErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_eventPriority, _eventPriorityErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _eventPriorityErr != nil {
 		return nil, errors.Wrap(_eventPriorityErr, "Error parsing 'eventPriority' field of BACnetSpecialEvent")
 	}
@@ -177,7 +182,15 @@ func BACnetSpecialEventParse(readBuffer utils.ReadBuffer) (BACnetSpecialEvent, e
 	}, nil
 }
 
-func (m *_BACnetSpecialEvent) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetSpecialEvent) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetSpecialEvent) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetSpecialEvent"); pushErr != nil {

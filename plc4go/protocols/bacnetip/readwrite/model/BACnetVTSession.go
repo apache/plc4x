@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,7 +118,11 @@ func (m *_BACnetVTSession) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetVTSessionParse(readBuffer utils.ReadBuffer) (BACnetVTSession, error) {
+func BACnetVTSessionParse(theBytes []byte) (BACnetVTSession, error) {
+	return BACnetVTSessionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetVTSessionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVTSession, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetVTSession"); pullErr != nil {
@@ -130,7 +135,7 @@ func BACnetVTSessionParse(readBuffer utils.ReadBuffer) (BACnetVTSession, error) 
 	if pullErr := readBuffer.PullContext("localVtSessionId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for localVtSessionId")
 	}
-	_localVtSessionId, _localVtSessionIdErr := BACnetApplicationTagParse(readBuffer)
+	_localVtSessionId, _localVtSessionIdErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _localVtSessionIdErr != nil {
 		return nil, errors.Wrap(_localVtSessionIdErr, "Error parsing 'localVtSessionId' field of BACnetVTSession")
 	}
@@ -143,7 +148,7 @@ func BACnetVTSessionParse(readBuffer utils.ReadBuffer) (BACnetVTSession, error) 
 	if pullErr := readBuffer.PullContext("removeVtSessionId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for removeVtSessionId")
 	}
-	_removeVtSessionId, _removeVtSessionIdErr := BACnetApplicationTagParse(readBuffer)
+	_removeVtSessionId, _removeVtSessionIdErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _removeVtSessionIdErr != nil {
 		return nil, errors.Wrap(_removeVtSessionIdErr, "Error parsing 'removeVtSessionId' field of BACnetVTSession")
 	}
@@ -156,7 +161,7 @@ func BACnetVTSessionParse(readBuffer utils.ReadBuffer) (BACnetVTSession, error) 
 	if pullErr := readBuffer.PullContext("remoteVtAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for remoteVtAddress")
 	}
-	_remoteVtAddress, _remoteVtAddressErr := BACnetAddressParse(readBuffer)
+	_remoteVtAddress, _remoteVtAddressErr := BACnetAddressParseWithBuffer(readBuffer)
 	if _remoteVtAddressErr != nil {
 		return nil, errors.Wrap(_remoteVtAddressErr, "Error parsing 'remoteVtAddress' field of BACnetVTSession")
 	}
@@ -177,7 +182,15 @@ func BACnetVTSessionParse(readBuffer utils.ReadBuffer) (BACnetVTSession, error) 
 	}, nil
 }
 
-func (m *_BACnetVTSession) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetVTSession) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetVTSession) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetVTSession"); pushErr != nil {

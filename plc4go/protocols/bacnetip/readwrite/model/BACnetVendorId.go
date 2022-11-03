@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,9 +32,9 @@ import (
 type BACnetVendorId uint16
 
 type IBACnetVendorId interface {
+	utils.Serializable
 	VendorId() uint16
 	VendorName() string
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -19468,7 +19470,11 @@ func (m BACnetVendorId) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetVendorIdParse(readBuffer utils.ReadBuffer) (BACnetVendorId, error) {
+func BACnetVendorIdParse(theBytes []byte) (BACnetVendorId, error) {
+	return BACnetVendorIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetVendorIdParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVendorId, error) {
 	val, err := readBuffer.ReadUint16("BACnetVendorId", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetVendorId")
@@ -19481,7 +19487,15 @@ func BACnetVendorIdParse(readBuffer utils.ReadBuffer) (BACnetVendorId, error) {
 	}
 }
 
-func (e BACnetVendorId) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetVendorId) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetVendorId) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetVendorId", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

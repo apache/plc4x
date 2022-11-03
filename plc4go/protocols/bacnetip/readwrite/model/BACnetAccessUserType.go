@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetAccessUserType uint16
 
 type IBACnetAccessUserType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +109,11 @@ func (m BACnetAccessUserType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessUserTypeParse(readBuffer utils.ReadBuffer) (BACnetAccessUserType, error) {
+func BACnetAccessUserTypeParse(theBytes []byte) (BACnetAccessUserType, error) {
+	return BACnetAccessUserTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAccessUserTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessUserType, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessUserType", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessUserType")
@@ -120,7 +126,15 @@ func BACnetAccessUserTypeParse(readBuffer utils.ReadBuffer) (BACnetAccessUserTyp
 	}
 }
 
-func (e BACnetAccessUserType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAccessUserType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetAccessUserType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetAccessUserType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

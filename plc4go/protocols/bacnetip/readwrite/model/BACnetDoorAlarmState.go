@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetDoorAlarmState uint8
 
 type IBACnetDoorAlarmState interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -143,7 +145,11 @@ func (m BACnetDoorAlarmState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDoorAlarmStateParse(readBuffer utils.ReadBuffer) (BACnetDoorAlarmState, error) {
+func BACnetDoorAlarmStateParse(theBytes []byte) (BACnetDoorAlarmState, error) {
+	return BACnetDoorAlarmStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetDoorAlarmStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDoorAlarmState, error) {
 	val, err := readBuffer.ReadUint8("BACnetDoorAlarmState", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetDoorAlarmState")
@@ -156,7 +162,15 @@ func BACnetDoorAlarmStateParse(readBuffer utils.ReadBuffer) (BACnetDoorAlarmStat
 	}
 }
 
-func (e BACnetDoorAlarmState) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetDoorAlarmState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetDoorAlarmState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetDoorAlarmState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

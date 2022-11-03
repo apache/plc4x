@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetLogStatus uint8
 
 type IBACnetLogStatus interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -101,7 +103,11 @@ func (m BACnetLogStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogStatusParse(readBuffer utils.ReadBuffer) (BACnetLogStatus, error) {
+func BACnetLogStatusParse(theBytes []byte) (BACnetLogStatus, error) {
+	return BACnetLogStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLogStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLogStatus, error) {
 	val, err := readBuffer.ReadUint8("BACnetLogStatus", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLogStatus")
@@ -114,7 +120,15 @@ func BACnetLogStatusParse(readBuffer utils.ReadBuffer) (BACnetLogStatus, error) 
 	}
 }
 
-func (e BACnetLogStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLogStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetLogStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetLogStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

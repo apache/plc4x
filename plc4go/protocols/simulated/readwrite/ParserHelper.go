@@ -41,9 +41,9 @@ func (m SimulatedParserHelper) Parse(typeName string, arguments []string, io uti
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.DataItemParse(io, dataType, numberOfValues)
+		return model.DataItemParseWithBuffer(io, dataType, numberOfValues)
 	case "Dummy":
-		return model.DummyParse(io)
+		return model.DummyParseWithBuffer(io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

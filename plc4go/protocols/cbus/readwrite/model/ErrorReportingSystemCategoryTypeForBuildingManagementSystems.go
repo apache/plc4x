@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type ErrorReportingSystemCategoryTypeForBuildingManagementSystems uint8
 
 type IErrorReportingSystemCategoryTypeForBuildingManagementSystems interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -179,7 +181,11 @@ func (m ErrorReportingSystemCategoryTypeForBuildingManagementSystems) GetLengthI
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParse(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeForBuildingManagementSystems, error) {
+func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParse(theBytes []byte) (ErrorReportingSystemCategoryTypeForBuildingManagementSystems, error) {
+	return ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeForBuildingManagementSystems, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingSystemCategoryTypeForBuildingManagementSystems", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingSystemCategoryTypeForBuildingManagementSystems")
@@ -192,7 +198,15 @@ func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParse(readBuffe
 	}
 }
 
-func (e ErrorReportingSystemCategoryTypeForBuildingManagementSystems) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ErrorReportingSystemCategoryTypeForBuildingManagementSystems) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ErrorReportingSystemCategoryTypeForBuildingManagementSystems) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ErrorReportingSystemCategoryTypeForBuildingManagementSystems", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

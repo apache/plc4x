@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -140,7 +141,11 @@ func (m *_ApduDataMemoryResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataMemoryResponse, error) {
+func ApduDataMemoryResponseParse(theBytes []byte, dataLength uint8) (ApduDataMemoryResponse, error) {
+	return ApduDataMemoryResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), dataLength) // TODO: get endianness from mspec
+}
+
+func ApduDataMemoryResponseParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataMemoryResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataMemoryResponse"); pullErr != nil {
@@ -185,7 +190,15 @@ func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) 
 	return _child, nil
 }
 
-func (m *_ApduDataMemoryResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataMemoryResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApduDataMemoryResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

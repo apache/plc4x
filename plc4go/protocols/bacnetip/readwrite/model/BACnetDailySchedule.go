@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -121,7 +122,11 @@ func (m *_BACnetDailySchedule) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDailyScheduleParse(readBuffer utils.ReadBuffer) (BACnetDailySchedule, error) {
+func BACnetDailyScheduleParse(theBytes []byte) (BACnetDailySchedule, error) {
+	return BACnetDailyScheduleParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetDailyScheduleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDailySchedule, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetDailySchedule"); pullErr != nil {
@@ -134,7 +139,7 @@ func BACnetDailyScheduleParse(readBuffer utils.ReadBuffer) (BACnetDailySchedule,
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(0)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetDailySchedule")
 	}
@@ -151,7 +156,7 @@ func BACnetDailyScheduleParse(readBuffer utils.ReadBuffer) (BACnetDailySchedule,
 	var daySchedule []BACnetTimeValue
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 0)) {
-			_item, _err := BACnetTimeValueParse(readBuffer)
+			_item, _err := BACnetTimeValueParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'daySchedule' field of BACnetDailySchedule")
 			}
@@ -167,7 +172,7 @@ func BACnetDailyScheduleParse(readBuffer utils.ReadBuffer) (BACnetDailySchedule,
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(0)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetDailySchedule")
 	}
@@ -188,7 +193,15 @@ func BACnetDailyScheduleParse(readBuffer utils.ReadBuffer) (BACnetDailySchedule,
 	}, nil
 }
 
-func (m *_BACnetDailySchedule) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetDailySchedule) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetDailySchedule) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetDailySchedule"); pushErr != nil {

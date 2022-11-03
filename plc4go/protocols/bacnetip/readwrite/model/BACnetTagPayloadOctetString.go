@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -102,7 +103,11 @@ func (m *_BACnetTagPayloadOctetString) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTagPayloadOctetStringParse(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadOctetString, error) {
+func BACnetTagPayloadOctetStringParse(theBytes []byte, actualLength uint32) (BACnetTagPayloadOctetString, error) {
+	return BACnetTagPayloadOctetStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), actualLength) // TODO: get endianness from mspec
+}
+
+func BACnetTagPayloadOctetStringParseWithBuffer(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadOctetString"); pullErr != nil {
@@ -128,7 +133,15 @@ func BACnetTagPayloadOctetStringParse(readBuffer utils.ReadBuffer, actualLength 
 	}, nil
 }
 
-func (m *_BACnetTagPayloadOctetString) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTagPayloadOctetString) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetTagPayloadOctetString) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadOctetString"); pushErr != nil {

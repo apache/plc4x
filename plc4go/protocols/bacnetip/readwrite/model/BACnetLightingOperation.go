@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetLightingOperation uint16
 
 type IBACnetLightingOperation interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -155,7 +157,11 @@ func (m BACnetLightingOperation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLightingOperationParse(readBuffer utils.ReadBuffer) (BACnetLightingOperation, error) {
+func BACnetLightingOperationParse(theBytes []byte) (BACnetLightingOperation, error) {
+	return BACnetLightingOperationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLightingOperationParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLightingOperation, error) {
 	val, err := readBuffer.ReadUint16("BACnetLightingOperation", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLightingOperation")
@@ -168,7 +174,15 @@ func BACnetLightingOperationParse(readBuffer utils.ReadBuffer) (BACnetLightingOp
 	}
 }
 
-func (e BACnetLightingOperation) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLightingOperation) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetLightingOperation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetLightingOperation", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,7 +98,11 @@ func (m *_AdsMultiRequestItem) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsMultiRequestItemParse(readBuffer utils.ReadBuffer, indexGroup uint32) (AdsMultiRequestItem, error) {
+func AdsMultiRequestItemParse(theBytes []byte, indexGroup uint32) (AdsMultiRequestItem, error) {
+	return AdsMultiRequestItemParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), indexGroup) // TODO: get endianness from mspec
+}
+
+func AdsMultiRequestItemParseWithBuffer(readBuffer utils.ReadBuffer, indexGroup uint32) (AdsMultiRequestItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsMultiRequestItem"); pullErr != nil {
@@ -117,11 +122,11 @@ func AdsMultiRequestItemParse(readBuffer utils.ReadBuffer, indexGroup uint32) (A
 	var typeSwitchError error
 	switch {
 	case indexGroup == uint32(61568): // AdsMultiRequestItemRead
-		_childTemp, typeSwitchError = AdsMultiRequestItemReadParse(readBuffer, indexGroup)
+		_childTemp, typeSwitchError = AdsMultiRequestItemReadParseWithBuffer(readBuffer, indexGroup)
 	case indexGroup == uint32(61569): // AdsMultiRequestItemWrite
-		_childTemp, typeSwitchError = AdsMultiRequestItemWriteParse(readBuffer, indexGroup)
+		_childTemp, typeSwitchError = AdsMultiRequestItemWriteParseWithBuffer(readBuffer, indexGroup)
 	case indexGroup == uint32(61570): // AdsMultiRequestItemReadWrite
-		_childTemp, typeSwitchError = AdsMultiRequestItemReadWriteParse(readBuffer, indexGroup)
+		_childTemp, typeSwitchError = AdsMultiRequestItemReadWriteParseWithBuffer(readBuffer, indexGroup)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [indexGroup=%v]", indexGroup)
 	}

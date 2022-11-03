@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,7 +118,11 @@ func (m *_BACnetAuthenticationFactor) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAuthenticationFactorParse(readBuffer utils.ReadBuffer) (BACnetAuthenticationFactor, error) {
+func BACnetAuthenticationFactorParse(theBytes []byte) (BACnetAuthenticationFactor, error) {
+	return BACnetAuthenticationFactorParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAuthenticationFactorParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthenticationFactor, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAuthenticationFactor"); pullErr != nil {
@@ -130,7 +135,7 @@ func BACnetAuthenticationFactorParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	if pullErr := readBuffer.PullContext("formatType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for formatType")
 	}
-	_formatType, _formatTypeErr := BACnetAuthenticationFactorTypeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_formatType, _formatTypeErr := BACnetAuthenticationFactorTypeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _formatTypeErr != nil {
 		return nil, errors.Wrap(_formatTypeErr, "Error parsing 'formatType' field of BACnetAuthenticationFactor")
 	}
@@ -143,7 +148,7 @@ func BACnetAuthenticationFactorParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	if pullErr := readBuffer.PullContext("formatClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for formatClass")
 	}
-	_formatClass, _formatClassErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_formatClass, _formatClassErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _formatClassErr != nil {
 		return nil, errors.Wrap(_formatClassErr, "Error parsing 'formatClass' field of BACnetAuthenticationFactor")
 	}
@@ -156,7 +161,7 @@ func BACnetAuthenticationFactorParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_OCTET_STRING))
+	_value, _valueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_OCTET_STRING))
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAuthenticationFactor")
 	}
@@ -177,7 +182,15 @@ func BACnetAuthenticationFactorParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	}, nil
 }
 
-func (m *_BACnetAuthenticationFactor) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAuthenticationFactor) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetAuthenticationFactor) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAuthenticationFactor"); pushErr != nil {

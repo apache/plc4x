@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -114,7 +115,11 @@ func (m *_ApplicationAddress2) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApplicationAddress2Parse(readBuffer utils.ReadBuffer) (ApplicationAddress2, error) {
+func ApplicationAddress2Parse(theBytes []byte) (ApplicationAddress2, error) {
+	return ApplicationAddress2ParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ApplicationAddress2ParseWithBuffer(readBuffer utils.ReadBuffer) (ApplicationAddress2, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApplicationAddress2"); pullErr != nil {
@@ -145,7 +150,15 @@ func ApplicationAddress2Parse(readBuffer utils.ReadBuffer) (ApplicationAddress2,
 	}, nil
 }
 
-func (m *_ApplicationAddress2) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApplicationAddress2) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApplicationAddress2) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ApplicationAddress2"); pushErr != nil {

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetSecurityPolicy uint8
 
 type IBACnetSecurityPolicy interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +109,11 @@ func (m BACnetSecurityPolicy) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSecurityPolicyParse(readBuffer utils.ReadBuffer) (BACnetSecurityPolicy, error) {
+func BACnetSecurityPolicyParse(theBytes []byte) (BACnetSecurityPolicy, error) {
+	return BACnetSecurityPolicyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetSecurityPolicyParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSecurityPolicy, error) {
 	val, err := readBuffer.ReadUint8("BACnetSecurityPolicy", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetSecurityPolicy")
@@ -120,7 +126,15 @@ func BACnetSecurityPolicyParse(readBuffer utils.ReadBuffer) (BACnetSecurityPolic
 	}
 }
 
-func (e BACnetSecurityPolicy) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetSecurityPolicy) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetSecurityPolicy) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetSecurityPolicy", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

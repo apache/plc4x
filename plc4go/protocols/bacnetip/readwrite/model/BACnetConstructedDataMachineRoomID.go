@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataMachineRoomID) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMachineRoomIDParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMachineRoomID, error) {
+func BACnetConstructedDataMachineRoomIDParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMachineRoomID, error) {
+	return BACnetConstructedDataMachineRoomIDParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataMachineRoomIDParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMachineRoomID, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMachineRoomID"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataMachineRoomIDParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("machineRoomId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for machineRoomId")
 	}
-	_machineRoomId, _machineRoomIdErr := BACnetApplicationTagParse(readBuffer)
+	_machineRoomId, _machineRoomIdErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _machineRoomIdErr != nil {
 		return nil, errors.Wrap(_machineRoomIdErr, "Error parsing 'machineRoomId' field of BACnetConstructedDataMachineRoomID")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataMachineRoomIDParse(readBuffer utils.ReadBuffer, tagNum
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataMachineRoomID) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMachineRoomID) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataMachineRoomID) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

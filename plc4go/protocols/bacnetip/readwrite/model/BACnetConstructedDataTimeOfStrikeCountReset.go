@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataTimeOfStrikeCountReset) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTimeOfStrikeCountResetParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeOfStrikeCountReset, error) {
+func BACnetConstructedDataTimeOfStrikeCountResetParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeOfStrikeCountReset, error) {
+	return BACnetConstructedDataTimeOfStrikeCountResetParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataTimeOfStrikeCountResetParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeOfStrikeCountReset, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeOfStrikeCountReset"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataTimeOfStrikeCountResetParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("timeOfStrikeCountReset"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeOfStrikeCountReset")
 	}
-	_timeOfStrikeCountReset, _timeOfStrikeCountResetErr := BACnetDateTimeParse(readBuffer)
+	_timeOfStrikeCountReset, _timeOfStrikeCountResetErr := BACnetDateTimeParseWithBuffer(readBuffer)
 	if _timeOfStrikeCountResetErr != nil {
 		return nil, errors.Wrap(_timeOfStrikeCountResetErr, "Error parsing 'timeOfStrikeCountReset' field of BACnetConstructedDataTimeOfStrikeCountReset")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataTimeOfStrikeCountResetParse(readBuffer utils.ReadBuffe
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataTimeOfStrikeCountReset) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataTimeOfStrikeCountReset) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataTimeOfStrikeCountReset) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

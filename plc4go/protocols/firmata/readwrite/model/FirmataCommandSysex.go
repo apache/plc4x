@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -129,7 +130,11 @@ func (m *_FirmataCommandSysex) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (FirmataCommandSysex, error) {
+func FirmataCommandSysexParse(theBytes []byte, response bool) (FirmataCommandSysex, error) {
+	return FirmataCommandSysexParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func FirmataCommandSysexParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataCommandSysex, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandSysex"); pullErr != nil {
@@ -142,7 +147,7 @@ func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (Firma
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
-	_command, _commandErr := SysexCommandParse(readBuffer, bool(response))
+	_command, _commandErr := SysexCommandParseWithBuffer(readBuffer, bool(response))
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of FirmataCommandSysex")
 	}
@@ -184,7 +189,15 @@ func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (Firma
 	return _child, nil
 }
 
-func (m *_FirmataCommandSysex) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_FirmataCommandSysex) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_FirmataCommandSysex) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

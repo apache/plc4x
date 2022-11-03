@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,7 +118,11 @@ func (m *_BACnetEventTimestamps) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventTimestampsParse(readBuffer utils.ReadBuffer) (BACnetEventTimestamps, error) {
+func BACnetEventTimestampsParse(theBytes []byte) (BACnetEventTimestamps, error) {
+	return BACnetEventTimestampsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEventTimestampsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventTimestamps, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventTimestamps"); pullErr != nil {
@@ -130,7 +135,7 @@ func BACnetEventTimestampsParse(readBuffer utils.ReadBuffer) (BACnetEventTimesta
 	if pullErr := readBuffer.PullContext("toOffnormal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for toOffnormal")
 	}
-	_toOffnormal, _toOffnormalErr := BACnetTimeStampParse(readBuffer)
+	_toOffnormal, _toOffnormalErr := BACnetTimeStampParseWithBuffer(readBuffer)
 	if _toOffnormalErr != nil {
 		return nil, errors.Wrap(_toOffnormalErr, "Error parsing 'toOffnormal' field of BACnetEventTimestamps")
 	}
@@ -143,7 +148,7 @@ func BACnetEventTimestampsParse(readBuffer utils.ReadBuffer) (BACnetEventTimesta
 	if pullErr := readBuffer.PullContext("toFault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for toFault")
 	}
-	_toFault, _toFaultErr := BACnetTimeStampParse(readBuffer)
+	_toFault, _toFaultErr := BACnetTimeStampParseWithBuffer(readBuffer)
 	if _toFaultErr != nil {
 		return nil, errors.Wrap(_toFaultErr, "Error parsing 'toFault' field of BACnetEventTimestamps")
 	}
@@ -156,7 +161,7 @@ func BACnetEventTimestampsParse(readBuffer utils.ReadBuffer) (BACnetEventTimesta
 	if pullErr := readBuffer.PullContext("toNormal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for toNormal")
 	}
-	_toNormal, _toNormalErr := BACnetTimeStampParse(readBuffer)
+	_toNormal, _toNormalErr := BACnetTimeStampParseWithBuffer(readBuffer)
 	if _toNormalErr != nil {
 		return nil, errors.Wrap(_toNormalErr, "Error parsing 'toNormal' field of BACnetEventTimestamps")
 	}
@@ -177,7 +182,15 @@ func BACnetEventTimestampsParse(readBuffer utils.ReadBuffer) (BACnetEventTimesta
 	}, nil
 }
 
-func (m *_BACnetEventTimestamps) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventTimestamps) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetEventTimestamps) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEventTimestamps"); pushErr != nil {

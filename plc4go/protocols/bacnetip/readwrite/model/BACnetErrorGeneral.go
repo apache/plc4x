@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +125,11 @@ func (m *_BACnetErrorGeneral) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetErrorGeneralParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (BACnetErrorGeneral, error) {
+func BACnetErrorGeneralParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (BACnetErrorGeneral, error) {
+	return BACnetErrorGeneralParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), errorChoice) // TODO: get endianness from mspec
+}
+
+func BACnetErrorGeneralParseWithBuffer(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (BACnetErrorGeneral, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetErrorGeneral"); pullErr != nil {
@@ -137,7 +142,7 @@ func BACnetErrorGeneralParse(readBuffer utils.ReadBuffer, errorChoice BACnetConf
 	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for error")
 	}
-	_error, _errorErr := ErrorParse(readBuffer)
+	_error, _errorErr := ErrorParseWithBuffer(readBuffer)
 	if _errorErr != nil {
 		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of BACnetErrorGeneral")
 	}
@@ -159,7 +164,15 @@ func BACnetErrorGeneralParse(readBuffer utils.ReadBuffer, errorChoice BACnetConf
 	return _child, nil
 }
 
-func (m *_BACnetErrorGeneral) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetErrorGeneral) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetErrorGeneral) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

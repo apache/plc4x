@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -100,7 +101,11 @@ func (m *_ModbusADU) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusADUParse(readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusADU, error) {
+func ModbusADUParse(theBytes []byte, driverType DriverType, response bool) (ModbusADU, error) {
+	return ModbusADUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response) // TODO: get endianness from mspec
+}
+
+func ModbusADUParseWithBuffer(readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusADU, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusADU"); pullErr != nil {
@@ -120,11 +125,11 @@ func ModbusADUParse(readBuffer utils.ReadBuffer, driverType DriverType, response
 	var typeSwitchError error
 	switch {
 	case driverType == DriverType_MODBUS_TCP: // ModbusTcpADU
-		_childTemp, typeSwitchError = ModbusTcpADUParse(readBuffer, driverType, response)
+		_childTemp, typeSwitchError = ModbusTcpADUParseWithBuffer(readBuffer, driverType, response)
 	case driverType == DriverType_MODBUS_RTU: // ModbusRtuADU
-		_childTemp, typeSwitchError = ModbusRtuADUParse(readBuffer, driverType, response)
+		_childTemp, typeSwitchError = ModbusRtuADUParseWithBuffer(readBuffer, driverType, response)
 	case driverType == DriverType_MODBUS_ASCII: // ModbusAsciiADU
-		_childTemp, typeSwitchError = ModbusAsciiADUParse(readBuffer, driverType, response)
+		_childTemp, typeSwitchError = ModbusAsciiADUParseWithBuffer(readBuffer, driverType, response)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [driverType=%v]", driverType)
 	}

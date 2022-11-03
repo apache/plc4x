@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,7 +124,11 @@ func (m *_SecurityDataZoneUnsealed) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataZoneUnsealedParse(readBuffer utils.ReadBuffer) (SecurityDataZoneUnsealed, error) {
+func SecurityDataZoneUnsealedParse(theBytes []byte) (SecurityDataZoneUnsealed, error) {
+	return SecurityDataZoneUnsealedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityDataZoneUnsealedParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataZoneUnsealed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataZoneUnsealed"); pullErr != nil {
@@ -152,7 +157,15 @@ func SecurityDataZoneUnsealedParse(readBuffer utils.ReadBuffer) (SecurityDataZon
 	return _child, nil
 }
 
-func (m *_SecurityDataZoneUnsealed) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataZoneUnsealed) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataZoneUnsealed) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

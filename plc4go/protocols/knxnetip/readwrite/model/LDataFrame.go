@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -164,7 +165,11 @@ func (m *_LDataFrame) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LDataFrameParse(readBuffer utils.ReadBuffer) (LDataFrame, error) {
+func LDataFrameParse(theBytes []byte) (LDataFrame, error) {
+	return LDataFrameParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LDataFrameParseWithBuffer(readBuffer utils.ReadBuffer) (LDataFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataFrame"); pullErr != nil {
@@ -203,7 +208,7 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (LDataFrame, error) {
 	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for priority")
 	}
-	_priority, _priorityErr := CEMIPriorityParse(readBuffer)
+	_priority, _priorityErr := CEMIPriorityParseWithBuffer(readBuffer)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of LDataFrame")
 	}
@@ -237,11 +242,11 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (LDataFrame, error) {
 	var typeSwitchError error
 	switch {
 	case notAckFrame == bool(true) && polling == bool(false): // LDataExtended
-		_childTemp, typeSwitchError = LDataExtendedParse(readBuffer)
+		_childTemp, typeSwitchError = LDataExtendedParseWithBuffer(readBuffer)
 	case notAckFrame == bool(true) && polling == bool(true): // LPollData
-		_childTemp, typeSwitchError = LPollDataParse(readBuffer)
+		_childTemp, typeSwitchError = LPollDataParseWithBuffer(readBuffer)
 	case notAckFrame == bool(false): // LDataFrameACK
-		_childTemp, typeSwitchError = LDataFrameACKParse(readBuffer)
+		_childTemp, typeSwitchError = LDataFrameACKParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [notAckFrame=%v, polling=%v]", notAckFrame, polling)
 	}

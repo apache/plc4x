@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -138,7 +139,11 @@ func (m *_BACnetAccessCredentialDisableTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessCredentialDisableTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessCredentialDisableTagged, error) {
+func BACnetAccessCredentialDisableTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAccessCredentialDisableTagged, error) {
+	return BACnetAccessCredentialDisableTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+}
+
+func BACnetAccessCredentialDisableTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessCredentialDisableTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAccessCredentialDisableTagged"); pullErr != nil {
@@ -151,7 +156,7 @@ func BACnetAccessCredentialDisableTaggedParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetAccessCredentialDisableTagged")
 	}
@@ -209,7 +214,15 @@ func BACnetAccessCredentialDisableTaggedParse(readBuffer utils.ReadBuffer, tagNu
 	}, nil
 }
 
-func (m *_BACnetAccessCredentialDisableTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAccessCredentialDisableTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetAccessCredentialDisableTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAccessCredentialDisableTagged"); pushErr != nil {

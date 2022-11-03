@@ -22,7 +22,6 @@ package knxnetip
 import (
 	"fmt"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"strconv"
 )
 
@@ -67,8 +66,7 @@ func GroupAddressToString(groupAddress driverModel.KnxGroupAddress) string {
 }
 
 func ByteArrayToKnxAddress(data []byte) driverModel.KnxAddress {
-	readBuffer := utils.NewReadBufferByteBased(data)
-	knxAddress, err := driverModel.KnxAddressParse(readBuffer)
+	knxAddress, err := driverModel.KnxAddressParse(data)
 	if err != nil {
 		return nil
 	}
@@ -98,8 +96,7 @@ func Uint16ToKnxGroupAddress(data uint16, numLevels uint8) driverModel.KnxGroupA
 	rawData := make([]uint8, 2)
 	rawData[0] = uint8(data >> 8)
 	rawData[1] = uint8(data & 0xFF)
-	readBuffer := utils.NewReadBufferByteBased(rawData)
-	knxGroupAddress, err := driverModel.KnxGroupAddressParse(readBuffer, numLevels)
+	knxGroupAddress, err := driverModel.KnxGroupAddressParse(rawData, numLevels)
 	if err != nil {
 		return nil
 	}

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type GAVState uint8
 
 type IGAVState interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +109,11 @@ func (m GAVState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func GAVStateParse(readBuffer utils.ReadBuffer) (GAVState, error) {
+func GAVStateParse(theBytes []byte) (GAVState, error) {
+	return GAVStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func GAVStateParseWithBuffer(readBuffer utils.ReadBuffer) (GAVState, error) {
 	val, err := readBuffer.ReadUint8("GAVState", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading GAVState")
@@ -120,7 +126,15 @@ func GAVStateParse(readBuffer utils.ReadBuffer) (GAVState, error) {
 	}
 }
 
-func (e GAVState) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e GAVState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e GAVState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("GAVState", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

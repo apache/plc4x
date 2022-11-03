@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +127,11 @@ func (m *_SALDataMeasurement) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataMeasurementParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataMeasurement, error) {
+func SALDataMeasurementParse(theBytes []byte, applicationId ApplicationId) (SALDataMeasurement, error) {
+	return SALDataMeasurementParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataMeasurementParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataMeasurement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataMeasurement"); pullErr != nil {
@@ -139,7 +144,7 @@ func SALDataMeasurementParse(readBuffer utils.ReadBuffer, applicationId Applicat
 	if pullErr := readBuffer.PullContext("measurementData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for measurementData")
 	}
-	_measurementData, _measurementDataErr := MeasurementDataParse(readBuffer)
+	_measurementData, _measurementDataErr := MeasurementDataParseWithBuffer(readBuffer)
 	if _measurementDataErr != nil {
 		return nil, errors.Wrap(_measurementDataErr, "Error parsing 'measurementData' field of SALDataMeasurement")
 	}
@@ -161,7 +166,15 @@ func SALDataMeasurementParse(readBuffer utils.ReadBuffer, applicationId Applicat
 	return _child, nil
 }
 
-func (m *_SALDataMeasurement) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataMeasurement) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SALDataMeasurement) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

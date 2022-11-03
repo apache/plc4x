@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -179,7 +180,11 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {
+func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {
+	return S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cpuFunctionType, cpuSubfunction) // TODO: get endianness from mspec
+}
+
+func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse"); pullErr != nil {
@@ -210,7 +215,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("pudicfReturnCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for pudicfReturnCode")
 	}
-	_pudicfReturnCode, _pudicfReturnCodeErr := DataTransportErrorCodeParse(readBuffer)
+	_pudicfReturnCode, _pudicfReturnCodeErr := DataTransportErrorCodeParseWithBuffer(readBuffer)
 	if _pudicfReturnCodeErr != nil {
 		return nil, errors.Wrap(_pudicfReturnCodeErr, "Error parsing 'pudicfReturnCode' field of S7PayloadUserDataItemCpuFunctionAlarmQueryResponse")
 	}
@@ -223,7 +228,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("pudicftransportSize"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for pudicftransportSize")
 	}
-	_pudicftransportSize, _pudicftransportSizeErr := DataTransportSizeParse(readBuffer)
+	_pudicftransportSize, _pudicftransportSizeErr := DataTransportSizeParseWithBuffer(readBuffer)
 	if _pudicftransportSizeErr != nil {
 		return nil, errors.Wrap(_pudicftransportSizeErr, "Error parsing 'pudicftransportSize' field of S7PayloadUserDataItemCpuFunctionAlarmQueryResponse")
 	}
@@ -264,7 +269,15 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(readBuffer utils.Re
 	return _child, nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

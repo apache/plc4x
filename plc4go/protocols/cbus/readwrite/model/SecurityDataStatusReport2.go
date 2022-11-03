@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -128,7 +129,11 @@ func (m *_SecurityDataStatusReport2) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataStatusReport2Parse(readBuffer utils.ReadBuffer) (SecurityDataStatusReport2, error) {
+func SecurityDataStatusReport2Parse(theBytes []byte) (SecurityDataStatusReport2, error) {
+	return SecurityDataStatusReport2ParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityDataStatusReport2ParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataStatusReport2, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataStatusReport2"); pullErr != nil {
@@ -149,7 +154,7 @@ func SecurityDataStatusReport2Parse(readBuffer utils.ReadBuffer) (SecurityDataSt
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(48)); curItem++ {
-			_item, _err := ZoneStatusParse(readBuffer)
+			_item, _err := ZoneStatusParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'zoneStatus' field of SecurityDataStatusReport2")
 			}
@@ -173,7 +178,15 @@ func SecurityDataStatusReport2Parse(readBuffer utils.ReadBuffer) (SecurityDataSt
 	return _child, nil
 }
 
-func (m *_SecurityDataStatusReport2) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataStatusReport2) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataStatusReport2) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +125,11 @@ func (m *_KnxGroupAddressFreeLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxGroupAddressFreeLevelParse(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddressFreeLevel, error) {
+func KnxGroupAddressFreeLevelParse(theBytes []byte, numLevels uint8) (KnxGroupAddressFreeLevel, error) {
+	return KnxGroupAddressFreeLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), numLevels) // TODO: get endianness from mspec
+}
+
+func KnxGroupAddressFreeLevelParseWithBuffer(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddressFreeLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxGroupAddressFreeLevel"); pullErr != nil {
@@ -153,7 +158,15 @@ func KnxGroupAddressFreeLevelParse(readBuffer utils.ReadBuffer, numLevels uint8)
 	return _child, nil
 }
 
-func (m *_KnxGroupAddressFreeLevel) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_KnxGroupAddressFreeLevel) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_KnxGroupAddressFreeLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

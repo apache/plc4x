@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -155,7 +156,11 @@ func (m *_BACnetEventParameterChangeOfState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventParameterChangeOfStateParse(readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfState, error) {
+func BACnetEventParameterChangeOfStateParse(theBytes []byte) (BACnetEventParameterChangeOfState, error) {
+	return BACnetEventParameterChangeOfStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEventParameterChangeOfStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfState"); pullErr != nil {
@@ -168,7 +173,7 @@ func BACnetEventParameterChangeOfStateParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(1)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfState")
 	}
@@ -181,7 +186,7 @@ func BACnetEventParameterChangeOfStateParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
 	}
-	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
 		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterChangeOfState")
 	}
@@ -194,7 +199,7 @@ func BACnetEventParameterChangeOfStateParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfValues")
 	}
-	_listOfValues, _listOfValuesErr := BACnetEventParameterChangeOfStateListOfValuesParse(readBuffer, uint8(uint8(1)))
+	_listOfValues, _listOfValuesErr := BACnetEventParameterChangeOfStateListOfValuesParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _listOfValuesErr != nil {
 		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field of BACnetEventParameterChangeOfState")
 	}
@@ -207,7 +212,7 @@ func BACnetEventParameterChangeOfStateParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(1)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfState")
 	}
@@ -232,7 +237,15 @@ func BACnetEventParameterChangeOfStateParse(readBuffer utils.ReadBuffer) (BACnet
 	return _child, nil
 }
 
-func (m *_BACnetEventParameterChangeOfState) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventParameterChangeOfState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetEventParameterChangeOfState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

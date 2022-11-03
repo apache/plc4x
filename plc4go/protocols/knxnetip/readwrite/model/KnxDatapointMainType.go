@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,10 +32,10 @@ import (
 type KnxDatapointMainType uint16
 
 type IKnxDatapointMainType interface {
+	utils.Serializable
 	Number() uint16
 	Name() string
 	SizeInBits() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -1237,7 +1239,11 @@ func (m KnxDatapointMainType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxDatapointMainTypeParse(readBuffer utils.ReadBuffer) (KnxDatapointMainType, error) {
+func KnxDatapointMainTypeParse(theBytes []byte) (KnxDatapointMainType, error) {
+	return KnxDatapointMainTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func KnxDatapointMainTypeParseWithBuffer(readBuffer utils.ReadBuffer) (KnxDatapointMainType, error) {
 	val, err := readBuffer.ReadUint16("KnxDatapointMainType", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxDatapointMainType")
@@ -1250,7 +1256,15 @@ func KnxDatapointMainTypeParse(readBuffer utils.ReadBuffer) (KnxDatapointMainTyp
 	}
 }
 
-func (e KnxDatapointMainType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e KnxDatapointMainType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e KnxDatapointMainType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("KnxDatapointMainType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

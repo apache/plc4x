@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type NLMRejectRouterToNetworkRejectReason uint8
 
 type INLMRejectRouterToNetworkRejectReason interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -125,7 +127,11 @@ func (m NLMRejectRouterToNetworkRejectReason) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMRejectRouterToNetworkRejectReasonParse(readBuffer utils.ReadBuffer) (NLMRejectRouterToNetworkRejectReason, error) {
+func NLMRejectRouterToNetworkRejectReasonParse(theBytes []byte) (NLMRejectRouterToNetworkRejectReason, error) {
+	return NLMRejectRouterToNetworkRejectReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func NLMRejectRouterToNetworkRejectReasonParseWithBuffer(readBuffer utils.ReadBuffer) (NLMRejectRouterToNetworkRejectReason, error) {
 	val, err := readBuffer.ReadUint8("NLMRejectRouterToNetworkRejectReason", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading NLMRejectRouterToNetworkRejectReason")
@@ -138,7 +144,15 @@ func NLMRejectRouterToNetworkRejectReasonParse(readBuffer utils.ReadBuffer) (NLM
 	}
 }
 
-func (e NLMRejectRouterToNetworkRejectReason) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e NLMRejectRouterToNetworkRejectReason) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e NLMRejectRouterToNetworkRejectReason) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("NLMRejectRouterToNetworkRejectReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

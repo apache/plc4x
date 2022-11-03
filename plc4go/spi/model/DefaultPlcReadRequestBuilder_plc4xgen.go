@@ -22,13 +22,22 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var _ = fmt.Printf
 
-func (d *DefaultPlcReadRequestBuilder) Serialize(writeBuffer utils.WriteBuffer) error {
+func (d *DefaultPlcReadRequestBuilder) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := d.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (d *DefaultPlcReadRequestBuilder) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("PlcReadRequestBuilder"); err != nil {
 		return err
 	}
@@ -38,7 +47,7 @@ func (d *DefaultPlcReadRequestBuilder) Serialize(writeBuffer utils.WriteBuffer) 
 			if err := writeBuffer.PushContext("reader"); err != nil {
 				return err
 			}
-			if err := serializableField.Serialize(writeBuffer); err != nil {
+			if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext("reader"); err != nil {
@@ -57,7 +66,7 @@ func (d *DefaultPlcReadRequestBuilder) Serialize(writeBuffer utils.WriteBuffer) 
 			if err := writeBuffer.PushContext("fieldHandler"); err != nil {
 				return err
 			}
-			if err := serializableField.Serialize(writeBuffer); err != nil {
+			if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext("fieldHandler"); err != nil {
@@ -103,7 +112,7 @@ func (d *DefaultPlcReadRequestBuilder) Serialize(writeBuffer utils.WriteBuffer) 
 			if err := writeBuffer.PushContext(name); err != nil {
 				return err
 			}
-			if err := serializable.Serialize(writeBuffer); err != nil {
+			if err := serializable.SerializeWithWriteBuffer(writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext(name); err != nil {
@@ -136,7 +145,7 @@ func (d *DefaultPlcReadRequestBuilder) Serialize(writeBuffer utils.WriteBuffer) 
 			if err := writeBuffer.PushContext("readRequestInterceptor"); err != nil {
 				return err
 			}
-			if err := serializableField.Serialize(writeBuffer); err != nil {
+			if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext("readRequestInterceptor"); err != nil {

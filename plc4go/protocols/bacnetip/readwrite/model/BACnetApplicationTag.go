@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -139,7 +140,11 @@ func (m *_BACnetApplicationTag) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (BACnetApplicationTag, error) {
+func BACnetApplicationTagParse(theBytes []byte) (BACnetApplicationTag, error) {
+	return BACnetApplicationTagParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetApplicationTagParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetApplicationTag, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTag"); pullErr != nil {
@@ -152,7 +157,7 @@ func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (BACnetApplicationTa
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetApplicationTag")
 	}
@@ -187,31 +192,31 @@ func BACnetApplicationTagParse(readBuffer utils.ReadBuffer) (BACnetApplicationTa
 	var typeSwitchError error
 	switch {
 	case actualTagNumber == 0x0: // BACnetApplicationTagNull
-		_childTemp, typeSwitchError = BACnetApplicationTagNullParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetApplicationTagNullParseWithBuffer(readBuffer)
 	case actualTagNumber == 0x1: // BACnetApplicationTagBoolean
-		_childTemp, typeSwitchError = BACnetApplicationTagBooleanParse(readBuffer, header)
+		_childTemp, typeSwitchError = BACnetApplicationTagBooleanParseWithBuffer(readBuffer, header)
 	case actualTagNumber == 0x2: // BACnetApplicationTagUnsignedInteger
-		_childTemp, typeSwitchError = BACnetApplicationTagUnsignedIntegerParse(readBuffer, header)
+		_childTemp, typeSwitchError = BACnetApplicationTagUnsignedIntegerParseWithBuffer(readBuffer, header)
 	case actualTagNumber == 0x3: // BACnetApplicationTagSignedInteger
-		_childTemp, typeSwitchError = BACnetApplicationTagSignedIntegerParse(readBuffer, header)
+		_childTemp, typeSwitchError = BACnetApplicationTagSignedIntegerParseWithBuffer(readBuffer, header)
 	case actualTagNumber == 0x4: // BACnetApplicationTagReal
-		_childTemp, typeSwitchError = BACnetApplicationTagRealParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetApplicationTagRealParseWithBuffer(readBuffer)
 	case actualTagNumber == 0x5: // BACnetApplicationTagDouble
-		_childTemp, typeSwitchError = BACnetApplicationTagDoubleParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetApplicationTagDoubleParseWithBuffer(readBuffer)
 	case actualTagNumber == 0x6: // BACnetApplicationTagOctetString
-		_childTemp, typeSwitchError = BACnetApplicationTagOctetStringParse(readBuffer, header)
+		_childTemp, typeSwitchError = BACnetApplicationTagOctetStringParseWithBuffer(readBuffer, header)
 	case actualTagNumber == 0x7: // BACnetApplicationTagCharacterString
-		_childTemp, typeSwitchError = BACnetApplicationTagCharacterStringParse(readBuffer, header)
+		_childTemp, typeSwitchError = BACnetApplicationTagCharacterStringParseWithBuffer(readBuffer, header)
 	case actualTagNumber == 0x8: // BACnetApplicationTagBitString
-		_childTemp, typeSwitchError = BACnetApplicationTagBitStringParse(readBuffer, header)
+		_childTemp, typeSwitchError = BACnetApplicationTagBitStringParseWithBuffer(readBuffer, header)
 	case actualTagNumber == 0x9: // BACnetApplicationTagEnumerated
-		_childTemp, typeSwitchError = BACnetApplicationTagEnumeratedParse(readBuffer, header)
+		_childTemp, typeSwitchError = BACnetApplicationTagEnumeratedParseWithBuffer(readBuffer, header)
 	case actualTagNumber == 0xA: // BACnetApplicationTagDate
-		_childTemp, typeSwitchError = BACnetApplicationTagDateParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetApplicationTagDateParseWithBuffer(readBuffer)
 	case actualTagNumber == 0xB: // BACnetApplicationTagTime
-		_childTemp, typeSwitchError = BACnetApplicationTagTimeParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetApplicationTagTimeParseWithBuffer(readBuffer)
 	case actualTagNumber == 0xC: // BACnetApplicationTagObjectIdentifier
-		_childTemp, typeSwitchError = BACnetApplicationTagObjectIdentifierParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetApplicationTagObjectIdentifierParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [actualTagNumber=%v]", actualTagNumber)
 	}

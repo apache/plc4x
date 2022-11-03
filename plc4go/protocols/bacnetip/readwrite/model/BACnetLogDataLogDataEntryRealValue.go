@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetLogDataLogDataEntryRealValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogDataLogDataEntryRealValueParse(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryRealValue, error) {
+func BACnetLogDataLogDataEntryRealValueParse(theBytes []byte) (BACnetLogDataLogDataEntryRealValue, error) {
+	return BACnetLogDataLogDataEntryRealValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLogDataLogDataEntryRealValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryRealValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryRealValue"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetLogDataLogDataEntryRealValueParse(readBuffer utils.ReadBuffer) (BACne
 	if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for realValue")
 	}
-	_realValue, _realValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_REAL))
+	_realValue, _realValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_REAL))
 	if _realValueErr != nil {
 		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field of BACnetLogDataLogDataEntryRealValue")
 	}
@@ -157,7 +162,15 @@ func BACnetLogDataLogDataEntryRealValueParse(readBuffer utils.ReadBuffer) (BACne
 	return _child, nil
 }
 
-func (m *_BACnetLogDataLogDataEntryRealValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogDataLogDataEntryRealValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLogDataLogDataEntryRealValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

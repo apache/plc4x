@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -134,7 +135,11 @@ func (m *_CALDataGetStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALDataGetStatusParse(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataGetStatus, error) {
+func CALDataGetStatusParse(theBytes []byte, requestContext RequestContext) (CALDataGetStatus, error) {
+	return CALDataGetStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), requestContext) // TODO: get endianness from mspec
+}
+
+func CALDataGetStatusParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataGetStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataGetStatus"); pullErr != nil {
@@ -147,7 +152,7 @@ func CALDataGetStatusParse(readBuffer utils.ReadBuffer, requestContext RequestCo
 	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
 	}
-	_paramNo, _paramNoErr := ParameterParse(readBuffer)
+	_paramNo, _paramNoErr := ParameterParseWithBuffer(readBuffer)
 	if _paramNoErr != nil {
 		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataGetStatus")
 	}
@@ -179,7 +184,15 @@ func CALDataGetStatusParse(readBuffer utils.ReadBuffer, requestContext RequestCo
 	return _child, nil
 }
 
-func (m *_CALDataGetStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CALDataGetStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CALDataGetStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

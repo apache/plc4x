@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -140,7 +141,11 @@ func (m *_APDUReject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUReject, error) {
+func APDURejectParse(theBytes []byte, apduLength uint16) (APDUReject, error) {
+	return APDURejectParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength) // TODO: get endianness from mspec
+}
+
+func APDURejectParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDUReject, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUReject"); pullErr != nil {
@@ -177,7 +182,7 @@ func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUReject
 	if pullErr := readBuffer.PullContext("rejectReason"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for rejectReason")
 	}
-	_rejectReason, _rejectReasonErr := BACnetRejectReasonTaggedParse(readBuffer, uint32(uint32(1)))
+	_rejectReason, _rejectReasonErr := BACnetRejectReasonTaggedParseWithBuffer(readBuffer, uint32(uint32(1)))
 	if _rejectReasonErr != nil {
 		return nil, errors.Wrap(_rejectReasonErr, "Error parsing 'rejectReason' field of APDUReject")
 	}
@@ -203,7 +208,15 @@ func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUReject
 	return _child, nil
 }
 
-func (m *_APDUReject) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_APDUReject) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_APDUReject) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

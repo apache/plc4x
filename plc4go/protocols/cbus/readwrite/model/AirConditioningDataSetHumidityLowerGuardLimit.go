@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -155,7 +156,11 @@ func (m *_AirConditioningDataSetHumidityLowerGuardLimit) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func AirConditioningDataSetHumidityLowerGuardLimitParse(readBuffer utils.ReadBuffer) (AirConditioningDataSetHumidityLowerGuardLimit, error) {
+func AirConditioningDataSetHumidityLowerGuardLimitParse(theBytes []byte) (AirConditioningDataSetHumidityLowerGuardLimit, error) {
+	return AirConditioningDataSetHumidityLowerGuardLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AirConditioningDataSetHumidityLowerGuardLimitParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningDataSetHumidityLowerGuardLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningDataSetHumidityLowerGuardLimit"); pullErr != nil {
@@ -175,7 +180,7 @@ func AirConditioningDataSetHumidityLowerGuardLimitParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("zoneList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for zoneList")
 	}
-	_zoneList, _zoneListErr := HVACZoneListParse(readBuffer)
+	_zoneList, _zoneListErr := HVACZoneListParseWithBuffer(readBuffer)
 	if _zoneListErr != nil {
 		return nil, errors.Wrap(_zoneListErr, "Error parsing 'zoneList' field of AirConditioningDataSetHumidityLowerGuardLimit")
 	}
@@ -188,7 +193,7 @@ func AirConditioningDataSetHumidityLowerGuardLimitParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("limit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for limit")
 	}
-	_limit, _limitErr := HVACHumidityParse(readBuffer)
+	_limit, _limitErr := HVACHumidityParseWithBuffer(readBuffer)
 	if _limitErr != nil {
 		return nil, errors.Wrap(_limitErr, "Error parsing 'limit' field of AirConditioningDataSetHumidityLowerGuardLimit")
 	}
@@ -201,7 +206,7 @@ func AirConditioningDataSetHumidityLowerGuardLimitParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("hvacModeAndFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hvacModeAndFlags")
 	}
-	_hvacModeAndFlags, _hvacModeAndFlagsErr := HVACHumidityModeAndFlagsParse(readBuffer)
+	_hvacModeAndFlags, _hvacModeAndFlagsErr := HVACHumidityModeAndFlagsParseWithBuffer(readBuffer)
 	if _hvacModeAndFlagsErr != nil {
 		return nil, errors.Wrap(_hvacModeAndFlagsErr, "Error parsing 'hvacModeAndFlags' field of AirConditioningDataSetHumidityLowerGuardLimit")
 	}
@@ -226,7 +231,15 @@ func AirConditioningDataSetHumidityLowerGuardLimitParse(readBuffer utils.ReadBuf
 	return _child, nil
 }
 
-func (m *_AirConditioningDataSetHumidityLowerGuardLimit) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AirConditioningDataSetHumidityLowerGuardLimit) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AirConditioningDataSetHumidityLowerGuardLimit) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

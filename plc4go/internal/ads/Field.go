@@ -20,6 +20,7 @@
 package ads
 
 import (
+	"encoding/binary"
 	"encoding/xml"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -79,7 +80,15 @@ func castToDirectAdsFieldFromPlcField(plcField model.PlcField) (DirectPlcField, 
 	return DirectPlcField{}, errors.Errorf("couldn't %T cast to DirectPlcField", plcField)
 }
 
-func (m DirectPlcField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m DirectPlcField) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m DirectPlcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("DirectPlcField"); err != nil {
 		return err
 	}
@@ -146,7 +155,15 @@ func castToSymbolicPlcFieldFromPlcField(plcField model.PlcField) (SymbolicPlcFie
 	return SymbolicPlcField{}, errors.Errorf("couldn't cast %T to SymbolicPlcField", plcField)
 }
 
-func (m SymbolicPlcField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m SymbolicPlcField) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m SymbolicPlcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("SymbolicPlcField"); err != nil {
 		return err
 	}

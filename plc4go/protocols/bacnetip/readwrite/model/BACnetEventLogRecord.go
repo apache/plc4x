@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,7 +108,11 @@ func (m *_BACnetEventLogRecord) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventLogRecordParse(readBuffer utils.ReadBuffer) (BACnetEventLogRecord, error) {
+func BACnetEventLogRecordParse(theBytes []byte) (BACnetEventLogRecord, error) {
+	return BACnetEventLogRecordParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetEventLogRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventLogRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventLogRecord"); pullErr != nil {
@@ -120,7 +125,7 @@ func BACnetEventLogRecordParse(readBuffer utils.ReadBuffer) (BACnetEventLogRecor
 	if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timestamp")
 	}
-	_timestamp, _timestampErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(0)))
+	_timestamp, _timestampErr := BACnetDateTimeEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetEventLogRecord")
 	}
@@ -133,7 +138,7 @@ func BACnetEventLogRecordParse(readBuffer utils.ReadBuffer) (BACnetEventLogRecor
 	if pullErr := readBuffer.PullContext("logDatum"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for logDatum")
 	}
-	_logDatum, _logDatumErr := BACnetEventLogRecordLogDatumParse(readBuffer, uint8(uint8(1)))
+	_logDatum, _logDatumErr := BACnetEventLogRecordLogDatumParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _logDatumErr != nil {
 		return nil, errors.Wrap(_logDatumErr, "Error parsing 'logDatum' field of BACnetEventLogRecord")
 	}
@@ -153,7 +158,15 @@ func BACnetEventLogRecordParse(readBuffer utils.ReadBuffer) (BACnetEventLogRecor
 	}, nil
 }
 
-func (m *_BACnetEventLogRecord) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventLogRecord) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetEventLogRecord) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEventLogRecord"); pushErr != nil {

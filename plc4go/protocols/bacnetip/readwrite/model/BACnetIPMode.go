@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetIPMode uint8
 
 type IBACnetIPMode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -101,7 +103,11 @@ func (m BACnetIPMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetIPModeParse(readBuffer utils.ReadBuffer) (BACnetIPMode, error) {
+func BACnetIPModeParse(theBytes []byte) (BACnetIPMode, error) {
+	return BACnetIPModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetIPModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetIPMode, error) {
 	val, err := readBuffer.ReadUint8("BACnetIPMode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetIPMode")
@@ -114,7 +120,15 @@ func BACnetIPModeParse(readBuffer utils.ReadBuffer) (BACnetIPMode, error) {
 	}
 }
 
-func (e BACnetIPMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetIPMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetIPMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetIPMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

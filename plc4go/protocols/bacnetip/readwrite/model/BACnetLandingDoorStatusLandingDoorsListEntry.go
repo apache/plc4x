@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,7 +108,11 @@ func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLandingDoorStatusLandingDoorsListEntryParse(readBuffer utils.ReadBuffer) (BACnetLandingDoorStatusLandingDoorsListEntry, error) {
+func BACnetLandingDoorStatusLandingDoorsListEntryParse(theBytes []byte) (BACnetLandingDoorStatusLandingDoorsListEntry, error) {
+	return BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLandingDoorStatusLandingDoorsListEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLandingDoorStatusLandingDoorsListEntry"); pullErr != nil {
@@ -120,7 +125,7 @@ func BACnetLandingDoorStatusLandingDoorsListEntryParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("floorNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for floorNumber")
 	}
-	_floorNumber, _floorNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_floorNumber, _floorNumberErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _floorNumberErr != nil {
 		return nil, errors.Wrap(_floorNumberErr, "Error parsing 'floorNumber' field of BACnetLandingDoorStatusLandingDoorsListEntry")
 	}
@@ -133,7 +138,7 @@ func BACnetLandingDoorStatusLandingDoorsListEntryParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("doorStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doorStatus")
 	}
-	_doorStatus, _doorStatusErr := BACnetDoorStatusTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_doorStatus, _doorStatusErr := BACnetDoorStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _doorStatusErr != nil {
 		return nil, errors.Wrap(_doorStatusErr, "Error parsing 'doorStatus' field of BACnetLandingDoorStatusLandingDoorsListEntry")
 	}
@@ -153,7 +158,15 @@ func BACnetLandingDoorStatusLandingDoorsListEntryParse(readBuffer utils.ReadBuff
 	}, nil
 }
 
-func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLandingDoorStatusLandingDoorsListEntry"); pushErr != nil {

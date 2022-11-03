@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIPv6AutoAddressingEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6AutoAddressingEnable, error) {
+func BACnetConstructedDataIPv6AutoAddressingEnableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6AutoAddressingEnable, error) {
+	return BACnetConstructedDataIPv6AutoAddressingEnableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataIPv6AutoAddressingEnableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6AutoAddressingEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6AutoAddressingEnable"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataIPv6AutoAddressingEnableParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("autoAddressingEnable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for autoAddressingEnable")
 	}
-	_autoAddressingEnable, _autoAddressingEnableErr := BACnetApplicationTagParse(readBuffer)
+	_autoAddressingEnable, _autoAddressingEnableErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _autoAddressingEnableErr != nil {
 		return nil, errors.Wrap(_autoAddressingEnableErr, "Error parsing 'autoAddressingEnable' field of BACnetConstructedDataIPv6AutoAddressingEnable")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataIPv6AutoAddressingEnableParse(readBuffer utils.ReadBuf
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

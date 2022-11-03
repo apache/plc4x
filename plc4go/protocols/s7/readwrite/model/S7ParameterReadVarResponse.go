@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -128,7 +129,11 @@ func (m *_S7ParameterReadVarResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterReadVarResponseParse(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterReadVarResponse, error) {
+func S7ParameterReadVarResponseParse(theBytes []byte, messageType uint8) (S7ParameterReadVarResponse, error) {
+	return S7ParameterReadVarResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), messageType) // TODO: get endianness from mspec
+}
+
+func S7ParameterReadVarResponseParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterReadVarResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterReadVarResponse"); pullErr != nil {
@@ -157,7 +162,15 @@ func S7ParameterReadVarResponseParse(readBuffer utils.ReadBuffer, messageType ui
 	return _child, nil
 }
 
-func (m *_S7ParameterReadVarResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7ParameterReadVarResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7ParameterReadVarResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

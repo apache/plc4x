@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +127,11 @@ func (m *_SALDataMetering) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataMeteringParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataMetering, error) {
+func SALDataMeteringParse(theBytes []byte, applicationId ApplicationId) (SALDataMetering, error) {
+	return SALDataMeteringParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataMeteringParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataMetering, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataMetering"); pullErr != nil {
@@ -139,7 +144,7 @@ func SALDataMeteringParse(readBuffer utils.ReadBuffer, applicationId Application
 	if pullErr := readBuffer.PullContext("meteringData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for meteringData")
 	}
-	_meteringData, _meteringDataErr := MeteringDataParse(readBuffer)
+	_meteringData, _meteringDataErr := MeteringDataParseWithBuffer(readBuffer)
 	if _meteringDataErr != nil {
 		return nil, errors.Wrap(_meteringDataErr, "Error parsing 'meteringData' field of SALDataMetering")
 	}
@@ -161,7 +166,15 @@ func SALDataMeteringParse(readBuffer utils.ReadBuffer, applicationId Application
 	return _child, nil
 }
 
-func (m *_SALDataMetering) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataMetering) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SALDataMetering) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

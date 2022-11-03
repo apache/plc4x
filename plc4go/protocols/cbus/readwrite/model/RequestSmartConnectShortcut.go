@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -156,7 +157,11 @@ func (m *_RequestSmartConnectShortcut) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestSmartConnectShortcutParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestSmartConnectShortcut, error) {
+func RequestSmartConnectShortcutParse(theBytes []byte, cBusOptions CBusOptions) (RequestSmartConnectShortcut, error) {
+	return RequestSmartConnectShortcutParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+}
+
+func RequestSmartConnectShortcutParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestSmartConnectShortcut, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestSmartConnectShortcut"); pullErr != nil {
@@ -179,7 +184,7 @@ func RequestSmartConnectShortcutParse(readBuffer utils.ReadBuffer, cBusOptions C
 	if pullErr := readBuffer.PullContext("pipePeek"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for pipePeek")
 	}
-	pipePeek, _err := RequestTypeParse(readBuffer)
+	pipePeek, _err := RequestTypeParseWithBuffer(readBuffer)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'pipePeek' field of RequestSmartConnectShortcut")
 	}
@@ -215,7 +220,15 @@ func RequestSmartConnectShortcutParse(readBuffer utils.ReadBuffer, cBusOptions C
 	return _child, nil
 }
 
-func (m *_RequestSmartConnectShortcut) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_RequestSmartConnectShortcut) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_RequestSmartConnectShortcut) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

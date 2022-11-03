@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,7 +108,11 @@ func (m *_ReplyNetwork) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReplyNetworkParse(readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
+func ReplyNetworkParse(theBytes []byte) (ReplyNetwork, error) {
+	return ReplyNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ReplyNetworkParseWithBuffer(readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyNetwork"); pullErr != nil {
@@ -120,7 +125,7 @@ func ReplyNetworkParse(readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
 	if pullErr := readBuffer.PullContext("networkRoute"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkRoute")
 	}
-	_networkRoute, _networkRouteErr := NetworkRouteParse(readBuffer)
+	_networkRoute, _networkRouteErr := NetworkRouteParseWithBuffer(readBuffer)
 	if _networkRouteErr != nil {
 		return nil, errors.Wrap(_networkRouteErr, "Error parsing 'networkRoute' field of ReplyNetwork")
 	}
@@ -133,7 +138,7 @@ func ReplyNetworkParse(readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
 	if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unitAddress")
 	}
-	_unitAddress, _unitAddressErr := UnitAddressParse(readBuffer)
+	_unitAddress, _unitAddressErr := UnitAddressParseWithBuffer(readBuffer)
 	if _unitAddressErr != nil {
 		return nil, errors.Wrap(_unitAddressErr, "Error parsing 'unitAddress' field of ReplyNetwork")
 	}
@@ -153,7 +158,15 @@ func ReplyNetworkParse(readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
 	}, nil
 }
 
-func (m *_ReplyNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ReplyNetwork) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ReplyNetwork) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ReplyNetwork"); pushErr != nil {

@@ -35,25 +35,26 @@ type ReadBufferByteBased interface {
 	PeekByte(offset byte) byte
 }
 
-func NewReadBufferByteBased(data []byte) ReadBufferByteBased {
+func NewReadBufferByteBased(data []byte, options ...ReadBufferByteBasedOptions) ReadBufferByteBased {
 	buffer := bytes.NewBuffer(data)
 	reader := bitio.NewReader(buffer)
-	return &byteReadBuffer{
+	b := &byteReadBuffer{
 		data:      data,
 		reader:    reader,
 		pos:       uint64(0),
 		byteOrder: binary.BigEndian,
 	}
+	for _, option := range options {
+		option(b)
+	}
+	return b
 }
 
-func NewLittleEndianReadBufferByteBased(data []byte) ReadBufferByteBased {
-	buffer := bytes.NewBuffer(data)
-	reader := bitio.NewReader(buffer)
-	return &byteReadBuffer{
-		data:      data,
-		reader:    reader,
-		pos:       uint64(0),
-		byteOrder: binary.LittleEndian,
+type ReadBufferByteBasedOptions = func(b *byteReadBuffer)
+
+func WithByteOrderForReadBufferByteBased(byteOrder binary.ByteOrder) ReadBufferByteBasedOptions {
+	return func(b *byteReadBuffer) {
+		b.byteOrder = byteOrder
 	}
 }
 

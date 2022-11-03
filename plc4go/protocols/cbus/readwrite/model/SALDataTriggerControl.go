@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +127,11 @@ func (m *_SALDataTriggerControl) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataTriggerControlParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTriggerControl, error) {
+func SALDataTriggerControlParse(theBytes []byte, applicationId ApplicationId) (SALDataTriggerControl, error) {
+	return SALDataTriggerControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataTriggerControlParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTriggerControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataTriggerControl"); pullErr != nil {
@@ -139,7 +144,7 @@ func SALDataTriggerControlParse(readBuffer utils.ReadBuffer, applicationId Appli
 	if pullErr := readBuffer.PullContext("triggerControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for triggerControlData")
 	}
-	_triggerControlData, _triggerControlDataErr := TriggerControlDataParse(readBuffer)
+	_triggerControlData, _triggerControlDataErr := TriggerControlDataParseWithBuffer(readBuffer)
 	if _triggerControlDataErr != nil {
 		return nil, errors.Wrap(_triggerControlDataErr, "Error parsing 'triggerControlData' field of SALDataTriggerControl")
 	}
@@ -161,7 +166,15 @@ func SALDataTriggerControlParse(readBuffer utils.ReadBuffer, applicationId Appli
 	return _child, nil
 }
 
-func (m *_SALDataTriggerControl) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataTriggerControl) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SALDataTriggerControl) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

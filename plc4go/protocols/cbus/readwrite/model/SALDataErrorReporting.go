@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +127,11 @@ func (m *_SALDataErrorReporting) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataErrorReportingParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataErrorReporting, error) {
+func SALDataErrorReportingParse(theBytes []byte, applicationId ApplicationId) (SALDataErrorReporting, error) {
+	return SALDataErrorReportingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+}
+
+func SALDataErrorReportingParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataErrorReporting, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataErrorReporting"); pullErr != nil {
@@ -139,7 +144,7 @@ func SALDataErrorReportingParse(readBuffer utils.ReadBuffer, applicationId Appli
 	if pullErr := readBuffer.PullContext("errorReportingData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorReportingData")
 	}
-	_errorReportingData, _errorReportingDataErr := ErrorReportingDataParse(readBuffer)
+	_errorReportingData, _errorReportingDataErr := ErrorReportingDataParseWithBuffer(readBuffer)
 	if _errorReportingDataErr != nil {
 		return nil, errors.Wrap(_errorReportingDataErr, "Error parsing 'errorReportingData' field of SALDataErrorReporting")
 	}
@@ -161,7 +166,15 @@ func SALDataErrorReportingParse(readBuffer utils.ReadBuffer, applicationId Appli
 	return _child, nil
 }
 
-func (m *_SALDataErrorReporting) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataErrorReporting) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SALDataErrorReporting) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

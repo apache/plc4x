@@ -18,3 +18,4 @@
 #
 org.apache.plc4x.simulator.server.s7.S7ServerModule
 org.apache.plc4x.simulator.server.cbus.CBusServerModule
+org.apache.plc4x.simulator.server.bacnet.BacnetServerModule

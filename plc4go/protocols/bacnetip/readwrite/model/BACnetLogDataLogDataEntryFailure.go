@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetLogDataLogDataEntryFailure) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogDataLogDataEntryFailureParse(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryFailure, error) {
+func BACnetLogDataLogDataEntryFailureParse(theBytes []byte) (BACnetLogDataLogDataEntryFailure, error) {
+	return BACnetLogDataLogDataEntryFailureParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetLogDataLogDataEntryFailureParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryFailure, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryFailure"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetLogDataLogDataEntryFailureParse(readBuffer utils.ReadBuffer) (BACnetL
 	if pullErr := readBuffer.PullContext("failure"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for failure")
 	}
-	_failure, _failureErr := ErrorEnclosedParse(readBuffer, uint8(uint8(7)))
+	_failure, _failureErr := ErrorEnclosedParseWithBuffer(readBuffer, uint8(uint8(7)))
 	if _failureErr != nil {
 		return nil, errors.Wrap(_failureErr, "Error parsing 'failure' field of BACnetLogDataLogDataEntryFailure")
 	}
@@ -157,7 +162,15 @@ func BACnetLogDataLogDataEntryFailureParse(readBuffer utils.ReadBuffer) (BACnetL
 	return _child, nil
 }
 
-func (m *_BACnetLogDataLogDataEntryFailure) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogDataLogDataEntryFailure) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLogDataLogDataEntryFailure) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

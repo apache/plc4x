@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetPropertyStatesDoorAlarmState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesDoorAlarmStateParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorAlarmState, error) {
+func BACnetPropertyStatesDoorAlarmStateParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesDoorAlarmState, error) {
+	return BACnetPropertyStatesDoorAlarmStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesDoorAlarmStateParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorAlarmState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesDoorAlarmState"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetPropertyStatesDoorAlarmStateParse(readBuffer utils.ReadBuffer, peeked
 	if pullErr := readBuffer.PullContext("doorAlarmState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doorAlarmState")
 	}
-	_doorAlarmState, _doorAlarmStateErr := BACnetDoorAlarmStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_doorAlarmState, _doorAlarmStateErr := BACnetDoorAlarmStateTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _doorAlarmStateErr != nil {
 		return nil, errors.Wrap(_doorAlarmStateErr, "Error parsing 'doorAlarmState' field of BACnetPropertyStatesDoorAlarmState")
 	}
@@ -157,7 +162,15 @@ func BACnetPropertyStatesDoorAlarmStateParse(readBuffer utils.ReadBuffer, peeked
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesDoorAlarmState) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesDoorAlarmState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesDoorAlarmState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

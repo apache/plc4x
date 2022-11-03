@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetPropertyStatesUnits) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesUnitsParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesUnits, error) {
+func BACnetPropertyStatesUnitsParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesUnits, error) {
+	return BACnetPropertyStatesUnitsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesUnitsParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesUnits, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesUnits"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetPropertyStatesUnitsParse(readBuffer utils.ReadBuffer, peekedTagNumber
 	if pullErr := readBuffer.PullContext("units"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for units")
 	}
-	_units, _unitsErr := BACnetEngineeringUnitsTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_units, _unitsErr := BACnetEngineeringUnitsTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _unitsErr != nil {
 		return nil, errors.Wrap(_unitsErr, "Error parsing 'units' field of BACnetPropertyStatesUnits")
 	}
@@ -157,7 +162,15 @@ func BACnetPropertyStatesUnitsParse(readBuffer utils.ReadBuffer, peekedTagNumber
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesUnits) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesUnits) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesUnits) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +125,11 @@ func (m *_ComObjectTableRealisationType6) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ComObjectTableRealisationType6Parse(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTableRealisationType6, error) {
+func ComObjectTableRealisationType6Parse(theBytes []byte, firmwareType FirmwareType) (ComObjectTableRealisationType6, error) {
+	return ComObjectTableRealisationType6ParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), firmwareType) // TODO: get endianness from mspec
+}
+
+func ComObjectTableRealisationType6ParseWithBuffer(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTableRealisationType6, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ComObjectTableRealisationType6"); pullErr != nil {
@@ -137,7 +142,7 @@ func ComObjectTableRealisationType6Parse(readBuffer utils.ReadBuffer, firmwareTy
 	if pullErr := readBuffer.PullContext("comObjectDescriptors"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for comObjectDescriptors")
 	}
-	_comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6Parse(readBuffer)
+	_comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6ParseWithBuffer(readBuffer)
 	if _comObjectDescriptorsErr != nil {
 		return nil, errors.Wrap(_comObjectDescriptorsErr, "Error parsing 'comObjectDescriptors' field of ComObjectTableRealisationType6")
 	}
@@ -159,7 +164,15 @@ func ComObjectTableRealisationType6Parse(readBuffer utils.ReadBuffer, firmwareTy
 	return _child, nil
 }
 
-func (m *_ComObjectTableRealisationType6) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ComObjectTableRealisationType6) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ComObjectTableRealisationType6) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -98,7 +99,11 @@ func (m *_RequestTermination) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestTerminationParse(readBuffer utils.ReadBuffer) (RequestTermination, error) {
+func RequestTerminationParse(theBytes []byte) (RequestTermination, error) {
+	return RequestTerminationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func RequestTerminationParseWithBuffer(readBuffer utils.ReadBuffer) (RequestTermination, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestTermination"); pullErr != nil {
@@ -124,7 +129,15 @@ func RequestTerminationParse(readBuffer utils.ReadBuffer) (RequestTermination, e
 	return &_RequestTermination{}, nil
 }
 
-func (m *_RequestTermination) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_RequestTermination) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_RequestTermination) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("RequestTermination"); pushErr != nil {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +125,11 @@ func (m *_DeviceConfigurationAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (DeviceConfigurationAck, error) {
+func DeviceConfigurationAckParse(theBytes []byte) (DeviceConfigurationAck, error) {
+	return DeviceConfigurationAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DeviceConfigurationAckParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceConfigurationAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationAck"); pullErr != nil {
@@ -137,7 +142,7 @@ func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (DeviceConfigurati
 	if pullErr := readBuffer.PullContext("deviceConfigurationAckDataBlock"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceConfigurationAckDataBlock")
 	}
-	_deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockErr := DeviceConfigurationAckDataBlockParse(readBuffer)
+	_deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockErr := DeviceConfigurationAckDataBlockParseWithBuffer(readBuffer)
 	if _deviceConfigurationAckDataBlockErr != nil {
 		return nil, errors.Wrap(_deviceConfigurationAckDataBlockErr, "Error parsing 'deviceConfigurationAckDataBlock' field of DeviceConfigurationAck")
 	}
@@ -159,7 +164,15 @@ func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (DeviceConfigurati
 	return _child, nil
 }
 
-func (m *_DeviceConfigurationAck) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_DeviceConfigurationAck) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_DeviceConfigurationAck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetAuthenticationStatus uint8
 
 type IBACnetAuthenticationStatus interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -125,7 +127,11 @@ func (m BACnetAuthenticationStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAuthenticationStatusParse(readBuffer utils.ReadBuffer) (BACnetAuthenticationStatus, error) {
+func BACnetAuthenticationStatusParse(theBytes []byte) (BACnetAuthenticationStatus, error) {
+	return BACnetAuthenticationStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAuthenticationStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthenticationStatus, error) {
 	val, err := readBuffer.ReadUint8("BACnetAuthenticationStatus", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAuthenticationStatus")
@@ -138,7 +144,15 @@ func BACnetAuthenticationStatusParse(readBuffer utils.ReadBuffer) (BACnetAuthent
 	}
 }
 
-func (e BACnetAuthenticationStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAuthenticationStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetAuthenticationStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetAuthenticationStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

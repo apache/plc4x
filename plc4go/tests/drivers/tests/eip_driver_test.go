@@ -31,7 +31,7 @@ import (
 
 func TestEIPDriver(t *testing.T) {
 	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
-		return eipModel.EipPacketParse(readBufferByteBased)
+		return eipModel.EipPacketParseWithBuffer(readBufferByteBased)
 	})}
 	testutils.RunDriverTestsuiteWithOptions(t, eip.NewDriver(), "assets/testing/protocols/eip/DriverTestsuite.xml", eipIO.EipXmlParserHelper{}, options)
 }

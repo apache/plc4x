@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetShedLevelLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetShedLevelLevelParse(readBuffer utils.ReadBuffer) (BACnetShedLevelLevel, error) {
+func BACnetShedLevelLevelParse(theBytes []byte) (BACnetShedLevelLevel, error) {
+	return BACnetShedLevelLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetShedLevelLevelParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetShedLevelLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetShedLevelLevel"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetShedLevelLevelParse(readBuffer utils.ReadBuffer) (BACnetShedLevelLeve
 	if pullErr := readBuffer.PullContext("level"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for level")
 	}
-	_level, _levelErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_level, _levelErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _levelErr != nil {
 		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of BACnetShedLevelLevel")
 	}
@@ -157,7 +162,15 @@ func BACnetShedLevelLevelParse(readBuffer utils.ReadBuffer) (BACnetShedLevelLeve
 	return _child, nil
 }
 
-func (m *_BACnetShedLevelLevel) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetShedLevelLevel) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetShedLevelLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

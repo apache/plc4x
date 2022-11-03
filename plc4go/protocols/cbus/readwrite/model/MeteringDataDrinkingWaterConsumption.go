@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,7 +124,11 @@ func (m *_MeteringDataDrinkingWaterConsumption) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MeteringDataDrinkingWaterConsumptionParse(readBuffer utils.ReadBuffer) (MeteringDataDrinkingWaterConsumption, error) {
+func MeteringDataDrinkingWaterConsumptionParse(theBytes []byte) (MeteringDataDrinkingWaterConsumption, error) {
+	return MeteringDataDrinkingWaterConsumptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MeteringDataDrinkingWaterConsumptionParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringDataDrinkingWaterConsumption, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeteringDataDrinkingWaterConsumption"); pullErr != nil {
@@ -152,7 +157,15 @@ func MeteringDataDrinkingWaterConsumptionParse(readBuffer utils.ReadBuffer) (Met
 	return _child, nil
 }
 
-func (m *_MeteringDataDrinkingWaterConsumption) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MeteringDataDrinkingWaterConsumption) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_MeteringDataDrinkingWaterConsumption) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

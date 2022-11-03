@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -129,7 +130,11 @@ func (m *_NLMInitalizeRoutingTablePortMapping) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMInitalizeRoutingTablePortMappingParse(readBuffer utils.ReadBuffer) (NLMInitalizeRoutingTablePortMapping, error) {
+func NLMInitalizeRoutingTablePortMappingParse(theBytes []byte) (NLMInitalizeRoutingTablePortMapping, error) {
+	return NLMInitalizeRoutingTablePortMappingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func NLMInitalizeRoutingTablePortMappingParseWithBuffer(readBuffer utils.ReadBuffer) (NLMInitalizeRoutingTablePortMapping, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMInitalizeRoutingTablePortMapping"); pullErr != nil {
@@ -178,7 +183,15 @@ func NLMInitalizeRoutingTablePortMappingParse(readBuffer utils.ReadBuffer) (NLMI
 	}, nil
 }
 
-func (m *_NLMInitalizeRoutingTablePortMapping) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_NLMInitalizeRoutingTablePortMapping) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_NLMInitalizeRoutingTablePortMapping) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NLMInitalizeRoutingTablePortMapping"); pushErr != nil {

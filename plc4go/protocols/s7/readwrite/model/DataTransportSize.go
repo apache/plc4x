@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,8 +32,8 @@ import (
 type DataTransportSize uint8
 
 type IDataTransportSize interface {
+	utils.Serializable
 	SizeInBits() bool
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -171,7 +173,11 @@ func (m DataTransportSize) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DataTransportSizeParse(readBuffer utils.ReadBuffer) (DataTransportSize, error) {
+func DataTransportSizeParse(theBytes []byte) (DataTransportSize, error) {
+	return DataTransportSizeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func DataTransportSizeParseWithBuffer(readBuffer utils.ReadBuffer) (DataTransportSize, error) {
 	val, err := readBuffer.ReadUint8("DataTransportSize", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DataTransportSize")
@@ -184,7 +190,15 @@ func DataTransportSizeParse(readBuffer utils.ReadBuffer) (DataTransportSize, err
 	}
 }
 
-func (e DataTransportSize) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e DataTransportSize) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e DataTransportSize) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("DataTransportSize", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

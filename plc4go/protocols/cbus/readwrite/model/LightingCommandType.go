@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,8 +32,8 @@ import (
 type LightingCommandType uint8
 
 type ILightingCommandType interface {
+	utils.Serializable
 	NumberOfArguments() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -151,7 +153,11 @@ func (m LightingCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LightingCommandTypeParse(readBuffer utils.ReadBuffer) (LightingCommandType, error) {
+func LightingCommandTypeParse(theBytes []byte) (LightingCommandType, error) {
+	return LightingCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LightingCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (LightingCommandType, error) {
 	val, err := readBuffer.ReadUint8("LightingCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading LightingCommandType")
@@ -164,7 +170,15 @@ func LightingCommandTypeParse(readBuffer utils.ReadBuffer) (LightingCommandType,
 	}
 }
 
-func (e LightingCommandType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e LightingCommandType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e LightingCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("LightingCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

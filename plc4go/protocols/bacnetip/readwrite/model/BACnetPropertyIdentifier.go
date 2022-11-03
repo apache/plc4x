@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetPropertyIdentifier uint32
 
 type IBACnetPropertyIdentifier interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -2831,7 +2833,11 @@ func (m BACnetPropertyIdentifier) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyIdentifierParse(readBuffer utils.ReadBuffer) (BACnetPropertyIdentifier, error) {
+func BACnetPropertyIdentifierParse(theBytes []byte) (BACnetPropertyIdentifier, error) {
+	return BACnetPropertyIdentifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyIdentifierParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPropertyIdentifier, error) {
 	val, err := readBuffer.ReadUint32("BACnetPropertyIdentifier", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetPropertyIdentifier")
@@ -2844,7 +2850,15 @@ func BACnetPropertyIdentifierParse(readBuffer utils.ReadBuffer) (BACnetPropertyI
 	}
 }
 
-func (e BACnetPropertyIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetPropertyIdentifier) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetPropertyIdentifier) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint32("BACnetPropertyIdentifier", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

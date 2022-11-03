@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +125,11 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStri
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString, error) {
+func BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringParse(theBytes []byte, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString, error) {
+	return BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString"); pullErr != nil {
@@ -137,7 +142,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringPar
 	if pullErr := readBuffer.PullContext("characterStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for characterStringValue")
 	}
-	_characterStringValue, _characterStringValueErr := BACnetApplicationTagParse(readBuffer)
+	_characterStringValue, _characterStringValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _characterStringValueErr != nil {
 		return nil, errors.Wrap(_characterStringValueErr, "Error parsing 'characterStringValue' field of BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString")
 	}
@@ -161,7 +166,15 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringPar
 	return _child, nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

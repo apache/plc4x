@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -133,7 +134,11 @@ func (m *_LightingDataRampToLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LightingDataRampToLevelParse(readBuffer utils.ReadBuffer) (LightingDataRampToLevel, error) {
+func LightingDataRampToLevelParse(theBytes []byte) (LightingDataRampToLevel, error) {
+	return LightingDataRampToLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LightingDataRampToLevelParseWithBuffer(readBuffer utils.ReadBuffer) (LightingDataRampToLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LightingDataRampToLevel"); pullErr != nil {
@@ -170,7 +175,15 @@ func LightingDataRampToLevelParse(readBuffer utils.ReadBuffer) (LightingDataRamp
 	return _child, nil
 }
 
-func (m *_LightingDataRampToLevel) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_LightingDataRampToLevel) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_LightingDataRampToLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

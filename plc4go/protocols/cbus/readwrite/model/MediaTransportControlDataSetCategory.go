@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,7 +124,11 @@ func (m *_MediaTransportControlDataSetCategory) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlDataSetCategoryParse(readBuffer utils.ReadBuffer) (MediaTransportControlDataSetCategory, error) {
+func MediaTransportControlDataSetCategoryParse(theBytes []byte) (MediaTransportControlDataSetCategory, error) {
+	return MediaTransportControlDataSetCategoryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func MediaTransportControlDataSetCategoryParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataSetCategory, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataSetCategory"); pullErr != nil {
@@ -152,7 +157,15 @@ func MediaTransportControlDataSetCategoryParse(readBuffer utils.ReadBuffer) (Med
 	return _child, nil
 }
 
-func (m *_MediaTransportControlDataSetCategory) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataSetCategory) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_MediaTransportControlDataSetCategory) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

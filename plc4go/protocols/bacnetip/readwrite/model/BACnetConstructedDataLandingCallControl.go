@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataLandingCallControl) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLandingCallControlParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLandingCallControl, error) {
+func BACnetConstructedDataLandingCallControlParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLandingCallControl, error) {
+	return BACnetConstructedDataLandingCallControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLandingCallControlParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLandingCallControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLandingCallControl"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataLandingCallControlParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("landingCallControl"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for landingCallControl")
 	}
-	_landingCallControl, _landingCallControlErr := BACnetLandingCallStatusParse(readBuffer)
+	_landingCallControl, _landingCallControlErr := BACnetLandingCallStatusParseWithBuffer(readBuffer)
 	if _landingCallControlErr != nil {
 		return nil, errors.Wrap(_landingCallControlErr, "Error parsing 'landingCallControl' field of BACnetConstructedDataLandingCallControl")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataLandingCallControlParse(readBuffer utils.ReadBuffer, t
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataLandingCallControl) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLandingCallControl) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataLandingCallControl) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

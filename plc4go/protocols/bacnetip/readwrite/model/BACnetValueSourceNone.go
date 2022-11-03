@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetValueSourceNone) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetValueSourceNoneParse(readBuffer utils.ReadBuffer) (BACnetValueSourceNone, error) {
+func BACnetValueSourceNoneParse(theBytes []byte) (BACnetValueSourceNone, error) {
+	return BACnetValueSourceNoneParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetValueSourceNoneParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetValueSourceNone, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetValueSourceNone"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetValueSourceNoneParse(readBuffer utils.ReadBuffer) (BACnetValueSourceN
 	if pullErr := readBuffer.PullContext("none"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for none")
 	}
-	_none, _noneErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_NULL))
+	_none, _noneErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_NULL))
 	if _noneErr != nil {
 		return nil, errors.Wrap(_noneErr, "Error parsing 'none' field of BACnetValueSourceNone")
 	}
@@ -157,7 +162,15 @@ func BACnetValueSourceNoneParse(readBuffer utils.ReadBuffer) (BACnetValueSourceN
 	return _child, nil
 }
 
-func (m *_BACnetValueSourceNone) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetValueSourceNone) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetValueSourceNone) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

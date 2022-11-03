@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -136,7 +137,11 @@ func (m *_S7ParameterWriteVarRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterWriteVarRequest, error) {
+func S7ParameterWriteVarRequestParse(theBytes []byte, messageType uint8) (S7ParameterWriteVarRequest, error) {
+	return S7ParameterWriteVarRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), messageType) // TODO: get endianness from mspec
+}
+
+func S7ParameterWriteVarRequestParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterWriteVarRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterWriteVarRequest"); pullErr != nil {
@@ -164,7 +169,7 @@ func S7ParameterWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType ui
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
-			_item, _err := S7VarRequestParameterItemParse(readBuffer)
+			_item, _err := S7VarRequestParameterItemParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field of S7ParameterWriteVarRequest")
 			}
@@ -188,7 +193,15 @@ func S7ParameterWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType ui
 	return _child, nil
 }
 
-func (m *_S7ParameterWriteVarRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7ParameterWriteVarRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7ParameterWriteVarRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

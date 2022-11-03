@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -132,7 +133,11 @@ func (m *_ReplyOrConfirmation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReplyOrConfirmationParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmation, error) {
+func ReplyOrConfirmationParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmation, error) {
+	return ReplyOrConfirmationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions, requestContext) // TODO: get endianness from mspec
+}
+
+func ReplyOrConfirmationParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyOrConfirmation"); pullErr != nil {
@@ -166,11 +171,11 @@ func ReplyOrConfirmationParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptio
 	var typeSwitchError error
 	switch {
 	case isAlpha == bool(false) && peekedByte == 0x21: // ServerErrorReply
-		_childTemp, typeSwitchError = ServerErrorReplyParse(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = ServerErrorReplyParseWithBuffer(readBuffer, cBusOptions, requestContext)
 	case isAlpha == bool(true): // ReplyOrConfirmationConfirmation
-		_childTemp, typeSwitchError = ReplyOrConfirmationConfirmationParse(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = ReplyOrConfirmationConfirmationParseWithBuffer(readBuffer, cBusOptions, requestContext)
 	case isAlpha == bool(false): // ReplyOrConfirmationReply
-		_childTemp, typeSwitchError = ReplyOrConfirmationReplyParse(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = ReplyOrConfirmationReplyParseWithBuffer(readBuffer, cBusOptions, requestContext)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [isAlpha=%v, peekedByte=%v]", isAlpha, peekedByte)
 	}

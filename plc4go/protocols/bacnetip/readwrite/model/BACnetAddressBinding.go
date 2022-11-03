@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,7 +108,11 @@ func (m *_BACnetAddressBinding) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAddressBindingParse(readBuffer utils.ReadBuffer) (BACnetAddressBinding, error) {
+func BACnetAddressBindingParse(theBytes []byte) (BACnetAddressBinding, error) {
+	return BACnetAddressBindingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetAddressBindingParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAddressBinding, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAddressBinding"); pullErr != nil {
@@ -120,7 +125,7 @@ func BACnetAddressBindingParse(readBuffer utils.ReadBuffer) (BACnetAddressBindin
 	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
 	}
-	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParse(readBuffer)
+	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _deviceIdentifierErr != nil {
 		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field of BACnetAddressBinding")
 	}
@@ -133,7 +138,7 @@ func BACnetAddressBindingParse(readBuffer utils.ReadBuffer) (BACnetAddressBindin
 	if pullErr := readBuffer.PullContext("deviceAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceAddress")
 	}
-	_deviceAddress, _deviceAddressErr := BACnetAddressParse(readBuffer)
+	_deviceAddress, _deviceAddressErr := BACnetAddressParseWithBuffer(readBuffer)
 	if _deviceAddressErr != nil {
 		return nil, errors.Wrap(_deviceAddressErr, "Error parsing 'deviceAddress' field of BACnetAddressBinding")
 	}
@@ -153,7 +158,15 @@ func BACnetAddressBindingParse(readBuffer utils.ReadBuffer) (BACnetAddressBindin
 	}, nil
 }
 
-func (m *_BACnetAddressBinding) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAddressBinding) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetAddressBinding) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAddressBinding"); pushErr != nil {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -125,7 +126,11 @@ func (m *_ErrorReportingSystemCategoryTypeClimateControllers) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingSystemCategoryTypeClimateControllersParse(readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeClimateControllers, error) {
+func ErrorReportingSystemCategoryTypeClimateControllersParse(theBytes []byte, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeClimateControllers, error) {
+	return ErrorReportingSystemCategoryTypeClimateControllersParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), errorReportingSystemCategoryClass) // TODO: get endianness from mspec
+}
+
+func ErrorReportingSystemCategoryTypeClimateControllersParseWithBuffer(readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeClimateControllers, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorReportingSystemCategoryTypeClimateControllers"); pullErr != nil {
@@ -138,7 +143,7 @@ func ErrorReportingSystemCategoryTypeClimateControllersParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("categoryForType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for categoryForType")
 	}
-	_categoryForType, _categoryForTypeErr := ErrorReportingSystemCategoryTypeForClimateControllersParse(readBuffer)
+	_categoryForType, _categoryForTypeErr := ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(readBuffer)
 	if _categoryForTypeErr != nil {
 		return nil, errors.Wrap(_categoryForTypeErr, "Error parsing 'categoryForType' field of ErrorReportingSystemCategoryTypeClimateControllers")
 	}
@@ -160,7 +165,15 @@ func ErrorReportingSystemCategoryTypeClimateControllersParse(readBuffer utils.Re
 	return _child, nil
 }
 
-func (m *_ErrorReportingSystemCategoryTypeClimateControllers) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ErrorReportingSystemCategoryTypeClimateControllers) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ErrorReportingSystemCategoryTypeClimateControllers) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

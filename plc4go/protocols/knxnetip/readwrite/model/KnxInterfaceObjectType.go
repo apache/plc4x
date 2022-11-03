@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,9 +32,9 @@ import (
 type KnxInterfaceObjectType uint16
 
 type IKnxInterfaceObjectType interface {
+	utils.Serializable
 	Code() string
 	Name() string
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -470,7 +472,11 @@ func (m KnxInterfaceObjectType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxInterfaceObjectTypeParse(readBuffer utils.ReadBuffer) (KnxInterfaceObjectType, error) {
+func KnxInterfaceObjectTypeParse(theBytes []byte) (KnxInterfaceObjectType, error) {
+	return KnxInterfaceObjectTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func KnxInterfaceObjectTypeParseWithBuffer(readBuffer utils.ReadBuffer) (KnxInterfaceObjectType, error) {
 	val, err := readBuffer.ReadUint16("KnxInterfaceObjectType", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxInterfaceObjectType")
@@ -483,7 +489,15 @@ func KnxInterfaceObjectTypeParse(readBuffer utils.ReadBuffer) (KnxInterfaceObjec
 	}
 }
 
-func (e KnxInterfaceObjectType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e KnxInterfaceObjectType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e KnxInterfaceObjectType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("KnxInterfaceObjectType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

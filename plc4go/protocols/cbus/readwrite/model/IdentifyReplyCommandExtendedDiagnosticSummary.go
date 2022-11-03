@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -353,7 +354,11 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandExtendedDiagnosticSummary, error) {
+func IdentifyReplyCommandExtendedDiagnosticSummaryParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandExtendedDiagnosticSummary, error) {
+	return IdentifyReplyCommandExtendedDiagnosticSummaryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), attribute, numBytes) // TODO: get endianness from mspec
+}
+
+func IdentifyReplyCommandExtendedDiagnosticSummaryParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandExtendedDiagnosticSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandExtendedDiagnosticSummary"); pullErr != nil {
@@ -366,7 +371,7 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("lowApplication"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lowApplication")
 	}
-	_lowApplication, _lowApplicationErr := ApplicationIdContainerParse(readBuffer)
+	_lowApplication, _lowApplicationErr := ApplicationIdContainerParseWithBuffer(readBuffer)
 	if _lowApplicationErr != nil {
 		return nil, errors.Wrap(_lowApplicationErr, "Error parsing 'lowApplication' field of IdentifyReplyCommandExtendedDiagnosticSummary")
 	}
@@ -379,7 +384,7 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("highApplication"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for highApplication")
 	}
-	_highApplication, _highApplicationErr := ApplicationIdContainerParse(readBuffer)
+	_highApplication, _highApplicationErr := ApplicationIdContainerParseWithBuffer(readBuffer)
 	if _highApplicationErr != nil {
 		return nil, errors.Wrap(_highApplicationErr, "Error parsing 'highApplication' field of IdentifyReplyCommandExtendedDiagnosticSummary")
 	}
@@ -599,7 +604,15 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParse(readBuffer utils.ReadBuf
 	return _child, nil
 }
 
-func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

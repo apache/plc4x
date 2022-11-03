@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -103,7 +104,11 @@ func (m *_ApduDataExtNetworkParameterRead) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtNetworkParameterReadParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtNetworkParameterRead, error) {
+func ApduDataExtNetworkParameterReadParse(theBytes []byte, length uint8) (ApduDataExtNetworkParameterRead, error) {
+	return ApduDataExtNetworkParameterReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), length) // TODO: get endianness from mspec
+}
+
+func ApduDataExtNetworkParameterReadParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtNetworkParameterRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtNetworkParameterRead"); pullErr != nil {
@@ -126,7 +131,15 @@ func ApduDataExtNetworkParameterReadParse(readBuffer utils.ReadBuffer, length ui
 	return _child, nil
 }
 
-func (m *_ApduDataExtNetworkParameterRead) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataExtNetworkParameterRead) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApduDataExtNetworkParameterRead) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -102,7 +103,11 @@ func (m *_SecurityDataMainsFailure) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataMainsFailureParse(readBuffer utils.ReadBuffer) (SecurityDataMainsFailure, error) {
+func SecurityDataMainsFailureParse(theBytes []byte) (SecurityDataMainsFailure, error) {
+	return SecurityDataMainsFailureParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func SecurityDataMainsFailureParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataMainsFailure, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataMainsFailure"); pullErr != nil {
@@ -123,7 +128,15 @@ func SecurityDataMainsFailureParse(readBuffer utils.ReadBuffer) (SecurityDataMai
 	return _child, nil
 }
 
-func (m *_SecurityDataMainsFailure) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataMainsFailure) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataMainsFailure) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice uint8
 
 type IBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -137,7 +139,11 @@ func (m BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevic
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice, error) {
+func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceParse(theBytes []byte) (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice, error) {
+	return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice")
@@ -150,7 +156,15 @@ func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevicePa
 	}
 }
 
-func (e BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

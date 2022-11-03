@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -129,7 +130,11 @@ func (m *_BVLCForeignDeviceTableEntry) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (BVLCForeignDeviceTableEntry, error) {
+func BVLCForeignDeviceTableEntryParse(theBytes []byte) (BVLCForeignDeviceTableEntry, error) {
+	return BVLCForeignDeviceTableEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BVLCForeignDeviceTableEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCForeignDeviceTableEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCForeignDeviceTableEntry"); pullErr != nil {
@@ -195,7 +200,15 @@ func BVLCForeignDeviceTableEntryParse(readBuffer utils.ReadBuffer) (BVLCForeignD
 	}, nil
 }
 
-func (m *_BVLCForeignDeviceTableEntry) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BVLCForeignDeviceTableEntry) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BVLCForeignDeviceTableEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BVLCForeignDeviceTableEntry"); pushErr != nil {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -100,7 +101,11 @@ func (m *_BACnetClosingTag) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetClosingTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8) (BACnetClosingTag, error) {
+func BACnetClosingTagParse(theBytes []byte, tagNumberArgument uint8) (BACnetClosingTag, error) {
+	return BACnetClosingTagParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumberArgument) // TODO: get endianness from mspec
+}
+
+func BACnetClosingTagParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8) (BACnetClosingTag, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetClosingTag"); pullErr != nil {
@@ -113,7 +118,7 @@ func BACnetClosingTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8)
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetClosingTag")
 	}
@@ -148,7 +153,15 @@ func BACnetClosingTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8)
 	}, nil
 }
 
-func (m *_BACnetClosingTag) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetClosingTag) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetClosingTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetClosingTag"); pushErr != nil {

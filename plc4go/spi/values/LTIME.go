@@ -20,6 +20,7 @@
 package values
 
 import (
+	"encoding/binary"
 	"fmt"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -38,9 +39,8 @@ func NewPlcLTIME(value uint64) PlcLTIME {
 }
 
 func (m PlcLTIME) GetRaw() []byte {
-	buf := utils.NewWriteBufferByteBased()
-	_ = m.Serialize(buf)
-	return buf.GetBytes()
+	theBytes, _ := m.Serialize()
+	return theBytes
 }
 
 func (m PlcLTIME) IsDuration() bool {
@@ -63,7 +63,15 @@ func (m PlcLTIME) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.LTIME
 }
 
-func (m PlcLTIME) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m PlcLTIME) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m PlcLTIME) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteString("PlcLTIME", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
 }
 

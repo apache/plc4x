@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type ModbusDeviceInformationConformityLevel uint8
 
 type IModbusDeviceInformationConformityLevel interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -101,7 +103,11 @@ func (m ModbusDeviceInformationConformityLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusDeviceInformationConformityLevelParse(readBuffer utils.ReadBuffer) (ModbusDeviceInformationConformityLevel, error) {
+func ModbusDeviceInformationConformityLevelParse(theBytes []byte) (ModbusDeviceInformationConformityLevel, error) {
+	return ModbusDeviceInformationConformityLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func ModbusDeviceInformationConformityLevelParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusDeviceInformationConformityLevel, error) {
 	val, err := readBuffer.ReadUint8("ModbusDeviceInformationConformityLevel", 7)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ModbusDeviceInformationConformityLevel")
@@ -114,7 +120,15 @@ func ModbusDeviceInformationConformityLevelParse(readBuffer utils.ReadBuffer) (M
 	}
 }
 
-func (e ModbusDeviceInformationConformityLevel) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ModbusDeviceInformationConformityLevel) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ModbusDeviceInformationConformityLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ModbusDeviceInformationConformityLevel", 7, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

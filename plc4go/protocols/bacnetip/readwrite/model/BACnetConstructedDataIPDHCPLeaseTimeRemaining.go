@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIPDHCPLeaseTimeRemainingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDHCPLeaseTimeRemaining, error) {
+func BACnetConstructedDataIPDHCPLeaseTimeRemainingParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDHCPLeaseTimeRemaining, error) {
+	return BACnetConstructedDataIPDHCPLeaseTimeRemainingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataIPDHCPLeaseTimeRemainingParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDHCPLeaseTimeRemaining, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPDHCPLeaseTimeRemaining"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataIPDHCPLeaseTimeRemainingParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("ipDhcpLeaseTimeRemaining"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipDhcpLeaseTimeRemaining")
 	}
-	_ipDhcpLeaseTimeRemaining, _ipDhcpLeaseTimeRemainingErr := BACnetApplicationTagParse(readBuffer)
+	_ipDhcpLeaseTimeRemaining, _ipDhcpLeaseTimeRemainingErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _ipDhcpLeaseTimeRemainingErr != nil {
 		return nil, errors.Wrap(_ipDhcpLeaseTimeRemainingErr, "Error parsing 'ipDhcpLeaseTimeRemaining' field of BACnetConstructedDataIPDHCPLeaseTimeRemaining")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataIPDHCPLeaseTimeRemainingParse(readBuffer utils.ReadBuf
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

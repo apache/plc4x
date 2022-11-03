@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -114,7 +115,11 @@ func (m *_HVACRawLevels) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACRawLevelsParse(readBuffer utils.ReadBuffer) (HVACRawLevels, error) {
+func HVACRawLevelsParse(theBytes []byte) (HVACRawLevels, error) {
+	return HVACRawLevelsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func HVACRawLevelsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACRawLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACRawLevels"); pullErr != nil {
@@ -145,7 +150,15 @@ func HVACRawLevelsParse(readBuffer utils.ReadBuffer) (HVACRawLevels, error) {
 	}, nil
 }
 
-func (m *_HVACRawLevels) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_HVACRawLevels) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_HVACRawLevels) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HVACRawLevels"); pushErr != nil {

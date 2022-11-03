@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetTimeStampTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimeStampTimeParse(readBuffer utils.ReadBuffer) (BACnetTimeStampTime, error) {
+func BACnetTimeStampTimeParse(theBytes []byte) (BACnetTimeStampTime, error) {
+	return BACnetTimeStampTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetTimeStampTimeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimeStampTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeStampTime"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetTimeStampTimeParse(readBuffer utils.ReadBuffer) (BACnetTimeStampTime,
 	if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeValue")
 	}
-	_timeValue, _timeValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_TIME))
+	_timeValue, _timeValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_TIME))
 	if _timeValueErr != nil {
 		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field of BACnetTimeStampTime")
 	}
@@ -157,7 +162,15 @@ func BACnetTimeStampTimeParse(readBuffer utils.ReadBuffer) (BACnetTimeStampTime,
 	return _child, nil
 }
 
-func (m *_BACnetTimeStampTime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTimeStampTime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetTimeStampTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

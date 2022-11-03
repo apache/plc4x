@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -103,7 +104,11 @@ func (m *_AccessControlDataAccessPointClosed) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AccessControlDataAccessPointClosedParse(readBuffer utils.ReadBuffer) (AccessControlDataAccessPointClosed, error) {
+func AccessControlDataAccessPointClosedParse(theBytes []byte) (AccessControlDataAccessPointClosed, error) {
+	return AccessControlDataAccessPointClosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AccessControlDataAccessPointClosedParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlDataAccessPointClosed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AccessControlDataAccessPointClosed"); pullErr != nil {
@@ -124,7 +129,15 @@ func AccessControlDataAccessPointClosedParse(readBuffer utils.ReadBuffer) (Acces
 	return _child, nil
 }
 
-func (m *_AccessControlDataAccessPointClosed) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AccessControlDataAccessPointClosed) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AccessControlDataAccessPointClosed) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

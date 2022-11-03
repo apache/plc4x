@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -157,7 +158,11 @@ func (m *_AmsSerialFrame) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AmsSerialFrameParse(readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
+func AmsSerialFrameParse(theBytes []byte) (AmsSerialFrame, error) {
+	return AmsSerialFrameParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AmsSerialFrameParseWithBuffer(readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsSerialFrame"); pullErr != nil {
@@ -205,7 +210,7 @@ func AmsSerialFrameParse(readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
 	if pullErr := readBuffer.PullContext("userdata"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for userdata")
 	}
-	_userdata, _userdataErr := AmsPacketParse(readBuffer)
+	_userdata, _userdataErr := AmsPacketParseWithBuffer(readBuffer)
 	if _userdataErr != nil {
 		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field of AmsSerialFrame")
 	}
@@ -237,7 +242,15 @@ func AmsSerialFrameParse(readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
 	}, nil
 }
 
-func (m *_AmsSerialFrame) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AmsSerialFrame) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AmsSerialFrame) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AmsSerialFrame"); pushErr != nil {

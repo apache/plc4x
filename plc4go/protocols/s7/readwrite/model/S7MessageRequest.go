@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,7 +108,11 @@ func (m *_S7MessageRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7MessageRequestParse(readBuffer utils.ReadBuffer) (S7MessageRequest, error) {
+func S7MessageRequestParse(theBytes []byte) (S7MessageRequest, error) {
+	return S7MessageRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func S7MessageRequestParseWithBuffer(readBuffer utils.ReadBuffer) (S7MessageRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7MessageRequest"); pullErr != nil {
@@ -128,7 +133,15 @@ func S7MessageRequestParse(readBuffer utils.ReadBuffer) (S7MessageRequest, error
 	return _child, nil
 }
 
-func (m *_S7MessageRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7MessageRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7MessageRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

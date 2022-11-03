@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -161,7 +162,11 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandOutputUnitSummaryParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandOutputUnitSummary, error) {
+func IdentifyReplyCommandOutputUnitSummaryParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandOutputUnitSummary, error) {
+	return IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), attribute, numBytes) // TODO: get endianness from mspec
+}
+
+func IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandOutputUnitSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandOutputUnitSummary"); pullErr != nil {
@@ -174,7 +179,7 @@ func IdentifyReplyCommandOutputUnitSummaryParse(readBuffer utils.ReadBuffer, att
 	if pullErr := readBuffer.PullContext("unitFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unitFlags")
 	}
-	_unitFlags, _unitFlagsErr := IdentifyReplyCommandUnitSummaryParse(readBuffer)
+	_unitFlags, _unitFlagsErr := IdentifyReplyCommandUnitSummaryParseWithBuffer(readBuffer)
 	if _unitFlagsErr != nil {
 		return nil, errors.Wrap(_unitFlagsErr, "Error parsing 'unitFlags' field of IdentifyReplyCommandOutputUnitSummary")
 	}
@@ -228,7 +233,15 @@ func IdentifyReplyCommandOutputUnitSummaryParse(readBuffer utils.ReadBuffer, att
 	return _child, nil
 }
 
-func (m *_IdentifyReplyCommandOutputUnitSummary) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_IdentifyReplyCommandOutputUnitSummary) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_IdentifyReplyCommandOutputUnitSummary) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

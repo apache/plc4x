@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -112,7 +113,11 @@ func (m *_BACnetVMACEntry) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetVMACEntryParse(readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) {
+func BACnetVMACEntryParse(theBytes []byte) (BACnetVMACEntry, error) {
+	return BACnetVMACEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetVMACEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetVMACEntry"); pullErr != nil {
@@ -128,7 +133,7 @@ func BACnetVMACEntryParse(readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) 
 		if pullErr := readBuffer.PullContext("virtualMacAddress"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for virtualMacAddress")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_OCTET_STRING)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(0), BACnetDataType_OCTET_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -150,7 +155,7 @@ func BACnetVMACEntryParse(readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) 
 		if pullErr := readBuffer.PullContext("nativeMacAddress"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for nativeMacAddress")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_OCTET_STRING)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_OCTET_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -176,7 +181,15 @@ func BACnetVMACEntryParse(readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) 
 	}, nil
 }
 
-func (m *_BACnetVMACEntry) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetVMACEntry) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetVMACEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetVMACEntry"); pushErr != nil {

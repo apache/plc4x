@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type Language uint8
 
 type ILanguage interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -497,7 +499,11 @@ func (m Language) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LanguageParse(readBuffer utils.ReadBuffer) (Language, error) {
+func LanguageParse(theBytes []byte) (Language, error) {
+	return LanguageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LanguageParseWithBuffer(readBuffer utils.ReadBuffer) (Language, error) {
 	val, err := readBuffer.ReadUint8("Language", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading Language")
@@ -510,7 +516,15 @@ func LanguageParse(readBuffer utils.ReadBuffer) (Language, error) {
 	}
 }
 
-func (e Language) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e Language) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e Language) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("Language", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

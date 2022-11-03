@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +125,11 @@ func (m *_TriggerControlLabelOptions) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TriggerControlLabelOptionsParse(readBuffer utils.ReadBuffer) (TriggerControlLabelOptions, error) {
+func TriggerControlLabelOptionsParse(theBytes []byte) (TriggerControlLabelOptions, error) {
+	return TriggerControlLabelOptionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func TriggerControlLabelOptionsParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlLabelOptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlLabelOptions"); pullErr != nil {
@@ -154,7 +159,7 @@ func TriggerControlLabelOptionsParse(readBuffer utils.ReadBuffer) (TriggerContro
 	if pullErr := readBuffer.PullContext("labelFlavour"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for labelFlavour")
 	}
-	_labelFlavour, _labelFlavourErr := TriggerControlLabelFlavourParse(readBuffer)
+	_labelFlavour, _labelFlavourErr := TriggerControlLabelFlavourParseWithBuffer(readBuffer)
 	if _labelFlavourErr != nil {
 		return nil, errors.Wrap(_labelFlavourErr, "Error parsing 'labelFlavour' field of TriggerControlLabelOptions")
 	}
@@ -201,7 +206,7 @@ func TriggerControlLabelOptionsParse(readBuffer utils.ReadBuffer) (TriggerContro
 	if pullErr := readBuffer.PullContext("labelType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for labelType")
 	}
-	_labelType, _labelTypeErr := TriggerControlLabelTypeParse(readBuffer)
+	_labelType, _labelTypeErr := TriggerControlLabelTypeParseWithBuffer(readBuffer)
 	if _labelTypeErr != nil {
 		return nil, errors.Wrap(_labelTypeErr, "Error parsing 'labelType' field of TriggerControlLabelOptions")
 	}
@@ -242,7 +247,15 @@ func TriggerControlLabelOptionsParse(readBuffer utils.ReadBuffer) (TriggerContro
 	}, nil
 }
 
-func (m *_TriggerControlLabelOptions) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TriggerControlLabelOptions) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TriggerControlLabelOptions) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("TriggerControlLabelOptions"); pushErr != nil {

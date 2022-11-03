@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -161,7 +162,11 @@ func (m *_DF1ResponseMessage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DF1ResponseMessageParse(readBuffer utils.ReadBuffer, payloadLength uint16) (DF1ResponseMessage, error) {
+func DF1ResponseMessageParse(theBytes []byte, payloadLength uint16) (DF1ResponseMessage, error) {
+	return DF1ResponseMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), payloadLength) // TODO: get endianness from mspec
+}
+
+func DF1ResponseMessageParseWithBuffer(readBuffer utils.ReadBuffer, payloadLength uint16) (DF1ResponseMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1ResponseMessage"); pullErr != nil {
@@ -249,7 +254,7 @@ func DF1ResponseMessageParse(readBuffer utils.ReadBuffer, payloadLength uint16) 
 	var typeSwitchError error
 	switch {
 	case commandCode == 0x4F: // DF1CommandResponseMessageProtectedTypedLogicalRead
-		_childTemp, typeSwitchError = DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer, payloadLength)
+		_childTemp, typeSwitchError = DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(readBuffer, payloadLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandCode=%v]", commandCode)
 	}

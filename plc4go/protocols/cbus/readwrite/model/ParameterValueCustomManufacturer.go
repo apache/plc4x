@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +125,11 @@ func (m *_ParameterValueCustomManufacturer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterValueCustomManufacturerParse(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueCustomManufacturer, error) {
+func ParameterValueCustomManufacturerParse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueCustomManufacturer, error) {
+	return ParameterValueCustomManufacturerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), parameterType, numBytes) // TODO: get endianness from mspec
+}
+
+func ParameterValueCustomManufacturerParseWithBuffer(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueCustomManufacturer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueCustomManufacturer"); pullErr != nil {
@@ -137,7 +142,7 @@ func ParameterValueCustomManufacturerParse(readBuffer utils.ReadBuffer, paramete
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := CustomManufacturerParse(readBuffer, uint8(numBytes))
+	_value, _valueErr := CustomManufacturerParseWithBuffer(readBuffer, uint8(numBytes))
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueCustomManufacturer")
 	}
@@ -161,7 +166,15 @@ func ParameterValueCustomManufacturerParse(readBuffer utils.ReadBuffer, paramete
 	return _child, nil
 }
 
-func (m *_ParameterValueCustomManufacturer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ParameterValueCustomManufacturer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ParameterValueCustomManufacturer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

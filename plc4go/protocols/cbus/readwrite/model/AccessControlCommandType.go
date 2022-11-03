@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,8 +32,8 @@ import (
 type AccessControlCommandType uint8
 
 type IAccessControlCommandType interface {
+	utils.Serializable
 	NumberOfArguments() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -181,7 +183,11 @@ func (m AccessControlCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AccessControlCommandTypeParse(readBuffer utils.ReadBuffer) (AccessControlCommandType, error) {
+func AccessControlCommandTypeParse(theBytes []byte) (AccessControlCommandType, error) {
+	return AccessControlCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AccessControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlCommandType, error) {
 	val, err := readBuffer.ReadUint8("AccessControlCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AccessControlCommandType")
@@ -194,7 +200,15 @@ func AccessControlCommandTypeParse(readBuffer utils.ReadBuffer) (AccessControlCo
 	}
 }
 
-func (e AccessControlCommandType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e AccessControlCommandType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e AccessControlCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("AccessControlCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -128,7 +129,11 @@ func (m *_BACnetRecipient) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRecipientParse(readBuffer utils.ReadBuffer) (BACnetRecipient, error) {
+func BACnetRecipientParse(theBytes []byte) (BACnetRecipient, error) {
+	return BACnetRecipientParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetRecipientParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRecipient, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetRecipient"); pullErr != nil {
@@ -142,7 +147,7 @@ func BACnetRecipientParse(readBuffer utils.ReadBuffer) (BACnetRecipient, error) 
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -161,9 +166,9 @@ func BACnetRecipientParse(readBuffer utils.ReadBuffer) (BACnetRecipient, error) 
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetRecipientDevice
-		_childTemp, typeSwitchError = BACnetRecipientDeviceParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetRecipientDeviceParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(1): // BACnetRecipientAddress
-		_childTemp, typeSwitchError = BACnetRecipientAddressParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetRecipientAddressParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}

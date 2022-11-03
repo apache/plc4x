@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetHostAddressIpAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetHostAddressIpAddressParse(readBuffer utils.ReadBuffer) (BACnetHostAddressIpAddress, error) {
+func BACnetHostAddressIpAddressParse(theBytes []byte) (BACnetHostAddressIpAddress, error) {
+	return BACnetHostAddressIpAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetHostAddressIpAddressParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetHostAddressIpAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetHostAddressIpAddress"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetHostAddressIpAddressParse(readBuffer utils.ReadBuffer) (BACnetHostAdd
 	if pullErr := readBuffer.PullContext("ipAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipAddress")
 	}
-	_ipAddress, _ipAddressErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_OCTET_STRING))
+	_ipAddress, _ipAddressErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_OCTET_STRING))
 	if _ipAddressErr != nil {
 		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field of BACnetHostAddressIpAddress")
 	}
@@ -157,7 +162,15 @@ func BACnetHostAddressIpAddressParse(readBuffer utils.ReadBuffer) (BACnetHostAdd
 	return _child, nil
 }
 
-func (m *_BACnetHostAddressIpAddress) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetHostAddressIpAddress) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetHostAddressIpAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -136,7 +137,11 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntry, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntry, error) {
+	return BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntry"); pullErr != nil {
@@ -150,7 +155,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryParse(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -179,33 +184,33 @@ func BACnetFaultParameterFaultExtendedParametersEntryParse(readBuffer utils.Read
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == 0x0 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryNull
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryNullParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryNullParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x4 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryReal
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryRealParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryRealParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryUnsigned
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryUnsignedParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryUnsignedParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryBoolean
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryBooleanParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryBooleanParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryInteger
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryIntegerParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryIntegerParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x5 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryDouble
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryDoubleParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryDoubleParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryOctetString
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryOctetStringParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryOctetStringParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryCharacterString
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryCharacterStringParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryCharacterStringParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x8 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryBitString
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryBitStringParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryBitStringParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryEnumerated
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryDate
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryDateParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryDateParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryTime
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryTimeParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryTimeParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetFaultParameterFaultExtendedParametersEntryReference
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryReferenceParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v, peekedIsContextTag=%v]", peekedTagNumber, peekedIsContextTag)
 	}

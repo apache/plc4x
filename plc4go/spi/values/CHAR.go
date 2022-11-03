@@ -20,6 +20,7 @@
 package values
 
 import (
+	"encoding/binary"
 	"fmt"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -53,7 +54,15 @@ func (m PlcCHAR) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.CHAR
 }
 
-func (m PlcCHAR) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m PlcCHAR) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m PlcCHAR) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteString("PlcCHAR", 8, "UTF-8", m.value)
 }
 

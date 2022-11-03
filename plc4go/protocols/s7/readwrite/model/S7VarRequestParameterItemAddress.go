@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -127,7 +128,11 @@ func (m *_S7VarRequestParameterItemAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (S7VarRequestParameterItemAddress, error) {
+func S7VarRequestParameterItemAddressParse(theBytes []byte) (S7VarRequestParameterItemAddress, error) {
+	return S7VarRequestParameterItemAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func S7VarRequestParameterItemAddressParseWithBuffer(readBuffer utils.ReadBuffer) (S7VarRequestParameterItemAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7VarRequestParameterItemAddress"); pullErr != nil {
@@ -147,7 +152,7 @@ func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (S7VarRe
 	if pullErr := readBuffer.PullContext("address"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for address")
 	}
-	_address, _addressErr := S7AddressParse(readBuffer)
+	_address, _addressErr := S7AddressParseWithBuffer(readBuffer)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of S7VarRequestParameterItemAddress")
 	}
@@ -169,7 +174,15 @@ func S7VarRequestParameterItemAddressParse(readBuffer utils.ReadBuffer) (S7VarRe
 	return _child, nil
 }
 
-func (m *_S7VarRequestParameterItemAddress) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7VarRequestParameterItemAddress) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7VarRequestParameterItemAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

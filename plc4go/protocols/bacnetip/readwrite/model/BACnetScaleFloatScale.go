@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetScaleFloatScale) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetScaleFloatScaleParse(readBuffer utils.ReadBuffer) (BACnetScaleFloatScale, error) {
+func BACnetScaleFloatScaleParse(theBytes []byte) (BACnetScaleFloatScale, error) {
+	return BACnetScaleFloatScaleParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetScaleFloatScaleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetScaleFloatScale, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetScaleFloatScale"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetScaleFloatScaleParse(readBuffer utils.ReadBuffer) (BACnetScaleFloatSc
 	if pullErr := readBuffer.PullContext("floatScale"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for floatScale")
 	}
-	_floatScale, _floatScaleErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_REAL))
+	_floatScale, _floatScaleErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_REAL))
 	if _floatScaleErr != nil {
 		return nil, errors.Wrap(_floatScaleErr, "Error parsing 'floatScale' field of BACnetScaleFloatScale")
 	}
@@ -157,7 +162,15 @@ func BACnetScaleFloatScaleParse(readBuffer utils.ReadBuffer) (BACnetScaleFloatSc
 	return _child, nil
 }
 
-func (m *_BACnetScaleFloatScale) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetScaleFloatScale) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetScaleFloatScale) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

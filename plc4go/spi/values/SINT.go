@@ -20,6 +20,7 @@
 package values
 
 import (
+	"encoding/binary"
 	"fmt"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -38,9 +39,8 @@ func NewPlcSINT(value int8) PlcSINT {
 }
 
 func (m PlcSINT) GetRaw() []byte {
-	buf := utils.NewWriteBufferByteBased()
-	_ = m.Serialize(buf)
-	return buf.GetBytes()
+	theBytes, _ := m.Serialize()
+	return theBytes
 }
 
 func (m PlcSINT) GetBoolean() bool {
@@ -136,7 +136,15 @@ func (m PlcSINT) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.SINT
 }
 
-func (m PlcSINT) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m PlcSINT) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m PlcSINT) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteInt8("PlcINT", 8, m.value)
 }
 

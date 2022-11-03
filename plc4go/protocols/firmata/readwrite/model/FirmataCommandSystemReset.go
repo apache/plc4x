@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -103,7 +104,11 @@ func (m *_FirmataCommandSystemReset) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataCommandSystemResetParse(readBuffer utils.ReadBuffer, response bool) (FirmataCommandSystemReset, error) {
+func FirmataCommandSystemResetParse(theBytes []byte, response bool) (FirmataCommandSystemReset, error) {
+	return FirmataCommandSystemResetParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func FirmataCommandSystemResetParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataCommandSystemReset, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandSystemReset"); pullErr != nil {
@@ -126,7 +131,15 @@ func FirmataCommandSystemResetParse(readBuffer utils.ReadBuffer, response bool) 
 	return _child, nil
 }
 
-func (m *_FirmataCommandSystemReset) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_FirmataCommandSystemReset) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_FirmataCommandSystemReset) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

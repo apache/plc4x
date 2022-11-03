@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -136,7 +137,11 @@ func (m *_S7ParameterUserData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterUserDataParse(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterUserData, error) {
+func S7ParameterUserDataParse(theBytes []byte, messageType uint8) (S7ParameterUserData, error) {
+	return S7ParameterUserDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), messageType) // TODO: get endianness from mspec
+}
+
+func S7ParameterUserDataParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterUserData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterUserData"); pullErr != nil {
@@ -164,7 +169,7 @@ func S7ParameterUserDataParse(readBuffer utils.ReadBuffer, messageType uint8) (S
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
-			_item, _err := S7ParameterUserDataItemParse(readBuffer)
+			_item, _err := S7ParameterUserDataItemParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field of S7ParameterUserData")
 			}
@@ -188,7 +193,15 @@ func S7ParameterUserDataParse(readBuffer utils.ReadBuffer, messageType uint8) (S
 	return _child, nil
 }
 
-func (m *_S7ParameterUserData) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7ParameterUserData) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7ParameterUserData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

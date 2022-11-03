@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataEventDetectionEnable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEventDetectionEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventDetectionEnable, error) {
+func BACnetConstructedDataEventDetectionEnableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventDetectionEnable, error) {
+	return BACnetConstructedDataEventDetectionEnableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataEventDetectionEnableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventDetectionEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventDetectionEnable"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataEventDetectionEnableParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("eventDetectionEnable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventDetectionEnable")
 	}
-	_eventDetectionEnable, _eventDetectionEnableErr := BACnetApplicationTagParse(readBuffer)
+	_eventDetectionEnable, _eventDetectionEnableErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _eventDetectionEnableErr != nil {
 		return nil, errors.Wrap(_eventDetectionEnableErr, "Error parsing 'eventDetectionEnable' field of BACnetConstructedDataEventDetectionEnable")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataEventDetectionEnableParse(readBuffer utils.ReadBuffer,
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataEventDetectionEnable) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataEventDetectionEnable) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataEventDetectionEnable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

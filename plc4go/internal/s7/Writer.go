@@ -26,7 +26,6 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"time"
@@ -231,12 +230,10 @@ func serializePlcValue(field model.PlcField, plcValue values.PlcValue) (readWrit
 	if s7StringField, ok := field.(*PlcStringField); ok {
 		stringLength = s7StringField.stringLength
 	}
-	io := utils.NewWriteBufferByteBased()
-	err := readWriteModel.DataItemSerialize(io, plcValue, s7Field.GetDataType().DataProtocolId(), int32(stringLength))
+	data, err := readWriteModel.DataItemSerialize(plcValue, s7Field.GetDataType().DataProtocolId(), int32(stringLength))
 	if err != nil {
 		return nil, errors.Wrapf(err, "Error serializing field item of type: '%v'", s7Field.GetDataType())
 	}
-	data := io.GetBytes()
 	return readWriteModel.NewS7VarPayloadDataItem(
 		readWriteModel.DataTransportErrorCode_OK,
 		transportSize, data,

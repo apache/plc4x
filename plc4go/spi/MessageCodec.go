@@ -50,7 +50,7 @@ type MessageCodec interface {
 	ConnectWithContext(ctx context.Context) error
 	// Disconnect disconnects this codec
 	Disconnect() error
-	// IsRunning returns tur if the codec (workers are running)
+	// IsRunning returns true if the codec (workers are running)
 	IsRunning() bool
 
 	// Send is sending a given message

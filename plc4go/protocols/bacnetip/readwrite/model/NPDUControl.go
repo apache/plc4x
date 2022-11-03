@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -146,7 +147,11 @@ func (m *_NPDUControl) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NPDUControlParse(readBuffer utils.ReadBuffer) (NPDUControl, error) {
+func NPDUControlParse(theBytes []byte) (NPDUControl, error) {
+	return NPDUControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func NPDUControlParseWithBuffer(readBuffer utils.ReadBuffer) (NPDUControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NPDUControl"); pullErr != nil {
@@ -221,7 +226,7 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (NPDUControl, error) {
 	if pullErr := readBuffer.PullContext("networkPriority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkPriority")
 	}
-	_networkPriority, _networkPriorityErr := NPDUNetworkPriorityParse(readBuffer)
+	_networkPriority, _networkPriorityErr := NPDUNetworkPriorityParseWithBuffer(readBuffer)
 	if _networkPriorityErr != nil {
 		return nil, errors.Wrap(_networkPriorityErr, "Error parsing 'networkPriority' field of NPDUControl")
 	}
@@ -246,7 +251,15 @@ func NPDUControlParse(readBuffer utils.ReadBuffer) (NPDUControl, error) {
 	}, nil
 }
 
-func (m *_NPDUControl) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_NPDUControl) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_NPDUControl) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NPDUControl"); pushErr != nil {

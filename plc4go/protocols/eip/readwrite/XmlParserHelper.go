@@ -48,23 +48,23 @@ func (m EipXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 			return nil, err
 		}
 		serviceLen := uint16(parsedUint0)
-		return model.CipServiceParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), serviceLen)
+		return model.CipServiceParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), serviceLen)
 	case "EipPacket":
-		return model.EipPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.EipPacketParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Services":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
 		servicesLen := uint16(parsedUint0)
-		return model.ServicesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), servicesLen)
+		return model.ServicesParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), servicesLen)
 	case "CipExchange":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
 		exchangeLen := uint16(parsedUint0)
-		return model.CipExchangeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), exchangeLen)
+		return model.CipExchangeParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), exchangeLen)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

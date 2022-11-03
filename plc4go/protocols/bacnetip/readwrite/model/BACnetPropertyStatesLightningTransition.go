@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetPropertyStatesLightningTransition) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesLightningTransitionParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLightningTransition, error) {
+func BACnetPropertyStatesLightningTransitionParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLightningTransition, error) {
+	return BACnetPropertyStatesLightningTransitionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetPropertyStatesLightningTransitionParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLightningTransition, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLightningTransition"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetPropertyStatesLightningTransitionParse(readBuffer utils.ReadBuffer, p
 	if pullErr := readBuffer.PullContext("lightningTransition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lightningTransition")
 	}
-	_lightningTransition, _lightningTransitionErr := BACnetLightingTransitionTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_lightningTransition, _lightningTransitionErr := BACnetLightingTransitionTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lightningTransitionErr != nil {
 		return nil, errors.Wrap(_lightningTransitionErr, "Error parsing 'lightningTransition' field of BACnetPropertyStatesLightningTransition")
 	}
@@ -157,7 +162,15 @@ func BACnetPropertyStatesLightningTransitionParse(readBuffer utils.ReadBuffer, p
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesLightningTransition) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesLightningTransition) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesLightningTransition) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

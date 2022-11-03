@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -210,7 +211,11 @@ func (m *_S7ParameterUserDataItemCPUFunctions) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (S7ParameterUserDataItemCPUFunctions, error) {
+func S7ParameterUserDataItemCPUFunctionsParse(theBytes []byte) (S7ParameterUserDataItemCPUFunctions, error) {
+	return S7ParameterUserDataItemCPUFunctionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func S7ParameterUserDataItemCPUFunctionsParseWithBuffer(readBuffer utils.ReadBuffer) (S7ParameterUserDataItemCPUFunctions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterUserDataItemCPUFunctions"); pullErr != nil {
@@ -311,7 +316,15 @@ func S7ParameterUserDataItemCPUFunctionsParse(readBuffer utils.ReadBuffer) (S7Pa
 	return _child, nil
 }
 
-func (m *_S7ParameterUserDataItemCPUFunctions) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7ParameterUserDataItemCPUFunctions) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7ParameterUserDataItemCPUFunctions) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

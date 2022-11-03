@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -159,7 +160,11 @@ func (m *_CALData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALDataParse(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALData, error) {
+func CALDataParse(theBytes []byte, requestContext RequestContext) (CALData, error) {
+	return CALDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), requestContext) // TODO: get endianness from mspec
+}
+
+func CALDataParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALData"); pullErr != nil {
@@ -177,7 +182,7 @@ func CALDataParse(readBuffer utils.ReadBuffer, requestContext RequestContext) (C
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := CALCommandTypeContainerParse(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := CALCommandTypeContainerParseWithBuffer(readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of CALData")
 	}
@@ -207,25 +212,25 @@ func CALDataParse(readBuffer utils.ReadBuffer, requestContext RequestContext) (C
 	var typeSwitchError error
 	switch {
 	case commandType == CALCommandType_RESET: // CALDataReset
-		_childTemp, typeSwitchError = CALDataResetParse(readBuffer, requestContext)
+		_childTemp, typeSwitchError = CALDataResetParseWithBuffer(readBuffer, requestContext)
 	case commandType == CALCommandType_RECALL: // CALDataRecall
-		_childTemp, typeSwitchError = CALDataRecallParse(readBuffer, requestContext)
+		_childTemp, typeSwitchError = CALDataRecallParseWithBuffer(readBuffer, requestContext)
 	case commandType == CALCommandType_IDENTIFY: // CALDataIdentify
-		_childTemp, typeSwitchError = CALDataIdentifyParse(readBuffer, requestContext)
+		_childTemp, typeSwitchError = CALDataIdentifyParseWithBuffer(readBuffer, requestContext)
 	case commandType == CALCommandType_GET_STATUS: // CALDataGetStatus
-		_childTemp, typeSwitchError = CALDataGetStatusParse(readBuffer, requestContext)
+		_childTemp, typeSwitchError = CALDataGetStatusParseWithBuffer(readBuffer, requestContext)
 	case commandType == CALCommandType_WRITE: // CALDataWrite
-		_childTemp, typeSwitchError = CALDataWriteParse(readBuffer, requestContext, commandTypeContainer)
+		_childTemp, typeSwitchError = CALDataWriteParseWithBuffer(readBuffer, requestContext, commandTypeContainer)
 	case commandType == CALCommandType_REPLY && sendIdentifyRequestBefore == bool(true): // CALDataIdentifyReply
-		_childTemp, typeSwitchError = CALDataIdentifyReplyParse(readBuffer, requestContext, commandTypeContainer)
+		_childTemp, typeSwitchError = CALDataIdentifyReplyParseWithBuffer(readBuffer, requestContext, commandTypeContainer)
 	case commandType == CALCommandType_REPLY: // CALDataReply
-		_childTemp, typeSwitchError = CALDataReplyParse(readBuffer, requestContext, commandTypeContainer)
+		_childTemp, typeSwitchError = CALDataReplyParseWithBuffer(readBuffer, requestContext, commandTypeContainer)
 	case commandType == CALCommandType_ACKNOWLEDGE: // CALDataAcknowledge
-		_childTemp, typeSwitchError = CALDataAcknowledgeParse(readBuffer, requestContext)
+		_childTemp, typeSwitchError = CALDataAcknowledgeParseWithBuffer(readBuffer, requestContext)
 	case commandType == CALCommandType_STATUS: // CALDataStatus
-		_childTemp, typeSwitchError = CALDataStatusParse(readBuffer, requestContext, commandTypeContainer)
+		_childTemp, typeSwitchError = CALDataStatusParseWithBuffer(readBuffer, requestContext, commandTypeContainer)
 	case commandType == CALCommandType_STATUS_EXTENDED: // CALDataStatusExtended
-		_childTemp, typeSwitchError = CALDataStatusExtendedParse(readBuffer, requestContext, commandTypeContainer)
+		_childTemp, typeSwitchError = CALDataStatusExtendedParseWithBuffer(readBuffer, requestContext, commandTypeContainer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v, sendIdentifyRequestBefore=%v]", commandType, sendIdentifyRequestBefore)
 	}
@@ -241,7 +246,7 @@ func CALDataParse(readBuffer utils.ReadBuffer, requestContext RequestContext) (C
 		if pullErr := readBuffer.PullContext("additionalData"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for additionalData")
 		}
-		_val, _err := CALDataParse(readBuffer, nil)
+		_val, _err := CALDataParseWithBuffer(readBuffer, nil)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

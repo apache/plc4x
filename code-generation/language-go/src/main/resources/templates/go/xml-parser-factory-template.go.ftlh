@@ -117,9 +117,9 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) Parse(typ
                 </#if>
             </#list>
             <#assign parserArgumentList><#list typeDefinition.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#sep> </#list> </#assign>
-            return model.${typeDefinition.name}Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), ${parserArgumentList})
+            return model.${typeDefinition.name}ParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), ${parserArgumentList})
         <#else>
-			return model.${typeDefinition.name}Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+			return model.${typeDefinition.name}ParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
         </#if>
     </#list>
     }

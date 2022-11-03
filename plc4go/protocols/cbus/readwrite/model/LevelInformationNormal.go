@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -158,7 +159,11 @@ func (m *_LevelInformationNormal) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LevelInformationNormalParse(readBuffer utils.ReadBuffer) (LevelInformationNormal, error) {
+func LevelInformationNormalParse(theBytes []byte) (LevelInformationNormal, error) {
+	return LevelInformationNormalParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func LevelInformationNormalParseWithBuffer(readBuffer utils.ReadBuffer) (LevelInformationNormal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LevelInformationNormal"); pullErr != nil {
@@ -171,7 +176,7 @@ func LevelInformationNormalParse(readBuffer utils.ReadBuffer) (LevelInformationN
 	if pullErr := readBuffer.PullContext("pair1"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for pair1")
 	}
-	_pair1, _pair1Err := LevelInformationNibblePairParse(readBuffer)
+	_pair1, _pair1Err := LevelInformationNibblePairParseWithBuffer(readBuffer)
 	if _pair1Err != nil {
 		return nil, errors.Wrap(_pair1Err, "Error parsing 'pair1' field of LevelInformationNormal")
 	}
@@ -184,7 +189,7 @@ func LevelInformationNormalParse(readBuffer utils.ReadBuffer) (LevelInformationN
 	if pullErr := readBuffer.PullContext("pair2"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for pair2")
 	}
-	_pair2, _pair2Err := LevelInformationNibblePairParse(readBuffer)
+	_pair2, _pair2Err := LevelInformationNibblePairParseWithBuffer(readBuffer)
 	if _pair2Err != nil {
 		return nil, errors.Wrap(_pair2Err, "Error parsing 'pair2' field of LevelInformationNormal")
 	}
@@ -217,7 +222,15 @@ func LevelInformationNormalParse(readBuffer utils.ReadBuffer) (LevelInformationN
 	return _child, nil
 }
 
-func (m *_LevelInformationNormal) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_LevelInformationNormal) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_LevelInformationNormal) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -44,13 +44,13 @@ func (m FirmataXmlParserHelper) Parse(typeName string, xmlString string, parserA
 	switch typeName {
 	case "SysexCommand":
 		response := parserArguments[0] == "true"
-		return model.SysexCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
+		return model.SysexCommandParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	case "FirmataMessage":
 		response := parserArguments[0] == "true"
-		return model.FirmataMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
+		return model.FirmataMessageParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	case "FirmataCommand":
 		response := parserArguments[0] == "true"
-		return model.FirmataCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
+		return model.FirmataCommandParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

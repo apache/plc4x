@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type StatusCoding byte
 
 type IStatusCoding interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +109,11 @@ func (m StatusCoding) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func StatusCodingParse(readBuffer utils.ReadBuffer) (StatusCoding, error) {
+func StatusCodingParse(theBytes []byte) (StatusCoding, error) {
+	return StatusCodingParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func StatusCodingParseWithBuffer(readBuffer utils.ReadBuffer) (StatusCoding, error) {
 	val, err := readBuffer.ReadByte("StatusCoding")
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading StatusCoding")
@@ -120,7 +126,15 @@ func StatusCodingParse(readBuffer utils.ReadBuffer) (StatusCoding, error) {
 	}
 }
 
-func (e StatusCoding) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e StatusCoding) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e StatusCoding) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteByte("StatusCoding", byte(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

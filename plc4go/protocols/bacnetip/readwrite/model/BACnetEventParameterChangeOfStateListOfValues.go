@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +125,11 @@ func (m *_BACnetEventParameterChangeOfStateListOfValues) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventParameterChangeOfStateListOfValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfStateListOfValues, error) {
+func BACnetEventParameterChangeOfStateListOfValuesParse(theBytes []byte, tagNumber uint8) (BACnetEventParameterChangeOfStateListOfValues, error) {
+	return BACnetEventParameterChangeOfStateListOfValuesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+}
+
+func BACnetEventParameterChangeOfStateListOfValuesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfStateListOfValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfStateListOfValues"); pullErr != nil {
@@ -137,7 +142,7 @@ func BACnetEventParameterChangeOfStateListOfValuesParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfStateListOfValues")
 	}
@@ -154,7 +159,7 @@ func BACnetEventParameterChangeOfStateListOfValuesParse(readBuffer utils.ReadBuf
 	var listOfValues []BACnetPropertyStates
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetPropertyStatesParse(readBuffer)
+			_item, _err := BACnetPropertyStatesParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field of BACnetEventParameterChangeOfStateListOfValues")
 			}
@@ -170,7 +175,7 @@ func BACnetEventParameterChangeOfStateListOfValuesParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfStateListOfValues")
 	}
@@ -192,7 +197,15 @@ func BACnetEventParameterChangeOfStateListOfValuesParse(readBuffer utils.ReadBuf
 	}, nil
 }
 
-func (m *_BACnetEventParameterChangeOfStateListOfValues) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventParameterChangeOfStateListOfValues) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetEventParameterChangeOfStateListOfValues) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEventParameterChangeOfStateListOfValues"); pushErr != nil {

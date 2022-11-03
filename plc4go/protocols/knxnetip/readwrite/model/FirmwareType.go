@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,7 +32,7 @@ import (
 type FirmwareType uint16
 
 type IFirmwareType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -179,7 +181,11 @@ func (m FirmwareType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmwareTypeParse(readBuffer utils.ReadBuffer) (FirmwareType, error) {
+func FirmwareTypeParse(theBytes []byte) (FirmwareType, error) {
+	return FirmwareTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func FirmwareTypeParseWithBuffer(readBuffer utils.ReadBuffer) (FirmwareType, error) {
 	val, err := readBuffer.ReadUint16("FirmwareType", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading FirmwareType")
@@ -192,7 +198,15 @@ func FirmwareTypeParse(readBuffer utils.ReadBuffer) (FirmwareType, error) {
 	}
 }
 
-func (e FirmwareType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e FirmwareType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e FirmwareType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("FirmwareType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

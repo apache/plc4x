@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetSpecialEventPeriodCalendarEntry) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSpecialEventPeriodCalendarEntryParse(readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriodCalendarEntry, error) {
+func BACnetSpecialEventPeriodCalendarEntryParse(theBytes []byte) (BACnetSpecialEventPeriodCalendarEntry, error) {
+	return BACnetSpecialEventPeriodCalendarEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func BACnetSpecialEventPeriodCalendarEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriodCalendarEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetSpecialEventPeriodCalendarEntry"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetSpecialEventPeriodCalendarEntryParse(readBuffer utils.ReadBuffer) (BA
 	if pullErr := readBuffer.PullContext("calendarEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for calendarEntry")
 	}
-	_calendarEntry, _calendarEntryErr := BACnetCalendarEntryEnclosedParse(readBuffer, uint8(uint8(0)))
+	_calendarEntry, _calendarEntryErr := BACnetCalendarEntryEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _calendarEntryErr != nil {
 		return nil, errors.Wrap(_calendarEntryErr, "Error parsing 'calendarEntry' field of BACnetSpecialEventPeriodCalendarEntry")
 	}
@@ -157,7 +162,15 @@ func BACnetSpecialEventPeriodCalendarEntryParse(readBuffer utils.ReadBuffer) (BA
 	return _child, nil
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarEntry) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetSpecialEventPeriodCalendarEntry) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetSpecialEventPeriodCalendarEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

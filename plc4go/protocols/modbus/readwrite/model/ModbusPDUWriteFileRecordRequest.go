@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -139,7 +140,11 @@ func (m *_ModbusPDUWriteFileRecordRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUWriteFileRecordRequestParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteFileRecordRequest, error) {
+func ModbusPDUWriteFileRecordRequestParse(theBytes []byte, response bool) (ModbusPDUWriteFileRecordRequest, error) {
+	return ModbusPDUWriteFileRecordRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+}
+
+func ModbusPDUWriteFileRecordRequestParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteFileRecordRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteFileRecordRequest"); pullErr != nil {
@@ -165,7 +170,7 @@ func ModbusPDUWriteFileRecordRequestParse(readBuffer utils.ReadBuffer, response 
 		_itemsLength := byteCount
 		_itemsEndPos := positionAware.GetPos() + uint16(_itemsLength)
 		for positionAware.GetPos() < _itemsEndPos {
-			_item, _err := ModbusPDUWriteFileRecordRequestItemParse(readBuffer)
+			_item, _err := ModbusPDUWriteFileRecordRequestItemParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field of ModbusPDUWriteFileRecordRequest")
 			}
@@ -189,7 +194,15 @@ func ModbusPDUWriteFileRecordRequestParse(readBuffer utils.ReadBuffer, response 
 	return _child, nil
 }
 
-func (m *_ModbusPDUWriteFileRecordRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUWriteFileRecordRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ModbusPDUWriteFileRecordRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	itemsArraySizeInBytes := func(items []ModbusPDUWriteFileRecordRequestItem) uint32 {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +123,11 @@ func (m *_BACnetPriorityValueConstructedValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueConstructedValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueConstructedValue, error) {
+func BACnetPriorityValueConstructedValueParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueConstructedValue, error) {
+	return BACnetPriorityValueConstructedValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument) // TODO: get endianness from mspec
+}
+
+func BACnetPriorityValueConstructedValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueConstructedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueConstructedValue"); pullErr != nil {
@@ -135,7 +140,7 @@ func BACnetPriorityValueConstructedValueParse(readBuffer utils.ReadBuffer, objec
 	if pullErr := readBuffer.PullContext("constructedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for constructedValue")
 	}
-	_constructedValue, _constructedValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(0)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
+	_constructedValue, _constructedValueErr := BACnetConstructedDataParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
 	if _constructedValueErr != nil {
 		return nil, errors.Wrap(_constructedValueErr, "Error parsing 'constructedValue' field of BACnetPriorityValueConstructedValue")
 	}
@@ -159,7 +164,15 @@ func BACnetPriorityValueConstructedValueParse(readBuffer utils.ReadBuffer, objec
 	return _child, nil
 }
 
-func (m *_BACnetPriorityValueConstructedValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPriorityValueConstructedValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPriorityValueConstructedValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

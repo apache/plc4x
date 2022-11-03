@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -149,7 +150,11 @@ func (m *_BACnetConstructedDataLastCredentialAddedTime) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLastCredentialAddedTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialAddedTime, error) {
+func BACnetConstructedDataLastCredentialAddedTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialAddedTime, error) {
+	return BACnetConstructedDataLastCredentialAddedTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+}
+
+func BACnetConstructedDataLastCredentialAddedTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialAddedTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastCredentialAddedTime"); pullErr != nil {
@@ -162,7 +167,7 @@ func BACnetConstructedDataLastCredentialAddedTimeParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("lastCredentialAddedTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastCredentialAddedTime")
 	}
-	_lastCredentialAddedTime, _lastCredentialAddedTimeErr := BACnetDateTimeParse(readBuffer)
+	_lastCredentialAddedTime, _lastCredentialAddedTimeErr := BACnetDateTimeParseWithBuffer(readBuffer)
 	if _lastCredentialAddedTimeErr != nil {
 		return nil, errors.Wrap(_lastCredentialAddedTimeErr, "Error parsing 'lastCredentialAddedTime' field of BACnetConstructedDataLastCredentialAddedTime")
 	}
@@ -192,7 +197,15 @@ func BACnetConstructedDataLastCredentialAddedTimeParse(readBuffer utils.ReadBuff
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataLastCredentialAddedTime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLastCredentialAddedTime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataLastCredentialAddedTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

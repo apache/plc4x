@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -119,7 +120,11 @@ func (m *_AlarmMessageAckResponseType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmMessageAckResponseTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageAckResponseType, error) {
+func AlarmMessageAckResponseTypeParse(theBytes []byte) (AlarmMessageAckResponseType, error) {
+	return AlarmMessageAckResponseTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func AlarmMessageAckResponseTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmMessageAckResponseType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageAckResponseType"); pullErr != nil {
@@ -177,7 +182,15 @@ func AlarmMessageAckResponseTypeParse(readBuffer utils.ReadBuffer) (AlarmMessage
 	}, nil
 }
 
-func (m *_AlarmMessageAckResponseType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AlarmMessageAckResponseType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AlarmMessageAckResponseType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessageAckResponseType"); pushErr != nil {

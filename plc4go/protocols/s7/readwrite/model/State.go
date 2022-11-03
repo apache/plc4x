@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -167,7 +168,11 @@ func (m *_State) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func StateParse(readBuffer utils.ReadBuffer) (State, error) {
+func StateParse(theBytes []byte) (State, error) {
+	return StateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+}
+
+func StateParseWithBuffer(readBuffer utils.ReadBuffer) (State, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("State"); pullErr != nil {
@@ -249,7 +254,15 @@ func StateParse(readBuffer utils.ReadBuffer) (State, error) {
 	}, nil
 }
 
-func (m *_State) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_State) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_State) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("State"); pushErr != nil {
