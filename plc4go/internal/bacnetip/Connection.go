@@ -136,10 +136,6 @@ type InvokeIdGenerator struct {
 func (t *InvokeIdGenerator) getAndIncrement() uint8 {
 	t.lock.Lock()
 	defer t.lock.Unlock()
-	// If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-	if t.currentInvokeId > 0xFF {
-		t.currentInvokeId = 0
-	}
 	result := t.currentInvokeId
 	t.currentInvokeId += 1
 	return result
