@@ -214,7 +214,8 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				discoveryRequestMessage := model.NewAdsDiscovery(0, model.Operation_DISCOVERY_REQUEST, amsNetId, model.AdsPortNumbers_SYSTEM_SERVICE, []model.AdsDiscoveryBlock{})
 
 				// Serialize the message
-				buffer := bytes.NewBuffer(make([]byte, discoveryRequestMessage.GetLengthInBytes()))
+				buffer := new(bytes.Buffer)
+				buffer.Grow(int(discoveryRequestMessage.GetLengthInBytes()))
 				writeBuffer := utils.NewCustomWriteBufferByteBased(buffer, binary.LittleEndian)
 				discoveryRequestMessage.Serialize(writeBuffer)
 
