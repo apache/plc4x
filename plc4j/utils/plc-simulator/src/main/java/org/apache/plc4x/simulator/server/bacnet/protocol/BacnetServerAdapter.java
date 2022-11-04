@@ -18,23 +18,15 @@
  */
 package org.apache.plc4x.simulator.server.bacnet.protocol;
 
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
-import org.apache.plc4x.java.cbus.readwrite.*;
+import org.apache.plc4x.java.bacnetip.readwrite.Error;
+import org.apache.plc4x.java.bacnetip.readwrite.*;
+import org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper;
 import org.apache.plc4x.simulator.model.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class BacnetServerAdapter extends ChannelInboundHandlerAdapter {
 
@@ -57,8 +49,129 @@ public class BacnetServerAdapter extends ChannelInboundHandlerAdapter {
         if (!(msg instanceof BVLC)) {
             return;
         }
+        BVLC bvlc = (BVLC) msg;
+        if (!(bvlc instanceof BVLCOriginalUnicastNPDU)) {
+            // TODO: write useful error
+            ctx.writeAndFlush(new BVLCOriginalUnicastNPDU(
+                new NPDU(
+                    (short) 1,
+                    new NPDUControl(true, false, false, false, NPDUNetworkPriority.NORMAL_MESSAGE),
+                    0,
+                    (short) 0,
+                    null,
+                    0,
+                    (short) 0,
+                    null,
+                    (short) 0,
+                    null,
+                    new APDUError(
+                        (short) 0,
+                        BACnetConfirmedServiceChoice.READ_PROPERTY,
+                        new BACnetErrorGeneral(new Error(
+                            new ErrorClassTagged(new BACnetTagHeader((byte) 0, TagClass.APPLICATION_TAGS, (byte) 1, (short) 0, (short) 0, 0, 0L), ErrorClass.COMMUNICATION, 0, (short) 0, TagClass.APPLICATION_TAGS),
+                            new ErrorCodeTagged(new BACnetTagHeader((byte) 0, TagClass.APPLICATION_TAGS, (byte) 1, (short) 0, (short) 0, 0, 0L), ErrorCode.VENDOR_PROPRIETARY_VALUE, 0, (short) 0, TagClass.APPLICATION_TAGS)
+                        )),
+                        0
+                    ),
+                    0
+                ),
+                0
+            )).addListener((ChannelFutureListener) f -> {
+                if (!f.isSuccess()) {
+                    f.cause().printStackTrace();
+                }
+            });
+            return;
+        }
+        BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
+        // TODO: get messageTypeField
+        APDU apdu = bvlcOriginalUnicastNPDU.getNpdu().getApdu();
+        if (!(apdu instanceof APDUConfirmedRequest)) {
+            // TODO: write useful error
+            ctx.writeAndFlush(new BVLCOriginalUnicastNPDU(
+                new NPDU(
+                    (short) 1,
+                    new NPDUControl(true, false, false, false, NPDUNetworkPriority.NORMAL_MESSAGE),
+                    0,
+                    (short) 0,
+                    null,
+                    0,
+                    (short) 0,
+                    null,
+                    (short) 0,
+                    null,
+                    new APDUError(
+                        (short) 0,
+                        BACnetConfirmedServiceChoice.READ_PROPERTY,
+                        new BACnetErrorGeneral(new Error(
+                            new ErrorClassTagged(new BACnetTagHeader((byte) 0, TagClass.APPLICATION_TAGS, (byte) 1, (short) 0, (short) 0, 0, 0L), ErrorClass.COMMUNICATION, 0, (short) 0, TagClass.APPLICATION_TAGS),
+                            new ErrorCodeTagged(new BACnetTagHeader((byte) 0, TagClass.APPLICATION_TAGS, (byte) 1, (short) 0, (short) 0, 0, 0L), ErrorCode.VENDOR_PROPRIETARY_VALUE, 0, (short) 0, TagClass.APPLICATION_TAGS)
+                        )),
+                        0
+                    ),
+                    0
+                ),
+                0
+            )).addListener((ChannelFutureListener) f -> {
+                if (!f.isSuccess()) {
+                    f.cause().printStackTrace();
+                }
+            });
+            return;
+        }
+        APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) apdu;
         // TODO: implement me
+        System.out.println("Got request");
         System.out.println(msg);
+        BVLCOriginalUnicastNPDU response = new BVLCOriginalUnicastNPDU(
+            new NPDU(
+                (short) 1,
+                new NPDUControl(false, false, false, false, NPDUNetworkPriority.NORMAL_MESSAGE),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                new APDUComplexAck(
+                    false,
+                    false,
+                    apduConfirmedRequest.getInvokeId(),
+                    null,
+                    null,
+                    new BACnetServiceAckReadProperty(
+                        StaticHelper.createBACnetContextTagObjectIdentifier((byte) 0, 2, 1L),
+                        StaticHelper.createBACnetPropertyIdentifierTagged((byte) 1, 85),
+                        null,
+                        new BACnetConstructedDataAnalogValuePresentValue(
+                            StaticHelper.createBACnetOpeningTag((short) 3),
+                            StaticHelper.createBACnetTagHeaderBalanced(true, (short) 3, 3L),
+                            StaticHelper.createBACnetClosingTag((short) 3),
+                            StaticHelper.createBACnetApplicationTagReal(101L),
+                            null,
+                            null
+                        ),
+                        0L
+                    ),
+                    null,
+                    null,
+                    0
+                ),
+                0
+            ),
+            0
+        );
+        System.out.println("Writing response");
+        System.out.println(response);
+        ctx.writeAndFlush(response).addListener((ChannelFutureListener) f -> {
+            if (!f.isSuccess()) {
+                f.cause().printStackTrace();
+            }
+        });
+        ;
     }
+
 
 }

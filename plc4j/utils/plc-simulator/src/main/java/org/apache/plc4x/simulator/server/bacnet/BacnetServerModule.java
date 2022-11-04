@@ -19,35 +19,28 @@
 package org.apache.plc4x.simulator.server.bacnet;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.DatagramPacketDecoder;
-import io.netty.handler.codec.DatagramPacketEncoder;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import org.apache.plc4x.java.bacnetip.BacNetIpDriver;
 import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
 import org.apache.plc4x.java.bacnetip.readwrite.BacnetConstants;
-import org.apache.plc4x.java.cbus.CBusDriver;
-import org.apache.plc4x.java.cbus.readwrite.CBusConstants;
-import org.apache.plc4x.java.cbus.readwrite.CBusMessage;
-import org.apache.plc4x.java.cbus.readwrite.CBusOptions;
-import org.apache.plc4x.java.cbus.readwrite.RequestContext;
 import org.apache.plc4x.java.spi.connection.GeneratedProtocolMessageCodec;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.apache.plc4x.simulator.PlcSimulatorConfig;
 import org.apache.plc4x.simulator.exceptions.SimulatorException;
 import org.apache.plc4x.simulator.model.Context;
 import org.apache.plc4x.simulator.server.ServerModule;
 import org.apache.plc4x.simulator.server.bacnet.protocol.BacnetServerAdapter;
 
+import java.net.InetSocketAddress;
 import java.util.List;
 
 public class BacnetServerModule implements ServerModule {
@@ -88,24 +81,28 @@ public class BacnetServerModule implements ServerModule {
                 .handler(new ChannelInitializer<NioDatagramChannel>() {
                     @Override
                     public void initChannel(NioDatagramChannel channel) {
-                        ChannelPipeline pipeline = channel.pipeline();
-                        pipeline.addLast(new DatagramPacketDecoder(new MessageToMessageDecoder<ByteBuf>() {
-                            @Override
-                            protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-                                byte[] bytes = new byte[msg.readableBytes()];
-                                msg.readBytes(bytes);
-                                out.add(BVLC.staticParse(new ReadBufferByteBased(bytes)));
-                            }
-                        }));
-                        pipeline.addLast(new DatagramPacketEncoder<>(new MessageToMessageEncoder<BVLC>() {
-                            @Override
-                            protected void encode(ChannelHandlerContext ctx, BVLC msg, List<Object> out) throws Exception {
-                                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(msg.getLengthInBytes());
-                                msg.serialize(writeBuffer);
-                                out.add(writeBuffer.getBytes());
-                            }
-                        }));
-                        pipeline.addLast(new BacnetServerAdapter(context));
+                        channel.pipeline()
+                            .addLast(new MessageToMessageDecoder<DatagramPacket>() {
+                                @Override
+                                protected void decode(ChannelHandlerContext ctx, DatagramPacket msg, List<Object> out) throws Exception {
+                                    final ByteBuf content = msg.content();
+                                    out.add(content.retain());
+                                }
+                            })
+                            .addLast(new MessageToMessageEncoder<ByteBuf>() {
+                                @Override
+                                protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
+                                    msg.retain();
+                                    // TODO: find better way to implement request response
+                                    out.add(new DatagramPacket(msg, new InetSocketAddress("192.168.178.102", 47808)));
+                                }
+                            })
+                            .addLast(new GeneratedProtocolMessageCodec<>(BVLC.class,
+                                BVLC::staticParse, ByteOrder.BIG_ENDIAN,
+                                null,
+                                new BacNetIpDriver.ByteLengthEstimator(),
+                                new BacNetIpDriver.CorruptPackageCleaner()))
+                            .addLast(new BacnetServerAdapter(context));
                     }
                 });
 
