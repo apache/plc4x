@@ -30,7 +30,7 @@ import (
 type AdsDiscoveryBlockType uint16
 
 type IAdsDiscoveryBlockType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -137,7 +137,11 @@ func (m AdsDiscoveryBlockType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDiscoveryBlockTypeParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockType, error) {
+func AdsDiscoveryBlockTypeParse(theBytes []byte) (AdsDiscoveryBlockType, error) {
+	return AdsDiscoveryBlockTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsDiscoveryBlockTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockType, error) {
 	val, err := readBuffer.ReadUint16("AdsDiscoveryBlockType", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AdsDiscoveryBlockType")
@@ -150,7 +154,15 @@ func AdsDiscoveryBlockTypeParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockT
 	}
 }
 
-func (e AdsDiscoveryBlockType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e AdsDiscoveryBlockType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e AdsDiscoveryBlockType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("AdsDiscoveryBlockType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

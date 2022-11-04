@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -127,7 +126,7 @@ func (m *_ErrorReportingSystemCategoryTypeSupportUnits) GetLengthInBytes() uint1
 }
 
 func ErrorReportingSystemCategoryTypeSupportUnitsParse(theBytes []byte, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeSupportUnits, error) {
-	return ErrorReportingSystemCategoryTypeSupportUnitsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), errorReportingSystemCategoryClass) // TODO: get endianness from mspec
+	return ErrorReportingSystemCategoryTypeSupportUnitsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), errorReportingSystemCategoryClass)
 }
 
 func ErrorReportingSystemCategoryTypeSupportUnitsParseWithBuffer(readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeSupportUnits, error) {
@@ -166,7 +165,7 @@ func ErrorReportingSystemCategoryTypeSupportUnitsParseWithBuffer(readBuffer util
 }
 
 func (m *_ErrorReportingSystemCategoryTypeSupportUnits) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

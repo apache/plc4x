@@ -126,7 +126,7 @@ func (m *_AdsDataTypeArrayInfo) GetLengthInBytes() uint16 {
 }
 
 func AdsDataTypeArrayInfoParse(theBytes []byte) (AdsDataTypeArrayInfo, error) {
-	return AdsDataTypeArrayInfoParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return AdsDataTypeArrayInfoParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
 func AdsDataTypeArrayInfoParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDataTypeArrayInfo, error) {
@@ -169,7 +169,7 @@ func AdsDataTypeArrayInfoParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDataTy
 }
 
 func (m *_AdsDataTypeArrayInfo) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

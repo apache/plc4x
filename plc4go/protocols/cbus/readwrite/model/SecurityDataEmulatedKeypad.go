@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -222,7 +221,7 @@ func (m *_SecurityDataEmulatedKeypad) GetLengthInBytes() uint16 {
 }
 
 func SecurityDataEmulatedKeypadParse(theBytes []byte) (SecurityDataEmulatedKeypad, error) {
-	return SecurityDataEmulatedKeypadParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return SecurityDataEmulatedKeypadParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataEmulatedKeypadParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataEmulatedKeypad, error) {
@@ -310,7 +309,7 @@ func SecurityDataEmulatedKeypadParseWithBuffer(readBuffer utils.ReadBuffer) (Sec
 }
 
 func (m *_SecurityDataEmulatedKeypad) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

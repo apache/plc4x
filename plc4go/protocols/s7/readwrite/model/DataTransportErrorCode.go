@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +120,7 @@ func (m DataTransportErrorCode) GetLengthInBytes() uint16 {
 }
 
 func DataTransportErrorCodeParse(theBytes []byte) (DataTransportErrorCode, error) {
-	return DataTransportErrorCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return DataTransportErrorCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func DataTransportErrorCodeParseWithBuffer(readBuffer utils.ReadBuffer) (DataTransportErrorCode, error) {
@@ -139,7 +137,7 @@ func DataTransportErrorCodeParseWithBuffer(readBuffer utils.ReadBuffer) (DataTra
 }
 
 func (e DataTransportErrorCode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

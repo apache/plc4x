@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -114,7 +112,7 @@ func (m MeteringCommandType) GetLengthInBytes() uint16 {
 }
 
 func MeteringCommandTypeParse(theBytes []byte) (MeteringCommandType, error) {
-	return MeteringCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return MeteringCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func MeteringCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringCommandType, error) {
@@ -131,7 +129,7 @@ func MeteringCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringCo
 }
 
 func (e MeteringCommandType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

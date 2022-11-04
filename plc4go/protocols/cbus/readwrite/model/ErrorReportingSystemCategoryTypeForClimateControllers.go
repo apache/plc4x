@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -182,7 +180,7 @@ func (m ErrorReportingSystemCategoryTypeForClimateControllers) GetLengthInBytes(
 }
 
 func ErrorReportingSystemCategoryTypeForClimateControllersParse(theBytes []byte) (ErrorReportingSystemCategoryTypeForClimateControllers, error) {
-	return ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeForClimateControllers, error) {
@@ -199,7 +197,7 @@ func ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(readBu
 }
 
 func (e ErrorReportingSystemCategoryTypeForClimateControllers) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

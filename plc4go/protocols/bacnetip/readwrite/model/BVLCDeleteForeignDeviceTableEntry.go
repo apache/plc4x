@@ -139,7 +139,7 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBytes() uint16 {
 }
 
 func BVLCDeleteForeignDeviceTableEntryParse(theBytes []byte) (BVLCDeleteForeignDeviceTableEntry, error) {
-	return BVLCDeleteForeignDeviceTableEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BVLCDeleteForeignDeviceTableEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func BVLCDeleteForeignDeviceTableEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCDeleteForeignDeviceTableEntry, error) {
@@ -196,7 +196,7 @@ func BVLCDeleteForeignDeviceTableEntryParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BVLCDeleteForeignDeviceTableEntry) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

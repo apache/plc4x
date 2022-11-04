@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +125,7 @@ func (m *_KnxNetIpDeviceManagement) GetLengthInBytes() uint16 {
 }
 
 func KnxNetIpDeviceManagementParse(theBytes []byte) (KnxNetIpDeviceManagement, error) {
-	return KnxNetIpDeviceManagementParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return KnxNetIpDeviceManagementParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func KnxNetIpDeviceManagementParseWithBuffer(readBuffer utils.ReadBuffer) (KnxNetIpDeviceManagement, error) {
@@ -159,7 +158,7 @@ func KnxNetIpDeviceManagementParseWithBuffer(readBuffer utils.ReadBuffer) (KnxNe
 }
 
 func (m *_KnxNetIpDeviceManagement) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

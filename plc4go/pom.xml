@@ -408,7 +408,7 @@
             TODO: The licenser adds a version of the Apache Header with http url
           -->
           <execution>
-            <id>add-license</id>
+            <id>add-license-modbus</id>
             <phase>process-sources</phase>
             <goals>
               <goal>custom</goal>
@@ -425,24 +425,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>add-license2</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>custom</goal>
-            </goals>
-            <configuration>
-              <exec>go-licenser</exec>
-              <customCommand>-licensor</customCommand>
-              <buildFlags>
-                <flag>Apache Software Foundation (ASF)</flag>
-              </buildFlags>
-              <packages>
-                <package>internal/ads/fieldtype_string.go</package>
-              </packages>
-            </configuration>
-          </execution>
-          <execution>
-            <id>add-license3</id>
+            <id>add-license-cbus</id>
             <phase>process-sources</phase>
             <goals>
               <goal>custom</goal>
@@ -459,7 +442,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>add-license4</id>
+            <id>add-license-s7</id>
             <phase>process-sources</phase>
             <goals>
               <goal>custom</goal>
@@ -476,7 +459,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>add-license5</id>
+            <id>add-license-spi-testutils</id>
             <phase>process-sources</phase>
             <goals>
               <goal>custom</goal>

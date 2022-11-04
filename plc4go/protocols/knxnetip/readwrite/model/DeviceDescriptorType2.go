@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -189,7 +188,7 @@ func (m *_DeviceDescriptorType2) GetLengthInBytes() uint16 {
 }
 
 func DeviceDescriptorType2Parse(theBytes []byte) (DeviceDescriptorType2, error) {
-	return DeviceDescriptorType2ParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return DeviceDescriptorType2ParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func DeviceDescriptorType2ParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceDescriptorType2, error) {
@@ -315,7 +314,7 @@ func DeviceDescriptorType2ParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceDe
 }
 
 func (m *_DeviceDescriptorType2) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -148,7 +147,7 @@ func (m *_SecurityArmCode) GetLengthInBytes() uint16 {
 }
 
 func SecurityArmCodeParse(theBytes []byte) (SecurityArmCode, error) {
-	return SecurityArmCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return SecurityArmCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityArmCodeParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityArmCode, error) {
@@ -203,7 +202,7 @@ func SecurityArmCodeParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityArmCod
 }
 
 func (m *_SecurityArmCode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

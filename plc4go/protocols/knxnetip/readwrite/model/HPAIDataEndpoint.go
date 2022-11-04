@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +121,7 @@ func (m *_HPAIDataEndpoint) GetLengthInBytes() uint16 {
 }
 
 func HPAIDataEndpointParse(theBytes []byte) (HPAIDataEndpoint, error) {
-	return HPAIDataEndpointParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return HPAIDataEndpointParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func HPAIDataEndpointParseWithBuffer(readBuffer utils.ReadBuffer) (HPAIDataEndpoint, error) {
@@ -187,7 +186,7 @@ func HPAIDataEndpointParseWithBuffer(readBuffer utils.ReadBuffer) (HPAIDataEndpo
 }
 
 func (m *_HPAIDataEndpoint) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

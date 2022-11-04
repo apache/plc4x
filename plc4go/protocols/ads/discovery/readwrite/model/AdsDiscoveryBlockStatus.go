@@ -144,7 +144,11 @@ func (m *_AdsDiscoveryBlockStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDiscoveryBlockStatusParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockStatus, error) {
+func AdsDiscoveryBlockStatusParse(theBytes []byte) (AdsDiscoveryBlockStatus, error) {
+	return AdsDiscoveryBlockStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsDiscoveryBlockStatusParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockStatus"); pullErr != nil {
@@ -166,7 +170,7 @@ func AdsDiscoveryBlockStatusParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBloc
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for status")
 	}
-	_status, _statusErr := StatusParse(readBuffer)
+	_status, _statusErr := StatusParseWithBuffer(readBuffer)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of AdsDiscoveryBlockStatus")
 	}
@@ -188,7 +192,15 @@ func AdsDiscoveryBlockStatusParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBloc
 	return _child, nil
 }
 
-func (m *_AdsDiscoveryBlockStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDiscoveryBlockStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsDiscoveryBlockStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

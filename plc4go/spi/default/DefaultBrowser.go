@@ -21,6 +21,7 @@ package _default
 
 import (
 	"context"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/model"
@@ -56,10 +57,6 @@ type defaultBrowser struct {
 ///////////////////////////////////////
 
 func (m *defaultBrowser) Browse(ctx context.Context, browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult {
-	return m.BrowseWithContext(ctx, browseRequest)
-}
-
-func (m *defaultBrowser) BrowseWithContext(ctx context.Context, browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult {
 	return m.BrowseWithInterceptor(ctx, browseRequest, func(result apiModel.PlcBrowseEvent) bool {
 		return true
 	})

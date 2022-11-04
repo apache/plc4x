@@ -147,7 +147,11 @@ func (m *_AmsNetId) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AmsNetIdParse(readBuffer utils.ReadBuffer) (AmsNetId, error) {
+func AmsNetIdParse(theBytes []byte) (AmsNetId, error) {
+	return AmsNetIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AmsNetIdParseWithBuffer(readBuffer utils.ReadBuffer) (AmsNetId, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsNetId"); pullErr != nil {
@@ -213,7 +217,15 @@ func AmsNetIdParse(readBuffer utils.ReadBuffer) (AmsNetId, error) {
 	}, nil
 }
 
-func (m *_AmsNetId) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AmsNetId) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AmsNetId) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AmsNetId"); pushErr != nil {

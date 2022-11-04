@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -212,7 +211,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQuery) GetLengthInBytes() uint16 
 }
 
 func S7PayloadUserDataItemCpuFunctionAlarmQueryParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmQuery, error) {
-	return S7PayloadUserDataItemCpuFunctionAlarmQueryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cpuFunctionType, cpuSubfunction) // TODO: get endianness from mspec
+	return S7PayloadUserDataItemCpuFunctionAlarmQueryParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
 }
 
 func S7PayloadUserDataItemCpuFunctionAlarmQueryParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmQuery, error) {
@@ -351,7 +350,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParseWithBuffer(readBuffer utils.
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQuery) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

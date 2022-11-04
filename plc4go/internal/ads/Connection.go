@@ -21,8 +21,12 @@ package ads
 
 import (
 	"fmt"
+	"math"
+	"sync/atomic"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
@@ -38,8 +42,52 @@ type Connection struct {
 	reader             *Reader
 	writer             *Writer
 	connectionId       string
+	invokeId           uint32
+	dataTypeTable      map[string]model.AdsDataTypeTableEntry
+	symbolTable        map[string]model.AdsSymbolTableEntry
 	tracer             *spi.Tracer
 }
+
+/*
+
+	// First read the device info
+	deviceInfoResponseChanel := make(chan model.AdsReadDeviceInfoResponse)
+	go func() {
+		deviceInfoRequest := model.NewAdsReadDeviceInfoRequest(
+			m.targetAmsNetId, uint16(model.DefaultAmsPorts_RUNTIME_SYSTEM_01), m.sourceAmsNetId,
+			800, 0, m.transactionIdentifier)
+		if err := m.messageCodec.SendRequest(
+			context.TODO(),
+			model.NewAmsTCPPacket(deviceInfoRequest),
+			func(message spi.Message) bool {
+				amsTcpPacket, ok := message.(model.AmsTCPPacket)
+				if !ok {
+					return false
+				}
+				return amsTcpPacket.GetUserdata().GetInvokeId() == deviceInfoRequest.GetInvokeId()
+			},
+			func(message spi.Message) error {
+				amsTcpPacket := message.(model.AmsTCPPacket)
+				deviceInfoResponse := amsTcpPacket.GetUserdata().(model.AdsReadDeviceInfoResponse)
+				deviceInfoResponseChanel <- deviceInfoResponse
+				close(deviceInfoResponseChanel)
+				return nil
+			},
+			func(err error) error {
+				return nil
+			},
+			time.Second); err != nil {
+			// TODO: Return an error
+		} else {
+			close(deviceInfoResponseChanel)
+		}
+	}()
+	deviceInfoResponse := ReadWithTimeout(deviceInfoResponseChanel)
+	if deviceInfoResponse == nil {
+		return apiModel.PlcResponseCode_NOT_FOUND, []apiModel.PlcBrowseFoundField{}
+	}
+
+*/
 
 func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, fieldHandler spi.PlcFieldHandler, options map[string][]string) (*Connection, error) {
 	reader := *NewReader(
@@ -65,8 +113,10 @@ func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, f
 			internalModel.NewDefaultPlcReadResponse,
 			internalModel.NewDefaultPlcWriteResponse,
 		),
-		reader: &reader,
-		writer: &writer,
+		configuration: configuration,
+		reader:        &reader,
+		writer:        &writer,
+		invokeId:      0,
 	}
 	if traceEnabledOption, ok := options["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
@@ -105,6 +155,7 @@ func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 		ProvidesReading:     true,
 		ProvidesWriting:     true,
 		ProvidesSubscribing: true,
+		ProvidesBrowsing:    true,
 	}
 }
 
@@ -124,6 +175,10 @@ func (m *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRe
 	panic("implement me")
 }
 
+func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
+	return internalModel.NewDefaultPlcBrowseRequestBuilder(m.GetPlcFieldHandler(), m)
+}
+
 func (m *Connection) GetTransportInstance() transports.TransportInstance {
 	if mc, ok := m.messageCodec.(spi.TransportInstanceExposer); ok {
 		return mc.GetTransportInstance()
@@ -133,4 +188,14 @@ func (m *Connection) GetTransportInstance() transports.TransportInstance {
 
 func (m *Connection) String() string {
 	return fmt.Sprintf("ads.Connection{}")
+}
+
+func (m *Connection) getInvokeId() uint32 {
+	// Calculate a new transaction identifier
+	transactionIdentifier := atomic.AddUint32(&m.invokeId, 1)
+	if transactionIdentifier > math.MaxUint8 {
+		transactionIdentifier = 1
+		atomic.StoreUint32(&m.invokeId, 1)
+	}
+	return transactionIdentifier
 }

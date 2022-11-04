@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +121,7 @@ func (m *_BACnetAuthenticationFactorEnclosed) GetLengthInBytes() uint16 {
 }
 
 func BACnetAuthenticationFactorEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetAuthenticationFactorEnclosed, error) {
-	return BACnetAuthenticationFactorEnclosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+	return BACnetAuthenticationFactorEnclosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetAuthenticationFactorEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetAuthenticationFactorEnclosed, error) {
@@ -187,7 +186,7 @@ func BACnetAuthenticationFactorEnclosedParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetAuthenticationFactorEnclosed) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

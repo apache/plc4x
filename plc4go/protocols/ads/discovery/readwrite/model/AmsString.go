@@ -105,7 +105,11 @@ func (m *_AmsString) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AmsStringParse(readBuffer utils.ReadBuffer) (AmsString, error) {
+func AmsStringParse(theBytes []byte) (AmsString, error) {
+	return AmsStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AmsStringParseWithBuffer(readBuffer utils.ReadBuffer) (AmsString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsString"); pullErr != nil {
@@ -156,7 +160,15 @@ func AmsStringParse(readBuffer utils.ReadBuffer) (AmsString, error) {
 	}, nil
 }
 
-func (m *_AmsString) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AmsString) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AmsString) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AmsString"); pushErr != nil {

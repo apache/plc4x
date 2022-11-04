@@ -30,7 +30,7 @@ import (
 type Status uint32
 
 type IStatus interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -101,7 +101,11 @@ func (m Status) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func StatusParse(readBuffer utils.ReadBuffer) (Status, error) {
+func StatusParse(theBytes []byte) (Status, error) {
+	return StatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func StatusParseWithBuffer(readBuffer utils.ReadBuffer) (Status, error) {
 	val, err := readBuffer.ReadUint32("Status", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading Status")
@@ -114,7 +118,15 @@ func StatusParse(readBuffer utils.ReadBuffer) (Status, error) {
 	}
 }
 
-func (e Status) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e Status) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e Status) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint32("Status", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

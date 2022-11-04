@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -161,7 +160,7 @@ func (m *_RequestObsolete) GetLengthInBytes() uint16 {
 }
 
 func RequestObsoleteParse(theBytes []byte, cBusOptions CBusOptions) (RequestObsolete, error) {
-	return RequestObsoleteParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+	return RequestObsoleteParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func RequestObsoleteParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestObsolete, error) {
@@ -227,7 +226,7 @@ func RequestObsoleteParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBu
 }
 
 func (m *_RequestObsolete) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

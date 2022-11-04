@@ -126,7 +126,7 @@ func (m *_BVLCResult) GetLengthInBytes() uint16 {
 }
 
 func BVLCResultParse(theBytes []byte) (BVLCResult, error) {
-	return BVLCResultParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BVLCResultParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func BVLCResultParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCResult, error) {
@@ -165,7 +165,7 @@ func BVLCResultParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCResult, error) 
 }
 
 func (m *_BVLCResult) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

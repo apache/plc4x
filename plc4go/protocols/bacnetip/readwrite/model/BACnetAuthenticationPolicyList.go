@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +125,7 @@ func (m *_BACnetAuthenticationPolicyList) GetLengthInBytes() uint16 {
 }
 
 func BACnetAuthenticationPolicyListParse(theBytes []byte, tagNumber uint8) (BACnetAuthenticationPolicyList, error) {
-	return BACnetAuthenticationPolicyListParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+	return BACnetAuthenticationPolicyListParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetAuthenticationPolicyListParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetAuthenticationPolicyList, error) {
@@ -164,7 +163,6 @@ func BACnetAuthenticationPolicyListParseWithBuffer(readBuffer utils.ReadBuffer, 
 				return nil, errors.Wrap(_err, "Error parsing 'entries' field of BACnetAuthenticationPolicyList")
 			}
 			entries = append(entries, _item.(BACnetAuthenticationPolicyListEntry))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("entries", utils.WithRenderAsList(true)); closeErr != nil {
@@ -198,7 +196,7 @@ func BACnetAuthenticationPolicyListParseWithBuffer(readBuffer utils.ReadBuffer, 
 }
 
 func (m *_BACnetAuthenticationPolicyList) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

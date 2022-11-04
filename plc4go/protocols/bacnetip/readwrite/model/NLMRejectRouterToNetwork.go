@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -139,7 +138,7 @@ func (m *_NLMRejectRouterToNetwork) GetLengthInBytes() uint16 {
 }
 
 func NLMRejectRouterToNetworkParse(theBytes []byte, apduLength uint16, messageType uint8) (NLMRejectRouterToNetwork, error) {
-	return NLMRejectRouterToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength, messageType) // TODO: get endianness from mspec
+	return NLMRejectRouterToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength, messageType)
 }
 
 func NLMRejectRouterToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMRejectRouterToNetwork, error) {
@@ -188,7 +187,7 @@ func NLMRejectRouterToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLe
 }
 
 func (m *_NLMRejectRouterToNetwork) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

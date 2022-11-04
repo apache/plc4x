@@ -200,7 +200,7 @@ func (m *Connection) getLocalAddress() (*net.UDPAddr, error) {
 	}
 
 	// Prepare a SearchReq
-	udpTransportInstance, ok := transportInstanceExposer.GetTransportInstance().(*udp.DirectTransportInstance)
+	udpTransportInstance, ok := transportInstanceExposer.GetTransportInstance().(*udp.TransportInstance)
 	if !ok {
 		return nil, errors.New("used transport, is not a UdpTransportInstance")
 	}

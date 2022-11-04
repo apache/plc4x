@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -150,7 +149,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetLengthInBytes() uint16
 }
 
 func BACnetConfirmedServiceRequestReadRangeRangeParse(theBytes []byte) (BACnetConfirmedServiceRequestReadRangeRange, error) {
-	return BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRange, error) {

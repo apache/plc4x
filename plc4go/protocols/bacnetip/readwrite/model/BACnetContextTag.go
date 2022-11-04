@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -147,7 +146,7 @@ func (m *_BACnetContextTag) GetLengthInBytes() uint16 {
 }
 
 func BACnetContextTagParse(theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTag, error) {
-	return BACnetContextTagParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumberArgument, dataType) // TODO: get endianness from mspec
+	return BACnetContextTagParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType)
 }
 
 func BACnetContextTagParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTag, error) {

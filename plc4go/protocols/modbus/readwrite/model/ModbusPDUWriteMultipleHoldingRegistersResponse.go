@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -145,7 +144,7 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) GetLengthInBytes() uin
 }
 
 func ModbusPDUWriteMultipleHoldingRegistersResponseParse(theBytes []byte, response bool) (ModbusPDUWriteMultipleHoldingRegistersResponse, error) {
-	return ModbusPDUWriteMultipleHoldingRegistersResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+	return ModbusPDUWriteMultipleHoldingRegistersResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func ModbusPDUWriteMultipleHoldingRegistersResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteMultipleHoldingRegistersResponse, error) {
@@ -186,7 +185,7 @@ func ModbusPDUWriteMultipleHoldingRegistersResponseParseWithBuffer(readBuffer ut
 }
 
 func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

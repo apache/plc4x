@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -128,7 +126,7 @@ func (m BACnetDaysOfWeek) GetLengthInBytes() uint16 {
 }
 
 func BACnetDaysOfWeekParse(theBytes []byte) (BACnetDaysOfWeek, error) {
-	return BACnetDaysOfWeekParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetDaysOfWeekParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetDaysOfWeekParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDaysOfWeek, error) {
@@ -145,7 +143,7 @@ func BACnetDaysOfWeekParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDaysOfW
 }
 
 func (e BACnetDaysOfWeek) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

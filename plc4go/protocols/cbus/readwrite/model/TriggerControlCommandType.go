@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -154,7 +152,7 @@ func (m TriggerControlCommandType) GetLengthInBytes() uint16 {
 }
 
 func TriggerControlCommandTypeParse(theBytes []byte) (TriggerControlCommandType, error) {
-	return TriggerControlCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return TriggerControlCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func TriggerControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlCommandType, error) {
@@ -171,7 +169,7 @@ func TriggerControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (Trig
 }
 
 func (e TriggerControlCommandType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

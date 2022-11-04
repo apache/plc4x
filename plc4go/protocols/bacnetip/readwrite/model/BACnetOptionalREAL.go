@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -130,7 +129,7 @@ func (m *_BACnetOptionalREAL) GetLengthInBytes() uint16 {
 }
 
 func BACnetOptionalREALParse(theBytes []byte) (BACnetOptionalREAL, error) {
-	return BACnetOptionalREALParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetOptionalREALParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetOptionalREALParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetOptionalREAL, error) {

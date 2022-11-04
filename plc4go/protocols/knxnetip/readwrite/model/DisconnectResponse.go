@@ -137,7 +137,7 @@ func (m *_DisconnectResponse) GetLengthInBytes() uint16 {
 }
 
 func DisconnectResponseParse(theBytes []byte) (DisconnectResponse, error) {
-	return DisconnectResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return DisconnectResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func DisconnectResponseParseWithBuffer(readBuffer utils.ReadBuffer) (DisconnectResponse, error) {
@@ -184,7 +184,7 @@ func DisconnectResponseParseWithBuffer(readBuffer utils.ReadBuffer) (DisconnectR
 }
 
 func (m *_DisconnectResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

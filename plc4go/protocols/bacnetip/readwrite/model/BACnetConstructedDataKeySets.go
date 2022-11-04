@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -171,7 +170,7 @@ func (m *_BACnetConstructedDataKeySets) GetLengthInBytes() uint16 {
 }
 
 func BACnetConstructedDataKeySetsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataKeySets, error) {
-	return BACnetConstructedDataKeySetsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+	return BACnetConstructedDataKeySetsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
 func BACnetConstructedDataKeySetsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataKeySets, error) {
@@ -223,7 +222,6 @@ func BACnetConstructedDataKeySetsParseWithBuffer(readBuffer utils.ReadBuffer, ta
 				return nil, errors.Wrap(_err, "Error parsing 'keySets' field of BACnetConstructedDataKeySets")
 			}
 			keySets = append(keySets, _item.(BACnetSecurityKeySet))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("keySets", utils.WithRenderAsList(true)); closeErr != nil {
@@ -253,7 +251,7 @@ func BACnetConstructedDataKeySetsParseWithBuffer(readBuffer utils.ReadBuffer, ta
 }
 
 func (m *_BACnetConstructedDataKeySets) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

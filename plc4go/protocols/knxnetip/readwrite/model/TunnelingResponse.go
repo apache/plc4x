@@ -126,7 +126,7 @@ func (m *_TunnelingResponse) GetLengthInBytes() uint16 {
 }
 
 func TunnelingResponseParse(theBytes []byte) (TunnelingResponse, error) {
-	return TunnelingResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return TunnelingResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func TunnelingResponseParseWithBuffer(readBuffer utils.ReadBuffer) (TunnelingResponse, error) {
@@ -165,7 +165,7 @@ func TunnelingResponseParseWithBuffer(readBuffer utils.ReadBuffer) (TunnelingRes
 }
 
 func (m *_TunnelingResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

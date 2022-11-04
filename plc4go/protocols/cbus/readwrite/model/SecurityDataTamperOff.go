@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -104,7 +103,7 @@ func (m *_SecurityDataTamperOff) GetLengthInBytes() uint16 {
 }
 
 func SecurityDataTamperOffParse(theBytes []byte) (SecurityDataTamperOff, error) {
-	return SecurityDataTamperOffParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return SecurityDataTamperOffParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataTamperOffParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataTamperOff, error) {
@@ -129,7 +128,7 @@ func SecurityDataTamperOffParseWithBuffer(readBuffer utils.ReadBuffer) (Security
 }
 
 func (m *_SecurityDataTamperOff) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -144,7 +142,7 @@ func (m ProtectionLevel) GetLengthInBytes() uint16 {
 }
 
 func ProtectionLevelParse(theBytes []byte) (ProtectionLevel, error) {
-	return ProtectionLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return ProtectionLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func ProtectionLevelParseWithBuffer(readBuffer utils.ReadBuffer) (ProtectionLevel, error) {
@@ -161,7 +159,7 @@ func ProtectionLevelParseWithBuffer(readBuffer utils.ReadBuffer) (ProtectionLeve
 }
 
 func (e ProtectionLevel) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

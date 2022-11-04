@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,7 +108,7 @@ func (m *_ModbusPDU) GetLengthInBytes() uint16 {
 }
 
 func ModbusPDUParse(theBytes []byte, response bool) (ModbusPDU, error) {
-	return ModbusPDUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+	return ModbusPDUParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func ModbusPDUParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDU, error) {

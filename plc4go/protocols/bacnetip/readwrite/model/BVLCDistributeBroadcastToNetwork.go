@@ -129,7 +129,7 @@ func (m *_BVLCDistributeBroadcastToNetwork) GetLengthInBytes() uint16 {
 }
 
 func BVLCDistributeBroadcastToNetworkParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCDistributeBroadcastToNetwork, error) {
-	return BVLCDistributeBroadcastToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength) // TODO: get endianness from mspec
+	return BVLCDistributeBroadcastToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
 }
 
 func BVLCDistributeBroadcastToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCDistributeBroadcastToNetwork, error) {
@@ -168,7 +168,7 @@ func BVLCDistributeBroadcastToNetworkParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BVLCDistributeBroadcastToNetwork) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

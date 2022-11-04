@@ -105,7 +105,7 @@ func (m *_RoutingIndication) GetLengthInBytes() uint16 {
 }
 
 func RoutingIndicationParse(theBytes []byte) (RoutingIndication, error) {
-	return RoutingIndicationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return RoutingIndicationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func RoutingIndicationParseWithBuffer(readBuffer utils.ReadBuffer) (RoutingIndication, error) {
@@ -130,7 +130,7 @@ func RoutingIndicationParseWithBuffer(readBuffer utils.ReadBuffer) (RoutingIndic
 }
 
 func (m *_RoutingIndication) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

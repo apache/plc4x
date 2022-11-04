@@ -131,7 +131,7 @@ func (m *_UnknownMessage) GetLengthInBytes() uint16 {
 }
 
 func UnknownMessageParse(theBytes []byte, totalLength uint16) (UnknownMessage, error) {
-	return UnknownMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength) // TODO: get endianness from mspec
+	return UnknownMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
 }
 
 func UnknownMessageParseWithBuffer(readBuffer utils.ReadBuffer, totalLength uint16) (UnknownMessage, error) {
@@ -163,7 +163,7 @@ func UnknownMessageParseWithBuffer(readBuffer utils.ReadBuffer, totalLength uint
 }
 
 func (m *_UnknownMessage) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

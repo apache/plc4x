@@ -30,7 +30,7 @@ import (
 type Operation uint32
 
 type IOperation interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -131,7 +131,11 @@ func (m Operation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func OperationParse(readBuffer utils.ReadBuffer) (Operation, error) {
+func OperationParse(theBytes []byte) (Operation, error) {
+	return OperationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func OperationParseWithBuffer(readBuffer utils.ReadBuffer) (Operation, error) {
 	val, err := readBuffer.ReadUint32("Operation", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading Operation")
@@ -144,7 +148,15 @@ func OperationParse(readBuffer utils.ReadBuffer) (Operation, error) {
 	}
 }
 
-func (e Operation) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e Operation) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e Operation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint32("Operation", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

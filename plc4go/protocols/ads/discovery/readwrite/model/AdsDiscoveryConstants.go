@@ -98,7 +98,11 @@ func (m *_AdsDiscoveryConstants) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDiscoveryConstantsParse(readBuffer utils.ReadBuffer) (AdsDiscoveryConstants, error) {
+func AdsDiscoveryConstantsParse(theBytes []byte) (AdsDiscoveryConstants, error) {
+	return AdsDiscoveryConstantsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsDiscoveryConstantsParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscoveryConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryConstants"); pullErr != nil {
@@ -124,7 +128,15 @@ func AdsDiscoveryConstantsParse(readBuffer utils.ReadBuffer) (AdsDiscoveryConsta
 	return &_AdsDiscoveryConstants{}, nil
 }
 
-func (m *_AdsDiscoveryConstants) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDiscoveryConstants) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsDiscoveryConstants) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsDiscoveryConstants"); pushErr != nil {

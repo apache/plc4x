@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -179,7 +178,7 @@ func (m *_GroupObjectDescriptorRealisationType7) GetLengthInBytes() uint16 {
 }
 
 func GroupObjectDescriptorRealisationType7Parse(theBytes []byte) (GroupObjectDescriptorRealisationType7, error) {
-	return GroupObjectDescriptorRealisationType7ParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return GroupObjectDescriptorRealisationType7ParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func GroupObjectDescriptorRealisationType7ParseWithBuffer(readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType7, error) {
@@ -285,7 +284,7 @@ func GroupObjectDescriptorRealisationType7ParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_GroupObjectDescriptorRealisationType7) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

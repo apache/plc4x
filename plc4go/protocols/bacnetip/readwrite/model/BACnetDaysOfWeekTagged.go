@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -178,7 +177,7 @@ func (m *_BACnetDaysOfWeekTagged) GetLengthInBytes() uint16 {
 }
 
 func BACnetDaysOfWeekTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetDaysOfWeekTagged, error) {
-	return BACnetDaysOfWeekTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+	return BACnetDaysOfWeekTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetDaysOfWeekTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetDaysOfWeekTagged, error) {
@@ -275,7 +274,7 @@ func BACnetDaysOfWeekTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumbe
 }
 
 func (m *_BACnetDaysOfWeekTagged) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

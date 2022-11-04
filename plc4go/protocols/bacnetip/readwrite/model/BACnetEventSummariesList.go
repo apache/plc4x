@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +125,7 @@ func (m *_BACnetEventSummariesList) GetLengthInBytes() uint16 {
 }
 
 func BACnetEventSummariesListParse(theBytes []byte, tagNumber uint8) (BACnetEventSummariesList, error) {
-	return BACnetEventSummariesListParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+	return BACnetEventSummariesListParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetEventSummariesListParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventSummariesList, error) {
@@ -164,7 +163,6 @@ func BACnetEventSummariesListParseWithBuffer(readBuffer utils.ReadBuffer, tagNum
 				return nil, errors.Wrap(_err, "Error parsing 'listOfEventSummaries' field of BACnetEventSummariesList")
 			}
 			listOfEventSummaries = append(listOfEventSummaries, _item.(BACnetEventSummary))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("listOfEventSummaries", utils.WithRenderAsList(true)); closeErr != nil {
@@ -198,7 +196,7 @@ func BACnetEventSummariesListParseWithBuffer(readBuffer utils.ReadBuffer, tagNum
 }
 
 func (m *_BACnetEventSummariesList) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +123,7 @@ func (m *_BACnetPropertyStatesLightningInProgress) GetLengthInBytes() uint16 {
 }
 
 func BACnetPropertyStatesLightningInProgressParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLightningInProgress, error) {
-	return BACnetPropertyStatesLightningInProgressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+	return BACnetPropertyStatesLightningInProgressParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
 func BACnetPropertyStatesLightningInProgressParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLightningInProgress, error) {
@@ -163,7 +162,7 @@ func BACnetPropertyStatesLightningInProgressParseWithBuffer(readBuffer utils.Rea
 }
 
 func (m *_BACnetPropertyStatesLightningInProgress) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

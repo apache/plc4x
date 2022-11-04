@@ -20,7 +20,6 @@
 package ads
 
 import (
-	"bytes"
 	"context"
 	"encoding/binary"
 	"fmt"
@@ -36,7 +35,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	internalModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	values2 "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/rs/zerolog/log"
 )
@@ -73,8 +71,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 			if length == 0 {
 				continue
 			}
-			readBuffer := utils.NewLittleEndianReadBufferByteBased(buf[0:length])
-			discoveryResponse, err := model.AdsDiscoveryParse(readBuffer)
+			discoveryResponse, err := model.AdsDiscoveryParse(buf[0:length])
 			if err != nil {
 				log.Error().Err(err).Str("src-ip", fromAddr.String()).Msg("error decoding response")
 				continue
@@ -214,10 +211,11 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				discoveryRequestMessage := model.NewAdsDiscovery(0, model.Operation_DISCOVERY_REQUEST, amsNetId, model.AdsPortNumbers_SYSTEM_SERVICE, []model.AdsDiscoveryBlock{})
 
 				// Serialize the message
-				buffer := new(bytes.Buffer)
-				buffer.Grow(int(discoveryRequestMessage.GetLengthInBytes()))
-				writeBuffer := utils.NewCustomWriteBufferByteBased(buffer, binary.LittleEndian)
-				discoveryRequestMessage.Serialize(writeBuffer)
+				bytes, err := discoveryRequestMessage.Serialize()
+				if err != nil {
+					log.Error().Err(err).Str("broadcast-ip", broadcastAddress.String()).Msg("Error serialising broadcast search packet")
+					continue
+				}
 
 				// Create a not-connected UDP connection to the broadcast address
 				requestAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", broadcastAddress.String(), model.AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT))
@@ -238,7 +236,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				}*/
 
 				// Send out the message.
-				_, err = socket.WriteTo(writeBuffer.GetBytes(), requestAddr)
+				_, err = socket.WriteTo(bytes, requestAddr)
 				if err != nil {
 					log.Error().Err(err).Str("broadcast-ip", broadcastAddress.String()).Msg("Error sending request for broadcast search")
 					continue

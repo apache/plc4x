@@ -124,7 +124,11 @@ func (m *_AdsDiscoveryBlockHostName) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDiscoveryBlockHostNameParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockHostName, error) {
+func AdsDiscoveryBlockHostNameParse(theBytes []byte) (AdsDiscoveryBlockHostName, error) {
+	return AdsDiscoveryBlockHostNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsDiscoveryBlockHostNameParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockHostName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockHostName"); pullErr != nil {
@@ -137,7 +141,7 @@ func AdsDiscoveryBlockHostNameParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBl
 	if pullErr := readBuffer.PullContext("hostName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hostName")
 	}
-	_hostName, _hostNameErr := AmsStringParse(readBuffer)
+	_hostName, _hostNameErr := AmsStringParseWithBuffer(readBuffer)
 	if _hostNameErr != nil {
 		return nil, errors.Wrap(_hostNameErr, "Error parsing 'hostName' field of AdsDiscoveryBlockHostName")
 	}
@@ -159,7 +163,15 @@ func AdsDiscoveryBlockHostNameParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBl
 	return _child, nil
 }
 
-func (m *_AdsDiscoveryBlockHostName) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDiscoveryBlockHostName) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsDiscoveryBlockHostName) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

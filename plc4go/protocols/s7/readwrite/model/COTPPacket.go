@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -144,7 +143,7 @@ func (m *_COTPPacket) GetLengthInBytes() uint16 {
 }
 
 func COTPPacketParse(theBytes []byte, cotpLen uint16) (COTPPacket, error) {
-	return COTPPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cotpLen) // TODO: get endianness from mspec
+	return COTPPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cotpLen)
 }
 
 func COTPPacketParseWithBuffer(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, error) {
@@ -157,7 +156,6 @@ func COTPPacketParseWithBuffer(readBuffer utils.ReadBuffer, cotpLen uint16) (COT
 	_ = currentPos
 	var startPos = positionAware.GetPos()
 	_ = startPos
-	var curPos uint16
 
 	// Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	headerLength, _headerLengthErr := readBuffer.ReadUint8("headerLength", 8)
@@ -206,19 +204,17 @@ func COTPPacketParseWithBuffer(readBuffer utils.ReadBuffer, cotpLen uint16) (COT
 	if pullErr := readBuffer.PullContext("parameters", utils.WithRenderAsList(true)); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for parameters")
 	}
-	curPos = positionAware.GetPos() - startPos
 	// Length array
 	var parameters []COTPParameter
 	{
-		_parametersLength := uint16((uint16(headerLength) + uint16(uint16(1)))) - uint16(curPos)
+		_parametersLength := uint16((uint16(headerLength) + uint16(uint16(1)))) - uint16((positionAware.GetPos() - startPos))
 		_parametersEndPos := positionAware.GetPos() + uint16(_parametersLength)
 		for positionAware.GetPos() < _parametersEndPos {
-			_item, _err := COTPParameterParseWithBuffer(readBuffer, uint8((uint8(headerLength)+uint8(uint8(1))))-uint8(curPos))
+			_item, _err := COTPParameterParseWithBuffer(readBuffer, uint8((uint8(headerLength)+uint8(uint8(1))))-uint8((positionAware.GetPos()-startPos)))
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'parameters' field of COTPPacket")
 			}
 			parameters = append(parameters, _item.(COTPParameter))
-			curPos = positionAware.GetPos() - startPos
 		}
 	}
 	if closeErr := readBuffer.CloseContext("parameters", utils.WithRenderAsList(true)); closeErr != nil {
@@ -226,9 +222,8 @@ func COTPPacketParseWithBuffer(readBuffer utils.ReadBuffer, cotpLen uint16) (COT
 	}
 
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
-	curPos = positionAware.GetPos() - startPos
 	var payload S7Message = nil
-	if bool((curPos) < (cotpLen)) {
+	if bool((positionAware.GetPos() - startPos) < (cotpLen)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for payload")

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -165,7 +166,11 @@ func (m *_AdsDiscovery) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDiscoveryParse(readBuffer utils.ReadBuffer) (AdsDiscovery, error) {
+func AdsDiscoveryParse(theBytes []byte) (AdsDiscovery, error) {
+	return AdsDiscoveryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+}
+
+func AdsDiscoveryParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscovery, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscovery"); pullErr != nil {
@@ -194,7 +199,7 @@ func AdsDiscoveryParse(readBuffer utils.ReadBuffer) (AdsDiscovery, error) {
 	if pullErr := readBuffer.PullContext("operation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for operation")
 	}
-	_operation, _operationErr := OperationParse(readBuffer)
+	_operation, _operationErr := OperationParseWithBuffer(readBuffer)
 	if _operationErr != nil {
 		return nil, errors.Wrap(_operationErr, "Error parsing 'operation' field of AdsDiscovery")
 	}
@@ -207,7 +212,7 @@ func AdsDiscoveryParse(readBuffer utils.ReadBuffer) (AdsDiscovery, error) {
 	if pullErr := readBuffer.PullContext("amsNetId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for amsNetId")
 	}
-	_amsNetId, _amsNetIdErr := AmsNetIdParse(readBuffer)
+	_amsNetId, _amsNetIdErr := AmsNetIdParseWithBuffer(readBuffer)
 	if _amsNetIdErr != nil {
 		return nil, errors.Wrap(_amsNetIdErr, "Error parsing 'amsNetId' field of AdsDiscovery")
 	}
@@ -220,7 +225,7 @@ func AdsDiscoveryParse(readBuffer utils.ReadBuffer) (AdsDiscovery, error) {
 	if pullErr := readBuffer.PullContext("portNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for portNumber")
 	}
-	_portNumber, _portNumberErr := AdsPortNumbersParse(readBuffer)
+	_portNumber, _portNumberErr := AdsPortNumbersParseWithBuffer(readBuffer)
 	if _portNumberErr != nil {
 		return nil, errors.Wrap(_portNumberErr, "Error parsing 'portNumber' field of AdsDiscovery")
 	}
@@ -248,7 +253,7 @@ func AdsDiscoveryParse(readBuffer utils.ReadBuffer) (AdsDiscovery, error) {
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numBlocks); curItem++ {
-			_item, _err := AdsDiscoveryBlockParse(readBuffer)
+			_item, _err := AdsDiscoveryBlockParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'blocks' field of AdsDiscovery")
 			}
@@ -273,7 +278,15 @@ func AdsDiscoveryParse(readBuffer utils.ReadBuffer) (AdsDiscovery, error) {
 	}, nil
 }
 
-func (m *_AdsDiscovery) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDiscovery) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsDiscovery) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsDiscovery"); pushErr != nil {

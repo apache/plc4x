@@ -1178,7 +1178,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     directAdsField.getIndexGroup(),
                     directAdsField.getIndexOffset(),
                     adsDataTypeTableEntry.getSize() * field.getNumberOfElements(),
-                    field.getPlcSubscriptionType() == PlcSubscriptionType.CYCLIC ? 3 : 4, // if it's not cyclic, it's on change or event
+                    field.getPlcSubscriptionType() == PlcSubscriptionType.CYCLIC ? AdsTransMode.CYCLIC : AdsTransMode.ON_CHANGE, // if it's not cyclic, it's on change or event
                     0, // there is no api for that yet
                     field.getDuration().orElse(Duration.ZERO).toMillis()));
             })

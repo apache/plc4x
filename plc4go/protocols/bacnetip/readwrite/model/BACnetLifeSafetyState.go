@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -236,7 +234,7 @@ func (m BACnetLifeSafetyState) GetLengthInBytes() uint16 {
 }
 
 func BACnetLifeSafetyStateParse(theBytes []byte) (BACnetLifeSafetyState, error) {
-	return BACnetLifeSafetyStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetLifeSafetyStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetLifeSafetyStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLifeSafetyState, error) {
@@ -253,7 +251,7 @@ func BACnetLifeSafetyStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLi
 }
 
 func (e BACnetLifeSafetyState) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

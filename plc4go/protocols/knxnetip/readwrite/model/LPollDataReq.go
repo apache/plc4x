@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +104,7 @@ func (m *_LPollDataReq) GetLengthInBytes() uint16 {
 }
 
 func LPollDataReqParse(theBytes []byte, size uint16) (LPollDataReq, error) {
-	return LPollDataReqParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), size) // TODO: get endianness from mspec
+	return LPollDataReqParseWithBuffer(utils.NewReadBufferByteBased(theBytes), size)
 }
 
 func LPollDataReqParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (LPollDataReq, error) {
@@ -132,7 +131,7 @@ func LPollDataReqParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (LPol
 }
 
 func (m *_LPollDataReq) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +104,7 @@ func (m *_ApduDataExtDomainAddressSerialNumberRead) GetLengthInBytes() uint16 {
 }
 
 func ApduDataExtDomainAddressSerialNumberReadParse(theBytes []byte, length uint8) (ApduDataExtDomainAddressSerialNumberRead, error) {
-	return ApduDataExtDomainAddressSerialNumberReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), length) // TODO: get endianness from mspec
+	return ApduDataExtDomainAddressSerialNumberReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes), length)
 }
 
 func ApduDataExtDomainAddressSerialNumberReadParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtDomainAddressSerialNumberRead, error) {
@@ -132,7 +131,7 @@ func ApduDataExtDomainAddressSerialNumberReadParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_ApduDataExtDomainAddressSerialNumberRead) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

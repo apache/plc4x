@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -320,7 +319,7 @@ func (m *_BACnetPriorityArray) GetLengthInBytes() uint16 {
 }
 
 func BACnetPriorityArrayParse(theBytes []byte, objectTypeArgument BACnetObjectType, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPriorityArray, error) {
-	return BACnetPriorityArrayParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument, tagNumber, arrayIndexArgument) // TODO: get endianness from mspec
+	return BACnetPriorityArrayParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument, tagNumber, arrayIndexArgument)
 }
 
 func BACnetPriorityArrayParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPriorityArray, error) {
@@ -372,7 +371,6 @@ func BACnetPriorityArrayParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeA
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetPriorityArray")
 			}
 			data = append(data, _item.(BACnetPriorityValue))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
@@ -489,7 +487,7 @@ func BACnetPriorityArrayParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeA
 }
 
 func (m *_BACnetPriorityArray) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

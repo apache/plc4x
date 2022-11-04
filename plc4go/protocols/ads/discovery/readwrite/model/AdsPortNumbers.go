@@ -30,7 +30,7 @@ import (
 type AdsPortNumbers uint16
 
 type IAdsPortNumbers interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -161,7 +161,11 @@ func (m AdsPortNumbers) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsPortNumbersParse(readBuffer utils.ReadBuffer) (AdsPortNumbers, error) {
+func AdsPortNumbersParse(theBytes []byte) (AdsPortNumbers, error) {
+	return AdsPortNumbersParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsPortNumbersParseWithBuffer(readBuffer utils.ReadBuffer) (AdsPortNumbers, error) {
 	val, err := readBuffer.ReadUint16("AdsPortNumbers", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AdsPortNumbers")
@@ -174,7 +178,15 @@ func AdsPortNumbersParse(readBuffer utils.ReadBuffer) (AdsPortNumbers, error) {
 	}
 }
 
-func (e AdsPortNumbers) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e AdsPortNumbers) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e AdsPortNumbers) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("AdsPortNumbers", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

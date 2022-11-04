@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -129,7 +128,7 @@ func (m *_ApduControlContainer) GetLengthInBytes() uint16 {
 }
 
 func ApduControlContainerParse(theBytes []byte, dataLength uint8) (ApduControlContainer, error) {
-	return ApduControlContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), dataLength) // TODO: get endianness from mspec
+	return ApduControlContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
 func ApduControlContainerParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduControlContainer, error) {
@@ -170,7 +169,7 @@ func ApduControlContainerParseWithBuffer(readBuffer utils.ReadBuffer, dataLength
 }
 
 func (m *_ApduControlContainer) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +125,7 @@ func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) GetLengthInBytes
 }
 
 func BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParse(theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultLifeSafetyListOfFaultValues, error) {
-	return BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+	return BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultLifeSafetyListOfFaultValues, error) {
@@ -164,7 +163,6 @@ func BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParseWithBuffer(readBuf
 				return nil, errors.Wrap(_err, "Error parsing 'listIfFaultValues' field of BACnetFaultParameterFaultLifeSafetyListOfFaultValues")
 			}
 			listIfFaultValues = append(listIfFaultValues, _item.(BACnetLifeSafetyStateTagged))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("listIfFaultValues", utils.WithRenderAsList(true)); closeErr != nil {
@@ -198,7 +196,7 @@ func BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParseWithBuffer(readBuf
 }
 
 func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

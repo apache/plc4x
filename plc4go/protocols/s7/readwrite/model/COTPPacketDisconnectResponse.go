@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -140,7 +139,7 @@ func (m *_COTPPacketDisconnectResponse) GetLengthInBytes() uint16 {
 }
 
 func COTPPacketDisconnectResponseParse(theBytes []byte, cotpLen uint16) (COTPPacketDisconnectResponse, error) {
-	return COTPPacketDisconnectResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cotpLen) // TODO: get endianness from mspec
+	return COTPPacketDisconnectResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cotpLen)
 }
 
 func COTPPacketDisconnectResponseParseWithBuffer(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketDisconnectResponse, error) {
@@ -183,7 +182,7 @@ func COTPPacketDisconnectResponseParseWithBuffer(readBuffer utils.ReadBuffer, co
 }
 
 func (m *_COTPPacketDisconnectResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

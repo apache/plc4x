@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -260,7 +259,7 @@ func (m *_AmsPacket) GetLengthInBytes() uint16 {
 }
 
 func AmsPacketParse(theBytes []byte) (AmsPacket, error) {
-	return AmsPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return AmsPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func AmsPacketParseWithBuffer(readBuffer utils.ReadBuffer) (AmsPacket, error) {

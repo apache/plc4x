@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,7 +98,7 @@ func (m *_BACnetAccessThreatLevel) GetLengthInBytes() uint16 {
 }
 
 func BACnetAccessThreatLevelParse(theBytes []byte) (BACnetAccessThreatLevel, error) {
-	return BACnetAccessThreatLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetAccessThreatLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetAccessThreatLevelParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessThreatLevel, error) {
@@ -135,7 +134,7 @@ func BACnetAccessThreatLevelParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 }
 
 func (m *_BACnetAccessThreatLevel) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

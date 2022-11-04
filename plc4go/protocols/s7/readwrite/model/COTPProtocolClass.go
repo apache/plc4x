@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -116,7 +114,7 @@ func (m COTPProtocolClass) GetLengthInBytes() uint16 {
 }
 
 func COTPProtocolClassParse(theBytes []byte) (COTPProtocolClass, error) {
-	return COTPProtocolClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return COTPProtocolClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func COTPProtocolClassParseWithBuffer(readBuffer utils.ReadBuffer) (COTPProtocolClass, error) {
@@ -133,7 +131,7 @@ func COTPProtocolClassParseWithBuffer(readBuffer utils.ReadBuffer) (COTPProtocol
 }
 
 func (e COTPProtocolClass) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

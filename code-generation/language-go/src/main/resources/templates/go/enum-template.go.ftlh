@@ -49,8 +49,6 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/m
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -180,7 +178,7 @@ func (m ${type.name}) GetLengthInBytes() uint16 {
 	<#assign simpleTypeReference = type.type.orElseThrow().asSimpleTypeReference().orElseThrow()>
 	<#if simpleTypeReference.getSizeInBits() != -1>
 func ${type.name}Parse(theBytes []byte) (${type.name}, error) {
-	return ${type.name}ParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return ${type.name}ParseWithBuffer(utils.NewReadBufferByteBased(theBytes${helper.getEndiannessOptions(true, true)}))
 }
 
 func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer) (${type.name}, error) {
@@ -197,7 +195,7 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer) (${type.name}, err
 }
 
 func (e ${type.name}) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(${helper.getEndiannessOptions(false, false)})
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

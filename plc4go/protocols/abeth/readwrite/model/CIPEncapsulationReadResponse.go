@@ -134,7 +134,7 @@ func (m *_CIPEncapsulationReadResponse) GetLengthInBytes() uint16 {
 }
 
 func CIPEncapsulationReadResponseParse(theBytes []byte, packetLen uint16) (CIPEncapsulationReadResponse, error) {
-	return CIPEncapsulationReadResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), packetLen) // TODO: get endianness from mspec
+	return CIPEncapsulationReadResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), packetLen)
 }
 
 func CIPEncapsulationReadResponseParseWithBuffer(readBuffer utils.ReadBuffer, packetLen uint16) (CIPEncapsulationReadResponse, error) {
@@ -173,7 +173,7 @@ func CIPEncapsulationReadResponseParseWithBuffer(readBuffer utils.ReadBuffer, pa
 }
 
 func (m *_CIPEncapsulationReadResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

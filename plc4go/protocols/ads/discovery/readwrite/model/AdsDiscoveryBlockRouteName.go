@@ -124,7 +124,11 @@ func (m *_AdsDiscoveryBlockRouteName) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDiscoveryBlockRouteNameParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockRouteName, error) {
+func AdsDiscoveryBlockRouteNameParse(theBytes []byte) (AdsDiscoveryBlockRouteName, error) {
+	return AdsDiscoveryBlockRouteNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsDiscoveryBlockRouteNameParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockRouteName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockRouteName"); pullErr != nil {
@@ -137,7 +141,7 @@ func AdsDiscoveryBlockRouteNameParse(readBuffer utils.ReadBuffer) (AdsDiscoveryB
 	if pullErr := readBuffer.PullContext("routeName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for routeName")
 	}
-	_routeName, _routeNameErr := AmsStringParse(readBuffer)
+	_routeName, _routeNameErr := AmsStringParseWithBuffer(readBuffer)
 	if _routeNameErr != nil {
 		return nil, errors.Wrap(_routeNameErr, "Error parsing 'routeName' field of AdsDiscoveryBlockRouteName")
 	}
@@ -159,7 +163,15 @@ func AdsDiscoveryBlockRouteNameParse(readBuffer utils.ReadBuffer) (AdsDiscoveryB
 	return _child, nil
 }
 
-func (m *_AdsDiscoveryBlockRouteName) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDiscoveryBlockRouteName) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsDiscoveryBlockRouteName) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

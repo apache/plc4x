@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,7 +108,7 @@ func (m *_SysexCommandSysexNonRealtime) GetLengthInBytes() uint16 {
 }
 
 func SysexCommandSysexNonRealtimeParse(theBytes []byte, response bool) (SysexCommandSysexNonRealtime, error) {
-	return SysexCommandSysexNonRealtimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+	return SysexCommandSysexNonRealtimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func SysexCommandSysexNonRealtimeParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandSysexNonRealtime, error) {
@@ -134,7 +133,7 @@ func SysexCommandSysexNonRealtimeParseWithBuffer(readBuffer utils.ReadBuffer, re
 }
 
 func (m *_SysexCommandSysexNonRealtime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

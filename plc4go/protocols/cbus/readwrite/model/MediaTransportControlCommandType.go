@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -258,7 +256,7 @@ func (m MediaTransportControlCommandType) GetLengthInBytes() uint16 {
 }
 
 func MediaTransportControlCommandTypeParse(theBytes []byte) (MediaTransportControlCommandType, error) {
-	return MediaTransportControlCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return MediaTransportControlCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func MediaTransportControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlCommandType, error) {
@@ -275,7 +273,7 @@ func MediaTransportControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (e MediaTransportControlCommandType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

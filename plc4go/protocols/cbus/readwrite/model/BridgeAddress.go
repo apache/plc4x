@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,7 +98,7 @@ func (m *_BridgeAddress) GetLengthInBytes() uint16 {
 }
 
 func BridgeAddressParse(theBytes []byte) (BridgeAddress, error) {
-	return BridgeAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BridgeAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BridgeAddressParseWithBuffer(readBuffer utils.ReadBuffer) (BridgeAddress, error) {
@@ -129,7 +128,7 @@ func BridgeAddressParseWithBuffer(readBuffer utils.ReadBuffer) (BridgeAddress, e
 }
 
 func (m *_BridgeAddress) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

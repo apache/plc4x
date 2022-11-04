@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -110,7 +108,7 @@ func (m HVACHumidityModeAndFlagsMode) GetLengthInBytes() uint16 {
 }
 
 func HVACHumidityModeAndFlagsModeParse(theBytes []byte) (HVACHumidityModeAndFlagsMode, error) {
-	return HVACHumidityModeAndFlagsModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return HVACHumidityModeAndFlagsModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func HVACHumidityModeAndFlagsModeParseWithBuffer(readBuffer utils.ReadBuffer) (HVACHumidityModeAndFlagsMode, error) {
@@ -127,7 +125,7 @@ func HVACHumidityModeAndFlagsModeParseWithBuffer(readBuffer utils.ReadBuffer) (H
 }
 
 func (e HVACHumidityModeAndFlagsMode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

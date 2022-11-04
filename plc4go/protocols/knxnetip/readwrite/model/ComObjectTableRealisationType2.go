@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -153,7 +152,7 @@ func (m *_ComObjectTableRealisationType2) GetLengthInBytes() uint16 {
 }
 
 func ComObjectTableRealisationType2Parse(theBytes []byte, firmwareType FirmwareType) (ComObjectTableRealisationType2, error) {
-	return ComObjectTableRealisationType2ParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), firmwareType) // TODO: get endianness from mspec
+	return ComObjectTableRealisationType2ParseWithBuffer(utils.NewReadBufferByteBased(theBytes), firmwareType)
 }
 
 func ComObjectTableRealisationType2ParseWithBuffer(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTableRealisationType2, error) {
@@ -218,7 +217,7 @@ func ComObjectTableRealisationType2ParseWithBuffer(readBuffer utils.ReadBuffer, 
 }
 
 func (m *_ComObjectTableRealisationType2) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -164,7 +162,7 @@ func (m SyntaxIdType) GetLengthInBytes() uint16 {
 }
 
 func SyntaxIdTypeParse(theBytes []byte) (SyntaxIdType, error) {
-	return SyntaxIdTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return SyntaxIdTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func SyntaxIdTypeParseWithBuffer(readBuffer utils.ReadBuffer) (SyntaxIdType, error) {
@@ -181,7 +179,7 @@ func SyntaxIdTypeParseWithBuffer(readBuffer utils.ReadBuffer) (SyntaxIdType, err
 }
 
 func (e SyntaxIdType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

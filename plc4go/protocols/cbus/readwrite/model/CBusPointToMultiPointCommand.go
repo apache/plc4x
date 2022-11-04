@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -116,7 +115,7 @@ func (m *_CBusPointToMultiPointCommand) GetLengthInBytes() uint16 {
 }
 
 func CBusPointToMultiPointCommandParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToMultiPointCommand, error) {
-	return CBusPointToMultiPointCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+	return CBusPointToMultiPointCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func CBusPointToMultiPointCommandParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToMultiPointCommand, error) {

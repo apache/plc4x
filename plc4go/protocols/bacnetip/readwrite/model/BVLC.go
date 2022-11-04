@@ -142,7 +142,7 @@ func (m *_BVLC) GetLengthInBytes() uint16 {
 }
 
 func BVLCParse(theBytes []byte) (BVLC, error) {
-	return BVLCParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BVLCParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func BVLCParseWithBuffer(readBuffer utils.ReadBuffer) (BVLC, error) {

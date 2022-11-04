@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -110,7 +108,7 @@ func (m ZoneStatusTemp) GetLengthInBytes() uint16 {
 }
 
 func ZoneStatusTempParse(theBytes []byte) (ZoneStatusTemp, error) {
-	return ZoneStatusTempParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return ZoneStatusTempParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func ZoneStatusTempParseWithBuffer(readBuffer utils.ReadBuffer) (ZoneStatusTemp, error) {
@@ -127,7 +125,7 @@ func ZoneStatusTempParseWithBuffer(readBuffer utils.ReadBuffer) (ZoneStatusTemp,
 }
 
 func (e ZoneStatusTemp) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

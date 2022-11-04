@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +125,7 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) GetLengthInBy
 }
 
 func BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesParse(theBytes []byte, tagNumber uint8) (BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues, error) {
-	return BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+	return BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues, error) {
@@ -164,7 +163,6 @@ func BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesParseWithBuffer(read
 				return nil, errors.Wrap(_err, "Error parsing 'listOfAlarmValues' field of BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues")
 			}
 			listOfAlarmValues = append(listOfAlarmValues, _item.(BACnetLifeSafetyStateTagged))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("listOfAlarmValues", utils.WithRenderAsList(true)); closeErr != nil {
@@ -198,7 +196,7 @@ func BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesParseWithBuffer(read
 }
 
 func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

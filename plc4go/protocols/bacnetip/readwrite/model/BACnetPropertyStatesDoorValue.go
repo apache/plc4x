@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +123,7 @@ func (m *_BACnetPropertyStatesDoorValue) GetLengthInBytes() uint16 {
 }
 
 func BACnetPropertyStatesDoorValueParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesDoorValue, error) {
-	return BACnetPropertyStatesDoorValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), peekedTagNumber) // TODO: get endianness from mspec
+	return BACnetPropertyStatesDoorValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
 func BACnetPropertyStatesDoorValueParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorValue, error) {
@@ -163,7 +162,7 @@ func BACnetPropertyStatesDoorValueParseWithBuffer(readBuffer utils.ReadBuffer, p
 }
 
 func (m *_BACnetPropertyStatesDoorValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

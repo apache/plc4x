@@ -20,6 +20,7 @@
 package model
 
 type PlcField interface {
-	GetPlcDataType() string
-	GetNumberOfElements() int
+	GetAddressString() string
+	GetTypeName() string
+	GetQuantity() uint16
 }

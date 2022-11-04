@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -128,7 +127,7 @@ func (m *_BACnetContextTagTime) GetLengthInBytes() uint16 {
 }
 
 func BACnetContextTagTimeParse(theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagTime, error) {
-	return BACnetContextTagTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumberArgument, dataType) // TODO: get endianness from mspec
+	return BACnetContextTagTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType)
 }
 
 func BACnetContextTagTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagTime, error) {
@@ -169,7 +168,7 @@ func BACnetContextTagTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberA
 }
 
 func (m *_BACnetContextTagTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

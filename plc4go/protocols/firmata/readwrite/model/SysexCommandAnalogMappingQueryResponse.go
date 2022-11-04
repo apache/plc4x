@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -130,7 +129,7 @@ func (m *_SysexCommandAnalogMappingQueryResponse) GetLengthInBytes() uint16 {
 }
 
 func SysexCommandAnalogMappingQueryResponseParse(theBytes []byte, response bool) (SysexCommandAnalogMappingQueryResponse, error) {
-	return SysexCommandAnalogMappingQueryResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+	return SysexCommandAnalogMappingQueryResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func SysexCommandAnalogMappingQueryResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandAnalogMappingQueryResponse, error) {
@@ -163,7 +162,7 @@ func SysexCommandAnalogMappingQueryResponseParseWithBuffer(readBuffer utils.Read
 }
 
 func (m *_SysexCommandAnalogMappingQueryResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

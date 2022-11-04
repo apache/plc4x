@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,7 +122,7 @@ func (m *_BACnetActionList) GetLengthInBytes() uint16 {
 }
 
 func BACnetActionListParse(theBytes []byte) (BACnetActionList, error) {
-	return BACnetActionListParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetActionListParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetActionListParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetActionList, error) {
@@ -161,7 +160,6 @@ func BACnetActionListParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetActionL
 				return nil, errors.Wrap(_err, "Error parsing 'action' field of BACnetActionList")
 			}
 			action = append(action, _item.(BACnetActionCommand))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("action", utils.WithRenderAsList(true)); closeErr != nil {
@@ -194,7 +192,7 @@ func BACnetActionListParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetActionL
 }
 
 func (m *_BACnetActionList) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

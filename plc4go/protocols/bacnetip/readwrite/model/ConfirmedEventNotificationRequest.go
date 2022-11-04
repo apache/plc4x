@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -228,7 +227,7 @@ func (m *_ConfirmedEventNotificationRequest) GetLengthInBytes() uint16 {
 }
 
 func ConfirmedEventNotificationRequestParse(theBytes []byte) (ConfirmedEventNotificationRequest, error) {
-	return ConfirmedEventNotificationRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return ConfirmedEventNotificationRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func ConfirmedEventNotificationRequestParseWithBuffer(readBuffer utils.ReadBuffer) (ConfirmedEventNotificationRequest, error) {
@@ -468,7 +467,7 @@ func ConfirmedEventNotificationRequestParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_ConfirmedEventNotificationRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

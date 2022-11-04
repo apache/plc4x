@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -166,7 +165,7 @@ func (m *_LDataFrame) GetLengthInBytes() uint16 {
 }
 
 func LDataFrameParse(theBytes []byte) (LDataFrame, error) {
-	return LDataFrameParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return LDataFrameParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func LDataFrameParseWithBuffer(readBuffer utils.ReadBuffer) (LDataFrame, error) {

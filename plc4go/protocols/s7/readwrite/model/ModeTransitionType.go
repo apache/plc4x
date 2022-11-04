@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -140,7 +138,7 @@ func (m ModeTransitionType) GetLengthInBytes() uint16 {
 }
 
 func ModeTransitionTypeParse(theBytes []byte) (ModeTransitionType, error) {
-	return ModeTransitionTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return ModeTransitionTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func ModeTransitionTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ModeTransitionType, error) {
@@ -157,7 +155,7 @@ func ModeTransitionTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ModeTransit
 }
 
 func (e ModeTransitionType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

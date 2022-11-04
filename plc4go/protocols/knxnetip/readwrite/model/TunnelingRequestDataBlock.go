@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,7 +116,7 @@ func (m *_TunnelingRequestDataBlock) GetLengthInBytes() uint16 {
 }
 
 func TunnelingRequestDataBlockParse(theBytes []byte) (TunnelingRequestDataBlock, error) {
-	return TunnelingRequestDataBlockParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return TunnelingRequestDataBlockParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func TunnelingRequestDataBlockParseWithBuffer(readBuffer utils.ReadBuffer) (TunnelingRequestDataBlock, error) {
@@ -180,7 +179,7 @@ func TunnelingRequestDataBlockParseWithBuffer(readBuffer utils.ReadBuffer) (Tunn
 }
 
 func (m *_TunnelingRequestDataBlock) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

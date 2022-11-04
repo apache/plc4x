@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -129,7 +128,7 @@ func (m *_S7VarRequestParameterItemAddress) GetLengthInBytes() uint16 {
 }
 
 func S7VarRequestParameterItemAddressParse(theBytes []byte) (S7VarRequestParameterItemAddress, error) {
-	return S7VarRequestParameterItemAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return S7VarRequestParameterItemAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func S7VarRequestParameterItemAddressParseWithBuffer(readBuffer utils.ReadBuffer) (S7VarRequestParameterItemAddress, error) {
@@ -175,7 +174,7 @@ func S7VarRequestParameterItemAddressParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_S7VarRequestParameterItemAddress) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

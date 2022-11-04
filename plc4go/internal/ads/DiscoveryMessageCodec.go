@@ -24,7 +24,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -48,14 +47,13 @@ func (m *DiscoveryMessageCodec) Send(message spi.Message) error {
 	// Cast the message to the correct type of struct
 	tcpPaket := message.(model.AdsDiscovery)
 	// Serialize the request
-	wb := utils.NewLittleEndianWriteBufferByteBased()
-	err := tcpPaket.Serialize(wb)
+	bytes, err := tcpPaket.Serialize()
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(wb.GetBytes())
+	err = m.GetTransportInstance().Write(bytes)
 	if err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
@@ -83,8 +81,7 @@ func (m *DiscoveryMessageCodec) Receive() (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		rb := utils.NewLittleEndianReadBufferByteBased(data)
-		tcpPacket, err := model.AdsDiscoveryParse(rb)
+		tcpPacket, err := model.AdsDiscoveryParse(data)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

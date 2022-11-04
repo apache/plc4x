@@ -171,7 +171,7 @@ func (m *_ModbusTcpADU) GetLengthInBytes() uint16 {
 }
 
 func ModbusTcpADUParse(theBytes []byte, driverType DriverType, response bool) (ModbusTcpADU, error) {
-	return ModbusTcpADUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response) // TODO: get endianness from mspec
+	return ModbusTcpADUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response)
 }
 
 func ModbusTcpADUParseWithBuffer(readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusTcpADU, error) {
@@ -244,7 +244,7 @@ func ModbusTcpADUParseWithBuffer(readBuffer utils.ReadBuffer, driverType DriverT
 }
 
 func (m *_ModbusTcpADU) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

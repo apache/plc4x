@@ -129,7 +129,11 @@ func (m *_AdsDiscoveryBlockOsData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDiscoveryBlockOsDataParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockOsData, error) {
+func AdsDiscoveryBlockOsDataParse(theBytes []byte) (AdsDiscoveryBlockOsData, error) {
+	return AdsDiscoveryBlockOsDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsDiscoveryBlockOsDataParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockOsData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockOsData"); pullErr != nil {
@@ -164,7 +168,15 @@ func AdsDiscoveryBlockOsDataParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBloc
 	return _child, nil
 }
 
-func (m *_AdsDiscoveryBlockOsData) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDiscoveryBlockOsData) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsDiscoveryBlockOsData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -132,7 +131,7 @@ func (m *_ConnectionRequestInformationTunnelConnection) GetLengthInBytes() uint1
 }
 
 func ConnectionRequestInformationTunnelConnectionParse(theBytes []byte) (ConnectionRequestInformationTunnelConnection, error) {
-	return ConnectionRequestInformationTunnelConnectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return ConnectionRequestInformationTunnelConnectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func ConnectionRequestInformationTunnelConnectionParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionRequestInformationTunnelConnection, error) {
@@ -189,7 +188,7 @@ func ConnectionRequestInformationTunnelConnectionParseWithBuffer(readBuffer util
 }
 
 func (m *_ConnectionRequestInformationTunnelConnection) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

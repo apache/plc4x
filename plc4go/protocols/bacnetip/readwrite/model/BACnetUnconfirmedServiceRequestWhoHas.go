@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -154,7 +153,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetLengthInBytes() uint16 {
 }
 
 func BACnetUnconfirmedServiceRequestWhoHasParse(theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestWhoHas, error) {
-	return BACnetUnconfirmedServiceRequestWhoHasParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceRequestLength) // TODO: get endianness from mspec
+	return BACnetUnconfirmedServiceRequestWhoHasParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetUnconfirmedServiceRequestWhoHasParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestWhoHas, error) {
@@ -241,7 +240,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHas) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

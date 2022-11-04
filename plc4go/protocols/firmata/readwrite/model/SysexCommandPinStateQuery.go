@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -130,7 +129,7 @@ func (m *_SysexCommandPinStateQuery) GetLengthInBytes() uint16 {
 }
 
 func SysexCommandPinStateQueryParse(theBytes []byte, response bool) (SysexCommandPinStateQuery, error) {
-	return SysexCommandPinStateQueryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+	return SysexCommandPinStateQueryParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func SysexCommandPinStateQueryParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandPinStateQuery, error) {
@@ -163,7 +162,7 @@ func SysexCommandPinStateQueryParseWithBuffer(readBuffer utils.ReadBuffer, respo
 }
 
 func (m *_SysexCommandPinStateQuery) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

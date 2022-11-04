@@ -124,7 +124,11 @@ func (m *_AdsDiscoveryBlockPassword) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDiscoveryBlockPasswordParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockPassword, error) {
+func AdsDiscoveryBlockPasswordParse(theBytes []byte) (AdsDiscoveryBlockPassword, error) {
+	return AdsDiscoveryBlockPasswordParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsDiscoveryBlockPasswordParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockPassword, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockPassword"); pullErr != nil {
@@ -137,7 +141,7 @@ func AdsDiscoveryBlockPasswordParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBl
 	if pullErr := readBuffer.PullContext("password"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for password")
 	}
-	_password, _passwordErr := AmsStringParse(readBuffer)
+	_password, _passwordErr := AmsStringParseWithBuffer(readBuffer)
 	if _passwordErr != nil {
 		return nil, errors.Wrap(_passwordErr, "Error parsing 'password' field of AdsDiscoveryBlockPassword")
 	}
@@ -159,7 +163,15 @@ func AdsDiscoveryBlockPasswordParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBl
 	return _child, nil
 }
 
-func (m *_AdsDiscoveryBlockPassword) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDiscoveryBlockPassword) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsDiscoveryBlockPassword) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

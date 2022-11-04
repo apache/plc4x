@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -165,7 +164,7 @@ func (m *_BACnetConfirmedServiceRequestRemoveListElement) GetLengthInBytes() uin
 }
 
 func BACnetConfirmedServiceRequestRemoveListElementParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestRemoveListElement, error) {
-	return BACnetConfirmedServiceRequestRemoveListElementParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceRequestLength) // TODO: get endianness from mspec
+	return BACnetConfirmedServiceRequestRemoveListElementParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetConfirmedServiceRequestRemoveListElementParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestRemoveListElement, error) {
@@ -266,7 +265,7 @@ func BACnetConfirmedServiceRequestRemoveListElementParseWithBuffer(readBuffer ut
 }
 
 func (m *_BACnetConfirmedServiceRequestRemoveListElement) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -104,7 +102,7 @@ func (m ModbusDeviceInformationConformityLevel) GetLengthInBytes() uint16 {
 }
 
 func ModbusDeviceInformationConformityLevelParse(theBytes []byte) (ModbusDeviceInformationConformityLevel, error) {
-	return ModbusDeviceInformationConformityLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return ModbusDeviceInformationConformityLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func ModbusDeviceInformationConformityLevelParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusDeviceInformationConformityLevel, error) {
@@ -121,7 +119,7 @@ func ModbusDeviceInformationConformityLevelParseWithBuffer(readBuffer utils.Read
 }
 
 func (e ModbusDeviceInformationConformityLevel) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

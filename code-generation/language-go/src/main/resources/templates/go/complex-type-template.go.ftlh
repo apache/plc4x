@@ -747,7 +747,7 @@ func (m *_${type.name}) GetLengthInBytes() uint16 {
 <#assign parserArgumentList><#if hasParserArguments><#list parserArguments as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if></#assign>
 <#assign parserArgumentNameList><#if hasParserArguments><#list parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if></#assign>
 func ${type.name}Parse(theBytes []byte<#if hasParserArguments>, ${parserArgumentList}</#if>) (${type.name}, error) {
-	return ${type.name}ParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))<#if hasParserArguments>, ${parserArgumentNameList}</#if>) <@emitImport import="encoding/binary" /> // TODO: get endianness from mspec
+	return ${type.name}ParseWithBuffer(utils.NewReadBufferByteBased(theBytes${helper.getEndiannessOptions(true, true)})<#if hasParserArguments>, ${parserArgumentNameList}</#if>)
 }
 
 func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (${type.name}, error) {
@@ -761,9 +761,6 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 	<#if helper.requiresStartPos() || helper.requiresCurPos()>
 	var startPos = positionAware.GetPos()
 	_ = startPos
-	</#if>
-	<#if helper.requiresCurPos()>
-	var curPos uint16
 	</#if>
 	<#assign reservedFieldIndex=0>
 	<#list type.fields as field>
@@ -799,10 +796,6 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 	if pullErr := readBuffer.PullContext("${arrayField.name}", utils.WithRenderAsList(true)); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ${arrayField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
-			<#-- Only update curPos if the length expression uses it -->
-					<#if arrayField.loopExpression.contains("curPos")>
-	curPos = positionAware.GetPos() - startPos
-					</#if>
 			<#-- If this is a count array, we can directly initialize an array with the given size -->
 					<#if field.isCountArrayField()>
 	// Count array
@@ -897,10 +890,6 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
                         <#else>
 			${arrayField.name} = append(${arrayField.name}, _item.(${arrayElementType.asComplexTypeReference().orElseThrow().name}))
                         </#if>
-						<#-- After parsing, update the current position, but only if it's needed -->
-							<#if arrayField.loopExpression.contains("curPos")>
-			curPos = positionAware.GetPos() - startPos
-							</#if>
 		}
 	}
 					<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
@@ -943,11 +932,6 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 						<#else>
 			${arrayField.name} = append(${arrayField.name}, _item.(${arrayElementType.asComplexTypeReference().orElseThrow().name}))
 						</#if>
-
-						<#-- After parsing, update the current position, but only if it's needed -->
-							<#if arrayField.loopExpression.contains("curPos")>
-			curPos = positionAware.GetPos() - startPos
-							</#if>
 		}
 	}
 					</#if>
@@ -1066,10 +1050,6 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 		return nil, errors.Wrap(pullErr, "Error pulling for ${manualArrayField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 	// Manual Array Field (${manualArrayField.name})
-			<#-- Only update curPos if the length expression uses it -->
-				<#if manualArrayField.loopExpression.contains("curPos")>
-	curPos = positionAware.GetPos() - startPos
-				</#if>
 			<#-- If this is a count array, we can directly initialize an array with the given size -->
 				<#if field.isCountArrayField()>
 	// Count array
@@ -1092,10 +1072,6 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 	${manualArrayField.name}EndPos := positionAware.GetPos() + _${manualArrayField.name}Length
 	for ;positionAware.GetPos() < ${manualArrayField.name}EndPos; {
 		_${manualArrayField.name}List = append(_${manualArrayField.name}List, ((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, arrayElementType, manualArrayField.parseExpression, parserArguments)})))
-					<#-- After parsing, update the current position, but only if it's needed -->
-						<#if manualArrayField.loopExpression.contains("curPos")>
-		curPos = positionAware.GetPos() - startPos
-						</#if>
 	}
 					<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
 					<#elseif field.isTerminatedArrayField()>
@@ -1107,10 +1083,6 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 		for ;!((bool) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments, true)})); {
 		_${manualArrayField.name}List = append(_${manualArrayField.name}List, ((${helper.getLanguageTypeNameForTypeReference(arrayElementType)}) (${helper.toParseExpression(manualArrayField, arrayElementType, manualArrayField.parseExpression, parserArguments)})))
 
-					<#-- After parsing, update the current position, but only if it's needed -->
-						<#if manualArrayField.loopExpression.contains("curPos")>
-			curPos = positionAware.GetPos() - startPos
-						</#if>
 		}
 	}
 					</#if>
@@ -1153,9 +1125,6 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 				<#assign optionalField = field.asOptionalField().orElseThrow()>
 
 	// Optional Field (${optionalField.name}) (Can be skipped, if a given expression evaluates to false)
-				<#if optionalField.conditionExpression.present && optionalField.conditionExpression.get().contains("curPos")>
-	curPos = positionAware.GetPos() - startPos
-				</#if>
 	var ${optionalField.name} <#if !optionalField.type.isComplexTypeReference()>*</#if>${helper.getLanguageTypeNameForField(field)} = nil
 	<#if optionalField.conditionExpression.present>
 	if ${helper.toBooleanParseExpression(optionalField, optionalField.conditionExpression.get(), parserArguments)} </#if>{
@@ -1223,9 +1192,6 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 				<#assign assertField = field.asAssertField().orElseThrow()>
 
 	// Assert Field (${assertField.name}) (Can be skipped, if a given expression evaluates to false)
-				<#if assertField.conditionExpression.contains("curPos")>
-	curPos = positionAware.GetPos() - startPos
-				</#if>
 			<#if assertField.type.isSimpleTypeReference()>
 	${assertField.name}, _err := ${helper.getReadBufferReadMethodCall(assertField.name, assertField.type.asSimpleTypeReference().orElseThrow(), assertField)}
 	if _err != nil {
@@ -1571,7 +1537,7 @@ func (pm *_${type.name}) SerializeParent(writeBuffer utils.WriteBuffer, child ${
 	_ = m
 <#else>
 func (m *_${type.name}) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))<@emitImport import="encoding/binary" /> // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))${helper.getEndiannessOptions(false, true)})
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -135,7 +135,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		}
 
 		// Cast to the UDP transport instance, so we can access information on the local port.
-		udpTransportInstance, ok := transportInstance.(*udp.DirectTransportInstance)
+		udpTransportInstance, ok := transportInstance.(*udp.TransportInstance)
 		if !ok {
 			return errors.New("couldn't cast transport instance to UDP transport instance")
 		}

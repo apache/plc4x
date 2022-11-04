@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -218,7 +216,7 @@ func (m BACnetNodeType) GetLengthInBytes() uint16 {
 }
 
 func BACnetNodeTypeParse(theBytes []byte) (BACnetNodeType, error) {
-	return BACnetNodeTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetNodeTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetNodeTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNodeType, error) {
@@ -235,7 +233,7 @@ func BACnetNodeTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNodeType,
 }
 
 func (e BACnetNodeType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

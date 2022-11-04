@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -8607,7 +8605,7 @@ func (m KnxManufacturer) GetLengthInBytes() uint16 {
 }
 
 func KnxManufacturerParse(theBytes []byte) (KnxManufacturer, error) {
-	return KnxManufacturerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return KnxManufacturerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func KnxManufacturerParseWithBuffer(readBuffer utils.ReadBuffer) (KnxManufacturer, error) {
@@ -8624,7 +8622,7 @@ func KnxManufacturerParseWithBuffer(readBuffer utils.ReadBuffer) (KnxManufacture
 }
 
 func (e KnxManufacturer) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

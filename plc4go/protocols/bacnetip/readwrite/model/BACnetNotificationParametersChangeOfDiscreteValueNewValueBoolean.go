@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +125,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean) GetL
 }
 
 func BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanParse(theBytes []byte, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean, error) {
-	return BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+	return BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean, error) {
@@ -167,7 +166,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanParseWithBu
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

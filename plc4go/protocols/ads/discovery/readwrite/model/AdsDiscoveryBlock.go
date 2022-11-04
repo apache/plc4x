@@ -99,7 +99,11 @@ func (m *_AdsDiscoveryBlock) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDiscoveryBlockParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBlock, error) {
+func AdsDiscoveryBlockParse(theBytes []byte) (AdsDiscoveryBlock, error) {
+	return AdsDiscoveryBlockParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsDiscoveryBlockParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscoveryBlock, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlock"); pullErr != nil {
@@ -112,7 +116,7 @@ func AdsDiscoveryBlockParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBlock, err
 	if pullErr := readBuffer.PullContext("blockType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for blockType")
 	}
-	blockType_temp, _blockTypeErr := AdsDiscoveryBlockTypeParse(readBuffer)
+	blockType_temp, _blockTypeErr := AdsDiscoveryBlockTypeParseWithBuffer(readBuffer)
 	var blockType AdsDiscoveryBlockType = blockType_temp
 	if closeErr := readBuffer.CloseContext("blockType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for blockType")
@@ -132,23 +136,23 @@ func AdsDiscoveryBlockParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBlock, err
 	var typeSwitchError error
 	switch {
 	case blockType == AdsDiscoveryBlockType_STATUS: // AdsDiscoveryBlockStatus
-		_childTemp, typeSwitchError = AdsDiscoveryBlockStatusParse(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockStatusParseWithBuffer(readBuffer)
 	case blockType == AdsDiscoveryBlockType_PASSWORD: // AdsDiscoveryBlockPassword
-		_childTemp, typeSwitchError = AdsDiscoveryBlockPasswordParse(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockPasswordParseWithBuffer(readBuffer)
 	case blockType == AdsDiscoveryBlockType_VERSION: // AdsDiscoveryBlockVersion
-		_childTemp, typeSwitchError = AdsDiscoveryBlockVersionParse(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockVersionParseWithBuffer(readBuffer)
 	case blockType == AdsDiscoveryBlockType_OS_DATA: // AdsDiscoveryBlockOsData
-		_childTemp, typeSwitchError = AdsDiscoveryBlockOsDataParse(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockOsDataParseWithBuffer(readBuffer)
 	case blockType == AdsDiscoveryBlockType_HOST_NAME: // AdsDiscoveryBlockHostName
-		_childTemp, typeSwitchError = AdsDiscoveryBlockHostNameParse(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockHostNameParseWithBuffer(readBuffer)
 	case blockType == AdsDiscoveryBlockType_AMS_NET_ID: // AdsDiscoveryBlockAmsNetId
-		_childTemp, typeSwitchError = AdsDiscoveryBlockAmsNetIdParse(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockAmsNetIdParseWithBuffer(readBuffer)
 	case blockType == AdsDiscoveryBlockType_ROUTE_NAME: // AdsDiscoveryBlockRouteName
-		_childTemp, typeSwitchError = AdsDiscoveryBlockRouteNameParse(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockRouteNameParseWithBuffer(readBuffer)
 	case blockType == AdsDiscoveryBlockType_USER_NAME: // AdsDiscoveryBlockUserName
-		_childTemp, typeSwitchError = AdsDiscoveryBlockUserNameParse(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockUserNameParseWithBuffer(readBuffer)
 	case blockType == AdsDiscoveryBlockType_FINGERPRINT: // AdsDiscoveryBlockFingerprint
-		_childTemp, typeSwitchError = AdsDiscoveryBlockFingerprintParse(readBuffer)
+		_childTemp, typeSwitchError = AdsDiscoveryBlockFingerprintParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [blockType=%v]", blockType)
 	}

@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -136,7 +135,7 @@ func (m *_TelephonyDataLineOffHook) GetLengthInBytes() uint16 {
 }
 
 func TelephonyDataLineOffHookParse(theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataLineOffHook, error) {
-	return TelephonyDataLineOffHookParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), commandTypeContainer) // TODO: get endianness from mspec
+	return TelephonyDataLineOffHookParseWithBuffer(utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
 func TelephonyDataLineOffHookParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataLineOffHook, error) {
@@ -183,7 +182,7 @@ func TelephonyDataLineOffHookParseWithBuffer(readBuffer utils.ReadBuffer, comman
 }
 
 func (m *_TelephonyDataLineOffHook) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

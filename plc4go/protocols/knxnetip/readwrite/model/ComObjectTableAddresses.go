@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -18864,7 +18862,7 @@ func (m ComObjectTableAddresses) GetLengthInBytes() uint16 {
 }
 
 func ComObjectTableAddressesParse(theBytes []byte) (ComObjectTableAddresses, error) {
-	return ComObjectTableAddressesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return ComObjectTableAddressesParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func ComObjectTableAddressesParseWithBuffer(readBuffer utils.ReadBuffer) (ComObjectTableAddresses, error) {
@@ -18881,7 +18879,7 @@ func ComObjectTableAddressesParseWithBuffer(readBuffer utils.ReadBuffer) (ComObj
 }
 
 func (e ComObjectTableAddresses) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -161,7 +160,7 @@ func (m *_ModbusPDUWriteMultipleCoilsRequest) GetLengthInBytes() uint16 {
 }
 
 func ModbusPDUWriteMultipleCoilsRequestParse(theBytes []byte, response bool) (ModbusPDUWriteMultipleCoilsRequest, error) {
-	return ModbusPDUWriteMultipleCoilsRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+	return ModbusPDUWriteMultipleCoilsRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func ModbusPDUWriteMultipleCoilsRequestParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteMultipleCoilsRequest, error) {
@@ -216,7 +215,7 @@ func ModbusPDUWriteMultipleCoilsRequestParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_ModbusPDUWriteMultipleCoilsRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

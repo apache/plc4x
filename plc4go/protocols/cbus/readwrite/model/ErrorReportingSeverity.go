@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -134,7 +132,7 @@ func (m ErrorReportingSeverity) GetLengthInBytes() uint16 {
 }
 
 func ErrorReportingSeverityParse(theBytes []byte) (ErrorReportingSeverity, error) {
-	return ErrorReportingSeverityParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return ErrorReportingSeverityParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func ErrorReportingSeverityParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingSeverity, error) {
@@ -151,7 +149,7 @@ func ErrorReportingSeverityParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorRe
 }
 
 func (e ErrorReportingSeverity) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

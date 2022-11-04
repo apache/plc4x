@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -104,7 +102,7 @@ func (m DeviceGroup) GetLengthInBytes() uint16 {
 }
 
 func DeviceGroupParse(theBytes []byte) (DeviceGroup, error) {
-	return DeviceGroupParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return DeviceGroupParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func DeviceGroupParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceGroup, error) {
@@ -121,7 +119,7 @@ func DeviceGroupParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceGroup, error
 }
 
 func (e DeviceGroup) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

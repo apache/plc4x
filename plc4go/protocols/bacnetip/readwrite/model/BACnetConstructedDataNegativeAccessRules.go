@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -171,7 +170,7 @@ func (m *_BACnetConstructedDataNegativeAccessRules) GetLengthInBytes() uint16 {
 }
 
 func BACnetConstructedDataNegativeAccessRulesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNegativeAccessRules, error) {
-	return BACnetConstructedDataNegativeAccessRulesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+	return BACnetConstructedDataNegativeAccessRulesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
 func BACnetConstructedDataNegativeAccessRulesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNegativeAccessRules, error) {
@@ -223,7 +222,6 @@ func BACnetConstructedDataNegativeAccessRulesParseWithBuffer(readBuffer utils.Re
 				return nil, errors.Wrap(_err, "Error parsing 'negativeAccessRules' field of BACnetConstructedDataNegativeAccessRules")
 			}
 			negativeAccessRules = append(negativeAccessRules, _item.(BACnetAccessRule))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("negativeAccessRules", utils.WithRenderAsList(true)); closeErr != nil {
@@ -248,7 +246,7 @@ func BACnetConstructedDataNegativeAccessRulesParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_BACnetConstructedDataNegativeAccessRules) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

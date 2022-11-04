@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -110,7 +108,7 @@ func (m LightingLabelFlavour) GetLengthInBytes() uint16 {
 }
 
 func LightingLabelFlavourParse(theBytes []byte) (LightingLabelFlavour, error) {
-	return LightingLabelFlavourParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return LightingLabelFlavourParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func LightingLabelFlavourParseWithBuffer(readBuffer utils.ReadBuffer) (LightingLabelFlavour, error) {
@@ -127,7 +125,7 @@ func LightingLabelFlavourParseWithBuffer(readBuffer utils.ReadBuffer) (LightingL
 }
 
 func (e LightingLabelFlavour) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

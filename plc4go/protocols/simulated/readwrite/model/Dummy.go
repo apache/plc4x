@@ -99,7 +99,7 @@ func (m *_Dummy) GetLengthInBytes() uint16 {
 }
 
 func DummyParse(theBytes []byte) (Dummy, error) {
-	return DummyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return DummyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func DummyParseWithBuffer(readBuffer utils.ReadBuffer) (Dummy, error) {
@@ -129,7 +129,7 @@ func DummyParseWithBuffer(readBuffer utils.ReadBuffer) (Dummy, error) {
 }
 
 func (m *_Dummy) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

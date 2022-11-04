@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -134,7 +132,7 @@ func (m MaxSegmentsAccepted) GetLengthInBytes() uint16 {
 }
 
 func MaxSegmentsAcceptedParse(theBytes []byte) (MaxSegmentsAccepted, error) {
-	return MaxSegmentsAcceptedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return MaxSegmentsAcceptedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func MaxSegmentsAcceptedParseWithBuffer(readBuffer utils.ReadBuffer) (MaxSegmentsAccepted, error) {
@@ -151,7 +149,7 @@ func MaxSegmentsAcceptedParseWithBuffer(readBuffer utils.ReadBuffer) (MaxSegment
 }
 
 func (e MaxSegmentsAccepted) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

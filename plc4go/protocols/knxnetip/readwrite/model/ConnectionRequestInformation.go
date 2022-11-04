@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -104,7 +103,7 @@ func (m *_ConnectionRequestInformation) GetLengthInBytes() uint16 {
 }
 
 func ConnectionRequestInformationParse(theBytes []byte) (ConnectionRequestInformation, error) {
-	return ConnectionRequestInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return ConnectionRequestInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func ConnectionRequestInformationParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionRequestInformation, error) {

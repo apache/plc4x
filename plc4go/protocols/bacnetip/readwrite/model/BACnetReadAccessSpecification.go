@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -133,7 +132,7 @@ func (m *_BACnetReadAccessSpecification) GetLengthInBytes() uint16 {
 }
 
 func BACnetReadAccessSpecificationParse(theBytes []byte) (BACnetReadAccessSpecification, error) {
-	return BACnetReadAccessSpecificationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetReadAccessSpecificationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetReadAccessSpecificationParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetReadAccessSpecification, error) {
@@ -184,7 +183,6 @@ func BACnetReadAccessSpecificationParseWithBuffer(readBuffer utils.ReadBuffer) (
 				return nil, errors.Wrap(_err, "Error parsing 'listOfPropertyReferences' field of BACnetReadAccessSpecification")
 			}
 			listOfPropertyReferences = append(listOfPropertyReferences, _item.(BACnetPropertyReference))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("listOfPropertyReferences", utils.WithRenderAsList(true)); closeErr != nil {
@@ -218,7 +216,7 @@ func BACnetReadAccessSpecificationParseWithBuffer(readBuffer utils.ReadBuffer) (
 }
 
 func (m *_BACnetReadAccessSpecification) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

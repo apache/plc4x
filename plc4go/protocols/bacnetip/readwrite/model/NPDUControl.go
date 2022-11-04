@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -148,7 +147,7 @@ func (m *_NPDUControl) GetLengthInBytes() uint16 {
 }
 
 func NPDUControlParse(theBytes []byte) (NPDUControl, error) {
-	return NPDUControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return NPDUControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func NPDUControlParseWithBuffer(readBuffer utils.ReadBuffer) (NPDUControl, error) {
@@ -252,7 +251,7 @@ func NPDUControlParseWithBuffer(readBuffer utils.ReadBuffer) (NPDUControl, error
 }
 
 func (m *_NPDUControl) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

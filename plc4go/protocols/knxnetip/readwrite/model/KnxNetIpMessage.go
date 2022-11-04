@@ -128,7 +128,7 @@ func (m *_KnxNetIpMessage) GetLengthInBytes() uint16 {
 }
 
 func KnxNetIpMessageParse(theBytes []byte) (KnxNetIpMessage, error) {
-	return KnxNetIpMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return KnxNetIpMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func KnxNetIpMessageParseWithBuffer(readBuffer utils.ReadBuffer) (KnxNetIpMessage, error) {

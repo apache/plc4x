@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -425,7 +424,7 @@ func (m *_BACnetTagPayloadSignedInteger) GetLengthInBytes() uint16 {
 }
 
 func BACnetTagPayloadSignedIntegerParse(theBytes []byte, actualLength uint32) (BACnetTagPayloadSignedInteger, error) {
-	return BACnetTagPayloadSignedIntegerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), actualLength) // TODO: get endianness from mspec
+	return BACnetTagPayloadSignedIntegerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
 func BACnetTagPayloadSignedIntegerParseWithBuffer(readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadSignedInteger, error) {
@@ -598,7 +597,7 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(readBuffer utils.ReadBuffer, a
 }
 
 func (m *_BACnetTagPayloadSignedInteger) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

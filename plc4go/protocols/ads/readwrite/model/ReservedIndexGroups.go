@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -302,7 +300,7 @@ func (m ReservedIndexGroups) GetLengthInBytes() uint16 {
 }
 
 func ReservedIndexGroupsParse(theBytes []byte) (ReservedIndexGroups, error) {
-	return ReservedIndexGroupsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return ReservedIndexGroupsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func ReservedIndexGroupsParseWithBuffer(readBuffer utils.ReadBuffer) (ReservedIndexGroups, error) {
@@ -319,7 +317,7 @@ func ReservedIndexGroupsParseWithBuffer(readBuffer utils.ReadBuffer) (ReservedIn
 }
 
 func (e ReservedIndexGroups) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

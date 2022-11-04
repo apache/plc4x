@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -104,7 +103,7 @@ func (m *_CipService) GetLengthInBytes() uint16 {
 }
 
 func CipServiceParse(theBytes []byte, serviceLen uint16) (CipService, error) {
-	return CipServiceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceLen) // TODO: get endianness from mspec
+	return CipServiceParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceLen)
 }
 
 func CipServiceParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint16) (CipService, error) {

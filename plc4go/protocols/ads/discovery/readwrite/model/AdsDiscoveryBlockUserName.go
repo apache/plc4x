@@ -124,7 +124,11 @@ func (m *_AdsDiscoveryBlockUserName) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDiscoveryBlockUserNameParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockUserName, error) {
+func AdsDiscoveryBlockUserNameParse(theBytes []byte) (AdsDiscoveryBlockUserName, error) {
+	return AdsDiscoveryBlockUserNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsDiscoveryBlockUserNameParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockUserName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockUserName"); pullErr != nil {
@@ -137,7 +141,7 @@ func AdsDiscoveryBlockUserNameParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBl
 	if pullErr := readBuffer.PullContext("userName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for userName")
 	}
-	_userName, _userNameErr := AmsStringParse(readBuffer)
+	_userName, _userNameErr := AmsStringParseWithBuffer(readBuffer)
 	if _userNameErr != nil {
 		return nil, errors.Wrap(_userNameErr, "Error parsing 'userName' field of AdsDiscoveryBlockUserName")
 	}
@@ -159,7 +163,15 @@ func AdsDiscoveryBlockUserNameParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBl
 	return _child, nil
 }
 
-func (m *_AdsDiscoveryBlockUserName) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDiscoveryBlockUserName) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsDiscoveryBlockUserName) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

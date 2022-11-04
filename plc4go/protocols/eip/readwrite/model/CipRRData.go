@@ -143,7 +143,7 @@ func (m *_CipRRData) GetLengthInBytes() uint16 {
 }
 
 func CipRRDataParse(theBytes []byte, packetLength uint16) (CipRRData, error) {
-	return CipRRDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), packetLength) // TODO: get endianness from mspec
+	return CipRRDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), packetLength)
 }
 
 func CipRRDataParseWithBuffer(readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData, error) {
@@ -218,7 +218,7 @@ func CipRRDataParseWithBuffer(readBuffer utils.ReadBuffer, packetLength uint16) 
 }
 
 func (m *_CipRRData) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

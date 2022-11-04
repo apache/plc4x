@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -114,7 +112,7 @@ func (m TelephonyCommandType) GetLengthInBytes() uint16 {
 }
 
 func TelephonyCommandTypeParse(theBytes []byte) (TelephonyCommandType, error) {
-	return TelephonyCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return TelephonyCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func TelephonyCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyCommandType, error) {
@@ -131,7 +129,7 @@ func TelephonyCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (Telephony
 }
 
 func (e TelephonyCommandType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

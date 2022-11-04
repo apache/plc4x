@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,7 +98,7 @@ func (m *_KnxGroupAddress) GetLengthInBytes() uint16 {
 }
 
 func KnxGroupAddressParse(theBytes []byte, numLevels uint8) (KnxGroupAddress, error) {
-	return KnxGroupAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), numLevels) // TODO: get endianness from mspec
+	return KnxGroupAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes), numLevels)
 }
 
 func KnxGroupAddressParseWithBuffer(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddress, error) {

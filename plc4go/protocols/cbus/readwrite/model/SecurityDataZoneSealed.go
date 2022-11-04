@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -125,7 +124,7 @@ func (m *_SecurityDataZoneSealed) GetLengthInBytes() uint16 {
 }
 
 func SecurityDataZoneSealedParse(theBytes []byte) (SecurityDataZoneSealed, error) {
-	return SecurityDataZoneSealedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return SecurityDataZoneSealedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataZoneSealedParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataZoneSealed, error) {
@@ -158,7 +157,7 @@ func SecurityDataZoneSealedParseWithBuffer(readBuffer utils.ReadBuffer) (Securit
 }
 
 func (m *_SecurityDataZoneSealed) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

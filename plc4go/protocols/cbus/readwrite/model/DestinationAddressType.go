@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -104,7 +102,7 @@ func (m DestinationAddressType) GetLengthInBytes() uint16 {
 }
 
 func DestinationAddressTypeParse(theBytes []byte) (DestinationAddressType, error) {
-	return DestinationAddressTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return DestinationAddressTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func DestinationAddressTypeParseWithBuffer(readBuffer utils.ReadBuffer) (DestinationAddressType, error) {
@@ -121,7 +119,7 @@ func DestinationAddressTypeParseWithBuffer(readBuffer utils.ReadBuffer) (Destina
 }
 
 func (e DestinationAddressType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

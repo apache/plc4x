@@ -161,7 +161,7 @@ func (m *_CIPEncapsulationPacket) GetLengthInBytes() uint16 {
 }
 
 func CIPEncapsulationPacketParse(theBytes []byte) (CIPEncapsulationPacket, error) {
-	return CIPEncapsulationPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return CIPEncapsulationPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func CIPEncapsulationPacketParseWithBuffer(readBuffer utils.ReadBuffer) (CIPEncapsulationPacket, error) {

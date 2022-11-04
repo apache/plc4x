@@ -21,6 +21,7 @@ package eip
 
 import (
 	"encoding/binary"
+
 	readWrite "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )

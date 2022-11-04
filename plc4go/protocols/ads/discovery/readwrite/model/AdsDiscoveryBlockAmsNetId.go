@@ -144,7 +144,11 @@ func (m *_AdsDiscoveryBlockAmsNetId) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDiscoveryBlockAmsNetIdParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockAmsNetId, error) {
+func AdsDiscoveryBlockAmsNetIdParse(theBytes []byte) (AdsDiscoveryBlockAmsNetId, error) {
+	return AdsDiscoveryBlockAmsNetIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsDiscoveryBlockAmsNetIdParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockAmsNetId, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockAmsNetId"); pullErr != nil {
@@ -166,7 +170,7 @@ func AdsDiscoveryBlockAmsNetIdParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBl
 	if pullErr := readBuffer.PullContext("amsNetId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for amsNetId")
 	}
-	_amsNetId, _amsNetIdErr := AmsNetIdParse(readBuffer)
+	_amsNetId, _amsNetIdErr := AmsNetIdParseWithBuffer(readBuffer)
 	if _amsNetIdErr != nil {
 		return nil, errors.Wrap(_amsNetIdErr, "Error parsing 'amsNetId' field of AdsDiscoveryBlockAmsNetId")
 	}
@@ -188,7 +192,15 @@ func AdsDiscoveryBlockAmsNetIdParse(readBuffer utils.ReadBuffer) (AdsDiscoveryBl
 	return _child, nil
 }
 
-func (m *_AdsDiscoveryBlockAmsNetId) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDiscoveryBlockAmsNetId) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsDiscoveryBlockAmsNetId) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
