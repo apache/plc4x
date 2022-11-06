@@ -22,57 +22,61 @@ package values
 import (
 	"encoding/binary"
 	"fmt"
+	"time"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"time"
 )
 
-type PlcDATE struct {
+type PlcTIME_OF_DAY struct {
+	PlcSimpleValueAdapter
 	value time.Time
-	PlcValueAdapter
 }
 
-func NewPlcDATE(value interface{}) PlcDATE {
-	var timeValue time.Time
+func NewPlcTIME_OF_DAY(value interface{}) PlcTIME_OF_DAY {
+	var safeValue time.Time
 	switch value.(type) {
 	case time.Time:
-		timeValue = value.(time.Time)
-	case uint16:
-		// In this case the date is the number of days since 1990-01-01
-		// So we gotta add 7305 days to the value to have it relative to epoch
-		// Then we also need to transform it from days to seconds by multiplying by 86400
-		timeValue = time.Unix((int64(value.(uint16))+7305)*86400, 0)
+		castedValue := value.(time.Time)
+		safeValue = time.Date(0, 0, 0, castedValue.Hour(), castedValue.Minute(), castedValue.Second(),
+			castedValue.Nanosecond(), castedValue.Location())
 	case uint32:
-		// Interpreted as "seconds since epoch"
-		timeValue = time.Unix(int64(value.(uint32)), 0)
+		// Interpreted as milliseconds since midnight
+		castedValue := value.(uint32)
+		seconds := castedValue / 1000
+		nanoseconds := (castedValue % 1000) * 1000000
+		epochTime := time.Unix(int64(seconds), int64(nanoseconds))
+		safeValue = time.Date(0, 0, 0, epochTime.Hour(), epochTime.Minute(), epochTime.Second(),
+			epochTime.Nanosecond(), epochTime.Location())
 	}
-	safeValue := time.Date(timeValue.Year(), timeValue.Month(), timeValue.Day(), 0, 0, 0, 0, timeValue.Location())
-	return PlcDATE{
+
+	return PlcTIME_OF_DAY{
 		value: safeValue,
 	}
 }
 
-func (m PlcDATE) GetRaw() []byte {
+func (m PlcTIME_OF_DAY) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes
 }
 
-func (m PlcDATE) IsDate() bool {
+func (m PlcTIME_OF_DAY) IsTime() bool {
 	return true
 }
-func (m PlcDATE) GetDate() time.Time {
-	return time.Date(m.value.Year(), m.value.Month(), m.value.Day(), 0, 0, 0, 0, time.UTC)
+
+func (m PlcTIME_OF_DAY) GetTime() time.Time {
+	return m.value
 }
 
-func (m PlcDATE) GetString() string {
-	return m.GetDate().Format("2006-01-02")
+func (m PlcTIME_OF_DAY) GetString() string {
+	return m.value.Format("15:04:05.000")
 }
 
-func (m PlcDATE) GetPlcValueType() apiValues.PlcValueType {
-	return apiValues.DATE
+func (m PlcTIME_OF_DAY) GetPlcValueType() apiValues.PlcValueType {
+	return apiValues.TIME_OF_DAY
 }
 
-func (m PlcDATE) Serialize() ([]byte, error) {
+func (m PlcTIME_OF_DAY) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -80,10 +84,10 @@ func (m PlcDATE) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m PlcDATE) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcDATE", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
+func (m PlcTIME_OF_DAY) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteString("PlcTIME_OF_DAY", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
 }
 
-func (m PlcDATE) String() string {
+func (m PlcTIME_OF_DAY) String() string {
 	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), uint32(len([]rune(m.GetString()))*8), m.value)
 }

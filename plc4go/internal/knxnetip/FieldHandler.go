@@ -21,12 +21,14 @@ package knxnetip
 
 import (
 	"encoding/hex"
+	"fmt"
+	"regexp"
+	"strconv"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"regexp"
-	"strconv"
 )
 
 type FieldHandler struct {
@@ -52,8 +54,8 @@ func NewFieldHandler() FieldHandler {
 	}
 }
 
-func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
-	if match := utils.GetSubgroupMatches(m.groupAddress1Level, query); match != nil {
+func (m FieldHandler) ParseField(fieldQuery string) (apiModel.PlcField, error) {
+	if match := utils.GetSubgroupMatches(m.groupAddress1Level, fieldQuery); match != nil {
 		fieldTypeName, ok := match["datatype"]
 		var fieldType driverModel.KnxDatapointType
 		if ok {
@@ -63,7 +65,7 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 			}
 		}
 		return NewGroupAddress1LevelPlcField(match["mainGroup"], &fieldType), nil
-	} else if match := utils.GetSubgroupMatches(m.groupAddress2Level, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.groupAddress2Level, fieldQuery); match != nil {
 		fieldTypeName, ok := match["datatype"]
 		var fieldType driverModel.KnxDatapointType
 		if ok {
@@ -73,7 +75,7 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 			}
 		}
 		return NewGroupAddress2LevelPlcField(match["mainGroup"], match["subGroup"], &fieldType), nil
-	} else if match := utils.GetSubgroupMatches(m.groupAddress3Level, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.groupAddress3Level, fieldQuery); match != nil {
 		fieldTypeName, ok := match["datatype"]
 		var fieldType driverModel.KnxDatapointType
 		if ok {
@@ -83,10 +85,10 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 			}
 		}
 		return NewGroupAddress3LevelPlcField(match["mainGroup"], match["middleGroup"], match["subGroup"], &fieldType), nil
-	} else if match := utils.GetSubgroupMatches(m.deviceQuery, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.deviceQuery, fieldQuery); match != nil {
 		return NewDeviceQueryField(
 			match["mainGroup"], match["middleGroup"], match["subGroup"]), nil
-	} else if match := utils.GetSubgroupMatches(m.devicePropertyAddress, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.devicePropertyAddress, fieldQuery); match != nil {
 		mainGroup, _ := strconv.ParseUint(match["mainGroup"], 10, 8)
 		middleGroup, _ := strconv.ParseUint(match["middleGroup"], 10, 8)
 		subGroup, _ := strconv.ParseUint(match["subGroup"], 10, 8)
@@ -105,7 +107,7 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 		return NewDevicePropertyAddressPlcField(
 			uint8(mainGroup), uint8(middleGroup), uint8(subGroup), uint8(objectId), uint8(propertyId),
 			uint16(propertyIndex), uint8(numberOfElements)), nil
-	} else if match := utils.GetSubgroupMatches(m.deviceMemoryAddress, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.deviceMemoryAddress, fieldQuery); match != nil {
 		fieldTypeName, ok := match["datatype"]
 		// This is a 0-255 valued 1-byte value.
 		fieldType := driverModel.KnxDatapointType_DPT_DecimalFactor
@@ -130,12 +132,16 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 			numberOfElements, _ = strconv.ParseUint(numElements, 10, 8)
 		}
 		return NewDeviceMemoryAddressPlcField(uint8(mainGroup), uint8(middleGroup), uint8(subGroup), address, uint8(numberOfElements), &fieldType), nil
-	} else if match := utils.GetSubgroupMatches(m.deviceCommunicationObjectQuery, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.deviceCommunicationObjectQuery, fieldQuery); match != nil {
 		mainGroup, _ := strconv.ParseUint(match["mainGroup"], 10, 8)
 		middleGroup, _ := strconv.ParseUint(match["middleGroup"], 10, 8)
 		subGroup, _ := strconv.ParseUint(match["subGroup"], 10, 8)
 		return NewCommunicationObjectQueryField(
 			uint8(mainGroup), uint8(middleGroup), uint8(subGroup)), nil
 	}
-	return nil, errors.New("Invalid address format for address '" + query + "'")
+	return nil, errors.New("Invalid address format for address '" + fieldQuery + "'")
+}
+
+func (m FieldHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {
+	return nil, fmt.Errorf("queries not supported")
 }

@@ -32,19 +32,19 @@ import (
 )
 
 func (m *Connection) Browse(ctx context.Context, browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult {
-	return m.BrowseWithInterceptor(ctx, browseRequest, func(result apiModel.PlcBrowseEvent) bool {
+	return m.BrowseWithInterceptor(ctx, browseRequest, func(result apiModel.PlcBrowseItem) bool {
 		return true
 	})
 }
 
-func (m *Connection) BrowseWithInterceptor(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool) <-chan apiModel.PlcBrowseRequestResult {
+func (m *Connection) BrowseWithInterceptor(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool) <-chan apiModel.PlcBrowseRequestResult {
 	result := make(chan apiModel.PlcBrowseRequestResult)
 	go func() {
 		responseCodes := map[string]apiModel.PlcResponseCode{}
-		results := map[string][]apiModel.PlcBrowseFoundField{}
-		for _, fieldName := range browseRequest.GetFieldNames() {
-			field := browseRequest.GetField(fieldName)
-			responseCodes[fieldName], results[fieldName] = m.BrowseField(ctx, browseRequest, interceptor, fieldName, field)
+		results := map[string][]apiModel.PlcBrowseItem{}
+		for _, queryName := range browseRequest.GetQueryNames() {
+			query := browseRequest.GetQuery(queryName)
+			responseCodes[queryName], results[queryName] = m.BrowseQuery(ctx, browseRequest, interceptor, queryName, query)
 		}
 		browseResponse := model2.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
 		result <- &model2.DefaultPlcBrowseRequestResult{
@@ -56,16 +56,16 @@ func (m *Connection) BrowseWithInterceptor(ctx context.Context, browseRequest ap
 	return result
 }
 
-func (m *Connection) BrowseField(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool, fieldName string, field apiModel.PlcField) (apiModel.PlcResponseCode, []apiModel.PlcBrowseFoundField) {
-	switch field.(type) {
-	case SymbolicPlcField:
-		return m.executeSymbolicAddressQuery(ctx, field.(SymbolicPlcField))
+func (m *Connection) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
+	switch query.(type) {
+	case SymbolicPlcQuery:
+		return m.executeSymbolicAddressQuery(ctx, query.(SymbolicPlcQuery))
 	default:
 		return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
 	}
 }
 
-func (m *Connection) executeSymbolicAddressQuery(ctx context.Context, field SymbolicPlcField) (apiModel.PlcResponseCode, []apiModel.PlcBrowseFoundField) {
+func (m *Connection) executeSymbolicAddressQuery(ctx context.Context, query SymbolicPlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
 	var err error
 
 	// First read the sizes of the data type and symbol table, if needed.
@@ -94,11 +94,11 @@ func (m *Connection) executeSymbolicAddressQuery(ctx context.Context, field Symb
 	}
 
 	// Process the data type and symbol tables to produce the response.
-	fields := m.filterSymbols(field.SymbolicAddress)
+	fields := m.filterSymbols(query.GetSymbolicAddressPattern())
 	return apiModel.PlcResponseCode_OK, fields
 }
 
-func (m *Connection) filterSymbols(filterExpression string) []apiModel.PlcBrowseFoundField {
+func (m *Connection) filterSymbols(filterExpression string) []apiModel.PlcBrowseItem {
 	if len(filterExpression) == 0 {
 		return nil
 	}
@@ -173,33 +173,30 @@ func LALALA(){
 }
 */
 
-func (m *Connection) filterDataTypes(parentName string, currentType model.AdsDataTypeTableEntry, currentPath string, remainingAddressSegments []string) []apiModel.PlcBrowseFoundField {
+func (m *Connection) filterDataTypes(parentName string, currentType model.AdsDataTypeTableEntry, currentPath string, remainingAddressSegments []string) []apiModel.PlcBrowseItem {
 	if len(remainingAddressSegments) == 0 {
-		var numElements int32
-		var startElement int32
-		var endElement int32
-		if len(currentType.GetArrayInfo()) > 0 {
-			numElements = int32(currentType.GetArrayInfo()[0].GetNumElements())
-			startElement = int32(currentType.GetArrayInfo()[0].GetLowerBound())
-			endElement = int32(currentType.GetArrayInfo()[0].GetUpperBound())
+		arrayInfo := []apiModel.ArrayInfo{}
+		for _, ai := range currentType.GetArrayInfo() {
+			arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+				LowerBound: ai.GetLowerBound(),
+				UpperBound: ai.GetUpperBound(),
+			})
 		}
-		foundField := &model2.DefaultPlcBrowseQueryResult{
+		foundField := &model2.DefaultPlcBrowseItem{
 			Field: SymbolicPlcField{
 				PlcField: PlcField{
-					NumElements:  numElements,
-					StartElement: startElement,
-					EndElement:   endElement,
+					arrayInfo: arrayInfo,
 				},
 				SymbolicAddress: parentName,
 			},
-			Name:              parentName,
-			Readable:          false,
-			Writable:          false,
-			Subscribable:      false,
-			PossibleDataTypes: nil,
-			Attributes:        nil,
+			Name:         parentName,
+			DataTypeName: currentType.GetDataTypeName(),
+			Readable:     false,
+			Writable:     false,
+			Subscribable: false,
+			Options:      nil,
 		}
-		return []apiModel.PlcBrowseFoundField{foundField}
+		return []apiModel.PlcBrowseItem{foundField}
 	}
 
 	currentAddressSegment := remainingAddressSegments[0]

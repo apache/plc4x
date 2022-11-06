@@ -20,11 +20,12 @@
 package knxnetip
 
 import (
+	"time"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	internalMode "github.com/apache/plc4x/plc4go/spi/model"
-	"time"
 )
 
 type SubscriptionEvent struct {

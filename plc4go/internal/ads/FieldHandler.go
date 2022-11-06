@@ -46,7 +46,7 @@ func NewFieldHandler() FieldHandler {
 	}
 }
 
-func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
+func (m FieldHandler) ParseField(query string) (apiModel.PlcField, error) {
 	if match := utils.GetSubgroupMatches(m.directAdsStringField, query); match != nil {
 		var indexGroup uint32
 		if indexGroupHexString := match["indexGroupHex"]; indexGroupHexString != "" {
@@ -266,8 +266,12 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 			}
 		}
 
-		return newAdsSymbolicPlcField(match["symbolicAddress"], numElements, startElement, endElement)
+		return newAdsSymbolicPlcField(match["symbolicAddress"])
 	} else {
 		return nil, errors.Errorf("Invalid address format for address '%s'", query)
 	}
+}
+
+func (m FieldHandler) ParseQuery(_ string) (apiModel.PlcQuery, error) {
+	return nil, fmt.Errorf("queries not supported")
 }

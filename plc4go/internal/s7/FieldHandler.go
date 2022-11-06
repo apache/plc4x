@@ -21,13 +21,15 @@ package s7
 
 import (
 	"encoding/hex"
+	"fmt"
+	"regexp"
+	"strconv"
+	"strings"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"regexp"
-	"strconv"
-	"strings"
 )
 
 type FieldType uint8
@@ -74,7 +76,7 @@ const (
 	MEMORY_AREA        = "memoryArea"
 )
 
-func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
+func (m FieldHandler) ParseField(query string) (model.PlcField, error) {
 	if match := utils.GetSubgroupMatches(m.dataBlockStringAddressPattern, query); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
@@ -315,6 +317,10 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		return NewField(memoryArea, 0, byteOffset, bitOffset, numElements, dataType), nil
 	}
 	return nil, errors.Errorf("Unable to parse %s", query)
+}
+
+func (m FieldHandler) ParseQuery(query string) (model.PlcQuery, error) {
+	return nil, fmt.Errorf("queries not supported")
 }
 
 func checkDatablockNumber(blockNumber uint64) (uint16, error) {

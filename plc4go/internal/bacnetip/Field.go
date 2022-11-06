@@ -22,12 +22,17 @@ package bacnetip
 import (
 	"encoding/binary"
 	"fmt"
+	"strings"
+
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"strings"
 )
 
 type BacNetPlcField interface {
+	model.PlcField
+
 	GetObjectId() objectId
 	GetProperties() []property
 }
@@ -105,12 +110,12 @@ func (m plcField) GetAddressString() string {
 	return fmt.Sprintf("%v/%s", m.ObjectId, propertiesString)
 }
 
-func (m plcField) GetTypeName() string {
-	return m.ObjectId.String()
+func (m plcField) GetValueType() values.PlcValueType {
+	return values.Struct
 }
 
-func (m plcField) GetQuantity() uint16 {
-	return uint16(len(m.Properties))
+func (m plcField) GetArrayInfo() []model.ArrayInfo {
+	return []model.ArrayInfo{}
 }
 
 func (m plcField) GetObjectId() objectId {

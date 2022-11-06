@@ -22,6 +22,7 @@ package values
 import (
 	"encoding/binary"
 	"fmt"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )

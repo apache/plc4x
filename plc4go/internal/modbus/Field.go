@@ -22,27 +22,32 @@ package modbus
 import (
 	"encoding/binary"
 	"fmt"
+	"strconv"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	model2 "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
+	model3 "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"strconv"
 )
 
 const (
 	AddressOffset = 1
 )
 
-type PlcField struct {
+type modbusField struct {
+	model.PlcField
+
 	FieldType FieldType
 	Address   uint16
 	Quantity  uint16
 	Datatype  model2.ModbusDataType
 }
 
-func NewField(fieldType FieldType, address uint16, quantity uint16, datatype model2.ModbusDataType) PlcField {
-	return PlcField{
+func NewField(fieldType FieldType, address uint16, quantity uint16, datatype model2.ModbusDataType) modbusField {
+	return modbusField{
 		FieldType: fieldType,
 		Address:   address - AddressOffset,
 		Quantity:  quantity,
@@ -67,30 +72,38 @@ func NewModbusPlcFieldFromStrings(fieldType FieldType, addressString string, qua
 	return NewField(fieldType, uint16(address), uint16(quantity), datatype), nil
 }
 
-func (m PlcField) GetAddressString() string {
+func (m modbusField) GetAddressString() string {
 	return fmt.Sprintf("%dx%05d:%s[%d]", m.FieldType, m.Address, m.Datatype.String(), m.Quantity)
 }
 
-func (m PlcField) GetTypeName() string {
-	return m.Datatype.String()
+func (m modbusField) GetValueType() values.PlcValueType {
+	if plcValueType, ok := values.PlcValueByName(m.Datatype.String()); !ok {
+		return values.NULL
+	} else {
+		return plcValueType
+	}
 }
 
-func (m PlcField) GetDataType() model2.ModbusDataType {
-	return m.Datatype
+func (m modbusField) GetArrayInfo() []model.ArrayInfo {
+	if m.Quantity != 1 {
+		return []model.ArrayInfo{
+			model3.DefaultArrayInfo{
+				LowerBound: 0,
+				UpperBound: uint32(m.Quantity),
+			},
+		}
+	}
+	return []model.ArrayInfo{}
 }
 
-func (m PlcField) GetQuantity() uint16 {
-	return m.Quantity
-}
-
-func CastToModbusFieldFromPlcField(plcField model.PlcField) (PlcField, error) {
-	if modbusField, ok := plcField.(PlcField); ok {
+func CastToModbusFieldFromPlcField(plcField model.PlcField) (modbusField, error) {
+	if modbusField, ok := plcField.(modbusField); ok {
 		return modbusField, nil
 	}
-	return PlcField{}, errors.New("couldn't cast to ModbusPlcField")
+	return modbusField{}, errors.New("couldn't cast to ModbusPlcField")
 }
 
-func (m PlcField) Serialize() ([]byte, error) {
+func (m modbusField) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -98,7 +111,7 @@ func (m PlcField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m PlcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m modbusField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(m.FieldType.GetName()); err != nil {
 		return err
 	}
@@ -106,10 +119,10 @@ func (m PlcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error 
 	if err := writeBuffer.WriteUint16("address", 16, m.Address); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteUint16("numberOfElements", 16, m.GetQuantity()); err != nil {
+	if err := writeBuffer.WriteUint16("numberOfElements", 16, m.Quantity); err != nil {
 		return err
 	}
-	dataType := m.GetDataType().String()
+	dataType := m.Datatype.String()
 	if err := writeBuffer.WriteString("dataType", uint32(len([]rune(dataType))*8), "UTF-8", dataType); err != nil {
 		return err
 	}

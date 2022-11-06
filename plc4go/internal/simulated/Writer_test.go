@@ -21,6 +21,10 @@ package simulated
 
 import (
 	"context"
+	"reflect"
+	"testing"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/internal/s7"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -29,9 +33,6 @@ import (
 	model3 "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	values2 "github.com/apache/plc4x/plc4go/spi/values"
-	"reflect"
-	"testing"
-	"time"
 )
 
 func TestWriter_Write(t *testing.T) {
@@ -49,7 +50,7 @@ func TestWriter_Write(t *testing.T) {
 		fields       fields
 		args         args
 		want         model.PlcWriteResponse
-		newState     map[SimulatedField]*values.PlcValue
+		newState     map[simulatedField]*values.PlcValue
 		delayAtLeast time.Duration
 	}{
 		{
@@ -57,7 +58,7 @@ func TestWriter_Write(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name:  "hurz",
-					State: map[SimulatedField]*values.PlcValue{},
+					State: map[simulatedField]*values.PlcValue{},
 				},
 				options: map[string][]string{},
 			},
@@ -74,7 +75,7 @@ func TestWriter_Write(t *testing.T) {
 				map[string]model.PlcResponseCode{
 					"test": model.PlcResponseCode_OK,
 				}),
-			newState: map[SimulatedField]*values.PlcValue{
+			newState: map[simulatedField]*values.PlcValue{
 				NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 			},
 			delayAtLeast: 0,
@@ -84,7 +85,7 @@ func TestWriter_Write(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[SimulatedField]*values.PlcValue{
+					State: map[simulatedField]*values.PlcValue{
 						NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 					},
 				},
@@ -103,7 +104,7 @@ func TestWriter_Write(t *testing.T) {
 				map[string]model.PlcResponseCode{
 					"test": model.PlcResponseCode_OK,
 				}),
-			newState: map[SimulatedField]*values.PlcValue{
+			newState: map[simulatedField]*values.PlcValue{
 				NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(false)),
 			},
 			delayAtLeast: 0,
@@ -113,7 +114,7 @@ func TestWriter_Write(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[SimulatedField]*values.PlcValue{
+					State: map[simulatedField]*values.PlcValue{
 						NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 					},
 				},
@@ -134,7 +135,7 @@ func TestWriter_Write(t *testing.T) {
 				map[string]model.PlcResponseCode{
 					"test": model.PlcResponseCode_OK,
 				}),
-			newState: map[SimulatedField]*values.PlcValue{
+			newState: map[simulatedField]*values.PlcValue{
 				NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(false)),
 			},
 			delayAtLeast: 1000,
@@ -145,7 +146,7 @@ func TestWriter_Write(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[SimulatedField]*values.PlcValue{
+					State: map[simulatedField]*values.PlcValue{
 						NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 					},
 				},
@@ -164,7 +165,7 @@ func TestWriter_Write(t *testing.T) {
 				map[string]model.PlcResponseCode{
 					"test": model.PlcResponseCode_INVALID_ADDRESS,
 				}),
-			newState: map[SimulatedField]*values.PlcValue{
+			newState: map[simulatedField]*values.PlcValue{
 				NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 			},
 			delayAtLeast: 0,

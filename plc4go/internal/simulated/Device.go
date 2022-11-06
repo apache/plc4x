@@ -20,25 +20,26 @@
 package simulated
 
 import (
+	"math/rand"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
 	"github.com/rs/zerolog/log"
-	"math/rand"
 )
 
 type Device struct {
 	Name  string
-	State map[SimulatedField]*values.PlcValue
+	State map[simulatedField]*values.PlcValue
 }
 
 func NewDevice(name string) *Device {
 	return &Device{
 		Name:  name,
-		State: make(map[SimulatedField]*values.PlcValue),
+		State: make(map[simulatedField]*values.PlcValue),
 	}
 }
 
-func (t *Device) Get(field SimulatedField) *values.PlcValue {
+func (t *Device) Get(field simulatedField) *values.PlcValue {
 	switch field.FieldType {
 	case FieldState:
 		return t.State[field]
@@ -48,7 +49,7 @@ func (t *Device) Get(field SimulatedField) *values.PlcValue {
 	return nil
 }
 
-func (t *Device) Set(field SimulatedField, value *values.PlcValue) {
+func (t *Device) Set(field simulatedField, value *values.PlcValue) {
 	switch field.FieldType {
 	case FieldState:
 		t.State[field] = value
@@ -62,7 +63,7 @@ func (t *Device) Set(field SimulatedField, value *values.PlcValue) {
 	}
 }
 
-func (t *Device) getRandomValue(field SimulatedField) *values.PlcValue {
+func (t *Device) getRandomValue(field simulatedField) *values.PlcValue {
 	size := field.GetDataTypeSize().DataTypeSize()
 	data := make([]byte, uint16(size)*field.Quantity)
 	rand.Read(data)

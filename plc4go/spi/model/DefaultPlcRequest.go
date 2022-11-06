@@ -19,7 +19,12 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/pkg/api/model"
+import (
+	"encoding/binary"
+
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+)
 
 type DefaultPlcRequest struct {
 }
@@ -30,4 +35,30 @@ func NewDefaultPlcRequest() model.PlcRequest {
 
 func (d *DefaultPlcRequest) IsAPlcMessage() bool {
 	return true
+}
+
+func (d *DefaultPlcRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := d.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (d *DefaultPlcRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("DefaultPlcRequest"); err != nil {
+		return err
+	}
+	if err := writeBuffer.PopContext("DefaultPlcRequest"); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d *DefaultPlcRequest) String() string {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(d); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
 }

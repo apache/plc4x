@@ -59,21 +59,10 @@ type PlcBrowseRequestResult interface {
 	GetErr() error
 }
 
-type PlcBrowseEvent interface {
-	PlcMessage
-	GetRequest() PlcBrowseRequest
-	GetQueryName() string
-	GetResult() PlcBrowseItem
-	GetErr() error
-}
-
 type PlcBrowseItem interface {
 	GetField() PlcField
 
-	GetAddress() string
 	GetName() string
-	GetPlcValueType() values.PlcValueType
-	GetArrayInfo() []ArrayInfo
 	IsReadable() bool
 	IsWritable() bool
 	IsSubscribable() bool

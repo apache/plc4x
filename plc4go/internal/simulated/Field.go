@@ -21,24 +21,30 @@ package simulated
 
 import (
 	"fmt"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type Field interface {
+	apiModel.PlcField
+
 	GetFieldType() *FieldType
 	GetName() string
 	GetDataTypeSize() *model.SimulatedDataTypeSizes
 }
 
-type SimulatedField struct {
+type simulatedField struct {
 	FieldType    FieldType
 	Name         string
 	DataTypeSize model.SimulatedDataTypeSizes
 	Quantity     uint16
 }
 
-func NewSimulatedField(fieldType FieldType, name string, dataTypeSize model.SimulatedDataTypeSizes, quantity uint16) SimulatedField {
-	return SimulatedField{
+func NewSimulatedField(fieldType FieldType, name string, dataTypeSize model.SimulatedDataTypeSizes, quantity uint16) apiModel.PlcField {
+	return simulatedField{
 		FieldType:    fieldType,
 		Name:         name,
 		DataTypeSize: dataTypeSize,
@@ -46,26 +52,37 @@ func NewSimulatedField(fieldType FieldType, name string, dataTypeSize model.Simu
 	}
 }
 
-func (t SimulatedField) GetFieldType() FieldType {
+func (t simulatedField) GetFieldType() FieldType {
 	return t.FieldType
 }
 
-func (t SimulatedField) GetName() string {
+func (t simulatedField) GetName() string {
 	return t.Name
 }
 
-func (t SimulatedField) GetDataTypeSize() model.SimulatedDataTypeSizes {
+func (t simulatedField) GetDataTypeSize() model.SimulatedDataTypeSizes {
 	return t.DataTypeSize
 }
 
-func (t SimulatedField) GetAddressString() string {
+func (t simulatedField) GetAddressString() string {
 	return fmt.Sprintf("%s/%s:%s[%d]", t.FieldType.Name(), t.Name, t.DataTypeSize.String(), t.Quantity)
 }
 
-func (t SimulatedField) GetTypeName() string {
-	return t.DataTypeSize.String()
+func (t simulatedField) GetValueType() values.PlcValueType {
+	if plcValueType, ok := values.PlcValueByName(t.DataTypeSize.String()); ok {
+		return plcValueType
+	}
+	return values.NULL
 }
 
-func (t SimulatedField) GetQuantity() uint16 {
-	return t.Quantity
+func (t simulatedField) GetArrayInfo() []apiModel.ArrayInfo {
+	if t.Quantity != 1 {
+		return []apiModel.ArrayInfo{
+			spiModel.DefaultArrayInfo{
+				LowerBound: 0,
+				UpperBound: uint32(t.Quantity),
+			},
+		}
+	}
+	return []apiModel.ArrayInfo{}
 }

@@ -27,10 +27,8 @@ import (
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseItem
 type DefaultPlcBrowseItem struct {
 	Field        model.PlcField
-	Address      string
 	Name         string
-	PlcValueType values.PlcValueType
-	ArrayInfo    []model.PlcBrowseItemArrayInfo
+	DataTypeName string
 	Readable     bool
 	Writable     bool
 	Subscribable bool
@@ -42,20 +40,12 @@ func (d *DefaultPlcBrowseItem) GetField() model.PlcField {
 	return d.Field
 }
 
-func (d *DefaultPlcBrowseItem) GetAddress() string {
-	return d.Address
-}
-
 func (d *DefaultPlcBrowseItem) GetName() string {
 	return d.Name
 }
 
-func (d *DefaultPlcBrowseItem) GetPlcValueType() values.PlcValueType {
-	return d.PlcValueType
-}
-
-func (d *DefaultPlcBrowseItem) GetArrayInfo() []model.PlcBrowseItemArrayInfo {
-	return d.ArrayInfo
+func (d *DefaultPlcBrowseItem) GetDataTypeName() string {
+	return d.DataTypeName
 }
 
 func (d *DefaultPlcBrowseItem) IsReadable() bool {

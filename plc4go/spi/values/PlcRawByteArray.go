@@ -21,40 +21,51 @@ package values
 
 import (
 	"encoding/binary"
-	"fmt"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-type PlcCHAR struct {
-	PlcSimpleValueAdapter
-	// TODO: Why is this a byte-array?
-	value string
+type PlcByteArray struct {
+	Values []byte
+	PlcValueAdapter
 }
 
-func NewPlcCHAR(value string) PlcCHAR {
-	return PlcCHAR{
-		value: value,
+func NewPlcByteArray(values []byte) PlcByteArray {
+	return PlcByteArray{
+		Values: values,
 	}
 }
 
-func (m PlcCHAR) GetRaw() []byte {
-	return []byte(m.value)
+func (m PlcByteArray) GetRaw() []byte {
+	return m.Values
 }
 
-func (m PlcCHAR) IsString() bool {
+func (m PlcByteArray) IsList() bool {
 	return true
 }
 
-func (m PlcCHAR) GetString() string {
-	return m.value
+func (m PlcByteArray) GetLength() uint32 {
+	return uint32(len(m.Values))
 }
 
-func (m PlcCHAR) GetPlcValueType() apiValues.PlcValueType {
-	return apiValues.CHAR
+func (m PlcByteArray) GetIndex(i uint32) apiValues.PlcValue {
+	return NewPlcUSINT(m.Values[i])
 }
 
-func (m PlcCHAR) Serialize() ([]byte, error) {
+func (m PlcByteArray) GetList() []apiValues.PlcValue {
+	var plcValues []apiValues.PlcValue
+	for _, value := range m.Values {
+		plcValues = append(plcValues, NewPlcUSINT(value))
+	}
+	return plcValues
+}
+
+func (m PlcByteArray) GetPlcValueType() apiValues.PlcValueType {
+	return apiValues.RAW_BYTE_ARRAY
+}
+
+func (m PlcByteArray) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -62,10 +73,17 @@ func (m PlcCHAR) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m PlcCHAR) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcCHAR", 8, "UTF-8", m.value)
-}
-
-func (m PlcCHAR) String() string {
-	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), 8, m.value)
+func (m PlcByteArray) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("PlcByteArray"); err != nil {
+		return err
+	}
+	for _, value := range m.Values {
+		if err := writeBuffer.WriteByte("value", value); err != nil {
+			return err
+		}
+	}
+	if err := writeBuffer.PopContext("PlcByteArray"); err != nil {
+		return err
+	}
+	return nil
 }

@@ -22,10 +22,12 @@ package knxnetip
 import (
 	"errors"
 	"fmt"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"strconv"
 	"strings"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 )
 
 type Field interface {
@@ -33,16 +35,18 @@ type Field interface {
 }
 
 type GroupAddressField interface {
+	Field
+
 	GetFieldType() *driverModel.KnxDatapointType
 	IsPatternField() bool
 	matches(knxGroupAddress driverModel.KnxGroupAddress) bool
 	toGroupAddress() driverModel.KnxGroupAddress
-	Field
 }
 
 type DeviceField interface {
-	toKnxAddress() driverModel.KnxAddress
 	Field
+
+	toKnxAddress() driverModel.KnxAddress
 }
 
 type GroupAddress3LevelPlcField struct {
@@ -65,16 +69,16 @@ func (k GroupAddress3LevelPlcField) GetAddressString() string {
 	return fmt.Sprintf("%s/%s/%s:%s", k.MainGroup, k.MiddleGroup, k.SubGroup, k.FieldType.String())
 }
 
-func (k GroupAddress3LevelPlcField) GetTypeName() string {
-	return k.FieldType.Name()
+func (k GroupAddress3LevelPlcField) GetValueType() values.PlcValueType {
+	return values.Struct
+}
+
+func (k GroupAddress3LevelPlcField) GetArrayInfo() []apiModel.ArrayInfo {
+	return []apiModel.ArrayInfo{}
 }
 
 func (k GroupAddress3LevelPlcField) GetFieldType() *driverModel.KnxDatapointType {
 	return k.FieldType
-}
-
-func (k GroupAddress3LevelPlcField) GetQuantity() uint16 {
-	return 1
 }
 
 func (k GroupAddress3LevelPlcField) IsPatternField() bool {
@@ -136,16 +140,16 @@ func (k GroupAddress2LevelPlcField) GetAddressString() string {
 	return fmt.Sprintf("%s/%s:%s", k.MainGroup, k.SubGroup, k.FieldType.String())
 }
 
-func (k GroupAddress2LevelPlcField) GetTypeName() string {
-	return k.FieldType.Name()
+func (k GroupAddress2LevelPlcField) GetValueType() values.PlcValueType {
+	return values.Struct
+}
+
+func (k GroupAddress2LevelPlcField) GetArrayInfo() []apiModel.ArrayInfo {
+	return []apiModel.ArrayInfo{}
 }
 
 func (k GroupAddress2LevelPlcField) GetFieldType() *driverModel.KnxDatapointType {
 	return k.FieldType
-}
-
-func (k GroupAddress2LevelPlcField) GetQuantity() uint16 {
-	return 1
 }
 
 func (k GroupAddress2LevelPlcField) IsPatternField() bool {
@@ -197,16 +201,16 @@ func (k GroupAddress1LevelPlcField) GetAddressString() string {
 	return fmt.Sprintf("%s:%s", k.MainGroup, k.FieldType.String())
 }
 
-func (k GroupAddress1LevelPlcField) GetTypeName() string {
-	return k.FieldType.Name()
+func (k GroupAddress1LevelPlcField) GetValueType() values.PlcValueType {
+	return values.Struct
+}
+
+func (k GroupAddress1LevelPlcField) GetArrayInfo() []apiModel.ArrayInfo {
+	return []apiModel.ArrayInfo{}
 }
 
 func (k GroupAddress1LevelPlcField) GetFieldType() *driverModel.KnxDatapointType {
 	return k.FieldType
-}
-
-func (k GroupAddress1LevelPlcField) GetQuantity() uint16 {
-	return 1
 }
 
 func (k GroupAddress1LevelPlcField) IsPatternField() bool {
@@ -252,12 +256,12 @@ func (k DeviceQueryField) GetAddressString() string {
 	return fmt.Sprintf("%s.%s.%s", k.MainGroup, k.MiddleGroup, k.SubGroup)
 }
 
-func (k DeviceQueryField) GetTypeName() string {
-	return ""
+func (k DeviceQueryField) GetValueType() values.PlcValueType {
+	return values.Struct
 }
 
-func (k DeviceQueryField) GetQuantity() uint16 {
-	return 1
+func (k DeviceQueryField) GetArrayInfo() []apiModel.ArrayInfo {
+	return []apiModel.ArrayInfo{}
 }
 
 func (k DeviceQueryField) toKnxAddress() driverModel.KnxAddress {
@@ -292,12 +296,12 @@ func (k DevicePropertyAddressPlcField) GetAddressString() string {
 		k.MainGroup, k.MiddleGroup, k.SubGroup, k.ObjectId, k.PropertyId, k.PropertyIndex, k.NumElements)
 }
 
-func (k DevicePropertyAddressPlcField) GetTypeName() string {
-	return ""
+func (k DevicePropertyAddressPlcField) GetValueType() values.PlcValueType {
+	return values.Struct
 }
 
-func (k DevicePropertyAddressPlcField) GetQuantity() uint16 {
-	return 1
+func (k DevicePropertyAddressPlcField) GetArrayInfo() []apiModel.ArrayInfo {
+	return []apiModel.ArrayInfo{}
 }
 
 func (k DevicePropertyAddressPlcField) toKnxAddress() driverModel.KnxAddress {
@@ -334,19 +338,12 @@ func (k DeviceMemoryAddressPlcField) GetAddressString() string {
 		k.MainGroup, k.MiddleGroup, k.SubGroup, k.Address, k.FieldType.String(), k.NumElements)
 }
 
-func (k DeviceMemoryAddressPlcField) GetTypeName() string {
-	if k.FieldType != nil {
-		return k.FieldType.Name()
-	}
-	return ""
+func (k DeviceMemoryAddressPlcField) GetValueType() values.PlcValueType {
+	return values.Struct
 }
 
-func (k DeviceMemoryAddressPlcField) GetFieldType() *driverModel.KnxDatapointType {
-	return k.FieldType
-}
-
-func (k DeviceMemoryAddressPlcField) GetQuantity() uint16 {
-	return uint16(k.NumElements)
+func (k DeviceMemoryAddressPlcField) GetArrayInfo() []apiModel.ArrayInfo {
+	return []apiModel.ArrayInfo{}
 }
 
 func (k DeviceMemoryAddressPlcField) toKnxAddress() driverModel.KnxAddress {
@@ -378,12 +375,12 @@ func (k CommunicationObjectQueryField) GetAddressString() string {
 		k.MainGroup, k.MiddleGroup, k.SubGroup)
 }
 
-func (k CommunicationObjectQueryField) GetTypeName() string {
-	return ""
+func (k CommunicationObjectQueryField) GetValueType() values.PlcValueType {
+	return values.Struct
 }
 
-func (k CommunicationObjectQueryField) GetQuantity() uint16 {
-	return 1
+func (k CommunicationObjectQueryField) GetArrayInfo() []apiModel.ArrayInfo {
+	return []apiModel.ArrayInfo{}
 }
 
 func (k CommunicationObjectQueryField) toKnxAddress() driverModel.KnxAddress {

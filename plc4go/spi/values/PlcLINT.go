@@ -22,10 +22,11 @@ package values
 import (
 	"encoding/binary"
 	"fmt"
-	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"math"
 	"strconv"
+
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type PlcLINT struct {

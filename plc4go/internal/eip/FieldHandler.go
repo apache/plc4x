@@ -20,12 +20,14 @@
 package eip
 
 import (
+	"fmt"
+	"regexp"
+	"strconv"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"regexp"
-	"strconv"
 )
 
 type FieldHandler struct {
@@ -44,7 +46,7 @@ const (
 	ELEMENT_NB = "elementNb"
 )
 
-func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
+func (m FieldHandler) ParseField(query string) (model.PlcField, error) {
 	if match := utils.GetSubgroupMatches(m.addressPattern, query); match != nil {
 		tag := match[TAG]
 		_type, ok := readWriteModel.CIPDataTypeCodeByName(match[DATA_TYPE])
@@ -56,4 +58,8 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		return NewField(tag, _type, elementNb), nil
 	}
 	return nil, errors.Errorf("Unable to parse %s", query)
+}
+
+func (m FieldHandler) ParseQuery(query string) (model.PlcQuery, error) {
+	return nil, fmt.Errorf("queries not supported")
 }

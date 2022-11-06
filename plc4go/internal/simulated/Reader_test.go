@@ -21,6 +21,10 @@ package simulated
 
 import (
 	"context"
+	"reflect"
+	"testing"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/internal/s7"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -29,9 +33,6 @@ import (
 	model3 "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	values2 "github.com/apache/plc4x/plc4go/spi/values"
-	"reflect"
-	"testing"
-	"time"
 )
 
 func TestReader_Read(t *testing.T) {
@@ -55,7 +56,7 @@ func TestReader_Read(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[SimulatedField]*values.PlcValue{
+					State: map[simulatedField]*values.PlcValue{
 						NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 					},
 				},
@@ -81,7 +82,7 @@ func TestReader_Read(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[SimulatedField]*values.PlcValue{
+					State: map[simulatedField]*values.PlcValue{
 						NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 					},
 				},
@@ -109,7 +110,7 @@ func TestReader_Read(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[SimulatedField]*values.PlcValue{
+					State: map[simulatedField]*values.PlcValue{
 						NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 					},
 				},
@@ -136,7 +137,7 @@ func TestReader_Read(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[SimulatedField]*values.PlcValue{
+					State: map[simulatedField]*values.PlcValue{
 						NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 					},
 				},

@@ -29,7 +29,7 @@ import (
 
 // DefaultBrowserRequirements adds required methods to Browser that are needed when using DefaultBrowser
 type DefaultBrowserRequirements interface {
-	BrowseField(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool, fieldName string, field apiModel.PlcField) (apiModel.PlcResponseCode, []apiModel.PlcBrowseFoundField)
+	InternalBrowse(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem)
 }
 
 type DefaultBrowser interface {
@@ -37,7 +37,9 @@ type DefaultBrowser interface {
 }
 
 func NewDefaultBrowser(defaultBrowserRequirements DefaultBrowserRequirements) DefaultBrowser {
-	return &defaultBrowser{defaultBrowserRequirements}
+	return &defaultBrowser{
+		defaultBrowserRequirements,
+	}
 }
 
 ///////////////////////////////////////
@@ -57,19 +59,19 @@ type defaultBrowser struct {
 ///////////////////////////////////////
 
 func (m *defaultBrowser) Browse(ctx context.Context, browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult {
-	return m.BrowseWithInterceptor(ctx, browseRequest, func(result apiModel.PlcBrowseEvent) bool {
+	return m.BrowseWithInterceptor(ctx, browseRequest, func(result apiModel.PlcBrowseItem) bool {
 		return true
 	})
 }
 
-func (m *defaultBrowser) BrowseWithInterceptor(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool) <-chan apiModel.PlcBrowseRequestResult {
+func (m *defaultBrowser) BrowseWithInterceptor(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool) <-chan apiModel.PlcBrowseRequestResult {
 	result := make(chan apiModel.PlcBrowseRequestResult)
 	go func() {
 		responseCodes := map[string]apiModel.PlcResponseCode{}
-		results := map[string][]apiModel.PlcBrowseFoundField{}
-		for _, fieldName := range browseRequest.GetFieldNames() {
-			field := browseRequest.GetField(fieldName)
-			responseCodes[fieldName], results[fieldName] = m.BrowseField(ctx, browseRequest, interceptor, fieldName, field)
+		results := map[string][]apiModel.PlcBrowseItem{}
+		for _, queryName := range browseRequest.GetQueryNames() {
+			query := browseRequest.GetQuery(queryName)
+			responseCodes[queryName], results[queryName] = m.InternalBrowse(ctx, browseRequest, interceptor, queryName, query)
 		}
 		browseResponse := model.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
 		result <- &model.DefaultPlcBrowseRequestResult{

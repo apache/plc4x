@@ -22,43 +22,58 @@ package values
 import (
 	"encoding/binary"
 	"fmt"
+	"time"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"time"
 )
 
-type PlcDATE_AND_TIME struct {
+type PlcDATE struct {
 	value time.Time
 	PlcValueAdapter
 }
 
-func NewPlcDATE_AND_TIME(value time.Time) PlcDATE_AND_TIME {
-	return PlcDATE_AND_TIME{
-		value: value,
+func NewPlcDATE(value interface{}) PlcDATE {
+	var timeValue time.Time
+	switch value.(type) {
+	case time.Time:
+		timeValue = value.(time.Time)
+	case uint16:
+		// In this case the date is the number of days since 1990-01-01
+		// So we gotta add 7305 days to the value to have it relative to epoch
+		// Then we also need to transform it from days to seconds by multiplying by 86400
+		timeValue = time.Unix((int64(value.(uint16))+7305)*86400, 0)
+	case uint32:
+		// Interpreted as "seconds since epoch"
+		timeValue = time.Unix(int64(value.(uint32)), 0)
+	}
+	safeValue := time.Date(timeValue.Year(), timeValue.Month(), timeValue.Day(), 0, 0, 0, 0, timeValue.Location())
+	return PlcDATE{
+		value: safeValue,
 	}
 }
 
-func (m PlcDATE_AND_TIME) GetRaw() []byte {
+func (m PlcDATE) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes
 }
 
-func (m PlcDATE_AND_TIME) IsDateTime() bool {
+func (m PlcDATE) IsDate() bool {
 	return true
 }
-func (m PlcDATE_AND_TIME) GetDateTime() time.Time {
-	return m.value
+func (m PlcDATE) GetDate() time.Time {
+	return time.Date(m.value.Year(), m.value.Month(), m.value.Day(), 0, 0, 0, 0, time.UTC)
 }
 
-func (m PlcDATE_AND_TIME) GetString() string {
-	return fmt.Sprintf("%v", m.GetDateTime())
+func (m PlcDATE) GetString() string {
+	return m.GetDate().Format("2006-01-02")
 }
 
-func (m PlcDATE_AND_TIME) GetPlcValueType() apiValues.PlcValueType {
-	return apiValues.DATE_AND_TIME
+func (m PlcDATE) GetPlcValueType() apiValues.PlcValueType {
+	return apiValues.DATE
 }
 
-func (m PlcDATE_AND_TIME) Serialize() ([]byte, error) {
+func (m PlcDATE) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -66,10 +81,10 @@ func (m PlcDATE_AND_TIME) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m PlcDATE_AND_TIME) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcDATE_AND_TIME", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
+func (m PlcDATE) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteString("PlcDATE", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
 }
 
-func (m PlcDATE_AND_TIME) String() string {
+func (m PlcDATE) String() string {
 	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), uint32(len([]rune(m.GetString()))*8), m.value)
 }

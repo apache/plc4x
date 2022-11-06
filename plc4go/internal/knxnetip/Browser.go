@@ -23,10 +23,11 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
-	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"strconv"
 	"strings"
 	"time"
+
+	_default "github.com/apache/plc4x/plc4go/spi/default"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"

@@ -32,26 +32,15 @@ type DefaultPlcBrowseResponse struct {
 	DefaultResponse
 	request      model.PlcBrowseRequest
 	responseCode model.PlcResponseCode
-	results      map[string][]model.PlcBrowseFoundField
+	results      map[string][]model.PlcBrowseItem
 }
 
-func NewDefaultPlcBrowseResponse(request model.PlcBrowseRequest, results map[string][]model.PlcBrowseFoundField, responseCodes map[string]model.PlcResponseCode) DefaultPlcBrowseResponse {
+func NewDefaultPlcBrowseResponse(request model.PlcBrowseRequest, results map[string][]model.PlcBrowseItem, responseCodes map[string]model.PlcResponseCode) DefaultPlcBrowseResponse {
 	return DefaultPlcBrowseResponse{
 		DefaultResponse: DefaultResponse{responseCodes: responseCodes},
 		request:         request,
 		results:         results,
 	}
-}
-
-func (d DefaultPlcBrowseResponse) GetFieldNames() []string {
-	var fieldNames []string
-	// We take the field names from the request to keep order as map is not ordered
-	for _, name := range d.request.GetFieldNames() {
-		if _, ok := d.results[name]; ok {
-			fieldNames = append(fieldNames, name)
-		}
-	}
-	return fieldNames
 }
 
 func (d DefaultPlcBrowseResponse) GetRequest() model.PlcBrowseRequest {
@@ -66,7 +55,7 @@ func (d DefaultPlcBrowseResponse) GetQueryNames() []string {
 	return queryNames
 }
 
-func (d DefaultPlcBrowseResponse) GetQueryResults(queryName string) []model.PlcBrowseFoundField {
+func (d DefaultPlcBrowseResponse) GetQueryResults(queryName string) []model.PlcBrowseItem {
 	return d.results[queryName]
 }
 

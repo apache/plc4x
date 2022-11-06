@@ -21,11 +21,12 @@ package simulated
 
 import (
 	"context"
+	"strconv"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	model2 "github.com/apache/plc4x/plc4go/spi/model"
-	"strconv"
-	"time"
 )
 
 type Writer struct {
@@ -64,7 +65,7 @@ func (w Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 		responseCodes := map[string]model.PlcResponseCode{}
 		for _, fieldName := range writeRequest.GetFieldNames() {
 			field := writeRequest.GetField(fieldName)
-			simulatedField, ok := field.(SimulatedField)
+			simulatedField, ok := field.(simulatedField)
 			if !ok {
 				responseCodes[fieldName] = model.PlcResponseCode_INVALID_ADDRESS
 			} else {

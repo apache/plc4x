@@ -22,39 +22,40 @@ package values
 import (
 	"encoding/binary"
 	"fmt"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-type PlcWCHAR struct {
+type PlcCHAR struct {
 	PlcSimpleValueAdapter
+	// TODO: Why is this a byte-array?
 	value string
 }
 
-func NewPlcWCHAR(value string) PlcWCHAR {
-	return PlcWCHAR{
+func NewPlcCHAR(value string) PlcCHAR {
+	return PlcCHAR{
 		value: value,
 	}
 }
 
-func (m PlcWCHAR) GetRaw() []byte {
-	theBytes, _ := m.Serialize()
-	return theBytes
+func (m PlcCHAR) GetRaw() []byte {
+	return []byte(m.value)
 }
 
-func (m PlcWCHAR) IsString() bool {
+func (m PlcCHAR) IsString() bool {
 	return true
 }
 
-func (m PlcWCHAR) GetString() string {
-	return string(m.value)
+func (m PlcCHAR) GetString() string {
+	return m.value
 }
 
-func (m PlcWCHAR) GetPlcValueType() apiValues.PlcValueType {
-	return apiValues.WCHAR
+func (m PlcCHAR) GetPlcValueType() apiValues.PlcValueType {
+	return apiValues.CHAR
 }
 
-func (m PlcWCHAR) Serialize() ([]byte, error) {
+func (m PlcCHAR) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -62,10 +63,10 @@ func (m PlcWCHAR) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m PlcWCHAR) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcWCHAR", uint32(16), "UTF-16", string(m.value))
+func (m PlcCHAR) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteString("PlcCHAR", 8, "UTF-8", m.value)
 }
 
-func (m PlcWCHAR) String() string {
-	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), uint32(8), m.value)
+func (m PlcCHAR) String() string {
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), 8, m.value)
 }

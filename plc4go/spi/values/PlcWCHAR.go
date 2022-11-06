@@ -22,68 +22,40 @@ package values
 import (
 	"encoding/binary"
 	"fmt"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-type PlcBOOL struct {
+type PlcWCHAR struct {
 	PlcSimpleValueAdapter
-	value bool
+	value string
 }
 
-func NewPlcBOOL(value bool) PlcBOOL {
-	return PlcBOOL{
+func NewPlcWCHAR(value string) PlcWCHAR {
+	return PlcWCHAR{
 		value: value,
 	}
 }
 
-func (m PlcBOOL) GetRaw() []byte {
-	if m.value {
-		return []byte{0x01}
-	}
-	return []byte{0x00}
+func (m PlcWCHAR) GetRaw() []byte {
+	theBytes, _ := m.Serialize()
+	return theBytes
 }
 
-func (m PlcBOOL) IsBool() bool {
+func (m PlcWCHAR) IsString() bool {
 	return true
 }
 
-func (m PlcBOOL) GetBoolLength() uint32 {
-	return 1
+func (m PlcWCHAR) GetString() string {
+	return string(m.value)
 }
 
-func (m PlcBOOL) GetBool() bool {
-	return m.value
+func (m PlcWCHAR) GetPlcValueType() apiValues.PlcValueType {
+	return apiValues.WCHAR
 }
 
-func (m PlcBOOL) GetBoolAt(index uint32) bool {
-	if index == 0 {
-		return m.value
-	}
-	return false
-}
-
-func (m PlcBOOL) GetBoolArray() []bool {
-	return []bool{m.value}
-}
-
-func (m PlcBOOL) IsString() bool {
-	return true
-}
-
-func (m PlcBOOL) GetString() string {
-	if m.GetBool() {
-		return "true"
-	} else {
-		return "false"
-	}
-}
-
-func (m PlcBOOL) GetPlcValueType() apiValues.PlcValueType {
-	return apiValues.BOOL
-}
-
-func (m PlcBOOL) Serialize() ([]byte, error) {
+func (m PlcWCHAR) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -91,10 +63,10 @@ func (m PlcBOOL) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m PlcBOOL) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteBit("PlcBOOL", m.value)
+func (m PlcWCHAR) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteString("PlcWCHAR", uint32(16), "UTF-16", string(m.value))
 }
 
-func (m PlcBOOL) String() string {
-	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), 1, m.value)
+func (m PlcWCHAR) String() string {
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), uint32(8), m.value)
 }

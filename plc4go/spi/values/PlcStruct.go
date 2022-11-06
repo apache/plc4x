@@ -22,10 +22,11 @@ package values
 import (
 	"encoding/binary"
 	"fmt"
+	"strings"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"strings"
 )
 
 type PlcStruct struct {
@@ -84,7 +85,7 @@ func (m PlcStruct) GetString() string {
 }
 
 func (m PlcStruct) GetPlcValueType() apiValues.PlcValueType {
-	return apiValues.STRUCT
+	return apiValues.Struct
 }
 
 func (m PlcStruct) Serialize() ([]byte, error) {

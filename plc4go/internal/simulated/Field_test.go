@@ -20,9 +20,10 @@
 package simulated
 
 import (
-	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
 	"reflect"
 	"testing"
+
+	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
 )
 
 func TestNewSimulatedField(t *testing.T) {
@@ -35,7 +36,7 @@ func TestNewSimulatedField(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want SimulatedField
+		want simulatedField
 	}{
 		{
 			name: "simple",
@@ -45,7 +46,7 @@ func TestNewSimulatedField(t *testing.T) {
 				dataTypeSize: model.SimulatedDataTypeSizes_BOOL,
 				quantity:     1,
 			},
-			want: SimulatedField{
+			want: simulatedField{
 				FieldType:    FieldRandom,
 				Name:         "test",
 				DataTypeSize: model.SimulatedDataTypeSizes_BOOL,
@@ -87,7 +88,7 @@ func TestSimulatedField_GetAddressString(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := SimulatedField{
+			t := simulatedField{
 				FieldType:    tt.fields.FieldType,
 				Name:         tt.fields.Name,
 				DataTypeSize: tt.fields.DataTypeSize,
@@ -125,7 +126,7 @@ func TestSimulatedField_GetDataTypeSize(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := SimulatedField{
+			t := simulatedField{
 				FieldType:    tt.fields.FieldType,
 				Name:         tt.fields.Name,
 				DataTypeSize: tt.fields.DataTypeSize,
@@ -163,7 +164,7 @@ func TestSimulatedField_GetFieldType(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := SimulatedField{
+			t := simulatedField{
 				FieldType:    tt.fields.FieldType,
 				Name:         tt.fields.Name,
 				DataTypeSize: tt.fields.DataTypeSize,
@@ -201,7 +202,7 @@ func TestSimulatedField_GetName(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := SimulatedField{
+			t := simulatedField{
 				FieldType:    tt.fields.FieldType,
 				Name:         tt.fields.Name,
 				DataTypeSize: tt.fields.DataTypeSize,
@@ -239,7 +240,7 @@ func TestSimulatedField_GetQuantity(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := SimulatedField{
+			t := simulatedField{
 				FieldType:    tt.fields.FieldType,
 				Name:         tt.fields.Name,
 				DataTypeSize: tt.fields.DataTypeSize,
@@ -277,7 +278,7 @@ func TestSimulatedField_GetTypeName(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := SimulatedField{
+			t := simulatedField{
 				FieldType:    tt.fields.FieldType,
 				Name:         tt.fields.Name,
 				DataTypeSize: tt.fields.DataTypeSize,

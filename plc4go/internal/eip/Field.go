@@ -22,55 +22,63 @@ package eip
 import (
 	"encoding/binary"
 
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWrite "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type EIPPlcField interface {
+	model.PlcField
+
 	GetTag() string
 	GetType() readWrite.CIPDataTypeCode
 	GetElementNb() uint16
 }
 
-type PlcField struct {
+type plcField struct {
 	Tag       string
 	Type      readWrite.CIPDataTypeCode
 	ElementNb uint16
 }
 
-func (m PlcField) GetAddressString() string {
+func (m plcField) GetAddressString() string {
 	return m.GetTag()
 }
 
-func (m PlcField) GetTypeName() string {
-	return m.GetType().String()
+func (m plcField) GetValueType() values.PlcValueType {
+	if plcValueType, ok := values.PlcValueByName(m.GetType().String()); !ok {
+		return values.NULL
+	} else {
+		return plcValueType
+	}
 }
 
-func (m PlcField) GetQuantity() uint16 {
-	return 1
+func (m plcField) GetArrayInfo() []model.ArrayInfo {
+	return []model.ArrayInfo{}
 }
 
-func NewField(tag string, _type readWrite.CIPDataTypeCode, elementNb uint16) PlcField {
-	return PlcField{
+func NewField(tag string, _type readWrite.CIPDataTypeCode, elementNb uint16) plcField {
+	return plcField{
 		Tag:       tag,
 		Type:      _type,
 		ElementNb: elementNb,
 	}
 }
 
-func (m PlcField) GetTag() string {
+func (m plcField) GetTag() string {
 	return m.Tag
 }
 
-func (m PlcField) GetType() readWrite.CIPDataTypeCode {
+func (m plcField) GetType() readWrite.CIPDataTypeCode {
 	return m.Type
 }
 
-func (m PlcField) GetElementNb() uint16 {
+func (m plcField) GetElementNb() uint16 {
 	return m.ElementNb
 }
 
-func (m PlcField) Serialize() ([]byte, error) {
+func (m plcField) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -78,7 +86,7 @@ func (m PlcField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m PlcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m plcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("EipField"); err != nil {
 		return err
 	}

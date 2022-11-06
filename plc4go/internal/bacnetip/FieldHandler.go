@@ -20,13 +20,15 @@
 package bacnetip
 
 import (
+	"fmt"
+	"regexp"
+	"strconv"
+	"strings"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"regexp"
-	"strconv"
-	"strings"
 )
 
 type FieldHandler struct {
@@ -49,8 +51,8 @@ const (
 	ARRAY_INDEX          = "arrayIndex"
 )
 
-func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
-	if addressMatch := utils.GetSubgroupMatches(m.addressPattern, query); addressMatch != nil {
+func (m FieldHandler) ParseField(fieldString string) (model.PlcField, error) {
+	if addressMatch := utils.GetSubgroupMatches(m.addressPattern, fieldString); addressMatch != nil {
 		var result plcField
 		{
 			objectTypeMatch := addressMatch[OBJECT_TYPE]
@@ -102,5 +104,9 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		}
 		return result, nil
 	}
-	return nil, errors.Errorf("Unable to parse %s", query)
+	return nil, errors.Errorf("Unable to parse %s", fieldString)
+}
+
+func (m FieldHandler) ParseQuery(_ string) (model.PlcQuery, error) {
+	return nil, fmt.Errorf("queries not supported")
 }

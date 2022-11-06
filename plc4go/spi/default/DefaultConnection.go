@@ -20,8 +20,9 @@
 package _default
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"

@@ -21,12 +21,13 @@ package simulated
 
 import (
 	"context"
+	"strconv"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
 	model2 "github.com/apache/plc4x/plc4go/spi/model"
-	"strconv"
-	"time"
 )
 
 type Reader struct {
@@ -66,7 +67,7 @@ func (r Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-ch
 		responseValues := make(map[string]values.PlcValue)
 		for _, fieldName := range readRequest.GetFieldNames() {
 			field := readRequest.GetField(fieldName)
-			simulatedField, ok := field.(SimulatedField)
+			simulatedField, ok := field.(simulatedField)
 			if !ok {
 				responseCodes[fieldName] = model.PlcResponseCode_INVALID_ADDRESS
 				responseValues[fieldName] = nil

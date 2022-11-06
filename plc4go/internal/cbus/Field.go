@@ -22,8 +22,11 @@ package cbus
 import (
 	"encoding/binary"
 	"fmt"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	model2 "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -44,9 +47,16 @@ func (s StatusRequestType) String() string {
 	return ""
 }
 
+type CbusField interface {
+	model.PlcField
+
+	GetFieldType() FieldType
+}
+
 // StatusField can be used to query status using a P-to-MP-StatusRequest command
 type StatusField interface {
-	model.PlcField
+	CbusField
+
 	GetStatusRequestType() StatusRequestType
 	GetStartingGroupAddressLabel() *byte
 	GetApplication() readWriteModel.ApplicationIdContainer
@@ -68,8 +78,9 @@ type CalField interface {
 
 // CALRecallField can be used to get device/network management fields
 type CALRecallField interface {
-	model.PlcField
+	CbusField
 	CalField
+
 	GetParameter() readWriteModel.Parameter
 	GetCount() uint8
 }
@@ -86,8 +97,9 @@ func NewCALRecallField(unitAddress readWriteModel.UnitAddress, parameter readWri
 
 // CALIdentifyField can be used to get device/network management fields
 type CALIdentifyField interface {
-	model.PlcField
+	CbusField
 	CalField
+
 	GetAttribute() readWriteModel.Attribute
 }
 
@@ -102,8 +114,9 @@ func NewCALIdentifyField(unitAddress readWriteModel.UnitAddress, attribute readW
 
 // CALGetstatusField can be used to get device/network management fields
 type CALGetstatusField interface {
-	model.PlcField
+	CbusField
 	CalField
+
 	GetParameter() readWriteModel.Parameter
 	GetCount() uint8
 }
@@ -120,7 +133,8 @@ func NewCALGetstatusField(unitAddress readWriteModel.UnitAddress, parameter read
 
 // SALField can be used to send SAL commands
 type SALField interface {
-	model.PlcField
+	CbusField
+
 	GetApplication() readWriteModel.ApplicationIdContainer
 	GetSALCommand() string
 }
@@ -136,7 +150,8 @@ func NewSALField(application readWriteModel.ApplicationIdContainer, salCommand s
 
 // SALMonitorField can be used to monitor sal fields
 type SALMonitorField interface {
-	model.PlcField
+	CbusField
+
 	GetUnitAddress() *readWriteModel.UnitAddress
 	GetApplication() *readWriteModel.ApplicationIdContainer
 }
@@ -152,7 +167,8 @@ func NewSALMonitorField(unitAddress *readWriteModel.UnitAddress, application *re
 
 // MMIMonitorField can be used to monitor mmi fields
 type MMIMonitorField interface {
-	model.PlcField
+	CbusField
+
 	GetUnitAddress() *readWriteModel.UnitAddress
 	GetApplication() *readWriteModel.ApplicationIdContainer
 }
@@ -168,7 +184,8 @@ func NewMMIMonitorField(unitAddress *readWriteModel.UnitAddress, application *re
 
 // UnitInfoField can be used to get information about unit(s)
 type UnitInfoField interface {
-	model.PlcField
+	CbusField
+
 	GetUnitAddress() *readWriteModel.UnitAddress
 	GetAttribute() *readWriteModel.Attribute
 }
@@ -268,6 +285,26 @@ func (s statusField) GetAddressString() string {
 	return fmt.Sprintf("status/%s/%s", statusRequestType, s.application)
 }
 
+func (s statusField) GetValueType() values.PlcValueType {
+	return values.NULL
+}
+
+func (s statusField) GetArrayInfo() []model.ArrayInfo {
+	if s.numElements != 1 {
+		return []model.ArrayInfo{
+			model2.DefaultArrayInfo{
+				LowerBound: 0,
+				UpperBound: uint32(s.numElements),
+			},
+		}
+	}
+	return []model.ArrayInfo{}
+}
+
+func (s statusField) GetFieldType() FieldType {
+	return s.fieldType
+}
+
 func (s statusField) GetStatusRequestType() StatusRequestType {
 	return s.statusRequestType
 }
@@ -278,14 +315,6 @@ func (s statusField) GetStartingGroupAddressLabel() *byte {
 
 func (s statusField) GetApplication() readWriteModel.ApplicationIdContainer {
 	return s.application
-}
-
-func (s statusField) GetTypeName() string {
-	return STATUS.GetName()
-}
-
-func (s statusField) GetQuantity() uint16 {
-	return s.numElements
 }
 
 func (s statusField) Serialize() ([]byte, error) {
@@ -366,12 +395,24 @@ func (c calRecallField) GetAddressString() string {
 	return fmt.Sprintf("cal/%d/recall=%s", c.unitAddress.GetAddress(), c.parameter)
 }
 
-func (c calRecallField) GetTypeName() string {
-	return c.fieldType.GetName()
+func (c calRecallField) GetValueType() values.PlcValueType {
+	return values.Struct
 }
 
-func (c calRecallField) GetQuantity() uint16 {
-	return c.numElements
+func (c calRecallField) GetArrayInfo() []model.ArrayInfo {
+	if c.count != 1 {
+		return []model.ArrayInfo{
+			model2.DefaultArrayInfo{
+				LowerBound: 0,
+				UpperBound: uint32(c.count),
+			},
+		}
+	}
+	return []model.ArrayInfo{}
+}
+
+func (s calRecallField) GetFieldType() FieldType {
+	return s.fieldType
 }
 
 func (c calRecallField) Serialize() ([]byte, error) {
@@ -421,12 +462,24 @@ func (c calIdentifyField) GetAddressString() string {
 	return fmt.Sprintf("cal/%d/identify=%s", c.unitAddress.GetAddress(), c.GetAttribute())
 }
 
-func (c calIdentifyField) GetTypeName() string {
-	return c.fieldType.GetName()
+func (c calIdentifyField) GetValueType() values.PlcValueType {
+	return values.Struct
 }
 
-func (c calIdentifyField) GetQuantity() uint16 {
-	return c.numElements
+func (c calIdentifyField) GetArrayInfo() []model.ArrayInfo {
+	if c.numElements != 1 {
+		return []model.ArrayInfo{
+			model2.DefaultArrayInfo{
+				LowerBound: 0,
+				UpperBound: uint32(c.numElements),
+			},
+		}
+	}
+	return []model.ArrayInfo{}
+}
+
+func (s calIdentifyField) GetFieldType() FieldType {
+	return s.fieldType
 }
 
 func (c calIdentifyField) Serialize() ([]byte, error) {
@@ -476,12 +529,24 @@ func (c calGetstatusField) GetAddressString() string {
 	return fmt.Sprintf("cal/getstatus=%s, %d", c.parameter, c.GetCount())
 }
 
-func (c calGetstatusField) GetTypeName() string {
-	return c.fieldType.GetName()
+func (c calGetstatusField) GetValueType() values.PlcValueType {
+	return values.Struct
 }
 
-func (c calGetstatusField) GetQuantity() uint16 {
-	return c.numElements
+func (c calGetstatusField) GetArrayInfo() []model.ArrayInfo {
+	if c.count != 1 {
+		return []model.ArrayInfo{
+			model2.DefaultArrayInfo{
+				LowerBound: 0,
+				UpperBound: uint32(c.count),
+			},
+		}
+	}
+	return []model.ArrayInfo{}
+}
+
+func (s calGetstatusField) GetFieldType() FieldType {
+	return s.fieldType
 }
 
 func (c calGetstatusField) Serialize() ([]byte, error) {
@@ -535,12 +600,24 @@ func (s salField) GetAddressString() string {
 	return fmt.Sprintf("sal/%s/%s", s.application, s.salCommand)
 }
 
-func (s salField) GetTypeName() string {
-	return s.fieldType.GetName()
+func (s salField) GetValueType() values.PlcValueType {
+	return values.Struct
 }
 
-func (s salField) GetQuantity() uint16 {
-	return s.numElements
+func (s salField) GetArrayInfo() []model.ArrayInfo {
+	if s.numElements != 1 {
+		return []model.ArrayInfo{
+			model2.DefaultArrayInfo{
+				LowerBound: 0,
+				UpperBound: uint32(s.numElements),
+			},
+		}
+	}
+	return []model.ArrayInfo{}
+}
+
+func (s salField) GetFieldType() FieldType {
+	return s.fieldType
 }
 
 func (s salField) Serialize() ([]byte, error) {
@@ -590,12 +667,24 @@ func (s salMonitorField) GetAddressString() string {
 	return fmt.Sprintf("salmonitor/%s/%s", unitAddress, application)
 }
 
-func (s salMonitorField) GetTypeName() string {
-	return s.fieldType.GetName()
+func (s salMonitorField) GetValueType() values.PlcValueType {
+	return values.Struct
 }
 
-func (s salMonitorField) GetQuantity() uint16 {
-	return s.numElements
+func (s salMonitorField) GetArrayInfo() []model.ArrayInfo {
+	if s.numElements != 1 {
+		return []model.ArrayInfo{
+			model2.DefaultArrayInfo{
+				LowerBound: 0,
+				UpperBound: uint32(s.numElements),
+			},
+		}
+	}
+	return []model.ArrayInfo{}
+}
+
+func (s salMonitorField) GetFieldType() FieldType {
+	return s.fieldType
 }
 
 func (s salMonitorField) GetUnitAddress() *readWriteModel.UnitAddress {
@@ -656,12 +745,24 @@ func (m mmiMonitorField) GetAddressString() string {
 	return fmt.Sprintf("mmimonitor/%s/%s", unitAddress, application)
 }
 
-func (m mmiMonitorField) GetTypeName() string {
-	return m.fieldType.GetName()
+func (m mmiMonitorField) GetValueType() values.PlcValueType {
+	return values.Struct
 }
 
-func (m mmiMonitorField) GetQuantity() uint16 {
-	return m.numElements
+func (m mmiMonitorField) GetArrayInfo() []model.ArrayInfo {
+	if m.numElements != 1 {
+		return []model.ArrayInfo{
+			model2.DefaultArrayInfo{
+				LowerBound: 0,
+				UpperBound: uint32(m.numElements),
+			},
+		}
+	}
+	return []model.ArrayInfo{}
+}
+
+func (s mmiMonitorField) GetFieldType() FieldType {
+	return s.fieldType
 }
 
 func (m mmiMonitorField) GetUnitAddress() *readWriteModel.UnitAddress {
@@ -710,14 +811,6 @@ func (m mmiMonitorField) String() string {
 	return writeBuffer.GetBox().String()
 }
 
-func (u unitInfoField) GetUnitAddress() *readWriteModel.UnitAddress {
-	return u.unitAddress
-}
-
-func (u unitInfoField) GetAttribute() *readWriteModel.Attribute {
-	return u.attribute
-}
-
 func (u unitInfoField) GetAddressString() string {
 	unitAddressString := "*"
 	if u.unitAddress != nil {
@@ -730,12 +823,32 @@ func (u unitInfoField) GetAddressString() string {
 	return fmt.Sprintf("cal/%s/identify=%s", unitAddressString, attributeString)
 }
 
-func (u unitInfoField) GetTypeName() string {
-	return u.fieldType.GetName()
+func (u unitInfoField) GetValueType() values.PlcValueType {
+	return values.Struct
 }
 
-func (u unitInfoField) GetQuantity() uint16 {
-	return u.numElements
+func (u unitInfoField) GetArrayInfo() []model.ArrayInfo {
+	if u.numElements != 1 {
+		return []model.ArrayInfo{
+			model2.DefaultArrayInfo{
+				LowerBound: 0,
+				UpperBound: uint32(u.numElements),
+			},
+		}
+	}
+	return []model.ArrayInfo{}
+}
+
+func (s unitInfoField) GetFieldType() FieldType {
+	return s.fieldType
+}
+
+func (u unitInfoField) GetUnitAddress() *readWriteModel.UnitAddress {
+	return u.unitAddress
+}
+
+func (u unitInfoField) GetAttribute() *readWriteModel.Attribute {
+	return u.attribute
 }
 
 func (u unitInfoField) Serialize() ([]byte, error) {

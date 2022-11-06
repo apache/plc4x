@@ -22,48 +22,69 @@ package values
 import (
 	"encoding/binary"
 	"fmt"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"time"
 )
 
-type PlcTIME struct {
+type PlcBOOL struct {
 	PlcSimpleValueAdapter
-	value uint32
+	value bool
 }
 
-func NewPlcTIME(value uint32) PlcTIME {
-	return PlcTIME{
+func NewPlcBOOL(value bool) PlcBOOL {
+	return PlcBOOL{
 		value: value,
 	}
 }
 
-func (m PlcTIME) GetRaw() []byte {
-	theBytes, _ := m.Serialize()
-	return theBytes
+func (m PlcBOOL) GetRaw() []byte {
+	if m.value {
+		return []byte{0x01}
+	}
+	return []byte{0x00}
 }
 
-func (m PlcTIME) IsDuration() bool {
+func (m PlcBOOL) IsBool() bool {
 	return true
 }
 
-func (m PlcTIME) GetDuration() time.Duration {
-	return time.Duration(m.value)
+func (m PlcBOOL) GetBoolLength() uint32 {
+	return 1
 }
 
-func (m PlcTIME) IsString() bool {
+func (m PlcBOOL) GetBool() bool {
+	return m.value
+}
+
+func (m PlcBOOL) GetBoolAt(index uint32) bool {
+	if index == 0 {
+		return m.value
+	}
+	return false
+}
+
+func (m PlcBOOL) GetBoolArray() []bool {
+	return []bool{m.value}
+}
+
+func (m PlcBOOL) IsString() bool {
 	return true
 }
 
-func (m PlcTIME) GetString() string {
-	return fmt.Sprintf("PT%0.fS", m.GetDuration().Seconds())
+func (m PlcBOOL) GetString() string {
+	if m.GetBool() {
+		return "true"
+	} else {
+		return "false"
+	}
 }
 
-func (m PlcTIME) GetPlcValueType() apiValues.PlcValueType {
-	return apiValues.TIME
+func (m PlcBOOL) GetPlcValueType() apiValues.PlcValueType {
+	return apiValues.BOOL
 }
 
-func (m PlcTIME) Serialize() ([]byte, error) {
+func (m PlcBOOL) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -71,10 +92,10 @@ func (m PlcTIME) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m PlcTIME) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcTIME", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
+func (m PlcBOOL) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteBit("PlcBOOL", m.value)
 }
 
-func (m PlcTIME) String() string {
-	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), uint32(len([]rune(m.GetString()))*8), m.value)
+func (m PlcBOOL) String() string {
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), 1, m.value)
 }

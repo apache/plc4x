@@ -21,25 +21,26 @@ package values
 
 import (
 	"fmt"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
-type PlcNULL struct {
+type PlcNull struct {
 	PlcValueAdapter
 }
 
-func NewPlcNULL() PlcNULL {
-	return PlcNULL{}
+func NewPlcNULL() PlcNull {
+	return PlcNull{}
 }
 
-func (m PlcNULL) GetRaw() []byte {
+func (m PlcNull) GetRaw() []byte {
 	return []byte{}
 }
 
-func (m PlcNULL) GetPlcValueType() apiValues.PlcValueType {
+func (m PlcNull) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.NULL
 }
 
-func (m PlcNULL) String() string {
+func (m PlcNull) String() string {
 	return fmt.Sprintf("%s", m.GetPlcValueType())
 }

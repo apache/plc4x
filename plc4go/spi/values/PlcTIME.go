@@ -22,48 +22,49 @@ package values
 import (
 	"encoding/binary"
 	"fmt"
+	"time"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"time"
 )
 
-type PlcLTIME struct {
+type PlcTIME struct {
 	PlcSimpleValueAdapter
-	value uint64
+	value uint32
 }
 
-func NewPlcLTIME(value uint64) PlcLTIME {
-	return PlcLTIME{
+func NewPlcTIME(value uint32) PlcTIME {
+	return PlcTIME{
 		value: value,
 	}
 }
 
-func (m PlcLTIME) GetRaw() []byte {
+func (m PlcTIME) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes
 }
 
-func (m PlcLTIME) IsDuration() bool {
+func (m PlcTIME) IsDuration() bool {
 	return true
 }
 
-func (m PlcLTIME) GetDuration() time.Duration {
+func (m PlcTIME) GetDuration() time.Duration {
 	return time.Duration(m.value)
 }
 
-func (m PlcLTIME) IsString() bool {
+func (m PlcTIME) IsString() bool {
 	return true
 }
 
-func (m PlcLTIME) GetString() string {
+func (m PlcTIME) GetString() string {
 	return fmt.Sprintf("PT%0.fS", m.GetDuration().Seconds())
 }
 
-func (m PlcLTIME) GetPlcValueType() apiValues.PlcValueType {
-	return apiValues.LTIME
+func (m PlcTIME) GetPlcValueType() apiValues.PlcValueType {
+	return apiValues.TIME
 }
 
-func (m PlcLTIME) Serialize() ([]byte, error) {
+func (m PlcTIME) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -71,10 +72,10 @@ func (m PlcLTIME) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m PlcLTIME) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcLTIME", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
+func (m PlcTIME) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteString("PlcTIME", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
 }
 
-func (m PlcLTIME) String() string {
+func (m PlcTIME) String() string {
 	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), uint32(len([]rune(m.GetString()))*8), m.value)
 }

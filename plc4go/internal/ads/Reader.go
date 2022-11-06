@@ -41,7 +41,7 @@ type Reader struct {
 	sourceAmsNetId        readWriteModel.AmsNetId
 	sourceAmsPort         uint16
 	messageCodec          spi.MessageCodec
-	fieldMapping          map[SymbolicPlcField]DirectPlcField
+	fieldMapping          map[string]DirectPlcField
 	mappingLock           sync.Mutex
 }
 
@@ -53,7 +53,7 @@ func NewReader(messageCodec spi.MessageCodec, targetAmsNetId readWriteModel.AmsN
 		sourceAmsNetId:        sourceAmsNetId,
 		sourceAmsPort:         sourceAmsPort,
 		messageCodec:          messageCodec,
-		fieldMapping:          make(map[SymbolicPlcField]DirectPlcField),
+		fieldMapping:          make(map[string]DirectPlcField),
 	}
 }
 

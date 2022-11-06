@@ -22,39 +22,40 @@ package values
 import (
 	"encoding/binary"
 	"fmt"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-type PlcWSTRING struct {
+type PlcSTRING struct {
 	PlcSimpleValueAdapter
 	value string
 }
 
-func NewPlcWSTRING(value string) PlcWSTRING {
-	return PlcWSTRING{
+func NewPlcSTRING(value string) PlcSTRING {
+	return PlcSTRING{
 		value: value,
 	}
 }
 
-func (m PlcWSTRING) GetRaw() []byte {
+func (m PlcSTRING) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes
 }
 
-func (m PlcWSTRING) IsString() bool {
+func (m PlcSTRING) IsString() bool {
 	return true
 }
 
-func (m PlcWSTRING) GetString() string {
-	return string(m.value)
+func (m PlcSTRING) GetString() string {
+	return m.value
 }
 
-func (m PlcWSTRING) GetPlcValueType() apiValues.PlcValueType {
-	return apiValues.WSTRING
+func (m PlcSTRING) GetPlcValueType() apiValues.PlcValueType {
+	return apiValues.STRING
 }
 
-func (m PlcWSTRING) Serialize() ([]byte, error) {
+func (m PlcSTRING) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -62,10 +63,10 @@ func (m PlcWSTRING) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m PlcWSTRING) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcSTRING", uint32(len(m.value)*8), "UTF-8", string(m.value))
+func (m PlcSTRING) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteString("PlcSTRING", uint32(len([]rune(m.value))*8), "UTF-8", m.value)
 }
 
-func (m PlcWSTRING) String() string {
-	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), uint32(len(m.value)*8), m.value)
+func (m PlcSTRING) String() string {
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), uint32(len([]rune(m.value))*8), m.value)
 }

@@ -20,21 +20,22 @@
 package simulated
 
 import (
+	"reflect"
+	"testing"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
 	values2 "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/rs/zerolog/log"
-	"reflect"
-	"testing"
 )
 
 func TestDevice_Get(t1 *testing.T) {
 	type fields struct {
 		Name  string
-		State map[SimulatedField]*values.PlcValue
+		State map[simulatedField]*values.PlcValue
 	}
 	type args struct {
-		field        SimulatedField
+		field        simulatedField
 		verifyOutput bool
 	}
 	tests := []struct {
@@ -47,7 +48,7 @@ func TestDevice_Get(t1 *testing.T) {
 			name: "simple state",
 			fields: fields{
 				Name: "hurz",
-				State: map[SimulatedField]*values.PlcValue{
+				State: map[simulatedField]*values.PlcValue{
 					NewSimulatedField(FieldState, "boolField", model.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 				},
 			},
@@ -61,7 +62,7 @@ func TestDevice_Get(t1 *testing.T) {
 			name: "simple random",
 			fields: fields{
 				Name:  "hurz",
-				State: map[SimulatedField]*values.PlcValue{},
+				State: map[simulatedField]*values.PlcValue{},
 			},
 			args: args{
 				field:        NewSimulatedField(FieldRandom, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
@@ -73,7 +74,7 @@ func TestDevice_Get(t1 *testing.T) {
 			name: "simple stdout",
 			fields: fields{
 				Name:  "hurz",
-				State: map[SimulatedField]*values.PlcValue{},
+				State: map[simulatedField]*values.PlcValue{},
 			},
 			args: args{
 				field:        NewSimulatedField(FieldStdOut, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
@@ -108,10 +109,10 @@ func TestDevice_Get(t1 *testing.T) {
 func TestDevice_Random(t1 *testing.T) {
 	type fields struct {
 		Name  string
-		State map[SimulatedField]*values.PlcValue
+		State map[simulatedField]*values.PlcValue
 	}
 	type args struct {
-		field   SimulatedField
+		field   simulatedField
 		numRuns int
 	}
 	tests := []struct {
@@ -124,7 +125,7 @@ func TestDevice_Random(t1 *testing.T) {
 			name: "simple random",
 			fields: fields{
 				Name:  "hurz",
-				State: map[SimulatedField]*values.PlcValue{},
+				State: map[simulatedField]*values.PlcValue{},
 			},
 			args: args{
 				field:   NewSimulatedField(FieldRandom, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
@@ -162,10 +163,10 @@ func TestDevice_Random(t1 *testing.T) {
 func TestDevice_Set(t1 *testing.T) {
 	type fields struct {
 		Name  string
-		State map[SimulatedField]*values.PlcValue
+		State map[simulatedField]*values.PlcValue
 	}
 	type args struct {
-		field         SimulatedField
+		field         simulatedField
 		value         *values.PlcValue
 		shouldBeSaved bool
 	}
@@ -178,7 +179,7 @@ func TestDevice_Set(t1 *testing.T) {
 			name: "simple state",
 			fields: fields{
 				Name:  "hurz",
-				State: map[SimulatedField]*values.PlcValue{},
+				State: map[simulatedField]*values.PlcValue{},
 			},
 			args: args{
 				field:         NewSimulatedField(FieldState, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
@@ -190,7 +191,7 @@ func TestDevice_Set(t1 *testing.T) {
 			name: "simple random",
 			fields: fields{
 				Name:  "hurz",
-				State: map[SimulatedField]*values.PlcValue{},
+				State: map[simulatedField]*values.PlcValue{},
 			},
 			args: args{
 				field:         NewSimulatedField(FieldRandom, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
@@ -202,7 +203,7 @@ func TestDevice_Set(t1 *testing.T) {
 			name: "simple stdout",
 			fields: fields{
 				Name:  "hurz",
-				State: map[SimulatedField]*values.PlcValue{},
+				State: map[simulatedField]*values.PlcValue{},
 			},
 			args: args{
 				field:         NewSimulatedField(FieldStdOut, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
@@ -237,10 +238,10 @@ func TestDevice_Set(t1 *testing.T) {
 func TestDevice_getRandomValue(t1 *testing.T) {
 	type fields struct {
 		Name  string
-		State map[SimulatedField]*values.PlcValue
+		State map[simulatedField]*values.PlcValue
 	}
 	type args struct {
-		field SimulatedField
+		field simulatedField
 	}
 	tests := []struct {
 		name   string

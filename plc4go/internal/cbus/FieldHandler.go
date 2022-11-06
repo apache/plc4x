@@ -22,13 +22,14 @@ package cbus
 import (
 	"encoding/hex"
 	"fmt"
+	"regexp"
+	"strconv"
+	"strings"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"regexp"
-	"strconv"
-	"strings"
 )
 
 type FieldType uint8
@@ -111,22 +112,26 @@ var PossibleSalCommands = map[readWriteModel.ApplicationId][]CommandAndArguments
 	readWriteModel.ApplicationId_HVAC_ACTUATOR:                      c2nl(readWriteModel.LightingCommandTypeValues),
 }
 
-func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
-	if match := utils.GetSubgroupMatches(m.statusRequestPattern, query); match != nil {
+func (m FieldHandler) ParseField(fieldQuery string) (model.PlcField, error) {
+	if match := utils.GetSubgroupMatches(m.statusRequestPattern, fieldQuery); match != nil {
 		return m.handleStatusRequestPattern(match)
-	} else if match := utils.GetSubgroupMatches(m.calPattern, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.calPattern, fieldQuery); match != nil {
 		return m.handleCalPattern(match)
-	} else if match := utils.GetSubgroupMatches(m.salPattern, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.salPattern, fieldQuery); match != nil {
 		return m.handleSALPattern(match)
-	} else if match := utils.GetSubgroupMatches(m.salMonitorPattern, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.salMonitorPattern, fieldQuery); match != nil {
 		return m.handleSALMonitorPattern(match)
-	} else if match := utils.GetSubgroupMatches(m.mmiMonitorPattern, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.mmiMonitorPattern, fieldQuery); match != nil {
 		return m.handleMMIMonitorPattern(match)
-	} else if match := utils.GetSubgroupMatches(m.unityQuery, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.unityQuery, fieldQuery); match != nil {
 		return m.handleUnitQuery(match)
 	} else {
-		return nil, errors.Errorf("Unable to parse %s", query)
+		return nil, errors.Errorf("Unable to parse %s", fieldQuery)
 	}
+}
+
+func (m FieldHandler) ParseQuery(_ string) (model.PlcQuery, error) {
+	return nil, fmt.Errorf("queries not supported")
 }
 
 func (m FieldHandler) handleStatusRequestPattern(match map[string]string) (model.PlcField, error) {

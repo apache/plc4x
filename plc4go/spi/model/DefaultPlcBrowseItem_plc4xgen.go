@@ -61,58 +61,11 @@ func (d *DefaultPlcBrowseItem) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		}
 	}
 
-	if err := writeBuffer.WriteString("address", uint32(len(d.Address)*8), "UTF-8", d.Address); err != nil {
-		return err
-	}
-
 	if err := writeBuffer.WriteString("name", uint32(len(d.Name)*8), "UTF-8", d.Name); err != nil {
 		return err
 	}
 
-	if d.PlcValueType != nil {
-		if serializableField, ok := d.PlcValueType.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("plcValueType"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("plcValueType"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.PlcValueType)
-			if err := writeBuffer.WriteString("plcValueType", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
-				return err
-			}
-		}
-	}
-	if err := writeBuffer.PushContext("arrayInfo", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	for _, elem := range d.ArrayInfo {
-		var elem interface{} = elem
-
-		if elem != nil {
-			if serializableField, ok := elem.(utils.Serializable); ok {
-				if err := writeBuffer.PushContext("value"); err != nil {
-					return err
-				}
-				if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
-					return err
-				}
-				if err := writeBuffer.PopContext("value"); err != nil {
-					return err
-				}
-			} else {
-				stringValue := fmt.Sprintf("%v", elem)
-				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
-					return err
-				}
-			}
-		}
-	}
-	if err := writeBuffer.PopContext("arrayInfo", utils.WithRenderAsList(true)); err != nil {
+	if err := writeBuffer.WriteString("dataTypeName", uint32(len(d.DataTypeName)*8), "UTF-8", d.DataTypeName); err != nil {
 		return err
 	}
 

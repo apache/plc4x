@@ -22,129 +22,137 @@ package values
 import (
 	"encoding/binary"
 	"fmt"
-	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"math"
 	"strconv"
+
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-type PlcINT struct {
-	value int16
+type PlcDINT struct {
+	value int32
 	PlcSimpleNumericValueAdapter
 }
 
-func NewPlcINT(value int16) PlcINT {
-	return PlcINT{
+func NewPlcDINT(value int32) PlcDINT {
+	return PlcDINT{
 		value: value,
 	}
 }
 
-func (m PlcINT) GetRaw() []byte {
+func (m PlcDINT) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes
 }
 
-func (m PlcINT) GetBoolean() bool {
+func (m PlcDINT) GetBoolean() bool {
 	if m.value == 0 {
 		return false
 	}
 	return true
 }
 
-func (m PlcINT) IsByte() bool {
+func (m PlcDINT) IsByte() bool {
 	return m.IsUint8()
 }
 
-func (m PlcINT) GetByte() byte {
+func (m PlcDINT) GetByte() byte {
 	return m.GetUint8()
 }
 
-func (m PlcINT) IsUint8() bool {
+func (m PlcDINT) IsUint8() bool {
 	return m.value >= 0 && m.value <= math.MaxUint8
 }
 
-func (m PlcINT) GetUint8() uint8 {
+func (m PlcDINT) GetUint8() uint8 {
 	if m.IsUint8() {
-		return uint8(m.GetInt16())
+		return uint8(m.GetInt32())
 	}
 	return 0
 }
 
-func (m PlcINT) IsUint16() bool {
-	return m.value >= 0
+func (m PlcDINT) IsUint16() bool {
+	return m.value >= 0 && m.value <= math.MaxUint16
 }
 
-func (m PlcINT) GetUint16() uint16 {
+func (m PlcDINT) GetUint16() uint16 {
 	if m.IsUint16() {
-		return uint16(m.GetInt16())
+		return uint16(m.GetInt32())
 	}
 	return 0
 }
 
-func (m PlcINT) IsUint32() bool {
+func (m PlcDINT) IsUint32() bool {
 	return m.value >= 0
 }
 
-func (m PlcINT) GetUint32() uint32 {
+func (m PlcDINT) GetUint32() uint32 {
 	if m.IsUint32() {
-		return uint32(m.GetInt16())
+		return uint32(m.GetInt32())
 	}
 	return 0
 }
 
-func (m PlcINT) IsUint64() bool {
+func (m PlcDINT) IsUint64() bool {
 	return m.value >= 0
 }
 
-func (m PlcINT) GetUint64() uint64 {
+func (m PlcDINT) GetUint64() uint64 {
 	if m.IsUint64() {
-		return uint64(m.GetInt16())
+		return uint64(m.GetInt32())
 	}
 	return 0
 }
 
-func (m PlcINT) IsInt8() bool {
+func (m PlcDINT) IsInt8() bool {
 	return m.value >= math.MinInt8 && m.value <= math.MaxInt8
 }
 
-func (m PlcINT) GetInt8() int8 {
+func (m PlcDINT) GetInt8() int8 {
 	if m.IsInt8() {
-		return int8(m.GetInt16())
+		return int8(m.GetInt32())
 	}
 	return 0
 }
 
-func (m PlcINT) GetInt16() int16 {
+func (m PlcDINT) IsInt16() bool {
+	return m.value >= math.MinInt16 && m.value <= math.MaxInt16
+}
+
+func (m PlcDINT) GetInt16() int16 {
+	if m.IsInt16() {
+		return int16(m.GetInt32())
+	}
+	return 0
+}
+
+func (m PlcDINT) GetInt32() int32 {
 	return m.value
 }
 
-func (m PlcINT) GetInt32() int32 {
-	return int32(m.GetInt16())
+func (m PlcDINT) GetInt64() int64 {
+	return int64(m.GetInt32())
 }
 
-func (m PlcINT) GetInt64() int64 {
-	return int64(m.GetInt16())
-}
-
-func (m PlcINT) GetFloat32() float32 {
+func (m PlcDINT) GetFloat32() float32 {
 	//TODO: Check if this is ok
-	return float32(m.GetInt16())
+	return float32(m.GetInt32())
 }
 
-func (m PlcINT) GetFloat64() float64 {
+func (m PlcDINT) GetFloat64() float64 {
 	//TODO: Check if this is ok
-	return float64(m.GetInt16())
+	return float64(m.GetInt32())
 }
 
-func (m PlcINT) GetString() string {
+func (m PlcDINT) GetString() string {
 	return strconv.Itoa(int(m.GetInt64()))
 }
 
-func (m PlcINT) GetPlcValueType() apiValues.PlcValueType {
-	return apiValues.INT
+func (m PlcDINT) GetPlcValueType() apiValues.PlcValueType {
+	return apiValues.DINT
 }
 
-func (m PlcINT) Serialize() ([]byte, error) {
+func (m PlcDINT) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -152,10 +160,10 @@ func (m PlcINT) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m PlcINT) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteInt16("PlcINT", 16, m.value)
+func (m PlcDINT) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteInt32("PlcDINT", 32, m.value)
 }
 
-func (m PlcINT) String() string {
-	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), 16, m.value)
+func (m PlcDINT) String() string {
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), 32, m.value)
 }

@@ -21,50 +21,50 @@ package values
 
 import (
 	"encoding/binary"
+	"fmt"
+	"time"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-type PlcByteArray struct {
-	Values []byte
-	PlcValueAdapter
+type PlcLTIME struct {
+	PlcSimpleValueAdapter
+	value uint64
 }
 
-func NewPlcByteArray(values []byte) PlcByteArray {
-	return PlcByteArray{
-		Values: values,
+func NewPlcLTIME(value uint64) PlcLTIME {
+	return PlcLTIME{
+		value: value,
 	}
 }
 
-func (m PlcByteArray) GetRaw() []byte {
-	return m.Values
+func (m PlcLTIME) GetRaw() []byte {
+	theBytes, _ := m.Serialize()
+	return theBytes
 }
 
-func (m PlcByteArray) IsList() bool {
+func (m PlcLTIME) IsDuration() bool {
 	return true
 }
 
-func (m PlcByteArray) GetLength() uint32 {
-	return uint32(len(m.Values))
+func (m PlcLTIME) GetDuration() time.Duration {
+	return time.Duration(m.value)
 }
 
-func (m PlcByteArray) GetIndex(i uint32) apiValues.PlcValue {
-	return NewPlcUSINT(m.Values[i])
+func (m PlcLTIME) IsString() bool {
+	return true
 }
 
-func (m PlcByteArray) GetList() []apiValues.PlcValue {
-	var plcValues []apiValues.PlcValue
-	for _, value := range m.Values {
-		plcValues = append(plcValues, NewPlcUSINT(value))
-	}
-	return plcValues
+func (m PlcLTIME) GetString() string {
+	return fmt.Sprintf("PT%0.fS", m.GetDuration().Seconds())
 }
 
-func (m PlcByteArray) GetPlcValueType() apiValues.PlcValueType {
-	return apiValues.BYTE_ARRAY
+func (m PlcLTIME) GetPlcValueType() apiValues.PlcValueType {
+	return apiValues.LTIME
 }
 
-func (m PlcByteArray) Serialize() ([]byte, error) {
+func (m PlcLTIME) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -72,17 +72,10 @@ func (m PlcByteArray) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m PlcByteArray) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcByteArray"); err != nil {
-		return err
-	}
-	for _, value := range m.Values {
-		if err := writeBuffer.WriteByte("value", value); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("PlcByteArray"); err != nil {
-		return err
-	}
-	return nil
+func (m PlcLTIME) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteString("PlcLTIME", uint32(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
+}
+
+func (m PlcLTIME) String() string {
+	return fmt.Sprintf("%s(%dbit):%v", m.GetPlcValueType(), uint32(len([]rune(m.GetString()))*8), m.value)
 }

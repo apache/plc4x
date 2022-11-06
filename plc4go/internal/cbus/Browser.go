@@ -22,6 +22,8 @@ package cbus
 import (
 	"context"
 	"fmt"
+	"time"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
@@ -30,7 +32,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"time"
 )
 
 type Browser struct {
@@ -50,15 +51,15 @@ func NewBrowser(connection *Connection, messageCodec spi.MessageCodec) *Browser 
 	return &browser
 }
 
-func (m Browser) BrowseField(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool, fieldName string, field apiModel.PlcField) (apiModel.PlcResponseCode, []apiModel.PlcBrowseFoundField) {
-	var queryResults []apiModel.PlcBrowseFoundField
-	switch field := field.(type) {
+func (m Browser) InternalBrowse(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
+	var queryResults []apiModel.PlcBrowseItem
+	switch query := query.(type) {
 	case *unitInfoField:
 		allUnits := false
 		var units []readWriteModel.UnitAddress
 		allAttributes := false
 		var attributes []readWriteModel.Attribute
-		if unitAddress := field.unitAddress; unitAddress != nil {
+		if unitAddress := query.unitAddress; unitAddress != nil {
 			units = append(units, *unitAddress)
 		} else {
 			// TODO: check if we still want the option to brute force all addresses
@@ -76,7 +77,7 @@ func (m Browser) BrowseField(ctx context.Context, browseRequest apiModel.PlcBrow
 				}
 			}
 		}
-		if attribute := field.attribute; attribute != nil {
+		if attribute := query.attribute; attribute != nil {
 			attributes = append(attributes, *attribute)
 		} else {
 			allAttributes = true
@@ -113,7 +114,7 @@ func (m Browser) BrowseField(ctx context.Context, browseRequest apiModel.PlcBrow
 				} else {
 					event.Msgf("unit %d: Query %s", unitAddress, attribute)
 				}
-				readFieldName := fmt.Sprintf("%s/%d/%s", fieldName, unitAddress, attribute)
+				readFieldName := fmt.Sprintf("%s/%d/%s", queryName, unitAddress, attribute)
 				readRequest, _ := m.connection.ReadRequestBuilder().
 					AddField(readFieldName, NewCALIdentifyField(unit, attribute, 1)).
 					Build()
@@ -131,23 +132,18 @@ func (m Browser) BrowseField(ctx context.Context, browseRequest apiModel.PlcBrow
 					event.Msgf("unit %d: error reading field %s. Code %s", unitAddress, attribute, code)
 					continue unitLoop
 				}
-				queryResult := &model.DefaultPlcBrowseQueryResult{
+				queryResult := &model.DefaultPlcBrowseItem{
 					Field:        NewCALIdentifyField(unit, attribute, 1),
-					Name:         fieldName,
+					Name:         queryName,
 					Readable:     true,
 					Writable:     false,
 					Subscribable: false,
-					Attributes: map[string]values.PlcValue{
+					Options: map[string]values.PlcValue{
 						"CurrentValue": response.GetValue(readFieldName),
 					},
 				}
 				if interceptor != nil {
-					interceptor(&model.DefaultPlcBrowseEvent{
-						Request:   browseRequest,
-						FieldName: readFieldName,
-						Result:    queryResult,
-						Err:       nil,
-					})
+					interceptor(queryResult)
 				}
 				queryResults = append(queryResults, queryResult)
 			}

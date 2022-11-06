@@ -21,11 +21,13 @@ package simulated
 
 import (
 	"errors"
+	"fmt"
+	"regexp"
+	"strconv"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"regexp"
-	"strconv"
 )
 
 type FieldType uint8
@@ -59,7 +61,7 @@ func NewFieldHandler() FieldHandler {
 	}
 }
 
-func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
+func (m FieldHandler) ParseField(query string) (apiModel.PlcField, error) {
 	if match := utils.GetSubgroupMatches(m.simulatedQuery, query); match != nil {
 		fieldTypeName, ok := match["type"]
 		var fieldType FieldType
@@ -100,4 +102,8 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 		return NewSimulatedField(fieldType, fieldName, fieldDataType, fieldNumElements), nil
 	}
 	return nil, errors.New("Invalid address format for address '" + query + "'")
+}
+
+func (m FieldHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {
+	return nil, fmt.Errorf("queries not supported")
 }

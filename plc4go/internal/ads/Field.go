@@ -22,8 +22,11 @@ package ads
 import (
 	"encoding/binary"
 	"encoding/xml"
+	"fmt"
+	"strconv"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	adsModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -34,9 +37,7 @@ const NONE = int32(-1)
 type PlcField struct {
 	model.PlcField
 
-	NumElements  int32
-	StartElement int32
-	EndElement   int32
+	arrayInfo []model.ArrayInfo
 }
 
 func needsResolving(plcField model.PlcField) bool {
@@ -59,16 +60,14 @@ type DirectPlcField struct {
 	StringLength int32
 }
 
-func newDirectAdsPlcField(indexGroup uint32, indexOffset uint32, adsDatatype adsModel.AdsDataType, stringLength int32, numElements int32, startElement int32, endElement int32) (model.PlcField, error) {
+func newDirectAdsPlcField(indexGroup uint32, indexOffset uint32, adsDatatype adsModel.AdsDataType, stringLength int32, arrayInfo []model.ArrayInfo) (model.PlcField, error) {
 	return DirectPlcField{
 		IndexGroup:   indexGroup,
 		IndexOffset:  indexOffset,
 		AdsDatatype:  adsDatatype,
 		StringLength: stringLength,
 		PlcField: PlcField{
-			NumElements:  numElements,
-			StartElement: startElement,
-			EndElement:   endElement,
+			arrayInfo: arrayInfo,
 		},
 	}, nil
 }
@@ -78,6 +77,31 @@ func castToDirectAdsFieldFromPlcField(plcField model.PlcField) (DirectPlcField, 
 		return adsField, nil
 	}
 	return DirectPlcField{}, errors.Errorf("couldn't %T cast to DirectPlcField", plcField)
+}
+
+func (m DirectPlcField) GetAddressString() string {
+	address := fmt.Sprintf("0x%d/%d:%s", m.IndexGroup, m.IndexOffset, m.AdsDatatype.String())
+	if m.AdsDatatype == adsModel.AdsDataType_STRING || m.AdsDatatype == adsModel.AdsDataType_WSTRING {
+		address = address + "(" + strconv.Itoa(int(m.StringLength)) + ")"
+	}
+	if len(m.arrayInfo) > 0 {
+		for _, ai := range m.arrayInfo {
+			address = address + "[" + strconv.Itoa(int(ai.GetLowerBound())) + ".." + strconv.Itoa(int(ai.GetUpperBound())) + "]"
+		}
+	}
+	return address
+}
+
+func (m DirectPlcField) GetValueType() values.PlcValueType {
+	if plcValueType, ok := values.PlcValueByName(m.AdsDatatype.PlcValueType().String()); !ok {
+		return values.NULL
+	} else {
+		return plcValueType
+	}
+}
+
+func (m DirectPlcField) GetArrayInfo() []model.ArrayInfo {
+	return []model.ArrayInfo{}
 }
 
 func (m DirectPlcField) Serialize() ([]byte, error) {
@@ -107,16 +131,25 @@ func (m DirectPlcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 			return err
 		}
 	}
-	if m.NumElements != NONE {
-		if err := writeBuffer.WriteInt32("numElements", 32, m.NumElements); err != nil {
+	if len(m.arrayInfo) > 0 {
+		if err := writeBuffer.PushContext("ArrayInfo"); err != nil {
 			return err
 		}
-	}
-	if m.StartElement != NONE && m.EndElement != NONE {
-		if err := writeBuffer.WriteInt32("startElement", 32, m.StartElement); err != nil {
-			return err
+		for _, ai := range m.arrayInfo {
+			if err := writeBuffer.PushContext("ArrayInfo"); err != nil {
+				return err
+			}
+			if err := writeBuffer.WriteInt32("lowerBound", 32, int32(ai.GetLowerBound())); err != nil {
+				return err
+			}
+			if err := writeBuffer.WriteInt32("upperBound", 32, int32(ai.GetUpperBound())); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("ArrayInfo"); err != nil {
+				return err
+			}
 		}
-		if err := writeBuffer.WriteInt32("endElement", 32, m.EndElement); err != nil {
+		if err := writeBuffer.PopContext("ArrayInfo"); err != nil {
 			return err
 		}
 	}
@@ -137,13 +170,11 @@ type SymbolicPlcField struct {
 	SymbolicAddress string
 }
 
-func newAdsSymbolicPlcField(symbolicAddress string, numElements int32, startElement int32, endElement int32) (model.PlcField, error) {
+func newAdsSymbolicPlcField(symbolicAddress string, arrayInfo []model.ArrayInfo) (model.PlcField, error) {
 	return SymbolicPlcField{
 		SymbolicAddress: symbolicAddress,
 		PlcField: PlcField{
-			NumElements:  numElements,
-			StartElement: startElement,
-			EndElement:   endElement,
+			arrayInfo: arrayInfo,
 		},
 	}, nil
 }
@@ -153,6 +184,18 @@ func castToSymbolicPlcFieldFromPlcField(plcField model.PlcField) (SymbolicPlcFie
 		return adsField, nil
 	}
 	return SymbolicPlcField{}, errors.Errorf("couldn't cast %T to SymbolicPlcField", plcField)
+}
+
+func (m SymbolicPlcField) GetAddressString() string {
+	return m.SymbolicAddress
+}
+
+func (m SymbolicPlcField) GetValueType() values.PlcValueType {
+	return values.NULL
+}
+
+func (m SymbolicPlcField) GetArrayInfo() []model.ArrayInfo {
+	return []model.ArrayInfo{}
 }
 
 func (m SymbolicPlcField) Serialize() ([]byte, error) {
@@ -171,16 +214,25 @@ func (m SymbolicPlcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 	if err := writeBuffer.WriteString("symbolicAddress", uint32(len([]rune(m.SymbolicAddress))*8), "UTF-8", m.SymbolicAddress); err != nil {
 		return err
 	}
-	if m.NumElements != NONE {
-		if err := writeBuffer.WriteInt32("numElements", 32, m.NumElements); err != nil {
+	if len(m.arrayInfo) > 0 {
+		if err := writeBuffer.PushContext("ArrayInfo"); err != nil {
 			return err
 		}
-	}
-	if m.StartElement != NONE && m.EndElement != NONE {
-		if err := writeBuffer.WriteInt32("startElement", 32, m.StartElement); err != nil {
-			return err
+		for _, ai := range m.arrayInfo {
+			if err := writeBuffer.PushContext("ArrayInfo"); err != nil {
+				return err
+			}
+			if err := writeBuffer.WriteInt32("lowerBound", 32, int32(ai.GetLowerBound())); err != nil {
+				return err
+			}
+			if err := writeBuffer.WriteInt32("upperBound", 32, int32(ai.GetUpperBound())); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("ArrayInfo"); err != nil {
+				return err
+			}
 		}
-		if err := writeBuffer.WriteInt32("endElement", 32, m.EndElement); err != nil {
+		if err := writeBuffer.PopContext("ArrayInfo"); err != nil {
 			return err
 		}
 	}

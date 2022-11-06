@@ -22,13 +22,17 @@ package s7
 import (
 	"encoding/binary"
 	"fmt"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
+	model2 "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type PlcField interface {
 	model.PlcField
+
 	GetDataType() readWriteModel.TransportSize
 	GetNumElements() uint16
 	GetBlockNumber() uint16
@@ -84,8 +88,23 @@ func (m plcField) GetAddressString() string {
 	return fmt.Sprintf("%d:%s[%d]", m.FieldType, m.Datatype, m.NumElements)
 }
 
-func (m plcField) GetTypeName() string {
-	return m.Datatype.String()
+func (m plcField) GetValueType() values.PlcValueType {
+	if plcValueByName, ok := values.PlcValueByName(m.Datatype.String()); ok {
+		return plcValueByName
+	}
+	return values.NULL
+}
+
+func (m plcField) GetArrayInfo() []model.ArrayInfo {
+	if m.NumElements != 1 {
+		return []model.ArrayInfo{
+			model2.DefaultArrayInfo{
+				LowerBound: 0,
+				UpperBound: uint32(m.NumElements),
+			},
+		}
+	}
+	return []model.ArrayInfo{}
 }
 
 func (m plcField) GetDataType() readWriteModel.TransportSize {

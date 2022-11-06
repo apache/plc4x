@@ -21,8 +21,9 @@ package knxnetip
 
 import (
 	"fmt"
-	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"strconv"
+
+	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 )
 
 func NumericGroupAddressToString(numericAddress uint16, groupAddress GroupAddressField) string {
