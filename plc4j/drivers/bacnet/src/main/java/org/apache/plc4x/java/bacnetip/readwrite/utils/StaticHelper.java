@@ -161,6 +161,14 @@ public class StaticHelper {
             if (!BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.isDefined((short) rawValue))
                 return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.VENDOR_PROPRIETARY_VALUE;
             return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetSegmentation.class) {
+            if (!BACnetSegmentation.isDefined((short) rawValue))
+                LOGGER.error("{} not defined for segmentation falling back to no segmentation", rawValue);
+            return BACnetSegmentation.NO_SEGMENTATION;
+        } else if (declaringClass == BACnetVendorId.class) {
+            if (!BACnetVendorId.isDefined((short) rawValue))
+                return BACnetVendorId.UNKNOWN_VENDOR;
+            return BACnetVendorId.enumForValue((short) rawValue);
         } else {
             LOGGER.warn("using reflection for {}", declaringClass);
             Optional<Method> enumForValue = Arrays.stream(declaringClass.getDeclaredMethods()).filter(method -> method.getName().equals("enumForValue")).findAny();
@@ -242,6 +250,10 @@ public class StaticHelper {
             valueValue = ((BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) value).getValue();
         } else if (value.getDeclaringClass() == BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable.class) {
             valueValue = ((BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetSegmentation.class) {
+            valueValue = ((BACnetSegmentation) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetVendorId.class) {
+            valueValue = ((BACnetVendorId) value).getValue();
         } else {
             LOGGER.warn("using reflection for {}", value.getDeclaringClass());
             try {
@@ -437,7 +449,7 @@ public class StaticHelper {
     }
 
     public static BACnetApplicationTagObjectIdentifier createBACnetApplicationTagObjectIdentifier(int objectType, long instance) {
-        BACnetTagHeader header = new BACnetTagHeader((byte) BACnetDataType.SIGNED_INTEGER.getValue(), TagClass.APPLICATION_TAGS, (byte) 4, null, null, null, null);
+        BACnetTagHeader header = new BACnetTagHeader((byte) BACnetDataType.BACNET_OBJECT_IDENTIFIER.getValue(), TagClass.APPLICATION_TAGS, (byte) 4, null, null, null, null);
         BACnetObjectType objectTypeEnum = BACnetObjectType.enumForValue(objectType);
         int proprietaryValue = 0;
         if (objectType >= 128 || !BACnetObjectType.isDefined(objectType)) {
@@ -494,8 +506,8 @@ public class StaticHelper {
     }
 
     public static BACnetSegmentationTagged creatBACnetSegmentationTagged(BACnetSegmentation value) {
-        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, (byte) 0, 1);
-        return new BACnetSegmentationTagged(header, value, (short) 0, TagClass.APPLICATION_TAGS);
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, (byte) 9, 1);
+        return new BACnetSegmentationTagged(header, value, (short) 9, TagClass.APPLICATION_TAGS);
     }
 
     public static BACnetApplicationTagBoolean createBACnetApplicationTagBoolean(boolean value) {

@@ -873,8 +873,8 @@ func CreateSignedPayload(value int) (uint32, BACnetTagPayloadSignedInteger) {
 }
 
 func CreatBACnetSegmentationTagged(value BACnetSegmentation) BACnetSegmentationTagged {
-	header := CreateBACnetTagHeaderBalanced(false, 0, 1)
-	return NewBACnetSegmentationTagged(header, value, 0, TagClass_APPLICATION_TAGS)
+	header := CreateBACnetTagHeaderBalanced(false, 9, 1)
+	return NewBACnetSegmentationTagged(header, value, 9, TagClass_APPLICATION_TAGS)
 }
 
 func CreateBACnetApplicationTagBoolean(value bool) BACnetApplicationTagBoolean {
