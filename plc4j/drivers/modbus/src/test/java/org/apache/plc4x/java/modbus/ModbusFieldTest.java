@@ -19,10 +19,12 @@
 package org.apache.plc4x.java.modbus;
 
 import org.apache.plc4x.java.modbus.base.field.ModbusFieldHoldingRegister;
+import org.apache.plc4x.java.modbus.base.field.ModbusIdentificationRegister;
 import org.apache.plc4x.java.modbus.base.field.ModbusFieldInputRegister;
 import org.apache.plc4x.java.modbus.base.field.ModbusExtendedRegister;
 import org.apache.plc4x.java.modbus.base.field.ModbusFieldDiscreteInput;
 import org.apache.plc4x.java.modbus.base.field.ModbusFieldCoil;
+import org.apache.plc4x.java.modbus.readwrite.ModbusDeviceInformationLevel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -68,4 +70,21 @@ public class ModbusFieldTest {
         }
     }
 
+    @Test
+    public void testIdentificationField() {
+        ModbusDeviceInformationLevel level = ModbusDeviceInformationLevel.EXTENDED;
+        short objectId = 10;
+
+        ModbusIdentificationRegister identification = ModbusIdentificationRegister.of("identification:EXTENDED:10");
+        Assertions.assertEquals(level, identification.getLevel());
+        Assertions.assertEquals(objectId, identification.getObjectId());
+
+        identification = ModbusIdentificationRegister.of("identification:0x03:10");
+        Assertions.assertEquals(level, identification.getLevel());
+        Assertions.assertEquals(objectId, identification.getObjectId());
+
+        identification = ModbusIdentificationRegister.of("identification:0x3:0xA");
+        Assertions.assertEquals(level, identification.getLevel());
+        Assertions.assertEquals(objectId, identification.getObjectId());
+    }
 }

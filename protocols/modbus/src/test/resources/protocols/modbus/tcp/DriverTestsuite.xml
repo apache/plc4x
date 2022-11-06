@@ -532,4 +532,153 @@
     </steps>
   </testcase>
 
+
+  <testcase>
+    <name>Identification request</name>
+    <steps>
+      <api-request name="Receive Identification request">
+        <TestReadRequest>
+          <fields>
+            <field className="org.apache.plc4x.test.driver.internal.api.TestValueField">
+              <name>hurz</name>
+              <address>identification:BASIC:1</address>
+            </field>
+          </fields>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="Send Modbus Input-Register Write Request">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">5</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">43</functionFlag>
+                <ModbusPDUReadDeviceIdentificationRequest>
+                  <meiType dataType="uint" bitLength="8">14</meiType>
+                  <level>
+                    <ModbusDeviceInformationLevel dataType="uint" bitLength="8" stringRepresentation="BASIC">1</ModbusDeviceInformationLevel>
+                  </level>
+                  <objectId dataType="uint" bitLength="8">1</objectId>
+                </ModbusPDUReadDeviceIdentificationRequest>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive Modbus Identification Response">
+        <parser-arguments>
+          <driverType>MODBUS_TCP</driverType>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusADU>
+          <ModbusTcpADU>
+            <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+            <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+            <length dataType="uint" bitLength="16">15</length>
+            <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+            <pdu>
+              <ModbusPDU>
+                <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+                <functionFlag dataType="uint" bitLength="7">43</functionFlag>
+                <ModbusPDUReadDeviceIdentificationResponse>
+                  <meiType dataType="uint" bitLength="8">14</meiType>
+                  <level>
+                    <ModbusDeviceInformationLevel dataType="uint" bitLength="8" stringRepresentation="BASIC">1</ModbusDeviceInformationLevel>
+                  </level>
+                  <individualAccess dataType="bit" bitLength="1">false</individualAccess>
+                  <conformityLevel>
+                    <ModbusDeviceInformationConformityLevel dataType="uint" bitLength="7" stringRepresentation="EXTENDED_STREAM_ONLY">3</ModbusDeviceInformationConformityLevel>
+                  </conformityLevel>
+                  <moreFollows>
+                    <ModbusDeviceInformationMoreFollows dataType="uint" bitLength="8" stringRepresentation="NO_MORE_OBJECTS_AVAILABLE">0</ModbusDeviceInformationMoreFollows>
+                  </moreFollows>
+                  <nextObjectId dataType="uint" bitLength="8">135</nextObjectId>
+                  <numberOfObjects dataType="uint" bitLength="8">2</numberOfObjects>
+                  <objects isList="true">
+                    <ModbusDeviceInformationObject>
+                      <objectId dataType="uint" bitLength="8">135</objectId>
+                      <objectLength dataType="uint" bitLength="8">1</objectLength>
+                      <data dataType="byte" bitLength="8">0x01</data>
+                    </ModbusDeviceInformationObject>
+                    <ModbusDeviceInformationObject>
+                      <objectId dataType="uint" bitLength="8">136</objectId>
+                      <objectLength dataType="uint" bitLength="8">2</objectLength>
+                      <data dataType="byte" bitLength="16">0x313d</data>
+                    </ModbusDeviceInformationObject>
+                  </objects>
+                </ModbusPDUReadDeviceIdentificationResponse>
+              </ModbusPDU>
+            </pdu>
+          </ModbusTcpADU>
+        </ModbusADU>
+      </incoming-plc-message>
+      <api-response name="Report Identification Response to application">
+        <PlcReadResponse>
+          <PlcReadRequest>
+            <fields>
+              <hurz>
+                <ModbusIdentificationRegister>
+                  <level dataType="int" bitLength="8">1</level>
+                  <objectId dataType="int" bitLength="8">1</objectId>
+                </ModbusIdentificationRegister>
+              </hurz>
+            </fields>
+          </PlcReadRequest>
+          <values>
+            <hurz>
+              <ResponseItem>
+                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
+                <PlcStruct>
+                  <level>
+                    <PlcUSINT dataType="int" bitLength="8">1</PlcUSINT>
+                  </level>
+                  <individualAccess>
+                    <PlcBOOL dataType="bit" bitLength="1">false</PlcBOOL>
+                  </individualAccess>
+                  <conformityLevel>
+                    <PlcUSINT dataType="int" bitLength="8">3</PlcUSINT>
+                  </conformityLevel>
+                  <moreFollows>
+                    <PlcBOOL dataType="bit" bitLength="1">false</PlcBOOL>
+                  </moreFollows>
+                  <nextObjectId>
+                    <PlcUSINT dataType="int" bitLength="8">135</PlcUSINT>
+                  </nextObjectId>
+                  <objects>
+                    <PlcList>
+                      <PlcStruct>
+                        <objectId>
+                          <PlcUSINT dataType="int" bitLength="8">135</PlcUSINT>
+                        </objectId>
+                        <data>
+                          <PlcByteArray dataType="byte" bitLength="8">0x01</PlcByteArray>
+                        </data>
+                      </PlcStruct>
+                      <PlcStruct>
+                        <objectId>
+                          <PlcUSINT dataType="int" bitLength="8">136</PlcUSINT>
+                        </objectId>
+                        <data>
+                          <PlcByteArray dataType="byte" bitLength="16">0x313d</PlcByteArray>
+                        </data>
+                      </PlcStruct>
+                    </PlcList>
+                  </objects>
+                </PlcStruct>
+              </ResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
 </test:driver-testsuite>

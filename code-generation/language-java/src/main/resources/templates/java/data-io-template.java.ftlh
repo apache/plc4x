@@ -317,9 +317,14 @@ public class ${type.name} {
             return new PlcStruct(_map);
                     <#break>
                     <#case "List">
+                    <#if helper.getNonPrimitiveLanguageTypeNameForField(simpleField) == 'String'>
+            return new PlcSTRING(value);
+                    <#else>
             return new PlcList(value);
+                    </#if>
                     <#break>
                     <#default>
+                    // default ${case.name}
             return new Plc${case.name}(value);
                 </#switch>
             </#if>

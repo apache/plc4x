@@ -18,11 +18,15 @@
  */
 package org.apache.plc4x.java.modbus.base.protocol;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.modbus.base.field.ModbusField;
+import org.apache.plc4x.java.modbus.base.field.ModbusFieldBase;
+import org.apache.plc4x.java.modbus.base.field.ModbusIdentificationRegister;
 import org.apache.plc4x.java.modbus.base.field.ModbusFieldCoil;
 import org.apache.plc4x.java.modbus.base.field.ModbusFieldDiscreteInput;
 import org.apache.plc4x.java.modbus.base.field.ModbusFieldHoldingRegister;
@@ -35,6 +39,7 @@ import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
+import org.apache.plc4x.java.spi.values.PlcByteArray;
 import org.apache.plc4x.java.spi.values.PlcList;
 
 import java.time.Duration;
@@ -43,6 +48,9 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.apache.plc4x.java.spi.values.PlcSINT;
+import org.apache.plc4x.java.spi.values.PlcStruct;
+import org.apache.plc4x.java.spi.values.PlcUSINT;
 
 public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProtocolBase<T> {
 
@@ -137,6 +145,11 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
                 itemArray = Arrays.asList(group1, group2);
             }
             return new ModbusPDUReadFileRecordRequest(itemArray);
+        } else if (field instanceof ModbusIdentificationRegister) {
+            ModbusIdentificationRegister identification = (ModbusIdentificationRegister) field;
+            return new ModbusPDUReadDeviceIdentificationRequest(
+                identification.getLevel(), identification.getObjectId()
+            );
         }
         throw new PlcRuntimeException("Unsupported read field type " + field.getClass().getName());
     }
@@ -201,7 +214,44 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
         throw new PlcRuntimeException("Unsupported write field type " + field.getClass().getName());
     }
 
-    protected PlcValue toPlcValue(ModbusPDU request, ModbusPDU response, ModbusDataType dataType) throws ParseException {
+    protected PlcValue toPlcValue(ModbusPDU request, ModbusPDU response, ModbusField field) throws ParseException {
+        if (field instanceof ModbusFieldBase) {
+            return toPlcValue(request, response, ((ModbusFieldBase) field).getDataType());
+        }
+        if (request instanceof ModbusPDUReadDeviceIdentificationRequest) {
+            if (!(response instanceof ModbusPDUReadDeviceIdentificationResponse)) {
+                throw new PlcRuntimeException("Unexpected response type. " +
+                    "Expected ModbusPDUReadDeviceIdentificationResponse, but got " + response.getClass().getName());
+            }
+
+            ModbusPDUReadDeviceIdentificationResponse rsp = (ModbusPDUReadDeviceIdentificationResponse) response;
+//            protected final ModbusDeviceInformationLevel level;
+//            protected final boolean individualAccess;
+//            protected final ModbusDeviceInformationConformityLevel conformityLevel;
+//            protected final ModbusDeviceInformationMoreFollows moreFollows;
+//            protected final short nextObjectId;
+//            protected final List<ModbusDeviceInformationObject> objects;
+            Map<String, PlcValue> data = new LinkedHashMap<>();
+            data.put("level", new PlcUSINT(rsp.getLevel().getValue()));
+            data.put("individualAccess", new PlcBOOL(rsp.getIndividualAccess()));
+            data.put("conformityLevel", new PlcUSINT(rsp.getConformityLevel().getValue()));
+            data.put("moreFollows", new PlcBOOL(rsp.getMoreFollows() == ModbusDeviceInformationMoreFollows.MORE_OBJECTS_AVAILABLE));
+            data.put("nextObjectId", new PlcUSINT(rsp.getNextObjectId()));
+            List objectList = new ArrayList<>();
+            for (ModbusDeviceInformationObject object : rsp.getObjects()) {
+                Map<String, PlcValue> objectMap = new LinkedHashMap<>();
+                objectMap.put("objectId", new PlcUSINT(object.getObjectId()));
+                objectMap.put("data", new PlcByteArray(object.getData()));
+                objectList.add(new PlcStruct(objectMap));
+            }
+            data.put("objects", new PlcList(objectList));
+            return new PlcStruct(data);
+
+        }
+        return null;
+    }
+
+    private PlcValue toPlcValue(ModbusPDU request, ModbusPDU response, ModbusDataType dataType) throws ParseException {
         short fieldDataTypeSize = dataType.getDataTypeSize();
 
         if (request instanceof ModbusPDUReadDiscreteInputsRequest) {
@@ -275,13 +325,13 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
     }
 
     protected byte[] fromPlcValue(PlcField field, PlcValue plcValue) {
-        ModbusDataType fieldDataType = ((ModbusField) field).getDataType();
+        ModbusDataType fieldDataType = ((ModbusFieldBase) field).getDataType();
         try {
             if (plcValue instanceof PlcList) {
                 WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue, fieldDataType, plcValue.getLength()));
                 DataItem.staticSerialize(writeBuffer, plcValue, fieldDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
                 byte[] data = writeBuffer.getData();
-                if (((ModbusField) field).getDataType() == ModbusDataType.BOOL) {
+                if (((ModbusFieldBase) field).getDataType() == ModbusDataType.BOOL) {
                     //Reverse Bits in each byte as
                     //they should be ordered like this: 8 7 6 5 4 3 2 1 | 0 0 0 0 0 0 0 9
                     byte[] bytes = new byte[data.length];

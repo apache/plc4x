@@ -88,6 +88,96 @@
   </testcase>
 
   <testcase>
+    <name>Device identification request</name>
+    <raw>
+      000100000005012b0e0387
+    </raw>
+    <root-type>ModbusADU</root-type>
+    <parser-arguments>
+      <driverType>MODBUS_TCP</driverType>
+      <response>false</response>
+    </parser-arguments>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">5</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">43</functionFlag>
+              <ModbusPDUReadDeviceIdentificationRequest>
+                <meiType dataType="uint" bitLength="8">14</meiType>
+                <level>
+                  <ModbusDeviceInformationLevel dataType="uint" bitLength="8" stringRepresentation="EXTENDED">3</ModbusDeviceInformationLevel>
+                </level>
+                <objectId dataType="uint" bitLength="8">135</objectId>
+              </ModbusPDUReadDeviceIdentificationRequest>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Device identification response</name>
+    <raw>
+      00010000000f012b0e03030087028701018802313d
+    </raw>
+    <root-type>ModbusADU</root-type>
+    <parser-arguments>
+      <driverType>MODBUS_TCP</driverType>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <ModbusADU>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">15</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">43</functionFlag>
+              <ModbusPDUReadDeviceIdentificationResponse>
+                <meiType dataType="uint" bitLength="8">14</meiType>
+                <level>
+                  <ModbusDeviceInformationLevel dataType="uint" bitLength="8" stringRepresentation="EXTENDED">3</ModbusDeviceInformationLevel>
+                </level>
+                <individualAccess dataType="bit" bitLength="1">false</individualAccess>
+                <conformityLevel>
+                  <ModbusDeviceInformationConformityLevel dataType="uint" bitLength="7" stringRepresentation="EXTENDED_STREAM_ONLY">3</ModbusDeviceInformationConformityLevel>
+                </conformityLevel>
+                <moreFollows>
+                  <ModbusDeviceInformationMoreFollows dataType="uint" bitLength="8" stringRepresentation="NO_MORE_OBJECTS_AVAILABLE">0</ModbusDeviceInformationMoreFollows>
+                </moreFollows>
+                <nextObjectId dataType="uint" bitLength="8">135</nextObjectId>
+                <numberOfObjects dataType="uint" bitLength="8">2</numberOfObjects>
+                <objects isList="true">
+                  <ModbusDeviceInformationObject>
+                    <objectId dataType="uint" bitLength="8">135</objectId>
+                    <objectLength dataType="uint" bitLength="8">1</objectLength>
+                    <data dataType="byte" bitLength="8">0x01</data>
+                  </ModbusDeviceInformationObject>
+                  <ModbusDeviceInformationObject>
+                    <objectId dataType="uint" bitLength="8">136</objectId>
+                    <objectLength dataType="uint" bitLength="8">2</objectLength>
+                    <data dataType="byte" bitLength="16">0x313d</data>
+                  </ModbusDeviceInformationObject>
+                </objects>
+              </ModbusPDUReadDeviceIdentificationResponse>
+            </ModbusPDU>
+          </pdu>
+        </ModbusTcpADU>
+      </ModbusADU>
+    </xml>
+  </testcase>
+
+  <testcase>
     <name>Read Extended Registers Request Split File Record</name>
     <raw>000a0000001101140e060003270e000206000400000008</raw>
     <root-type>ModbusADU</root-type>
