@@ -153,13 +153,13 @@ public class TriggerConfiguration{
      */
     private static Class<?> validateDataType(PlcField plcField) throws ScraperConfigurationException {
         if(plcField!=null){
-            Class<?> javaDataType = plcField.getDefaultJavaType();
+            Class<?> javaDataType = plcField.getPlcValueType().getDefaultJavaType();
             if(!javaDataType.equals(Boolean.class)
                 && !javaDataType.equals(Integer.class)
                 && !javaDataType.equals(Long.class)
                 && !javaDataType.equals(Double.class)
             ){
-                String exceptionMessage = String.format("Unsupported plc-trigger variable %s with converted data-type %s used",plcField,plcField.getDefaultJavaType());
+                String exceptionMessage = String.format("Unsupported plc-trigger variable %s with converted data-type %s used",plcField,plcField.getPlcValueType().getDefaultJavaType());
                 throw new ScraperConfigurationException(exceptionMessage);
             }
             return javaDataType;
@@ -656,7 +656,7 @@ public class TriggerConfiguration{
         private void matchTypeAndComparator() throws ScraperConfigurationException {
             if(validateDataType(this.plcField).equals(Boolean.class)
                 && !(this.comparatorType.equals(Comparator.EQUAL) || this.comparatorType.equals(Comparator.UNEQUAL))){
-                String exceptionMessage = String.format("Trigger-Data-Type (%s) and Comparator (%s) do not match",this.plcField.getDefaultJavaType(),this.comparatorType);
+                String exceptionMessage = String.format("Trigger-Data-Type (%s) and Comparator (%s) do not match",this.plcField.getPlcValueType().getDefaultJavaType(),this.comparatorType);
                 throw new ScraperConfigurationException(exceptionMessage);
             }
             //all other combinations are valid

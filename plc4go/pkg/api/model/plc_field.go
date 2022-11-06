@@ -19,8 +19,10 @@
 
 package model
 
+import "github.com/apache/plc4x/plc4go/pkg/api/values"
+
 type PlcField interface {
 	GetAddressString() string
-	GetTypeName() string
-	GetQuantity() uint16
+	GetValueType() values.PlcValueType
+	GetArrayInfo() []ArrayInfo
 }

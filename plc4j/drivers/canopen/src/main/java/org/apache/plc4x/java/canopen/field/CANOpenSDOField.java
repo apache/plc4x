@@ -19,12 +19,15 @@
 package org.apache.plc4x.java.canopen.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenDataType;
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,6 +49,29 @@ public class CANOpenSDOField extends CANOpenField {
         this.index = index;
         this.subIndex = subIndex;
         this.canOpenDataType = canOpenDataType;
+    }
+
+    @Override
+    public String getAddressString() {
+       // "SDO:" + NODE_PATTERN + "(?:/(?<answerNodeId>\\d+))?:" + CANOpenField.ADDRESS_PATTERN;
+        String address = "SDO:" + getNodeId();
+        if(answerNode != 0) {
+            address += ":/" + answerNode;
+        }
+
+        address += ":" + index + "/" + subIndex + ":" + canOpenDataType.name();
+        // Number of Elements is commented out.
+        return address;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.valueOf(canOpenDataType.getPlcValueName());
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        return Collections.emptyList();
     }
 
     public int getAnswerNodeId() {

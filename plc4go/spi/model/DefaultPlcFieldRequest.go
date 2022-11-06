@@ -16,33 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.mock.field;
 
-import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
-import org.apache.plc4x.java.api.types.PlcValueType;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.values.PlcValueAdapter;
+package model
 
-public class MockPlcValue extends PlcValueAdapter {
+import (
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+)
 
-    final Object[] values;
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcFieldRequest
+type DefaultPlcFieldRequest struct {
+	fields     map[string]model.PlcField
+	fieldNames []string
+}
 
-    public MockPlcValue(Object... values) {
-        this.values = values;
-    }
+func (d *DefaultPlcFieldRequest) IsAPlcMessage() bool {
+	return true
+}
 
-    @Override
-    public PlcValueType getPlcValueType() {
-        return null;
-    }
+func NewDefaultPlcFieldRequest(fields map[string]model.PlcField, fieldNames []string) DefaultPlcFieldRequest {
+	return DefaultPlcFieldRequest{fields: fields, fieldNames: fieldNames}
+}
 
-    public Object getObject(int index) {
-        return values[index];
-    }
+func (d *DefaultPlcFieldRequest) GetFieldNames() []string {
+	return d.fieldNames
+}
 
-    @Override
-    public void serialize(WriteBuffer writeBuffer) {
-        throw new PlcNotImplementedException("Not implemented");
-    }
-
+func (d *DefaultPlcFieldRequest) GetField(name string) model.PlcField {
+	if field, ok := d.fields[name]; ok {
+		return field
+	}
+	return nil
 }

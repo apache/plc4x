@@ -19,10 +19,14 @@
 package org.apache.plc4x.java.ads.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +36,7 @@ import java.util.regex.Pattern;
  */
 public class SymbolicAdsField implements AdsField {
 
+    // TODO: Model the end of this address to allow usage of multi-dimensional arrays.
     private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+)");
 
     private final String symbolicAddress;
@@ -56,6 +61,21 @@ public class SymbolicAdsField implements AdsField {
 
     public String getSymbolicAddress() {
         return symbolicAddress;
+    }
+
+    @Override
+    public String getAddressString() {
+        return symbolicAddress;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.NULL;
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        return Collections.emptyList();
     }
 
     @Override
@@ -89,10 +109,6 @@ public class SymbolicAdsField implements AdsField {
         String symbolicAddress = getSymbolicAddress();
         writeBuffer.writeString("symbolicAddress", symbolicAddress.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), symbolicAddress);
 
-        writeBuffer.writeUnsignedLong("numberOfElements", 32, getNumberOfElements());
-
-        String dataType = getPlcDataType();
-        writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);
         writeBuffer.popContext(getClass().getSimpleName());
     }
 }

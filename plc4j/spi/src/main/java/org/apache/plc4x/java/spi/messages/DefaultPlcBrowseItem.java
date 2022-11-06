@@ -45,7 +45,7 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
     private final boolean writable;
     private final boolean subscribable;
 
-    private final List<PlcBrowseItem> children;
+    private final Map<String, PlcBrowseItem> children;
 
     private final Map<String, PlcValue> options;
 
@@ -56,7 +56,7 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
                                 @JsonProperty("readable") boolean readable,
                                 @JsonProperty("writable") boolean writable,
                                 @JsonProperty("subscribable") boolean subscribable,
-                                @JsonProperty("children") List<PlcBrowseItem> children,
+                                @JsonProperty("children") Map<String, PlcBrowseItem> children,
                                 @JsonProperty("options") Map<String, PlcValue> options) {
         this.address = address;
         this.name = name;
@@ -96,7 +96,7 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
     }
 
     @Override
-    public List<PlcBrowseItem> getChildren() {
+    public Map<String, PlcBrowseItem> getChildren() {
         return children;
     }
 
@@ -114,7 +114,7 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
         //writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);
         if(children != null && !children.isEmpty()) {
             writeBuffer.pushContext("children");
-            for (PlcBrowseItem child : children) {
+            for (PlcBrowseItem child : children.values()) {
                 writeBuffer.pushContext("child");
                 ((DefaultPlcBrowseItem) child).serialize(writeBuffer);
                 writeBuffer.popContext("child");

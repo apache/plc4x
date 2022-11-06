@@ -19,13 +19,19 @@
 package org.apache.plc4x.java.mock.field;
 
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
 public class MockFieldHandler implements PlcFieldHandler {
 
     @Override
-    public PlcField createField(String fieldQuery) {
+    public PlcField parseField(String fieldQuery) {
         return new MockField(fieldQuery);
+    }
+
+    @Override
+    public PlcQuery parseQuery(String query) {
+        throw new UnsupportedOperationException("This driver doesn't support browsing");
     }
 
 }

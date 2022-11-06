@@ -19,10 +19,15 @@
 package org.apache.plc4x.java.ads.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -109,9 +114,34 @@ public class DirectAdsField implements AdsField {
         return adsDataTypeName;
     }
 
-    @Override
     public int getNumberOfElements() {
         return numberOfElements;
+    }
+
+    @Override
+    public String getAddressString() {
+        String address = String.format("0x%d/%d:%s", getIndexGroup(), getIndexOffset(), getPlcDataType());
+        if(getNumberOfElements() != 1) {
+            address += "[" + getNumberOfElements() + "]";
+        }
+        return address;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        try {
+            return PlcValueType.valueOf(adsDataTypeName);
+        } catch (Exception e) {
+            return PlcValueType.Struct;
+        }
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        if(getNumberOfElements() != 1) {
+            return Collections.singletonList(new DefaultArrayInfo(0, getNumberOfElements()));
+        }
+        return Collections.emptyList();
     }
 
     @Override

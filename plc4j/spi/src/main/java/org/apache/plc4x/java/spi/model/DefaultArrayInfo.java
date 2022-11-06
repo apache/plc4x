@@ -16,10 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.mock.field;
+package org.apache.plc4x.java.spi.model;
 
-public enum MockType {
-    BOOL,
-    INT,
-    REAL
+import org.apache.plc4x.java.api.model.ArrayInfo;
+
+public class DefaultArrayInfo implements ArrayInfo {
+
+    private final int lowerBound;
+    private final int upperBound;
+
+    public DefaultArrayInfo(int lowerBound, int upperBound) {
+        this.lowerBound = lowerBound;
+        this.upperBound = upperBound;
+    }
+
+    @Override
+    public int GetSize() {
+        return upperBound - lowerBound;
+    }
+
+    @Override
+    public int GetLowerBound() {
+        return lowerBound;
+    }
+
+    @Override
+    public int GetUpperBound() {
+        return upperBound;
+    }
+
 }

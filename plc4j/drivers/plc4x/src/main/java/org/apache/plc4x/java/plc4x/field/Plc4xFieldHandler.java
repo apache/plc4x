@@ -20,19 +20,26 @@ package org.apache.plc4x.java.plc4x.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcQuery;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.plc4x.readwrite.Plc4xValueType;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
 public class Plc4xFieldHandler implements PlcFieldHandler {
 
     @Override
-    public PlcField createField(String fieldQuery) {
+    public PlcField parseField(String fieldQuery) {
         if(!fieldQuery.contains(":")) {
             throw new PlcInvalidFieldException(fieldQuery);
         }
         String address = fieldQuery.substring(0, fieldQuery.lastIndexOf(":"));
         String dataType = fieldQuery.substring(fieldQuery.lastIndexOf(":") + 1);
-        return new Plc4xField(address, Plc4xValueType.valueOf(dataType));
+        return new Plc4xField(address, PlcValueType.valueOf(dataType));
+    }
+
+    @Override
+    public PlcQuery parseQuery(String query) {
+        throw new UnsupportedOperationException("This driver doesn't support browsing");
     }
 
 }

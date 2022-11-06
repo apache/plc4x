@@ -18,21 +18,42 @@
  */
 package org.apache.plc4x.java.df1.field;
 
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.df1.types.DataType;
+
+import java.util.Collections;
+import java.util.List;
 
 public class Df1Field implements PlcField {
 
     private final int address;
     private final int size;
     private final DataType dataType;
-    private final addressType address_type;
+    private final AddressType addressType;
 
-    public Df1Field(int address, int size, DataType dataType, addressType address_type) {
+    public Df1Field(int address, int size, DataType dataType, AddressType addressType) {
         this.address = address;
         this.size = size;
         this.dataType = dataType;
-        this.address_type = address_type;
+        this.addressType = addressType;
+    }
+
+    @Override
+    public String getAddressString() {
+        return String.format("%d:%s", address, addressType.toString());
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return dataType.getPlcValueType();
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        // TODO: This might need some work...
+        return Collections.emptyList();
     }
 
     public int getAddress() {
@@ -47,14 +68,14 @@ public class Df1Field implements PlcField {
         return dataType;
     }
 
-    public addressType getAddress_type() { return address_type; }
+    public AddressType getAddressType() { return addressType; }
 
     public static PlcField of(String fieldQuery) {
         String[] tmp = fieldQuery.split(":");
-        return new Df1Field(Integer.parseInt(tmp[0]), DataType.valueOf(tmp[1]).getLength(),DataType.valueOf(tmp[1]), addressType.OFFSET);
+        return new Df1Field(Integer.parseInt(tmp[0]), DataType.valueOf(tmp[1]).getLength(),DataType.valueOf(tmp[1]), AddressType.OFFSET);
     }
 
-    public enum addressType {
+    public enum AddressType {
         OFFSET,
         LOGICAL
     }

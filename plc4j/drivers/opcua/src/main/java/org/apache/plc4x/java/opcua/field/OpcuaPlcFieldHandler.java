@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.opcua.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
 /**
@@ -26,11 +27,16 @@ import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 public class OpcuaPlcFieldHandler implements PlcFieldHandler {
 
     @Override
-    public OpcuaField createField(String fieldQuery) {
+    public OpcuaField parseField(String fieldQuery) {
         if (OpcuaField.matches(fieldQuery)) {
             return OpcuaField.of(fieldQuery);
         }
         throw new PlcInvalidFieldException(fieldQuery);
+    }
+
+    @Override
+    public PlcQuery parseQuery(String query) {
+        throw new UnsupportedOperationException("This driver doesn't support browsing");
     }
 
 }

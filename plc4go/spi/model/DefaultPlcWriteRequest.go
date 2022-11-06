@@ -35,10 +35,9 @@ type DefaultPlcWriteRequestBuilder struct {
 	writer                  spi.PlcWriter
 	fieldHandler            spi.PlcFieldHandler
 	valueHandler            spi.PlcValueHandler
-	queries                 map[string]string
-	queryNames              []string
-	fields                  map[string]model.PlcField
 	fieldNames              []string
+	fieldQueries            map[string]string
+	fields                  map[string]model.PlcField
 	values                  map[string]interface{}
 	writeRequestInterceptor interceptors.WriteRequestInterceptor
 }
@@ -48,10 +47,9 @@ func NewDefaultPlcWriteRequestBuilder(fieldHandler spi.PlcFieldHandler, valueHan
 		writer:       writer,
 		fieldHandler: fieldHandler,
 		valueHandler: valueHandler,
-		queries:      map[string]string{},
-		queryNames:   make([]string, 0),
-		fields:       map[string]model.PlcField{},
 		fieldNames:   make([]string, 0),
+		fieldQueries: map[string]string{},
+		fields:       map[string]model.PlcField{},
 		values:       map[string]interface{}{},
 	}
 }
@@ -61,10 +59,9 @@ func NewDefaultPlcWriteRequestBuilderWithInterceptor(fieldHandler spi.PlcFieldHa
 		writer:                  writer,
 		fieldHandler:            fieldHandler,
 		valueHandler:            valueHandler,
-		queries:                 map[string]string{},
-		queryNames:              make([]string, 0),
-		fields:                  map[string]model.PlcField{},
 		fieldNames:              make([]string, 0),
+		fieldQueries:            map[string]string{},
+		fields:                  map[string]model.PlcField{},
 		values:                  map[string]interface{}{},
 		writeRequestInterceptor: writeRequestInterceptor,
 	}
@@ -78,9 +75,9 @@ func (m *DefaultPlcWriteRequestBuilder) GetWriteRequestInterceptor() interceptor
 	return m.writeRequestInterceptor
 }
 
-func (m *DefaultPlcWriteRequestBuilder) AddQuery(name string, query string, value interface{}) model.PlcWriteRequestBuilder {
-	m.queryNames = append(m.queryNames, name)
-	m.queries[name] = query
+func (m *DefaultPlcWriteRequestBuilder) AddFieldQuery(name string, fieldQuery string, value interface{}) model.PlcWriteRequestBuilder {
+	m.fieldNames = append(m.fieldNames, name)
+	m.fieldQueries[name] = fieldQuery
 	m.values[name] = value
 	return m
 }
@@ -93,15 +90,18 @@ func (m *DefaultPlcWriteRequestBuilder) AddField(name string, field model.PlcFie
 }
 
 func (m *DefaultPlcWriteRequestBuilder) Build() (model.PlcWriteRequest, error) {
-	// Parse the queries as well as pro
-	for _, name := range m.queryNames {
-		query := m.queries[name]
-		field, err := m.fieldHandler.ParseQuery(query)
-		if err != nil {
-			return nil, errors.Wrapf(err, "Error parsing query: %s", query)
+	// Parse any unparsed fieldQueries
+	for _, name := range m.fieldNames {
+		if fieldQuery, ok := m.fieldQueries[name]; ok {
+			field, err := m.fieldHandler.ParseField(fieldQuery)
+			if err != nil {
+				return nil, errors.Wrapf(err, "Error parsing field query: %s", fieldQuery)
+			}
+			m.fields[name] = field
 		}
-		m.AddField(name, field, m.values[name])
 	}
+	// Reset the queries
+	m.fieldQueries = map[string]string{}
 
 	// Process the values for fields.
 	plcValues := make(map[string]values.PlcValue)
@@ -117,14 +117,14 @@ func (m *DefaultPlcWriteRequestBuilder) Build() (model.PlcWriteRequest, error) {
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteRequest
 type DefaultPlcWriteRequest struct {
-	DefaultRequest
+	DefaultPlcFieldRequest
 	values                  map[string]values.PlcValue
 	writer                  spi.PlcWriter
 	writeRequestInterceptor interceptors.WriteRequestInterceptor
 }
 
 func NewDefaultPlcWriteRequest(fields map[string]model.PlcField, fieldNames []string, values map[string]values.PlcValue, writer spi.PlcWriter, writeRequestInterceptor interceptors.WriteRequestInterceptor) model.PlcWriteRequest {
-	return &DefaultPlcWriteRequest{NewDefaultRequest(fields, fieldNames), values, writer, writeRequestInterceptor}
+	return &DefaultPlcWriteRequest{NewDefaultPlcFieldRequest(fields, fieldNames), values, writer, writeRequestInterceptor}
 }
 
 func (d *DefaultPlcWriteRequest) Execute() <-chan model.PlcWriteRequestResult {

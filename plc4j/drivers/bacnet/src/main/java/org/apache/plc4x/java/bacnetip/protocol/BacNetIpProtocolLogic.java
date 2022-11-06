@@ -42,6 +42,7 @@ import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.values.*;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -162,8 +163,8 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
                     enrichedPlcValue.put("address", new PlcSTRING(toString(curField)));
 
                     // From the original BACNet tag
-                    enrichedPlcValue.put("tagNumber", IEC61131ValueHandler.of(propertyValue.getPeekedTagHeader().getActualTagNumber()));
-                    enrichedPlcValue.put("lengthValueType", IEC61131ValueHandler.of(propertyValue.getPeekedTagHeader().getActualLength()));
+                    enrichedPlcValue.put("tagNumber", PlcValueHandler.of(propertyValue.getPeekedTagHeader().getActualTagNumber()));
+                    enrichedPlcValue.put("lengthValueType", PlcValueHandler.of(propertyValue.getPeekedTagHeader().getActualLength()));
 
                     // Use the information in the edeModel to enrich the information.
                     if (edeModel != null) {
@@ -213,8 +214,8 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
                     enrichedPlcValue.put("address", new PlcSTRING(toString(curField)));
 
                     // From the original BACNet tag
-                    enrichedPlcValue.put("tagNumber", IEC61131ValueHandler.of(baCnetTag.getActualTagNumber()));
-                    enrichedPlcValue.put("lengthValueType", IEC61131ValueHandler.of(baCnetTag.getActualLength()));
+                    enrichedPlcValue.put("tagNumber", PlcValueHandler.of(baCnetTag.getActualTagNumber()));
+                    enrichedPlcValue.put("lengthValueType", PlcValueHandler.of(baCnetTag.getActualLength()));
 
                     // Use the information in the edeModel to enrich the information.
                     if (edeModel != null) {

@@ -20,13 +20,19 @@ package org.apache.plc4x.java.canopen.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
 public class CANOpenFieldHandler implements PlcFieldHandler {
 
     @Override
-    public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
+    public PlcField parseField(String fieldQuery) throws PlcInvalidFieldException {
         return CANOpenField.of(fieldQuery);
+    }
+
+    @Override
+    public PlcQuery parseQuery(String query) {
+        throw new UnsupportedOperationException("This driver doesn't support browsing");
     }
 
 }

@@ -110,9 +110,10 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
             UaVariableNode node = null;
             Variant variant = null;
             try {
-                datatype = plc4xServer.getField(tag, connectionString).getDefaultJavaType();
-                final int length = plc4xServer.getField(tag, connectionString).getNumberOfElements();
-                typeId = Plc4xCommunication.getNodeId(plc4xServer.getField(tag, connectionString).getPlcDataType());
+                datatype = plc4xServer.getField(tag, connectionString).getPlcValueType().getDefaultJavaType();
+                final int length = (plc4xServer.getField(tag, connectionString).getArrayInfo().isEmpty()) ? 1 :
+                    plc4xServer.getField(tag, connectionString).getArrayInfo().get(0).GetSize();
+                typeId = Plc4xCommunication.getNodeId(plc4xServer.getField(tag, connectionString).getPlcValueType());
 
 
                 if (length > 1) {

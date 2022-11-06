@@ -27,6 +27,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.values.PlcList;
+import org.apache.plc4x.java.spi.values.PlcStruct;
 import org.apache.plc4x.java.spi.values.PlcValues;
 import org.junit.jupiter.api.Assertions;
 
@@ -91,7 +92,9 @@ public abstract class ManualTest {
                         }
                     }
                 } else {
-                    if (testCase.expectedReadValue instanceof PlcValue) {
+                    if (testCase.expectedReadValue instanceof PlcStruct) {
+                        Assertions.assertEquals(testCase.expectedReadValue.toString(), readResponse.getPlcValue(fieldName).toString(), fieldName);
+                    } else if (testCase.expectedReadValue instanceof PlcValue) {
                         Assertions.assertEquals(
                             ((PlcValue) testCase.expectedReadValue).getObject(), readResponse.getPlcValue(fieldName).getObject(), fieldName);
                     } else {

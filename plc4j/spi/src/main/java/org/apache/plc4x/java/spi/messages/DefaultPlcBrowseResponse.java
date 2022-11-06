@@ -44,14 +44,14 @@ public class DefaultPlcBrowseResponse implements PlcBrowseResponse, Serializable
 
     private final PlcBrowseRequest request;
 
-    private final PlcResponseCode responseCode;
+    private final Map<String, PlcResponseCode> responseCodes;
 
-    private final List<PlcBrowseItem> values;
+    private final Map<String, List<PlcBrowseItem>> values;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcBrowseResponse(@JsonProperty("request") PlcBrowseRequest request, @JsonProperty("responseCode") PlcResponseCode responseCode, @JsonProperty("values") List<PlcBrowseItem> values) {
+    public DefaultPlcBrowseResponse(@JsonProperty("request") PlcBrowseRequest request, @JsonProperty("responseCodes") Map<String, PlcResponseCode> responseCodes, @JsonProperty("values") Map<String, List<PlcBrowseItem>> values) {
         this.request = request;
-        this.responseCode = responseCode;
+        this.responseCodes = responseCodes;
         this.values = values;
     }
 
@@ -60,14 +60,18 @@ public class DefaultPlcBrowseResponse implements PlcBrowseResponse, Serializable
         return request;
     }
 
-    @Override
-    public PlcResponseCode getResponseCode() {
-        return responseCode;
+    public LinkedHashSet<String> getQueryNames() {
+        return request.getQueryNames();
     }
 
     @Override
-    public List<PlcBrowseItem> getValues() {
-        return values;
+    public PlcResponseCode getResponseCode(String queryName) {
+        return responseCodes.get(queryName);
+    }
+
+    @Override
+    public List<PlcBrowseItem> getValues(String queryName) {
+        return values.get(queryName);
     }
 
     @Override

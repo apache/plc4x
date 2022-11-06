@@ -20,16 +20,22 @@ package org.apache.plc4x.java.eip.readwrite.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
 public class EipFieldHandler implements PlcFieldHandler {
 
     @Override
-    public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
+    public PlcField parseField(String fieldQuery) throws PlcInvalidFieldException {
        if(EipField.matches(fieldQuery)){
            return EipField.of(fieldQuery);
        }
        else throw new PlcInvalidFieldException("Invalid field "+fieldQuery);
+    }
+
+    @Override
+    public PlcQuery parseQuery(String query) {
+        throw new UnsupportedOperationException("This driver doesn't support browsing");
     }
 
 }

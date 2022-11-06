@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.can.generic;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.can.adapter.CANDriverAdapter;
 import org.apache.plc4x.java.can.generic.configuration.GenericCANConfiguration;
 import org.apache.plc4x.java.can.generic.context.GenericCANDriverContext;
@@ -34,7 +33,7 @@ import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.transport.can.CANTransport;
 
 /**
@@ -85,8 +84,8 @@ public class GenericCANDriver extends GeneratedDriverBase<Message> {
     }
 
     @Override
-    protected PlcValueHandler getValueHandler() {
-        return new IEC61131ValueHandler();
+    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
+        return new PlcValueHandler();
     }
 
     /**

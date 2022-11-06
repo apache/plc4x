@@ -20,12 +20,13 @@ package org.apache.plc4x.java.modbus.base.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
 public class ModbusFieldHandler implements PlcFieldHandler {
 
     @Override
-    public PlcField createField(String fieldQuery) {
+    public PlcField parseField(String fieldQuery) {
         if (ModbusFieldDiscreteInput.matches(fieldQuery)) {
             return ModbusFieldDiscreteInput.of(fieldQuery);
         } else if (ModbusFieldHoldingRegister.matches(fieldQuery)) {
@@ -38,6 +39,11 @@ public class ModbusFieldHandler implements PlcFieldHandler {
             return ModbusExtendedRegister.of(fieldQuery);
         }
         throw new PlcInvalidFieldException(fieldQuery);
+    }
+
+    @Override
+    public PlcQuery parseQuery(String query) {
+        throw new UnsupportedOperationException("This driver doesn't support browsing");
     }
 
 }

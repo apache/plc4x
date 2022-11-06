@@ -18,38 +18,39 @@
  */
 package org.apache.plc4x.java.plc4x.field;
 
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.plc4x.readwrite.Plc4xValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
+import java.util.List;
+
 public class Plc4xField implements PlcField, Serializable {
 
     private final String address;
-    private final Plc4xValueType valueType;
+    private final PlcValueType valueType;
 
-    public Plc4xField(String address, Plc4xValueType valueType) {
+    public Plc4xField(String address, PlcValueType valueType) {
         this.address = address;
         this.valueType = valueType;
     }
 
-    public String getAddress() {
+    @Override
+    public String getAddressString() {
         return address;
     }
 
-    public Plc4xValueType getValueType() {
+    @Override
+    public PlcValueType getPlcValueType() {
         return valueType;
     }
 
     @Override
-    public String getPlcDataType() {
-        return valueType.name();
-    }
-
-    @Override
-    public int getNumberOfElements() {
-        return PlcField.super.getNumberOfElements();
+    public List<ArrayInfo> getArrayInfo() {
+        return PlcField.super.getArrayInfo();
     }
 
     @Override

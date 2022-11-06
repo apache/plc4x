@@ -18,13 +18,17 @@
  */
 package org.apache.plc4x.java.eip.readwrite.field;
 
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.eip.readwrite.CIPDataTypeCode;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,26 +45,6 @@ public class EipField implements PlcField, Serializable {
     private final String tag;
     private CIPDataTypeCode type;
     private int elementNb;
-
-    public CIPDataTypeCode getType() {
-        return type;
-    }
-
-    public void setType(CIPDataTypeCode type) {
-        this.type = type;
-    }
-
-    public int getElementNb() {
-        return elementNb;
-    }
-
-    public void setElementNb(int elementNb) {
-        this.elementNb = elementNb;
-    }
-
-    public String getTag() {
-        return tag;
-    }
 
     public EipField(String tag) {
         this.tag = tag;
@@ -80,6 +64,41 @@ public class EipField implements PlcField, Serializable {
     public EipField(String tag, CIPDataTypeCode type) {
         this.tag = tag;
         this.type = type;
+    }
+
+    @Override
+    public String getAddressString() {
+        throw new NotImplementedException("Need to implement this");
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.valueOf(type.name());
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        return PlcField.super.getArrayInfo();
+    }
+
+    public CIPDataTypeCode getType() {
+        return type;
+    }
+
+    public void setType(CIPDataTypeCode type) {
+        this.type = type;
+    }
+
+    public int getElementNb() {
+        return elementNb;
+    }
+
+    public void setElementNb(int elementNb) {
+        this.elementNb = elementNb;
+    }
+
+    public String getTag() {
+        return tag;
     }
 
     public static boolean matches(String fieldQuery) {
@@ -114,32 +133,6 @@ public class EipField implements PlcField, Serializable {
     }
 
     @Override
-    public String getPlcDataType() {
-        return type.toString();
-    }
-
-    @Override
-    public Class<?> getDefaultJavaType() {
-        switch (type) {
-            //ToDo differenciate Short, Integer and Long
-            case INT:
-            case DINT:
-            case SINT:
-            case LINT:
-                return java.lang.Integer.class;
-            case STRING:
-            case STRING36:
-                return java.lang.String.class;
-            case REAL:
-                return java.lang.Double.class;
-            case BOOL:
-                return java.lang.Boolean.class;
-            default:
-                return Object.class;
-        }
-    }
-
-    @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext(getClass().getSimpleName());
 
@@ -149,7 +142,7 @@ public class EipField implements PlcField, Serializable {
         }
         writeBuffer.writeUnsignedInt("elementNb", 16, elementNb);
         // TODO: remove this (not language agnostic)
-        String defaultJavaType = (type == null ? Object.class : getDefaultJavaType()).getName();
+        String defaultJavaType = (type == null ? Object.class : getPlcValueType().getDefaultJavaType()).getName();
         writeBuffer.writeString("defaultJavaType", defaultJavaType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), defaultJavaType);
 
         writeBuffer.popContext(getClass().getSimpleName());

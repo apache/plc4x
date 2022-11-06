@@ -30,6 +30,7 @@ import org.apache.plc4x.java.api.types.PlcValueType;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -87,11 +88,13 @@ public class ConnectionTabController {
                 rootItem.setExpanded(true);
 
                 // Sort the entries first.
-                List<PlcBrowseItem> values = browseResponse.getValues();
-                values.sort(new PlcBrowseItemComparator());
-                // Then add the elements to the tree.
-                for (PlcBrowseItem value : values) {
-                    rootItem.getChildren().add(getTreeItemForBrowseItem(value));
+                for (String queryName : browseResponse.getQueryNames()) {
+                    List<PlcBrowseItem> values = browseResponse.getValues(queryName);
+                    values.sort(new PlcBrowseItemComparator());
+                    // Then add the elements to the tree.
+                    for (PlcBrowseItem value : values) {
+                        rootItem.getChildren().add(getTreeItemForBrowseItem(value));
+                    }
                 }
 
                 resourceTreeView.setRoot(rootItem);
@@ -114,7 +117,7 @@ public class ConnectionTabController {
             browseItem.isReadable(), browseItem.isWritable(), browseItem.isSubscribable()));
         if(!browseItem.getChildren().isEmpty()) {
             // Sort the entries first.
-            List<PlcBrowseItem> values = browseItem.getChildren();
+            List<PlcBrowseItem> values = new ArrayList<>(browseItem.getChildren().values());
             // Then add the elements to the tree.
             values.sort(new PlcBrowseItemComparator());
             for (PlcBrowseItem child : values) {

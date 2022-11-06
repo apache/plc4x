@@ -18,11 +18,14 @@
  */
 package org.apache.plc4x.java.spi.model;
 
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
+import org.apache.plc4x.java.api.types.PlcValueType;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -40,6 +43,21 @@ public class DefaultPlcSubscriptionField implements PlcSubscriptionField {
         this.plcSubscriptionType = plcSubscriptionType;
         this.plcField = plcField;
         this.duration = duration;
+    }
+
+    @Override
+    public String getAddressString() {
+        return plcField.getAddressString();
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return plcField.getPlcValueType();
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        return plcField.getArrayInfo();
     }
 
     public PlcSubscriptionType getPlcSubscriptionType() {

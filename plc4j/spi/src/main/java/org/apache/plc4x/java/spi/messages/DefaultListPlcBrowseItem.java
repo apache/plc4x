@@ -45,7 +45,7 @@ public class DefaultListPlcBrowseItem extends DefaultPlcBrowseItem {
                                     @JsonProperty("readable") boolean readable,
                                     @JsonProperty("writable") boolean writable,
                                     @JsonProperty("subscribable") boolean subscribable,
-                                    @JsonProperty("children") List<PlcBrowseItem> children,
+                                    @JsonProperty("children") Map<String, PlcBrowseItem> children,
                                     @JsonProperty("options") Map<String, PlcValue> options) {
         super(address, name, dataType, readable, writable, subscribable, children, options);
         this.arrayInfo = arrayInfo;
@@ -65,7 +65,7 @@ public class DefaultListPlcBrowseItem extends DefaultPlcBrowseItem {
         //writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);
         if(getChildren() != null && !getChildren().isEmpty()) {
             writeBuffer.pushContext("children");
-            for (PlcBrowseItem child : getChildren()) {
+            for (PlcBrowseItem child : getChildren().values()) {
                 writeBuffer.pushContext("child");
                 ((DefaultListPlcBrowseItem) child).serialize(writeBuffer);
                 writeBuffer.popContext("child");

@@ -22,8 +22,11 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcValueType;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,6 +64,21 @@ public class BacNetIpField implements PlcField {
         this.deviceIdentifier = deviceIdentifier;
         this.objectType = objectType;
         this.objectInstance = objectInstance;
+    }
+
+    @Override
+    public String getAddressString() {
+        return "TODO: finish me... see golang implementation";
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcField.super.getPlcValueType();
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        return PlcField.super.getArrayInfo();
     }
 
     public long getDeviceIdentifier() {

@@ -51,8 +51,10 @@ public class HelloPlc4xDiscoverAndBrowse {
                                 if (throwable != null) {
                                     throwable.printStackTrace();
                                 } else {
-                                    for (PlcBrowseItem value : browseResponse.getValues()) {
-                                        outputBrowseItem(value, 0);
+                                    for (String queryName : browseResponse.getQueryNames()) {
+                                        for (PlcBrowseItem value : browseResponse.getValues(queryName)) {
+                                            outputBrowseItem(value, 0);
+                                        }
                                     }
                                 }
                             });
@@ -74,7 +76,7 @@ public class HelloPlc4xDiscoverAndBrowse {
             browseItem.isWritable() ? "W" : " ",
             browseItem.isSubscribable() ? "S" : " ");
         if (!browseItem.getChildren().isEmpty()) {
-            for (PlcBrowseItem child : browseItem.getChildren()) {
+            for (PlcBrowseItem child : browseItem.getChildren().values()) {
                 outputBrowseItem(child, indent + 1);
             }
         }

@@ -26,7 +26,6 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
@@ -145,7 +144,7 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcFieldRequest, S
             if (fields.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
             }
-            fields.put(name, () -> fieldHandler.createField(fieldQuery));
+            fields.put(name, () -> fieldHandler.parseField(fieldQuery));
             return this;
         }
 

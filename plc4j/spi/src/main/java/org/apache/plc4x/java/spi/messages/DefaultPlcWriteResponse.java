@@ -38,13 +38,13 @@ import java.util.Map;
 public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
 
     private final PlcWriteRequest request;
-    private final Map<String, PlcResponseCode> responses;
+    private final Map<String, PlcResponseCode> responseCodes;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public DefaultPlcWriteResponse(@JsonProperty("request") PlcWriteRequest request,
-                                   @JsonProperty("values") Map<String, PlcResponseCode> responses) {
+                                   @JsonProperty("responseCodes") Map<String, PlcResponseCode> responseCodes) {
         this.request = request;
-        this.responses = responses;
+        this.responseCodes = responseCodes;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
     @Override
     @JsonIgnore
     public PlcResponseCode getResponseCode(String name) {
-        return responses.get(name);
+        return responseCodes.get(name);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
             ((Serializable) request).serialize(writeBuffer);
         }
         writeBuffer.pushContext("fields");
-        for (Map.Entry<String, PlcResponseCode> fieldEntry : responses.entrySet()) {
+        for (Map.Entry<String, PlcResponseCode> fieldEntry : responseCodes.entrySet()) {
             String fieldName = fieldEntry.getKey();
             final PlcResponseCode fieldResponseCode = fieldEntry.getValue();
             String result = fieldResponseCode.name();

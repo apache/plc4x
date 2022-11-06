@@ -33,7 +33,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.values.PlcNull;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.field.S7StringField;
@@ -51,7 +51,6 @@ import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.*;
@@ -897,7 +896,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     }
                     return null;
                 }).toArray(PlcValue[]::new);
-                return IEC61131ValueHandler.of(resultItems);
+                return PlcValueHandler.of(resultItems);
             }
         } catch (ParseException e) {
             logger.warn("Error parsing field item of type: '{}'", field.getDataType().name(), e);

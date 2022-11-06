@@ -24,7 +24,10 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
+import org.apache.plc4x.java.api.model.ArrayInfo;
+import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
@@ -34,7 +37,7 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcDINT;
 import org.apache.plc4x.java.spi.values.PlcLINT;
 import org.assertj.core.api.WithAssertions;
@@ -48,10 +51,7 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -127,26 +127,26 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
     private PlcEntityManager getInitializedEntityManager() throws PlcConnectionException {
         Map<String, PlcValue> map = new HashMap<>();
         String prefix = ConnectedEntity.class.getName() + ".";
-        map.put(prefix + "boolVar", IEC61131ValueHandler.of(true));
-        map.put(prefix + "byteVar", IEC61131ValueHandler.of((byte) 1));
-        map.put(prefix + "shortVar", IEC61131ValueHandler.of((short) 1));
-        map.put(prefix + "intVar", IEC61131ValueHandler.of(1));
-        map.put(prefix + "longVar", IEC61131ValueHandler.of(1L));
-        map.put(prefix + "boxedBoolVar", IEC61131ValueHandler.of(1L));
-        map.put(prefix + "boxedByteVar", IEC61131ValueHandler.of((byte) 1));
-        map.put(prefix + "boxedShortVar", IEC61131ValueHandler.of((short) 1));
-        map.put(prefix + "boxedIntegerVar", IEC61131ValueHandler.of(1));
-        map.put(prefix + "boxedLongVar", IEC61131ValueHandler.of(1L));
-        map.put(prefix + "bigIntegerVar", IEC61131ValueHandler.of(BigInteger.ONE));
-        map.put(prefix + "floatVar", IEC61131ValueHandler.of(1f));
-        map.put(prefix + "doubleVar", IEC61131ValueHandler.of(1d));
-        map.put(prefix + "bigDecimalVar", IEC61131ValueHandler.of(BigDecimal.ONE));
-        map.put(prefix + "localTimeVar", IEC61131ValueHandler.of(LocalTime.of(1, 1)));
-        map.put(prefix + "localDateVar", IEC61131ValueHandler.of(LocalDate.of(1, 1, 1)));
-        map.put(prefix + "localDateTimeVar", IEC61131ValueHandler.of(LocalDateTime.of(1, 1, 1, 1, 1)));
-        map.put(prefix + "byteArrayVar", IEC61131ValueHandler.of(new Byte[]{0x0, 0x1}));
-        map.put(prefix + "bigByteArrayVar", IEC61131ValueHandler.of(new Byte[]{0x0, 0x1}));
-        map.put(prefix + "stringVar", IEC61131ValueHandler.of("Hallo"));
+        map.put(prefix + "boolVar", PlcValueHandler.of(true));
+        map.put(prefix + "byteVar", PlcValueHandler.of((byte) 1));
+        map.put(prefix + "shortVar", PlcValueHandler.of((short) 1));
+        map.put(prefix + "intVar", PlcValueHandler.of(1));
+        map.put(prefix + "longVar", PlcValueHandler.of(1L));
+        map.put(prefix + "boxedBoolVar", PlcValueHandler.of(1L));
+        map.put(prefix + "boxedByteVar", PlcValueHandler.of((byte) 1));
+        map.put(prefix + "boxedShortVar", PlcValueHandler.of((short) 1));
+        map.put(prefix + "boxedIntegerVar", PlcValueHandler.of(1));
+        map.put(prefix + "boxedLongVar", PlcValueHandler.of(1L));
+        map.put(prefix + "bigIntegerVar", PlcValueHandler.of(BigInteger.ONE));
+        map.put(prefix + "floatVar", PlcValueHandler.of(1f));
+        map.put(prefix + "doubleVar", PlcValueHandler.of(1d));
+        map.put(prefix + "bigDecimalVar", PlcValueHandler.of(BigDecimal.ONE));
+        map.put(prefix + "localTimeVar", PlcValueHandler.of(LocalTime.of(1, 1)));
+        map.put(prefix + "localDateVar", PlcValueHandler.of(LocalDate.of(1, 1, 1)));
+        map.put(prefix + "localDateTimeVar", PlcValueHandler.of(LocalDateTime.of(1, 1, 1, 1, 1)));
+        map.put(prefix + "byteArrayVar", PlcValueHandler.of(new Byte[]{0x0, 0x1}));
+        map.put(prefix + "bigByteArrayVar", PlcValueHandler.of(new Byte[]{0x0, 0x1}));
+        map.put(prefix + "stringVar", PlcValueHandler.of("Hallo"));
         return getPlcEntityManager(map);
     }
 
@@ -251,19 +251,38 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
         return new NoOpPlcFieldHandler();
     }
 
-    private PlcValueHandler getValueHandler() {
+    private org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
         return new NoOpPlcValueHandler();
     }
 
     private static class NoOpPlcFieldHandler implements PlcFieldHandler {
         @Override
-        public org.apache.plc4x.java.api.model.PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
+        public org.apache.plc4x.java.api.model.PlcField parseField(String fieldQuery) throws PlcInvalidFieldException {
             return new org.apache.plc4x.java.api.model.PlcField() {
+                @Override
+                public String getAddressString() {
+                    return "address";
+                }
+
+                @Override
+                public PlcValueType getPlcValueType() {
+                    return org.apache.plc4x.java.api.model.PlcField.super.getPlcValueType();
+                }
+
+                @Override
+                public List<ArrayInfo> getArrayInfo() {
+                    return org.apache.plc4x.java.api.model.PlcField.super.getArrayInfo();
+                }
             };
+        }
+
+        @Override
+        public PlcQuery parseQuery(String query) {
+            throw new UnsupportedOperationException("This driver doesn't support browsing");
         }
     }
 
-    private static class NoOpPlcValueHandler implements PlcValueHandler {
+    private static class NoOpPlcValueHandler implements org.apache.plc4x.java.api.value.PlcValueHandler {
         @Override
         public PlcValue newPlcValue(Object value) {
             throw new RuntimeException("Data Type " + value.getClass().getSimpleName() + "Is not supported");

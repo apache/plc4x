@@ -19,12 +19,16 @@
 package org.apache.plc4x.java.s7.readwrite.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.s7.readwrite.AlarmType;
 import org.apache.plc4x.java.s7.readwrite.EventType;
 import org.apache.plc4x.java.s7.readwrite.types.S7SubscriptionFieldType;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,13 +47,15 @@ public class S7SubscriptionField implements PlcField {
     private static final Pattern EVENT_ALARM_QUERY_PATTERN =
         Pattern.compile("(^QUERY:)((ALARM_S)|(ALARM_8))");
 
+    private final String address;
     private final S7SubscriptionFieldType fieldType;
     private final EventType eventtype;
     private final S7Field s7field;
     private final ArrayList<Integer> ackAlarms;
     private final AlarmType alarmQueryType;
 
-    public S7SubscriptionField(S7SubscriptionFieldType fieldType, EventType eventtype) {
+    public S7SubscriptionField(String address, S7SubscriptionFieldType fieldType, EventType eventtype) {
+        this.address = address;
         this.fieldType = fieldType;
         this.eventtype = eventtype;
         this.s7field = null;
@@ -57,7 +63,8 @@ public class S7SubscriptionField implements PlcField {
         this.alarmQueryType = null;
     }
 
-    public S7SubscriptionField(S7SubscriptionFieldType fieldType, ArrayList<Integer> ackAlarms) {
+    public S7SubscriptionField(String address, S7SubscriptionFieldType fieldType, ArrayList<Integer> ackAlarms) {
+        this.address = address;
         this.fieldType = fieldType;
         this.eventtype = null;
         this.s7field = null;
@@ -65,7 +72,8 @@ public class S7SubscriptionField implements PlcField {
         this.alarmQueryType = null;
     }
 
-    public S7SubscriptionField(S7SubscriptionFieldType fieldType, AlarmType alarmQueryType) {
+    public S7SubscriptionField(String address, S7SubscriptionFieldType fieldType, AlarmType alarmQueryType) {
+        this.address = address;
         this.fieldType = fieldType;
         this.eventtype = null;
         this.s7field = null;
@@ -73,12 +81,28 @@ public class S7SubscriptionField implements PlcField {
         this.alarmQueryType = alarmQueryType;
     }
 
-    public S7SubscriptionField(S7SubscriptionFieldType fieldType, S7Field s7field) {
+    public S7SubscriptionField(String address, S7SubscriptionFieldType fieldType, S7Field s7field) {
+        this.address = address;
         this.fieldType = fieldType;
         this.eventtype = null;
         this.s7field = s7field;
         this.ackAlarms = null;
         this.alarmQueryType = null;
+    }
+
+    @Override
+    public String getAddressString() {
+        return address;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.RAW_BYTE_ARRAY;
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        return Collections.emptyList();
     }
 
     public S7SubscriptionFieldType getFieldType() {
@@ -112,7 +136,7 @@ public class S7SubscriptionField implements PlcField {
         {
             Matcher matcher = EVENT_SUBSCRIPTION_TYPE_PATTERN.matcher(fieldString);
             if (matcher.matches()) {
-                return new S7SubscriptionField(S7SubscriptionFieldType.EVENT_SUBSCRIPTION,
+                return new S7SubscriptionField(fieldString, S7SubscriptionFieldType.EVENT_SUBSCRIPTION,
                     EventType.valueOf(fieldString));
             }
         }
@@ -128,7 +152,7 @@ public class S7SubscriptionField implements PlcField {
                     EventId = EventId.replaceAll("16#", "");
                     arrEventId.add(Integer.parseInt(EventId, 16));
                 }
-                return new S7SubscriptionField(S7SubscriptionFieldType.ALARM_ACK, arrEventId);
+                return new S7SubscriptionField(fieldString, S7SubscriptionFieldType.ALARM_ACK, arrEventId);
             }
         }
 
@@ -136,7 +160,7 @@ public class S7SubscriptionField implements PlcField {
             //TODO: Support for ALARM_8            
             Matcher matcher = EVENT_ALARM_QUERY_PATTERN.matcher(fieldString);
             if (matcher.matches()) {
-                return new S7SubscriptionField(S7SubscriptionFieldType.ALARM_QUERY, AlarmType.ALARM_S);
+                return new S7SubscriptionField(fieldString, S7SubscriptionFieldType.ALARM_QUERY, AlarmType.ALARM_S);
             }
         }
 
@@ -149,7 +173,7 @@ public class S7SubscriptionField implements PlcField {
                     default:
 
                 }
-                return new S7SubscriptionField(S7SubscriptionFieldType.CYCLIC_SUBSCRIPTION,
+                return new S7SubscriptionField(fieldString, S7SubscriptionFieldType.CYCLIC_SUBSCRIPTION,
                     s7field);
             }
         }

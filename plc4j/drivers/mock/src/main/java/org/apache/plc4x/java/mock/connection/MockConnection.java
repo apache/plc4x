@@ -27,11 +27,10 @@ import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.mock.field.MockField;
 import org.apache.plc4x.java.mock.field.MockFieldHandler;
-import org.apache.plc4x.java.mock.field.MockValueHandler;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,7 +112,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
 
     @Override
     public PlcBrowseRequest.Builder browseRequestBuilder() {
-        return new DefaultPlcBrowseRequest.Builder(this);
+        return new DefaultPlcBrowseRequest.Builder(this, new MockFieldHandler());
     }
 
     @Override
@@ -121,7 +120,16 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
         return CompletableFuture.supplyAsync(() -> {
             Validate.notNull(device, "No device is set in the mock connection!");
             LOGGER.debug("Sending browse request to MockDevice");
-            return new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, Collections.emptyList());
+            return new DefaultPlcBrowseResponse(browseRequest, Collections.emptyMap(), Collections.emptyMap());
+        });
+    }
+
+    @Override
+    public CompletableFuture<PlcBrowseResponse> browseWithInterceptor(PlcBrowseRequest browseRequest, PlcBrowseRequestInterceptor interceptor) {
+        return CompletableFuture.supplyAsync(() -> {
+            Validate.notNull(device, "No device is set in the mock connection!");
+            LOGGER.debug("Sending browse request to MockDevice");
+            return new DefaultPlcBrowseResponse(browseRequest, Collections.emptyMap(), Collections.emptyMap());
         });
     }
 
@@ -138,10 +146,10 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
             Map<String, ResponseItem<PlcValue>> response = readRequest.getFieldNames().stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
-                        name -> device.read(((MockField) readRequest.getField(name)).getAddress())
+                        name -> device.read(readRequest.getField(name).getAddressString())
                     )
                 );
-            return new DefaultPlcReadResponse((DefaultPlcReadRequest) readRequest, response);
+            return new DefaultPlcReadResponse(readRequest, response);
         });
     }
 
@@ -153,8 +161,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
             Map<String, PlcResponseCode> response = writeRequest.getFieldNames().stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
-                        name -> device.write(((MockField) writeRequest.getField(name)).getAddress(),
-                            ((MockField) writeRequest.getField(name)).getPlcValue())
+                        name -> device.write(writeRequest.getField(name).getAddressString(), writeRequest.getPlcValue(name))
                     )
                 );
             return new DefaultPlcWriteResponse((DefaultPlcWriteRequest) writeRequest, response);
@@ -169,7 +176,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
             Map<String, ResponseItem<PlcSubscriptionHandle>> response = subscriptionRequest.getFieldNames().stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
-                        name -> device.subscribe(((MockField) subscriptionRequest.getField(name)).getAddress())
+                        name -> device.subscribe(subscriptionRequest.getField(name).getAddressString())
                     )
                 );
             return new DefaultPlcSubscriptionResponse(subscriptionRequest, response);
@@ -198,7 +205,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
 
     @Override
     public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(this, new MockFieldHandler(), new MockValueHandler());
+        return new DefaultPlcWriteRequest.Builder(this, new MockFieldHandler(), new PlcValueHandler());
     }
 
     @Override

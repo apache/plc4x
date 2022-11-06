@@ -71,7 +71,7 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcReq
 
                 requests.put(transactionId, msg);
 
-                switch (((Df1Field) field).getAddress_type()) {
+                switch (((Df1Field) field).getAddressType()) {
                     case OFFSET:
                         out.add(new DF1UnprotectedReadRequest((short) 0x00, (short)transactionId, address, size));
                         break;

@@ -21,10 +21,11 @@ package model
 
 import (
 	"context"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/pkg/errors"
-	"time"
 )
 
 type SubscriptionType uint8
@@ -53,10 +54,9 @@ type DefaultPlcSubscriptionRequestBuilder struct {
 	subscriber             spi.PlcSubscriber
 	fieldHandler           spi.PlcFieldHandler
 	valueHandler           spi.PlcValueHandler
-	queries                map[string]string
-	queryNames             []string
-	fields                 map[string]model.PlcField
 	fieldNames             []string
+	fieldQueries           map[string]string
+	fields                 map[string]model.PlcField
 	types                  map[string]SubscriptionType
 	intervals              map[string]time.Duration
 	preRegisteredConsumers map[string][]model.PlcSubscriptionEventConsumer `ignore:"true"`
@@ -67,18 +67,18 @@ func NewDefaultPlcSubscriptionRequestBuilder(fieldHandler spi.PlcFieldHandler, v
 		subscriber:             subscriber,
 		fieldHandler:           fieldHandler,
 		valueHandler:           valueHandler,
-		queries:                map[string]string{},
-		fields:                 map[string]model.PlcField{},
 		fieldNames:             make([]string, 0),
+		fieldQueries:           map[string]string{},
+		fields:                 map[string]model.PlcField{},
 		types:                  map[string]SubscriptionType{},
 		intervals:              map[string]time.Duration{},
 		preRegisteredConsumers: make(map[string][]model.PlcSubscriptionEventConsumer),
 	}
 }
 
-func (d *DefaultPlcSubscriptionRequestBuilder) AddCyclicQuery(name string, query string, interval time.Duration) model.PlcSubscriptionRequestBuilder {
-	d.queryNames = append(d.queryNames, name)
-	d.queries[name] = query
+func (d *DefaultPlcSubscriptionRequestBuilder) AddCyclicFieldQuery(name string, query string, interval time.Duration) model.PlcSubscriptionRequestBuilder {
+	d.fieldNames = append(d.fieldNames, name)
+	d.fieldQueries[name] = query
 	d.types[name] = SubscriptionCyclic
 	d.intervals[name] = interval
 	return d
@@ -92,9 +92,9 @@ func (d *DefaultPlcSubscriptionRequestBuilder) AddCyclicField(name string, field
 	return d
 }
 
-func (d *DefaultPlcSubscriptionRequestBuilder) AddChangeOfStateQuery(name string, query string) model.PlcSubscriptionRequestBuilder {
-	d.queryNames = append(d.queryNames, name)
-	d.queries[name] = query
+func (d *DefaultPlcSubscriptionRequestBuilder) AddChangeOfStateFieldQuery(name string, query string) model.PlcSubscriptionRequestBuilder {
+	d.fieldNames = append(d.fieldNames, name)
+	d.fieldQueries[name] = query
 	d.types[name] = SubscriptionChangeOfState
 	return d
 }
@@ -106,9 +106,9 @@ func (d *DefaultPlcSubscriptionRequestBuilder) AddChangeOfStateField(name string
 	return d
 }
 
-func (d *DefaultPlcSubscriptionRequestBuilder) AddEventQuery(name string, query string) model.PlcSubscriptionRequestBuilder {
-	d.queryNames = append(d.queryNames, name)
-	d.queries[name] = query
+func (d *DefaultPlcSubscriptionRequestBuilder) AddEventFieldQuery(name string, query string) model.PlcSubscriptionRequestBuilder {
+	d.fieldNames = append(d.fieldNames, name)
+	d.fieldQueries[name] = query
 	d.types[name] = SubscriptionEvent
 	return d
 }
@@ -129,21 +129,21 @@ func (d *DefaultPlcSubscriptionRequestBuilder) AddPreRegisteredConsumer(name str
 }
 
 func (d *DefaultPlcSubscriptionRequestBuilder) Build() (model.PlcSubscriptionRequest, error) {
-	for _, name := range d.queryNames {
-		query := d.queries[name]
-		field, err := d.fieldHandler.ParseQuery(query)
-		if err != nil {
-			return nil, errors.Wrapf(err, "Error parsing query: %s", query)
+	for _, name := range d.fieldNames {
+		if fieldQuery, ok := d.fieldQueries[name]; ok {
+			field, err := d.fieldHandler.ParseField(fieldQuery)
+			if err != nil {
+				return nil, errors.Wrapf(err, "Error parsing field query: %s", fieldQuery)
+			}
+			d.fields[name] = field
 		}
-		d.fieldNames = append(d.fieldNames, name)
-		d.fields[name] = field
 	}
 	return NewDefaultPlcSubscriptionRequest(d.fields, d.fieldNames, d.types, d.intervals, d.subscriber, d.preRegisteredConsumers), nil
 }
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionRequest
 type DefaultPlcSubscriptionRequest struct {
-	DefaultRequest
+	DefaultPlcFieldRequest
 	types                  map[string]SubscriptionType
 	intervals              map[string]time.Duration
 	subscriber             spi.PlcSubscriber
@@ -151,7 +151,7 @@ type DefaultPlcSubscriptionRequest struct {
 }
 
 func NewDefaultPlcSubscriptionRequest(fields map[string]model.PlcField, fieldNames []string, types map[string]SubscriptionType, intervals map[string]time.Duration, subscriber spi.PlcSubscriber, preRegisteredConsumers map[string][]model.PlcSubscriptionEventConsumer) model.PlcSubscriptionRequest {
-	return &DefaultPlcSubscriptionRequest{NewDefaultRequest(fields, fieldNames), types, intervals, subscriber, preRegisteredConsumers}
+	return &DefaultPlcSubscriptionRequest{NewDefaultPlcFieldRequest(fields, fieldNames), types, intervals, subscriber, preRegisteredConsumers}
 }
 
 func (d *DefaultPlcSubscriptionRequest) Execute() <-chan model.PlcSubscriptionRequestResult {

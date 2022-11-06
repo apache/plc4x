@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.can.generic.field;
 
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,10 +27,10 @@ class GenericCANFieldHandlerTest {
 
     @Test
     void checkFieldSyntax() {
-        GenericCANField field = new GenericCANFieldHandler().createField("200:BYTE[8]");
+        GenericCANField field = new GenericCANFieldHandler().parseField("200:BYTE[8]");
 
         assertEquals(200, field.getNodeId());
-        assertEquals("BYTE", field.getPlcDataType());
+        assertEquals(PlcValueType.BYTE, field.getPlcValueType());
         assertEquals(8, field.getArraySize());
     }
 

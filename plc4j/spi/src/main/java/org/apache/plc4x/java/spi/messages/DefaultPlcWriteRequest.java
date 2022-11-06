@@ -27,7 +27,6 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
@@ -200,7 +199,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
             fields.forEach((name, fieldValues) -> {
                 // Compile the query string.
                 String fieldQuery = fieldValues.getLeft();
-                PlcField field = fieldHandler.createField(fieldQuery);
+                PlcField field = fieldHandler.parseField(fieldQuery);
                 Object[] value = fieldValues.getRight();
                 PlcValue plcValue = valueHandler.newPlcValue(field, value);
                 parsedFields.put(name, new FieldValueItem(field, plcValue));

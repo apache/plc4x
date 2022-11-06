@@ -21,12 +21,15 @@ package org.apache.plc4x.java.opcua.field;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaIdentifierType;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaDataType;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -97,8 +100,22 @@ public class OpcuaField implements PlcSubscriptionField {
     }
 
     @Override
-    public String getPlcDataType() {
-        return dataType.name();
+    public String getAddressString() {
+        String address = String.format("ns=%d;%s=%s", namespace, identifierType.getValue(), identifier);
+        if (dataType != null) {
+            address += ";" + dataType.name();
+        }
+        return address;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.valueOf(dataType.name());
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        return PlcSubscriptionField.super.getArrayInfo();
     }
 
     @Override

@@ -20,8 +20,11 @@ package org.apache.plc4x.java.abeth.field;
 
 import org.apache.plc4x.java.abeth.types.FileType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcValueType;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,8 +69,26 @@ public class AbEthField implements PlcField {
     }
 
     @Override
-    public String getPlcDataType() {
-        return fileType.toString();
+    public String getAddressString() {
+        String address = String.format("N%d:%d", fileNumber, elementNumber);
+        if(bitNumber != 0) {
+            address += "/" + bitNumber;
+        }
+        address += ":" + fileType.name();
+        if(byteSize != 1) {
+            address += "[" + byteSize + "]";
+        }
+        return address;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return fileType.getPlcValueType();
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        return PlcField.super.getArrayInfo();
     }
 
     public short getElementNumber() {

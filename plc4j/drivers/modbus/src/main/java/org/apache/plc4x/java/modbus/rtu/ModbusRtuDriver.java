@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.modbus.rtu;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.modbus.base.field.ModbusField;
 import org.apache.plc4x.java.modbus.base.field.ModbusFieldHandler;
 import org.apache.plc4x.java.modbus.readwrite.DriverType;
@@ -32,7 +31,7 @@ import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.util.function.ToIntFunction;
 
@@ -97,8 +96,8 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
     }
 
     @Override
-    protected PlcValueHandler getValueHandler() {
-        return new IEC61131ValueHandler();
+    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
+        return new PlcValueHandler();
     }
 
     @Override

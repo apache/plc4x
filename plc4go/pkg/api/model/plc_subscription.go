@@ -21,8 +21,9 @@ package model
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
 type PlcSubscriptionEvent interface {
@@ -45,11 +46,11 @@ type PlcSubscriptionEvent interface {
 type PlcSubscriptionEventConsumer func(event PlcSubscriptionEvent)
 
 type PlcSubscriptionRequestBuilder interface {
-	AddCyclicQuery(name string, query string, interval time.Duration) PlcSubscriptionRequestBuilder
+	AddCyclicFieldQuery(name string, query string, interval time.Duration) PlcSubscriptionRequestBuilder
 	AddCyclicField(name string, field PlcField, interval time.Duration) PlcSubscriptionRequestBuilder
-	AddChangeOfStateQuery(name string, query string) PlcSubscriptionRequestBuilder
+	AddChangeOfStateFieldQuery(name string, query string) PlcSubscriptionRequestBuilder
 	AddChangeOfStateField(name string, field PlcField) PlcSubscriptionRequestBuilder
-	AddEventQuery(name string, query string) PlcSubscriptionRequestBuilder
+	AddEventFieldQuery(name string, query string) PlcSubscriptionRequestBuilder
 	AddEventField(name string, field PlcField) PlcSubscriptionRequestBuilder
 	AddPreRegisteredConsumer(name string, consumer PlcSubscriptionEventConsumer) PlcSubscriptionRequestBuilder
 	Build() (PlcSubscriptionRequest, error)

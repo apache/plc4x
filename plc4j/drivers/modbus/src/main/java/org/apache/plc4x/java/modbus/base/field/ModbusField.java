@@ -20,13 +20,18 @@ package org.apache.plc4x.java.modbus.base.field;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.modbus.readwrite.*;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -96,8 +101,16 @@ public abstract class ModbusField implements PlcField, Serializable {
     }
 
     @Override
-    public String getPlcDataType() {
-        return dataType.name();
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.valueOf(dataType.name());
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        if(quantity != 1) {
+            return Collections.singletonList(new DefaultArrayInfo(0, quantity));
+        }
+        return Collections.emptyList();
     }
 
     @Override
@@ -132,7 +145,7 @@ public abstract class ModbusField implements PlcField, Serializable {
 
         writeBuffer.writeUnsignedInt("address", 16, address);
         writeBuffer.writeUnsignedInt("numberOfElements", 16, getNumberOfElements());
-        String dataType = getPlcDataType();
+        String dataType = getDataType().name();
         writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);
 
         writeBuffer.popContext(getClass().getSimpleName());

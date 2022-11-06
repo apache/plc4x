@@ -18,14 +18,22 @@
  */
 package org.apache.plc4x.java.can.generic.field;
 
+import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
 import java.util.Optional;
 
 public class GenericCANFieldHandler implements PlcFieldHandler {
+
     @Override
-    public GenericCANField createField(String fieldQuery) {
+    public GenericCANField parseField(String fieldQuery) {
         Optional<GenericCANField> field = GenericCANField.matches(fieldQuery);
         return field.orElse(null);
     }
+
+    @Override
+    public PlcQuery parseQuery(String query) {
+        throw new UnsupportedOperationException("This driver doesn't support browsing");
+    }
+
 }

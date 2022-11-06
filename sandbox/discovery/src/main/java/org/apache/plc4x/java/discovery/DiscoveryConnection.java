@@ -145,7 +145,7 @@ public class DiscoveryConnection implements PlcConnection, PlcSubscriber, PlcBro
 
     @Override
     public PlcBrowseRequest.Builder browseRequestBuilder() {
-        return new DefaultPlcBrowseRequest.Builder(this);
+        return new DefaultPlcBrowseRequest.Builder(this, new DiscoveryFieldHandler());
     }
 
     @Override
@@ -173,6 +173,12 @@ public class DiscoveryConnection implements PlcConnection, PlcSubscriber, PlcBro
 
     @Override
     public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
+        // TODO: Implement ...
+        return null;
+    }
+
+    @Override
+    public CompletableFuture<PlcBrowseResponse> browseWithInterceptor(PlcBrowseRequest browseRequest, PlcBrowseRequestInterceptor interceptor) {
         // TODO: Implement ...
         return null;
     }

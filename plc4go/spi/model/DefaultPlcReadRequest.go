@@ -21,21 +21,21 @@ package model
 
 import (
 	"context"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
 	"github.com/pkg/errors"
-	"time"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadRequestBuilder
 type DefaultPlcReadRequestBuilder struct {
 	reader                 spi.PlcReader
 	fieldHandler           spi.PlcFieldHandler
-	queries                map[string]string
-	queryNames             []string
-	fields                 map[string]model.PlcField
 	fieldNames             []string
+	fieldQueries           map[string]string
+	fields                 map[string]model.PlcField
 	readRequestInterceptor interceptors.ReadRequestInterceptor
 }
 
@@ -47,48 +47,51 @@ func NewDefaultPlcReadRequestBuilderWithInterceptor(fieldHandler spi.PlcFieldHan
 	return &DefaultPlcReadRequestBuilder{
 		reader:                 reader,
 		fieldHandler:           fieldHandler,
-		queries:                map[string]string{},
-		queryNames:             make([]string, 0),
-		fields:                 map[string]model.PlcField{},
 		fieldNames:             make([]string, 0),
+		fieldQueries:           map[string]string{},
+		fields:                 map[string]model.PlcField{},
 		readRequestInterceptor: readRequestInterceptor,
 	}
 }
 
-func (m *DefaultPlcReadRequestBuilder) AddQuery(name string, query string) model.PlcReadRequestBuilder {
-	m.queryNames = append(m.queryNames, name)
-	m.queries[name] = query
-	return m
+func (d *DefaultPlcReadRequestBuilder) AddFieldQuery(name string, query string) model.PlcReadRequestBuilder {
+	d.fieldNames = append(d.fieldNames, name)
+	d.fieldQueries[name] = query
+	return d
 }
 
-func (m *DefaultPlcReadRequestBuilder) AddField(name string, field model.PlcField) model.PlcReadRequestBuilder {
-	m.fieldNames = append(m.fieldNames, name)
-	m.fields[name] = field
-	return m
+func (d *DefaultPlcReadRequestBuilder) AddField(name string, field model.PlcField) model.PlcReadRequestBuilder {
+	d.fieldNames = append(d.fieldNames, name)
+	d.fields[name] = field
+	return d
 }
 
-func (m *DefaultPlcReadRequestBuilder) Build() (model.PlcReadRequest, error) {
-	for _, name := range m.queryNames {
-		query := m.queries[name]
-		field, err := m.fieldHandler.ParseQuery(query)
-		if err != nil {
-			return nil, errors.Wrapf(err, "Error parsing query: %s", query)
+func (d *DefaultPlcReadRequestBuilder) Build() (model.PlcReadRequest, error) {
+	for _, name := range d.fieldNames {
+		if fieldQuery, ok := d.fieldQueries[name]; ok {
+			field, err := d.fieldHandler.ParseField(fieldQuery)
+			if err != nil {
+				return nil, errors.Wrapf(err, "Error parsing field query: %s", fieldQuery)
+			}
+			d.fields[name] = field
 		}
-		m.AddField(name, field)
 	}
-	return NewDefaultPlcReadRequest(m.fields, m.fieldNames, m.reader, m.readRequestInterceptor), nil
+	// Reset the queries
+	d.fieldQueries = map[string]string{}
+
+	return NewDefaultPlcReadRequest(d.fields, d.fieldNames, d.reader, d.readRequestInterceptor), nil
 }
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadRequest
 type DefaultPlcReadRequest struct {
-	DefaultRequest
+	DefaultPlcFieldRequest
 	reader                 spi.PlcReader
 	readRequestInterceptor interceptors.ReadRequestInterceptor
 }
 
 func NewDefaultPlcReadRequest(fields map[string]model.PlcField, fieldNames []string, reader spi.PlcReader, readRequestInterceptor interceptors.ReadRequestInterceptor) model.PlcReadRequest {
 	return &DefaultPlcReadRequest{
-		DefaultRequest:         NewDefaultRequest(fields, fieldNames),
+		DefaultPlcFieldRequest: NewDefaultPlcFieldRequest(fields, fieldNames),
 		reader:                 reader,
 		readRequestInterceptor: readRequestInterceptor,
 	}

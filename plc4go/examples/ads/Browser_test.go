@@ -31,7 +31,7 @@ func TestBrowserManual(t *testing.T) {
 	drivers.RegisterAdsDriver(driverManager)
 	connectionChan := driverManager.GetConnection("ads:tcp://192.168.23.20?sourceAmsNetId=192.168.23.200.1.1&sourceAmsPort=65534&targetAmsNetId=192.168.23.20.1.1&targetAmsPort=851")
 	connection := <-connectionChan
-	browseRequest, err := connection.GetConnection().BrowseRequestBuilder().AddQuery("all", "*").Build()
+	browseRequest, err := connection.GetConnection().BrowseRequestBuilder().AddQuery("all", "MAIN.rivianTest01.RotationalPosition").Build()
 	if err != nil {
 		panic(err)
 	}

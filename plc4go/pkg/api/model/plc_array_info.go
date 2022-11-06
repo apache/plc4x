@@ -16,32 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.mock.field;
 
-import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
+package model
 
-public class MockValueHandler implements PlcValueHandler {
-
-    @Override
-    public PlcValue newPlcValue(Object value) {
-        return new MockPlcValue(value);
-    }
-
-    @Override
-    public PlcValue newPlcValue(Object[] values) {
-        return new MockPlcValue(values);
-    }
-
-    @Override
-    public PlcValue newPlcValue(PlcField field, Object value) {
-        return newPlcValue(value);
-    }
-
-    @Override
-    public PlcValue newPlcValue(PlcField field, Object[] values) {
-        return newPlcValue(values);
-    }
-
+type ArrayInfo interface {
+	GetSize() uint32
+	GetLowerBound() uint32
+	GetUpperBound() uint32
 }

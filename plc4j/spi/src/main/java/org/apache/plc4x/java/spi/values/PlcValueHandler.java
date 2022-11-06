@@ -22,7 +22,6 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 
 import java.math.BigInteger;
 import java.time.Duration;
@@ -31,8 +30,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-public class IEC61131ValueHandler implements PlcValueHandler {
-
+public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValueHandler {
 
     public PlcValue newPlcValue(Object value) {
         return of(new Object[]{value});
@@ -122,12 +120,13 @@ public class IEC61131ValueHandler implements PlcValueHandler {
     public static PlcValue of(PlcField field, Object[] values) {
         if (values.length == 1) {
             Object value = values[0];
-            switch (field.getPlcDataType().toUpperCase()) {
-                case "BOOL":
-                case "BIT":
+            if(field.getPlcValueType() == null) {
+                return new PlcNull();
+            }
+            switch (field.getPlcValueType()) {
+                case BOOL:
                     return PlcBOOL.of(value);
-                case "BYTE":
-                case "BITARR8":
+                case BYTE:
                     if(value instanceof Short) {
                         return new PlcBYTE((short) value);
                     } else if(value instanceof Integer) {
@@ -138,21 +137,15 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                         return new PlcBYTE(((BigInteger) value).shortValue());
                     }
                     throw new PlcRuntimeException("BYTE requires short");
-                case "SINT":
-                case "INT8":
+                case SINT:
                     return PlcSINT.of(value);
-                case "USINT":
-                case "UINT8":
-                case "BIT8":
+                case USINT:
                     return PlcUSINT.of(value);
-                case "INT":
-                case "INT16":
+                case INT:
                     return PlcINT.of(value);
-                case "UINT":
-                case "UINT16":
+                case UINT:
                     return PlcUINT.of(value);
-                case "WORD":
-                case "BITARR16":
+                case WORD:
                     if(value instanceof Short) {
                         return new PlcWORD((int) value);
                     } else if(value instanceof Integer) {
@@ -163,14 +156,11 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                         return new PlcWORD(((BigInteger) value).intValue());
                     }
                     throw new PlcRuntimeException("WORD requires int");
-                case "DINT":
-                case "INT32":
+                case DINT:
                     return PlcDINT.of(value);
-                case "UDINT":
-                case "UINT32":
+                case UDINT:
                     return PlcUDINT.of(value);
-                case "DWORD":
-                case "BITARR32":
+                case DWORD:
                     if(value instanceof Short) {
                         return new PlcDWORD((long) value);
                     } else if(value instanceof Integer) {
@@ -181,14 +171,11 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                         return new PlcDWORD(((BigInteger) value).longValue());
                     }
                     throw new PlcRuntimeException("DWORD requires long");
-                case "LINT":
-                case "INT64":
+                case LINT:
                     return PlcLINT.of(value);
-                case "ULINT":
-                case "UINT64":
+                case ULINT:
                     return PlcULINT.of(value);
-                case "LWORD":
-                case "BITARR64":
+                case LWORD:
                     if(value instanceof Short) {
                         return new PlcLWORD(BigInteger.valueOf((long) value));
                     } else if(value instanceof Integer) {
@@ -199,28 +186,25 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                         return new PlcLWORD((BigInteger) value);
                     }
                     throw new PlcRuntimeException("LWORD requires BigInteger");
-                case "REAL":
-                case "FLOAT":
+                case REAL:
                     return PlcREAL.of(value);
-                case "LREAL":
-                case "DOUBLE":
+                case LREAL:
                     return PlcLREAL.of(value);
-                case "CHAR":
+                case CHAR:
                     return PlcCHAR.of(value);
-                case "WCHAR":
+                case WCHAR:
                     return PlcWCHAR.of(value);
-                case "STRING":
+                case STRING:
                     return PlcSTRING.of(value);
-                case "WSTRING":
-                case "STRING16":
+                case WSTRING:
                     return PlcWSTRING.of(value);
-                case "TIME":
+                case TIME:
                     return PlcTIME.of(value);
-                case "DATE":
+                case DATE:
                     return PlcDATE.of(value);
-                case "TIME_OF_DAY":
+                case TIME_OF_DAY:
                     return PlcTIME_OF_DAY.of(value);
-                case "DATE_AND_TIME":
+                case DATE_AND_TIME:
                     return PlcDATE_AND_TIME.of(value);
                 default:
                     return customDataType(new Object[]{value});

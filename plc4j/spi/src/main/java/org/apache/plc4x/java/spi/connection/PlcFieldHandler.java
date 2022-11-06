@@ -19,12 +19,15 @@
 package org.apache.plc4x.java.spi.connection;
 
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcQuery;
 
 /**
- * Field Handler which handles the parsing of string to {@link PlcField} and the encoding of retrieved plc values.
+ * Field Handler which handles the parsing of string to {@link PlcField} or {@link PlcQuery}.
  */
 public interface PlcFieldHandler {
 
-    PlcField createField(String fieldQuery);
+    PlcField parseField(String fieldQuery);
+
+    PlcQuery parseQuery(String query);
 
 }

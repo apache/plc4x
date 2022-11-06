@@ -31,12 +31,12 @@ public class SimulatedFieldTest {
 
     @Test
     public void constructor() {
-        assertThat(SimulatedField.matches("RANDOM/test:Integer[2]"), equalTo(true));
-        SimulatedField field = SimulatedField.of("RANDOM/test:Integer[2]");
+        assertThat(SimulatedField.matches("RANDOM/test:DINT[2]"), equalTo(true));
+        SimulatedField field = SimulatedField.of("RANDOM/test:DINT[2]");
         assertThat(field.getType(), equalTo(SimulatedFieldType.RANDOM));
         assertThat(field.getName(), equalTo("test"));
-        assertThat(field.getPlcDataType(), equalTo("DINT"));
-        assertThat(field.getNumberOfElements(), equalTo(2));
+        assertThat(field.getPlcValueType().name(), equalTo("DINT"));
+        assertThat(field.getArrayInfo().get(0).GetSize(), equalTo(2));
         assertThat(field.toString(),
             equalTo("TestField{type=RANDOM, name='test', dataType='DINT', numElements=2}"));
     }

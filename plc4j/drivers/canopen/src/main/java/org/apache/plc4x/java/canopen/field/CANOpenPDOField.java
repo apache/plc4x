@@ -19,13 +19,16 @@
 package org.apache.plc4x.java.canopen.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenDataType;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenService;
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,6 +46,23 @@ public class CANOpenPDOField extends CANOpenField implements CANOpenSubscription
 
     public CANOpenDataType getCanOpenDataType() {
         return canOpenDataType;
+    }
+
+    @Override
+    public String getAddressString() {
+        // Number of Elements not implemented.
+        return service.name() + ":" + canOpenDataType.name();
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.valueOf(canOpenDataType.getPlcValueName());
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        // Number of elements not implemented.
+        return Collections.emptyList();
     }
 
     public static boolean matches(String addressString) {

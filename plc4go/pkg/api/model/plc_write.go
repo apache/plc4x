@@ -21,11 +21,12 @@ package model
 
 import (
 	"context"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
 type PlcWriteRequestBuilder interface {
-	AddQuery(name string, query string, value interface{}) PlcWriteRequestBuilder
+	AddFieldQuery(name string, fieldQuery string, value interface{}) PlcWriteRequestBuilder
 	AddField(name string, field PlcField, value interface{}) PlcWriteRequestBuilder
 	Build() (PlcWriteRequest, error)
 }
@@ -40,6 +41,7 @@ type PlcWriteRequest interface {
 	PlcRequest
 	Execute() <-chan PlcWriteRequestResult
 	ExecuteWithContext(ctx context.Context) <-chan PlcWriteRequestResult
+
 	GetFieldNames() []string
 	GetField(name string) PlcField
 	GetValue(name string) values.PlcValue

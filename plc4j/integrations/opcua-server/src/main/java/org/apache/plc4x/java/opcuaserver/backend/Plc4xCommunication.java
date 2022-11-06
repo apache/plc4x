@@ -21,6 +21,7 @@ package org.apache.plc4x.java.opcuaserver.backend;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.eclipse.milo.opcua.sdk.server.AbstractLifecycle;
 import org.eclipse.milo.opcua.sdk.server.api.DataItem;
 import org.eclipse.milo.opcua.sdk.server.nodes.filters.AttributeFilterContext;
@@ -106,62 +107,38 @@ public class Plc4xCommunication extends AbstractLifecycle {
         monitoredList.remove(item.getReadValueId().getNodeId());
     }
 
-    public static NodeId getNodeId(String plcValue) {
-        switch (plcValue) {
-            case "BOOL":
-            case "BIT":
+    public static NodeId getNodeId(PlcValueType plcValueType) {
+        switch (plcValueType) {
+            case BOOL:
                 return Identifiers.Boolean;
-            case "BYTE":
-            case "BITARR8":
+            case BYTE:
+            case USINT:
                 return Identifiers.Byte;
-            case "SINT":
-            case "INT8":
+            case SINT:
                 return Identifiers.SByte;
-            case "USINT":
-            case "UINT8":
-            case "BIT8":
-                return Identifiers.Byte;
-            case "INT":
-            case "INT16":
+            case INT:
                 return Identifiers.Int16;
-            case "UINT":
-            case "UINT16":
+            case WORD:
+            case UINT:
                 return Identifiers.UInt16;
-            case "WORD":
-            case "BITARR16":
-                return Identifiers.UInt16;
-            case "DINT":
-            case "INT32":
+            case DINT:
                 return Identifiers.Int32;
-            case "UDINT":
-            case "UINT32":
+            case DWORD:
+            case UDINT:
                 return Identifiers.UInt32;
-            case "DWORD":
-            case "BITARR32":
-                return Identifiers.UInt32;
-            case "LINT":
-            case "INT64":
+            case LINT:
                 return Identifiers.Int64;
-            case "ULINT":
-            case "UINT64":
+            case ULINT:
+            case LWORD:
                 return Identifiers.UInt64;
-            case "LWORD":
-            case "BITARR64":
-                return Identifiers.UInt64;
-            case "REAL":
-            case "FLOAT":
+            case REAL:
                 return Identifiers.Float;
-            case "LREAL":
-            case "DOUBLE":
+            case LREAL:
                 return Identifiers.Double;
-            case "CHAR":
-                return Identifiers.String;
-            case "WCHAR":
-                return Identifiers.String;
-            case "STRING":
-                return Identifiers.String;
-            case "WSTRING":
-            case "STRING16":
+            case CHAR:
+            case WCHAR:
+            case STRING:
+            case WSTRING:
                 return Identifiers.String;
             default:
                 return Identifiers.BaseDataType;

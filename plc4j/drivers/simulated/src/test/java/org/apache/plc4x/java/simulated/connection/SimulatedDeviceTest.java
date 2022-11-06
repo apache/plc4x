@@ -32,7 +32,7 @@ public class SimulatedDeviceTest {
     @Test
     public void random() {
         SimulatedDevice device = new SimulatedDevice("foobar");
-        SimulatedField field = SimulatedField.of("RANDOM/foo:Integer");
+        SimulatedField field = SimulatedField.of("RANDOM/foo:DINT");
 
         Optional<PlcValue> value = device.get(field);
 
@@ -42,7 +42,7 @@ public class SimulatedDeviceTest {
     @Test
     public void read() {
         SimulatedDevice device = new SimulatedDevice("foobar");
-        SimulatedField field = SimulatedField.of("STATE/bar:Integer");
+        SimulatedField field = SimulatedField.of("STATE/bar:DINT");
 
         Optional<PlcValue> value = device.get(field);
         assertFalse(value.isPresent());

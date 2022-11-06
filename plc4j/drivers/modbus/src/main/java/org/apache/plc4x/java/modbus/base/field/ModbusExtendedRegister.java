@@ -36,6 +36,18 @@ public class ModbusExtendedRegister extends ModbusField {
         super(address, quantity, dataType);
     }
 
+    @Override
+    public String getAddressString() {
+        String address = "6x" + getAddress();
+        if(getDataType() != null) {
+            address += ":" + getDataType().name();
+        }
+        if(getArrayInfo().size() > 0) {
+            address += "[" + getArrayInfo().get(0).GetUpperBound() + "]";
+        }
+        return address;
+    }
+
     public static boolean matches(String addressString) {
         return ADDRESS_PATTERN.matcher(addressString).matches() ||
             ADDRESS_SHORTER_PATTERN.matcher(addressString).matches() ||

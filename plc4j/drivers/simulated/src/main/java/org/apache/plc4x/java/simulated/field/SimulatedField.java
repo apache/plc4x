@@ -20,10 +20,15 @@ package org.apache.plc4x.java.simulated.field;
 
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.simulated.readwrite.SimulatedDataTypeSizes;
 import org.apache.plc4x.java.simulated.types.SimulatedFieldType;
+import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,10 +47,10 @@ public class SimulatedField implements PlcField {
 
     private final SimulatedFieldType type;
     private final String name;
-    private final SimulatedDataTypeSizes dataType;
+    private final PlcValueType dataType;
     private final int numElements;
 
-    private SimulatedField(SimulatedFieldType type, String name, SimulatedDataTypeSizes dataType, int numElements) {
+    private SimulatedField(SimulatedFieldType type, String name, PlcValueType dataType, int numElements) {
         this.type = type;
         this.name = name;
         this.dataType = dataType;
@@ -57,41 +62,19 @@ public class SimulatedField implements PlcField {
         if (matcher.matches()) {
             SimulatedFieldType type = SimulatedFieldType.valueOf(matcher.group("type"));
             String name = matcher.group("name");
-            String dataType;
-            switch (matcher.group("dataType").toUpperCase()) {
-                case "INTEGER":
-                    dataType = "DINT";
-                    break;
-                case "BYTE":
-                    dataType = "BYTE";
-                    break;
-                case "SHORT":
-                    dataType = "INT";
-                    break;
-                case "LONG":
-                    dataType = "LINT";
-                    break;
-                case "FLOAT":
-                    dataType = "REAL";
-                    break;
-                case "DOUBLE":
-                    dataType = "LREAL";
-                    break;
-                case "BOOLEAN":
-                    dataType = "BOOL";
-                    break;
-                default:
-                    dataType = matcher.group("dataType").toUpperCase();
-            }
-            if (!EnumUtils.isValidEnum(SimulatedDataTypeSizes.class, dataType)) {
-                throw new PlcInvalidFieldException("Invalid data type: " + dataType);
+
+            PlcValueType dataType;
+            try {
+                dataType = PlcValueType.valueOf(matcher.group("dataType").toUpperCase());
+            } catch (Exception e) {
+                throw new PlcInvalidFieldException("Invalid data type: " + matcher.group("dataType"));
             }
 
             int numElements = 1;
             if (matcher.group("numElements") != null) {
                 numElements = Integer.parseInt(matcher.group("numElements"));
             }
-            return new SimulatedField(type, name, SimulatedDataTypeSizes.valueOf(dataType), numElements);
+            return new SimulatedField(type, name, dataType, numElements);
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
     }
@@ -100,24 +83,27 @@ public class SimulatedField implements PlcField {
         return ADDRESS_PATTERN.matcher(fieldString).matches();
     }
 
+    @Override
+    public String getAddressString() {
+        return String.format("%s/%s:%s[%d]", type.name(), name, dataType.name(), numElements);
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return dataType;
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        return Collections.singletonList(new DefaultArrayInfo(0, numElements));
+    }
+
     public SimulatedFieldType getType() {
         return type;
     }
 
-    public String getPlcDataType() {
-        return dataType.name();
-    }
-
     public String getName() {
         return name;
-    }
-
-    public SimulatedDataTypeSizes getDataType() {
-        return dataType;
-    }
-
-    public int getNumberOfElements() {
-        return numElements;
     }
 
     @Override

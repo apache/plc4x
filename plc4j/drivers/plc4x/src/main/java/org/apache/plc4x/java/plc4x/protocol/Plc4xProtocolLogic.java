@@ -95,7 +95,7 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
             final org.apache.plc4x.java.plc4x.field.Plc4xField plc4xField =
                 (org.apache.plc4x.java.plc4x.field.Plc4xField) apiReadRequest.getField(fieldName);
             Plc4xFieldRequest plc4xFieldRequest = new Plc4xFieldRequest(
-                new Plc4xField(fieldName, plc4xField.getAddress() + ":" + plc4xField.getPlcDataType()));
+                new Plc4xField(fieldName, plc4xField.getAddressString() + ":" + plc4xField.getPlcValueType().name()));
             plc4xFields.add(plc4xFieldRequest);
         }
         final int requestId = txIdGenerator.getAndIncrement();
@@ -136,10 +136,10 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
         List<Plc4xFieldValueRequest> fields = new ArrayList<>(writeRequest.getNumberOfFields());
         for (String fieldName : writeRequest.getFieldNames()) {
             final org.apache.plc4x.java.plc4x.field.Plc4xField plc4xField = (org.apache.plc4x.java.plc4x.field.Plc4xField) writeRequest.getField(fieldName);
-            final Plc4xValueType plc4xValueType = plc4xField.getValueType();
+            final Plc4xValueType plc4xValueType = Plc4xValueType.valueOf(plc4xField.getPlcValueType().name());
             final PlcValue plcValue = writeRequest.getPlcValue(fieldName);
             Plc4xFieldValueRequest fieldRequest = new Plc4xFieldValueRequest(
-                new Plc4xField(fieldName, plc4xField.getAddress() + ":" + plc4xField.getPlcDataType()), plc4xValueType, plcValue);
+                new Plc4xField(fieldName, plc4xField.getAddressString() + ":" + plc4xField.getPlcValueType().name()), plc4xValueType, plcValue);
             fields.add(fieldRequest);
         }
         final int requestId = txIdGenerator.getAndIncrement();

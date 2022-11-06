@@ -19,9 +19,12 @@
 package org.apache.plc4x.java.knxnetip.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.knxnetip.ets.model.GroupAddress;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -85,9 +88,27 @@ public class KnxNetIpField implements PlcField {
         return subGroup;
     }
 
+
     @Override
-    public String getPlcDataType() {
-        return "";
+    public String getAddressString() {
+        String address = mainGroup;
+        if(middleGroup != null) {
+            address += "/" + middleGroup;
+        }
+        if(subGroup != null) {
+            address += "/" + subGroup;
+        }
+        return address;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.NULL;
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        return PlcField.super.getArrayInfo();
     }
 
     // As our fields can contain wildcards and complex matching logic,

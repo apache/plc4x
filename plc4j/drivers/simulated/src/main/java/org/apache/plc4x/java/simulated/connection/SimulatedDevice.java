@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.simulated.field.SimulatedField;
 import org.apache.plc4x.java.simulated.readwrite.DataItem;
+import org.apache.plc4x.java.simulated.readwrite.SimulatedDataTypeSizes;
 import org.apache.plc4x.java.spi.generation.*;
 
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
@@ -96,15 +97,15 @@ public class SimulatedDevice {
                 LOGGER.info("TEST PLC STDOUT [{}]: {}", field.getName(), value.toString());
                 return;
             case RANDOM:
-                switch (field.getPlcDataType()) {
-                    case "STRING":
-                    case "WSTRING":
+                switch (field.getPlcValueType()) {
+                    case STRING:
+                    case WSTRING:
                         break;
                     default:
                         try {
-                            final int lengthInBits = DataItem.getLengthInBits(value, field.getPlcDataType(), field.getNumberOfElements());
+                            final int lengthInBits = DataItem.getLengthInBits(value, field.getPlcValueType().name(), field.getArrayInfo().get(0).GetSize());
                             final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
-                            DataItem.staticSerialize(writeBuffer, value, field.getPlcDataType(), field.getNumberOfElements(), ByteOrder.BIG_ENDIAN);
+                            DataItem.staticSerialize(writeBuffer, value, field.getPlcValueType().name(), field.getArrayInfo().get(0).GetSize(), ByteOrder.BIG_ENDIAN);
                         } catch (SerializationException e) {
                             LOGGER.info("Write failed");
                         }
@@ -116,14 +117,15 @@ public class SimulatedDevice {
     }
 
     private PlcValue randomValue(SimulatedField field) {
-        short fieldDataTypeSize = field.getDataType().getDataTypeSize();
 
-        byte[] b = new byte[fieldDataTypeSize * field.getNumberOfElements()];
+        short fieldDataTypeSize = SimulatedDataTypeSizes.valueOf(field.getPlcValueType().name()).getDataTypeSize();
+
+        byte[] b = new byte[fieldDataTypeSize * field.getArrayInfo().get(0).GetSize()];
         random.nextBytes(b);
 
         ReadBuffer io = new ReadBufferByteBased(b);
         try {
-            return DataItem.staticParse(io, field.getPlcDataType(), field.getNumberOfElements());
+            return DataItem.staticParse(io, field.getPlcValueType().name(), field.getArrayInfo().get(0).GetSize());
         } catch (ParseException e) {
             return null;
         }

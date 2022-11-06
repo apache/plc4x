@@ -67,7 +67,7 @@ public interface PlcBrowseItem {
     /**
      * @return returns any children this item might have
      */
-    List<PlcBrowseItem> getChildren();
+    Map<String, PlcBrowseItem> getChildren();
 
     /**
      * @return returns a map of additional options the given protocol might provide.

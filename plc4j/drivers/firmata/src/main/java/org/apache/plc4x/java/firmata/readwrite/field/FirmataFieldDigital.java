@@ -19,9 +19,14 @@
 package org.apache.plc4x.java.firmata.readwrite.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.firmata.readwrite.PinMode;
+import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
 
 import java.util.BitSet;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,17 +48,34 @@ public class FirmataFieldDigital extends FirmataField {
         this.pinMode = pinMode;
     }
 
+    @Override
+    public String getAddressString() {
+        String address = "digital:" + getAddress();
+        if(getNumberOfElements() != 1) {
+            address += "[" + getNumberOfElements() + "]";
+        }
+        return address;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.BOOL;
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        if(getNumberOfElements() != 1) {
+            return Collections.singletonList(new DefaultArrayInfo(0, getNumberOfElements()));
+        }
+        return Collections.emptyList();
+    }
+
     public BitSet getBitSet() {
         return bitSet;
     }
 
     public PinMode getPinMode() {
         return pinMode;
-    }
-
-    @Override
-    public String getPlcDataType() {
-        return "BOOL";
     }
 
     public static FirmataFieldDigital of(String addressString) {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
@@ -36,19 +37,20 @@ type PlcBrowseRequest interface {
 	// ExecuteWithContext is the same as Execute but handles the Context if implemented for Driver
 	ExecuteWithContext(ctx context.Context) <-chan PlcBrowseRequestResult
 	// ExecuteWithInterceptor Will call the given callback for every found resource
-	ExecuteWithInterceptor(interceptor func(result PlcBrowseEvent) bool) <-chan PlcBrowseRequestResult
+	ExecuteWithInterceptor(interceptor func(result PlcBrowseItem) bool) <-chan PlcBrowseRequestResult
 	// ExecuteWithInterceptorWithContext Will call the given callback for every found resource
-	ExecuteWithInterceptorWithContext(ctx context.Context, interceptor func(result PlcBrowseEvent) bool) <-chan PlcBrowseRequestResult
-	GetFieldNames() []string
-	GetField(name string) PlcField
+	ExecuteWithInterceptorWithContext(ctx context.Context, interceptor func(result PlcBrowseItem) bool) <-chan PlcBrowseRequestResult
+
+	GetQueryNames() []string
+	GetQuery(queryName string) PlcQuery
 }
 
 type PlcBrowseResponse interface {
 	PlcResponse
 	GetRequest() PlcBrowseRequest
-	GetFieldNames() []string
+	GetQueryNames() []string
 	GetResponseCode(name string) PlcResponseCode
-	GetQueryResults(name string) []PlcBrowseFoundField
+	GetQueryResults(name string) []PlcBrowseItem
 }
 
 type PlcBrowseRequestResult interface {
@@ -60,17 +62,21 @@ type PlcBrowseRequestResult interface {
 type PlcBrowseEvent interface {
 	PlcMessage
 	GetRequest() PlcBrowseRequest
-	GetFieldName() string
-	GetResult() PlcBrowseFoundField
+	GetQueryName() string
+	GetResult() PlcBrowseItem
 	GetErr() error
 }
 
-type PlcBrowseFoundField interface {
+type PlcBrowseItem interface {
 	GetField() PlcField
+
+	GetAddress() string
 	GetName() string
+	GetPlcValueType() values.PlcValueType
+	GetArrayInfo() []ArrayInfo
 	IsReadable() bool
 	IsWritable() bool
 	IsSubscribable() bool
-	GetPossibleDataTypes() []string
-	GetAttributes() map[string]values.PlcValue
+	GetChildren() map[string]PlcBrowseItem
+	GetOptions() map[string]values.PlcValue
 }

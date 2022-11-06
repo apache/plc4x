@@ -19,12 +19,15 @@
 package org.apache.plc4x.java.canopen.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenService;
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,6 +46,21 @@ public class CANOpenHeartbeatField extends CANOpenField implements CANOpenSubscr
 
     public boolean isWildcard() {
         return getNodeId() == 0;
+    }
+
+    @Override
+    public String getAddressString() {
+        return "HEARTBEAT:" + getNodeId();
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.NULL;
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        return Collections.emptyList();
     }
 
     public static boolean matches(String addressString) {

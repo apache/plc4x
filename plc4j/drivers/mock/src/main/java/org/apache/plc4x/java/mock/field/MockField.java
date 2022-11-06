@@ -19,56 +19,62 @@
 package org.apache.plc4x.java.mock.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MockField implements PlcField {
 
     private final String address;
-    private MockPlcValue plcValue;
-    private MockType type;
-
+    private final PlcValueType type;
     private static final Pattern PATTERN =
-        Pattern.compile("%(?<name>[a-zA-Z_.0-9]+(?:\\[[0-9]*])?):?(?<type>[A-Z]*)");
+        Pattern.compile("%(?<address>[a-zA-Z_.0-9]+(?:\\[[0-9]*])?):?(?<type>[A-Z]*)");
 
     public static MockField of(String addressString) throws PlcInvalidFieldException {
         Matcher matcher = PATTERN.matcher(addressString);
         if (matcher.matches()) {
-            String addr = matcher.group("name");
-            MockType type = MockType.valueOf(matcher.group("type"));
-            return new MockField(addr, type);
+            String address = matcher.group("address");
+            PlcValueType type = PlcValueType.valueOf(matcher.group("type"));
+            return new MockField(address, type);
         }
         return null;
     }
 
     public MockField(String address) {
         this.address = address;
-        this.plcValue = null;
+        this.type = null;
     }
 
-    public MockField(String address, MockType type) {
+    public MockField(String address, PlcValueType type) {
         this.address = address;
         this.type = type;
     }
 
-    public MockField(String address, MockPlcValue plcValue) {
+    public MockField(String address, PlcValue plcValue) {
         this.address = address;
-        this.plcValue = plcValue;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public MockPlcValue getPlcValue() {
-        return plcValue;
+        this.type = plcValue.getPlcValueType();
     }
 
     @Override
-    public String getPlcDataType() {
-        return type.toString();
+    public String getAddressString() {
+        return address;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return type;
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        return Collections.emptyList();
     }
 
     @Override
@@ -87,18 +93,4 @@ public class MockField implements PlcField {
         return address.hashCode();
     }
 
-
-    @Override
-    public Class<?> getDefaultJavaType() {
-        switch (type) {
-            case BOOL:
-                return Boolean.class;
-            case INT:
-                return Integer.class;
-            case REAL:
-                return Double.class;
-            default:
-                return null;
-        }
-    }
 }

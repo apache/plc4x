@@ -31,10 +31,7 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.model.PlcSubscriptionField;
-import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.model.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -464,45 +461,71 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
     @Override
     public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
+        return browseWithInterceptor(browseRequest, item -> true);
+    }
+
+    public CompletableFuture<PlcBrowseResponse> browseWithInterceptor(PlcBrowseRequest browseRequest, PlcBrowseRequestInterceptor interceptor) {
         CompletableFuture<PlcBrowseResponse> future = new CompletableFuture<>();
-        List<PlcBrowseItem> values = new ArrayList<>(symbolTable.size());
-        for (AdsSymbolTableEntry symbol : symbolTable.values()) {
-            // Get the datatype of this entry.
-            AdsDataTypeTableEntry dataType = dataTypeTable.get(symbol.getDataTypeName());
-            if (dataType == null) {
-                System.out.printf("couldn't find datatype: %s%n", symbol.getDataTypeName());
-                continue;
-            }
-            String itemName = (symbol.getComment() == null || symbol.getComment().isEmpty()) ? symbol.getName() : symbol.getComment();
-            // Convert the plc value type from the ADS specific one to the PLC4X global one.
-            org.apache.plc4x.java.api.types.PlcValueType plc4xPlcValueType = org.apache.plc4x.java.api.types.PlcValueType.valueOf(getPlcValueTypeForAdsDataType(dataType).toString());
-
-            // If this type has children, add entries for its children.
-            List<PlcBrowseItem> children = getBrowseItems(symbol.getName(), symbol.getGroup(), symbol.getOffset(), !symbol.getFlagReadOnly(), dataType);
-
-            // Populate a map of protocol-dependent options.
-            Map<String, PlcValue> options = new HashMap<>();
-            options.put("comment", new PlcSTRING(symbol.getComment()));
-            options.put("group-id", new PlcUDINT(symbol.getGroup()));
-            options.put("offset", new PlcUDINT(symbol.getOffset()));
-            options.put("size-in-bytes", new PlcUDINT(symbol.getSize()));
-
-            if(plc4xPlcValueType == org.apache.plc4x.java.api.types.PlcValueType.List) {
-                List<PlcBrowseItemArrayInfo> arrayInfo = new ArrayList<>();
-                for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : dataType.getArrayInfo()) {
-                    arrayInfo.add(new DefaultBrowseItemArrayInfo(
-                        adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
+        Map<String, PlcResponseCode> responseCodes = new HashMap<>();
+        Map<String, List<PlcBrowseItem>> values = new HashMap<>();
+        for (String queryName : browseRequest.getQueryNames()) {
+            PlcQuery query = browseRequest.getQuery(queryName);
+            List<PlcBrowseItem> resultsForQuery = new ArrayList<>();
+            for (AdsSymbolTableEntry symbol : symbolTable.values()) {
+                // Get the datatype of this entry.
+                AdsDataTypeTableEntry dataType = dataTypeTable.get(symbol.getDataTypeName());
+                if (dataType == null) {
+                    System.out.printf("couldn't find datatype: %s%n", symbol.getDataTypeName());
+                    continue;
                 }
-                // Add the type itself.
-                values.add(new DefaultListPlcBrowseItem(symbol.getName(), itemName, plc4xPlcValueType, arrayInfo,
-                    true, !symbol.getFlagReadOnly(), true, children, options));
-            } else {
-                // Add the type itself.
-                values.add(new DefaultPlcBrowseItem(symbol.getName(), itemName, plc4xPlcValueType, true,
-                    !symbol.getFlagReadOnly(), true, children, options));
+                String itemName = (symbol.getComment() == null || symbol.getComment().isEmpty()) ? symbol.getName() : symbol.getComment();
+                // Convert the plc value type from the ADS specific one to the PLC4X global one.
+                org.apache.plc4x.java.api.types.PlcValueType plc4xPlcValueType = org.apache.plc4x.java.api.types.PlcValueType.valueOf(getPlcValueTypeForAdsDataType(dataType).toString());
+
+                // If this type has children, add entries for its children.
+                List<PlcBrowseItem> children = getBrowseItems(symbol.getName(), symbol.getGroup(), symbol.getOffset(), !symbol.getFlagReadOnly(), dataType);
+                Map<String, PlcBrowseItem> childMap = new HashMap<>();
+                for (PlcBrowseItem child : children) {
+                    childMap.put(child.getName(), child);
+                }
+
+                // Populate a map of protocol-dependent options.
+                Map<String, PlcValue> options = new HashMap<>();
+                options.put("comment", new PlcSTRING(symbol.getComment()));
+                options.put("group-id", new PlcUDINT(symbol.getGroup()));
+                options.put("offset", new PlcUDINT(symbol.getOffset()));
+                options.put("size-in-bytes", new PlcUDINT(symbol.getSize()));
+
+                if(plc4xPlcValueType == org.apache.plc4x.java.api.types.PlcValueType.List) {
+                    List<PlcBrowseItemArrayInfo> arrayInfo = new ArrayList<>();
+                    for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : dataType.getArrayInfo()) {
+                        arrayInfo.add(new DefaultBrowseItemArrayInfo(
+                            adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
+                    }
+                    DefaultListPlcBrowseItem item = new DefaultListPlcBrowseItem(symbol.getName(), itemName, plc4xPlcValueType, arrayInfo,
+                        true, !symbol.getFlagReadOnly(), true, childMap, options);
+
+                    // Check if this item should be added to the result
+                    if(interceptor.intercept(item)) {
+                        // Add the type itself.
+                        resultsForQuery.add(item);
+                    }
+                } else {
+                    DefaultPlcBrowseItem item = new DefaultPlcBrowseItem(symbol.getName(), itemName, plc4xPlcValueType, true,
+                        !symbol.getFlagReadOnly(), true, childMap, options);
+
+                    // Check if this item should be added to the result
+                    if(interceptor.intercept(item)) {
+                        // Add the type itself.
+                        resultsForQuery.add(item);
+                    }
+                }
             }
+            responseCodes.put(queryName, PlcResponseCode.OK);
+            values.put(queryName, resultsForQuery);
+            throw new RuntimeException("Gotta implement this ... Currently ignoring all queries.");
         }
-        DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, values);
+        DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, responseCodes, values);
         future.complete(response);
         return future;
     }
@@ -528,6 +551,10 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
             // Recursively add all children of the current datatype.
             List<PlcBrowseItem> children = getBrowseItems(itemAddress, baseGroupId, baseOffset + child.getOffset(), parentWritable, childDataType);
+            Map<String, PlcBrowseItem> childMap = new HashMap<>();
+            for (PlcBrowseItem ch : children) {
+                childMap.put(ch.getName(), ch);
+            }
 
             // Populate a map of protocol-dependent options.
             Map<String, PlcValue> options = new HashMap<>();
@@ -544,11 +571,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 }
                 // Add the type itself.
                 values.add(new DefaultListPlcBrowseItem(basePath + "." + child.getPropertyName(), itemName,
-                    plc4xPlcValueType, arrayInfo,true, parentWritable, true, children, options));
+                    plc4xPlcValueType, arrayInfo,true, parentWritable, true, childMap, options));
             } else {
                 // Add the type itself.
                 values.add(new DefaultPlcBrowseItem(basePath + "." + child.getPropertyName(), itemName,
-                    plc4xPlcValueType,true, parentWritable, true, children, options));
+                    plc4xPlcValueType,true, parentWritable, true, childMap, options));
             }
         }
         return values;
@@ -784,7 +811,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     }
                     return null;
                 }).toArray(PlcValue[]::new);
-                return new ResponseItem<>(PlcResponseCode.OK, IEC61131ValueHandler.of(resultItems));
+                return new ResponseItem<>(PlcResponseCode.OK, PlcValueHandler.of(resultItems));
             }
         } catch (Exception e) {
             LOGGER.warn(String.format("Error parsing field item of type: '%s'", field.getPlcDataType()), e);
@@ -1172,12 +1199,14 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .map(field -> {
                 AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(resolvedFields.get((AdsField) field.getPlcField()).getPlcDataType());
                 DirectAdsField directAdsField = getDirectAdsFieldForSymbolicName(field.getPlcField());
+                // TODO: We should implement multi-dimensional arrays here ...
+                int numberOfElements = (field.getArrayInfo().size() == 0) ? 1 : field.getArrayInfo().get(0).GetSize();
                 return new AmsTCPPacket(new AdsAddDeviceNotificationRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
                     configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
                     0, getInvokeId(),
                     directAdsField.getIndexGroup(),
                     directAdsField.getIndexOffset(),
-                    adsDataTypeTableEntry.getSize() * field.getNumberOfElements(),
+                    adsDataTypeTableEntry.getSize() * numberOfElements,
                     field.getPlcSubscriptionType() == PlcSubscriptionType.CYCLIC ? AdsTransMode.CYCLIC : AdsTransMode.ON_CHANGE, // if it's not cyclic, it's on change or event
                     0, // there is no api for that yet
                     field.getDuration().orElse(Duration.ZERO).toMillis()));

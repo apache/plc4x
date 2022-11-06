@@ -44,7 +44,6 @@ const (
 	CIPDataTypeCode_DWORD      CIPDataTypeCode = 0x00D3
 	CIPDataTypeCode_STRUCTURED CIPDataTypeCode = 0x02A0
 	CIPDataTypeCode_STRING     CIPDataTypeCode = 0x02A0
-	CIPDataTypeCode_STRING36   CIPDataTypeCode = 0x02A0
 )
 
 var CIPDataTypeCodeValues []CIPDataTypeCode
@@ -61,7 +60,6 @@ func init() {
 		CIPDataTypeCode_DWORD,
 		CIPDataTypeCode_STRUCTURED,
 		CIPDataTypeCode_STRING,
-		CIPDataTypeCode_STRING36,
 	}
 }
 

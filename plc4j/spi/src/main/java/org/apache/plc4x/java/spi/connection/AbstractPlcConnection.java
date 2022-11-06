@@ -158,7 +158,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         if (!canBrowse) {
             throw new PlcUnsupportedOperationException("The connection does not support browsing");
         }
-        return new DefaultPlcBrowseRequest.Builder(this);
+        return new DefaultPlcBrowseRequest.Builder(this, getPlcFieldHandler());
     }
 
     @Override
@@ -206,6 +206,11 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     @Override
     public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
         return protocol.browse(browseRequest);
+    }
+
+    @Override
+    public CompletableFuture<PlcBrowseResponse> browseWithInterceptor(PlcBrowseRequest browseRequest, PlcBrowseRequestInterceptor interceptor) {
+        return protocol.browseWithInterceptor(browseRequest, interceptor);
     }
 
 }

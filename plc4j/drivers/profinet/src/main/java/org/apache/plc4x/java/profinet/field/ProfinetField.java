@@ -19,7 +19,11 @@
 package org.apache.plc4x.java.profinet.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcValueType;
+
+import java.util.List;
 
 public class ProfinetField implements PlcField {
 
@@ -27,4 +31,18 @@ public class ProfinetField implements PlcField {
         throw new PlcInvalidFieldException("Unable to parse address: " + addressString);
     }
 
+    @Override
+    public String getAddressString() {
+        return null;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcField.super.getPlcValueType();
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        return PlcField.super.getArrayInfo();
+    }
 }

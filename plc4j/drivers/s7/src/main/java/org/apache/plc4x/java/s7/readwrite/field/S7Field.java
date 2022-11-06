@@ -25,18 +25,23 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.s7.readwrite.S7Address;
 import org.apache.plc4x.java.s7.readwrite.S7AddressAny;
 import org.apache.plc4x.java.s7.readwrite.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.TransportSize;
 import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -91,6 +96,24 @@ public class S7Field implements PlcField, Serializable {
         this.numElements = numElements;
     }
 
+    @Override
+    public String getAddressString() {
+        return null;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.valueOf(dataType.name());
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        if(numElements != 1) {
+            return Collections.singletonList(new DefaultArrayInfo(0, numElements));
+        }
+        return Collections.emptyList();
+    }
+
     public TransportSize getDataType() {
         return dataType;
     }
@@ -127,42 +150,6 @@ public class S7Field implements PlcField, Serializable {
                 DATA_BLOCK_SHORT_PATTERN.matcher(fieldString).matches() ||
                 PLC_PROXY_ADDRESS_PATTERN.matcher(fieldString).matches() ||
                 ADDRESS_PATTERN.matcher(fieldString).matches();
-    }
-
-    /**
-     * @return Java type of expected response.
-     * <p>
-     * TODO validate all Methods existing are implemented
-     */
-    @Override
-    public Class<?> getDefaultJavaType() {
-        switch (dataType) {
-            case STRING:
-                return String.class;
-            case USINT:
-            case SINT:
-            case UINT:
-            case INT:
-            case DINT:
-                return Integer.class;
-            case UDINT:
-            case ULINT:
-            case LINT:
-                return Long.class;
-            case BOOL:
-                return Boolean.class;
-            case REAL:
-            case LREAL:
-                return Double.class;
-            case DATE_AND_TIME:
-                return LocalDateTime.class;
-            case DATE:
-                return LocalDate.class;
-            case TIME_OF_DAY:
-                return LocalTime.class;
-            default:
-                throw new NotImplementedException("The response type for datatype " + dataType + " is not yet implemented");
-        }
     }
 
     public static S7Field of(String fieldString) {

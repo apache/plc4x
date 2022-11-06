@@ -20,12 +20,13 @@ package org.apache.plc4x.java.s7.readwrite.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
 public class S7PlcFieldHandler implements PlcFieldHandler {
 
     @Override
-    public PlcField createField(String fieldQuery) {
+    public PlcField parseField(String fieldQuery) {
         if (S7Field.matches(fieldQuery)) {
             return S7Field.of(fieldQuery);
         } else if (S7SubscriptionField.matches(fieldQuery)){
@@ -34,6 +35,11 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
             return S7SslField.of(fieldQuery);
         }
         throw new PlcInvalidFieldException(fieldQuery);
+    }
+
+    @Override
+    public PlcQuery parseQuery(String query) {
+        throw new UnsupportedOperationException("This driver doesn't support browsing");
     }
 
 }

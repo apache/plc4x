@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -29,8 +30,9 @@ import (
 // TODO: use generator once we figured out how to render results with ast
 type DefaultPlcBrowseResponse struct {
 	DefaultResponse
-	request model.PlcBrowseRequest
-	results map[string][]model.PlcBrowseFoundField
+	request      model.PlcBrowseRequest
+	responseCode model.PlcResponseCode
+	results      map[string][]model.PlcBrowseFoundField
 }
 
 func NewDefaultPlcBrowseResponse(request model.PlcBrowseRequest, results map[string][]model.PlcBrowseFoundField, responseCodes map[string]model.PlcResponseCode) DefaultPlcBrowseResponse {

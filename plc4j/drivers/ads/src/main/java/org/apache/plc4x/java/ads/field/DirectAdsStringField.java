@@ -87,6 +87,15 @@ public class DirectAdsStringField extends DirectAdsField implements AdsStringFie
     }
 
     @Override
+    public String getAddressString() {
+        String address = String.format("0x%d/%d:%s(%d)", getIndexGroup(), getIndexOffset(), getPlcDataType(), getStringLength());
+        if(getNumberOfElements() != 1) {
+            address += "[" + getNumberOfElements() + "]";
+        }
+        return address;
+    }
+
+    @Override
     public int getStringLength() {
         return stringLength;
     }
@@ -107,8 +116,8 @@ public class DirectAdsStringField extends DirectAdsField implements AdsStringFie
         writeBuffer.writeUnsignedLong("indexGroup", 32, getIndexGroup());
         writeBuffer.writeUnsignedLong("indexOffset", 32, getIndexOffset());
         writeBuffer.writeUnsignedLong("numberOfElements", 32, getNumberOfElements());
-        String plcDataType = getPlcDataType();
-        writeBuffer.writeString("dataType", plcDataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), plcDataType);
+        writeBuffer.writeString("dataType", getPlcDataType().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), getPlcDataType());
+        writeBuffer.writeUnsignedLong("stringLength", 32, getStringLength());
 
         writeBuffer.popContext(getClass().getSimpleName());
     }

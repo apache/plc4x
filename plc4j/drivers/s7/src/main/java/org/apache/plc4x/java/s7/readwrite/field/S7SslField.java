@@ -18,10 +18,14 @@
  */
 package org.apache.plc4x.java.s7.readwrite.field;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcValueType;
 
 public class S7SslField  implements PlcField {
     
@@ -38,6 +42,21 @@ public class S7SslField  implements PlcField {
     public S7SslField(int sslId, int index) {
         this.szlId = sslId;
         this.index = index;
+    }
+
+    @Override
+    public String getAddressString() {
+        return String.format("SSL_ID=%s;INDEX=16#%d", szlId, index);
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.RAW_BYTE_ARRAY;
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        return Collections.emptyList();
     }
 
     public int getSslId() {

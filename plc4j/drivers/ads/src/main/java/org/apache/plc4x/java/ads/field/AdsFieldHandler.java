@@ -20,12 +20,13 @@ package org.apache.plc4x.java.ads.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
 public class AdsFieldHandler implements PlcFieldHandler {
 
     @Override
-    public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
+    public PlcField parseField(String fieldQuery) throws PlcInvalidFieldException {
         if (DirectAdsStringField.matches(fieldQuery)) {
             return DirectAdsStringField.of(fieldQuery);
         } else if (DirectAdsField.matches(fieldQuery)) {
@@ -34,6 +35,11 @@ public class AdsFieldHandler implements PlcFieldHandler {
             return SymbolicAdsField.of(fieldQuery);
         }
         throw new PlcInvalidFieldException(fieldQuery);
+    }
+
+    @Override
+    public PlcQuery parseQuery(String query) {
+        throw new UnsupportedOperationException("This driver doesn't support browsing");
     }
 
 }

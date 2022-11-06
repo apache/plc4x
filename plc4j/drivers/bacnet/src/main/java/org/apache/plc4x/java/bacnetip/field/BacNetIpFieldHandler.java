@@ -20,16 +20,22 @@ package org.apache.plc4x.java.bacnetip.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
 public class BacNetIpFieldHandler implements PlcFieldHandler {
 
     @Override
-    public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
+    public PlcField parseField(String fieldQuery) throws PlcInvalidFieldException {
         if (BacNetIpField.matches(fieldQuery)) {
             return BacNetIpField.of(fieldQuery);
         }
         throw new PlcInvalidFieldException(fieldQuery);
+    }
+
+    @Override
+    public PlcQuery parseQuery(String query) {
+        throw new UnsupportedOperationException("This driver doesn't support browsing");
     }
 
 }

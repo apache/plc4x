@@ -94,7 +94,7 @@ func (m *Connection) executeSymbolicAddressQuery(ctx context.Context, field Symb
 	}
 
 	// Process the data type and symbol tables to produce the response.
-	fields := m.filterSymbols("")
+	fields := m.filterSymbols(field.SymbolicAddress)
 	return apiModel.PlcResponseCode_OK, fields
 }
 
@@ -109,8 +109,8 @@ func (m *Connection) filterSymbols(filterExpression string) []apiModel.PlcBrowse
 	symbolName := addressSegments[0]
 	remainingSegments := addressSegments[1:]
 	if len(addressSegments) > 0 {
-		symbolName = symbolName + "." + addressSegments[0]
-		remainingSegments = addressSegments[1:]
+		symbolName = symbolName + "." + remainingSegments[0]
+		remainingSegments = remainingSegments[1:]
 	}
 
 	if symbol, ok := m.symbolTable[symbolName]; !ok {
@@ -125,15 +125,81 @@ func (m *Connection) filterSymbols(filterExpression string) []apiModel.PlcBrowse
 			// Couldn't find data type
 			return nil
 		} else {
-			return m.filterDataTypes(symbolDataType, symbolDataTypeName, remainingSegments)
+			return m.filterDataTypes(symbolName, symbolDataType, symbolDataTypeName, remainingSegments)
 		}
 	}
 }
 
-func (m *Connection) filterDataTypes(currentType model.AdsDataTypeTableEntry, currentPath string, remainingAddressSegments []string) []apiModel.PlcBrowseFoundField {
+/*
+func LALALA(){
+	for (AdsSymbolTableEntry symbol : symbolTable.values()) {
+		// Get the datatype of this entry.
+		AdsDataTypeTableEntry dataType = dataTypeTable.get(symbol.getDataTypeName());
+		if (dataType == null) {
+			System.out.printf("couldn't find datatype: %s%n", symbol.getDataTypeName());
+			continue;
+		}
+		String itemName = (symbol.getComment() == null || symbol.getComment().isEmpty()) ? symbol.getName() : symbol.getComment();
+		// Convert the plc value type from the ADS specific one to the PLC4X global one.
+		org.apache.plc4x.java.api.types.PlcValueType plc4xPlcValueType = org.apache.plc4x.java.api.types.PlcValueType.valueOf(getPlcValueTypeForAdsDataType(dataType).toString());
+
+		// If this type has children, add entries for its children.
+		List<PlcBrowseItem> children = getBrowseItems(symbol.getName(), symbol.getGroup(), symbol.getOffset(), !symbol.getFlagReadOnly(), dataType);
+
+		// Populate a map of protocol-dependent options.
+		Map<String, PlcValue> options = new HashMap<>();
+		options.put("comment", new PlcSTRING(symbol.getComment()));
+		options.put("group-id", new PlcUDINT(symbol.getGroup()));
+		options.put("offset", new PlcUDINT(symbol.getOffset()));
+		options.put("size-in-bytes", new PlcUDINT(symbol.getSize()));
+
+		if(plc4xPlcValueType == org.apache.plc4x.java.api.types.PlcValueType.List) {
+			List<PlcBrowseItemArrayInfo> arrayInfo = new ArrayList<>();
+			for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : dataType.getArrayInfo()) {
+				arrayInfo.add(new DefaultBrowseItemArrayInfo(
+					adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
+			}
+			// Add the type itself.
+			values.add(new DefaultListPlcBrowseItem(symbol.getName(), itemName, plc4xPlcValueType, arrayInfo,
+				true, !symbol.getFlagReadOnly(), true, children, options));
+		} else {
+			// Add the type itself.
+			values.add(new DefaultPlcBrowseItem(symbol.getName(), itemName, plc4xPlcValueType, true,
+				!symbol.getFlagReadOnly(), true, children, options));
+		}
+	}
+	DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, values);
+
+}
+*/
+
+func (m *Connection) filterDataTypes(parentName string, currentType model.AdsDataTypeTableEntry, currentPath string, remainingAddressSegments []string) []apiModel.PlcBrowseFoundField {
 	if len(remainingAddressSegments) == 0 {
-		// TODO: Convert the symbol itself into a PlcBrowseField
-		return nil
+		var numElements int32
+		var startElement int32
+		var endElement int32
+		if len(currentType.GetArrayInfo()) > 0 {
+			numElements = int32(currentType.GetArrayInfo()[0].GetNumElements())
+			startElement = int32(currentType.GetArrayInfo()[0].GetLowerBound())
+			endElement = int32(currentType.GetArrayInfo()[0].GetUpperBound())
+		}
+		foundField := &model2.DefaultPlcBrowseQueryResult{
+			Field: SymbolicPlcField{
+				PlcField: PlcField{
+					NumElements:  numElements,
+					StartElement: startElement,
+					EndElement:   endElement,
+				},
+				SymbolicAddress: parentName,
+			},
+			Name:              parentName,
+			Readable:          false,
+			Writable:          false,
+			Subscribable:      false,
+			PossibleDataTypes: nil,
+			Attributes:        nil,
+		}
+		return []apiModel.PlcBrowseFoundField{foundField}
 	}
 
 	currentAddressSegment := remainingAddressSegments[0]
@@ -145,7 +211,8 @@ func (m *Connection) filterDataTypes(currentType model.AdsDataTypeTableEntry, cu
 				// TODO: Couldn't find data type with the name defined in the protperty.
 				return nil
 			} else {
-				return m.filterDataTypes(symbolDataType, currentPath+"."+currentAddressSegment, remainingAddressSegments)
+				return m.filterDataTypes(parentName+"."+child.GetPropertyName(), symbolDataType,
+					currentPath+"."+currentAddressSegment, remainingAddressSegments)
 			}
 		}
 	}

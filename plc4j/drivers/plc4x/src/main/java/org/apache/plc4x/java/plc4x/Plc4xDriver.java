@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.plc4x;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
 import org.apache.plc4x.java.plc4x.field.Plc4xFieldHandler;
 import org.apache.plc4x.java.plc4x.protocol.Plc4xProtocolLogic;
@@ -29,7 +28,7 @@ import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.util.function.ToIntFunction;
 
@@ -56,8 +55,8 @@ public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> {
     }
 
     @Override
-    protected PlcValueHandler getValueHandler() {
-        return new IEC61131ValueHandler();
+    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
+        return new PlcValueHandler();
     }
 
     @Override

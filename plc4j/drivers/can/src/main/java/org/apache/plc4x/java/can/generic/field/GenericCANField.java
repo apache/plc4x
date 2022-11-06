@@ -19,12 +19,18 @@
 package org.apache.plc4x.java.can.generic.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcField;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.genericcan.readwrite.GenericCANDataType;
+import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
 
 public class GenericCANField implements PlcField {
 
@@ -44,8 +50,25 @@ public class GenericCANField implements PlcField {
     }
 
     @Override
-    public String getPlcDataType() {
-        return dataType.name();
+    public String getAddressString() {
+        String address = nodeId + ":" + dataType.name();
+        if(arraySize != 1) {
+            address += "[" + arraySize + "]";
+        }
+        return address;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.valueOf(dataType.getPlcValueName());
+    }
+
+    @Override
+    public List<ArrayInfo> getArrayInfo() {
+        if(arraySize != 1) {
+            return Collections.singletonList(new DefaultArrayInfo(0, arraySize));
+        }
+        return Collections.emptyList();
     }
 
     public int getArraySize() {
@@ -58,7 +81,7 @@ public class GenericCANField implements PlcField {
 
     public static Optional<GenericCANField> matches(String fieldQuery) {
         Matcher matcher = ADDRESS_PATTERN.matcher(fieldQuery);
-        return matcher.matches() ? Optional.ofNullable(GenericCANField.create(matcher)) : Optional.empty();
+        return matcher.matches() ? Optional.of(GenericCANField.create(matcher)) : Optional.empty();
     }
 
     static GenericCANField create(Matcher fieldQuery) {

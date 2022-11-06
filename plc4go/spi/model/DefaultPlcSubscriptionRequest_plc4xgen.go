@@ -41,7 +41,7 @@ func (d *DefaultPlcSubscriptionRequest) SerializeWithWriteBuffer(writeBuffer uti
 	if err := writeBuffer.PushContext("PlcSubscriptionRequest"); err != nil {
 		return err
 	}
-	if err := d.DefaultRequest.SerializeWithWriteBuffer(writeBuffer); err != nil {
+	if err := d.DefaultPlcFieldRequest.SerializeWithWriteBuffer(writeBuffer); err != nil {
 		return err
 	}
 	if err := writeBuffer.PushContext("types", utils.WithRenderAsList(true)); err != nil {

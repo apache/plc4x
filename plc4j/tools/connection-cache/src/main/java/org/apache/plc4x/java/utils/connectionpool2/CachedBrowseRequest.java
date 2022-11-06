@@ -19,8 +19,11 @@
 package org.apache.plc4x.java.utils.connectionpool2;
 
 import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
+import org.apache.plc4x.java.api.messages.PlcBrowseRequestInterceptor;
 import org.apache.plc4x.java.api.messages.PlcBrowseResponse;
+import org.apache.plc4x.java.api.model.PlcQuery;
 
+import java.util.LinkedHashSet;
 import java.util.concurrent.CompletableFuture;
 
 public class CachedBrowseRequest implements PlcBrowseRequest {
@@ -37,6 +40,21 @@ public class CachedBrowseRequest implements PlcBrowseRequest {
     public CompletableFuture<? extends PlcBrowseResponse> execute() {
         // Only allowed if connection is still active
         return parent.execute(innerRequest);
+    }
+
+    @Override
+    public CompletableFuture<? extends PlcBrowseResponse> executeWithInterceptor(PlcBrowseRequestInterceptor interceptor) {
+        return parent.executeWithInterceptor(innerRequest, interceptor);
+    }
+
+    @Override
+    public LinkedHashSet<String> getQueryNames() {
+        return innerRequest.getQueryNames();
+    }
+
+    @Override
+    public PlcQuery getQuery(String name) {
+        return innerRequest.getQuery(name);
     }
 
 }

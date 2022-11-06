@@ -46,7 +46,7 @@ import org.apache.plc4x.java.spi.messages.PlcWriter;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +79,7 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
 
     public SimulatedConnection(SimulatedDevice device) {
         super(true, true, true, false,
-            new SimulatedFieldHandler(), new IEC61131ValueHandler(), null, null);
+            new SimulatedFieldHandler(), new PlcValueHandler(), null, null);
         this.device = device;
     }
 

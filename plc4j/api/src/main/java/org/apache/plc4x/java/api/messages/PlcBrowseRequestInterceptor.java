@@ -16,34 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.plc4x.java.api.messages;
 
-package model
+public interface PlcBrowseRequestInterceptor {
 
-import (
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-)
+    boolean intercept(PlcBrowseItem item);
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultRequest
-type DefaultRequest struct {
-	fields     map[string]model.PlcField
-	fieldNames []string
-}
-
-func (d *DefaultRequest) IsAPlcMessage() bool {
-	return true
-}
-
-func NewDefaultRequest(Fields map[string]model.PlcField, FieldNames []string) DefaultRequest {
-	return DefaultRequest{Fields, FieldNames}
-}
-
-func (d *DefaultRequest) GetFieldNames() []string {
-	return d.fieldNames
-}
-
-func (d *DefaultRequest) GetField(name string) model.PlcField {
-	if field, ok := d.fields[name]; ok {
-		return field
-	}
-	return nil
 }

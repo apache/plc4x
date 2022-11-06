@@ -175,7 +175,7 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
             LinkedHashMap<String, PlcSubscriptionField> parsedFields = new LinkedHashMap<>();
 
             fields.forEach((name, builderItem) -> {
-                PlcField parsedField = fieldHandler.createField(builderItem.fieldQuery);
+                PlcField parsedField = fieldHandler.parseField(builderItem.fieldQuery);
                 parsedFields.put(name, new DefaultPlcSubscriptionField(builderItem.plcSubscriptionType, parsedField, builderItem.duration));
             });
             preRegisteredConsumers.forEach((fieldName, ignored) -> {

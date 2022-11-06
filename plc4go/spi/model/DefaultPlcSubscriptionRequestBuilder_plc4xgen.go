@@ -98,27 +98,27 @@ func (d *DefaultPlcSubscriptionRequestBuilder) SerializeWithWriteBuffer(writeBuf
 			}
 		}
 	}
-	if err := writeBuffer.PushContext("queries", utils.WithRenderAsList(true)); err != nil {
+	if err := writeBuffer.PushContext("fieldNames", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for name, elem := range d.queries {
+	for _, elem := range d.fieldNames {
+		if err := writeBuffer.WriteString("", uint32(len(elem)*8), "UTF-8", elem); err != nil {
+			return err
+		}
+	}
+	if err := writeBuffer.PopContext("fieldNames", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+	if err := writeBuffer.PushContext("fieldQueries", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+	for name, elem := range d.fieldQueries {
 
 		if err := writeBuffer.WriteString(name, uint32(len(elem)*8), "UTF-8", elem); err != nil {
 			return err
 		}
 	}
-	if err := writeBuffer.PopContext("queries", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	if err := writeBuffer.PushContext("queryNames", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	for _, elem := range d.queryNames {
-		if err := writeBuffer.WriteString("", uint32(len(elem)*8), "UTF-8", elem); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("queryNames", utils.WithRenderAsList(true)); err != nil {
+	if err := writeBuffer.PopContext("fieldQueries", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
 	if err := writeBuffer.PushContext("fields", utils.WithRenderAsList(true)); err != nil {
@@ -145,17 +145,6 @@ func (d *DefaultPlcSubscriptionRequestBuilder) SerializeWithWriteBuffer(writeBuf
 		}
 	}
 	if err := writeBuffer.PopContext("fields", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	if err := writeBuffer.PushContext("fieldNames", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	for _, elem := range d.fieldNames {
-		if err := writeBuffer.WriteString("", uint32(len(elem)*8), "UTF-8", elem); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("fieldNames", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
 	if err := writeBuffer.PushContext("types", utils.WithRenderAsList(true)); err != nil {
