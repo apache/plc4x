@@ -21,7 +21,6 @@ package knxnetip
 
 import (
 	"encoding/hex"
-	"fmt"
 	"regexp"
 	"strconv"
 
@@ -85,9 +84,6 @@ func (m FieldHandler) ParseField(fieldQuery string) (apiModel.PlcField, error) {
 			}
 		}
 		return NewGroupAddress3LevelPlcField(match["mainGroup"], match["middleGroup"], match["subGroup"], &fieldType), nil
-	} else if match := utils.GetSubgroupMatches(m.deviceQuery, fieldQuery); match != nil {
-		return NewDeviceQueryField(
-			match["mainGroup"], match["middleGroup"], match["subGroup"]), nil
 	} else if match := utils.GetSubgroupMatches(m.devicePropertyAddress, fieldQuery); match != nil {
 		mainGroup, _ := strconv.ParseUint(match["mainGroup"], 10, 8)
 		middleGroup, _ := strconv.ParseUint(match["middleGroup"], 10, 8)
@@ -139,9 +135,13 @@ func (m FieldHandler) ParseField(fieldQuery string) (apiModel.PlcField, error) {
 		return NewCommunicationObjectQueryField(
 			uint8(mainGroup), uint8(middleGroup), uint8(subGroup)), nil
 	}
-	return nil, errors.New("Invalid address format for address '" + fieldQuery + "'")
+	return nil, errors.New("Invalid address format for field '" + fieldQuery + "'")
 }
 
 func (m FieldHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {
-	return nil, fmt.Errorf("queries not supported")
+	if match := utils.GetSubgroupMatches(m.deviceQuery, query); match != nil {
+		return NewDeviceQuery(
+			match["mainGroup"], match["middleGroup"], match["subGroup"]), nil
+	}
+	return nil, errors.New("Invalid address format for query '" + query + "'")
 }

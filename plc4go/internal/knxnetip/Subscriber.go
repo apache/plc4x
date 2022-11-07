@@ -21,13 +21,14 @@ package knxnetip
 
 import (
 	"context"
+	"time"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	values2 "github.com/apache/plc4x/plc4go/spi/values"
-	"time"
 )
 
 type Subscriber struct {
@@ -119,7 +120,10 @@ func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte
 				_, _ = rb.ReadUint8("groupAddress", 8)
 			}
 			elementType := *groupAddressField.GetFieldType()
-			numElements := groupAddressField.GetQuantity()
+			numElements := uint16(1)
+			if len(groupAddressField.GetArrayInfo()) > 0 {
+				numElements = uint16(groupAddressField.GetArrayInfo()[0].GetUpperBound() - groupAddressField.GetArrayInfo()[0].GetLowerBound())
+			}
 
 			fields[fieldName] = groupAddressField
 			types[fieldName] = subscriptionHandle.fieldType
@@ -136,7 +140,7 @@ func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte
 					if !rb.HasMore(1) {
 						rb.Reset(0)
 					}
-					plcValue := values2.NewRawPlcValue(rb, NewValueDecoder(rb))
+					plcValue := values2.NewPlcRawByteArray(rb.GetBytes())
 					plcValueList = append(plcValueList, plcValue)
 				} else {
 					plcValue, err2 := driverModel.KnxDatapointParseWithBuffer(rb, elementType)

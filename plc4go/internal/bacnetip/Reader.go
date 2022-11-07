@@ -22,6 +22,9 @@ package bacnetip
 import (
 	"context"
 	"fmt"
+	"math"
+	"time"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
@@ -30,8 +33,6 @@ import (
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"math"
-	"time"
 )
 
 type Reader struct {
@@ -82,7 +83,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 		}
 		// create the service request
 		var serviceRequest readWriteModel.BACnetConfirmedServiceRequest
-		if isMultiRequest := len(readRequest.GetFieldNames()) > 1 || readRequest.GetField(readRequest.GetFieldNames()[0]).GetQuantity() > 1; !isMultiRequest {
+		quantity := uint32(1)
+		if len(readRequest.GetField(readRequest.GetFieldNames()[0]).GetArrayInfo()) > 0 {
+			quantity = readRequest.GetField(readRequest.GetFieldNames()[0]).GetArrayInfo()[0].GetUpperBound() - readRequest.GetField(readRequest.GetFieldNames()[0]).GetArrayInfo()[0].GetLowerBound()
+		}
+		if isMultiRequest := len(readRequest.GetFieldNames()) > 1 || quantity > 1; !isMultiRequest {
 			// Single request
 			singleField := readRequest.GetField(readRequest.GetFieldNames()[0]).(BacNetPlcField)
 			objectIdentifier := readWriteModel.CreateBACnetContextTagObjectIdentifier(0, singleField.GetObjectId().getId(), singleField.GetObjectId().ObjectIdInstance)

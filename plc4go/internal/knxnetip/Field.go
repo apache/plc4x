@@ -50,6 +50,8 @@ type DeviceField interface {
 }
 
 type GroupAddress3LevelPlcField struct {
+	GroupAddressField
+
 	MainGroup   string // 5 Bits: Values 0-31
 	MiddleGroup string // 3 Bits: values 0-7
 	SubGroup    string // 8 Bits
@@ -122,10 +124,11 @@ func (k GroupAddress3LevelPlcField) toGroupAddress() driverModel.KnxGroupAddress
 }
 
 type GroupAddress2LevelPlcField struct {
+	GroupAddressField
+
 	MainGroup string // 5 Bits: Values 0-31
 	SubGroup  string // 11 Bits
 	FieldType *driverModel.KnxDatapointType
-	Field
 }
 
 func NewGroupAddress2LevelPlcField(mainGroup string, subGroup string, fieldType *driverModel.KnxDatapointType) GroupAddress2LevelPlcField {
@@ -185,9 +188,10 @@ func (k GroupAddress2LevelPlcField) toGroupAddress() driverModel.KnxGroupAddress
 }
 
 type GroupAddress1LevelPlcField struct {
+	GroupAddressField
+
 	MainGroup string // 16 Bits
 	FieldType *driverModel.KnxDatapointType
-	Field
 }
 
 func NewGroupAddress1LevelPlcField(mainGroup string, fieldType *driverModel.KnxDatapointType) GroupAddress1LevelPlcField {
@@ -235,37 +239,6 @@ func (k GroupAddress1LevelPlcField) toGroupAddress() driverModel.KnxGroupAddress
 		return nil
 	}
 	return driverModel.NewKnxGroupAddressFreeLevel(uint16(mainGroup))
-}
-
-type DeviceQueryField struct {
-	MainGroup   string // 5 Bits: Values 0-31
-	MiddleGroup string // 3 Bits: values 0-7
-	SubGroup    string // 8 Bits
-	DeviceField
-}
-
-func NewDeviceQueryField(mainGroup string, middleGroup string, subGroup string) DeviceQueryField {
-	return DeviceQueryField{
-		MainGroup:   mainGroup,
-		MiddleGroup: middleGroup,
-		SubGroup:    subGroup,
-	}
-}
-
-func (k DeviceQueryField) GetAddressString() string {
-	return fmt.Sprintf("%s.%s.%s", k.MainGroup, k.MiddleGroup, k.SubGroup)
-}
-
-func (k DeviceQueryField) GetValueType() values.PlcValueType {
-	return values.Struct
-}
-
-func (k DeviceQueryField) GetArrayInfo() []apiModel.ArrayInfo {
-	return []apiModel.ArrayInfo{}
-}
-
-func (k DeviceQueryField) toKnxAddress() driverModel.KnxAddress {
-	return nil
 }
 
 type DevicePropertyAddressPlcField struct {
@@ -347,43 +320,6 @@ func (k DeviceMemoryAddressPlcField) GetArrayInfo() []apiModel.ArrayInfo {
 }
 
 func (k DeviceMemoryAddressPlcField) toKnxAddress() driverModel.KnxAddress {
-	individualAddress := driverModel.NewKnxAddress(
-		k.MainGroup,
-		k.MiddleGroup,
-		k.SubGroup,
-	)
-	return individualAddress
-}
-
-type CommunicationObjectQueryField struct {
-	MainGroup   uint8 // 5 Bits: Values 0-31
-	MiddleGroup uint8 // 3 Bits: values 0-7
-	SubGroup    uint8 // 8 Bits
-	DeviceField
-}
-
-func NewCommunicationObjectQueryField(mainGroup uint8, middleGroup uint8, subGroup uint8) CommunicationObjectQueryField {
-	return CommunicationObjectQueryField{
-		MainGroup:   mainGroup,
-		MiddleGroup: middleGroup,
-		SubGroup:    subGroup,
-	}
-}
-
-func (k CommunicationObjectQueryField) GetAddressString() string {
-	return fmt.Sprintf("%d.%d.%d#com-obj",
-		k.MainGroup, k.MiddleGroup, k.SubGroup)
-}
-
-func (k CommunicationObjectQueryField) GetValueType() values.PlcValueType {
-	return values.Struct
-}
-
-func (k CommunicationObjectQueryField) GetArrayInfo() []apiModel.ArrayInfo {
-	return []apiModel.ArrayInfo{}
-}
-
-func (k CommunicationObjectQueryField) toKnxAddress() driverModel.KnxAddress {
 	individualAddress := driverModel.NewKnxAddress(
 		k.MainGroup,
 		k.MiddleGroup,

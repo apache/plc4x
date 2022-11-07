@@ -85,10 +85,6 @@ func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <
 					deviceAddresses[knxAddress] = map[string]DeviceField{}
 				}
 				deviceAddresses[knxAddress][fieldName] = memoryField
-			case CommunicationObjectQueryField:
-				responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS
-				plcValues[fieldName] = nil
-				continue
 			case GroupAddressField:
 				groupAddressField := field.(GroupAddressField)
 				groupAddresses[fieldName] = groupAddressField
@@ -212,8 +208,8 @@ func (m Reader) readGroupAddress(ctx context.Context, field GroupAddressField) (
 			}
 		} else {
 			// If we don't have any field-type information, add the raw data
-			if field.GetTypeName() == "" {
-				values[stringAddress] = internalValues.NewPlcByteArray(int8s)
+			if field.GetFieldType() == nil {
+				values[stringAddress] = internalValues.NewPlcRawByteArray(int8s)
 			} else {
 				// Decode the data according to the fields type
 				rb := utils.NewReadBufferByteBased(int8s)

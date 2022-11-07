@@ -26,34 +26,34 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-type PlcByteArray struct {
+type PlcRawByteArray struct {
 	Values []byte
 	PlcValueAdapter
 }
 
-func NewPlcByteArray(values []byte) PlcByteArray {
-	return PlcByteArray{
+func NewPlcRawByteArray(values []byte) PlcRawByteArray {
+	return PlcRawByteArray{
 		Values: values,
 	}
 }
 
-func (m PlcByteArray) GetRaw() []byte {
+func (m PlcRawByteArray) GetRaw() []byte {
 	return m.Values
 }
 
-func (m PlcByteArray) IsList() bool {
+func (m PlcRawByteArray) IsList() bool {
 	return true
 }
 
-func (m PlcByteArray) GetLength() uint32 {
+func (m PlcRawByteArray) GetLength() uint32 {
 	return uint32(len(m.Values))
 }
 
-func (m PlcByteArray) GetIndex(i uint32) apiValues.PlcValue {
+func (m PlcRawByteArray) GetIndex(i uint32) apiValues.PlcValue {
 	return NewPlcUSINT(m.Values[i])
 }
 
-func (m PlcByteArray) GetList() []apiValues.PlcValue {
+func (m PlcRawByteArray) GetList() []apiValues.PlcValue {
 	var plcValues []apiValues.PlcValue
 	for _, value := range m.Values {
 		plcValues = append(plcValues, NewPlcUSINT(value))
@@ -61,11 +61,11 @@ func (m PlcByteArray) GetList() []apiValues.PlcValue {
 	return plcValues
 }
 
-func (m PlcByteArray) GetPlcValueType() apiValues.PlcValueType {
+func (m PlcRawByteArray) GetPlcValueType() apiValues.PlcValueType {
 	return apiValues.RAW_BYTE_ARRAY
 }
 
-func (m PlcByteArray) Serialize() ([]byte, error) {
+func (m PlcRawByteArray) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -73,8 +73,8 @@ func (m PlcByteArray) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m PlcByteArray) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcByteArray"); err != nil {
+func (m PlcRawByteArray) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("PlcRawByteArray"); err != nil {
 		return err
 	}
 	for _, value := range m.Values {
@@ -82,7 +82,7 @@ func (m PlcByteArray) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 			return err
 		}
 	}
-	if err := writeBuffer.PopContext("PlcByteArray"); err != nil {
+	if err := writeBuffer.PopContext("PlcRawByteArray"); err != nil {
 		return err
 	}
 	return nil
