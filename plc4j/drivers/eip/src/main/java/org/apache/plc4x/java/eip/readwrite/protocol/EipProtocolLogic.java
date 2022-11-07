@@ -367,7 +367,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                         list.add(new PlcBOOL(data.getBoolean(index)));
                         index += type.getSize();
                         break;
-                    case STRUCTURED: {
+                    case Struct: {
                         Short structuredType = Short.reverseBytes(data.getShort(0));
                         Short structuredLen = Short.reverseBytes(data.getShort(STRING_LEN_OFFSET));
                         if (structuredType == CIPStructTypeCode.STRING.getValue()) {
@@ -402,7 +402,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 case BOOL:
                     return new PlcBOOL(data.getBoolean(0));
                 case STRING:
-                case STRUCTURED: {
+                case Struct: {
                     Short structuredType = Short.reverseBytes(data.getShort(0));
                     Short structuredLen = Short.reverseBytes(data.getShort(STRING_LEN_OFFSET));
                     if (structuredType == CIPStructTypeCode.STRING.getValue()) {
@@ -617,7 +617,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 buffer.putInt(value.getString().length());
                 buffer.put(value.getString().getBytes(), 0, value.getString().length());
                 break;
-            case STRUCTURED:
+            case Struct:
                 // Need to handle
                 break;
             default:

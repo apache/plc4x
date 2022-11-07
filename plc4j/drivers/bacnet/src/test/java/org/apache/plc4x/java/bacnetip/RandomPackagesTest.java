@@ -54,7 +54,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 // Tests from http://kargs.net/captures
 @RequirePcapNg
-@RequireAllTestsFlag
+//@RequireAllTestsFlag
 @Tag("require-all-tests")
 @Tag("bacnet-regression")
 public class RandomPackagesTest {

@@ -163,8 +163,8 @@
     <asciidoctorj.diagram.version>2.2.3</asciidoctorj.diagram.version>
 
     <skip-code-generation-tests>true</skip-code-generation-tests>
-    <skip-dependency-cve-scan>true</skip-dependency-cve-scan>
     <enable-all-tests>false</enable-all-tests>
+    <excluded-test-groups>require-all-tests</excluded-test-groups>
   </properties>
 
   <modules>
@@ -1128,7 +1128,7 @@
             </dependency>
           </dependencies>
           <configuration>
-            <excludedGroups>require-all-tests</excludedGroups>
+            <excludedGroups>${excluded-test-groups}</excludedGroups>
           </configuration>
         </plugin>
 
@@ -1704,9 +1704,8 @@
       <id>jenkins-build</id>
       <properties>
         <skip-code-generation-tests>false</skip-code-generation-tests>
-        <!-- Disabled this for now as it was just continiuously reporting false positives -->
-        <skip-dependency-cve-scan>true</skip-dependency-cve-scan>
         <enable-all-tests>true</enable-all-tests>
+        <excluded-test-groups/>
       </properties>
     </profile>
 
@@ -1714,23 +1713,9 @@
       <id>enable-all-checks</id>
       <properties>
         <skip-code-generation-tests>false</skip-code-generation-tests>
-        <!-- Disabled this for now as it was just continiuously reporting false positives -->
-        <skip-dependency-cve-scan>true</skip-dependency-cve-scan>
         <enable-all-tests>true</enable-all-tests>
+        <excluded-test-groups/>
       </properties>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <configuration>
-                <excludedGroups />
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
     </profile>
 
     <!--
