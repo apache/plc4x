@@ -21,13 +21,14 @@ package main
 
 import (
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/api/logging"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	"strings"
-	"time"
 )
 
 func main() {
@@ -54,8 +55,8 @@ func main() {
 	// Prepare a subscription-request
 	if subscriptionRequest, err := connection.SubscriptionRequestBuilder().
 		// Intentionally catching all without datatype and the temperature values of the first floor with type
-		AddChangeOfStateQuery("all", "*/*/*").
-		AddChangeOfStateQuery("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp").
+		AddChangeOfStateFieldQuery("all", "*/*/*").
+		AddChangeOfStateFieldQuery("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp").
 		AddPreRegisteredConsumer("all", func(event model.PlcSubscriptionEvent) {
 			// Iterate over all fields that were triggered in the current event.
 			for _, fieldName := range event.GetFieldNames() {

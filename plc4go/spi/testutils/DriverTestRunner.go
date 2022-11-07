@@ -23,6 +23,13 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"os"
+	"runtime/debug"
+	"strconv"
+	"strings"
+	"testing"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	api "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -32,12 +39,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/subchen/go-xmldom"
-	"os"
-	"runtime/debug"
-	"strconv"
-	"strings"
-	"testing"
-	"time"
 )
 
 type DriverTestsuite struct {
@@ -162,7 +163,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			for _, fieldNode := range step.payload.GetChild("fields").GetChildren("field") {
 				fieldName := fieldNode.GetChild("name").Text
 				fieldAddress := fieldNode.GetChild("address").Text
-				rrb.AddQuery(fieldName, fieldAddress)
+				rrb.AddFieldQuery(fieldName, fieldAddress)
 			}
 			readRequest, err := rrb.Build()
 			if err != nil {
@@ -186,19 +187,19 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 				if !ok {
 					return errors.New("connection is not a HandlerExposer")
 				}
-				field, err := he.GetPlcFieldHandler().ParseQuery(fieldAddress)
+				field, err := he.GetPlcFieldHandler().ParseField(fieldAddress)
 				if err != nil {
 					return errors.Wrapf(err, "error parsing address: %s", fieldAddress)
 				}
-				if field.GetQuantity() > 1 {
+				if len(field.GetArrayInfo()) > 0 {
 					var fieldValue []string
 					for _, valueChild := range fieldNode.GetChildren("value") {
 						fieldValue = append(fieldValue, valueChild.Text)
 					}
-					wrb.AddQuery(fieldName, fieldAddress, fieldValue)
+					wrb.AddFieldQuery(fieldName, fieldAddress, fieldValue)
 				} else {
 					fieldValue := fieldNode.GetChild("value").Text
-					wrb.AddQuery(fieldName, fieldAddress, fieldValue)
+					wrb.AddFieldQuery(fieldName, fieldAddress, fieldValue)
 				}
 			}
 			writeRequest, err := wrb.Build()

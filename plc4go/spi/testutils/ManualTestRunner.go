@@ -21,16 +21,17 @@ package testutils
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi/values"
-	"github.com/rs/zerolog/log"
-	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"reflect"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/values"
+	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
 )
 
 type ManualTestCase struct {
@@ -99,7 +100,7 @@ func (m *ManualTestSuite) Run() plc4go.PlcConnection {
 func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConnection, fieldName string, testCase ManualTestCase) {
 	// Prepare the read-request
 	readRequestBuilder := connection.ReadRequestBuilder()
-	readRequestBuilder.AddQuery(fieldName, testCase.Address)
+	readRequestBuilder.AddFieldQuery(fieldName, testCase.Address)
 	readRequest, err := readRequestBuilder.Build()
 	if err != nil {
 		panic(err)
@@ -164,7 +165,7 @@ func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnec
 		builder := connection.ReadRequestBuilder()
 		for _, testCase := range shuffledTestcases {
 			fieldName := testCase.Address
-			builder.AddQuery(fieldName, testCase.Address)
+			builder.AddFieldQuery(fieldName, testCase.Address)
 		}
 		readRequest, err := builder.Build()
 		if err != nil {

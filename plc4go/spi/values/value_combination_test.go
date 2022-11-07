@@ -174,7 +174,7 @@ func TestCombinations(t *testing.T) {
 		{
 			name: apiValues.RAW_BYTE_ARRAY,
 			arguments: []apiValues.PlcValue{
-				NewRawPlcValue(utils.NewReadBufferByteBased([]byte{0x47, 0x11}), nil),
+				NewPlcRawByteArray(utils.NewReadBufferByteBased([]byte{0x47, 0x11}).GetBytes()),
 			},
 		},
 		{

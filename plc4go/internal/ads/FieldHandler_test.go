@@ -26,6 +26,7 @@ import (
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	model2 "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	model3 "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 func TestFieldHandler_ParseQuery(t *testing.T) {
@@ -52,9 +53,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: DirectPlcField{
 				PlcField: PlcField{
-					NumElements:  NONE,
-					StartElement: NONE,
-					EndElement:   NONE,
+					arrayInfo: []model.ArrayInfo{},
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
@@ -69,9 +68,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: DirectPlcField{
 				PlcField: PlcField{
-					NumElements:  NONE,
-					StartElement: NONE,
-					EndElement:   NONE,
+					arrayInfo: []model.ArrayInfo{},
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
@@ -86,9 +83,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: DirectPlcField{
 				PlcField: PlcField{
-					NumElements:  NONE,
-					StartElement: NONE,
-					EndElement:   NONE,
+					arrayInfo: []model.ArrayInfo{},
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
@@ -103,9 +98,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: DirectPlcField{
 				PlcField: PlcField{
-					NumElements:  NONE,
-					StartElement: NONE,
-					EndElement:   NONE,
+					arrayInfo: []model.ArrayInfo{},
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
@@ -120,9 +113,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: SymbolicPlcField{
 				PlcField: PlcField{
-					NumElements:  NONE,
-					StartElement: NONE,
-					EndElement:   NONE,
+					arrayInfo: []model.ArrayInfo{},
 				},
 				SymbolicAddress: "MAIN.testVariable",
 			},
@@ -135,9 +126,12 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: DirectPlcField{
 				PlcField: PlcField{
-					NumElements:  42,
-					StartElement: NONE,
-					EndElement:   NONE,
+					arrayInfo: []model.ArrayInfo{
+						model3.DefaultArrayInfo{
+							LowerBound: 0,
+							UpperBound: 42,
+						},
+					},
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
@@ -152,9 +146,12 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: DirectPlcField{
 				PlcField: PlcField{
-					NumElements:  42,
-					StartElement: NONE,
-					EndElement:   NONE,
+					arrayInfo: []model.ArrayInfo{
+						model3.DefaultArrayInfo{
+							LowerBound: 0,
+							UpperBound: 42,
+						},
+					},
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
@@ -169,9 +166,12 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: DirectPlcField{
 				PlcField: PlcField{
-					NumElements:  42,
-					StartElement: NONE,
-					EndElement:   NONE,
+					arrayInfo: []model.ArrayInfo{
+						model3.DefaultArrayInfo{
+							LowerBound: 0,
+							UpperBound: 42,
+						},
+					},
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
@@ -186,9 +186,12 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: DirectPlcField{
 				PlcField: PlcField{
-					NumElements:  42,
-					StartElement: NONE,
-					EndElement:   NONE,
+					arrayInfo: []model.ArrayInfo{
+						model3.DefaultArrayInfo{
+							LowerBound: 0,
+							UpperBound: 42,
+						},
+					},
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
@@ -203,9 +206,12 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: SymbolicPlcField{
 				PlcField: PlcField{
-					NumElements:  42,
-					StartElement: NONE,
-					EndElement:   NONE,
+					arrayInfo: []model.ArrayInfo{
+						model3.DefaultArrayInfo{
+							LowerBound: 0,
+							UpperBound: 42,
+						},
+					},
 				},
 				SymbolicAddress: "MAIN.testVariable",
 			},
@@ -218,9 +224,12 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: DirectPlcField{
 				PlcField: PlcField{
-					NumElements:  NONE,
-					StartElement: 23,
-					EndElement:   42,
+					arrayInfo: []model.ArrayInfo{
+						model3.DefaultArrayInfo{
+							LowerBound: 23,
+							UpperBound: 42,
+						},
+					},
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
@@ -235,9 +244,12 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: DirectPlcField{
 				PlcField: PlcField{
-					NumElements:  NONE,
-					StartElement: 23,
-					EndElement:   42,
+					arrayInfo: []model.ArrayInfo{
+						model3.DefaultArrayInfo{
+							LowerBound: 23,
+							UpperBound: 42,
+						},
+					},
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
@@ -252,9 +264,12 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: DirectPlcField{
 				PlcField: PlcField{
-					NumElements:  NONE,
-					StartElement: 23,
-					EndElement:   42,
+					arrayInfo: []model.ArrayInfo{
+						model3.DefaultArrayInfo{
+							LowerBound: 23,
+							UpperBound: 42,
+						},
+					},
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
@@ -269,9 +284,12 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: DirectPlcField{
 				PlcField: PlcField{
-					NumElements:  NONE,
-					StartElement: 23,
-					EndElement:   42,
+					arrayInfo: []model.ArrayInfo{
+						model3.DefaultArrayInfo{
+							LowerBound: 23,
+							UpperBound: 42,
+						},
+					},
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
@@ -286,9 +304,12 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: SymbolicPlcField{
 				PlcField: PlcField{
-					NumElements:  NONE,
-					StartElement: 23,
-					EndElement:   42,
+					arrayInfo: []model.ArrayInfo{
+						model3.DefaultArrayInfo{
+							LowerBound: 23,
+							UpperBound: 42,
+						},
+					},
 				},
 				SymbolicAddress: "MAIN.testVariable",
 			},
@@ -301,9 +322,12 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: DirectPlcField{
 				PlcField: PlcField{
-					NumElements:  42,
-					StartElement: 23,
-					EndElement:   NONE,
+					arrayInfo: []model.ArrayInfo{
+						model3.DefaultArrayInfo{
+							LowerBound: 23,
+							UpperBound: 65,
+						},
+					},
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
@@ -318,9 +342,12 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: DirectPlcField{
 				PlcField: PlcField{
-					NumElements:  42,
-					StartElement: 23,
-					EndElement:   NONE,
+					arrayInfo: []model.ArrayInfo{
+						model3.DefaultArrayInfo{
+							LowerBound: 23,
+							UpperBound: 65,
+						},
+					},
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
@@ -335,9 +362,12 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: DirectPlcField{
 				PlcField: PlcField{
-					NumElements:  42,
-					StartElement: 23,
-					EndElement:   NONE,
+					arrayInfo: []model.ArrayInfo{
+						model3.DefaultArrayInfo{
+							LowerBound: 23,
+							UpperBound: 65,
+						},
+					},
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
@@ -352,9 +382,12 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: DirectPlcField{
 				PlcField: PlcField{
-					NumElements:  42,
-					StartElement: 23,
-					EndElement:   NONE,
+					arrayInfo: []model.ArrayInfo{
+						model3.DefaultArrayInfo{
+							LowerBound: 23,
+							UpperBound: 65,
+						},
+					},
 				},
 				IndexGroup:   1234,
 				IndexOffset:  5678,
@@ -369,9 +402,12 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			},
 			want: SymbolicPlcField{
 				PlcField: PlcField{
-					NumElements:  42,
-					StartElement: 23,
-					EndElement:   NONE,
+					arrayInfo: []model.ArrayInfo{
+						model3.DefaultArrayInfo{
+							LowerBound: 23,
+							UpperBound: 65,
+						},
+					},
 				},
 				SymbolicAddress: "MAIN.testVariable",
 			},

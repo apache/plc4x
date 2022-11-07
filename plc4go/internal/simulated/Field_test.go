@@ -215,7 +215,7 @@ func TestSimulatedField_GetName(t1 *testing.T) {
 	}
 }
 
-func TestSimulatedField_GetQuantity(t1 *testing.T) {
+/*func TestSimulatedField_GetQuantity(t1 *testing.T) {
 	type fields struct {
 		FieldType    FieldType
 		Name         string
@@ -251,42 +251,4 @@ func TestSimulatedField_GetQuantity(t1 *testing.T) {
 			}
 		})
 	}
-}
-
-func TestSimulatedField_GetTypeName(t1 *testing.T) {
-	type fields struct {
-		FieldType    FieldType
-		Name         string
-		DataTypeSize model.SimulatedDataTypeSizes
-		Quantity     uint16
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   string
-	}{
-		{
-			name: "simple",
-			fields: fields{
-				FieldType:    FieldRandom,
-				Name:         "test",
-				DataTypeSize: model.SimulatedDataTypeSizes_BOOL,
-				Quantity:     1,
-			},
-			want: "BOOL",
-		},
-	}
-	for _, tt := range tests {
-		t1.Run(tt.name, func(t1 *testing.T) {
-			t := simulatedField{
-				FieldType:    tt.fields.FieldType,
-				Name:         tt.fields.Name,
-				DataTypeSize: tt.fields.DataTypeSize,
-				Quantity:     tt.fields.Quantity,
-			}
-			if got := t.GetTypeName(); got != tt.want {
-				t1.Errorf("GetTypeName() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
+}*/

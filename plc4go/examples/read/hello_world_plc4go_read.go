@@ -21,6 +21,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -46,7 +47,7 @@ func main() {
 
 	// Prepare a read-request
 	readRequest, err := connection.ReadRequestBuilder().
-		AddQuery("field", "holding-register:26:REAL").
+		AddFieldQuery("field", "holding-register:26:REAL").
 		Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.GetErr().Error())

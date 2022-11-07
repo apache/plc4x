@@ -43,7 +43,7 @@ type simulatedField struct {
 	Quantity     uint16
 }
 
-func NewSimulatedField(fieldType FieldType, name string, dataTypeSize model.SimulatedDataTypeSizes, quantity uint16) apiModel.PlcField {
+func NewSimulatedField(fieldType FieldType, name string, dataTypeSize model.SimulatedDataTypeSizes, quantity uint16) simulatedField {
 	return simulatedField{
 		FieldType:    fieldType,
 		Name:         name,

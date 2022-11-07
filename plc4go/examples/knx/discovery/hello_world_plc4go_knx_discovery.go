@@ -20,14 +20,15 @@
 package main
 
 import (
+	"os"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/api/logging"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/rs/zerolog/log"
-	"os"
-	"time"
 )
 
 func main() {
@@ -78,8 +79,8 @@ func main() {
 			log.Error().Err(err).Msg("error creating browse request")
 			return
 		}
-		brr := browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseEvent) bool {
-			knxField := result.GetResult().GetField()
+		brr := browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseItem) bool {
+			knxField := result.GetField()
 			knxAddress := knxField.GetAddressString()
 			log.Info().Msgf("Inspecting detected Device at KNX Address: %s", knxAddress)
 
@@ -118,8 +119,8 @@ func main() {
 			}
 
 			readRequest, err := connection.ReadRequestBuilder().
-				AddQuery("applicationProgramVersion", knxAddress+"#3/13").
-				AddQuery("interfaceProgramVersion", knxAddress+"#4/13").
+				AddFieldQuery("applicationProgramVersion", knxAddress+"#3/13").
+				AddFieldQuery("interfaceProgramVersion", knxAddress+"#4/13").
 				Build()
 			if err != nil {
 				log.Error().Msgf("Error creating read request for scanning %s", knxAddress)

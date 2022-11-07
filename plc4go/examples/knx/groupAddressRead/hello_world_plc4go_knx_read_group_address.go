@@ -21,6 +21,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/api/logging"
@@ -50,8 +51,8 @@ func main() {
 
 	// Prepare a read-request
 	readRequest, err := connection.ReadRequestBuilder().
-		AddQuery("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp").
-		AddQuery("secondFlorTemperatures", "3/[2,3,4,6]/10:DPT_Value_Temp").
+		AddFieldQuery("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp").
+		AddFieldQuery("secondFlorTemperatures", "3/[2,3,4,6]/10:DPT_Value_Temp").
 		Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.GetErr().Error())
