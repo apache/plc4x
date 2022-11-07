@@ -6058,8 +6058,10 @@ public class RandomPackagesTest {
                         @SuppressWarnings("redundant")
                         byte[] expectedBytes = rawData;
                         byte[] actualBytes = writeBuffer.getBytes();
-                        // This goes to std out on purpose to preserve coloring
-                        System.out.println(HexDiff.diffHex(expectedBytes, actualBytes));
+                        if (!Arrays.equals(expectedBytes, actualBytes)) {
+                            // This goes to std out on purpose to preserve coloring
+                            System.out.println(HexDiff.diffHex(expectedBytes, actualBytes));
+                        }
                         assertThat(actualBytes)
                             .withRepresentation(HexadecimalRepresentation.HEXA_REPRESENTATION)
                             .describedAs("re-serialized output doesn't match original bytes:%s\n", bvlc)
