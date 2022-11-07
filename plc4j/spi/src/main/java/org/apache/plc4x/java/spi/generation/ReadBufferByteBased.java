@@ -395,16 +395,16 @@ public class ReadBufferByteBased implements ReadBuffer {
             case "UTF8": {
                 byte[] strBytes = new byte[bitLength / 8];
                 int realLength = 0;
-                boolean finishedReading = false;
+                //boolean finishedReading = false;
                 for (int i = 0; (i < (bitLength / 8)) && hasMore(8); i++) {
                     try {
                         byte b = readByte(logicalName);
-                        if (b == 0x00) {
+                        /*if (b == 0x00) {
                             finishedReading = true;
-                        } else if (!finishedReading) {
+                        } else if (!finishedReading) {*/
                             strBytes[i] = b;
                             realLength++;
-                        }
+                        //}
                     } catch (Exception e) {
                         throw new PlcRuntimeException(e);
                     }
@@ -416,18 +416,18 @@ public class ReadBufferByteBased implements ReadBuffer {
             case "UTF16BE": {
                 byte[] strBytes = new byte[bitLength / 8];
                 int realLength = 0;
-                boolean finishedReading = false;
+                //boolean finishedReading = false;
                 for (int i = 0; (i < (bitLength / 16)) && hasMore(16); i++) {
                     try {
                         byte b1 = readByte(logicalName);
                         byte b2 = readByte(logicalName);
-                        if ((b1 == 0x00) && (b2 == 0x00)) {
+                        /*if ((b1 == 0x00) && (b2 == 0x00)) {
                             finishedReading = true;
-                        } else if (!finishedReading){
+                        } else if (!finishedReading){*/
                             strBytes[(i * 2)] = b1;
                             strBytes[(i * 2) + 1] = b2;
                             realLength++;
-                        }
+                        //}
                     } catch (Exception e) {
                         throw new PlcRuntimeException(e);
                     }

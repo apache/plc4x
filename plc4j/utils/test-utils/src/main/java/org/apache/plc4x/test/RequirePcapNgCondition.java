@@ -27,6 +27,7 @@ import org.pcap4j.core.Pcaps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,8 +43,11 @@ public class RequirePcapNgCondition implements ExecutionCondition {
         try {
             // On Mac we need to force the usage of the updated libpcap
             if(System.getProperty( "os.name" ).startsWith( "Mac" )) {
-                // TODO: Possibly find the highest version ...
-                System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.1/lib");
+                if (new File("/usr/local/Cellar/libpcap/1.10.1/lib").exists()) {
+                    System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.1/lib");
+                } else if (new File("/opt/homebrew/opt/libpcap/lib").exists()) {
+                    System.getProperties().setProperty("jna.library.path", "/opt/homebrew/opt/libpcap/lib");
+                }
             }
 
             String libVersion = Pcaps.libVersion();
