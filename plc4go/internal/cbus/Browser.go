@@ -21,15 +21,12 @@ package cbus
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
-	"github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -53,7 +50,7 @@ func NewBrowser(connection *Connection, messageCodec spi.MessageCodec) *Browser 
 
 func (m Browser) InternalBrowse(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
 	var queryResults []apiModel.PlcBrowseItem
-	switch query := query.(type) {
+	/*switch query := query.(type) {
 	case *unitInfoField:
 		allUnits := false
 		var units []readWriteModel.UnitAddress
@@ -150,7 +147,7 @@ func (m Browser) InternalBrowse(ctx context.Context, browseRequest apiModel.PlcB
 		}
 	default:
 		return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
-	}
+	}*/
 	return apiModel.PlcResponseCode_OK, queryResults
 }
 
