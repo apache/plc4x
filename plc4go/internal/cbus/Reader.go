@@ -256,11 +256,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 						case readWriteModel.CALDataIdentifyReplyExactly:
 							switch identifyReplyCommand := calData.GetIdentifyReplyCommand().(type) {
 							case readWriteModel.IdentifyReplyCommandCurrentSenseLevelsExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetCurrentSenseLevels()))
+								addPlcValue(fieldNameCopy, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetCurrentSenseLevels()))
 							case readWriteModel.IdentifyReplyCommandDelaysExactly:
 								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 									"ReStrikeDelay": spiValues.NewPlcUSINT(identifyReplyCommand.GetReStrikeDelay()),
-									"TerminalLevel": spiValues.NewPlcByteArray(identifyReplyCommand.GetTerminalLevels()),
+									"TerminalLevel": spiValues.NewPlcRawByteArray(identifyReplyCommand.GetTerminalLevels()),
 								}))
 							case readWriteModel.IdentifyReplyCommandDSIStatusExactly:
 								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
@@ -306,11 +306,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 							case readWriteModel.IdentifyReplyCommandFirmwareVersionExactly:
 								addPlcValue(fieldNameCopy, spiValues.NewPlcSTRING(identifyReplyCommand.GetFirmwareVersion()))
 							case readWriteModel.IdentifyReplyCommandGAVPhysicalAddressesExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetValues()))
+								addPlcValue(fieldNameCopy, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetValues()))
 							case readWriteModel.IdentifyReplyCommandGAVValuesCurrentExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetValues()))
+								addPlcValue(fieldNameCopy, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetValues()))
 							case readWriteModel.IdentifyReplyCommandGAVValuesStoredExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetValues()))
+								addPlcValue(fieldNameCopy, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetValues()))
 							case readWriteModel.IdentifyReplyCommandLogicalAssignmentExactly:
 								var plcValues []apiValues.PlcValue
 								for _, logicAssigment := range identifyReplyCommand.GetLogicAssigment() {
@@ -327,11 +327,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 							case readWriteModel.IdentifyReplyCommandManufacturerExactly:
 								addPlcValue(fieldNameCopy, spiValues.NewPlcSTRING(identifyReplyCommand.GetManufacturerName()))
 							case readWriteModel.IdentifyReplyCommandMaximumLevelsExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetMaximumLevels()))
+								addPlcValue(fieldNameCopy, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetMaximumLevels()))
 							case readWriteModel.IdentifyReplyCommandMinimumLevelsExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetMinimumLevels()))
+								addPlcValue(fieldNameCopy, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetMinimumLevels()))
 							case readWriteModel.IdentifyReplyCommandNetworkTerminalLevelsExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetNetworkTerminalLevels()))
+								addPlcValue(fieldNameCopy, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetNetworkTerminalLevels()))
 							case readWriteModel.IdentifyReplyCommandNetworkVoltageExactly:
 								volts := identifyReplyCommand.GetVolts()
 								voltsFloat, err := strconv.ParseFloat(volts, 0)
@@ -370,7 +370,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 								}
 								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(structContent))
 							case readWriteModel.IdentifyReplyCommandTerminalLevelsExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetTerminalLevels()))
+								addPlcValue(fieldNameCopy, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetTerminalLevels()))
 							case readWriteModel.IdentifyReplyCommandTypeExactly:
 								addPlcValue(fieldNameCopy, spiValues.NewPlcSTRING(identifyReplyCommand.GetUnitType()))
 							default:

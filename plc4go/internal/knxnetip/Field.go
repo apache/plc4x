@@ -328,9 +328,16 @@ func (k DeviceMemoryAddressPlcField) toKnxAddress() driverModel.KnxAddress {
 	return individualAddress
 }
 
-func CastToFieldFromPlcField(plcField apiModel.PlcField) (Field, error) {
-	if field, ok := plcField.(Field); ok {
-		return field, nil
+func CastToKnxFieldFromPlcField(plcField apiModel.PlcField) (Field, error) {
+	if knxField, ok := plcField.(Field); ok {
+		return knxField, nil
+	}
+	return nil, errors.New("couldn't cast to KnxNetIpField")
+}
+
+func CastToGroupAddressFieldFromPlcField(plcField apiModel.PlcField) (GroupAddressField, error) {
+	if groupAddressField, ok := plcField.(GroupAddressField); ok {
+		return groupAddressField, nil
 	}
 	return nil, errors.New("couldn't cast to KnxNetIpField")
 }

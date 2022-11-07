@@ -157,7 +157,7 @@ func (m Browser) InternalBrowse(ctx context.Context, browseRequest apiModel.PlcB
 func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any, error) {
 	// We need to presubscribe to catch the 2 followup responses
 	subscriptionRequest, err := m.connection.SubscriptionRequestBuilder().
-		AddEventQuery("installationMMIMonitor", "mmimonitor/*/NETWORK_CONTROL").
+		AddEventFieldQuery("installationMMIMonitor", "mmimonitor/*/NETWORK_CONTROL").
 		Build()
 	if err != nil {
 		return nil, errors.Wrap(err, "Error subscribing to the installation MMI")
@@ -248,7 +248,7 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 	defer plcConsumerRegistration.Unregister()
 
 	readRequest, err := m.connection.ReadRequestBuilder().
-		AddQuery("installationMMI", "status/binary/0xFF").
+		AddFieldQuery("installationMMI", "status/binary/0xFF").
 		Build()
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting the installation MMI")

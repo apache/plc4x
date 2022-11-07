@@ -56,17 +56,17 @@ func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <
 		deviceAddresses := map[driverModel.KnxAddress]map[string]DeviceField{}
 		groupAddresses := map[string]GroupAddressField{}
 		for _, fieldName := range readRequest.GetFieldNames() {
-			// Get the knx field
-			field, err := CastToFieldFromPlcField(readRequest.GetField(fieldName))
+			// Get the knx knxField
+			knxField, err := CastToKnxFieldFromPlcField(readRequest.GetField(fieldName))
 			if err != nil {
 				responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS
 				plcValues[fieldName] = nil
 				continue
 			}
 
-			switch field.(type) {
+			switch knxField.(type) {
 			case DevicePropertyAddressPlcField:
-				propertyField := field.(DevicePropertyAddressPlcField)
+				propertyField := knxField.(DevicePropertyAddressPlcField)
 				knxAddress := propertyField.toKnxAddress()
 				if knxAddress == nil {
 					continue
@@ -76,7 +76,7 @@ func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <
 				}
 				deviceAddresses[knxAddress][fieldName] = propertyField
 			case DeviceMemoryAddressPlcField:
-				memoryField := field.(DeviceMemoryAddressPlcField)
+				memoryField := knxField.(DeviceMemoryAddressPlcField)
 				knxAddress := memoryField.toKnxAddress()
 				if knxAddress == nil {
 					continue
@@ -86,7 +86,7 @@ func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <
 				}
 				deviceAddresses[knxAddress][fieldName] = memoryField
 			case GroupAddressField:
-				groupAddressField := field.(GroupAddressField)
+				groupAddressField := knxField.(GroupAddressField)
 				groupAddresses[fieldName] = groupAddressField
 			default:
 				responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS

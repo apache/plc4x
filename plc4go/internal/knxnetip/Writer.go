@@ -22,6 +22,7 @@ package knxnetip
 import (
 	"context"
 	"errors"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -47,7 +48,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 
 		// Get the KnxNetIp field instance from the request
 		field := writeRequest.GetField(fieldName)
-		knxNetIpField, err := CastToFieldFromPlcField(field)
+		groupAddressField, err := CastToGroupAddressFieldFromPlcField(field)
 		if err != nil {
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
@@ -59,9 +60,9 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 
 		// Get the value from the request and serialize it to a byte array
 		value := writeRequest.GetValue(fieldName)
-		fieldType, _ := readWriteModel.KnxDatapointTypeByName(knxNetIpField.GetTypeName())
+		fieldType := groupAddressField.GetFieldType()
 		// TODO: why do we ignore the bytes here?
-		if _, err := readWriteModel.KnxDatapointSerialize(value, fieldType); err != nil {
+		if _, err := readWriteModel.KnxDatapointSerialize(value, *fieldType); err != nil {
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
