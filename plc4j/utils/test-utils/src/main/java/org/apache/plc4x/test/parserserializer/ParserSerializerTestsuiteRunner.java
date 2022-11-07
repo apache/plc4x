@@ -27,6 +27,7 @@ import org.apache.plc4x.test.XmlTestsuiteLoader;
 import org.apache.plc4x.test.dom4j.LocationAwareDocumentFactory;
 import org.apache.plc4x.test.dom4j.LocationAwareElement;
 import org.apache.plc4x.test.dom4j.LocationAwareSAXReader;
+import org.apache.plc4x.test.hex.HexDiff;
 import org.apache.plc4x.test.migration.MessageResolver;
 import org.apache.plc4x.test.migration.MessageValidatorAndMigrator;
 import org.apache.plc4x.test.parserserializer.exceptions.ParserSerializerTestsuiteException;
@@ -165,7 +166,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
 
             // In this case no reference xml has been provided
             // (This is usually during development)
-            if(testcase.getXml().elements().size() == 0) {
+            if (testcase.getXml().elements().size() == 0) {
                 WriteBufferXmlBased writeBufferXmlBased = new WriteBufferXmlBased();
                 parsedOutput.serialize(writeBufferXmlBased);
                 String xmlString = writeBufferXmlBased.getXmlString();
@@ -209,24 +210,10 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             if (!Arrays.equals(testcaseRaw, data)) {
-                int numBytes = Math.min(data.length, testcaseRaw.length);
-                int brokenAt = -1;
-                List<Integer> diffIndexes = new LinkedList<>();
-                for (int i = 0; i < numBytes; i++) {
-                    if (data[i] != testcaseRaw[i]) {
-                        if (brokenAt < 0) {
-                            brokenAt = i;
-                        }
-                        diffIndexes.add(i);
-                    }
-                }
-                String rawHex = org.apache.plc4x.java.spi.utils.hex.Hex.dump(testcaseRaw, 46, diffIndexes.stream().mapToInt(integer -> integer).toArray());
-                String dataHex = org.apache.plc4x.java.spi.utils.hex.Hex.dump(data, 46, diffIndexes.stream().mapToInt(integer -> integer).toArray());
-                AsciiBox compareBox = AsciiBoxWriter.DEFAULT.boxSideBySide(AsciiBoxWriter.DEFAULT.boxString("expected", rawHex, 0), AsciiBoxWriter.DEFAULT.boxString("actual", dataHex, 0));
-                LOGGER.error("Diff\n{}", compareBox);
+                // This goes to std out on purpose to preserve coloring
+                System.out.println(HexDiff.diffHex(testcaseRaw, data));
                 throw new ParserSerializerTestsuiteException("Differences were found after serializing.\nExpected: " +
-                    Hex.encodeHexString(testcaseRaw) + "\nBut Got:  " + Hex.encodeHexString(data) +
-                    "\n          " + String.join("", Collections.nCopies(brokenAt, "--")) + "^");
+                    Hex.encodeHexString(testcaseRaw) + "\nBut Got:  " + Hex.encodeHexString(data) + "");
             }
         } catch (SerializationException | ParseException e) {
             throw new ParserSerializerTestsuiteException("Unable to parse message", e);
