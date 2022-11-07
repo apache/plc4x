@@ -46,7 +46,7 @@ func NewFieldHandler() FieldHandler {
 		directAdsStringField: regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
 		directAdsField:       regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>\w+)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
 		symbolicAdsField:     regexp.MustCompile(`^(?P<symbolicAddress>[^\[]+)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
-		arrayInfoSegment:     regexp.MustCompile(`^((?P<numElements>\d+)|((?P<startElement>\d+)\.\.(?P<endElement>\d+))|((?P<startElement2>\d+):(?P<numElements2>\d+)))`),
+		arrayInfoSegment:     regexp.MustCompile(`((^(?P<numElements>\d+)$)|(^((?P<startElement>\d+)\.\.(?P<endElement>\d+))$)|(^((?P<startElement2>\d+):(?P<numElements2>\d+)))$)`),
 	}
 }
 
@@ -130,12 +130,12 @@ func (m FieldHandler) ParseField(query string) (apiModel.PlcField, error) {
 							LowerBound: startElement,
 							UpperBound: endElement,
 						})
-					} else if match["startElement"] != "" && match["numElements"] != "" {
-						startElement, err := m.getUint32Value(match["startElement"])
+					} else if match["startElement2"] != "" && match["numElements2"] != "" {
+						startElement, err := m.getUint32Value(match["startElement2"])
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						numElements, err := m.getUint32Value(match["numElements"])
+						numElements, err := m.getUint32Value(match["numElements2"])
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
@@ -205,6 +205,7 @@ func (m FieldHandler) ParseField(query string) (apiModel.PlcField, error) {
 		}
 
 		var arrayInfo []apiModel.ArrayInfo
+
 		if match["arrayInfo"] != "" {
 			arrayInfoString := match["arrayInfo"]
 
@@ -229,12 +230,12 @@ func (m FieldHandler) ParseField(query string) (apiModel.PlcField, error) {
 							LowerBound: startElement,
 							UpperBound: endElement,
 						})
-					} else if match["startElement"] != "" && match["numElements"] != "" {
-						startElement, err := m.getUint32Value(match["startElement"])
+					} else if match["startElement2"] != "" && match["numElements2"] != "" {
+						startElement, err := m.getUint32Value(match["startElement2"])
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						numElements, err := m.getUint32Value(match["numElements"])
+						numElements, err := m.getUint32Value(match["numElements2"])
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
@@ -284,12 +285,12 @@ func (m FieldHandler) ParseField(query string) (apiModel.PlcField, error) {
 							LowerBound: startElement,
 							UpperBound: endElement,
 						})
-					} else if match["startElement"] != "" && match["numElements"] != "" {
-						startElement, err := m.getUint32Value(match["startElement"])
+					} else if match["startElement2"] != "" && match["numElements2"] != "" {
+						startElement, err := m.getUint32Value(match["startElement2"])
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
-						numElements, err := m.getUint32Value(match["numElements"])
+						numElements, err := m.getUint32Value(match["numElements2"])
 						if err != nil {
 							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
 						}
@@ -317,8 +318,10 @@ func (m FieldHandler) ParseField(query string) (apiModel.PlcField, error) {
 	}
 }
 
-func (m FieldHandler) ParseQuery(_ string) (apiModel.PlcQuery, error) {
-	return nil, fmt.Errorf("queries not supported")
+func (m FieldHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {
+	return symbolicPlcQuery{
+		query: query,
+	}, nil
 }
 
 func (m FieldHandler) getUint32Value(stringValue string) (uint32, error) {

@@ -20,13 +20,14 @@
 package simulated
 
 import (
+	"net/url"
+	"testing"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"net/url"
-	"testing"
-	"time"
 )
 
 func TestDriver_CheckQuery(t *testing.T) {
@@ -49,8 +50,8 @@ func TestDriver_CheckQuery(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			d := NewDriver()
-			if err := d.CheckQuery(tt.args.query); (err != nil) != tt.wantErr {
-				t.Errorf("CheckQuery() error = %v, wantErr %v", err, tt.wantErr)
+			if err := d.CheckFieldQuery(tt.args.query); (err != nil) != tt.wantErr {
+				t.Errorf("CheckFieldQuery() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

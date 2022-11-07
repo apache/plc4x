@@ -20,10 +20,11 @@
 package simulated
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	model2 "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
 	"reflect"
 	"testing"
+
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	model2 "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
 )
 
 func TestFieldHandler_ParseQuery(t *testing.T) {
@@ -120,7 +121,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := NewFieldHandler()
-			got, err := m.ParseQuery(tt.args.query)
+			got, err := m.ParseField(tt.args.query)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ParseQuery() error = %v, wantErr %v", err, tt.wantErr)
 				return

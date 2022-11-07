@@ -27,6 +27,7 @@ import (
 )
 
 func TestBrowserManual(t *testing.T) {
+	t.Skip("manual test")
 	driverManager := plc4go.NewPlcDriverManager()
 	drivers.RegisterAdsDriver(driverManager)
 	connectionChan := driverManager.GetConnection("ads:tcp://192.168.23.20?sourceAmsNetId=192.168.23.200.1.1&sourceAmsPort=65534&targetAmsNetId=192.168.23.20.1.1&targetAmsPort=851")

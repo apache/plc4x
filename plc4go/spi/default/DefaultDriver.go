@@ -22,12 +22,13 @@ package _default
 import (
 	"context"
 	"fmt"
+	"net/url"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"net/url"
 )
 
 type DefaultDriver interface {
@@ -75,6 +76,11 @@ func (d *defaultDriver) GetProtocolName() string {
 
 func (d *defaultDriver) GetDefaultTransport() string {
 	return d.defaultTransport
+}
+
+func (d *defaultDriver) CheckFieldQuery(query string) error {
+	_, err := d.plcFieldHandler.ParseField(query)
+	return err
 }
 
 func (d *defaultDriver) CheckQuery(query string) error {

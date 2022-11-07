@@ -26,3 +26,17 @@ type SymbolicPlcQuery interface {
 
 	GetSymbolicAddressPattern() string
 }
+
+type symbolicPlcQuery struct {
+	SymbolicPlcQuery
+
+	query string
+}
+
+func (t symbolicPlcQuery) GetQueryString() string {
+	return t.query
+}
+
+func (t symbolicPlcQuery) GetSymbolicAddressPattern() string {
+	return t.query
+}
