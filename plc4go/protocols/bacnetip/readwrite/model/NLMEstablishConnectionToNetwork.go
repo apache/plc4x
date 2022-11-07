@@ -66,9 +66,7 @@ func (m *_NLMEstablishConnectionToNetwork) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMEstablishConnectionToNetwork) InitializeParent(parent NLM, vendorId *BACnetVendorId) {
-	m.VendorId = vendorId
-}
+func (m *_NLMEstablishConnectionToNetwork) InitializeParent(parent NLM) {}
 
 func (m *_NLMEstablishConnectionToNetwork) GetParent() NLM {
 	return m._NLM
@@ -93,11 +91,11 @@ func (m *_NLMEstablishConnectionToNetwork) GetTerminationTime() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewNLMEstablishConnectionToNetwork factory function for _NLMEstablishConnectionToNetwork
-func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8, vendorId *BACnetVendorId, apduLength uint16) *_NLMEstablishConnectionToNetwork {
+func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8, apduLength uint16) *_NLMEstablishConnectionToNetwork {
 	_result := &_NLMEstablishConnectionToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		TerminationTime:           terminationTime,
-		_NLM:                      NewNLM(vendorId, apduLength),
+		_NLM:                      NewNLM(apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result
 	return _result
@@ -138,11 +136,11 @@ func (m *_NLMEstablishConnectionToNetwork) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMEstablishConnectionToNetworkParse(theBytes []byte, apduLength uint16, messageType uint8) (NLMEstablishConnectionToNetwork, error) {
-	return NLMEstablishConnectionToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength, messageType) // TODO: get endianness from mspec
+func NLMEstablishConnectionToNetworkParse(theBytes []byte, apduLength uint16) (NLMEstablishConnectionToNetwork, error) {
+	return NLMEstablishConnectionToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength) // TODO: get endianness from mspec
 }
 
-func NLMEstablishConnectionToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMEstablishConnectionToNetwork, error) {
+func NLMEstablishConnectionToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMEstablishConnectionToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMEstablishConnectionToNetwork"); pullErr != nil {

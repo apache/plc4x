@@ -63,9 +63,7 @@ func (m *_NLMRouterBusyToNetwork) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMRouterBusyToNetwork) InitializeParent(parent NLM, vendorId *BACnetVendorId) {
-	m.VendorId = vendorId
-}
+func (m *_NLMRouterBusyToNetwork) InitializeParent(parent NLM) {}
 
 func (m *_NLMRouterBusyToNetwork) GetParent() NLM {
 	return m._NLM
@@ -86,10 +84,10 @@ func (m *_NLMRouterBusyToNetwork) GetDestinationNetworkAddress() []uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewNLMRouterBusyToNetwork factory function for _NLMRouterBusyToNetwork
-func NewNLMRouterBusyToNetwork(destinationNetworkAddress []uint16, vendorId *BACnetVendorId, apduLength uint16) *_NLMRouterBusyToNetwork {
+func NewNLMRouterBusyToNetwork(destinationNetworkAddress []uint16, apduLength uint16) *_NLMRouterBusyToNetwork {
 	_result := &_NLMRouterBusyToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
-		_NLM:                      NewNLM(vendorId, apduLength),
+		_NLM:                      NewNLM(apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result
 	return _result
@@ -129,11 +127,11 @@ func (m *_NLMRouterBusyToNetwork) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMRouterBusyToNetworkParse(theBytes []byte, apduLength uint16, messageType uint8) (NLMRouterBusyToNetwork, error) {
-	return NLMRouterBusyToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength, messageType) // TODO: get endianness from mspec
+func NLMRouterBusyToNetworkParse(theBytes []byte, apduLength uint16) (NLMRouterBusyToNetwork, error) {
+	return NLMRouterBusyToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength) // TODO: get endianness from mspec
 }
 
-func NLMRouterBusyToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMRouterBusyToNetwork, error) {
+func NLMRouterBusyToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMRouterBusyToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMRouterBusyToNetwork"); pullErr != nil {
@@ -149,7 +147,7 @@ func NLMRouterBusyToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLeng
 	// Length array
 	var destinationNetworkAddress []uint16
 	{
-		_destinationNetworkAddressLength := uint16(apduLength) - uint16((utils.InlineIf((bool((bool((messageType) >= (128)))) && bool((bool((messageType) <= (255))))), func() interface{} { return uint16(uint16(3)) }, func() interface{} { return uint16(uint16(1)) }).(uint16)))
+		_destinationNetworkAddressLength := uint16(apduLength) - uint16(uint16(1))
 		_destinationNetworkAddressEndPos := positionAware.GetPos() + uint16(_destinationNetworkAddressLength)
 		for positionAware.GetPos() < _destinationNetworkAddressEndPos {
 			_item, _err := readBuffer.ReadUint16("", 16)

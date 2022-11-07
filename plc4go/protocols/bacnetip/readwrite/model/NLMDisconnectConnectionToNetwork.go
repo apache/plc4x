@@ -63,9 +63,7 @@ func (m *_NLMDisconnectConnectionToNetwork) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMDisconnectConnectionToNetwork) InitializeParent(parent NLM, vendorId *BACnetVendorId) {
-	m.VendorId = vendorId
-}
+func (m *_NLMDisconnectConnectionToNetwork) InitializeParent(parent NLM) {}
 
 func (m *_NLMDisconnectConnectionToNetwork) GetParent() NLM {
 	return m._NLM
@@ -86,10 +84,10 @@ func (m *_NLMDisconnectConnectionToNetwork) GetDestinationNetworkAddress() uint1
 ///////////////////////////////////////////////////////////
 
 // NewNLMDisconnectConnectionToNetwork factory function for _NLMDisconnectConnectionToNetwork
-func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, vendorId *BACnetVendorId, apduLength uint16) *_NLMDisconnectConnectionToNetwork {
+func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, apduLength uint16) *_NLMDisconnectConnectionToNetwork {
 	_result := &_NLMDisconnectConnectionToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
-		_NLM:                      NewNLM(vendorId, apduLength),
+		_NLM:                      NewNLM(apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result
 	return _result
@@ -127,11 +125,11 @@ func (m *_NLMDisconnectConnectionToNetwork) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMDisconnectConnectionToNetworkParse(theBytes []byte, apduLength uint16, messageType uint8) (NLMDisconnectConnectionToNetwork, error) {
-	return NLMDisconnectConnectionToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength, messageType) // TODO: get endianness from mspec
+func NLMDisconnectConnectionToNetworkParse(theBytes []byte, apduLength uint16) (NLMDisconnectConnectionToNetwork, error) {
+	return NLMDisconnectConnectionToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength) // TODO: get endianness from mspec
 }
 
-func NLMDisconnectConnectionToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMDisconnectConnectionToNetwork, error) {
+func NLMDisconnectConnectionToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMDisconnectConnectionToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMDisconnectConnectionToNetwork"); pullErr != nil {

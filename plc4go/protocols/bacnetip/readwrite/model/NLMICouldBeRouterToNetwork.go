@@ -66,9 +66,7 @@ func (m *_NLMICouldBeRouterToNetwork) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMICouldBeRouterToNetwork) InitializeParent(parent NLM, vendorId *BACnetVendorId) {
-	m.VendorId = vendorId
-}
+func (m *_NLMICouldBeRouterToNetwork) InitializeParent(parent NLM) {}
 
 func (m *_NLMICouldBeRouterToNetwork) GetParent() NLM {
 	return m._NLM
@@ -93,11 +91,11 @@ func (m *_NLMICouldBeRouterToNetwork) GetPerformanceIndex() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewNLMICouldBeRouterToNetwork factory function for _NLMICouldBeRouterToNetwork
-func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performanceIndex uint8, vendorId *BACnetVendorId, apduLength uint16) *_NLMICouldBeRouterToNetwork {
+func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performanceIndex uint8, apduLength uint16) *_NLMICouldBeRouterToNetwork {
 	_result := &_NLMICouldBeRouterToNetwork{
 		DestinationNetworkAddress: destinationNetworkAddress,
 		PerformanceIndex:          performanceIndex,
-		_NLM:                      NewNLM(vendorId, apduLength),
+		_NLM:                      NewNLM(apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result
 	return _result
@@ -138,11 +136,11 @@ func (m *_NLMICouldBeRouterToNetwork) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMICouldBeRouterToNetworkParse(theBytes []byte, apduLength uint16, messageType uint8) (NLMICouldBeRouterToNetwork, error) {
-	return NLMICouldBeRouterToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength, messageType) // TODO: get endianness from mspec
+func NLMICouldBeRouterToNetworkParse(theBytes []byte, apduLength uint16) (NLMICouldBeRouterToNetwork, error) {
+	return NLMICouldBeRouterToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength) // TODO: get endianness from mspec
 }
 
-func NLMICouldBeRouterToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMICouldBeRouterToNetwork, error) {
+func NLMICouldBeRouterToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMICouldBeRouterToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMICouldBeRouterToNetwork"); pullErr != nil {
