@@ -25,9 +25,11 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
+	"strings"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	model2 "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -36,13 +38,15 @@ type FieldHandler struct {
 	directAdsStringField *regexp.Regexp
 	directAdsField       *regexp.Regexp
 	symbolicAdsField     *regexp.Regexp
+	arrayInfoSegment     *regexp.Regexp
 }
 
 func NewFieldHandler() FieldHandler {
 	return FieldHandler{
-		directAdsStringField: regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)((\[(?P<numElements>\d+)])|(\[(?P<startElement>\d+)\.\.(?P<endElement>\d+)])|(\[(?P<startElement2>\d+):(?P<numElements2>\d+)]))?`),
-		directAdsField:       regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>\w+)((\[(?P<numElements>\d+)])|(\[(?P<startElement>\d+)\.\.(?P<endElement>\d+)])|(\[(?P<startElement2>\d+):(?P<numElements2>\d+)]))?`),
-		symbolicAdsField:     regexp.MustCompile(`^(?P<symbolicAddress>[^\[]+)((\[(?P<numElements>\d+)])|(\[(?P<startElement>\d+)\.\.(?P<endElement>\d+)])|(\[(?P<startElement2>\d+):(?P<numElements2>\d+)]))?`),
+		directAdsStringField: regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
+		directAdsField:       regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>\w+)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
+		symbolicAdsField:     regexp.MustCompile(`^(?P<symbolicAddress>[^\[]+)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
+		arrayInfoSegment:     regexp.MustCompile(`^((?P<numElements>\d+)|((?P<startElement>\d+)\.\.(?P<endElement>\d+))|((?P<startElement2>\d+):(?P<numElements2>\d+)))`),
 	}
 }
 
@@ -94,9 +98,7 @@ func (m FieldHandler) ParseField(query string) (apiModel.PlcField, error) {
 		}
 
 		stringLength := NONE
-		numElements := NONE
-		startElement := NONE
-		endElement := NONE
+		var arrayInfo []apiModel.ArrayInfo
 
 		tmpStringLength, err := strconv.ParseInt(match["stringLength"], 10, 32)
 		if err != nil {
@@ -104,42 +106,58 @@ func (m FieldHandler) ParseField(query string) (apiModel.PlcField, error) {
 		}
 		stringLength = int32(tmpStringLength)
 
-		if match["numElements"] != "" {
-			tmpNumElements, err := strconv.ParseUint(match["numElements"], 10, 32)
-			if err != nil {
-				return nil, fmt.Errorf("invalid address format parsing 'numElements': %v", err)
-			} else {
-				numElements = int32(tmpNumElements)
-			}
-		} else if match["startElement"] != "" && match["endElement"] != "" {
-			tmpStartElement, err := strconv.ParseUint(match["startElement"], 10, 32)
-			if err != nil {
-				return nil, fmt.Errorf("invalid address format parsing 'startElement': %v", err)
-			} else {
-				startElement = int32(tmpStartElement)
-			}
-			tmpEndElement, err := strconv.ParseUint(match["endElement"], 10, 32)
-			if err != nil {
-				return nil, fmt.Errorf("invalid address format parsing 'endElement': %v", err)
-			} else {
-				endElement = int32(tmpEndElement)
-			}
-		} else if match["startElement2"] != "" && match["numElements2"] != "" {
-			tmpStartElement2, err := strconv.ParseUint(match["startElement2"], 10, 32)
-			if err != nil {
-				return nil, fmt.Errorf("invalid address format parsing 'startElement2': %v", err)
-			} else {
-				startElement = int32(tmpStartElement2)
-			}
-			tmpNumElements2, err := strconv.ParseUint(match["numElements2"], 10, 32)
-			if err != nil {
-				return nil, fmt.Errorf("invalid address format parsing 'numElements2': %v", err)
-			} else {
-				numElements = int32(tmpNumElements2)
+		if match["arrayInfo"] != "" {
+			arrayInfoString := match["arrayInfo"]
+
+			arrayInfo = []apiModel.ArrayInfo{}
+
+			// Cut off the starting and ending bracket
+			arrayInfoString = arrayInfoString[1:(len(arrayInfoString) - 1)]
+			// Split the remaining string into separate segments.
+			arrayInfoSegments := strings.Split(arrayInfoString, "][")
+			for _, currentSegment := range arrayInfoSegments {
+				if match := utils.GetSubgroupMatches(m.arrayInfoSegment, currentSegment); match != nil {
+					if match["startElement"] != "" && match["endElement"] != "" {
+						startElement, err := m.getUint32Value(match["startElement"])
+						if err != nil {
+							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
+						}
+						endElement, err := m.getUint32Value(match["endElement"])
+						if err != nil {
+							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
+						}
+						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+							LowerBound: startElement,
+							UpperBound: endElement,
+						})
+					} else if match["startElement"] != "" && match["numElements"] != "" {
+						startElement, err := m.getUint32Value(match["startElement"])
+						if err != nil {
+							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
+						}
+						numElements, err := m.getUint32Value(match["numElements"])
+						if err != nil {
+							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
+						}
+						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+							LowerBound: startElement,
+							UpperBound: startElement + numElements,
+						})
+					} else if match["numElements"] != "" {
+						numElements, err := m.getUint32Value(match["numElements"])
+						if err != nil {
+							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
+						}
+						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+							LowerBound: 0,
+							UpperBound: numElements,
+						})
+					}
+				}
 			}
 		}
 
-		return newDirectAdsPlcField(indexGroup, indexOffset, adsDataType, stringLength, numElements, startElement, endElement)
+		return newDirectAdsPlcField(indexGroup, indexOffset, adsDataType, stringLength, arrayInfo)
 	} else if match := utils.GetSubgroupMatches(m.directAdsField, query); match != nil {
 		var indexGroup uint32
 		if indexGroupHexString := match["indexGroupHex"]; indexGroupHexString != "" {
@@ -186,87 +204,114 @@ func (m FieldHandler) ParseField(query string) (apiModel.PlcField, error) {
 			return nil, fmt.Errorf("invalid ads data type")
 		}
 
-		numElements := NONE
-		startElement := NONE
-		endElement := NONE
+		var arrayInfo []apiModel.ArrayInfo
+		if match["arrayInfo"] != "" {
+			arrayInfoString := match["arrayInfo"]
 
-		if match["numElements"] != "" {
-			tmpNumElements, err := strconv.ParseUint(match["numElements"], 10, 32)
-			if err != nil {
-				return nil, fmt.Errorf("invalid address format parsing 'numElements': %v", err)
-			} else {
-				numElements = int32(tmpNumElements)
-			}
-		} else if match["startElement"] != "" && match["endElement"] != "" {
-			tmpStartElement, err := strconv.ParseUint(match["startElement"], 10, 32)
-			if err != nil {
-				return nil, fmt.Errorf("invalid address format parsing 'startElement': %v", err)
-			} else {
-				startElement = int32(tmpStartElement)
-			}
-			tmpEndElement, err := strconv.ParseUint(match["endElement"], 10, 32)
-			if err != nil {
-				return nil, fmt.Errorf("invalid address format parsing 'endElement': %v", err)
-			} else {
-				endElement = int32(tmpEndElement)
-			}
-		} else if match["startElement2"] != "" && match["numElements2"] != "" {
-			tmpStartElement2, err := strconv.ParseUint(match["startElement2"], 10, 32)
-			if err != nil {
-				return nil, fmt.Errorf("invalid address format parsing 'startElement2': %v", err)
-			} else {
-				startElement = int32(tmpStartElement2)
-			}
-			tmpNumElements2, err := strconv.ParseUint(match["numElements2"], 10, 32)
-			if err != nil {
-				return nil, fmt.Errorf("invalid address format parsing 'numElements2': %v", err)
-			} else {
-				numElements = int32(tmpNumElements2)
+			arrayInfo = []apiModel.ArrayInfo{}
+
+			// Cut off the starting and ending bracket
+			arrayInfoString = arrayInfoString[1:(len(arrayInfoString) - 1)]
+			// Split the remaining string into separate segments.
+			arrayInfoSegments := strings.Split(arrayInfoString, "][")
+			for _, currentSegment := range arrayInfoSegments {
+				if match := utils.GetSubgroupMatches(m.arrayInfoSegment, currentSegment); match != nil {
+					if match["startElement"] != "" && match["endElement"] != "" {
+						startElement, err := m.getUint32Value(match["startElement"])
+						if err != nil {
+							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
+						}
+						endElement, err := m.getUint32Value(match["endElement"])
+						if err != nil {
+							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
+						}
+						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+							LowerBound: startElement,
+							UpperBound: endElement,
+						})
+					} else if match["startElement"] != "" && match["numElements"] != "" {
+						startElement, err := m.getUint32Value(match["startElement"])
+						if err != nil {
+							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
+						}
+						numElements, err := m.getUint32Value(match["numElements"])
+						if err != nil {
+							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
+						}
+						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+							LowerBound: startElement,
+							UpperBound: startElement + numElements,
+						})
+					} else if match["numElements"] != "" {
+						numElements, err := m.getUint32Value(match["numElements"])
+						if err != nil {
+							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
+						}
+						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+							LowerBound: 0,
+							UpperBound: numElements,
+						})
+					}
+				}
 			}
 		}
 
-		return newDirectAdsPlcField(indexGroup, indexOffset, adsDataType, NONE, numElements, startElement, endElement)
+		return newDirectAdsPlcField(indexGroup, indexOffset, adsDataType, NONE, arrayInfo)
 	} else if match := utils.GetSubgroupMatches(m.symbolicAdsField, query); match != nil {
-		numElements := NONE
-		startElement := NONE
-		endElement := NONE
+		var arrayInfo []apiModel.ArrayInfo
 
-		if match["numElements"] != "" {
-			tmpNumElements, err := strconv.ParseUint(match["numElements"], 10, 32)
-			if err != nil {
-				return nil, fmt.Errorf("invalid address format parsing 'numElements': %v", err)
-			} else {
-				numElements = int32(tmpNumElements)
-			}
-		} else if match["startElement"] != "" && match["endElement"] != "" {
-			tmpStartElement, err := strconv.ParseUint(match["startElement"], 10, 32)
-			if err != nil {
-				return nil, fmt.Errorf("invalid address format parsing 'startElement': %v", err)
-			} else {
-				startElement = int32(tmpStartElement)
-			}
-			tmpEndElement, err := strconv.ParseUint(match["endElement"], 10, 32)
-			if err != nil {
-				return nil, fmt.Errorf("invalid address format parsing 'endElement': %v", err)
-			} else {
-				endElement = int32(tmpEndElement)
-			}
-		} else if match["startElement2"] != "" && match["numElements2"] != "" {
-			tmpStartElement2, err := strconv.ParseUint(match["startElement2"], 10, 32)
-			if err != nil {
-				return nil, fmt.Errorf("invalid address format parsing 'startElement2': %v", err)
-			} else {
-				startElement = int32(tmpStartElement2)
-			}
-			tmpNumElements2, err := strconv.ParseUint(match["numElements2"], 10, 32)
-			if err != nil {
-				return nil, fmt.Errorf("invalid address format parsing 'numElements2': %v", err)
-			} else {
-				numElements = int32(tmpNumElements2)
+		if match["arrayInfo"] != "" {
+			arrayInfoString := match["arrayInfo"]
+
+			arrayInfo = []apiModel.ArrayInfo{}
+
+			// Cut off the starting and ending bracket
+			arrayInfoString = arrayInfoString[1:(len(arrayInfoString) - 1)]
+			// Split the remaining string into separate segments.
+			arrayInfoSegments := strings.Split(arrayInfoString, "][")
+			for _, currentSegment := range arrayInfoSegments {
+				if match := utils.GetSubgroupMatches(m.arrayInfoSegment, currentSegment); match != nil {
+					if match["startElement"] != "" && match["endElement"] != "" {
+						startElement, err := m.getUint32Value(match["startElement"])
+						if err != nil {
+							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
+						}
+						endElement, err := m.getUint32Value(match["endElement"])
+						if err != nil {
+							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
+						}
+						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+							LowerBound: startElement,
+							UpperBound: endElement,
+						})
+					} else if match["startElement"] != "" && match["numElements"] != "" {
+						startElement, err := m.getUint32Value(match["startElement"])
+						if err != nil {
+							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
+						}
+						numElements, err := m.getUint32Value(match["numElements"])
+						if err != nil {
+							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
+						}
+						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+							LowerBound: startElement,
+							UpperBound: startElement + numElements,
+						})
+					} else if match["numElements"] != "" {
+						numElements, err := m.getUint32Value(match["numElements"])
+						if err != nil {
+							return nil, fmt.Errorf("error parsing array info: %s, got error: %v", currentSegment, err)
+						}
+						arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+							LowerBound: 0,
+							UpperBound: numElements,
+						})
+					}
+				}
 			}
 		}
 
-		return newAdsSymbolicPlcField(match["symbolicAddress"])
+		return newAdsSymbolicPlcField(match["symbolicAddress"], arrayInfo)
 	} else {
 		return nil, errors.Errorf("Invalid address format for address '%s'", query)
 	}
@@ -274,4 +319,13 @@ func (m FieldHandler) ParseField(query string) (apiModel.PlcField, error) {
 
 func (m FieldHandler) ParseQuery(_ string) (apiModel.PlcQuery, error) {
 	return nil, fmt.Errorf("queries not supported")
+}
+
+func (m FieldHandler) getUint32Value(stringValue string) (uint32, error) {
+	intValue, err := strconv.ParseUint(stringValue, 10, 32)
+	if err != nil {
+		return 0, fmt.Errorf("invalid number format parsing '%s' as int32: %v", stringValue, err)
+	} else {
+		return uint32(intValue), nil
+	}
 }
