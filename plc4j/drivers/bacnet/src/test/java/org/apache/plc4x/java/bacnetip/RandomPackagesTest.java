@@ -24,8 +24,11 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.bacnetip.readwrite.*;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.utils.Serializable;
+import org.apache.plc4x.java.spi.utils.ascii.AsciiBox;
+import org.apache.plc4x.java.spi.utils.ascii.AsciiBoxWriter;
 import org.apache.plc4x.java.spi.utils.hex.Hex;
 import org.apache.plc4x.test.RequirePcapNg;
+import org.apache.plc4x.test.hex.HexDiff;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.presentation.HexadecimalRepresentation;
 import org.junit.jupiter.api.*;
@@ -6053,9 +6056,13 @@ public class RandomPackagesTest {
                         @SuppressWarnings("redundant")
                         byte[] expectedBytes = rawData;
                         byte[] actualBytes = writeBuffer.getBytes();
+                        if (!Arrays.equals(expectedBytes, actualBytes)) {
+                            // This goes to std out on purpose to preserve coloring
+                            System.out.println(HexDiff.diffHex(expectedBytes, actualBytes));
+                        }
                         assertThat(actualBytes)
                             .withRepresentation(HexadecimalRepresentation.HEXA_REPRESENTATION)
-                            .describedAs("re-serialized output doesn't match original bytes:%s", bvlc)
+                            .describedAs("re-serialized output doesn't match original bytes:%s\n", bvlc)
                             .isEqualTo(expectedBytes);
                     }
                 } else {

@@ -60,6 +60,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.BACnetLiftGroupModeTaggedParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
 	case "BACnetValueSource":
 		return model.BACnetValueSourceParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "NLMUpdateKeyUpdateKeyEntry":
+		return model.NLMUpdateKeyUpdateKeyEntryParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetOpeningTag":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -79,6 +81,14 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.BACnetPriorityArrayParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectTypeArgument, tagNumber, arrayIndexArgument)
 	case "BACnetNameValue":
 		return model.BACnetNameValueParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "SecurityResponseCodeTagged":
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
+		if err != nil {
+			return nil, err
+		}
+		tagNumber := uint8(parsedUint0)
+		tagClass, _ := model.TagClassByName(parserArguments[1])
+		return model.SecurityResponseCodeTaggedParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
 	case "BACnetPropertyReferenceEnclosed":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -908,6 +918,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := model.TagClassByName(parserArguments[1])
 		return model.BACnetLightingTransitionTaggedParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
+	case "NLMUpdateKeyUpdateControlFlags":
+		return model.NLMUpdateKeyUpdateControlFlagsParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetAssignedLandingCalls":
 		return model.BACnetAssignedLandingCallsParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetNotifyTypeTagged":

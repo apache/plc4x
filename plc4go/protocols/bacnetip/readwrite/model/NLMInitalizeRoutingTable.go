@@ -65,9 +65,7 @@ func (m *_NLMInitalizeRoutingTable) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMInitalizeRoutingTable) InitializeParent(parent NLM, vendorId *BACnetVendorId) {
-	m.VendorId = vendorId
-}
+func (m *_NLMInitalizeRoutingTable) InitializeParent(parent NLM) {}
 
 func (m *_NLMInitalizeRoutingTable) GetParent() NLM {
 	return m._NLM
@@ -92,11 +90,11 @@ func (m *_NLMInitalizeRoutingTable) GetPortMappings() []NLMInitalizeRoutingTable
 ///////////////////////////////////////////////////////////
 
 // NewNLMInitalizeRoutingTable factory function for _NLMInitalizeRoutingTable
-func NewNLMInitalizeRoutingTable(numberOfPorts uint8, portMappings []NLMInitalizeRoutingTablePortMapping, vendorId *BACnetVendorId, apduLength uint16) *_NLMInitalizeRoutingTable {
+func NewNLMInitalizeRoutingTable(numberOfPorts uint8, portMappings []NLMInitalizeRoutingTablePortMapping, apduLength uint16) *_NLMInitalizeRoutingTable {
 	_result := &_NLMInitalizeRoutingTable{
 		NumberOfPorts: numberOfPorts,
 		PortMappings:  portMappings,
-		_NLM:          NewNLM(vendorId, apduLength),
+		_NLM:          NewNLM(apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result
 	return _result
@@ -142,11 +140,11 @@ func (m *_NLMInitalizeRoutingTable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMInitalizeRoutingTableParse(theBytes []byte, apduLength uint16, messageType uint8) (NLMInitalizeRoutingTable, error) {
-	return NLMInitalizeRoutingTableParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength, messageType)
+func NLMInitalizeRoutingTableParse(theBytes []byte, apduLength uint16) (NLMInitalizeRoutingTable, error) {
+	return NLMInitalizeRoutingTableParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func NLMInitalizeRoutingTableParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMInitalizeRoutingTable, error) {
+func NLMInitalizeRoutingTableParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMInitalizeRoutingTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMInitalizeRoutingTable"); pullErr != nil {

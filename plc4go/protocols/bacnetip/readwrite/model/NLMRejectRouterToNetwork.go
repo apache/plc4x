@@ -65,9 +65,7 @@ func (m *_NLMRejectRouterToNetwork) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMRejectRouterToNetwork) InitializeParent(parent NLM, vendorId *BACnetVendorId) {
-	m.VendorId = vendorId
-}
+func (m *_NLMRejectRouterToNetwork) InitializeParent(parent NLM) {}
 
 func (m *_NLMRejectRouterToNetwork) GetParent() NLM {
 	return m._NLM
@@ -92,11 +90,11 @@ func (m *_NLMRejectRouterToNetwork) GetDestinationNetworkAddress() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewNLMRejectRouterToNetwork factory function for _NLMRejectRouterToNetwork
-func NewNLMRejectRouterToNetwork(rejectReason NLMRejectRouterToNetworkRejectReason, destinationNetworkAddress uint16, vendorId *BACnetVendorId, apduLength uint16) *_NLMRejectRouterToNetwork {
+func NewNLMRejectRouterToNetwork(rejectReason NLMRejectRouterToNetworkRejectReason, destinationNetworkAddress uint16, apduLength uint16) *_NLMRejectRouterToNetwork {
 	_result := &_NLMRejectRouterToNetwork{
 		RejectReason:              rejectReason,
 		DestinationNetworkAddress: destinationNetworkAddress,
-		_NLM:                      NewNLM(vendorId, apduLength),
+		_NLM:                      NewNLM(apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result
 	return _result
@@ -137,11 +135,11 @@ func (m *_NLMRejectRouterToNetwork) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMRejectRouterToNetworkParse(theBytes []byte, apduLength uint16, messageType uint8) (NLMRejectRouterToNetwork, error) {
-	return NLMRejectRouterToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength, messageType)
+func NLMRejectRouterToNetworkParse(theBytes []byte, apduLength uint16) (NLMRejectRouterToNetwork, error) {
+	return NLMRejectRouterToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func NLMRejectRouterToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMRejectRouterToNetwork, error) {
+func NLMRejectRouterToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMRejectRouterToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMRejectRouterToNetwork"); pullErr != nil {

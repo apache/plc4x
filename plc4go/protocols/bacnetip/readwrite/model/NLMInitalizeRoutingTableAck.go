@@ -65,9 +65,7 @@ func (m *_NLMInitalizeRoutingTableAck) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMInitalizeRoutingTableAck) InitializeParent(parent NLM, vendorId *BACnetVendorId) {
-	m.VendorId = vendorId
-}
+func (m *_NLMInitalizeRoutingTableAck) InitializeParent(parent NLM) {}
 
 func (m *_NLMInitalizeRoutingTableAck) GetParent() NLM {
 	return m._NLM
@@ -92,11 +90,11 @@ func (m *_NLMInitalizeRoutingTableAck) GetPortMappings() []NLMInitalizeRoutingTa
 ///////////////////////////////////////////////////////////
 
 // NewNLMInitalizeRoutingTableAck factory function for _NLMInitalizeRoutingTableAck
-func NewNLMInitalizeRoutingTableAck(numberOfPorts uint8, portMappings []NLMInitalizeRoutingTablePortMapping, vendorId *BACnetVendorId, apduLength uint16) *_NLMInitalizeRoutingTableAck {
+func NewNLMInitalizeRoutingTableAck(numberOfPorts uint8, portMappings []NLMInitalizeRoutingTablePortMapping, apduLength uint16) *_NLMInitalizeRoutingTableAck {
 	_result := &_NLMInitalizeRoutingTableAck{
 		NumberOfPorts: numberOfPorts,
 		PortMappings:  portMappings,
-		_NLM:          NewNLM(vendorId, apduLength),
+		_NLM:          NewNLM(apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result
 	return _result
@@ -142,11 +140,11 @@ func (m *_NLMInitalizeRoutingTableAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMInitalizeRoutingTableAckParse(theBytes []byte, apduLength uint16, messageType uint8) (NLMInitalizeRoutingTableAck, error) {
-	return NLMInitalizeRoutingTableAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength, messageType)
+func NLMInitalizeRoutingTableAckParse(theBytes []byte, apduLength uint16) (NLMInitalizeRoutingTableAck, error) {
+	return NLMInitalizeRoutingTableAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func NLMInitalizeRoutingTableAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMInitalizeRoutingTableAck, error) {
+func NLMInitalizeRoutingTableAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMInitalizeRoutingTableAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMInitalizeRoutingTableAck"); pullErr != nil {
