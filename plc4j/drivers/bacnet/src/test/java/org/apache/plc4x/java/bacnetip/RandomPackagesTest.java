@@ -64,21 +64,12 @@ public class RandomPackagesTest {
 
     Queue<Closeable> toBeClosed = new ConcurrentLinkedDeque<>();
 
-    @BeforeEach
-    void init() {
-        // The captures contain assumably garbage bytes after the terminating 0x00 byte, without disabling this
-        // a lot of tests will be failing as the serialized version contains empty 0x00 bytes instead of garbage.
-        System.setProperty("disable-string-0-termination", "true");
-    }
-
     @AfterEach
     void closeStuff() {
         for (Closeable closeable = toBeClosed.poll(); closeable != null; closeable = toBeClosed.poll()) {
             LOGGER.info("Closing closeable " + closeable);
             IOUtils.closeQuietly(closeable);
         }
-        // We gotta turn this off after the test.
-        System.setProperty("disable-string-0-termination", "false");
     }
 
     @TestFactory
@@ -2672,8 +2663,7 @@ public class RandomPackagesTest {
                             .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getMessageText)
                             .extracting(BACnetContextTagCharacterString::getPayload)
                             .extracting(BACnetTagPayloadCharacterString::getValue)
-                            // TODO: check if there is a general problem with bacnet string parsing as we should not read that null byte at the end
-                            .isEqualTo("BO_1\u0000");
+                            .isEqualTo("BO_1");
                         assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
                             .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getNotifyType)
                             .extracting(BACnetNotifyTypeTagged::getValue)
@@ -3662,7 +3652,7 @@ public class RandomPackagesTest {
                 () -> assertThat(baos.toByteArray())
                     .satisfies(bytes -> {
                         LOGGER.info("Trying to parse\n{}", Hex.dump(bytes));
-                        BACnetServiceAckAtomicReadFile baCnetServiceAck = (BACnetServiceAckAtomicReadFile) BACnetServiceAckAtomicReadFile.staticParse(new ReadBufferByteBased(bytes), bytes.length);
+                        BACnetServiceAckAtomicReadFile baCnetServiceAck = (BACnetServiceAckAtomicReadFile) BACnetServiceAckAtomicReadFile.staticParse(new ReadBufferByteBased(bytes), (long) bytes.length);
                         assertThat(baCnetServiceAck)
                             .isNotNull()
                             .extracting(BACnetServiceAckAtomicReadFile::getAccessMethod)

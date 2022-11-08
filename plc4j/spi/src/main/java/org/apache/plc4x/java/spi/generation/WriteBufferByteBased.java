@@ -303,6 +303,11 @@ public class WriteBufferByteBased implements WriteBuffer {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
+    /*
+     * When encoding strings we currently implement a sort of 0-terminated string. If the string is shorter than the
+     * max bit-length, we fill it up with 0x00, which makes it 0-terminated. If it exactly fits, then there is no
+     * 0-termination.
+     */
     @Override
     public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws SerializationException {
         byte[] bytes;

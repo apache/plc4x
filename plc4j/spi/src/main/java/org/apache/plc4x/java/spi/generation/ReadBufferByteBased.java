@@ -388,6 +388,11 @@ public class ReadBufferByteBased implements ReadBuffer {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
+    /*
+     * When encoding strings we currently implement a sort of 0-terminated string. If the string is shorter than the
+     * max bit-length, we fill it up with 0x00, which makes it 0-terminated. If it exactly fits, then there is no
+     * 0-termination.
+     */
     @Override
     public String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs) throws ParseException {
         encoding = encoding.replaceAll("[^a-zA-Z0-9]", "");
