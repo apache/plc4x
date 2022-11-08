@@ -66,6 +66,8 @@ public class RandomPackagesTest {
 
     @BeforeEach
     void init() {
+        // The captures contain assumably garbage bytes after the terminating 0x00 byte, without disabling this
+        // a lot of tests will be failing as the serialized version contains empty 0x00 bytes instead of garbage.
         System.setProperty("disable-string-0-termination", "true");
     }
 
@@ -75,6 +77,7 @@ public class RandomPackagesTest {
             LOGGER.info("Closing closeable " + closeable);
             IOUtils.closeQuietly(closeable);
         }
+        // We gotta turn this off after the test.
         System.setProperty("disable-string-0-termination", "false");
     }
 
