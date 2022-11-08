@@ -64,12 +64,18 @@ public class RandomPackagesTest {
 
     Queue<Closeable> toBeClosed = new ConcurrentLinkedDeque<>();
 
+    @BeforeEach
+    void init() {
+        System.setProperty("disable-string-0-termination", "true");
+    }
+
     @AfterEach
     void closeStuff() {
         for (Closeable closeable = toBeClosed.poll(); closeable != null; closeable = toBeClosed.poll()) {
             LOGGER.info("Closing closeable " + closeable);
             IOUtils.closeQuietly(closeable);
         }
+        System.setProperty("disable-string-0-termination", "false");
     }
 
     @TestFactory
