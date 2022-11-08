@@ -328,13 +328,15 @@ public class WriteBufferByteBased implements WriteBuffer {
         }
 
         try {
-            int offset = bytes.length - fixedByteLength;
-            while (offset < 0) {
-                bo.writeByte(false, 8, (byte) 0x00);
-                offset++;
-            }
-            for (int i = offset; i < bytes.length; i++) {
+            int numStringBytes = Math.min(bytes.length, fixedByteLength);
+            int numZeroBytes = fixedByteLength - numStringBytes;
+            // Output the string data
+            for (int i = 0; i < numStringBytes; i++) {
                 bo.writeByte(false, 8, bytes[i]);
+            }
+            // Fill up with empty bytes
+            for (int i = 0; i < numZeroBytes; i++) {
+                bo.writeByte(false, 8, (byte) 0x00);
             }
         } catch (IOException e) {
             throw new SerializationException("Error writing string", e);
