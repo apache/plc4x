@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -44,12 +44,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
 
     private final PlcWriter writer;
+
     private final LinkedHashMap<String, FieldValueItem> fields;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -100,34 +102,8 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
         return fields.values().stream().map(FieldValueItem::getValue).collect(Collectors.toCollection(LinkedList::new));
     }
 
-    @JsonIgnore
-    public List<Pair<String, PlcField>> getNamedFields() {
-        return fields.entrySet()
-            .stream()
-            .map(stringPairEntry ->
-                Pair.of(
-                    stringPairEntry.getKey(),
-                    stringPairEntry.getValue().getField()
-                )
-            ).collect(Collectors.toCollection(LinkedList::new));
-    }
-
-
     public PlcWriter getWriter() {
         return writer;
-    }
-
-    @JsonIgnore
-    public List<Triple<String, PlcField, PlcValue>> getNamedFieldTriples() {
-        return fields.entrySet()
-            .stream()
-            .map(stringPairEntry ->
-                Triple.of(
-                    stringPairEntry.getKey(),
-                    stringPairEntry.getValue().getField(),
-                    stringPairEntry.getValue().getValue()
-                )
-            ).collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
@@ -178,7 +154,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
         private final PlcWriter writer;
         private final PlcFieldHandler fieldHandler;
         private final PlcValueHandler valueHandler;
-        private final Map<String, Pair<String, Object[]>> fields;
+        private final Map<String, Pair<Supplier<PlcField>, Object[]>> fields;
 
         public Builder(PlcWriter writer, PlcFieldHandler fieldHandler, PlcValueHandler valueHandler) {
             this.writer = writer;
@@ -188,8 +164,20 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
         }
 
         @Override
-        public Builder addItem(String name, String fieldQuery, Object... values) {
-            fields.put(name, Pair.of(fieldQuery, values));
+        public Builder addFieldAddress(String name, String fieldAddress, Object... values) {
+            if (fields.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
+            }
+            fields.put(name, Pair.of(() -> fieldHandler.parseField(fieldAddress), values));
+            return this;
+        }
+
+        @Override
+        public Builder addField(String name, PlcField field, Object... values) {
+            if (fields.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
+            }
+            fields.put(name, Pair.of(() -> field, values));
             return this;
         }
 
@@ -198,8 +186,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
             LinkedHashMap<String, FieldValueItem> parsedFields = new LinkedHashMap<>();
             fields.forEach((name, fieldValues) -> {
                 // Compile the query string.
-                String fieldQuery = fieldValues.getLeft();
-                PlcField field = fieldHandler.parseField(fieldQuery);
+                PlcField field = fieldValues.getLeft().get();
                 Object[] value = fieldValues.getRight();
                 PlcValue plcValue = valueHandler.newPlcValue(field, value);
                 parsedFields.put(name, new FieldValueItem(field, plcValue));

@@ -178,7 +178,7 @@ public class ManualS7PlcDriverMT {
         try (PlcConnection connection = plcDriverManager.getConnection(CONN_STRING)) {
             System.out.println("Connection: " + connection);
             CompletableFuture<? extends PlcReadResponse> future = connection.readRequestBuilder()
-                .addItem("distance", FIELD_STRING)
+                .addFieldAddress("distance", FIELD_STRING)
                 .build()
                 .execute();
 

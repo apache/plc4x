@@ -58,9 +58,9 @@ public class GenericCANDriverTest {
 
         final AtomicReference<PlcSubscriptionEvent> plcEvent = new AtomicReference<>();
         connection1.subscriptionRequestBuilder()
-            .addEventField("field1", "200:BYTE")
-            .addEventField("field2", "200:UNSIGNED8")
-            .addEventField("field3", "200:UNSIGNED8")
+            .addEventFieldAddress("field1", "200:BYTE")
+            .addEventFieldAddress("field2", "200:UNSIGNED8")
+            .addEventFieldAddress("field3", "200:UNSIGNED8")
             .build().execute().whenComplete((reply, error) -> {
                 if (error != null) {
                     fail(error);
@@ -77,9 +77,9 @@ public class GenericCANDriverTest {
             });
 
         connection2.writeRequestBuilder()
-            .addItem("f1", "200:BYTE", field1)
-            .addItem("f2", "200:UNSIGNED8", field2)
-            .addItem("f3", "200:UNSIGNED8", field3)
+            .addFieldAddress("f1", "200:BYTE", field1)
+            .addFieldAddress("f2", "200:UNSIGNED8", field2)
+            .addFieldAddress("f3", "200:UNSIGNED8", field3)
             .build().execute().whenComplete((reply, error) -> {
                 if (error != null) {
                     fail(error);

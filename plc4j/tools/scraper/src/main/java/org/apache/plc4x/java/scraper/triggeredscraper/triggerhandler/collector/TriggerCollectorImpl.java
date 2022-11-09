@@ -154,7 +154,7 @@ public class TriggerCollectorImpl implements TriggerCollector {
                         plcConnection = TriggeredScraperImpl.getPlcConnection(plcDriverManager,plcConnectionString,executorService,futureTimeout,info);
                         plcConnectionList.add(plcConnection);
                         plcReadRequestBuilderMap.put(plcConnectionString,plcConnection.readRequestBuilder());
-                        plcReadRequestBuilderMap.get(plcConnectionString).addItem(entry.getKey(),entry.getValue().getPlcField());
+                        plcReadRequestBuilderMap.get(plcConnectionString).addFieldAddress(entry.getKey(),entry.getValue().getPlcField());
                         activeRequestElements.add(entry.getValue());
                     } catch (InterruptedException e) {
                         logger.warn("Acquirement of PLC-Connection was interrupted",e);
@@ -166,7 +166,7 @@ public class TriggerCollectorImpl implements TriggerCollector {
                     }
                 }
                 else{
-                    plcReadRequestBuilderMap.get(plcConnectionString).addItem(entry.getKey(),entry.getValue().getPlcField());
+                    plcReadRequestBuilderMap.get(plcConnectionString).addFieldAddress(entry.getKey(),entry.getValue().getPlcField());
                     activeRequestElements.add(entry.getValue());
                 }
             }

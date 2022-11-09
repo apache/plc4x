@@ -61,7 +61,7 @@ public class Plc4XProducer extends DefaultAsyncProducer {
                 String name = entry.getKey();
                 String query = entry.getValue().keySet().iterator().next();
                 Object value = entry.getValue().get(query);
-                builder.addItem(name,query,value);
+                builder.addFieldAddress(name,query,value);
             }
         } else {
             throw new PlcInvalidFieldException("The body must contain a Map<String,Map<String,Object>");

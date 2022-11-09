@@ -32,14 +32,14 @@ public class CachedReadRequestBuilder implements PlcReadRequest.Builder {
     }
 
     @Override
-    public PlcReadRequest.Builder addItem(String s, String s1) {
-        builder.addItem(s, s1);
+    public PlcReadRequest.Builder addFieldAddress(String s, String s1) {
+        builder.addFieldAddress(s, s1);
         return this;
     }
 
     @Override
-    public PlcReadRequest.Builder addItem(String name, PlcField fieldQuery) {
-        builder.addItem(name, fieldQuery);
+    public PlcReadRequest.Builder addField(String name, PlcField fieldQuery) {
+        builder.addField(name, fieldQuery);
         return this;
     }
 

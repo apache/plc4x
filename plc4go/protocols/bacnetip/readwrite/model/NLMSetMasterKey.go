@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +125,7 @@ func (m *_NLMSetMasterKey) GetLengthInBytes() uint16 {
 }
 
 func NLMSetMasterKeyParse(theBytes []byte, apduLength uint16) (NLMSetMasterKey, error) {
-	return NLMSetMasterKeyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength) // TODO: get endianness from mspec
+	return NLMSetMasterKeyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMSetMasterKeyParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMSetMasterKey, error) {
@@ -167,7 +166,7 @@ func NLMSetMasterKeyParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint
 }
 
 func (m *_NLMSetMasterKey) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

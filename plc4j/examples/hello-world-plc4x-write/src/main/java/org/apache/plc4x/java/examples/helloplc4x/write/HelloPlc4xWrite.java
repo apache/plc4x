@@ -56,9 +56,9 @@ public class HelloPlc4xWrite {
                 //If an array value is passed instead of a single value then convert to a String array
                 if ((options.getFieldValues()[i].charAt(0) == '[') && (options.getFieldValues()[i].charAt(options.getFieldValues()[i].length() - 1) == ']')) {
                     String[] values = options.getFieldValues()[i].substring(1,options.getFieldValues()[i].length() - 1).split(",");
-                    builder.addItem("value-" + i, options.getFieldAddress()[i], values);
+                    builder.addFieldAddress("value-" + i, options.getFieldAddress()[i], values);
                 } else {
-                    builder.addItem("value-" + i, options.getFieldAddress()[i], options.getFieldValues()[i]);
+                    builder.addFieldAddress("value-" + i, options.getFieldAddress()[i], options.getFieldValues()[i]);
                 }
             }
             PlcWriteRequest writeRequest = builder.build();

@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -242,7 +240,7 @@ func (m SecurityResponseCode) GetLengthInBytes() uint16 {
 }
 
 func SecurityResponseCodeParse(theBytes []byte) (SecurityResponseCode, error) {
-	return SecurityResponseCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return SecurityResponseCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityResponseCodeParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityResponseCode, error) {
@@ -259,7 +257,7 @@ func SecurityResponseCodeParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityR
 }
 
 func (e SecurityResponseCode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -34,7 +34,7 @@ public class EndToEndTest {
     public void helloDf1() {
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection("df1:serial:///COM4")) {
             PlcReadRequest request = plcConnection.readRequestBuilder()
-                .addItem("hurz", "5:INTEGER")
+                .addFieldAddress("hurz", "5:INTEGER")
                 .build();
 
             PlcReadResponse response = request.execute().get(100, TimeUnit.SECONDS);

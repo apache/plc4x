@@ -94,7 +94,7 @@ public class MqttConnector {
             // Create a new read request.
             PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
             for (PlcFieldConfig fieldConfig : config.getPlcConfig().getPlcFields()) {
-                builder = builder.addItem(fieldConfig.getName(), fieldConfig.getAddress());
+                builder = builder.addFieldAddress(fieldConfig.getName(), fieldConfig.getAddress());
             }
             PlcReadRequest readRequest = builder.build();
 

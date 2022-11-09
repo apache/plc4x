@@ -45,10 +45,10 @@ public class EventSubscription {
         try (PlcConnection connection = new PlcDriverManager().getConnection("s7://192.168.1.51?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
             final PlcSubscriptionRequest.Builder subscription = connection.subscriptionRequestBuilder();
 
-            subscription.addEventField("myMODE", "MODE");
-            subscription.addEventField("mySYS", "SYS");
-            subscription.addEventField("myUSR", "USR");
-            subscription.addEventField("myALM", "ALM");
+            subscription.addEventFieldAddress("myMODE", "MODE");
+            subscription.addEventFieldAddress("mySYS", "SYS");
+            subscription.addEventFieldAddress("myUSR", "USR");
+            subscription.addEventFieldAddress("myALM", "ALM");
 
             final PlcSubscriptionRequest sub = subscription.build();
             final PlcSubscriptionResponse subresponse = sub.execute().get();

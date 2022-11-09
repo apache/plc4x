@@ -187,7 +187,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
             // Create a new read request:
             // - Give the single item requested an alias name
             PlcReadRequest.Builder builder = connection.readRequestBuilder();
-            builder.addItem("value-1", tag);
+            builder.addFieldAddress("value-1", tag);
             PlcReadRequest readRequest = builder.build();
 
             PlcReadResponse response = null;
@@ -282,9 +282,9 @@ public class Plc4xCommunication extends AbstractLifecycle {
         if ((value.charAt(0) == '[') && (value.charAt(value.length() - 1) == ']')) {
             String[] values = value.substring(1,value.length() - 1).split(",");
             logger.info("Adding Tag " + Arrays.toString(values));
-            builder.addItem(tag, tag, values);
+            builder.addFieldAddress(tag, tag, values);
         } else {
-            builder.addItem(tag, tag, value);
+            builder.addFieldAddress(tag, tag, value);
         }
 
         PlcWriteRequest writeRequest = builder.build();

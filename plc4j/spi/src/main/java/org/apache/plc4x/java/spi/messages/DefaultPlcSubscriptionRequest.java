@@ -40,6 +40,7 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
@@ -96,18 +97,6 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
         return new LinkedHashMap<>(preRegisteredConsumers);
     }
 
-    @JsonIgnore
-    public List<Pair<String, PlcSubscriptionField>> getNamedFields() {
-        return fields.entrySet()
-            .stream()
-            .map(stringPlcFieldEntry -> Pair.of(stringPlcFieldEntry.getKey(), stringPlcFieldEntry.getValue()))
-            .collect(Collectors.toCollection(LinkedList::new));
-    }
-
-    public PlcSubscriber getSubscriber() {
-        return subscriber;
-    }
-
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcSubscriptionRequest");
@@ -143,23 +132,56 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
         }
 
         @Override
-        public PlcSubscriptionRequest.Builder addCyclicField(String name, String fieldQuery, Duration pollingInterval) {
-            fields.put(name, new BuilderItem(fieldQuery, PlcSubscriptionType.CYCLIC, pollingInterval));
-            return this;
-        }
-
-        @Override
-        public PlcSubscriptionRequest.Builder addChangeOfStateField(String name, String fieldQuery) {
-            fields.put(name, new BuilderItem(fieldQuery, PlcSubscriptionType.CHANGE_OF_STATE));
-            return this;
-        }
-
-        @Override
-        public PlcSubscriptionRequest.Builder addEventField(String name, String fieldQuery) {
+        public PlcSubscriptionRequest.Builder addCyclicFieldAddress(String name, String fieldAddress, Duration pollingInterval) {
             if (fields.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
             }
-            fields.put(name, new BuilderItem(fieldQuery, PlcSubscriptionType.EVENT));
+            fields.put(name, new BuilderItem(() -> fieldHandler.parseField(fieldAddress), PlcSubscriptionType.CYCLIC, pollingInterval));
+            return this;
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addCyclicField(String name, PlcField field, Duration pollingInterval) {
+            if (fields.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
+            }
+            fields.put(name, new BuilderItem(() -> field, PlcSubscriptionType.CYCLIC, pollingInterval));
+            return this;
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateFieldAddress(String name, String fieldAddress) {
+            if (fields.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
+            }
+            fields.put(name, new BuilderItem(() -> fieldHandler.parseField(fieldAddress), PlcSubscriptionType.CHANGE_OF_STATE));
+            return this;
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateField(String name, PlcField field) {
+            if (fields.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
+            }
+            fields.put(name, new BuilderItem(() -> field, PlcSubscriptionType.CHANGE_OF_STATE));
+            return this;
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addEventFieldAddress(String name, String fieldAddress) {
+            if (fields.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
+            }
+            fields.put(name, new BuilderItem(() -> fieldHandler.parseField(fieldAddress), PlcSubscriptionType.EVENT));
+            return this;
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addEventField(String name, PlcField field) {
+            if (fields.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
+            }
+            fields.put(name, new BuilderItem(() -> field, PlcSubscriptionType.EVENT));
             return this;
         }
 
@@ -175,7 +197,7 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
             LinkedHashMap<String, PlcSubscriptionField> parsedFields = new LinkedHashMap<>();
 
             fields.forEach((name, builderItem) -> {
-                PlcField parsedField = fieldHandler.parseField(builderItem.fieldQuery);
+                PlcField parsedField = builderItem.field.get();
                 parsedFields.put(name, new DefaultPlcSubscriptionField(builderItem.plcSubscriptionType, parsedField, builderItem.duration));
             });
             preRegisteredConsumers.forEach((fieldName, ignored) -> {
@@ -187,16 +209,16 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
         }
 
         private static class BuilderItem {
-            private final String fieldQuery;
+            private final Supplier<PlcField> field;
             private final PlcSubscriptionType plcSubscriptionType;
             private final Duration duration;
 
-            private BuilderItem(String fieldQuery, PlcSubscriptionType plcSubscriptionType) {
-                this(fieldQuery, plcSubscriptionType, null);
+            private BuilderItem(Supplier<PlcField> field, PlcSubscriptionType plcSubscriptionType) {
+                this(field, plcSubscriptionType, null);
             }
 
-            private BuilderItem(String fieldQuery, PlcSubscriptionType plcSubscriptionType, Duration duration) {
-                this.fieldQuery = fieldQuery;
+            private BuilderItem(Supplier<PlcField> field, PlcSubscriptionType plcSubscriptionType, Duration duration) {
+                this.field = field;
                 this.plcSubscriptionType = plcSubscriptionType;
                 this.duration = duration;
             }

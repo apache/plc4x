@@ -84,7 +84,7 @@ class SimulatedConnectionTest implements WithAssertions {
         @Test
         void read() throws Exception {
             PlcReadRequest plcReadRequest = SUT.readRequestBuilder()
-                .addItem("foo", "RANDOM/foo:String")
+                .addFieldAddress("foo", "RANDOM/foo:String")
                 .build();
 
             CompletableFuture<PlcReadResponse> read = SUT.read(plcReadRequest);
@@ -95,7 +95,7 @@ class SimulatedConnectionTest implements WithAssertions {
         @Test
         void write() throws Exception {
             PlcWriteRequest plcWriteRequest = SUT.writeRequestBuilder()
-                .addItem("bar", "RANDOM/foo:String", "foobar")
+                .addFieldAddress("bar", "RANDOM/foo:String", "foobar")
                 .build();
 
             CompletableFuture<PlcWriteResponse> write = SUT.write(plcWriteRequest);
@@ -109,9 +109,9 @@ class SimulatedConnectionTest implements WithAssertions {
         @Test
         void subscribe() throws Exception {
             PlcSubscriptionRequest plcSubscriptionRequest = SUT.subscriptionRequestBuilder()
-                .addCyclicField("foo1", "STATE/foo:String", Duration.ofSeconds(1))
-                .addChangeOfStateField("foo2", "STATE/foo:String")
-                .addEventField("foo3", "STATE/foo:String")
+                .addCyclicFieldAddress("foo1", "STATE/foo:String", Duration.ofSeconds(1))
+                .addChangeOfStateFieldAddress("foo2", "STATE/foo:String")
+                .addEventFieldAddress("foo3", "STATE/foo:String")
                 .build();
 
             CompletableFuture<PlcSubscriptionResponse> subscribe = SUT.subscribe(plcSubscriptionRequest);
@@ -159,9 +159,9 @@ class SimulatedConnectionTest implements WithAssertions {
             LOGGER.trace("initialize");
             // Initialize the addresses
             PlcWriteRequest plcWriteRequest = SUT.writeRequestBuilder()
-                .addItem("cyclic", "STATE/cyclic:STRING", "initialcyclic")
-                .addItem("state", "STATE/state:STRING", "initialstate")
-                .addItem("event", "STATE/event:STRING", "initialevent")
+                .addFieldAddress("cyclic", "STATE/cyclic:STRING", "initialcyclic")
+                .addFieldAddress("state", "STATE/state:STRING", "initialstate")
+                .addFieldAddress("event", "STATE/event:STRING", "initialevent")
                 .build();
             SUT.write(plcWriteRequest).get(1, TimeUnit.SECONDS);
             // Note: as we don't have a subscription yet, no callback will be executed
@@ -169,9 +169,9 @@ class SimulatedConnectionTest implements WithAssertions {
             LOGGER.trace("subscribe");
             // Subscribe for the addresses
             PlcSubscriptionRequest plcSubscriptionRequest = SUT.subscriptionRequestBuilder()
-                .addCyclicField("cyclic", "STATE/cyclic:String", Duration.ofSeconds(1))
-                .addChangeOfStateField("state", "STATE/state:String")
-                .addEventField("event", "STATE/event:String")
+                .addCyclicFieldAddress("cyclic", "STATE/cyclic:String", Duration.ofSeconds(1))
+                .addChangeOfStateFieldAddress("state", "STATE/state:String")
+                .addEventFieldAddress("event", "STATE/event:String")
                 .build();
             PlcSubscriptionResponse plcSubscriptionResponse = SUT.subscribe(plcSubscriptionRequest).get(1, TimeUnit.SECONDS);
 
@@ -192,9 +192,9 @@ class SimulatedConnectionTest implements WithAssertions {
             LOGGER.trace("write some addresses");
             // Write something to the addresses in order to trigger a value-change event
             PlcWriteRequest plcWriteRequest2 = SUT.writeRequestBuilder()
-                .addItem("cyclic", "STATE/cyclic:STRING", "changedcyclic")
-                .addItem("state", "STATE/state:STRING", "changedstate")
-                .addItem("event", "STATE/event:STRING", "changedevent")
+                .addFieldAddress("cyclic", "STATE/cyclic:STRING", "changedcyclic")
+                .addFieldAddress("state", "STATE/state:STRING", "changedstate")
+                .addFieldAddress("event", "STATE/event:STRING", "changedevent")
                 .build();
             SUT.write(plcWriteRequest2).get(10, TimeUnit.SECONDS);
 

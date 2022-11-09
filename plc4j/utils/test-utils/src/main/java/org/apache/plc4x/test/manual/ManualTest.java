@@ -62,7 +62,7 @@ public abstract class ManualTest {
             for (TestCase testCase : testCases) {
                 String fieldName = testCase.address;
                 // Prepare the read-request
-                final PlcReadRequest readRequest = plcConnection.readRequestBuilder().addItem(fieldName, testCase.address).build();
+                final PlcReadRequest readRequest = plcConnection.readRequestBuilder().addFieldAddress(fieldName, testCase.address).build();
 
                 // Execute the read request
                 final PlcReadResponse readResponse = readRequest.execute().get();
@@ -113,7 +113,7 @@ public abstract class ManualTest {
                     }
 
                     // Prepare the write request
-                    PlcWriteRequest writeRequest = plcConnection.writeRequestBuilder().addItem(fieldName, testCase.address, plcValue).build();
+                    PlcWriteRequest writeRequest = plcConnection.writeRequestBuilder().addFieldAddress(fieldName, testCase.address, plcValue).build();
 
                     // Execute the write request
                     PlcWriteResponse writeResponse = writeRequest.execute().get();
@@ -142,7 +142,7 @@ public abstract class ManualTest {
                 final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
                 for (TestCase testCase : shuffledTestcases) {
                     String fieldName = testCase.address;
-                    builder.addItem(fieldName, testCase.address);
+                    builder.addFieldAddress(fieldName, testCase.address);
                 }
                 final PlcReadRequest readRequest = builder.build();
 

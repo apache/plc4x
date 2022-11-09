@@ -130,7 +130,7 @@ public class OpcuaSubscriptionHandleTest {
 
         // Create Subscription
         PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateField(field, identifier);
+        builder.addChangeOfStateFieldAddress(field, identifier);
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
@@ -157,7 +157,7 @@ public class OpcuaSubscriptionHandleTest {
 
         // Create Subscription
         PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateField(field, identifier);
+        builder.addChangeOfStateFieldAddress(field, identifier);
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
@@ -184,7 +184,7 @@ public class OpcuaSubscriptionHandleTest {
 
         // Create Subscription
         PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateField(field, identifier);
+        builder.addChangeOfStateFieldAddress(field, identifier);
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
@@ -211,7 +211,7 @@ public class OpcuaSubscriptionHandleTest {
 
         // Create Subscription
         PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateField(field, identifier);
+        builder.addChangeOfStateFieldAddress(field, identifier);
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
@@ -238,7 +238,7 @@ public class OpcuaSubscriptionHandleTest {
 
         // Create Subscription
         PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateField(field, identifier);
+        builder.addChangeOfStateFieldAddress(field, identifier);
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
@@ -265,7 +265,7 @@ public class OpcuaSubscriptionHandleTest {
 
         // Create Subscription
         PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateField(field, identifier);
+        builder.addChangeOfStateFieldAddress(field, identifier);
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
@@ -292,7 +292,7 @@ public class OpcuaSubscriptionHandleTest {
 
         // Create Subscription
         PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateField(field, identifier);
+        builder.addChangeOfStateFieldAddress(field, identifier);
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
@@ -319,7 +319,7 @@ public class OpcuaSubscriptionHandleTest {
 
         // Create Subscription
         PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateField(field, identifier);
+        builder.addChangeOfStateFieldAddress(field, identifier);
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
@@ -346,7 +346,7 @@ public class OpcuaSubscriptionHandleTest {
 
         // Create Subscription
         PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateField(field, identifier);
+        builder.addChangeOfStateFieldAddress(field, identifier);
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
@@ -373,7 +373,7 @@ public class OpcuaSubscriptionHandleTest {
 
         // Create Subscription
         PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateField(field, identifier);
+        builder.addChangeOfStateFieldAddress(field, identifier);
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
@@ -400,7 +400,7 @@ public class OpcuaSubscriptionHandleTest {
 
         // Create Subscription
         PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateField(field, identifier);
+        builder.addChangeOfStateFieldAddress(field, identifier);
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
@@ -427,7 +427,7 @@ public class OpcuaSubscriptionHandleTest {
 
         // Create Subscription
         PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateField(field, identifier);
+        builder.addChangeOfStateFieldAddress(field, identifier);
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
@@ -454,7 +454,7 @@ public class OpcuaSubscriptionHandleTest {
 
         // Create Subscription
         PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateField(field, identifier);
+        builder.addChangeOfStateFieldAddress(field, identifier);
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
@@ -481,7 +481,7 @@ public class OpcuaSubscriptionHandleTest {
 
         // Create Subscription
         PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateField(field, identifier);
+        builder.addChangeOfStateFieldAddress(field, identifier);
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
@@ -508,7 +508,7 @@ public class OpcuaSubscriptionHandleTest {
 
         // Create Subscription
         PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateField(field, identifier);
+        builder.addChangeOfStateFieldAddress(field, identifier);
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription
@@ -538,8 +538,8 @@ public class OpcuaSubscriptionHandleTest {
 
         // Create Subscription
         PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateField(field1, identifier1);
-        builder.addChangeOfStateField(field2, identifier2);
+        builder.addChangeOfStateFieldAddress(field1, identifier1);
+        builder.addChangeOfStateFieldAddress(field2, identifier2);
         PlcSubscriptionRequest request = builder.build();
 
         // Get result of creating subscription

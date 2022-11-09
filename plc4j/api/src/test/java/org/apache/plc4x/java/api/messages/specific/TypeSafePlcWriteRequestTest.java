@@ -52,8 +52,8 @@ public class TypeSafePlcWriteRequestTest {
     }
 
     @Test
-    public void addItem() {
-        new TypeSafePlcWriteRequest<>(String.class).addItem(writeRequestItemString);
+    public void addField() {
+        new TypeSafePlcWriteRequest<>(String.class).addField(writeRequestItemString);
     }
 
     @Test

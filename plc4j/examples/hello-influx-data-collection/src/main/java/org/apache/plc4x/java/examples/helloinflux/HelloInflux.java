@@ -66,7 +66,7 @@ public class HelloInflux {
             PlcConnection plcConnection = connectToPlc();
 
             final PlcSubscriptionRequest subscriptionRequest =
-                plcConnection.subscriptionRequestBuilder().addChangeOfStateField("query",
+                plcConnection.subscriptionRequestBuilder().addChangeOfStateFieldAddress("query",
                     configuration.getString("plc.query")).build();
             final PlcSubscriptionResponse subscriptionResponse =
                 subscriptionRequest.execute().get(10, TimeUnit.SECONDS);

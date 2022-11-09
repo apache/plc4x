@@ -41,7 +41,7 @@ public class PassiveBacNetIpDriver3Manual {
         try (final PlcConnection connection = driver.getConnection(
             "bacnet-ip:pcap://" + pcapFile.getAbsolutePath() + "?filter=udp%20port%2047808")) {
             connection.connect();
-            final PlcSubscriptionResponse subscriptionResponse = connection.subscriptionRequestBuilder().addEventField(
+            final PlcSubscriptionResponse subscriptionResponse = connection.subscriptionRequestBuilder().addEventFieldAddress(
                 "Hurz", "*/*/*").build().execute().get();
             subscriptionResponse.getSubscriptionHandle("Hurz").register(plcSubscriptionEvent -> {
                 PlcStruct plcStruct = (PlcStruct)

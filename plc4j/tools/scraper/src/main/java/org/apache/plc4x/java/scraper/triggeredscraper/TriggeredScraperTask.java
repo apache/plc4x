@@ -121,7 +121,7 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
                         if(LOGGER.isTraceEnabled()) {
                             LOGGER.trace("Requesting: {} -> {}", entry.getKey(), entry.getValue());
                         }
-                        readRequestBuilder.addItem(entry.getKey(),entry.getValue());
+                        readRequestBuilder.addFieldAddress(entry.getKey(),entry.getValue());
                     }
                     //build and send request and store result in read response
                     plcReadResponse = readRequestBuilder

@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -81,7 +80,7 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                         // Build a read request for all fields in the request.
                         final PlcReadRequest.Builder builder = connection.readRequestBuilder();
                         for (Plc4xFieldRequest requestField : request.getFields()) {
-                            builder.addItem(requestField.getField().getName(), requestField.getField().getFieldQuery());
+                            builder.addFieldAddress(requestField.getField().getName(), requestField.getField().getFieldQuery());
                         }
                         final PlcReadRequest rr = builder.build();
 
@@ -132,7 +131,7 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                         // Build a write request for all fields in the request.
                         final PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
                         for (Plc4xFieldValueRequest plc4xRequestField : plc4xWriteRequest.getFields()) {
-                            builder.addItem(plc4xRequestField.getField().getName(),
+                            builder.addFieldAddress(plc4xRequestField.getField().getName(),
                                 plc4xRequestField.getField().getFieldQuery(), plc4xRequestField.getValue().getObject());
                         }
                         final PlcWriteRequest apiWriteRequest = builder.build();

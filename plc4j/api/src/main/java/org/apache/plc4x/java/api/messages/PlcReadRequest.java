@@ -35,8 +35,8 @@ public interface PlcReadRequest extends PlcFieldRequest {
         @Override
         PlcReadRequest build();
 
-        Builder addItem(String name, String fieldQuery);
-        Builder addItem(String name, PlcField fieldQuery);
+        Builder addFieldAddress(String name, String fieldAddress);
+        Builder addField(String name, PlcField field);
 
     }
 

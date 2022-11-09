@@ -40,7 +40,7 @@ public class PassiveBacNetIpDriver2Manual {
         final PlcConnection connection = driver.getConnection(
             "bacnet-ip:pcap://" + pcapFile.getAbsolutePath());
         connection.connect();
-        final PlcSubscriptionResponse subscriptionResponse = connection.subscriptionRequestBuilder().addEventField(
+        final PlcSubscriptionResponse subscriptionResponse = connection.subscriptionRequestBuilder().addEventFieldAddress(
             "Hurz", "*/*/*").build().execute().get();
         subscriptionResponse.getSubscriptionHandle("Hurz").register(plcSubscriptionEvent -> {
             PlcStruct plcStruct = (PlcStruct)

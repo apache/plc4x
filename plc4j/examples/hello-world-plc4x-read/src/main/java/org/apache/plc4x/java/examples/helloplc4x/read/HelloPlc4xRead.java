@@ -58,7 +58,7 @@ public class HelloPlc4xRead {
             // - Give the single item requested the alias name "value"
             PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
             for (int i = 0; i < options.getFieldAddress().length; i++) {
-                builder.addItem("value-" + options.getFieldAddress()[i], options.getFieldAddress()[i]);
+                builder.addFieldAddress("value-" + options.getFieldAddress()[i], options.getFieldAddress()[i]);
             }
             PlcReadRequest readRequest = builder.build();
 

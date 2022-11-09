@@ -57,7 +57,7 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
                 getFields().forEach(field -> {
                     String address = getAddress(field);
                     if (address != null) {
-                        builder.addItem(field, address);
+                        builder.addFieldAddress(field, address);
                     }
                 });
                 PlcReadRequest readRequest = builder.build();

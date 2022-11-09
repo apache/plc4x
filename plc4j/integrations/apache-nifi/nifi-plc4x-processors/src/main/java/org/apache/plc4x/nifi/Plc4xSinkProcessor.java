@@ -60,7 +60,7 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
                 String address = getAddress(field);
                 if (address != null) {
                     // TODO: Convert the String into the right type ...
-                    builder.addItem(field, address, Boolean.valueOf(value));
+                    builder.addFieldAddress(field, address, Boolean.valueOf(value));
                 }
             });
             PlcWriteRequest writeRequest = builder.build();

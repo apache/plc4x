@@ -52,8 +52,8 @@ public class TypeSafePlcReadRequestTest {
     }
 
     @Test
-    public void addItem() {
-        new TypeSafePlcReadRequest<>(String.class).addItem(readRequestItemString);
+    public void addField() {
+        new TypeSafePlcReadRequest<>(String.class).addField(readRequestItemString);
     }
 
     @Test

@@ -117,7 +117,7 @@ class CachedDriverManagerTest implements WithAssertions {
         PlcConnection connection = driverManager.getConnection("");
         // Close the Connection
         PlcReadRequest.Builder builder = connection.readRequestBuilder();
-        PlcReadRequest request = builder.addItem("", "").build();
+        PlcReadRequest request = builder.addFieldAddress("", "").build();
         connection.close();
         assertThrows(IllegalStateException.class, () -> request.execute());
     }

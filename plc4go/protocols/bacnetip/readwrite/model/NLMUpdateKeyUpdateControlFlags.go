@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -169,7 +168,7 @@ func (m *_NLMUpdateKeyUpdateControlFlags) GetLengthInBytes() uint16 {
 }
 
 func NLMUpdateKeyUpdateControlFlagsParse(theBytes []byte) (NLMUpdateKeyUpdateControlFlags, error) {
-	return NLMUpdateKeyUpdateControlFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return NLMUpdateKeyUpdateControlFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func NLMUpdateKeyUpdateControlFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (NLMUpdateKeyUpdateControlFlags, error) {
@@ -255,7 +254,7 @@ func NLMUpdateKeyUpdateControlFlagsParseWithBuffer(readBuffer utils.ReadBuffer) 
 }
 
 func (m *_NLMUpdateKeyUpdateControlFlags) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

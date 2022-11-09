@@ -86,7 +86,7 @@ public class Plc4XConsumer extends DefaultConsumer {
         PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
         for (Map.Entry<String, Object> tag : tags.entrySet()) {
             try {
-                builder.addItem(tag.getKey(), (String) tag.getValue());
+                builder.addFieldAddress(tag.getKey(), (String) tag.getValue());
             } catch (PlcIncompatibleDatatypeException e) {
                 LOGGER.error("For consumer, please use Map<String,String>, currently using {}", tags.getClass().getSimpleName());
             }

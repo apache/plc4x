@@ -216,12 +216,12 @@ public class Plc4xSinkTask extends SinkTask {
                                 String sValue = (String) value;
                                 if ((sValue.charAt(0) == '[') && (sValue.charAt(sValue.length() - 1) == ']')) {
                                     String[] values = sValue.substring(1,sValue.length() - 1).split(",");
-                                    builder.addItem(address, address, values);
+                                    builder.addFieldAddress(address, address, values);
                                 } else {
-                                    builder.addItem(address, address, value);
+                                    builder.addFieldAddress(address, address, value);
                                 }
                             } else {
-                                builder.addItem(address, address, value);
+                                builder.addFieldAddress(address, address, value);
                             }
 
                             validCount += 1;

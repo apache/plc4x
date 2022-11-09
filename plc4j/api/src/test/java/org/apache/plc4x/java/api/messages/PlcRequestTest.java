@@ -40,8 +40,8 @@ public class PlcRequestTest {
     }
 
     @Test
-    public void addItem() {
-        SUT.addItem(mock(RequestItem.class));
+    public void addField() {
+        SUT.addField(mock(RequestItem.class));
     }
 
     @Test

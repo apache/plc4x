@@ -93,7 +93,7 @@ public class PollLoop {
                 // variables names are the same as the actual variable read
                 PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
                 for (int i = 0; i < variables.size(); i++) {
-                    builder.addItem(variables.get(i), variables.get(i));
+                    builder.addFieldAddress(variables.get(i), variables.get(i));
                 }
                 PlcReadRequest readRequest = builder.build();
 

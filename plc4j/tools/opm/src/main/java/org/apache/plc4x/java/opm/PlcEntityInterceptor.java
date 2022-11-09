@@ -21,7 +21,6 @@ package org.apache.plc4x.java.opm;
 import net.bytebuddy.implementation.bind.annotation.*;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.SystemConfiguration;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.plc4x.java.PlcDriverManager;
@@ -224,7 +223,7 @@ public class PlcEntityInterceptor {
                 .filter(field -> field.isAnnotationPresent(PlcField.class))
                 .filter(field -> needsToBeSynced(lastFetched, field))
                 .forEach(field ->
-                    requestBuilder.addItem(
+                    requestBuilder.addFieldAddress(
                         getFqn(field),
                         OpmUtils.getOrResolveAddress(registry, field.getAnnotation(PlcField.class).value())
                     )
@@ -280,7 +279,7 @@ public class PlcEntityInterceptor {
                 .filter(field -> field.isAnnotationPresent(PlcField.class))
                 .filter(field -> needsToBeSynced(lastWritten, field))
                 .forEach(field ->
-                    requestBuilder.addItem(
+                    requestBuilder.addFieldAddress(
                         getFqn(field),
                         OpmUtils.getOrResolveAddress(registry, field.getAnnotation(PlcField.class).value()),
                         getFromField(field, proxy)
@@ -369,7 +368,7 @@ public class PlcEntityInterceptor {
             // Catch the exception, if no reader present (see below)
 
             PlcReadRequest request = connection.readRequestBuilder()
-                .addItem(fqn, OpmUtils.getOrResolveAddress(registry, annotation.value()))
+                .addFieldAddress(fqn, OpmUtils.getOrResolveAddress(registry, annotation.value()))
                 .build();
 
             PlcReadResponse response = getPlcReadResponse(request);
@@ -417,7 +416,7 @@ public class PlcEntityInterceptor {
             // Catch the exception, if no reader present (see below)
 
             PlcWriteRequest request = connection.writeRequestBuilder()
-                .addItem(fqn, OpmUtils.getOrResolveAddress(registry, annotation.value()), object)
+                .addFieldAddress(fqn, OpmUtils.getOrResolveAddress(registry, annotation.value()), object)
                 .build();
 
             PlcWriteResponse response = getPlcWriteResponse(request);

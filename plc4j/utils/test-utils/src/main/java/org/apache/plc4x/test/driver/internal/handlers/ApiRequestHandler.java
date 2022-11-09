@@ -48,7 +48,7 @@ public class ApiRequestHandler {
                 final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
                 if (payload.element("fields") != null) {
                     for (Element fieldElement : payload.element("fields").elements("field")) {
-                        builder.addItem(fieldElement.elementText("name"), fieldElement.elementText("address"));
+                        builder.addFieldAddress(fieldElement.elementText("name"), fieldElement.elementText("address"));
                     }
                 }
                 final PlcReadRequest plc4xRequest = builder.build();
@@ -70,7 +70,7 @@ public class ApiRequestHandler {
                         for (Element valueElement : valueElements) {
                             valueStrings.add(valueElement.getTextTrim());
                         }
-                        builder.addItem(fieldElement.elementText("name"),
+                        builder.addFieldAddress(fieldElement.elementText("name"),
                             fieldElement.elementText("address"), valueStrings.toArray(new Object[0]));
                     }
                 }

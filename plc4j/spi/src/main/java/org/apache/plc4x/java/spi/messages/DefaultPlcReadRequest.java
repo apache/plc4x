@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.spi.messages;
 
 import com.fasterxml.jackson.annotation.*;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcFieldRequest;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -37,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcReadRequest implements PlcReadRequest, PlcFieldRequest, Serializable {
@@ -85,26 +83,8 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcFieldRequest, S
     }
 
     @JsonIgnore
-    public List<Pair<String, PlcField>> getNamedFields() {
-        return fields.entrySet()
-            .stream()
-            .map(stringPlcFieldEntry -> Pair.of(stringPlcFieldEntry.getKey(), stringPlcFieldEntry.getValue()))
-            .collect(Collectors.toCollection(LinkedList::new));
-    }
-
-    @JsonIgnore
     public PlcReader getReader() {
         return reader;
-    }
-
-    @JsonAnySetter
-    public void add(String key, PlcField value) {
-        fields.put(key, value);
-    }
-
-    @JsonAnyGetter
-    public Map<String, PlcField> getMap() {
-        return fields;
     }
 
     @Override
@@ -140,20 +120,20 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcFieldRequest, S
         }
 
         @Override
-        public PlcReadRequest.Builder addItem(String name, String fieldQuery) {
+        public PlcReadRequest.Builder addFieldAddress(String name, String fieldAddress) {
             if (fields.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
             }
-            fields.put(name, () -> fieldHandler.parseField(fieldQuery));
+            fields.put(name, () -> fieldHandler.parseField(fieldAddress));
             return this;
         }
 
         @Override
-        public PlcReadRequest.Builder addItem(String name, PlcField fieldQuery) {
+        public PlcReadRequest.Builder addField(String name, PlcField field) {
             if (fields.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
             }
-            fields.put(name, () -> fieldQuery);
+            fields.put(name, () -> field);
             return this;
         }
 

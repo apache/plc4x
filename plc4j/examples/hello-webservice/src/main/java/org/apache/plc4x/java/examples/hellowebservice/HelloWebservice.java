@@ -68,7 +68,7 @@ public class HelloWebservice {
             // - Give the single item requested the alias name "value"
             final PlcSubscriptionRequest.Builder builder = plcConnection.subscriptionRequestBuilder();
             for (int i = 0; i < options.getFieldAddress().length; i++) {
-                builder.addChangeOfStateField("value-" + i, options.getFieldAddress()[i]);
+                builder.addChangeOfStateFieldAddress("value-" + i, options.getFieldAddress()[i]);
             }
             PlcSubscriptionRequest subscriptionRequest = builder.build();
 

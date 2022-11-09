@@ -30,22 +30,22 @@ public class Plc4xWriteClient {
     public static void main(String[] args) throws Exception {
         try (final PlcConnection connection = new PlcDriverManager().getConnection("plc4x://localhost?remote-connection-string=simulated%3A%2F%2Flocalhost")) {
             final PlcWriteRequest.Builder requestBuilder = connection.writeRequestBuilder();
-            requestBuilder.addItem("test-BOOL", "STDOUT/foo:BOOL", true);
-            requestBuilder.addItem("test-BYTE", "STDOUT/foo:BYTE", new boolean[] {true, true, false, true, false, true, false, true});
-            requestBuilder.addItem("test-WORD", "STDOUT/foo:WORD", new boolean[] {true, true, false, true, false, true, false, true, false, false, false, false, true, true, true, true});
-            requestBuilder.addItem("test-DWORD", "STDOUT/foo:DWORD", new boolean[] {true, true, false, true, false, true, false, true, false, false, false, false, true, true, true, true, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false});
-            requestBuilder.addItem("test-USINT", "STDOUT/foo:USINT", 12);
-            requestBuilder.addItem("test-UINT", "STDOUT/foo:UINT", 12345);
-            requestBuilder.addItem("test-UDINT", "STDOUT/foo:UDINT", 1234567890);
-            requestBuilder.addItem("test-ULINT", "STDOUT/foo:ULINT", new BigInteger("12345678901234567"));
-            requestBuilder.addItem("test-SINT", "STDOUT/foo:SINT", -12);
-            requestBuilder.addItem("test-INT", "STDOUT/foo:INT", -12345);
-            requestBuilder.addItem("test-DINT", "STDOUT/foo:DINT", -1234567890);
-            requestBuilder.addItem("test-LINT", "STDOUT/foo:LINT", new BigInteger("-12345678901234567"));
-            requestBuilder.addItem("test-REAL", "STDOUT/foo:REAL", 3.14159f);
-            requestBuilder.addItem("test-LREAL", "STDOUT/foo:LREAL", 2.71828182845904523536028747135d);
-            requestBuilder.addItem("test-CHAR", "STDOUT/foo:CHAR", "P");
-            requestBuilder.addItem("test-WCHAR", "STDOUT/foo:WCHAR", "Ϡ");
+            requestBuilder.addFieldAddress("test-BOOL", "STDOUT/foo:BOOL", true);
+            requestBuilder.addFieldAddress("test-BYTE", "STDOUT/foo:BYTE", new boolean[] {true, true, false, true, false, true, false, true});
+            requestBuilder.addFieldAddress("test-WORD", "STDOUT/foo:WORD", new boolean[] {true, true, false, true, false, true, false, true, false, false, false, false, true, true, true, true});
+            requestBuilder.addFieldAddress("test-DWORD", "STDOUT/foo:DWORD", new boolean[] {true, true, false, true, false, true, false, true, false, false, false, false, true, true, true, true, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false});
+            requestBuilder.addFieldAddress("test-USINT", "STDOUT/foo:USINT", 12);
+            requestBuilder.addFieldAddress("test-UINT", "STDOUT/foo:UINT", 12345);
+            requestBuilder.addFieldAddress("test-UDINT", "STDOUT/foo:UDINT", 1234567890);
+            requestBuilder.addFieldAddress("test-ULINT", "STDOUT/foo:ULINT", new BigInteger("12345678901234567"));
+            requestBuilder.addFieldAddress("test-SINT", "STDOUT/foo:SINT", -12);
+            requestBuilder.addFieldAddress("test-INT", "STDOUT/foo:INT", -12345);
+            requestBuilder.addFieldAddress("test-DINT", "STDOUT/foo:DINT", -1234567890);
+            requestBuilder.addFieldAddress("test-LINT", "STDOUT/foo:LINT", new BigInteger("-12345678901234567"));
+            requestBuilder.addFieldAddress("test-REAL", "STDOUT/foo:REAL", 3.14159f);
+            requestBuilder.addFieldAddress("test-LREAL", "STDOUT/foo:LREAL", 2.71828182845904523536028747135d);
+            requestBuilder.addFieldAddress("test-CHAR", "STDOUT/foo:CHAR", "P");
+            requestBuilder.addFieldAddress("test-WCHAR", "STDOUT/foo:WCHAR", "Ϡ");
             final PlcWriteRequest writeRequest = requestBuilder.build();
             final PlcWriteResponse writeResponse = writeRequest.execute().get();
             System.out.println(writeResponse);

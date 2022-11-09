@@ -66,7 +66,7 @@ public class Scanner {
             // read symbols
             System.out.println("Reading symbol info");
             PlcReadRequest.Builder readRequestBuilder = plcConnection.readRequestBuilder();
-            PlcReadRequest request = readRequestBuilder.addItem("SYM_UPLOADINFO2", "0xf00f/0x0:SINT[24]").build();
+            PlcReadRequest request = readRequestBuilder.addFieldAddress("SYM_UPLOADINFO2", "0xf00f/0x0:SINT[24]").build();
             PlcReadResponse rsp = request.execute().get();
             ByteBuffer buffer = toBuffer(rsp, "SYM_UPLOADINFO2");
 
@@ -74,7 +74,7 @@ public class Scanner {
             int symbolAnswerSize = buffer.getInt(4);
             System.out.println("Expecting symbol table containing " + symbolAnswerSize + " bytes");
 
-            request = plcConnection.readRequestBuilder().addItem("SYM_UPLOAD", "0xf00b/0x0:SINT[" + symbolAnswerSize + "]").build();
+            request = plcConnection.readRequestBuilder().addFieldAddress("SYM_UPLOAD", "0xf00b/0x0:SINT[" + symbolAnswerSize + "]").build();
             PlcReadResponse readResponse = request.execute().get();
             buffer = toBuffer(readResponse, "SYM_UPLOAD");
             //System.err.println("second answer " + Hex.dump(buffer.array()));

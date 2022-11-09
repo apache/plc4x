@@ -121,7 +121,7 @@ public class ScraperTaskImpl implements ScraperTask {
                 //add fields to be acquired to builder
                 fields.forEach((alias, qry) -> {
                     LOGGER.trace("Requesting: {} -> {}", alias, qry);
-                    readRequestBuilder.addItem(alias, qry);
+                    readRequestBuilder.addFieldAddress(alias, qry);
                 });
                 plcReadResponse = readRequestBuilder
                     .build()

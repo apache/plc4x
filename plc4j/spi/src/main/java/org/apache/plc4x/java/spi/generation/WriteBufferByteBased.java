@@ -321,6 +321,11 @@ public class WriteBufferByteBased implements WriteBuffer {
             case "UTF16LE":
             case "UTF16BE": {
                 bytes = value.getBytes(StandardCharsets.UTF_16);
+                if(bytes.length > 2) {
+                    bytes = new byte[] {
+                        bytes[2], bytes[3]
+                    };
+                }
                 break;
             }
             default:

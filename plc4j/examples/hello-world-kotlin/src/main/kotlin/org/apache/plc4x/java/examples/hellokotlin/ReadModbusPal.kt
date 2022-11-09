@@ -33,10 +33,10 @@ fun main() {
             }
 
             val readRequest = conn.readRequestBuilder()
-                .addItem("value-1", "coil:1")
-                .addItem("value-2", "coil:3[4]")
-                .addItem("value-3", "holding-register:1")
-                .addItem("value-4", "holding-register:3[4]")
+                .addFieldAddress("value-1", "coil:1")
+                .addFieldAddress("value-2", "coil:3[4]")
+                .addFieldAddress("value-3", "holding-register:1")
+                .addFieldAddress("value-4", "holding-register:3[4]")
                 .build()
 
             val response = readRequest.execute().get(1, TimeUnit.MINUTES)
