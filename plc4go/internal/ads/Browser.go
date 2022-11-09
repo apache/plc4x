@@ -121,57 +121,13 @@ func (m *Connection) filterSymbols(filterExpression string) []apiModel.PlcBrowse
 		return nil
 	} else {
 		symbolDataTypeName := symbol.GetDataTypeName()
-		if symbolDataType, ok := m.dataTypeTable[symbolDataTypeName]; !ok {
-			// Couldn't find data type
-			return nil
-		} else {
+		if symbolDataType, ok := m.dataTypeTable[symbolDataTypeName]; ok {
 			return m.filterDataTypes(symbolName, symbolDataType, symbolDataTypeName, remainingSegments)
 		}
+		// Couldn't find data type
+		return nil
 	}
 }
-
-/*
-func LALALA(){
-	for (AdsSymbolTableEntry symbol : symbolTable.values()) {
-		// Get the datatype of this entry.
-		AdsDataTypeTableEntry dataType = dataTypeTable.get(symbol.getDataTypeName());
-		if (dataType == null) {
-			System.out.printf("couldn't find datatype: %s%n", symbol.getDataTypeName());
-			continue;
-		}
-		String itemName = (symbol.getComment() == null || symbol.getComment().isEmpty()) ? symbol.getName() : symbol.getComment();
-		// Convert the plc value type from the ADS specific one to the PLC4X global one.
-		org.apache.plc4x.java.api.types.PlcValueType plc4xPlcValueType = org.apache.plc4x.java.api.types.PlcValueType.valueOf(getPlcValueTypeForAdsDataType(dataType).toString());
-
-		// If this type has children, add entries for its children.
-		List<PlcBrowseItem> children = getBrowseItems(symbol.getName(), symbol.getGroup(), symbol.getOffset(), !symbol.getFlagReadOnly(), dataType);
-
-		// Populate a map of protocol-dependent options.
-		Map<String, PlcValue> options = new HashMap<>();
-		options.put("comment", new PlcSTRING(symbol.getComment()));
-		options.put("group-id", new PlcUDINT(symbol.getGroup()));
-		options.put("offset", new PlcUDINT(symbol.getOffset()));
-		options.put("size-in-bytes", new PlcUDINT(symbol.getSize()));
-
-		if(plc4xPlcValueType == org.apache.plc4x.java.api.types.PlcValueType.List) {
-			List<PlcBrowseItemArrayInfo> arrayInfo = new ArrayList<>();
-			for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : dataType.getArrayInfo()) {
-				arrayInfo.add(new DefaultBrowseItemArrayInfo(
-					adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
-			}
-			// Add the type itself.
-			values.add(new DefaultListPlcBrowseItem(symbol.getName(), itemName, plc4xPlcValueType, arrayInfo,
-				true, !symbol.getFlagReadOnly(), true, children, options));
-		} else {
-			// Add the type itself.
-			values.add(new DefaultPlcBrowseItem(symbol.getName(), itemName, plc4xPlcValueType, true,
-				!symbol.getFlagReadOnly(), true, children, options));
-		}
-	}
-	DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, values);
-
-}
-*/
 
 func (m *Connection) filterDataTypes(parentName string, currentType model.AdsDataTypeTableEntry, currentPath string, remainingAddressSegments []string) []apiModel.PlcBrowseItem {
 	if len(remainingAddressSegments) == 0 {

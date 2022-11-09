@@ -38,7 +38,7 @@ func NewValueHandler() ValueHandler {
 }
 
 func (m ValueHandler) NewPlcValue(field apiModel.PlcField, value interface{}) (apiValues.PlcValue, error) {
-	if cbusField, ok := field.(CbusField); ok {
+	if cbusField, ok := field.(Field); ok {
 		switch cbusField.GetFieldType() {
 		case
 			CAL_WRITE,

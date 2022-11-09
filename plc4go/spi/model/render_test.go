@@ -49,7 +49,7 @@ func TestNonPanickingStrings(t *testing.T) {
 		&DefaultResponse{},
 		&DefaultPlcBrowseRequestResult{},
 		&DefaultPlcBrowseRequest{},
-		//&DefaultPlcBrowseQueryResult{},
+		&DefaultPlcBrowseItem{},
 		&DefaultPlcBrowseEvent{},
 	}
 	for _, sut := range suts {

@@ -47,7 +47,7 @@ func (s StatusRequestType) String() string {
 	return ""
 }
 
-type CbusField interface {
+type Field interface {
 	model.PlcField
 
 	GetFieldType() FieldType
@@ -55,7 +55,7 @@ type CbusField interface {
 
 // StatusField can be used to query status using a P-to-MP-StatusRequest command
 type StatusField interface {
-	CbusField
+	Field
 
 	GetStatusRequestType() StatusRequestType
 	GetStartingGroupAddressLabel() *byte
@@ -78,7 +78,7 @@ type CalField interface {
 
 // CALRecallField can be used to get device/network management fields
 type CALRecallField interface {
-	CbusField
+	Field
 	CalField
 
 	GetParameter() readWriteModel.Parameter
@@ -97,7 +97,7 @@ func NewCALRecallField(unitAddress readWriteModel.UnitAddress, parameter readWri
 
 // CALIdentifyField can be used to get device/network management fields
 type CALIdentifyField interface {
-	CbusField
+	Field
 	CalField
 
 	GetAttribute() readWriteModel.Attribute
@@ -114,7 +114,7 @@ func NewCALIdentifyField(unitAddress readWriteModel.UnitAddress, attribute readW
 
 // CALGetstatusField can be used to get device/network management fields
 type CALGetstatusField interface {
-	CbusField
+	Field
 	CalField
 
 	GetParameter() readWriteModel.Parameter
@@ -133,7 +133,7 @@ func NewCALGetstatusField(unitAddress readWriteModel.UnitAddress, parameter read
 
 // SALField can be used to send SAL commands
 type SALField interface {
-	CbusField
+	Field
 
 	GetApplication() readWriteModel.ApplicationIdContainer
 	GetSALCommand() string
@@ -150,7 +150,7 @@ func NewSALField(application readWriteModel.ApplicationIdContainer, salCommand s
 
 // SALMonitorField can be used to monitor sal fields
 type SALMonitorField interface {
-	CbusField
+	Field
 
 	GetUnitAddress() *readWriteModel.UnitAddress
 	GetApplication() *readWriteModel.ApplicationIdContainer
@@ -167,7 +167,7 @@ func NewSALMonitorField(unitAddress *readWriteModel.UnitAddress, application *re
 
 // MMIMonitorField can be used to monitor mmi fields
 type MMIMonitorField interface {
-	CbusField
+	Field
 
 	GetUnitAddress() *readWriteModel.UnitAddress
 	GetApplication() *readWriteModel.ApplicationIdContainer
@@ -184,7 +184,7 @@ func NewMMIMonitorField(unitAddress *readWriteModel.UnitAddress, application *re
 
 // UnitInfoField can be used to get information about unit(s)
 type UnitInfoField interface {
-	CbusField
+	Field
 
 	GetUnitAddress() *readWriteModel.UnitAddress
 	GetAttribute() *readWriteModel.Attribute
