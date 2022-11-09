@@ -20,4 +20,5 @@ package org.apache.plc4x.java.api.messages;
 
 public interface PlcRequestBuilder {
     PlcRequest build();
+
 }

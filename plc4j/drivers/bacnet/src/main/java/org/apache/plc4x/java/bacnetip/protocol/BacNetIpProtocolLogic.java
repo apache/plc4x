@@ -30,7 +30,7 @@ import org.apache.plc4x.java.bacnetip.configuration.BacNetIpConfiguration;
 import org.apache.plc4x.java.bacnetip.ede.EdeParser;
 import org.apache.plc4x.java.bacnetip.ede.model.Datapoint;
 import org.apache.plc4x.java.bacnetip.ede.model.EdeModel;
-import org.apache.plc4x.java.bacnetip.field.BacNetIpField;
+import org.apache.plc4x.java.bacnetip.tag.BacNetIpTag;
 import org.apache.plc4x.java.bacnetip.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -147,7 +147,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             long deviceIdentifier = valueChange.getMonitoredObjectIdentifier().getPayload().getInstanceNumber();
             int objectType = valueChange.getMonitoredObjectIdentifier().getPayload().getObjectType().getValue();
             long objectInstance = valueChange.getMonitoredObjectIdentifier().getPayload().getInstanceNumber();
-            BacNetIpField curField = new BacNetIpField(deviceIdentifier, objectType, objectInstance);
+            BacNetIpTag curTag = new BacNetIpTag(deviceIdentifier, objectType, objectInstance);
 
             // The actual value change is in the notifications ... iterate through them to get it.
             for (BACnetPropertyValue baCnetPropertyValue : valueChange.getListOfValues().getData()) {
@@ -160,7 +160,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
                     enrichedPlcValue.put("deviceIdentifier", new PlcUDINT(deviceIdentifier));
                     enrichedPlcValue.put("objectType", new PlcDINT(objectType));
                     enrichedPlcValue.put("objectInstance", new PlcUDINT(objectInstance));
-                    enrichedPlcValue.put("address", new PlcSTRING(toString(curField)));
+                    enrichedPlcValue.put("address", new PlcSTRING(toString(curTag)));
 
                     // From the original BACNet tag
                     enrichedPlcValue.put("tagNumber", PlcValueHandler.of(propertyValue.getPeekedTagHeader().getActualTagNumber()));
@@ -168,14 +168,14 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
 
                     // Use the information in the edeModel to enrich the information.
                     if (edeModel != null) {
-                        final Datapoint datapoint = edeModel.getDatapoint(curField);
+                        final Datapoint datapoint = edeModel.getDatapoint(curTag);
                         if (datapoint != null) {
                             // Add all the attributes from the ede file.
                             enrichedPlcValue.putAll(datapoint.toPlcValues());
                         }
                     }
                     // Send out the enriched event.
-                    publishEvent(curField, new PlcStruct(enrichedPlcValue));
+                    publishEvent(curTag, new PlcStruct(enrichedPlcValue));
                 }
             }
         } else if (serviceRequest instanceof BACnetConfirmedServiceRequestReadProperty) { // Someone read a value.
@@ -198,7 +198,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             long deviceIdentifier = valueChange.getMonitoredObjectIdentifier().getPayload().getInstanceNumber();
             int objectType = valueChange.getMonitoredObjectIdentifier().getPayload().getObjectType().getValue();
             long objectInstance = valueChange.getMonitoredObjectIdentifier().getPayload().getInstanceNumber();
-            BacNetIpField curField = new BacNetIpField(deviceIdentifier, objectType, objectInstance);
+            BacNetIpTag curTag = new BacNetIpTag(deviceIdentifier, objectType, objectInstance);
 
             // The actual value change is in the notifications ... iterate through them to get it.
             for (BACnetPropertyValue baCnetPropertyValue : valueChange.getListOfValues().getData()) {
@@ -211,7 +211,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
                     enrichedPlcValue.put("deviceIdentifier", new PlcUDINT(deviceIdentifier));
                     enrichedPlcValue.put("objectType", new PlcDINT(objectType));
                     enrichedPlcValue.put("objectInstance", new PlcUDINT(objectInstance));
-                    enrichedPlcValue.put("address", new PlcSTRING(toString(curField)));
+                    enrichedPlcValue.put("address", new PlcSTRING(toString(curTag)));
 
                     // From the original BACNet tag
                     enrichedPlcValue.put("tagNumber", PlcValueHandler.of(baCnetTag.getActualTagNumber()));
@@ -219,14 +219,14 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
 
                     // Use the information in the edeModel to enrich the information.
                     if (edeModel != null) {
-                        final Datapoint datapoint = edeModel.getDatapoint(curField);
+                        final Datapoint datapoint = edeModel.getDatapoint(curTag);
                         if (datapoint != null) {
                             // Add all the attributes from the ede file.
                             enrichedPlcValue.putAll(datapoint.toPlcValues());
                         }
                     }
                     // Send out the enriched event.
-                    publishEvent(curField, new PlcStruct(enrichedPlcValue));
+                    publishEvent(curTag, new PlcStruct(enrichedPlcValue));
                 }
             }
         } else if (serviceRequest instanceof BACnetUnconfirmedServiceRequestWhoHas) {
@@ -245,8 +245,8 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
-        for (String fieldName : subscriptionRequest.getFieldNames()) {
-            values.put(fieldName, new ResponseItem<>(PlcResponseCode.OK, new DefaultPlcSubscriptionHandle(this)));
+        for (String tagName : subscriptionRequest.getTagNames()) {
+            values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, new DefaultPlcSubscriptionHandle(this)));
         }
         return CompletableFuture.completedFuture(new DefaultPlcSubscriptionResponse(subscriptionRequest, values));
     }
@@ -265,20 +265,20 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
         consumerIdMap.remove(consumerRegistration.getConsumerId());
     }
 
-    protected void publishEvent(BacNetIpField field, PlcValue plcValue) {
+    protected void publishEvent(BacNetIpTag tag, PlcValue plcValue) {
         // Create a subscription event from the input.
         final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
             Collections.singletonMap("event", new ResponseItem<>(PlcResponseCode.OK, plcValue)));
 
         // Send the subscription event to all listeners.
         for (Consumer<PlcSubscriptionEvent> consumer : consumerIdMap.values()) {
-            // TODO: Check if the subscription matches the current field ..
+            // TODO: Check if the subscription matches the current tag ..
             consumer.accept(event);
         }
     }
 
-    private String toString(BacNetIpField field) {
-        return field.getDeviceIdentifier() + "/" + field.getObjectType() + "/" + field.getObjectInstance();
+    private String toString(BacNetIpTag tag) {
+        return tag.getDeviceIdentifier() + "/" + tag.getObjectType() + "/" + tag.getObjectInstance();
     }
 
 }

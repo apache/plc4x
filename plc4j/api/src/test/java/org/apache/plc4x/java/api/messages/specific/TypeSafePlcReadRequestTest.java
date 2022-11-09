@@ -18,14 +18,7 @@
  */
 package org.apache.plc4x.java.api.messages.specific;
 
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.model.PlcField;
-
-import java.util.Collections;
-
-import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class TypeSafePlcReadRequestTest {
 

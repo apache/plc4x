@@ -20,12 +20,12 @@ package org.apache.plc4x.java.plc4x;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
-import org.apache.plc4x.java.plc4x.field.Plc4xFieldHandler;
+import org.apache.plc4x.java.plc4x.tag.Plc4XTagHandler;
 import org.apache.plc4x.java.plc4x.protocol.Plc4xProtocolLogic;
 import org.apache.plc4x.java.plc4x.readwrite.Plc4xMessage;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
@@ -50,8 +50,8 @@ public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> {
     }
 
     @Override
-    protected PlcFieldHandler getFieldHandler() {
-        return new Plc4xFieldHandler();
+    protected PlcTagHandler getTagHandler() {
+        return new Plc4XTagHandler();
     }
 
     @Override

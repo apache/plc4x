@@ -33,27 +33,27 @@ fun main() {
             }
 
             val readRequest = conn.readRequestBuilder()
-                .addFieldAddress("value-1", "coil:1")
-                .addFieldAddress("value-2", "coil:3[4]")
-                .addFieldAddress("value-3", "holding-register:1")
-                .addFieldAddress("value-4", "holding-register:3[4]")
+                .addTagAddress("value-1", "coil:1")
+                .addTagAddress("value-2", "coil:3[4]")
+                .addTagAddress("value-3", "holding-register:1")
+                .addTagAddress("value-4", "holding-register:3[4]")
                 .build()
 
             val response = readRequest.execute().get(1, TimeUnit.MINUTES)
-            response.fieldNames.forEach { fieldName ->
-                val responseCode = response.getResponseCode(fieldName)
+            response.tagNames.forEach { tagName ->
+                val responseCode = response.getResponseCode(tagName)
                 if (responseCode !== PlcResponseCode.OK) {
-                    println("Error[$fieldName]: ${responseCode.name}")
+                    println("Error[$tagName]: ${responseCode.name}")
                     return
                 }
-                val numValues = response.getNumberOfValues(fieldName)
+                val numValues = response.getNumberOfValues(tagName)
                 // If it's just one element, output just one single line.
                 if (numValues == 1) {
-                    println("Value[$fieldName]: ${response.getObject(fieldName)}")
+                    println("Value[$tagName]: ${response.getObject(tagName)}")
                 } else {
-                    println("Value[$fieldName]:")
+                    println("Value[$tagName]:")
                     for (i in 0 until numValues) {
-                        println(" - " + response.getObject(fieldName, i))
+                        println(" - " + response.getObject(tagName, i))
                     }
                 }
             }

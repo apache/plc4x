@@ -53,7 +53,7 @@ class CachedPlcConnectionTest {
 
         try {
             connection.readRequestBuilder()
-                .addFieldAddress("a", "b")
+                .addTagAddress("a", "b")
                 .build()
                 .execute()
                 .get(5, TimeUnit.SECONDS);
@@ -78,7 +78,7 @@ class CachedPlcConnectionTest {
 
         try {
             connection.readRequestBuilder()
-                .addFieldAddress("a", "b")
+                .addTagAddress("a", "b")
                 .build()
                 .execute()
                 .get(10, TimeUnit.SECONDS);

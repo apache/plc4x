@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -29,13 +30,12 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Map;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
 
-    private final String address;
+    private final PlcTag tag;
 
     private final String name;
 
@@ -50,7 +50,7 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
     private final Map<String, PlcValue> options;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcBrowseItem(@JsonProperty("address") String address,
+    public DefaultPlcBrowseItem(@JsonProperty("tag") PlcTag tag,
                                 @JsonProperty("name") String name,
                                 @JsonProperty("dataType") PlcValueType dataType,
                                 @JsonProperty("readable") boolean readable,
@@ -58,7 +58,7 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
                                 @JsonProperty("subscribable") boolean subscribable,
                                 @JsonProperty("children") Map<String, PlcBrowseItem> children,
                                 @JsonProperty("options") Map<String, PlcValue> options) {
-        this.address = address;
+        this.tag = tag;
         this.name = name;
         this.dataType = dataType;
         this.readable = readable;
@@ -69,8 +69,8 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
     }
 
     @Override
-    public String getAddress() {
-        return address;
+    public PlcTag getTag() {
+        return tag;
     }
 
     @Override
@@ -108,7 +108,7 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext(getClass().getSimpleName());
-        writeBuffer.writeString("address", address.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), address);
+        writeBuffer.writeString("address", tag.getAddressString().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), tag.getAddressString());
         writeBuffer.writeString("name", name.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), name);
         // TODO: Find out how to serialize an enum.
         //writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);

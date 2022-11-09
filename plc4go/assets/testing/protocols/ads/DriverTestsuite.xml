@@ -55,7 +55,7 @@
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
           <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz</name>
               <address>00004040/00000008:BOOL</address>
             </field>
@@ -212,11 +212,11 @@
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
           <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>00004040/00000008:BOOL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz2</name>
               <address>00004040/00000012:BOOL</address>
             </field>
@@ -389,7 +389,7 @@
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
           <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>main.f_trigDateiGelesen.M:BOOL</address>
             </field>
@@ -661,7 +661,7 @@
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
           <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>main.f_trigDateiGelesen.M:BOOL</address>
             </field>
@@ -925,7 +925,7 @@
       <api-request name="Receive a second Read Request for the same resource from application">
         <TestReadRequest>
           <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>main.f_trigDateiGelesen.M:BOOL</address>
             </field>

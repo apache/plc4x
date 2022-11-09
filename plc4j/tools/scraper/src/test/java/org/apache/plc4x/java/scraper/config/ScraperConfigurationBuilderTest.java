@@ -39,7 +39,7 @@ class ScraperConfigurationBuilderTest implements WithAssertions {
             JobConfigurationClassicImplBuilder jobConfigurationClassicImplBuilder = builder.job(job, 10);
             sources.forEach(jobConfigurationClassicImplBuilder::source);
             for (int i = 1; i <= 10; i++) {
-                jobConfigurationClassicImplBuilder.field("f" + i, "qry" + i);
+                jobConfigurationClassicImplBuilder.tag("f" + i, "qry" + i);
             }
             jobConfigurationClassicImplBuilder.build();
         }
@@ -62,7 +62,7 @@ class ScraperConfigurationBuilderTest implements WithAssertions {
                                 "  connections:\n" +
                                 "    s1: \"s1\"\n" +
                                 "    s2: \"s2\"\n" +
-                                "  fields:");
+                                "  tags:");
 
     }
 }

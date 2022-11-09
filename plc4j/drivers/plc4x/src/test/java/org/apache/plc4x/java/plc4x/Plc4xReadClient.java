@@ -28,22 +28,22 @@ public class Plc4xReadClient {
     public static void main(String[] args) throws Exception {
         try (final PlcConnection connection = new PlcDriverManager().getConnection("plc4x://localhost?remote-connection-string=simulated%3A%2F%2Flocalhost")) {
             final PlcReadRequest.Builder requestBuilder = connection.readRequestBuilder();
-            requestBuilder.addFieldAddress("test-BOOL", "RANDOM/foo:BOOL");
-            requestBuilder.addFieldAddress("test-BYTE", "RANDOM/foo:BYTE");
-            requestBuilder.addFieldAddress("test-WORD", "RANDOM/foo:WORD");
-            requestBuilder.addFieldAddress("test-DWORD", "RANDOM/foo:DWORD");
-            requestBuilder.addFieldAddress("test-USINT", "RANDOM/foo:USINT");
-            requestBuilder.addFieldAddress("test-UINT", "RANDOM/foo:UINT");
-            requestBuilder.addFieldAddress("test-UDINT", "RANDOM/foo:UDINT");
-            requestBuilder.addFieldAddress("test-ULINT", "RANDOM/foo:ULINT");
-            requestBuilder.addFieldAddress("test-SINT", "RANDOM/foo:SINT");
-            requestBuilder.addFieldAddress("test-INT", "RANDOM/foo:INT");
-            requestBuilder.addFieldAddress("test-DINT", "RANDOM/foo:DINT");
-            requestBuilder.addFieldAddress("test-LINT", "RANDOM/foo:LINT");
-            requestBuilder.addFieldAddress("test-REAL", "RANDOM/foo:REAL");
-            requestBuilder.addFieldAddress("test-LREAL", "RANDOM/foo:LREAL");
-            requestBuilder.addFieldAddress("test-CHAR", "RANDOM/foo:CHAR");
-            requestBuilder.addFieldAddress("test-WCHAR", "RANDOM/foo:WCHAR");
+            requestBuilder.addTagAddress("test-BOOL", "RANDOM/foo:BOOL");
+            requestBuilder.addTagAddress("test-BYTE", "RANDOM/foo:BYTE");
+            requestBuilder.addTagAddress("test-WORD", "RANDOM/foo:WORD");
+            requestBuilder.addTagAddress("test-DWORD", "RANDOM/foo:DWORD");
+            requestBuilder.addTagAddress("test-USINT", "RANDOM/foo:USINT");
+            requestBuilder.addTagAddress("test-UINT", "RANDOM/foo:UINT");
+            requestBuilder.addTagAddress("test-UDINT", "RANDOM/foo:UDINT");
+            requestBuilder.addTagAddress("test-ULINT", "RANDOM/foo:ULINT");
+            requestBuilder.addTagAddress("test-SINT", "RANDOM/foo:SINT");
+            requestBuilder.addTagAddress("test-INT", "RANDOM/foo:INT");
+            requestBuilder.addTagAddress("test-DINT", "RANDOM/foo:DINT");
+            requestBuilder.addTagAddress("test-LINT", "RANDOM/foo:LINT");
+            requestBuilder.addTagAddress("test-REAL", "RANDOM/foo:REAL");
+            requestBuilder.addTagAddress("test-LREAL", "RANDOM/foo:LREAL");
+            requestBuilder.addTagAddress("test-CHAR", "RANDOM/foo:CHAR");
+            requestBuilder.addTagAddress("test-WCHAR", "RANDOM/foo:WCHAR");
             final PlcReadRequest readRequest = requestBuilder.build();
             final PlcReadResponse readResponse = readRequest.execute().get();
             System.out.println(readResponse);

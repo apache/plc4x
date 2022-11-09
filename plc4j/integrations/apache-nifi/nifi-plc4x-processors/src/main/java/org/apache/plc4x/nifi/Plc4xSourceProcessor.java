@@ -54,19 +54,19 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
             FlowFile flowFile = session.create();
             try {
                 PlcReadRequest.Builder builder = connection.readRequestBuilder();
-                getFields().forEach(field -> {
-                    String address = getAddress(field);
+                getTags().forEach(tag -> {
+                    String address = getAddress(tag);
                     if (address != null) {
-                        builder.addFieldAddress(field, address);
+                        builder.addTagAddress(tag, address);
                     }
                 });
                 PlcReadRequest readRequest = builder.build();
                 PlcReadResponse response = readRequest.execute().get();
                 Map<String, String> attributes = new HashMap<>();
-                for (String fieldName : response.getFieldNames()) {
-                    for (int i = 0; i < response.getNumberOfValues(fieldName); i++) {
-                        Object value = response.getObject(fieldName, i);
-                        attributes.put(fieldName, String.valueOf(value));
+                for (String tagName : response.getTagNames()) {
+                    for (int i = 0; i < response.getNumberOfValues(tagName); i++) {
+                        Object value = response.getObject(tagName, i);
+                        attributes.put(tagName, String.valueOf(value));
                     }
                 }
                 flowFile = session.putAllAttributes(flowFile, attributes);   

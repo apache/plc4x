@@ -18,17 +18,6 @@
  */
 package org.apache.plc4x.java.api.connection;
 
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.mockito.Mockito.mock;
 
 public class PlcReaderTest {
@@ -36,14 +25,14 @@ public class PlcReaderTest {
 /*    @Test
     public void read() throws Exception {
         ((PlcReader) readRequest -> CompletableFuture.completedFuture(new PlcReadResponse(readRequest, Collections.emptyList())))
-            .read(new TypeSafePlcReadRequest<>(String.class, mock(PlcField.class))).get();
+            .read(new TypeSafePlcReadRequest<>(String.class, mock(PlcTag.class))).get();
     }
 
     @Test
     public void readWrongType() throws Exception {
         try {
             ((PlcReader) readRequest -> CompletableFuture.completedFuture(new PlcReadResponse(readRequest, (List) Collections.singletonList(new PlcReadResponseItem(readRequest.getRequestItem().get(), PlcResponseCode.OK, 1)))))
-                .read(new TypeSafePlcReadRequest<>(String.class, mock(PlcField.class))).get();
+                .read(new TypeSafePlcReadRequest<>(String.class, mock(PlcTag.class))).get();
             fail("Should throw an exception");
         } catch (IllegalArgumentException e) {
             assertThat(e.getMessage(), equalTo("Datatype of 1 doesn't match required datatype of class java.lang.String"));

@@ -36,17 +36,17 @@ type EIPPlcField interface {
 	GetElementNb() uint16
 }
 
-type plcField struct {
+type plcTag struct {
 	Tag       string
 	Type      readWrite.CIPDataTypeCode
 	ElementNb uint16
 }
 
-func (m plcField) GetAddressString() string {
+func (m plcTag) GetAddressString() string {
 	return m.GetTag()
 }
 
-func (m plcField) GetValueType() values.PlcValueType {
+func (m plcTag) GetValueType() values.PlcValueType {
 	if plcValueType, ok := values.PlcValueByName(m.GetType().String()); !ok {
 		return values.NULL
 	} else {
@@ -54,31 +54,31 @@ func (m plcField) GetValueType() values.PlcValueType {
 	}
 }
 
-func (m plcField) GetArrayInfo() []model.ArrayInfo {
+func (m plcTag) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func NewField(tag string, _type readWrite.CIPDataTypeCode, elementNb uint16) plcField {
-	return plcField{
+func NewField(tag string, _type readWrite.CIPDataTypeCode, elementNb uint16) plcTag {
+	return plcTag{
 		Tag:       tag,
 		Type:      _type,
 		ElementNb: elementNb,
 	}
 }
 
-func (m plcField) GetTag() string {
+func (m plcTag) GetTag() string {
 	return m.Tag
 }
 
-func (m plcField) GetType() readWrite.CIPDataTypeCode {
+func (m plcTag) GetType() readWrite.CIPDataTypeCode {
 	return m.Type
 }
 
-func (m plcField) GetElementNb() uint16 {
+func (m plcTag) GetElementNb() uint16 {
 	return m.ElementNb
 }
 
-func (m plcField) Serialize() ([]byte, error) {
+func (m plcTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -86,7 +86,7 @@ func (m plcField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m plcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m plcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("EipField"); err != nil {
 		return err
 	}

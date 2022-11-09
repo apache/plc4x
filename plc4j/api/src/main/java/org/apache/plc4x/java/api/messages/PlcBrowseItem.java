@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 
@@ -27,9 +28,9 @@ import java.util.Map;
 public interface PlcBrowseItem {
 
     /**
-     * @return returns the address of this item
+     * @return returns the tag
      */
-    String getAddress();
+    PlcTag getTag();
 
     /**
      * @return returns a textual description of this item

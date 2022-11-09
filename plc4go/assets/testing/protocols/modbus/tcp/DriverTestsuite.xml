@@ -35,7 +35,7 @@
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
           <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz</name>
               <address>holding-register:1:REAL</address>
             </field>
@@ -122,7 +122,7 @@
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
           <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz</name>
               <address>holding-register:1:REAL[2]</address>
             </field>
@@ -212,11 +212,11 @@
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
           <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>holding-register:1:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz2</name>
               <address>holding-register:3:REAL</address>
             </field>
@@ -364,7 +364,7 @@
       <api-request name="Receive Write Request from application">
         <TestWriteRequest>
           <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestValueField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
               <name>hurz</name>
               <address>holding-register:1:REAL</address>
               <value>3.1415927</value>
@@ -450,7 +450,7 @@
       <api-request name="Receive Write Request from application">
         <TestWriteRequest>
           <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestValueField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
               <name>hurz</name>
               <address>holding-register:1:REAL[2]</address>
               <value>3.1415927</value>

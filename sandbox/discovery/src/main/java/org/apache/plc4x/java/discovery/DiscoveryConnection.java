@@ -135,7 +135,7 @@ public class DiscoveryConnection implements PlcConnection, PlcSubscriber, PlcBro
 
     @Override
     public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
-        return new DefaultPlcSubscriptionRequest.Builder(this, new DiscoveryFieldHandler());
+        return new DefaultPlcSubscriptionRequest.Builder(this, new DiscoveryTagHandler());
     }
 
     @Override
@@ -145,7 +145,7 @@ public class DiscoveryConnection implements PlcConnection, PlcSubscriber, PlcBro
 
     @Override
     public PlcBrowseRequest.Builder browseRequestBuilder() {
-        return new DefaultPlcBrowseRequest.Builder(this, new DiscoveryFieldHandler());
+        return new DefaultPlcBrowseRequest.Builder(this, new DiscoveryTagHandler());
     }
 
     @Override

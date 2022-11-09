@@ -221,12 +221,12 @@ A Retriable Exception is raised which provides jitter for the timing of the retr
 PLC4X specifies a very basic schema and leaves the majority of the implementation to the user. It contains the
 following fields:-
 
--   "fields": - This is a customized structure that is formed by the fields defined in the connector configuration.
-This allows the user to defined arbitrary fields within here all based on the PLC4X data types.
+-   "tags": - This is a customized structure that is formed by the tags defined in the connector configuration.
+This allows the user to defined arbitrary tags within here all based on the PLC4X data types.
 
 - "timestamp": - This is the timestamp at which the PLC4X connector processed the PLC request.
 
-- "expires": - This field is used by the sink connector. It allows it to discard the record if it is too old. A value
+- "expires": - This tag is used by the sink connector. It allows it to discard the record if it is too old. A value
 of 0 or null indicates that the record some never be discarded no matter how old it is.
 
 As the majority of the schema is left to the user to define we expect to be able to provide backward compatibility

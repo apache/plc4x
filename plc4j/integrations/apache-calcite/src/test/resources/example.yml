@@ -27,6 +27,6 @@ jobs:
     sources:
     - test
     - test2
-    fields:
+    tags:
       test: 'RANDOM/test:DINT'
       test2: 'RANDOM/test:STRING'

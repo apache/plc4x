@@ -40,8 +40,8 @@ type PlcField struct {
 	arrayInfo []model.ArrayInfo
 }
 
-func needsResolving(plcField model.PlcField) bool {
-	switch plcField.(type) {
+func needsResolving(plcTag model.PlcField) bool {
+	switch plcTag.(type) {
 	case SymbolicPlcField:
 		return true
 	case DirectPlcField:
@@ -72,11 +72,11 @@ func newDirectAdsPlcField(indexGroup uint32, indexOffset uint32, adsDatatype ads
 	}, nil
 }
 
-func castToDirectAdsFieldFromPlcField(plcField model.PlcField) (DirectPlcField, error) {
-	if adsField, ok := plcField.(DirectPlcField); ok {
+func castToDirectAdsFieldFromPlcField(plcTag model.PlcField) (DirectPlcField, error) {
+	if adsField, ok := plcTag.(DirectPlcField); ok {
 		return adsField, nil
 	}
-	return DirectPlcField{}, errors.Errorf("couldn't %T cast to DirectPlcField", plcField)
+	return DirectPlcField{}, errors.Errorf("couldn't %T cast to DirectPlcField", plcTag)
 }
 
 func (m DirectPlcField) GetAddressString() string {
@@ -179,11 +179,11 @@ func newAdsSymbolicPlcField(symbolicAddress string, arrayInfo []model.ArrayInfo)
 	}, nil
 }
 
-func castToSymbolicPlcFieldFromPlcField(plcField model.PlcField) (SymbolicPlcField, error) {
-	if adsField, ok := plcField.(SymbolicPlcField); ok {
+func castToSymbolicPlcFieldFromPlcField(plcTag model.PlcField) (SymbolicPlcField, error) {
+	if adsField, ok := plcTag.(SymbolicPlcField); ok {
 		return adsField, nil
 	}
-	return SymbolicPlcField{}, errors.Errorf("couldn't cast %T to SymbolicPlcField", plcField)
+	return SymbolicPlcField{}, errors.Errorf("couldn't cast %T to SymbolicPlcField", plcTag)
 }
 
 func (m SymbolicPlcField) GetAddressString() string {

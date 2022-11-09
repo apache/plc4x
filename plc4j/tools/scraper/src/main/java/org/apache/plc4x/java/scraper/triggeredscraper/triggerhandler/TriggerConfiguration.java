@@ -21,7 +21,7 @@ package org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.scraper.exception.ScraperConfigurationException;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScrapeJobImpl;
@@ -54,10 +54,10 @@ public class TriggerConfiguration{
     private List<TriggerElement> triggerElementList;
 
     /**
-     * default constructor when an Field should be used for triggering
+     * default constructor when a tag should be used for triggering
      * @param triggerType type of trigger from enum
      * @param scrapeInterval scrape interval of triggered variable
-     * @param triggerElementList list of triggerElemts with concat that combined is used as triger
+     * @param triggerElementList list of triggerElements with concat that combined is used as trigger
      * @param triggeredScrapeJobImpl the job which is valid for the configuration
      * @throws ScraperConfigurationException when something goes wrong with configuration
      */
@@ -74,7 +74,7 @@ public class TriggerConfiguration{
         String exceptionMessage;
 
         if(this.triggerType.equals(TriggerType.TRIGGER_VAR) ) {
-            //test for valid field-connection string, on exception quit job and return message to user
+            //test for valid tag-connection string, on exception quit job and return message to user
             if(this.triggerElementList.isEmpty()){
                 exceptionMessage = String.format("No items in trigger List for trigger-type TRIGGER_VAR for Job %s!", triggeredScrapeJobImpl.getJobName());
                 throw new ScraperConfigurationException(exceptionMessage);
@@ -151,15 +151,15 @@ public class TriggerConfiguration{
      * @throws ScraperException when an unsupported Type is chosen,which is not (yet) implemented for comparison
      * ToDo check how to handle time-variables if needed
      */
-    private static Class<?> validateDataType(PlcField plcField) throws ScraperConfigurationException {
-        if(plcField!=null){
-            Class<?> javaDataType = plcField.getPlcValueType().getDefaultJavaType();
+    private static Class<?> validateDataType(PlcTag plcTag) throws ScraperConfigurationException {
+        if(plcTag !=null){
+            Class<?> javaDataType = plcTag.getPlcValueType().getDefaultJavaType();
             if(!javaDataType.equals(Boolean.class)
                 && !javaDataType.equals(Integer.class)
                 && !javaDataType.equals(Long.class)
                 && !javaDataType.equals(Double.class)
             ){
-                String exceptionMessage = String.format("Unsupported plc-trigger variable %s with converted data-type %s used",plcField,plcField.getPlcValueType().getDefaultJavaType());
+                String exceptionMessage = String.format("Unsupported plc-trigger variable %s with converted data-type %s used", plcTag, plcTag.getPlcValueType().getDefaultJavaType());
                 throw new ScraperConfigurationException(exceptionMessage);
             }
             return javaDataType;
@@ -202,7 +202,7 @@ public class TriggerConfiguration{
             for(int countElements=0; countElements<acquiredValuesList.size();countElements++){
                 TriggerElement triggerElement = triggerElementList.get(countElements);
                 Object acquiredObject = acquiredValuesList.get(countElements);
-                if(validateDataType(triggerElement.getPlcField()).equals(Boolean.class)){
+                if(validateDataType(triggerElement.getPlcTag()).equals(Boolean.class)){
                     //if given type is Boolean
                     boolean currentValue;
                     boolean refValue;
@@ -221,9 +221,9 @@ public class TriggerConfiguration{
                         triggerResultList.add(currentValue != refValue);
                     }
                 }
-                if(validateDataType(triggerElement.getPlcField()).equals(Double.class)
-                    || validateDataType(triggerElement.getPlcField()).equals(Integer.class)
-                    || validateDataType(triggerElement.getPlcField()).equals(Long.class)) {
+                if(validateDataType(triggerElement.getPlcTag()).equals(Double.class)
+                    || validateDataType(triggerElement.getPlcTag()).equals(Integer.class)
+                    || validateDataType(triggerElement.getPlcTag()).equals(Long.class)) {
                     //if given type is numerical
                     boolean skipComparison = false; //comparison shall be skipped if previous values was null
                     double currentValue;
@@ -492,8 +492,8 @@ public class TriggerConfiguration{
         //if trigger should be compared to previous value
         private Boolean previousMode;
         private Object compareValue;
-        private PlcField plcField;
-        private String plcFieldString;
+        private PlcTag plcTag;
+        private String plcTagAddress;
 
         private String plcConnectionString;
 
@@ -509,45 +509,45 @@ public class TriggerConfiguration{
             this.concatType = null;
             this.previousMode = false;
             this.compareValue = null;
-            this.plcField = null;
-            this.plcFieldString = null;
+            this.plcTag = null;
+            this.plcTagAddress = null;
             this.reservedCompareValue = null;
             this.plcConnectionString="not defined";
             this.triggerJob = "Not yet defined";
             this.uuid = "";
         }
 
-        public TriggerElement(Comparator comparatorType, ConcatType concatType, Boolean previousMode, Object compareValue, PlcField plcField, String plcFieldString) {
+        public TriggerElement(Comparator comparatorType, ConcatType concatType, Boolean previousMode, Object compareValue, PlcTag plcTag, String plcTagAddress) {
             this.comparatorType = comparatorType;
             this.concatType = concatType;
             this.previousMode = previousMode;
             this.compareValue = compareValue;
-            this.plcField = plcField;
-            this.plcFieldString = plcFieldString;
+            this.plcTag = plcTag;
+            this.plcTagAddress = plcTagAddress;
         }
 
-        public TriggerElement(Comparator comparatorType, Object compareValue, PlcField plcField) {
+        public TriggerElement(Comparator comparatorType, Object compareValue, PlcTag plcTag) {
             this();
             this.comparatorType = comparatorType;
             this.compareValue = compareValue;
-            this.plcField = plcField;
+            this.plcTag = plcTag;
         }
 
-        TriggerElement(String comparator, String concatType, String compareValue, String plcField, String triggerStrategy, String plcConnectionString) throws ScraperConfigurationException {
+        TriggerElement(String comparator, String concatType, String compareValue, String tagAddress, String triggerStrategy, String plcConnectionString) throws ScraperConfigurationException {
             this();
-            this.plcFieldString = plcField;
+            this.plcTagAddress = tagAddress;
             this.plcConnectionString = plcConnectionString;
             if(triggerStrategy.equals(TRIGGER)){
                 try {
-                    this.plcField = prepareField(plcFieldString);
+                    this.plcTag = parseTag(plcTagAddress);
                 }
                 catch (Exception e){
                     if(logger.isDebugEnabled()) {
-                        logger.debug("Exception occurred parsing a PlcField");
+                        logger.debug("Exception occurred parsing a PlcTag");
                     }
-                    throw new ScraperConfigurationException("Exception on parsing S7Field (" + plcField + "): " + e.getMessage());
+                    throw new ScraperConfigurationException("Exception on parsing S7Tag (" + tagAddress + "): " + e.getMessage());
                 }
-                this.compareValue = convertCompareValue(compareValue,this.plcField);
+                this.compareValue = convertCompareValue(compareValue,this.plcTag);
                 this.comparatorType = detectComparatorType(comparator);
                 matchTypeAndComparator();
             }
@@ -557,11 +557,11 @@ public class TriggerConfiguration{
         }
 
         //I used this because the prepareField method is deprecated with generated drivers
-        //So I need to create the field using the connection string here
-        private PlcField prepareField(String fieldQuery) throws PlcConnectionException {
+        //So I need to create the tag using the connection string here
+        private PlcTag parseTag(String tagAddress) throws PlcConnectionException {
             PlcDriverManager driverManager = new PlcDriverManager();
             PlcDriver driver = driverManager.getDriverForUrl(plcConnectionString);
-            return driver.prepareField(fieldQuery);
+            return driver.prepareTag(tagAddress);
         }
 
         /**
@@ -570,8 +570,8 @@ public class TriggerConfiguration{
          * @return converted object to needed data-type
          * @throws ScraperException when something does not match or parsing fails
          */
-        private Object convertCompareValue(String compareValue, PlcField plcField) throws ScraperConfigurationException {
-            Class<?> javaDataType = validateDataType(plcField);
+        private Object convertCompareValue(String compareValue, PlcTag plcTag) throws ScraperConfigurationException {
+            Class<?> javaDataType = validateDataType(plcTag);
             if(javaDataType.equals(Boolean.class)){
                 switch (compareValue){
                     case "1":
@@ -654,9 +654,9 @@ public class TriggerConfiguration{
          * @throws ScraperException when invalid combination is detected
          */
         private void matchTypeAndComparator() throws ScraperConfigurationException {
-            if(validateDataType(this.plcField).equals(Boolean.class)
+            if(validateDataType(this.plcTag).equals(Boolean.class)
                 && !(this.comparatorType.equals(Comparator.EQUAL) || this.comparatorType.equals(Comparator.UNEQUAL))){
-                String exceptionMessage = String.format("Trigger-Data-Type (%s) and Comparator (%s) do not match",this.plcField.getPlcValueType().getDefaultJavaType(),this.comparatorType);
+                String exceptionMessage = String.format("Trigger-Data-Type (%s) and Comparator (%s) do not match",this.plcTag.getPlcValueType().getDefaultJavaType(),this.comparatorType);
                 throw new ScraperConfigurationException(exceptionMessage);
             }
             //all other combinations are valid
@@ -678,12 +678,12 @@ public class TriggerConfiguration{
             return compareValue;
         }
 
-        PlcField getPlcField() {
-            return plcField;
+        PlcTag getPlcTag() {
+            return plcTag;
         }
 
-        String getPlcFieldString() {
-            return plcFieldString;
+        String getPlcTagAddress() {
+            return plcTagAddress;
         }
 
         void setCompareValue(Object compareValue) {

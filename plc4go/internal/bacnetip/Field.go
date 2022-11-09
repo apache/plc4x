@@ -37,7 +37,7 @@ type BacNetPlcField interface {
 	GetProperties() []property
 }
 
-type plcField struct {
+type plcTag struct {
 	ObjectId objectId
 	// Properties 1..N identifiers
 	Properties []property
@@ -101,7 +101,7 @@ func (p property) String() string {
 	return result
 }
 
-func (m plcField) GetAddressString() string {
+func (m plcTag) GetAddressString() string {
 	var properties []string
 	for _, p := range m.Properties {
 		properties = append(properties, fmt.Sprint(p))
@@ -110,23 +110,23 @@ func (m plcField) GetAddressString() string {
 	return fmt.Sprintf("%v/%s", m.ObjectId, propertiesString)
 }
 
-func (m plcField) GetValueType() values.PlcValueType {
+func (m plcTag) GetValueType() values.PlcValueType {
 	return values.Struct
 }
 
-func (m plcField) GetArrayInfo() []model.ArrayInfo {
+func (m plcTag) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func (m plcField) GetObjectId() objectId {
+func (m plcTag) GetObjectId() objectId {
 	return m.ObjectId
 }
 
-func (m plcField) GetProperties() []property {
+func (m plcTag) GetProperties() []property {
 	return m.Properties
 }
 
-func (m plcField) Serialize() ([]byte, error) {
+func (m plcTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -134,7 +134,7 @@ func (m plcField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m plcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m plcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("BacNetPlcField"); err != nil {
 		return err
 	}

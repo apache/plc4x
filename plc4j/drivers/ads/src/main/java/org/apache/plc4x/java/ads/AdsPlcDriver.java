@@ -21,7 +21,7 @@ package org.apache.plc4x.java.ads;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.configuration.AdsConfiguration;
 import org.apache.plc4x.java.ads.discovery.AdsPlcDiscoverer;
-import org.apache.plc4x.java.ads.field.AdsFieldHandler;
+import org.apache.plc4x.java.ads.tag.AdsTagHandler;
 import org.apache.plc4x.java.ads.protocol.AdsProtocolLogic;
 import org.apache.plc4x.java.ads.readwrite.AmsTCPPacket;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
@@ -89,8 +89,8 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     }
 
     @Override
-    protected AdsFieldHandler getFieldHandler() {
-        return new AdsFieldHandler();
+    protected AdsTagHandler getTagHandler() {
+        return new AdsTagHandler();
     }
 
     @Override

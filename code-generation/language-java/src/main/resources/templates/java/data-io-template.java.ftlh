@@ -48,7 +48,7 @@ package ${helper.packageName(protocolName, languageName, outputFlavor)};
 
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.generation.EvaluationHelper;
 import org.apache.plc4x.java.spi.generation.ParseException;

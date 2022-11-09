@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcBrowseItemArrayInfo;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -38,7 +39,7 @@ public class DefaultListPlcBrowseItem extends DefaultPlcBrowseItem {
     private final List<PlcBrowseItemArrayInfo> arrayInfo;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultListPlcBrowseItem(@JsonProperty("address") String address,
+    public DefaultListPlcBrowseItem(@JsonProperty("tag") PlcTag tag,
                                     @JsonProperty("name") String name,
                                     @JsonProperty("dataType") PlcValueType dataType,
                                     @JsonProperty("arrayInfo") List<PlcBrowseItemArrayInfo> arrayInfo,
@@ -47,7 +48,7 @@ public class DefaultListPlcBrowseItem extends DefaultPlcBrowseItem {
                                     @JsonProperty("subscribable") boolean subscribable,
                                     @JsonProperty("children") Map<String, PlcBrowseItem> children,
                                     @JsonProperty("options") Map<String, PlcValue> options) {
-        super(address, name, dataType, readable, writable, subscribable, children, options);
+        super(tag, name, dataType, readable, writable, subscribable, children, options);
         this.arrayInfo = arrayInfo;
     }
 
@@ -59,7 +60,7 @@ public class DefaultListPlcBrowseItem extends DefaultPlcBrowseItem {
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext(getClass().getSimpleName());
-        writeBuffer.writeString("address", getAddress().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), getAddress());
+        writeBuffer.writeString("address", getTag().getAddressString().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), getTag().getAddressString());
         writeBuffer.writeString("name", getName().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), getName());
         // TODO: Find out how to serialize an enum.
         //writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);

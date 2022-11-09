@@ -56,7 +56,7 @@ public class S7PlcToGoogleIoTCoreSample {
         throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         DateTime now = new DateTime();
         // Create a JWT to authenticate this device. The device will be disconnected after the token
-        // expires, and will have to reconnect with a new token. The audience field should always be set
+        // expires, and will have to reconnect with a new token. The audience tag should always be set
         // to the GCP project id.
         JwtBuilder jwtBuilder =
             Jwts.builder()
@@ -78,7 +78,7 @@ public class S7PlcToGoogleIoTCoreSample {
         throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         DateTime now = new DateTime();
         // Create a JWT to authenticate this device. The device will be disconnected after the token
-        // expires, and will have to reconnect with a new token. The audience field should always be set
+        // expires, and will have to reconnect with a new token. The audience tag should always be set
         // to the GCP project id.
         JwtBuilder jwtBuilder =
             Jwts.builder()
@@ -177,8 +177,8 @@ public class S7PlcToGoogleIoTCoreSample {
         // connection to your device.
         connectOptions.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
 
-        // With Google Cloud IoT Core, the username field is ignored, however it must be set for the
-        // Paho client library to send the password field. The password field is used to transmit a JWT
+        // With Google Cloud IoT Core, the username tag is ignored, however it must be set for the
+        // Paho client library to send the password tag. The password tag is used to transmit a JWT
         // to authorize the device.
         connectOptions.setUserName("unused");
 
@@ -239,7 +239,7 @@ public class S7PlcToGoogleIoTCoreSample {
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://10.10.64.20/1/1")) {
             logger.info("Connected");
 
-            PlcReadRequest readRequest = plcConnection.readRequestBuilder().addFieldAddress("outputs", "OUTPUTS/0").build();
+            PlcReadRequest readRequest = plcConnection.readRequestBuilder().addTagAddress("outputs", "OUTPUTS/0").build();
 
             while (!Thread.currentThread().isInterrupted()) {
 
@@ -259,8 +259,8 @@ public class S7PlcToGoogleIoTCoreSample {
                 // [END iot_mqtt_jwt_refresh]
 
                 // Send data to cloud
-                for (String fieldName : plcReadResponse.getFieldNames()) {
-                    Long l = plcReadResponse.getLong(fieldName);
+                for (String tagName : plcReadResponse.getTagNames()) {
+                    Long l = plcReadResponse.getLong(tagName);
                     byte[] array = ByteBuffer.allocate(8).putLong(l).array();
                     String result = Long.toBinaryString(l);
                     System.out.println("Outputs: " + result);

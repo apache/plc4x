@@ -60,11 +60,11 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 
 		requestItems := make([]readWriteModel.CipService, len(readRequest.GetFieldNames()))
 		for i, fieldName := range readRequest.GetFieldNames() {
-			plcField := readRequest.GetField(fieldName).(EIPPlcField)
-			tag := plcField.GetTag()
+			plcTag := readRequest.GetField(fieldName).(EIPPlcField)
+			tag := plcTag.GetTag()
 			elements := uint16(1)
-			if plcField.GetElementNb() > 1 {
-				elements = plcField.GetElementNb()
+			if plcTag.GetElementNb() > 1 {
+				elements = plcTag.GetElementNb()
 			}
 			ansi, err := toAnsi(tag)
 			if err != nil {

@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.model.PlcField;
-
-import java.util.Collections;
-
 import static org.mockito.Mockito.mock;
 
 public class PlcWriteRequestTest {

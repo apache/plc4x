@@ -54,8 +54,8 @@ public class HelloPlc4xSubscription {
             // Create a new read request:
             // - Give the single item requested the alias name "value"
             final PlcSubscriptionRequest.Builder builder = plcConnection.subscriptionRequestBuilder();
-            for (int i = 0; i < options.getFieldAddress().length; i++) {
-                builder.addChangeOfStateFieldAddress("value-" + i, options.getFieldAddress()[i]);
+            for (int i = 0; i < options.getTagAddress().length; i++) {
+                builder.addChangeOfStateTagAddress("value-" + i, options.getTagAddress()[i]);
             }
             PlcSubscriptionRequest subscriptionRequest = builder.build();
 
@@ -63,7 +63,7 @@ public class HelloPlc4xSubscription {
             final PlcSubscriptionResponse subscriptionResponse = subscriptionRequest.execute().get();
 
             // Attach handlers for the incoming data.
-            for (String subscriptionName : subscriptionResponse.getFieldNames()) {
+            for (String subscriptionName : subscriptionResponse.getTagNames()) {
                 final PlcSubscriptionHandle subscriptionHandle =
                     subscriptionResponse.getSubscriptionHandle(subscriptionName);
                 subscriptionHandle.register(new ValueChangeHandler());
@@ -105,24 +105,24 @@ public class HelloPlc4xSubscription {
         @Override
         public void accept(PlcSubscriptionEvent plcSubscriptionEvent) {
             logger.info("Incoming event:");
-            // Iterate over all the fields in this event and then simply output
+            // Iterate over all the tags in this event and then simply output
             // them to the console in a JSON format.
-            for (String fieldName : plcSubscriptionEvent.getFieldNames()) {
-                final PlcValue plcValue = plcSubscriptionEvent.getPlcValue(fieldName);
+            for (String tagName : plcSubscriptionEvent.getTagNames()) {
+                final PlcValue plcValue = plcSubscriptionEvent.getPlcValue(tagName);
                 if(plcValue.isList()) {
-                    StringBuilder sb = new StringBuilder(String.format("Field '%s' value:", fieldName));
+                    StringBuilder sb = new StringBuilder(String.format("Tag '%s' value:", tagName));
                     for (PlcValue value : plcValue.getList()) {
                         sb.append(" ").append(value.getString());
                     }
                     logger.info(sb.toString());
                 } else if (plcValue.isStruct()) {
-                    StringBuilder sb = new StringBuilder(String.format("Field '%s' value:", fieldName));
+                    StringBuilder sb = new StringBuilder(String.format("Tag '%s' value:", tagName));
                     plcValue.getStruct().forEach((name, value) ->
                         sb.append(" ").append(name).append("=").append(value.getString())
                     );
                     logger.info(sb.toString());
                 } else {
-                    logger.info(String.format("Field '%s' value: %s", fieldName, plcValue.getString()));
+                    logger.info(String.format("Tag '%s' value: %s", tagName, plcValue.getString()));
                 }
             }
         }

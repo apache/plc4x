@@ -18,12 +18,12 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.util.concurrent.CompletableFuture;
 
-public interface PlcWriteRequest extends PlcFieldRequest {
+public interface PlcWriteRequest extends PlcTagRequest {
 
     @Override
     CompletableFuture<? extends PlcWriteResponse> execute();
@@ -37,9 +37,9 @@ public interface PlcWriteRequest extends PlcFieldRequest {
         @Override
         PlcWriteRequest build();
 
-        PlcWriteRequest.Builder addFieldAddress(String name, String fieldAddress, Object... values);
+        PlcWriteRequest.Builder addTagAddress(String name, String tagAddress, Object... values);
 
-        PlcWriteRequest.Builder addField(String name, PlcField field, Object... values);
+        PlcWriteRequest.Builder addTag(String name, PlcTag tag, Object... values);
 
     }
 

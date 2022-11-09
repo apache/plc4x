@@ -18,11 +18,6 @@
  */
 package org.apache.plc4x.java.api.connection;
 
-import org.apache.plc4x.java.api.model.PlcField;
-
-import java.util.Collections;
-import java.util.concurrent.CompletableFuture;
-
 import static org.mockito.Mockito.mock;
 
 public class PlcWriterTest {
@@ -30,7 +25,7 @@ public class PlcWriterTest {
 /*    @Test
     public void write() throws Exception {
         PlcWriter dummyImplementation = writeRequest -> CompletableFuture.completedFuture(new TypeSafePlcWriteResponse((TypeSafePlcWriteRequest) writeRequest, Collections.emptyList()));
-        dummyImplementation.write(new TypeSafePlcWriteRequest<>(String.class, mock(PlcField.class))).get();
+        dummyImplementation.write(new TypeSafePlcWriteRequest<>(String.class, mock(PlcTag.class))).get();
     }*/
 
 }

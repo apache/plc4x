@@ -23,8 +23,8 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.modbus.ascii.config.ModbusAsciiConfiguration;
 import org.apache.plc4x.java.modbus.ascii.protocol.ModbusAsciiProtocolLogic;
-import org.apache.plc4x.java.modbus.base.field.ModbusField;
-import org.apache.plc4x.java.modbus.base.field.ModbusFieldHandler;
+import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
+import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.readwrite.DriverType;
 import org.apache.plc4x.java.modbus.readwrite.ModbusAsciiADU;
 import org.apache.plc4x.java.spi.configuration.Configuration;
@@ -33,7 +33,7 @@ import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
+import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.nio.charset.StandardCharsets;
@@ -91,12 +91,12 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
 
     @Override
     protected BaseOptimizer getOptimizer() {
-        return new SingleFieldOptimizer();
+        return new SingleTagOptimizer();
     }
 
     @Override
-    protected ModbusFieldHandler getFieldHandler() {
-        return new ModbusFieldHandler();
+    protected ModbusTagHandler getTagHandler() {
+        return new ModbusTagHandler();
     }
 
     @Override
@@ -127,8 +127,8 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
     }
 
     @Override
-    public ModbusField prepareField(String query){
-        return ModbusField.of(query);
+    public ModbusTag prepareTag(String tagAddress){
+        return ModbusTag.of(tagAddress);
     }
 
     public static class ModbusAsciiInput implements MessageInput<ModbusAsciiADU> {

@@ -100,14 +100,14 @@ public class PlcStruct extends PlcValueAdapter {
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcStruct");
         for (Map.Entry<String, PlcValue> entry : map.entrySet()) {
-            String fieldName = entry.getKey();
-            writeBuffer.pushContext(fieldName);
-            PlcValue fieldValue = entry.getValue();
-            if (!(fieldValue instanceof Serializable)) {
+            String tagName = entry.getKey();
+            writeBuffer.pushContext(tagName);
+            PlcValue tagValue = entry.getValue();
+            if (!(tagValue instanceof Serializable)) {
                 throw new PlcRuntimeException("Error serializing. List item doesn't implement XmlSerializable");
             }
-            ((Serializable) fieldValue).serialize(writeBuffer);
-            writeBuffer.pushContext(fieldName);
+            ((Serializable) tagValue).serialize(writeBuffer);
+            writeBuffer.pushContext(tagName);
         }
         writeBuffer.popContext("PlcStruct");
     }

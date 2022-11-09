@@ -46,7 +46,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.utils.connectionpool.*;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -93,16 +93,16 @@ public class Plc4xCommunication extends AbstractLifecycle {
         this.driverManager =  driverManager;
     }
 
-    public PlcField getField(String tag, String connectionString) throws PlcConnectionException {
-        return driverManager.getDriverForUrl(connectionString).prepareField(tag);
+    public PlcTag getTag(String tag, String connectionString) throws PlcConnectionException {
+        return driverManager.getDriverForUrl(connectionString).prepareTag(tag);
     }
 
-    public void addField(DataItem item) {
+    public void addTag(DataItem item) {
         logger.info("Adding item to OPC UA monitored list " + item.getReadValueId());
         monitoredList.put(item.getReadValueId().getNodeId(), item);
     }
 
-    public void removeField(DataItem item) {
+    public void removeTag(DataItem item) {
         logger.info("Removing item from OPC UA monitored list " + item.getReadValueId());
         monitoredList.remove(item.getReadValueId().getNodeId());
     }
@@ -187,7 +187,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
             // Create a new read request:
             // - Give the single item requested an alias name
             PlcReadRequest.Builder builder = connection.readRequestBuilder();
-            builder.addFieldAddress("value-1", tag);
+            builder.addTagAddress("value-1", tag);
             PlcReadRequest readRequest = builder.build();
 
             PlcReadResponse response = null;
@@ -203,27 +203,27 @@ public class Plc4xCommunication extends AbstractLifecycle {
                 return BAD_RESPONSE;
             }
             DataValue resp = BAD_RESPONSE;
-            for (String fieldName : response.getFieldNames()) {
-                if (response.getResponseCode(fieldName) == PlcResponseCode.OK) {
-                    int numValues = response.getNumberOfValues(fieldName);
+            for (String tagName : response.getTagNames()) {
+                if (response.getResponseCode(tagName) == PlcResponseCode.OK) {
+                    int numValues = response.getNumberOfValues(tagName);
                     if (numValues == 1) {
-                        if (response.getObject(fieldName) instanceof BigInteger) {
-                            resp = new DataValue(new Variant(ulong((BigInteger) response.getObject(fieldName))), StatusCode.GOOD);
+                        if (response.getObject(tagName) instanceof BigInteger) {
+                            resp = new DataValue(new Variant(ulong((BigInteger) response.getObject(tagName))), StatusCode.GOOD);
                         } else {
-                            resp = new DataValue(new Variant(response.getObject(fieldName)), StatusCode.GOOD);
+                            resp = new DataValue(new Variant(response.getObject(tagName)), StatusCode.GOOD);
                         }
                     } else {
                         Object array = null;
-                        if (response.getObject(fieldName, 0) instanceof BigInteger) {
+                        if (response.getObject(tagName, 0) instanceof BigInteger) {
                             array = Array.newInstance(ULong.class, numValues);
                         } else {
-                            array = Array.newInstance(response.getObject(fieldName, 0).getClass(), numValues);
+                            array = Array.newInstance(response.getObject(tagName, 0).getClass(), numValues);
                         }
                         for (int i = 0; i < numValues; i++) {
-                            if (response.getObject(fieldName, i) instanceof BigInteger) {
-                                Array.set(array, i, ulong((BigInteger) response.getObject(fieldName, i)));
+                            if (response.getObject(tagName, i) instanceof BigInteger) {
+                                Array.set(array, i, ulong((BigInteger) response.getObject(tagName, i)));
                             } else {
-                                Array.set(array, i, response.getObject(fieldName, i));
+                                Array.set(array, i, response.getObject(tagName, i));
                             }
                         }
                         resp = new DataValue(new Variant(array), StatusCode.GOOD);
@@ -282,9 +282,9 @@ public class Plc4xCommunication extends AbstractLifecycle {
         if ((value.charAt(0) == '[') && (value.charAt(value.length() - 1) == ']')) {
             String[] values = value.substring(1,value.length() - 1).split(",");
             logger.info("Adding Tag " + Arrays.toString(values));
-            builder.addFieldAddress(tag, tag, values);
+            builder.addTagAddress(tag, tag, values);
         } else {
-            builder.addFieldAddress(tag, tag, value);
+            builder.addTagAddress(tag, tag, value);
         }
 
         PlcWriteRequest writeRequest = builder.build();

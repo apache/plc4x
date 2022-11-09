@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcQuery;
-import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
@@ -82,12 +82,12 @@ public class DefaultPlcBrowseRequest implements PlcBrowseRequest, Serializable {
     public static class Builder implements PlcBrowseRequest.Builder {
 
         private final PlcBrowser browser;
-        private final PlcFieldHandler fieldHandler;
+        private final PlcTagHandler tagHandler;
         private final LinkedHashMap<String, Supplier<PlcQuery>> queries;
 
-        public Builder(PlcBrowser browser, PlcFieldHandler fieldHandler) {
+        public Builder(PlcBrowser browser, PlcTagHandler tagHandler) {
             this.browser = browser;
-            this.fieldHandler = fieldHandler;
+            this.tagHandler = tagHandler;
             queries = new LinkedHashMap<>();
         }
 
@@ -96,15 +96,15 @@ public class DefaultPlcBrowseRequest implements PlcBrowseRequest, Serializable {
             if (queries.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate query definition '" + name + "'");
             }
-            queries.put(name, () -> fieldHandler.parseQuery(query));
+            queries.put(name, () -> tagHandler.parseQuery(query));
             return this;
         }
 
         @Override
         public PlcBrowseRequest build() {
             LinkedHashMap<String, PlcQuery> parsedQueries = new LinkedHashMap<>();
-            queries.forEach((name, fieldQuery) -> {
-                parsedQueries.put(name, fieldQuery.get());
+            queries.forEach((name, tagQuery) -> {
+                parsedQueries.put(name, tagQuery.get());
             });
             return new DefaultPlcBrowseRequest(browser, parsedQueries);
         }

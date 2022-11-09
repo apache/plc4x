@@ -20,7 +20,7 @@ package org.apache.plc4x.java.spi.values;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.math.BigInteger;
@@ -40,12 +40,12 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
         return of(values);
     }
 
-    public PlcValue newPlcValue(PlcField field, Object value) {
-        return of(field, new Object[]{value});
+    public PlcValue newPlcValue(PlcTag tag, Object value) {
+        return of(tag, new Object[]{value});
     }
 
-    public PlcValue newPlcValue(PlcField field, Object[] values) {
-        return of(field, values);
+    public PlcValue newPlcValue(PlcTag tag, Object[] values) {
+        return of(tag, values);
     }
 
     public static PlcValue of(Object value) {
@@ -112,18 +112,18 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
     }
 
 
-    public static PlcValue of(PlcField field, Object value) {
-        return of(field, new Object[]{value});
+    public static PlcValue of(PlcTag tag, Object value) {
+        return of(tag, new Object[]{value});
     }
 
 
-    public static PlcValue of(PlcField field, Object[] values) {
+    public static PlcValue of(PlcTag tag, Object[] values) {
         if (values.length == 1) {
             Object value = values[0];
-            if(field.getPlcValueType() == null) {
+            if(tag.getPlcValueType() == null) {
                 return new PlcNull();
             }
-            switch (field.getPlcValueType()) {
+            switch (tag.getPlcValueType()) {
                 case BOOL:
                     return PlcBOOL.of(value);
                 case BYTE:
@@ -212,7 +212,7 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
         } else {
             PlcList list = new PlcList();
             for (Object value : values) {
-                list.add(of(field, new Object[]{value}));
+                list.add(of(tag, new Object[]{value}));
             }
             return list;
         }

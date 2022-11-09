@@ -61,10 +61,10 @@ public class Plc4xSinkConnector extends SinkConnector {
 
             StringBuilder query = new StringBuilder();
 
-            for (Field field : sink.getFields()) {
-                String fieldName = field.getName();
-                String fieldAddress = field.getAddress();
-                query.append("|").append(fieldName).append("#").append(fieldAddress);
+            for (Tag tag : sink.getTags()) {
+                String tagName = tag.getName();
+                String tagAddress = tag.getAddress();
+                query.append("|").append(tagName).append("#").append(tagAddress);
             }
 
             // Create a new task configuration.

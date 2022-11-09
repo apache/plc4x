@@ -20,8 +20,8 @@ package org.apache.plc4x.java.opcua;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.opcua.field.OpcuaField;
-import org.apache.plc4x.java.opcua.field.OpcuaPlcFieldHandler;
+import org.apache.plc4x.java.opcua.tag.OpcuaTag;
+import org.apache.plc4x.java.opcua.tag.OpcuaPlcTagHandler;
 import org.apache.plc4x.java.opcua.optimizer.OpcuaOptimizer;
 import org.apache.plc4x.java.opcua.protocol.*;
 import org.apache.plc4x.java.opcua.config.*;
@@ -112,8 +112,8 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     }
 
     @Override
-    protected OpcuaPlcFieldHandler getFieldHandler() {
-        return new OpcuaPlcFieldHandler();
+    protected OpcuaPlcTagHandler getTagHandler() {
+        return new OpcuaPlcTagHandler();
     }
 
     @Override
@@ -227,7 +227,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
         return new DefaultNettyPlcConnection(
             canRead(), canWrite(), canSubscribe(), canBrowse(),
-            getFieldHandler(),
+            getTagHandler(),
             getValueHandler(),
             configuration,
             channelFactory,
@@ -251,8 +251,8 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     }
 
     @Override
-    public OpcuaField prepareField(String query){
-        return OpcuaField.of(query);
+    public OpcuaTag prepareTag(String tagAddress){
+        return OpcuaTag.of(tagAddress);
     }
 
 }

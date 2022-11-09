@@ -70,7 +70,7 @@ public class HelloPlc4xDiscoverAndBrowse {
     protected static void outputBrowseItem(PlcBrowseItem browseItem, int indent) {
         System.out.printf("%s%s : %s (%s %s %s)%n",
             StringUtils.repeat("   ", Math.max(0, indent)),
-            browseItem.getAddress(),
+            browseItem.getTag().getAddressString(),
             browseItem.getPlcValueType().name(),
             browseItem.isReadable() ? "R" : " ",
             browseItem.isWritable() ? "W" : " ",

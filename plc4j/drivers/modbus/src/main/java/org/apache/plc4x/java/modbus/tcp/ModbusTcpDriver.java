@@ -21,11 +21,11 @@ package org.apache.plc4x.java.modbus.tcp;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
+import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
 import org.apache.plc4x.java.modbus.readwrite.DriverType;
 import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpConfiguration;
 import org.apache.plc4x.java.modbus.tcp.discovery.ModbusPlcDiscoverer;
-import org.apache.plc4x.java.modbus.base.field.ModbusField;
-import org.apache.plc4x.java.modbus.base.field.ModbusFieldHandler;
+import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU;
 import org.apache.plc4x.java.modbus.tcp.protocol.ModbusTcpProtocolLogic;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
@@ -35,7 +35,7 @@ import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
+import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 
 import java.util.function.ToIntFunction;
 
@@ -106,12 +106,12 @@ public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> {
 
     @Override
     protected BaseOptimizer getOptimizer() {
-        return new SingleFieldOptimizer();
+        return new SingleTagOptimizer();
     }
 
     @Override
-    protected ModbusFieldHandler getFieldHandler() {
-        return new ModbusFieldHandler();
+    protected ModbusTagHandler getTagHandler() {
+        return new ModbusTagHandler();
     }
 
     @Override
@@ -142,8 +142,8 @@ public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> {
     }
 
     @Override
-    public ModbusField prepareField(String query){
-        return ModbusField.of(query);
+    public ModbusTag prepareTag(String tagAddress){
+        return ModbusTag.of(tagAddress);
     }
 
 }

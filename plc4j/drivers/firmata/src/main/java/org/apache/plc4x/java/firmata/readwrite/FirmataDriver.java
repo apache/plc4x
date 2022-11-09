@@ -22,13 +22,13 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.firmata.readwrite.configuration.FirmataConfiguration;
 import org.apache.plc4x.java.firmata.readwrite.context.FirmataDriverContext;
-import org.apache.plc4x.java.firmata.readwrite.field.FirmataField;
-import org.apache.plc4x.java.firmata.readwrite.field.FirmataFieldHandler;
+import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTag;
+import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTagHandler;
 import org.apache.plc4x.java.firmata.readwrite.protocol.FirmataProtocolLogic;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
@@ -68,8 +68,8 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
     }
 
     @Override
-    protected PlcFieldHandler getFieldHandler() {
-        return new FirmataFieldHandler();
+    protected PlcTagHandler getTagHandler() {
+        return new FirmataTagHandler();
     }
 
     @Override
@@ -178,8 +178,8 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
     }
 
     @Override
-    public FirmataField prepareField(String query) {
-        return FirmataField.of(query);
+    public FirmataTag prepareTag(String tagAddress) {
+        return FirmataTag.of(tagAddress);
     }
 
 }

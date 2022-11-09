@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
+import org.apache.plc4x.java.plc4x.tag.Plc4xTag;
 import org.apache.plc4x.java.plc4x.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -90,16 +91,16 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
 
         // Prepare the request.
-        List<Plc4xFieldRequest> plc4xFields = new ArrayList<>(apiReadRequest.getNumberOfFields());
-        for (String fieldName : apiReadRequest.getFieldNames()) {
-            final org.apache.plc4x.java.plc4x.field.Plc4xField plc4xField =
-                (org.apache.plc4x.java.plc4x.field.Plc4xField) apiReadRequest.getField(fieldName);
-            Plc4xFieldRequest plc4xFieldRequest = new Plc4xFieldRequest(
-                new Plc4xField(fieldName, plc4xField.getAddressString() + ":" + plc4xField.getPlcValueType().name()));
-            plc4xFields.add(plc4xFieldRequest);
+        List<Plc4xTagRequest> plc4xTags = new ArrayList<>(apiReadRequest.getNumberOfTags());
+        for (String tagName : apiReadRequest.getTagNames()) {
+            final Plc4xTag plc4xTag =
+                (Plc4xTag) apiReadRequest.getTag(tagName);
+            Plc4xTagRequest plc4XTagRequest = new Plc4xTagRequest(
+                new org.apache.plc4x.java.plc4x.readwrite.Plc4xTag(tagName, plc4xTag.getAddressString() + ":" + plc4xTag.getPlcValueType().name()));
+            plc4xTags.add(plc4XTagRequest);
         }
         final int requestId = txIdGenerator.getAndIncrement();
-        Plc4xReadRequest plc4xReadRequest = new Plc4xReadRequest(requestId, connectionId, plc4xFields);
+        Plc4xReadRequest plc4xReadRequest = new Plc4xReadRequest(requestId, connectionId, plc4xTags);
 
         // Send the request and await a response.
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -112,11 +113,11 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
             .handle(plc4xReadResponse -> {
                 Map<String, ResponseItem<PlcValue>> apiResponses = new HashMap<>();
                 // Create the API response from the incoming message.
-                for (Plc4xFieldValueResponse plc4xField : plc4xReadResponse.getFields()) {
-                    final Plc4xResponseCode plc4xResponseCode = plc4xField.getResponseCode();
+                for (Plc4xTagValueResponse plc4xTag : plc4xReadResponse.getTags()) {
+                    final Plc4xResponseCode plc4xResponseCode = plc4xTag.getResponseCode();
                     final PlcResponseCode apiResponseCode = PlcResponseCode.valueOf(plc4xResponseCode.name());
-                    apiResponses.put(plc4xField.getField().getName(),
-                        new ResponseItem<>(apiResponseCode, plc4xField.getValue()));
+                    apiResponses.put(plc4xTag.getTag().getName(),
+                        new ResponseItem<>(apiResponseCode, plc4xTag.getValue()));
                 }
 
                 // Send it back to the calling process.
@@ -133,17 +134,17 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
 
         // Prepare the request.
-        List<Plc4xFieldValueRequest> fields = new ArrayList<>(writeRequest.getNumberOfFields());
-        for (String fieldName : writeRequest.getFieldNames()) {
-            final org.apache.plc4x.java.plc4x.field.Plc4xField plc4xField = (org.apache.plc4x.java.plc4x.field.Plc4xField) writeRequest.getField(fieldName);
-            final Plc4xValueType plc4xValueType = Plc4xValueType.valueOf(plc4xField.getPlcValueType().name());
-            final PlcValue plcValue = writeRequest.getPlcValue(fieldName);
-            Plc4xFieldValueRequest fieldRequest = new Plc4xFieldValueRequest(
-                new Plc4xField(fieldName, plc4xField.getAddressString() + ":" + plc4xField.getPlcValueType().name()), plc4xValueType, plcValue);
-            fields.add(fieldRequest);
+        List<Plc4xTagValueRequest> tags = new ArrayList<>(writeRequest.getNumberOfTags());
+        for (String tagName : writeRequest.getTagNames()) {
+            final Plc4xTag plc4xTag = (Plc4xTag) writeRequest.getTag(tagName);
+            final Plc4xValueType plc4xValueType = Plc4xValueType.valueOf(plc4xTag.getPlcValueType().name());
+            final PlcValue plcValue = writeRequest.getPlcValue(tagName);
+            Plc4xTagValueRequest tagRequest = new Plc4xTagValueRequest(
+                new org.apache.plc4x.java.plc4x.readwrite.Plc4xTag(tagName, plc4xTag.getAddressString() + ":" + plc4xTag.getPlcValueType().name()), plc4xValueType, plcValue);
+            tags.add(tagRequest);
         }
         final int requestId = txIdGenerator.getAndIncrement();
-        Plc4xWriteRequest write = new Plc4xWriteRequest(requestId, connectionId, fields);
+        Plc4xWriteRequest write = new Plc4xWriteRequest(requestId, connectionId, tags);
 
         // Send the request and await a response.
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -156,10 +157,10 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
             .handle(plc4xWriteResponse -> {
                 Map<String, PlcResponseCode> apiResponses = new HashMap<>();
                 // Create the API response from the incoming message.
-                for (Plc4xFieldResponse plc4xField : plc4xWriteResponse.getFields()) {
-                    final Plc4xResponseCode plc4xResponseCode = plc4xField.getResponseCode();
+                for (Plc4xTagResponse plc4xTag : plc4xWriteResponse.getTags()) {
+                    final Plc4xResponseCode plc4xResponseCode = plc4xTag.getResponseCode();
                     final PlcResponseCode apiResponseCode = PlcResponseCode.valueOf(plc4xResponseCode.name());
-                    apiResponses.put(plc4xField.getField().getName(), apiResponseCode);
+                    apiResponses.put(plc4xTag.getTag().getName(), apiResponseCode);
                 }
 
                 // Send it back to the calling process.

@@ -34,5 +34,5 @@ public interface JobConfiguration {
 
     List<String> getSources();
 
-    Map<String, String> getFields();
+    Map<String, String> getTags();
 }

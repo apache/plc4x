@@ -25,21 +25,21 @@ jobs:
     triggerConfig: (SCHEDULED,10000)
     sources:
       - S7_PI
-    fields:
+    tags:
       test1: '%DB810:DBB0:USINT'
 
   - name: triggered-demo-job1
     triggerConfig: (TRIGGER_VAR,10,(%M0.3:BOOL)==(true))
     sources:
       - S7_PI
-    fields:
+    tags:
       test1: '%DB810:DBW0:INT'
 
   - name: triggered-demo-job2
     triggerConfig: (TRIGGER_VAR,1000,(%M0.7:BOOL)==(true))
     sources:
       - S7_PI
-    fields:
+    tags:
       test1: '%DB810:DBW0:INT'
       test2: '%DB810:DBX6:STRING'
       test3: '%DB810:DBX266:STRING'
@@ -54,7 +54,7 @@ jobs:
     triggerConfig: (SCHEDULED,2000)
     sources:
       - S7_PI
-    fields:
+    tags:
       test3_8: '%DB811:DBX14:STRING'
       test3_9: '%DB811:DBX282:STRING'
 
@@ -63,12 +63,12 @@ jobs:
     triggerConfig: (TRIGGER_VAR,500,(%M0:USINT)>=(PREV))
     sources:
       - S7_PI
-    fields:
+    tags:
       test1: '%DB810:DBW0:INT'
 
   - name: triggered-demo-job4-combinded-condition
     triggerConfig: (TRIGGER_VAR,5,(%M0.1:BOOL)==(true)OR(%M0.2:BOOL)==(true))
     sources:
       - S7_PI
-    fields:
+    tags:
       test1: '%M0:USINT'

@@ -20,11 +20,11 @@ package org.apache.plc4x.java.abeth;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.abeth.configuration.AbEthConfiguration;
-import org.apache.plc4x.java.abeth.field.AbEthField;
-import org.apache.plc4x.java.abeth.field.AbEthFieldHandler;
+import org.apache.plc4x.java.abeth.tag.AbEthTag;
+import org.apache.plc4x.java.abeth.tag.AbEthTagHandler;
 import org.apache.plc4x.java.abeth.protocol.AbEthProtocolLogic;
 import org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationPacket;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
@@ -59,8 +59,8 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
     }
 
     @Override
-    protected AbEthFieldHandler getFieldHandler() {
-        return new AbEthFieldHandler();
+    protected AbEthTagHandler getTagHandler() {
+        return new AbEthTagHandler();
     }
 
     @Override
@@ -100,8 +100,8 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
     }
 
     @Override
-    public PlcField prepareField(String query) {
-        return AbEthField.of(query);
+    public PlcTag prepareTag(String tagAddress) {
+        return AbEthTag.of(tagAddress);
     }
 
 }

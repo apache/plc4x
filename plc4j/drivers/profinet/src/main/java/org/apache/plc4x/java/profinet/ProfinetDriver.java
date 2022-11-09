@@ -24,8 +24,8 @@ import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
-import org.apache.plc4x.java.profinet.field.ProfinetField;
-import org.apache.plc4x.java.profinet.field.ProfinetFieldHandler;
+import org.apache.plc4x.java.profinet.tag.ProfinetTag;
+import org.apache.plc4x.java.profinet.tag.ProfinetTagHandler;
 import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
 import org.apache.plc4x.java.profinet.readwrite.Ethernet_Frame;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
@@ -35,7 +35,7 @@ import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
+import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 
 import java.util.function.ToIntFunction;
 
@@ -108,12 +108,12 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
 
     @Override
     protected BaseOptimizer getOptimizer() {
-        return new SingleFieldOptimizer();
+        return new SingleTagOptimizer();
     }
 
     @Override
-    protected ProfinetFieldHandler getFieldHandler() {
-        return new ProfinetFieldHandler();
+    protected ProfinetTagHandler getTagHandler() {
+        return new ProfinetTagHandler();
     }
 
     @Override
@@ -143,8 +143,8 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
     }
 
     @Override
-    public ProfinetField prepareField(String query){
-        return ProfinetField.of(query);
+    public ProfinetTag prepareTag(String tagAddress){
+        return ProfinetTag.of(tagAddress);
     }
 
 }

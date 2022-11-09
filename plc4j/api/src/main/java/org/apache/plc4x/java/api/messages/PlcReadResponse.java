@@ -31,7 +31,7 @@ import java.util.Collection;
 /**
  * Response to a {@link PlcReadRequest}.
  */
-public interface PlcReadResponse extends PlcFieldResponse {
+public interface PlcReadResponse extends PlcTagResponse {
 
     @Override
     PlcReadRequest getRequest();

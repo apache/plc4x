@@ -22,14 +22,14 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.*;
-import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
@@ -226,39 +226,39 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
         });
 
         PlcReader reader = readRequest -> {
-            Map<String, ResponseItem<PlcValue>> map = readRequest.getFieldNames().stream()
+            Map<String, ResponseItem<PlcValue>> map = readRequest.getTagNames().stream()
                 .collect(Collectors.toMap(
                     Function.identity(),
                     s -> new ResponseItem<>(PlcResponseCode.OK, Objects.requireNonNull(responses.get(s), s + " not found"))
                 ));
             return CompletableFuture.completedFuture(new DefaultPlcReadResponse(readRequest, map));
         };
-        when(connection.readRequestBuilder()).then(invocation -> new DefaultPlcReadRequest.Builder(reader, getFieldHandler()));
+        when(connection.readRequestBuilder()).then(invocation -> new DefaultPlcReadRequest.Builder(reader, getTagHandler()));
         PlcWriter writer = writeRequest -> {
-            Map<String, PlcResponseCode> map = writeRequest.getFieldNames().stream()
+            Map<String, PlcResponseCode> map = writeRequest.getTagNames().stream()
                 .collect(Collectors.toMap(
                     Function.identity(),
                     s -> PlcResponseCode.OK
                 ));
             return CompletableFuture.completedFuture(new DefaultPlcWriteResponse(writeRequest, map));
         };
-        when(connection.writeRequestBuilder()).then(invocation -> new DefaultPlcWriteRequest.Builder(writer, getFieldHandler(), getValueHandler()));
+        when(connection.writeRequestBuilder()).then(invocation -> new DefaultPlcWriteRequest.Builder(writer, getTagHandler(), getValueHandler()));
 
         return new PlcEntityManager(mock);
     }
 
-    private PlcFieldHandler getFieldHandler() {
-        return new NoOpPlcFieldHandler();
+    private PlcTagHandler getTagHandler() {
+        return new NoOpPlcTagHandler();
     }
 
     private org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
         return new NoOpPlcValueHandler();
     }
 
-    private static class NoOpPlcFieldHandler implements PlcFieldHandler {
+    private static class NoOpPlcTagHandler implements PlcTagHandler {
         @Override
-        public org.apache.plc4x.java.api.model.PlcField parseField(String fieldQuery) throws PlcInvalidFieldException {
-            return new org.apache.plc4x.java.api.model.PlcField() {
+        public org.apache.plc4x.java.api.model.PlcTag parseTag(String tagAddress) throws PlcInvalidTagException {
+            return new org.apache.plc4x.java.api.model.PlcTag() {
                 @Override
                 public String getAddressString() {
                     return "address";
@@ -266,12 +266,12 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
 
                 @Override
                 public PlcValueType getPlcValueType() {
-                    return org.apache.plc4x.java.api.model.PlcField.super.getPlcValueType();
+                    return org.apache.plc4x.java.api.model.PlcTag.super.getPlcValueType();
                 }
 
                 @Override
                 public List<ArrayInfo> getArrayInfo() {
-                    return org.apache.plc4x.java.api.model.PlcField.super.getArrayInfo();
+                    return org.apache.plc4x.java.api.model.PlcTag.super.getArrayInfo();
                 }
             };
         }
@@ -294,12 +294,12 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
         }
 
         @Override
-        public PlcValue newPlcValue(org.apache.plc4x.java.api.model.PlcField field, Object value) {
+        public PlcValue newPlcValue(org.apache.plc4x.java.api.model.PlcTag tag, Object value) {
             throw new RuntimeException("Data Type " + value.getClass().getSimpleName() + "Is not supported");
         }
 
         @Override
-        public PlcValue newPlcValue(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
+        public PlcValue newPlcValue(org.apache.plc4x.java.api.model.PlcTag tag, Object[] values) {
             throw new RuntimeException("Data Type " + values.getClass().getSimpleName() + "Is not supported");
         }
     }
@@ -311,7 +311,7 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
     @PlcEntity()
     public static class EntityWithBadConstructor {
 
-        @PlcField("asdf")
+        @PlcTag("asdf")
         private long field;
 
         public EntityWithBadConstructor(long field) {
@@ -326,10 +326,10 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
     @PlcEntity()
     public static class MyEntity {
 
-        @PlcField("%DB3.DBW500")
+        @PlcTag("%DB3.DBW500")
         private Long counter;
 
-        @PlcField("%DB3.DBW504")
+        @PlcTag("%DB3.DBW504")
         private long counter2;
 
         public Long getCounter() {
@@ -345,46 +345,46 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
     @PlcEntity()
     public static class ConnectedEntity {
 
-        @PlcField("%DB1.DW111:BOOL")
+        @PlcTag("%DB1.DW111:BOOL")
         private boolean boolVar;
-        @PlcField("%DB1.DW111:BYTE")
+        @PlcTag("%DB1.DW111:BYTE")
         private byte byteVar;
-        @PlcField("%DB1.DW111:SHORT")
+        @PlcTag("%DB1.DW111:SHORT")
         private short shortVar;
-        @PlcField("%DB1.DW111:INT")
+        @PlcTag("%DB1.DW111:INT")
         private int intVar;
-        @PlcField("%DB1.DW111:LONG")
+        @PlcTag("%DB1.DW111:LONG")
         private long longVar;
-        @PlcField("%DB1.DW111:BOOL")
+        @PlcTag("%DB1.DW111:BOOL")
         private Boolean boxedBoolVar;
-        @PlcField("%DB1.DW111:BYTE")
+        @PlcTag("%DB1.DW111:BYTE")
         private Byte boxedByteVar;
-        @PlcField("%DB1.DW111:SHORT")
+        @PlcTag("%DB1.DW111:SHORT")
         private Short boxedShortVar;
-        @PlcField("%DB1.DW111:SHORT")
+        @PlcTag("%DB1.DW111:SHORT")
         private Integer boxedIntegerVar;
-        @PlcField("%DB1.DW111:LONG")
+        @PlcTag("%DB1.DW111:LONG")
         private Long boxedLongVar;
-        @PlcField("%DB1.DW111:BIGINT")
+        @PlcTag("%DB1.DW111:BIGINT")
         private BigInteger bigIntegerVar;
-        @PlcField("%DB1.DW111:FLOAT")
+        @PlcTag("%DB1.DW111:FLOAT")
         private Float floatVar;
-        @PlcField("%DB1.DW111:DOUBLE")
+        @PlcTag("%DB1.DW111:DOUBLE")
         private Double doubleVar;
-        @PlcField("%DB1.DW111:BIGDECIMAL")
+        @PlcTag("%DB1.DW111:BIGDECIMAL")
         private BigDecimal bigDecimalVar;
-        @PlcField("%DB1.DW111:LOCALTIME")
+        @PlcTag("%DB1.DW111:LOCALTIME")
         private LocalTime localTimeVar;
-        @PlcField("%DB1.DW111:LOCALDATE")
+        @PlcTag("%DB1.DW111:LOCALDATE")
         private LocalDate localDateVar;
-        @PlcField("%DB1.DW111:LOCALDATETIME")
+        @PlcTag("%DB1.DW111:LOCALDATETIME")
         private LocalDateTime localDateTimeVar;
-        @PlcField("%DB1.DW111:BYTEARRAY")
+        @PlcTag("%DB1.DW111:BYTEARRAY")
         private byte[] byteArrayVar;
-        @PlcField("%DB1.DW111:BYTEARRAY")
+        @PlcTag("%DB1.DW111:BYTEARRAY")
         private Byte[] bigByteArrayVar;
 
-        @PlcField("%DB1.DW111:STRING")
+        @PlcTag("%DB1.DW111:STRING")
         private String stringVar;
 
         public ConnectedEntity() {

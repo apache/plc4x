@@ -24,6 +24,6 @@ jobs:
     scrapeRate: 10
     sources:
       - a
-    fields:
+    tags:
       a: DBasdf
       b: DBbsdf

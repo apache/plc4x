@@ -48,7 +48,7 @@ public class Main {
 
         String value = "abcdef"; //UUID.randomUUID().toString();
         CompletableFuture<? extends PlcWriteResponse> response = connection.writeRequestBuilder()
-            .addFieldAddress("foo", "SDO:13:0x2000/0x0:VISIBLE_STRING", value)
+            .addTagAddress("foo", "SDO:13:0x2000/0x0:VISIBLE_STRING", value)
             .build().execute();
 
         response.whenComplete((writeReply, writeError) -> {
@@ -60,7 +60,7 @@ public class Main {
                 System.out.println("Result " + writeReply.getResponseCode("foo") + " " + value);
 
                 PlcReadRequest.Builder builder = connection.readRequestBuilder();
-                builder.addFieldAddress("foo", "SDO:13:0x2000/0x0:VISIBLE_STRING");
+                builder.addTagAddress("foo", "SDO:13:0x2000/0x0:VISIBLE_STRING");
                 CompletableFuture<? extends PlcReadResponse> future = builder.build().execute();
                 future.whenComplete((readReply, readError) -> {
                     System.out.println("====================================");

@@ -87,24 +87,24 @@ public class TriggerCollectorImpl implements TriggerCollector {
     /**
      * submits a trigger request to TriggerCollector
      *
-     * @param plcField              a (plc) field that is used for triggering procedure
+     * @param tag              a (plc) tag that is used for triggering procedure
      * @param plcConnectionString   the connection string to the regarding source
      * @param interval              max awaiting time until request shall be submitted
      * @return a uuid under that the request is handled internally
      */
     @Override
-    public String submitTrigger(String plcField, String plcConnectionString, long interval) throws ScraperException {
+    public String submitTrigger(String tag, String plcConnectionString, long interval) throws ScraperException {
         String uuid = UUID.randomUUID().toString();
 
         if(this.schedulerInterval>interval){
             this.schedulerInterval=interval;
         }
 
-        RequestElement requestElement = new RequestElement(plcConnectionString,plcField,interval, uuid);
+        RequestElement requestElement = new RequestElement(plcConnectionString, tag,interval, uuid);
         if(!currentRequestElements.containsValue(requestElement)){
             currentRequestElements.put(uuid,requestElement);
             if(logger.isDebugEnabled()) {
-                logger.debug("Received request to: {} for PLC: {}", plcField, plcConnectionString);
+                logger.debug("Received request to: {} for PLC: {}", tag, plcConnectionString);
             }
             return uuid;
         }
@@ -123,7 +123,7 @@ public class TriggerCollectorImpl implements TriggerCollector {
             }
 
             //should not happen
-            throw new ScraperException(String.format("Could not evaluate UUID for given trigger (%s,%s). Should not happen please report!",plcField,plcConnectionString));
+            throw new ScraperException(String.format("Could not evaluate UUID for given trigger (%s,%s). Should not happen please report!", tag,plcConnectionString));
         }
 
     }
@@ -154,7 +154,7 @@ public class TriggerCollectorImpl implements TriggerCollector {
                         plcConnection = TriggeredScraperImpl.getPlcConnection(plcDriverManager,plcConnectionString,executorService,futureTimeout,info);
                         plcConnectionList.add(plcConnection);
                         plcReadRequestBuilderMap.put(plcConnectionString,plcConnection.readRequestBuilder());
-                        plcReadRequestBuilderMap.get(plcConnectionString).addFieldAddress(entry.getKey(),entry.getValue().getPlcField());
+                        plcReadRequestBuilderMap.get(plcConnectionString).addTagAddress(entry.getKey(),entry.getValue().getPlcTag());
                         activeRequestElements.add(entry.getValue());
                     } catch (InterruptedException e) {
                         logger.warn("Acquirement of PLC-Connection was interrupted",e);
@@ -166,7 +166,7 @@ public class TriggerCollectorImpl implements TriggerCollector {
                     }
                 }
                 else{
-                    plcReadRequestBuilderMap.get(plcConnectionString).addFieldAddress(entry.getKey(),entry.getValue().getPlcField());
+                    plcReadRequestBuilderMap.get(plcConnectionString).addTagAddress(entry.getKey(),entry.getValue().getPlcTag());
                     activeRequestElements.add(entry.getValue());
                 }
             }
@@ -245,16 +245,16 @@ public class TriggerCollectorImpl implements TriggerCollector {
 
     class RequestElement{
         private String plcConnectionString;
-        private String plcField;
+        private String plcTag;
         private LocalDateTime lastAcquirement;
         private Object result;
         private String uuid;
         private long scanIntervalMs;
 
 
-        RequestElement(String plcConnectionString, String plcField, long scanIntervalMs, String uuid) {
+        RequestElement(String plcConnectionString, String plcTag, long scanIntervalMs, String uuid) {
             this.plcConnectionString = plcConnectionString;
-            this.plcField = plcField;
+            this.plcTag = plcTag;
             this.uuid = uuid;
             this.scanIntervalMs = scanIntervalMs;
             //set initial acquirement to a long time ago
@@ -265,8 +265,8 @@ public class TriggerCollectorImpl implements TriggerCollector {
             return plcConnectionString;
         }
 
-        String getPlcField() {
-            return plcField;
+        String getPlcTag() {
+            return plcTag;
         }
 
         public Object getResult() {
@@ -303,19 +303,19 @@ public class TriggerCollectorImpl implements TriggerCollector {
             if (o == null || getClass() != o.getClass()) return false;
             RequestElement that = (RequestElement) o;
             return Objects.equals(plcConnectionString, that.plcConnectionString) &&
-                Objects.equals(plcField, that.plcField);
+                Objects.equals(plcTag, that.plcTag);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(plcConnectionString, plcField);
+            return Objects.hash(plcConnectionString, plcTag);
         }
 
         @Override
         public String toString() {
             return "RequestElement{" +
                 "plcConnectionString='" + plcConnectionString + '\'' +
-                ", plcField='" + plcField + '\'' +
+                ", plcTag='" + plcTag + '\'' +
                 ", lastAcquirement=" + lastAcquirement +
                 ", result=" + result +
                 ", uuid='" + uuid + '\'' +

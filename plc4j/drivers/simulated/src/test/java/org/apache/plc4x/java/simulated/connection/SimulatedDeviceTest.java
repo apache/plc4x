@@ -20,7 +20,7 @@ package org.apache.plc4x.java.simulated.connection;
 
 import org.apache.plc4x.java.spi.values.PlcLINT;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.simulated.field.SimulatedField;
+import org.apache.plc4x.java.simulated.tag.SimulatedTag;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -32,9 +32,9 @@ public class SimulatedDeviceTest {
     @Test
     public void random() {
         SimulatedDevice device = new SimulatedDevice("foobar");
-        SimulatedField field = SimulatedField.of("RANDOM/foo:DINT");
+        SimulatedTag tag = SimulatedTag.of("RANDOM/foo:DINT");
 
-        Optional<PlcValue> value = device.get(field);
+        Optional<PlcValue> value = device.get(tag);
 
         assertTrue(value.isPresent());
     }
@@ -42,13 +42,13 @@ public class SimulatedDeviceTest {
     @Test
     public void read() {
         SimulatedDevice device = new SimulatedDevice("foobar");
-        SimulatedField field = SimulatedField.of("STATE/bar:DINT");
+        SimulatedTag tag = SimulatedTag.of("STATE/bar:DINT");
 
-        Optional<PlcValue> value = device.get(field);
+        Optional<PlcValue> value = device.get(tag);
         assertFalse(value.isPresent());
 
-        device.set(field, new PlcLINT(42));
-        value = device.get(field);
+        device.set(tag, new PlcLINT(42));
+        value = device.get(tag);
         assertTrue(value.isPresent());
         PlcValue plcValue = value.get();
         assertEquals(42L, plcValue.getLong());

@@ -27,7 +27,7 @@ import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
 import org.apache.plc4x.java.opcua.context.SecureChannel;
-import org.apache.plc4x.java.opcua.field.OpcuaField;
+import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.opcua.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -37,7 +37,7 @@ import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.slf4j.Logger;
@@ -138,13 +138,13 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             SecureChannel.REQUEST_TIMEOUT_LONG,
             NULL_EXTENSION_OBJECT);
 
-        List<ExtensionObjectDefinition> readValueArray = new ArrayList<>(request.getFieldNames().size());
-        Iterator<String> iterator = request.getFieldNames().iterator();
-        for (int i = 0; i < request.getFieldNames().size(); i++) {
-            String fieldName = iterator.next();
-            OpcuaField field = (OpcuaField) request.getField(fieldName);
+        List<ExtensionObjectDefinition> readValueArray = new ArrayList<>(request.getTagNames().size());
+        Iterator<String> iterator = request.getTagNames().iterator();
+        for (int i = 0; i < request.getTagNames().size(); i++) {
+            String tagName = iterator.next();
+            OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
 
-            NodeId nodeId = generateNodeId(field);
+            NodeId nodeId = generateNodeId(tag);
 
             readValueArray.add(new ReadValueId(nodeId,
                 0xD,
@@ -181,7 +181,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 try {
                     ExtensionObjectDefinition reply = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
                     if (reply instanceof ReadResponse) {
-                        future.complete(new DefaultPlcReadResponse(request, readResponse(request.getFieldNames(), ((ReadResponse) reply).getResults())));
+                        future.complete(new DefaultPlcReadResponse(request, readResponse(request.getTagNames(), ((ReadResponse) reply).getResults())));
                     } else {
                         if (reply instanceof ServiceFault) {
                             ExtensionObjectDefinition header = ((ServiceFault) reply).getResponseHeader();
@@ -191,7 +191,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                         }
 
                         Map<String, ResponseItem<PlcValue>> status = new LinkedHashMap<>();
-                        for (String key : request.getFieldNames()) {
+                        for (String key : request.getTagNames()) {
                             status.put(key, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                         }
                         future.complete(new DefaultPlcReadResponse(request, status));
@@ -223,29 +223,29 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         return future;
     }
 
-    private NodeId generateNodeId(OpcuaField field) {
+    private NodeId generateNodeId(OpcuaTag tag) {
         NodeId nodeId = null;
-        if (field.getIdentifierType() == OpcuaIdentifierType.BINARY_IDENTIFIER) {
-            nodeId = new NodeId(new NodeIdTwoByte(Short.parseShort(field.getIdentifier())));
-        } else if (field.getIdentifierType() == OpcuaIdentifierType.NUMBER_IDENTIFIER) {
-            nodeId = new NodeId(new NodeIdNumeric((short) field.getNamespace(), Long.parseLong(field.getIdentifier())));
-        } else if (field.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
-            UUID guid = UUID.fromString(field.getIdentifier());
+        if (tag.getIdentifierType() == OpcuaIdentifierType.BINARY_IDENTIFIER) {
+            nodeId = new NodeId(new NodeIdTwoByte(Short.parseShort(tag.getIdentifier())));
+        } else if (tag.getIdentifierType() == OpcuaIdentifierType.NUMBER_IDENTIFIER) {
+            nodeId = new NodeId(new NodeIdNumeric((short) tag.getNamespace(), Long.parseLong(tag.getIdentifier())));
+        } else if (tag.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
+            UUID guid = UUID.fromString(tag.getIdentifier());
             byte[] guidBytes = new byte[16];
             System.arraycopy(guid.getMostSignificantBits(), 0, guidBytes, 0, 8);
             System.arraycopy(guid.getLeastSignificantBits(), 0, guidBytes, 8, 8);
-            nodeId = new NodeId(new NodeIdGuid((short) field.getNamespace(), guidBytes));
-        } else if (field.getIdentifierType() == OpcuaIdentifierType.STRING_IDENTIFIER) {
-            nodeId = new NodeId(new NodeIdString((short) field.getNamespace(), new PascalString(field.getIdentifier())));
+            nodeId = new NodeId(new NodeIdGuid((short) tag.getNamespace(), guidBytes));
+        } else if (tag.getIdentifierType() == OpcuaIdentifierType.STRING_IDENTIFIER) {
+            nodeId = new NodeId(new NodeIdString((short) tag.getNamespace(), new PascalString(tag.getIdentifier())));
         }
         return nodeId;
     }
 
-    public Map<String, ResponseItem<PlcValue>> readResponse(LinkedHashSet<String> fieldNames, List<DataValue> results) {
+    public Map<String, ResponseItem<PlcValue>> readResponse(LinkedHashSet<String> tagNames, List<DataValue> results) {
         PlcResponseCode responseCode = PlcResponseCode.OK;
         Map<String, ResponseItem<PlcValue>> response = new HashMap<>();
         int count = 0;
-        for (String field : fieldNames) {
+        for (String tagName : tagNames) {
             PlcValue value = null;
             if (results.get(count).getValueSpecified()) {
                 Variant variant = results.get(count).getValue();
@@ -405,23 +405,23 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 LOGGER.error("Error while reading value from OPC UA server error code:- " + results.get(count).getStatusCode().toString());
             }
             count++;
-            response.put(field, new ResponseItem<>(responseCode, value));
+            response.put(tagName, new ResponseItem<>(responseCode, value));
         }
         return response;
     }
 
-    private Variant fromPlcValue(String fieldName, OpcuaField field, PlcWriteRequest request) {
+    private Variant fromPlcValue(String tagName, OpcuaTag tag, PlcWriteRequest request) {
         PlcList valueObject;
-        if (request.getPlcValue(fieldName).getObject() instanceof ArrayList) {
-            valueObject = (PlcList) request.getPlcValue(fieldName);
+        if (request.getPlcValue(tagName).getObject() instanceof ArrayList) {
+            valueObject = (PlcList) request.getPlcValue(tagName);
         } else {
             ArrayList<PlcValue> list = new ArrayList<>();
-            list.add(request.getPlcValue(fieldName));
+            list.add(request.getPlcValue(tagName));
             valueObject = new PlcList(list);
         }
 
         List<PlcValue> plcValueList = valueObject.getList();
-        PlcValueType dataType = field.getPlcValueType();
+        PlcValueType dataType = tag.getPlcValueType();
         if (dataType.equals(PlcValueType.NULL)) {
             if (plcValueList.get(0).getObject() instanceof Boolean) {
                 dataType = PlcValueType.BOOL;
@@ -669,7 +669,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     length == 1 ? null : length,
                     tmpDateTime);
             default:
-                throw new PlcRuntimeException("Unsupported write field type " + dataType);
+                throw new PlcRuntimeException("Unsupported write tag type " + dataType);
         }
     }
 
@@ -687,11 +687,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             SecureChannel.REQUEST_TIMEOUT_LONG,
             NULL_EXTENSION_OBJECT);
 
-        List<ExtensionObjectDefinition> writeValueList = new ArrayList<>(request.getFieldNames().size());
-        for (String fieldName : request.getFieldNames()) {
-            OpcuaField field = (OpcuaField) request.getField(fieldName);
+        List<ExtensionObjectDefinition> writeValueList = new ArrayList<>(request.getTagNames().size());
+        for (String tagName : request.getTagNames()) {
+            OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
 
-            NodeId nodeId = generateNodeId(field);
+            NodeId nodeId = generateNodeId(tag);
 
             writeValueList.add(new WriteValue(nodeId,
                 0xD,
@@ -703,7 +703,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     false,
                     false,
                     true,
-                    fromPlcValue(fieldName, field, writeRequest),
+                    fromPlcValue(tagName, tag, writeRequest),
                     null,
                     null,
                     null,
@@ -768,19 +768,19 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     private PlcWriteResponse writeResponse(DefaultPlcWriteRequest request, WriteResponse writeResponse) {
         Map<String, PlcResponseCode> responseMap = new HashMap<>();
         List<StatusCode> results = writeResponse.getResults();
-        Iterator<String> responseIterator = request.getFieldNames().iterator();
-        for (int i = 0; i < request.getFieldNames().size(); i++) {
-            String fieldName = responseIterator.next();
+        Iterator<String> responseIterator = request.getTagNames().iterator();
+        for (int i = 0; i < request.getTagNames().size(); i++) {
+            String tagName = responseIterator.next();
             OpcuaStatusCode statusCode = OpcuaStatusCode.enumForValue(results.get(i).getStatusCode());
             switch (statusCode) {
                 case Good:
-                    responseMap.put(fieldName, PlcResponseCode.OK);
+                    responseMap.put(tagName, PlcResponseCode.OK);
                     break;
                 case BadNodeIdUnknown:
-                    responseMap.put(fieldName, PlcResponseCode.NOT_FOUND);
+                    responseMap.put(tagName, PlcResponseCode.NOT_FOUND);
                     break;
                 default:
-                    responseMap.put(fieldName, PlcResponseCode.REMOTE_ERROR);
+                    responseMap.put(tagName, PlcResponseCode.REMOTE_ERROR);
             }
         }
         return new DefaultPlcWriteResponse(request, responseMap);
@@ -792,8 +792,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         return CompletableFuture.supplyAsync(() -> {
             Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
             long subscriptionId;
-            ArrayList<String> fields = new ArrayList<>(subscriptionRequest.getFieldNames());
-            long cycleTime = (subscriptionRequest.getField(fields.get(0))).getDuration().orElse(Duration.ofMillis(1000)).toMillis();
+            ArrayList<String> tagNames = new ArrayList<>(subscriptionRequest.getTagNames());
+            long cycleTime = (subscriptionRequest.getTag(tagNames.get(0))).getDuration().orElse(Duration.ofMillis(1000)).toMillis();
 
             try {
                 CompletableFuture<CreateSubscriptionResponse> subscription = onSubscribeCreateSubscription(cycleTime);
@@ -804,12 +804,12 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 throw new PlcRuntimeException("Unable to subscribe because of: " + e.getMessage());
             }
 
-            for (String fieldName : subscriptionRequest.getFieldNames()) {
-                final DefaultPlcSubscriptionField fieldDefaultPlcSubscription = (DefaultPlcSubscriptionField) subscriptionRequest.getField(fieldName);
-                if (!(fieldDefaultPlcSubscription.getPlcField() instanceof OpcuaField)) {
-                    values.put(fieldName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
+            for (String tagName : subscriptionRequest.getTagNames()) {
+                final DefaultPlcSubscriptionTag tagDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
+                if (!(tagDefaultPlcSubscription.getTag() instanceof OpcuaTag)) {
+                    values.put(tagName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
                 } else {
-                    values.put(fieldName, new ResponseItem<>(PlcResponseCode.OK, subscriptions.get(subscriptionId)));
+                    values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, subscriptions.get(subscriptionId)));
                 }
             }
             return new DefaultPlcSubscriptionResponse(subscriptionRequest, values);

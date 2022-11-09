@@ -154,22 +154,22 @@ public class OpcuaPlcDriverTest {
             assert opcuaConnection.isConnected();
 
             PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder();
-            builder.addFieldAddress("Bool", BOOL_IDENTIFIER_READ_WRITE);
-            builder.addFieldAddress("Byte", BYTE_IDENTIFIER_READ_WRITE);
-            builder.addFieldAddress("Double", DOUBLE_IDENTIFIER_READ_WRITE);
-            builder.addFieldAddress("Float", FLOAT_IDENTIFIER_READ_WRITE);
-            builder.addFieldAddress("Int16", INT16_IDENTIFIER_READ_WRITE);
-            builder.addFieldAddress("Int32", INT32_IDENTIFIER_READ_WRITE);
-            builder.addFieldAddress("Int64", INT64_IDENTIFIER_READ_WRITE);
-            builder.addFieldAddress("Integer", INTEGER_IDENTIFIER_READ_WRITE);
-            builder.addFieldAddress("SByte", SBYTE_IDENTIFIER_READ_WRITE);
-            builder.addFieldAddress("String", STRING_IDENTIFIER_READ_WRITE);
-            builder.addFieldAddress("UInt16", UINT16_IDENTIFIER_READ_WRITE);
-            builder.addFieldAddress("UInt32", UINT32_IDENTIFIER_READ_WRITE);
-            builder.addFieldAddress("UInt64", UINT64_IDENTIFIER_READ_WRITE);
-            builder.addFieldAddress("UInteger", UINTEGER_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("Bool", BOOL_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("Byte", BYTE_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("Double", DOUBLE_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("Float", FLOAT_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("Int16", INT16_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("Int32", INT32_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("Int64", INT64_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("Integer", INTEGER_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("SByte", SBYTE_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("String", STRING_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("UInt16", UINT16_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("UInt32", UINT32_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("UInt64", UINT64_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("UInteger", UINTEGER_IDENTIFIER_READ_WRITE);
 
-            builder.addFieldAddress("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE);
 
             PlcReadRequest request = builder.build();
             PlcReadResponse response = request.execute().get();
@@ -203,22 +203,22 @@ public class OpcuaPlcDriverTest {
             assert opcuaConnection.isConnected();
 
             PlcWriteRequest.Builder builder = opcuaConnection.writeRequestBuilder();
-            builder.addFieldAddress("Bool", BOOL_IDENTIFIER_READ_WRITE, true);
-            builder.addFieldAddress("Byte", BYTE_IDENTIFIER_READ_WRITE + ";BYTE", 255);
-            builder.addFieldAddress("Double", DOUBLE_IDENTIFIER_READ_WRITE, 0.5d);
-            builder.addFieldAddress("Float", FLOAT_IDENTIFIER_READ_WRITE, 0.5f);
-            builder.addFieldAddress("Int16", INT16_IDENTIFIER_READ_WRITE + ";INT", 32000);
-            builder.addFieldAddress("Int32", INT32_IDENTIFIER_READ_WRITE, 42);
-            builder.addFieldAddress("Int64", INT64_IDENTIFIER_READ_WRITE, 42L);
-            builder.addFieldAddress("Integer", INTEGER_IDENTIFIER_READ_WRITE, 42);
-            builder.addFieldAddress("SByte", SBYTE_IDENTIFIER_READ_WRITE + ";USINT", 100);
-            builder.addFieldAddress("String", STRING_IDENTIFIER_READ_WRITE, "Helllo Toddy!");
-            builder.addFieldAddress("UInt16", UINT16_IDENTIFIER_READ_WRITE + ";UINT", 65535);
-            builder.addFieldAddress("UInt32", UINT32_IDENTIFIER_READ_WRITE + ";UDINT", 100);
-            builder.addFieldAddress("UInt64", UINT64_IDENTIFIER_READ_WRITE + ";ULINT", new BigInteger("1337"));
-            builder.addFieldAddress("UInteger", UINTEGER_IDENTIFIER_READ_WRITE + ";UDINT", 100);
+            builder.addTagAddress("Bool", BOOL_IDENTIFIER_READ_WRITE, true);
+            builder.addTagAddress("Byte", BYTE_IDENTIFIER_READ_WRITE + ";BYTE", 255);
+            builder.addTagAddress("Double", DOUBLE_IDENTIFIER_READ_WRITE, 0.5d);
+            builder.addTagAddress("Float", FLOAT_IDENTIFIER_READ_WRITE, 0.5f);
+            builder.addTagAddress("Int16", INT16_IDENTIFIER_READ_WRITE + ";INT", 32000);
+            builder.addTagAddress("Int32", INT32_IDENTIFIER_READ_WRITE, 42);
+            builder.addTagAddress("Int64", INT64_IDENTIFIER_READ_WRITE, 42L);
+            builder.addTagAddress("Integer", INTEGER_IDENTIFIER_READ_WRITE, 42);
+            builder.addTagAddress("SByte", SBYTE_IDENTIFIER_READ_WRITE + ";USINT", 100);
+            builder.addTagAddress("String", STRING_IDENTIFIER_READ_WRITE, "Helllo Toddy!");
+            builder.addTagAddress("UInt16", UINT16_IDENTIFIER_READ_WRITE + ";UINT", 65535);
+            builder.addTagAddress("UInt32", UINT32_IDENTIFIER_READ_WRITE + ";UDINT", 100);
+            builder.addTagAddress("UInt64", UINT64_IDENTIFIER_READ_WRITE + ";ULINT", new BigInteger("1337"));
+            builder.addTagAddress("UInteger", UINTEGER_IDENTIFIER_READ_WRITE + ";UDINT", 100);
 
-            builder.addFieldAddress("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE, "Sad Toddy");
+            builder.addTagAddress("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE, "Sad Toddy");
 
             PlcWriteRequest request = builder.build();
             PlcWriteResponse response = request.execute().get();

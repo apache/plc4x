@@ -32,7 +32,7 @@ import java.util.function.Consumer;
 public interface PlcSubscriber {
 
     /**
-     * Subscribes to fields on the PLC.
+     * Subscribes to tags on the PLC.
      *
      * @param subscriptionRequest subscription request containing at least one subscription request item.
      * @return subscription response containing a subscription response item for each subscription request item.
@@ -40,7 +40,7 @@ public interface PlcSubscriber {
     CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest);
 
     /**
-     * Unsubscribes from fields on the PLC. For unsubscribing the unsubscription request uses the subscription
+     * Unsubscribes from tags on the PLC. For unsubscribing the unsubscription request uses the subscription
      * handle returned as part of the subscription response item.
      *
      * @param unsubscriptionRequest unsubscription request containing at least one unsubscription request item.

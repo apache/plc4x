@@ -20,11 +20,11 @@ package org.apache.plc4x.java.spi.messages;
 
 import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.messages.PlcFieldRequest;
+import org.apache.plc4x.java.api.messages.PlcTagRequest;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
@@ -38,17 +38,17 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcReadRequest implements PlcReadRequest, PlcFieldRequest, Serializable {
+public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Serializable {
 
     private final PlcReader reader;
     // This is intentionally a linked hash map in order to keep the order of how elements were added.
-    private LinkedHashMap<String, PlcField> fields;
+    private LinkedHashMap<String, PlcTag> tags;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public DefaultPlcReadRequest(@JsonProperty("reader") PlcReader reader,
-                                 @JsonProperty("fields") LinkedHashMap<String, PlcField> fields) {
+                                 @JsonProperty("tags") LinkedHashMap<String, PlcTag> tags) {
         this.reader = reader;
-        this.fields = fields;
+        this.tags = tags;
     }
 
     @Override
@@ -59,27 +59,27 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcFieldRequest, S
 
     @Override
     @JsonIgnore
-    public int getNumberOfFields() {
-        return fields.size();
+    public int getNumberOfTags() {
+        return tags.size();
     }
 
     @Override
     @JsonIgnore
-    public LinkedHashSet<String> getFieldNames() {
+    public LinkedHashSet<String> getTagNames() {
         // TODO: Check if this already is a LinkedHashSet.
-        return new LinkedHashSet<>(fields.keySet());
+        return new LinkedHashSet<>(tags.keySet());
     }
 
     @Override
     @JsonIgnore
-    public PlcField getField(String name) {
-        return fields.get(name);
+    public PlcTag getTag(String name) {
+        return tags.get(name);
     }
 
     @Override
     @JsonIgnore
-    public List<PlcField> getFields() {
-        return new LinkedList<>(fields.values());
+    public List<PlcTag> getTags() {
+        return new LinkedList<>(tags.values());
     }
 
     @JsonIgnore
@@ -91,18 +91,18 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcFieldRequest, S
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcReadRequest");
 
-        writeBuffer.pushContext("fields");
-        for (Map.Entry<String, PlcField> fieldEntry : fields.entrySet()) {
-            String fieldName = fieldEntry.getKey();
-            writeBuffer.pushContext(fieldName);
-            PlcField field = fieldEntry.getValue();
-            if(!(field instanceof Serializable)) {
-                throw new RuntimeException("Error serializing. Field doesn't implement XmlSerializable");
+        writeBuffer.pushContext("tags");
+        for (Map.Entry<String, PlcTag> tagEntry : tags.entrySet()) {
+            String tagName = tagEntry.getKey();
+            writeBuffer.pushContext(tagName);
+            PlcTag tag = tagEntry.getValue();
+            if(!(tag instanceof Serializable)) {
+                throw new RuntimeException("Error serializing. Tag doesn't implement XmlSerializable");
             }
-            ((Serializable) field).serialize(writeBuffer);
-            writeBuffer.popContext(fieldName);
+            ((Serializable) tag).serialize(writeBuffer);
+            writeBuffer.popContext(tagName);
         }
-        writeBuffer.popContext("fields");
+        writeBuffer.popContext("tags");
 
         writeBuffer.popContext("PlcReadRequest");
     }
@@ -110,40 +110,40 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcFieldRequest, S
     public static class Builder implements PlcReadRequest.Builder {
 
         private final PlcReader reader;
-        private final PlcFieldHandler fieldHandler;
-        private final Map<String, Supplier<PlcField>> fields;
+        private final PlcTagHandler tagHandler;
+        private final Map<String, Supplier<PlcTag>> tags;
 
-        public Builder(PlcReader reader, PlcFieldHandler fieldHandler) {
+        public Builder(PlcReader reader, PlcTagHandler tagHandler) {
             this.reader = reader;
-            this.fieldHandler = fieldHandler;
-            fields = new LinkedHashMap<>();
+            this.tagHandler = tagHandler;
+            tags = new LinkedHashMap<>();
         }
 
         @Override
-        public PlcReadRequest.Builder addFieldAddress(String name, String fieldAddress) {
-            if (fields.containsKey(name)) {
-                throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
+        public PlcReadRequest.Builder addTagAddress(String name, String tagAddress) {
+            if (tags.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
             }
-            fields.put(name, () -> fieldHandler.parseField(fieldAddress));
+            tags.put(name, () -> tagHandler.parseTag(tagAddress));
             return this;
         }
 
         @Override
-        public PlcReadRequest.Builder addField(String name, PlcField field) {
-            if (fields.containsKey(name)) {
-                throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
+        public PlcReadRequest.Builder addTag(String name, PlcTag tag) {
+            if (tags.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
             }
-            fields.put(name, () -> field);
+            tags.put(name, () -> tag);
             return this;
         }
 
         @Override
         public PlcReadRequest build() {
-            LinkedHashMap<String, PlcField> parsedFields = new LinkedHashMap<>();
-            fields.forEach((name, fieldQuery) -> {
-                parsedFields.put(name, fieldQuery.get());
+            LinkedHashMap<String, PlcTag> parsedTags = new LinkedHashMap<>();
+            tags.forEach((name, tagQuery) -> {
+                parsedTags.put(name, tagQuery.get());
             });
-            return new DefaultPlcReadRequest(reader, parsedFields);
+            return new DefaultPlcReadRequest(reader, parsedTags);
         }
 
     }

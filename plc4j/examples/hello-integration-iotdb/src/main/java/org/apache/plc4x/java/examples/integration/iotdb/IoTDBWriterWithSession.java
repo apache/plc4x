@@ -53,14 +53,14 @@ public class IoTDBWriterWithSession implements  IIoTDBWriter {
     }
 
     @Override
-    public void writeData(String deviceId, String field, long timestamp, Integer value) {
+    public void writeData(String deviceId, String tag, long timestamp, Integer value) {
         try {
             //when using the default configuration of IoTDB, then int value will be considered as float.
             //so we use float here.
             //change the data type by modify `integer_string_infer_type` parameter.
 
             //if you create time-series manually, REMEMBER TO MODIFY THE TSDATATYPE.FLOAT AS WHAT YOU REALLY NEED.
-            sessionPool.insertRecord(deviceId, timestamp, Collections.singletonList(field), Collections.singletonList(
+            sessionPool.insertRecord(deviceId, timestamp, Collections.singletonList(tag), Collections.singletonList(
                 TSDataType.FLOAT), Collections.singletonList(value + 0.0f));
         } catch (IoTDBConnectionException | StatementExecutionException e) {
             LOGGER.error("Error storing connection.", e);

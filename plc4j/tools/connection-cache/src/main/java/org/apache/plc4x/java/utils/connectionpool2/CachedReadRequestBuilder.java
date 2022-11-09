@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.utils.connectionpool2;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 
 public class CachedReadRequestBuilder implements PlcReadRequest.Builder {
 
@@ -32,14 +32,14 @@ public class CachedReadRequestBuilder implements PlcReadRequest.Builder {
     }
 
     @Override
-    public PlcReadRequest.Builder addFieldAddress(String s, String s1) {
-        builder.addFieldAddress(s, s1);
+    public PlcReadRequest.Builder addTagAddress(String s, String s1) {
+        builder.addTagAddress(s, s1);
         return this;
     }
 
     @Override
-    public PlcReadRequest.Builder addField(String name, PlcField fieldQuery) {
-        builder.addField(name, fieldQuery);
+    public PlcReadRequest.Builder addTag(String name, PlcTag tagQuery) {
+        builder.addTag(name, tagQuery);
         return this;
     }
 

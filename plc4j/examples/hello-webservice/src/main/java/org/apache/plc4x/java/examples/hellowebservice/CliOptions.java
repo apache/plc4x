@@ -25,7 +25,7 @@ public class CliOptions {
     private static Options options;
 
     private final String connectionString;
-    private final String[] fieldAddress;
+    private final String[] tagAddress;
     private final String webserviceUrl;
 
     public static CliOptions fromArgs(String[] args) {
@@ -42,9 +42,9 @@ public class CliOptions {
         options.addOption(
             Option.builder()
                 .type(String.class)
-                .longOpt("field-addresses")
+                .longOpt("tag-addresses")
                 .hasArgs()
-                .desc("Field Addresses (Space separated).")
+                .desc("Tag Addresses (Space separated).")
                 .required()
                 .build());
         options.addOption(
@@ -62,10 +62,10 @@ public class CliOptions {
             commandLine = parser.parse(options, args);
 
             String connectionString = commandLine.getOptionValue("connection-string");
-            String[] fieldAddress = commandLine.getOptionValues("field-addresses");
+            String[] tagAddress = commandLine.getOptionValues("tag-addresses");
             String webserviceUrl = commandLine.getOptionValue("webservice-url");
 
-            return new CliOptions(connectionString, fieldAddress, webserviceUrl);
+            return new CliOptions(connectionString, tagAddress, webserviceUrl);
         } catch (ParseException e) {
             System.err.println(e.getMessage());
             return null;
@@ -77,9 +77,9 @@ public class CliOptions {
         formatter.printHelp("HelloPlc4x", options);
     }
 
-    public CliOptions(String connectionString, String[] fieldAddress, String webserviceUrl) {
+    public CliOptions(String connectionString, String[] tagAddress, String webserviceUrl) {
         this.connectionString = connectionString;
-        this.fieldAddress = fieldAddress;
+        this.tagAddress = tagAddress;
         this.webserviceUrl = webserviceUrl;
     }
 
@@ -87,8 +87,8 @@ public class CliOptions {
         return connectionString;
     }
 
-    public String[] getFieldAddress() {
-        return fieldAddress;
+    public String[] getTagAddress() {
+        return tagAddress;
     }
 
     public String getWebserviceUrl() {

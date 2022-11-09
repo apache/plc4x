@@ -113,7 +113,7 @@ public class ConnectionTabController {
             }
         }
         TreeItem<ConnectionTabController.TreeEntry> treeItem = new TreeItem<>(new ConnectionTabController.TreeEntry(
-            browseItem.getAddress() + addressSuffix, browseItem.getName(), browseItem.getPlcValueType(),
+            browseItem.getTag().getAddressString() + addressSuffix, browseItem.getName(), browseItem.getPlcValueType(),
             browseItem.isReadable(), browseItem.isWritable(), browseItem.isSubscribable()));
         if(!browseItem.getChildren().isEmpty()) {
             // Sort the entries first.
@@ -183,7 +183,7 @@ public class ConnectionTabController {
     class PlcBrowseItemComparator implements Comparator<PlcBrowseItem> {
         @Override
         public int compare(PlcBrowseItem o1, PlcBrowseItem o2) {
-            return o1.getAddress().compareTo(o2.getAddress());
+            return o1.getTag().getAddressString().compareTo(o2.getTag().getAddressString());
         }
     }
 

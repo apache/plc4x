@@ -20,8 +20,8 @@ package org.apache.plc4x.camel;
 
 public class Constants {
 
-    public static final String FIELD_NAME_HEADER = "fieldName";
-    public static final String FIELD_QUERY_HEADER = "fieldQuery";
+    public static final String TAG_NAME_HEADER = "tagName";
+    public static final String TAG_ADDRESS_HEADER = "tagAddress";
     public final static String TRIGGER = "TRIGGER_VAR";
     public final static String PLC_NAME = "PLC";
     private Constants() {

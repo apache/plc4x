@@ -44,10 +44,10 @@ import java.util.stream.Stream;
 public class ManualS7PlcDriverMT {
 
     public static final String CONN_STRING = "s7://10.10.64.22/0/1";
-    public static final String FIELD_STRING = "%DB225:DBW0:INT";
+    public static final String TAG_STRING = "%DB225:DBW0:INT";
 
     //    public static final String CONN_STRING = "s7://10.10.64.20/0/1";
-//    public static final String FIELD_STRING = "%DB3:DBD32:DINT";
+//    public static final String TAG_STRING = "%DB3:DBD32:DINT";
 
     @Test
     public void simpleLoop() {
@@ -178,7 +178,7 @@ public class ManualS7PlcDriverMT {
         try (PlcConnection connection = plcDriverManager.getConnection(CONN_STRING)) {
             System.out.println("Connection: " + connection);
             CompletableFuture<? extends PlcReadResponse> future = connection.readRequestBuilder()
-                .addFieldAddress("distance", FIELD_STRING)
+                .addTagAddress("distance", TAG_STRING)
                 .build()
                 .execute();
 

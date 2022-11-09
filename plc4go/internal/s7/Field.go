@@ -41,7 +41,7 @@ type PlcField interface {
 	GetBitOffset() uint8
 }
 
-type plcField struct {
+type plcTag struct {
 	FieldType   FieldType
 	MemoryArea  readWriteModel.MemoryArea
 	BlockNumber uint16
@@ -52,7 +52,7 @@ type plcField struct {
 }
 
 func NewField(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWriteModel.TransportSize) PlcField {
-	return plcField{
+	return plcTag{
 		FieldType:   S7Field,
 		MemoryArea:  memoryArea,
 		BlockNumber: blockNumber,
@@ -64,13 +64,13 @@ func NewField(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffs
 }
 
 type PlcStringField struct {
-	plcField
+	plcTag
 	stringLength uint16
 }
 
 func NewStringField(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWriteModel.TransportSize) PlcStringField {
 	return PlcStringField{
-		plcField: plcField{
+		plcTag: plcTag{
 			FieldType:   S7StringField,
 			MemoryArea:  memoryArea,
 			BlockNumber: blockNumber,
@@ -83,19 +83,19 @@ func NewStringField(memoryArea readWriteModel.MemoryArea, blockNumber uint16, by
 	}
 }
 
-func (m plcField) GetAddressString() string {
+func (m plcTag) GetAddressString() string {
 	// TODO: add missing variables like memory area, block number, byte offset, bit offset
 	return fmt.Sprintf("%d:%s[%d]", m.FieldType, m.Datatype, m.NumElements)
 }
 
-func (m plcField) GetValueType() values.PlcValueType {
+func (m plcTag) GetValueType() values.PlcValueType {
 	if plcValueByName, ok := values.PlcValueByName(m.Datatype.String()); ok {
 		return plcValueByName
 	}
 	return values.NULL
 }
 
-func (m plcField) GetArrayInfo() []model.ArrayInfo {
+func (m plcTag) GetArrayInfo() []model.ArrayInfo {
 	if m.NumElements != 1 {
 		return []model.ArrayInfo{
 			model2.DefaultArrayInfo{
@@ -107,34 +107,34 @@ func (m plcField) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func (m plcField) GetDataType() readWriteModel.TransportSize {
+func (m plcTag) GetDataType() readWriteModel.TransportSize {
 	return m.Datatype
 }
 
-func (m plcField) GetNumElements() uint16 {
+func (m plcTag) GetNumElements() uint16 {
 	return m.NumElements
 }
 
-func (m plcField) GetBlockNumber() uint16 {
+func (m plcTag) GetBlockNumber() uint16 {
 	return m.BlockNumber
 }
 
-func (m plcField) GetMemoryArea() readWriteModel.MemoryArea {
+func (m plcTag) GetMemoryArea() readWriteModel.MemoryArea {
 	return m.MemoryArea
 }
 
-func (m plcField) GetByteOffset() uint16 {
+func (m plcTag) GetByteOffset() uint16 {
 	return m.ByteOffset
 }
 
-func (m plcField) GetBitOffset() uint8 {
+func (m plcTag) GetBitOffset() uint8 {
 	return m.BitOffset
 }
 
-func (m plcField) GetQuantity() uint16 {
+func (m plcTag) GetQuantity() uint16 {
 	return m.NumElements
 }
-func (m plcField) Serialize() ([]byte, error) {
+func (m plcTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -142,7 +142,7 @@ func (m plcField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m plcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m plcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(m.FieldType.GetName()); err != nil {
 		return err
 	}

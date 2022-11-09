@@ -37,76 +37,76 @@
         ]
         ['READ_REQUEST' Plc4xReadRequest
             [simple   uint 16                 connectionId                  ]
-            [implicit uint 8                  numFields    'COUNT(fields)'  ]
-            [array    Plc4xFieldRequest       fields       count 'numFields']
+            [implicit uint 8                  numTags    'COUNT(tags)'  ]
+            [array    Plc4xTagRequest         tags       count 'numTags']
         ]
         ['READ_RESPONSE' Plc4xReadResponse
             [simple   uint 16                 connectionId                  ]
             [simple   Plc4xResponseCode       responseCode                  ]
-            [implicit uint 8                  numFields    'COUNT(fields)'  ]
-            [array    Plc4xFieldValueResponse fields       count 'numFields']
+            [implicit uint 8                  numTags    'COUNT(tags)'  ]
+            [array    Plc4xTagValueResponse   tags       count 'numTags']
         ]
         ['WRITE_REQUEST' Plc4xWriteRequest
             [simple   uint 16                 connectionId                  ]
-            [implicit uint 8                  numFields    'COUNT(fields)'  ]
-            [array    Plc4xFieldValueRequest  fields       count 'numFields']
+            [implicit uint 8                  numTags    'COUNT(tags)'  ]
+            [array    Plc4xTagValueRequest    tags       count 'numTags']
         ]
         ['WRITE_RESPONSE' Plc4xWriteResponse
             [simple   uint 16                 connectionId                  ]
             [simple   Plc4xResponseCode       responseCode                  ]
-            [implicit uint 8                  numFields    'COUNT(fields)'  ]
-            [array    Plc4xFieldResponse      fields       count 'numFields']
+            [implicit uint 8                  numTags    'COUNT(tags)'  ]
+            [array    Plc4xTagResponse        tags       count 'numTags']
         ]
         // TODO: Implement this later on.
         /*['SUBSCRIPTION_REQUEST' Plc4xSubscriptionRequest
             [simple   uint 16                 connectionId                  ]
-            [implicit uint 8                  numFields    'COUNT(fields)'  ]
-            [array                            fields       count 'numFields']
+            [implicit uint 8                  numTags    'COUNT(tags)'  ]
+            [array                            tags       count 'numTags']
         ]
         ['SUBSCRIPTION_RESPONSE' Plc4xSubscriptionResponse
             [simple   uint 16                 connectionId                  ]
             [simple   PlcResponseCode         responseCode                  ]
-            [implicit uint 8                  numFields    'COUNT(fields)'  ]
-            [array                            fields       count 'numFields']
+            [implicit uint 8                  numTags    'COUNT(tags)'  ]
+            [array                            tags       count 'numTags']
         ]
         ['UNSUBSCRIPTION_REQUEST' Plc4xUnsubscriptionRequest
             [simple   uint 16                 connectionId                  ]
-            [implicit uint 8                  numFields    'COUNT(fields)'  ]
-            [array                            fields       count 'numFields']
+            [implicit uint 8                  numTags    'COUNT(tags)'  ]
+            [array                            tags       count 'numTags']
         ]
         ['UNSUBSCRIPTION_RESPONSE' Plc4xUnsubscriptionResponse
             [simple   uint 16                 connectionId                  ]
             [simple   Plc4xResponseCode       responseCode                  ]
-            [implicit uint 8                  numFields    'COUNT(fields)'  ]
-            [array                            fields       count 'numFields']
+            [implicit uint 8                  numTags    'COUNT(tags)'  ]
+            [array                            tags       count 'numTags']
         ]*/
     ]
 ]
 
-[type Plc4xField
+[type Plc4xTag
     [implicit uint 8                      nameLen       'STR_LEN(name)'      ]
     [simple   vstring 'nameLen * 8'       name                               ]
-    [implicit uint 8                      fieldQueryLen 'STR_LEN(fieldQuery)']
-    [simple   vstring 'fieldQueryLen * 8' fieldQuery                         ]
+    [implicit uint 8                      tagQueryLen 'STR_LEN(tagQuery)']
+    [simple   vstring 'tagQueryLen * 8' tagQuery                         ]
 ]
 
-[type Plc4xFieldRequest
-    [simple Plc4xField              field       ]
+[type Plc4xTagRequest
+    [simple Plc4xTag              tag       ]
 ]
 
-[type Plc4xFieldValueRequest
-    [simple   Plc4xField              field                                       ]
+[type Plc4xTagValueRequest
+    [simple   Plc4xTag              tag                                       ]
     [simple   Plc4xValueType          valueType                                   ]
     [optional Plc4xValue('valueType') value     'valueType != Plc4xValueType.NULL']
 ]
 
-[type Plc4xFieldResponse
-    [simple Plc4xField              field       ]
+[type Plc4xTagResponse
+    [simple Plc4xTag              tag       ]
     [simple Plc4xResponseCode       responseCode]
 ]
 
-[type Plc4xFieldValueResponse
-    [simple   Plc4xField              field                                          ]
+[type Plc4xTagValueResponse
+    [simple   Plc4xTag              tag                                          ]
     [simple   Plc4xResponseCode       responseCode                                   ]
     [simple   Plc4xValueType          valueType                                      ]
     [optional Plc4xValue('valueType') value        'valueType != Plc4xValueType.NULL']

@@ -41,7 +41,7 @@ public class Scanner {
     public static void main(String[] args) throws Exception {
         if (args.length != 5) {
             System.out.println("Usage: java -jar ... [ip -address] [target ams] [target ams port] [source ams] [source ams port]");
-            System.out.println("All fields are required. AMS route must be created beforehand.");
+            System.out.println("All tags are required. AMS route must be created beforehand.");
             System.out.println("Example parameter sequence:");
             System.out.println("  192.168.2.251  39.42.54.209.1.1  851  192.168.2.232.1.1  851");
             return;
@@ -66,7 +66,7 @@ public class Scanner {
             // read symbols
             System.out.println("Reading symbol info");
             PlcReadRequest.Builder readRequestBuilder = plcConnection.readRequestBuilder();
-            PlcReadRequest request = readRequestBuilder.addFieldAddress("SYM_UPLOADINFO2", "0xf00f/0x0:SINT[24]").build();
+            PlcReadRequest request = readRequestBuilder.addTagAddress("SYM_UPLOADINFO2", "0xf00f/0x0:SINT[24]").build();
             PlcReadResponse rsp = request.execute().get();
             ByteBuffer buffer = toBuffer(rsp, "SYM_UPLOADINFO2");
 
@@ -74,12 +74,12 @@ public class Scanner {
             int symbolAnswerSize = buffer.getInt(4);
             System.out.println("Expecting symbol table containing " + symbolAnswerSize + " bytes");
 
-            request = plcConnection.readRequestBuilder().addFieldAddress("SYM_UPLOAD", "0xf00b/0x0:SINT[" + symbolAnswerSize + "]").build();
+            request = plcConnection.readRequestBuilder().addTagAddress("SYM_UPLOAD", "0xf00b/0x0:SINT[" + symbolAnswerSize + "]").build();
             PlcReadResponse readResponse = request.execute().get();
             buffer = toBuffer(readResponse, "SYM_UPLOAD");
             //System.err.println("second answer " + Hex.dump(buffer.array()));
 
-            System.out.println("      |           PLC4X Field        |          Hex          |                                                            ");
+            System.out.println("      |           PLC4X Tag          |          Hex          |                                                            ");
             System.out.println("##### |          Query Syntax        |   Index   |   Offset  |   Type   | Name                                   | Size (B) | Type | Flag | Comment");
             System.out.println("------+------------------------------+-----------+-----------+----------+----------------------------------------+----------+------+------+");
 
@@ -134,9 +134,9 @@ public class Scanner {
         return new String(arr, StandardCharsets.UTF_8);
     }
 
-    private static ByteBuffer toBuffer(PlcReadResponse rsp, String fieldName) {
-        System.out.println(rsp.getFieldNames() + " " + rsp.getField(fieldName) + " " + rsp.getResponseCode(fieldName));
-        List<PlcValue> symbols = (List<PlcValue>) rsp.getObject(fieldName);
+    private static ByteBuffer toBuffer(PlcReadResponse rsp, String tagName) {
+        System.out.println(rsp.getTagNames() + " " + rsp.getTag(tagName) + " " + rsp.getResponseCode(tagName));
+        List<PlcValue> symbols = (List<PlcValue>) rsp.getObject(tagName);
         ByteBuffer buffer = ByteBuffer.allocate(symbols.size()).order(ByteOrder.LITTLE_ENDIAN);
 
         for (PlcValue byteVal : symbols) {

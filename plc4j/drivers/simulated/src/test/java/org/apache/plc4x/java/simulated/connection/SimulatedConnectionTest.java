@@ -84,7 +84,7 @@ class SimulatedConnectionTest implements WithAssertions {
         @Test
         void read() throws Exception {
             PlcReadRequest plcReadRequest = SUT.readRequestBuilder()
-                .addFieldAddress("foo", "RANDOM/foo:String")
+                .addTagAddress("foo", "RANDOM/foo:String")
                 .build();
 
             CompletableFuture<PlcReadResponse> read = SUT.read(plcReadRequest);
@@ -95,7 +95,7 @@ class SimulatedConnectionTest implements WithAssertions {
         @Test
         void write() throws Exception {
             PlcWriteRequest plcWriteRequest = SUT.writeRequestBuilder()
-                .addFieldAddress("bar", "RANDOM/foo:String", "foobar")
+                .addTagAddress("bar", "RANDOM/foo:String", "foobar")
                 .build();
 
             CompletableFuture<PlcWriteResponse> write = SUT.write(plcWriteRequest);
@@ -109,9 +109,9 @@ class SimulatedConnectionTest implements WithAssertions {
         @Test
         void subscribe() throws Exception {
             PlcSubscriptionRequest plcSubscriptionRequest = SUT.subscriptionRequestBuilder()
-                .addCyclicFieldAddress("foo1", "STATE/foo:String", Duration.ofSeconds(1))
-                .addChangeOfStateFieldAddress("foo2", "STATE/foo:String")
-                .addEventFieldAddress("foo3", "STATE/foo:String")
+                .addCyclicTagAddress("foo1", "STATE/foo:String", Duration.ofSeconds(1))
+                .addChangeOfStateTagAddress("foo2", "STATE/foo:String")
+                .addEventTagAddress("foo3", "STATE/foo:String")
                 .build();
 
             CompletableFuture<PlcSubscriptionResponse> subscribe = SUT.subscribe(plcSubscriptionRequest);
@@ -159,9 +159,9 @@ class SimulatedConnectionTest implements WithAssertions {
             LOGGER.trace("initialize");
             // Initialize the addresses
             PlcWriteRequest plcWriteRequest = SUT.writeRequestBuilder()
-                .addFieldAddress("cyclic", "STATE/cyclic:STRING", "initialcyclic")
-                .addFieldAddress("state", "STATE/state:STRING", "initialstate")
-                .addFieldAddress("event", "STATE/event:STRING", "initialevent")
+                .addTagAddress("cyclic", "STATE/cyclic:STRING", "initialcyclic")
+                .addTagAddress("state", "STATE/state:STRING", "initialstate")
+                .addTagAddress("event", "STATE/event:STRING", "initialevent")
                 .build();
             SUT.write(plcWriteRequest).get(1, TimeUnit.SECONDS);
             // Note: as we don't have a subscription yet, no callback will be executed
@@ -169,9 +169,9 @@ class SimulatedConnectionTest implements WithAssertions {
             LOGGER.trace("subscribe");
             // Subscribe for the addresses
             PlcSubscriptionRequest plcSubscriptionRequest = SUT.subscriptionRequestBuilder()
-                .addCyclicFieldAddress("cyclic", "STATE/cyclic:String", Duration.ofSeconds(1))
-                .addChangeOfStateFieldAddress("state", "STATE/state:String")
-                .addEventFieldAddress("event", "STATE/event:String")
+                .addCyclicTagAddress("cyclic", "STATE/cyclic:String", Duration.ofSeconds(1))
+                .addChangeOfStateTagAddress("state", "STATE/state:String")
+                .addEventTagAddress("event", "STATE/event:String")
                 .build();
             PlcSubscriptionResponse plcSubscriptionResponse = SUT.subscribe(plcSubscriptionRequest).get(1, TimeUnit.SECONDS);
 
@@ -183,7 +183,7 @@ class SimulatedConnectionTest implements WithAssertions {
             PlcConsumerRegistration stateRegistration = plcSubscriptionResponse.getSubscriptionHandle("state").register(stateQueue::add);
             Queue<PlcSubscriptionEvent> eventQueue = new ConcurrentLinkedQueue<>();
             PlcConsumerRegistration eventRegistration = plcSubscriptionResponse.getSubscriptionHandle("event").register(eventQueue::add);
-            assertThat(plcSubscriptionResponse.getFieldNames()).isNotEmpty();
+            assertThat(plcSubscriptionResponse.getTagNames()).isNotEmpty();
 
             LOGGER.trace("giving time");
             // Give the system some time to do stuff
@@ -192,9 +192,9 @@ class SimulatedConnectionTest implements WithAssertions {
             LOGGER.trace("write some addresses");
             // Write something to the addresses in order to trigger a value-change event
             PlcWriteRequest plcWriteRequest2 = SUT.writeRequestBuilder()
-                .addFieldAddress("cyclic", "STATE/cyclic:STRING", "changedcyclic")
-                .addFieldAddress("state", "STATE/state:STRING", "changedstate")
-                .addFieldAddress("event", "STATE/event:STRING", "changedevent")
+                .addTagAddress("cyclic", "STATE/cyclic:STRING", "changedcyclic")
+                .addTagAddress("state", "STATE/state:STRING", "changedstate")
+                .addTagAddress("event", "STATE/event:STRING", "changedevent")
                 .build();
             SUT.write(plcWriteRequest2).get(10, TimeUnit.SECONDS);
 
@@ -212,15 +212,15 @@ class SimulatedConnectionTest implements WithAssertions {
             // The cyclic queue should not be empty as it had 10 seconds to get a value once per second
             assertThat(cyclicQueue).isNotEmpty();
             cyclicQueue.forEach(
-                plcSubscriptionEvent -> assertThat(plcSubscriptionEvent.getFieldNames()).containsOnly("cyclic"));
+                plcSubscriptionEvent -> assertThat(plcSubscriptionEvent.getTagNames()).containsOnly("cyclic"));
             // The state change queue should also not be empty as we forced an update with the second write
             assertThat(stateQueue).isNotEmpty();
             stateQueue.forEach(
-                plcSubscriptionEvent -> assertThat(plcSubscriptionEvent.getFieldNames()).containsOnly("state"));
+                plcSubscriptionEvent -> assertThat(plcSubscriptionEvent.getTagNames()).containsOnly("state"));
             // No idea, why this should not be empty
             assertThat(eventQueue).isNotEmpty();
             eventQueue.forEach(
-                plcSubscriptionEvent -> assertThat(plcSubscriptionEvent.getFieldNames()).containsOnly("event"));
+                plcSubscriptionEvent -> assertThat(plcSubscriptionEvent.getTagNames()).containsOnly("event"));
         }
     }
 

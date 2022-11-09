@@ -53,7 +53,7 @@ const (
 
 func (m FieldHandler) ParseField(fieldString string) (model.PlcField, error) {
 	if addressMatch := utils.GetSubgroupMatches(m.addressPattern, fieldString); addressMatch != nil {
-		var result plcField
+		var result plcTag
 		{
 			objectTypeMatch := addressMatch[OBJECT_TYPE]
 			if parsedObjectType, parseUintErr := strconv.ParseUint(objectTypeMatch, 10, 16); parseUintErr != nil {

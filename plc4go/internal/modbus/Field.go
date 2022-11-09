@@ -96,8 +96,8 @@ func (m modbusField) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func CastToModbusFieldFromPlcField(plcField model.PlcField) (modbusField, error) {
-	if modbusField, ok := plcField.(modbusField); ok {
+func CastToModbusFieldFromPlcField(plcTag model.PlcField) (modbusField, error) {
+	if modbusField, ok := plcTag.(modbusField); ok {
 		return modbusField, nil
 	}
 	return modbusField{}, errors.New("couldn't cast to ModbusPlcField")

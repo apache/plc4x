@@ -32,7 +32,7 @@ public interface PlcBrowseRequest extends PlcRequest {
      * interceptor. This can be used for two different situations:
      * 1. Filter which items go into the final PlcBrowseResponse (Items are added, if interceptor returns true).
      * 2. Allow accessing found items on the fly while the system is still processing, hereby allowing a more
-     *    asynchronous consumption of found fields.
+     *    asynchronous consumption of found tags.
      *
      * @param interceptor interceptor for intercepting found items
      * @return future for the final PlcBrowseResponse
