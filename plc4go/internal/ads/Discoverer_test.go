@@ -28,6 +28,7 @@ import (
 )
 
 func TestDiscovererManual(t *testing.T) {
+	t.Skip("manual test")
 	discoverer := NewDiscoverer()
 	discoverer.Discover(context.Background(), func(event apiModel.PlcDiscoveryItem) {
 		print(event)

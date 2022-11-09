@@ -77,72 +77,76 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				continue
 			}
 
-			if (discoveryResponse.GetRequestId() == 0) &&
-				(discoveryResponse.GetPortNumber() == model.AdsPortNumbers_SYSTEM_SERVICE) &&
-				(discoveryResponse.GetOperation() == model.Operation_DISCOVERY_RESPONSE) {
-				remoteAmsNetId := discoveryResponse.GetAmsNetId()
-				var hostNameBlock model.AdsDiscoveryBlockHostName
-				//var osDataBlock model.AdsDiscoveryBlockOsData
-				var versionBlock model.AdsDiscoveryBlockVersion
-				var fingerprintBlock model.AdsDiscoveryBlockFingerprint
-				for _, block := range discoveryResponse.GetBlocks() {
-					switch block.GetBlockType() {
-					case model.AdsDiscoveryBlockType_HOST_NAME:
-						hostNameBlock = block.(model.AdsDiscoveryBlockHostName)
-						/*									case model.AdsDiscoveryBlockType_OS_DATA:
-															osDataBlock = block.(model.AdsDiscoveryBlockOsData)*/
-					case model.AdsDiscoveryBlockType_VERSION:
-						versionBlock = block.(model.AdsDiscoveryBlockVersion)
-					case model.AdsDiscoveryBlockType_FINGERPRINT:
-						fingerprintBlock = block.(model.AdsDiscoveryBlockFingerprint)
-					}
+			if !(discoveryResponse.GetRequestId() != 0 ||
+				discoveryResponse.GetPortNumber() != model.AdsPortNumbers_SYSTEM_SERVICE ||
+				discoveryResponse.GetOperation() != model.Operation_DISCOVERY_RESPONSE) {
+				continue
+			}
+
+			remoteAmsNetId := discoveryResponse.GetAmsNetId()
+			var hostNameBlock model.AdsDiscoveryBlockHostName
+			//var osDataBlock model.AdsDiscoveryBlockOsData
+			var versionBlock model.AdsDiscoveryBlockVersion
+			var fingerprintBlock model.AdsDiscoveryBlockFingerprint
+			for _, block := range discoveryResponse.GetBlocks() {
+				switch block.GetBlockType() {
+				case model.AdsDiscoveryBlockType_HOST_NAME:
+					hostNameBlock = block.(model.AdsDiscoveryBlockHostName)
+					/*									case model.AdsDiscoveryBlockType_OS_DATA:
+														osDataBlock = block.(model.AdsDiscoveryBlockOsData)*/
+				case model.AdsDiscoveryBlockType_VERSION:
+					versionBlock = block.(model.AdsDiscoveryBlockVersion)
+				case model.AdsDiscoveryBlockType_FINGERPRINT:
+					fingerprintBlock = block.(model.AdsDiscoveryBlockFingerprint)
+				}
+			}
+
+			if hostNameBlock == nil {
+				continue
+			}
+
+			opts := make(map[string][]string)
+			//					opts["sourceAmsNetId"] = []string{localIpV4Address.String() + ".1.1"}
+			opts["sourceAmsPort"] = []string{"65534"}
+			opts["targetAmsNetId"] = []string{strconv.Itoa(int(remoteAmsNetId.GetOctet1())) + "." +
+				strconv.Itoa(int(remoteAmsNetId.GetOctet2())) + "." +
+				strconv.Itoa(int(remoteAmsNetId.GetOctet3())) + "." +
+				strconv.Itoa(int(remoteAmsNetId.GetOctet4())) + "." +
+				strconv.Itoa(int(remoteAmsNetId.GetOctet5())) + "." +
+				strconv.Itoa(int(remoteAmsNetId.GetOctet6()))}
+			// TODO: Check if this is legit, or if we can get the information from somewhere.
+			opts["targetAmsPort"] = []string{"851"}
+
+			attributes := make(map[string]values.PlcValue)
+			attributes["hostName"] = values2.NewPlcSTRING(hostNameBlock.GetHostName().GetText())
+			if versionBlock != nil {
+				versionData := versionBlock.GetVersionData()
+				patchVersion := (int(versionData[3])&0xFF)<<8 | (int(versionData[2]) & 0xFF)
+				attributes["twinCatVersion"] = values2.NewPlcSTRING(fmt.Sprintf("%d.%d.%d", int(versionData[0])&0xFF, int(versionData[1])&0xFF, patchVersion))
+			}
+			if fingerprintBlock != nil {
+				attributes["fingerprint"] = values2.NewPlcSTRING(string(fingerprintBlock.GetData()))
+			}
+			// TODO: Find out how to handle the OS Data
+
+			// Add an entry to the results.
+			remoteAddress, err2 := url.Parse("udp://" + strconv.Itoa(int(remoteAmsNetId.GetOctet1())) + "." +
+				strconv.Itoa(int(remoteAmsNetId.GetOctet2())) + "." +
+				strconv.Itoa(int(remoteAmsNetId.GetOctet3())) + "." +
+				strconv.Itoa(int(remoteAmsNetId.GetOctet4())) + ":" +
+				strconv.Itoa(int(driverModel.AdsConstants_ADSTCPDEFAULTPORT)))
+			if err2 == nil {
+				plcDiscoveryItem := &internalModel.DefaultPlcDiscoveryItem{
+					ProtocolCode:  "ads",
+					TransportCode: "tcp",
+					TransportUrl:  *remoteAddress,
+					Options:       opts,
+					Name:          hostNameBlock.GetHostName().GetText(),
+					Attributes:    attributes,
 				}
 
-				if hostNameBlock != nil {
-					opts := make(map[string][]string)
-					//					opts["sourceAmsNetId"] = []string{localIpV4Address.String() + ".1.1"}
-					opts["sourceAmsPort"] = []string{"65534"}
-					opts["targetAmsNetId"] = []string{strconv.Itoa(int(remoteAmsNetId.GetOctet1())) + "." +
-						strconv.Itoa(int(remoteAmsNetId.GetOctet2())) + "." +
-						strconv.Itoa(int(remoteAmsNetId.GetOctet3())) + "." +
-						strconv.Itoa(int(remoteAmsNetId.GetOctet4())) + "." +
-						strconv.Itoa(int(remoteAmsNetId.GetOctet5())) + "." +
-						strconv.Itoa(int(remoteAmsNetId.GetOctet6()))}
-					// TODO: Check if this is legit, or if we can get the information from somewhere.
-					opts["targetAmsPort"] = []string{"851"}
-
-					attributes := make(map[string]values.PlcValue)
-					attributes["hostName"] = values2.NewPlcSTRING(hostNameBlock.GetHostName().GetText())
-					if versionBlock != nil {
-						versionData := versionBlock.GetVersionData()
-						patchVersion := (int(versionData[3])&0xFF)<<8 | (int(versionData[2]) & 0xFF)
-						attributes["twinCatVersion"] = values2.NewPlcSTRING(fmt.Sprintf("%d.%d.%d", int(versionData[0])&0xFF, int(versionData[1])&0xFF, patchVersion))
-					}
-					if fingerprintBlock != nil {
-						attributes["fingerprint"] = values2.NewPlcSTRING(string(fingerprintBlock.GetData()))
-					}
-					// TODO: Find out how to handle the OS Data
-
-					// Add an entry to the results.
-					remoteAddress, err2 := url.Parse("udp://" + strconv.Itoa(int(remoteAmsNetId.GetOctet1())) + "." +
-						strconv.Itoa(int(remoteAmsNetId.GetOctet2())) + "." +
-						strconv.Itoa(int(remoteAmsNetId.GetOctet3())) + "." +
-						strconv.Itoa(int(remoteAmsNetId.GetOctet4())) + ":" +
-						strconv.Itoa(int(driverModel.AdsConstants_ADSTCPDEFAULTPORT)))
-					if err2 == nil {
-						plcDiscoveryItem := &internalModel.DefaultPlcDiscoveryItem{
-							ProtocolCode:  "ads",
-							TransportCode: "tcp",
-							TransportUrl:  *remoteAddress,
-							Options:       opts,
-							Name:          hostNameBlock.GetHostName().GetText(),
-							Attributes:    attributes,
-						}
-
-						// Pass the event back to the callback
-						callback(plcDiscoveryItem)
-					}
-				}
+				// Pass the event back to the callback
+				callback(plcDiscoveryItem)
 			}
 		}
 	}()
@@ -200,47 +204,49 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 			// If we found an IPv4 address and this is not a loopback address,
 			// add it to the list of devices we will open ports and send discovery
 			// messages from.
-			if ipv4Addr != nil && !ipv4Addr.IsLoopback() {
-				// Calculate the broadcast address for this interface
-				broadcastAddress := make(net.IP, len(ipv4Addr))
-				binary.BigEndian.PutUint32(broadcastAddress, binary.BigEndian.Uint32(ipv4Addr)|^binary.BigEndian.Uint32(net.IP(addr.(*net.IPNet).Mask).To4()))
+			if ipv4Addr == nil || ipv4Addr.IsLoopback() {
+				continue
+			}
 
-				// Prepare the discovery packet data
-				// Create the discovery request message for this device.
-				amsNetId := model.NewAmsNetId(ipv4Addr[0], ipv4Addr[1], ipv4Addr[2], ipv4Addr[3], uint8(1), uint8(1))
-				discoveryRequestMessage := model.NewAdsDiscovery(0, model.Operation_DISCOVERY_REQUEST, amsNetId, model.AdsPortNumbers_SYSTEM_SERVICE, []model.AdsDiscoveryBlock{})
+			// Calculate the broadcast address for this interface
+			broadcastAddress := make(net.IP, len(ipv4Addr))
+			binary.BigEndian.PutUint32(broadcastAddress, binary.BigEndian.Uint32(ipv4Addr)|^binary.BigEndian.Uint32(net.IP(addr.(*net.IPNet).Mask).To4()))
 
-				// Serialize the message
-				bytes, err := discoveryRequestMessage.Serialize()
-				if err != nil {
-					log.Error().Err(err).Str("broadcast-ip", broadcastAddress.String()).Msg("Error serialising broadcast search packet")
-					continue
-				}
+			// Prepare the discovery packet data
+			// Create the discovery request message for this device.
+			amsNetId := model.NewAmsNetId(ipv4Addr[0], ipv4Addr[1], ipv4Addr[2], ipv4Addr[3], uint8(1), uint8(1))
+			discoveryRequestMessage := model.NewAdsDiscovery(0, model.Operation_DISCOVERY_REQUEST, amsNetId, model.AdsPortNumbers_SYSTEM_SERVICE, []model.AdsDiscoveryBlock{})
 
-				// Create a not-connected UDP connection to the broadcast address
-				requestAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", broadcastAddress.String(), model.AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT))
-				if err != nil {
-					log.Error().Err(err).Str("broadcast-ip", broadcastAddress.String()).Msg("Error resolving target socket for broadcast search")
-					continue
-				}
-				/*localAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", ipv4Addr.String(), model.AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT))
-				if err != nil {
-					log.Error().Err(err).Str("local-ip", ipv4Addr.String()).Msg("Error resolving local address for broadcast search")
-					continue
-				}
-				udp, err := net.DialUDP("udp4", localAddr, requestAddr)
-				if err != nil {
-					log.Error().Err(err).Str("local-ip", ipv4Addr.String()).Str("broadcast-ip", broadcastAddress.String()).
-						Msg("Error creating sending udp socket for broadcast search")
-					continue
-				}*/
+			// Serialize the message
+			bytes, err := discoveryRequestMessage.Serialize()
+			if err != nil {
+				log.Error().Err(err).Str("broadcast-ip", broadcastAddress.String()).Msg("Error serialising broadcast search packet")
+				continue
+			}
 
-				// Send out the message.
-				_, err = socket.WriteTo(bytes, requestAddr)
-				if err != nil {
-					log.Error().Err(err).Str("broadcast-ip", broadcastAddress.String()).Msg("Error sending request for broadcast search")
-					continue
-				}
+			// Create a not-connected UDP connection to the broadcast address
+			requestAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", broadcastAddress.String(), model.AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT))
+			if err != nil {
+				log.Error().Err(err).Str("broadcast-ip", broadcastAddress.String()).Msg("Error resolving target socket for broadcast search")
+				continue
+			}
+			/*localAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", ipv4Addr.String(), model.AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT))
+			if err != nil {
+				log.Error().Err(err).Str("local-ip", ipv4Addr.String()).Msg("Error resolving local address for broadcast search")
+				continue
+			}
+			udp, err := net.DialUDP("udp4", localAddr, requestAddr)
+			if err != nil {
+				log.Error().Err(err).Str("local-ip", ipv4Addr.String()).Str("broadcast-ip", broadcastAddress.String()).
+					Msg("Error creating sending udp socket for broadcast search")
+				continue
+			}*/
+
+			// Send out the message.
+			_, err = socket.WriteTo(bytes, requestAddr)
+			if err != nil {
+				log.Error().Err(err).Str("broadcast-ip", broadcastAddress.String()).Msg("Error sending request for broadcast search")
+				continue
 			}
 		}
 	}

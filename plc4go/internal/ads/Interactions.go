@@ -46,7 +46,6 @@ func (m *Connection) ExecuteAdsReadDeviceInfoRequest(ctx context.Context) (model
 				amsTcpPacket := message.(model.AmsTCPPacket)
 				response := amsTcpPacket.GetUserdata().(model.AdsReadDeviceInfoResponse)
 				responseChannel <- response
-				close(responseChannel)
 				return nil
 			},
 			func(err error) error {
@@ -58,7 +57,7 @@ func (m *Connection) ExecuteAdsReadDeviceInfoRequest(ctx context.Context) (model
 			close(responseChannel)
 		}
 	}()
-	response, err := ReadWithTimeout(responseChannel)
+	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error reading device info: %v", err)
 	}
@@ -83,7 +82,6 @@ func (m *Connection) ExecuteAdsReadRequest(ctx context.Context, indexGroup uint3
 				amsTcpPacket := message.(model.AmsTCPPacket)
 				response := amsTcpPacket.GetUserdata().(model.AdsReadResponse)
 				responseChannel <- response
-				close(responseChannel)
 				return nil
 			},
 			func(err error) error {
@@ -95,7 +93,7 @@ func (m *Connection) ExecuteAdsReadRequest(ctx context.Context, indexGroup uint3
 			//			close(responseChannel)
 		}
 	}()
-	response, err := ReadWithTimeout(responseChannel)
+	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error reading: %v", err)
 	}
@@ -120,7 +118,6 @@ func (m *Connection) ExecuteAdsWriteRequest(ctx context.Context, indexGroup uint
 				amsTcpPacket := message.(model.AmsTCPPacket)
 				response := amsTcpPacket.GetUserdata().(model.AdsWriteResponse)
 				responseChannel <- response
-				close(responseChannel)
 				return nil
 			},
 			func(err error) error {
@@ -132,7 +129,7 @@ func (m *Connection) ExecuteAdsWriteRequest(ctx context.Context, indexGroup uint
 			close(responseChannel)
 		}
 	}()
-	response, err := ReadWithTimeout(responseChannel)
+	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error writing: %v", err)
 	}
@@ -157,7 +154,6 @@ func (m *Connection) ExecuteAdsReadWriteRequest(ctx context.Context, indexGroup 
 				amsTcpPacket := message.(model.AmsTCPPacket)
 				response := amsTcpPacket.GetUserdata().(model.AdsReadWriteResponse)
 				responseChannel <- response
-				close(responseChannel)
 				return nil
 			},
 			func(err error) error {
@@ -169,7 +165,7 @@ func (m *Connection) ExecuteAdsReadWriteRequest(ctx context.Context, indexGroup 
 			close(responseChannel)
 		}
 	}()
-	response, err := ReadWithTimeout(responseChannel)
+	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error writing: %v", err)
 	}
@@ -194,7 +190,6 @@ func (m *Connection) ExecuteAdsAddDeviceNotificationRequest(ctx context.Context,
 				amsTcpPacket := message.(model.AmsTCPPacket)
 				response := amsTcpPacket.GetUserdata().(model.AdsAddDeviceNotificationResponse)
 				responseChannel <- response
-				close(responseChannel)
 				return nil
 			},
 			func(err error) error {
@@ -206,7 +201,7 @@ func (m *Connection) ExecuteAdsAddDeviceNotificationRequest(ctx context.Context,
 			close(responseChannel)
 		}
 	}()
-	response, err := ReadWithTimeout(responseChannel)
+	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error writing: %v", err)
 	}
@@ -231,7 +226,6 @@ func (m *Connection) ExecuteAdsDeleteDeviceNotificationRequest(ctx context.Conte
 				amsTcpPacket := message.(model.AmsTCPPacket)
 				response := amsTcpPacket.GetUserdata().(model.AdsDeleteDeviceNotificationResponse)
 				responseChannel <- response
-				close(responseChannel)
 				return nil
 			},
 			func(err error) error {
@@ -243,18 +237,21 @@ func (m *Connection) ExecuteAdsDeleteDeviceNotificationRequest(ctx context.Conte
 			close(responseChannel)
 		}
 	}()
-	response, err := ReadWithTimeout(responseChannel)
+	response, err := ReadWithTimeout(ctx, responseChannel)
 	if err != nil {
 		return nil, fmt.Errorf("error writing: %v", err)
 	}
 	return response, nil
 }
 
-func ReadWithTimeout[T spi.Message](ch <-chan T) (T, error) {
+func ReadWithTimeout[T spi.Message](ctx context.Context, ch <-chan T) (T, error) {
+	timeout, cancelFunc := context.WithTimeout(ctx, 5*time.Second)
+	defer cancelFunc()
+
 	select {
 	case m := <-ch:
 		return m, nil
-	case <-time.After(5 * time.Second):
+	case <-timeout.Done():
 		var t T
 		return t, fmt.Errorf("timeout")
 	}

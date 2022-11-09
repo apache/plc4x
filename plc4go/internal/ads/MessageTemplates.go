@@ -24,6 +24,7 @@ import adsModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 func (m *Connection) NewAdsReadDeviceInfoRequest() adsModel.AmsTCPPacket {
 	return adsModel.NewAmsTCPPacket(
 		adsModel.NewAdsReadDeviceInfoRequest(m.configuration.targetAmsNetId, uint16(adsModel.DefaultAmsPorts_RUNTIME_SYSTEM_01),
+			// TODO: Replace 800 with constant.
 			m.configuration.sourceAmsNetId, 800, 0, m.getInvokeId()))
 }
 
