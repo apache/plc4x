@@ -33,6 +33,7 @@ type MaxSegmentsAccepted uint8
 
 type IMaxSegmentsAccepted interface {
 	utils.Serializable
+	MaxSegments() uint8
 }
 
 const (
@@ -62,6 +63,55 @@ func init() {
 	}
 }
 
+func (e MaxSegmentsAccepted) MaxSegments() uint8 {
+	switch e {
+	case 0x0:
+		{ /* '0x0' */
+			return 255
+		}
+	case 0x1:
+		{ /* '0x1' */
+			return 2
+		}
+	case 0x2:
+		{ /* '0x2' */
+			return 4
+		}
+	case 0x3:
+		{ /* '0x3' */
+			return 8
+		}
+	case 0x4:
+		{ /* '0x4' */
+			return 16
+		}
+	case 0x5:
+		{ /* '0x5' */
+			return 32
+		}
+	case 0x6:
+		{ /* '0x6' */
+			return 64
+		}
+	case 0x7:
+		{ /* '0x7' */
+			return 255
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func MaxSegmentsAcceptedFirstEnumForFieldMaxSegments(value uint8) (MaxSegmentsAccepted, error) {
+	for _, sizeValue := range MaxSegmentsAcceptedValues {
+		if sizeValue.MaxSegments() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing MaxSegments not found", value)
+}
 func MaxSegmentsAcceptedByValue(value uint8) (enum MaxSegmentsAccepted, ok bool) {
 	switch value {
 	case 0x0:
