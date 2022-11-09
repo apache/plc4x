@@ -56,7 +56,7 @@ func NewBrowser(connection *Connection, messageCodec spi.MessageCodec) *Browser 
 	return &browser
 }
 
-func (m Browser) InternalBrowse(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
+func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
 	switch query.(type) {
 	case DeviceQuery:
 		queryResults, err := m.executeDeviceQuery(ctx, query.(DeviceQuery), browseRequest, queryName, interceptor)

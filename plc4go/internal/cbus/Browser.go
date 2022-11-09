@@ -48,7 +48,7 @@ func NewBrowser(connection *Connection, messageCodec spi.MessageCodec) *Browser 
 	return &browser
 }
 
-func (m Browser) InternalBrowse(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
+func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
 	var queryResults []apiModel.PlcBrowseItem
 	/*switch query := query.(type) {
 	case *unitInfoField:
