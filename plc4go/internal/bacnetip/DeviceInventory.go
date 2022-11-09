@@ -22,7 +22,6 @@ package bacnetip
 import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/pkg/errors"
-	"math"
 	"sync"
 	"time"
 )
@@ -44,18 +43,25 @@ func (d *DeviceInventory) getEntryForDestination(destination []uint8) (DeviceEnt
 }
 
 var NoDeviceEntry = DeviceEntry{
-	MaximumApduLengthAcceptedLength: readWriteModel.NewBACnetTagPayloadUnsignedInteger(nil, nil, nil, nil, nil, nil, nil, func() *uint64 {
-		var maxUint64 uint64 = math.MaxUint64
-		return &maxUint64
-	}(), 4),
+	DeviceIdentifier:          nil,
+	MaximumApduLengthAccepted: readWriteModel.MaxApduLengthAccepted_NUM_OCTETS_1024,
+	SegmentationSupported:     readWriteModel.BACnetSegmentation_SEGMENTED_BOTH,
+	MaxSegmentsAccepted:       16,
+	APDUSegmentTimeout:        5000,
+	APDUTimeout:               3000,
+	NumberOfAPDURetries:       3,
 }
 
 type DeviceEntry struct {
-	DeviceIdentifier                readWriteModel.BACnetTagPayloadObjectIdentifier
-	MaximumApduLengthAcceptedLength readWriteModel.BACnetTagPayloadUnsignedInteger
-	SegmentationSupported           bool
-	VendorId                        readWriteModel.BACnetVendorId
-	DeviceObjects                   []DeviceObject
+	DeviceIdentifier          readWriteModel.BACnetTagPayloadObjectIdentifier
+	MaximumApduLengthAccepted readWriteModel.MaxApduLengthAccepted
+	SegmentationSupported     readWriteModel.BACnetSegmentation
+	MaxSegmentsAccepted       readWriteModel.MaxSegmentsAccepted
+	APDUSegmentTimeout        uint
+	APDUTimeout               uint
+	NumberOfAPDURetries       uint
+	VendorId                  readWriteModel.BACnetVendorId
+	DeviceObjects             []DeviceObject
 }
 
 func (d DeviceEntry) GetDeviceObjects(filter ...DeviceObjectFilter) []DeviceObject {
