@@ -23,20 +23,20 @@ public interface ArrayInfo {
     /**
      * @return Number of elements in total
      */
-    int GetSize();
+    int getSize();
 
     /**
      * As in PLCs not every array starts at 0, we need to be flexible with this.
      * In the default usage scenario of a simple array [6] this index will be 0 by default.
      * @return Returns the index of lower bound of the array.
      */
-    int GetLowerBound();
+    int getLowerBound();
 
     /**
      * As in PLCs not every array starts at 0, we need to be flexible with this.
      * In the default usage scenario of a simple array [6] this index will be match the array size.
      * @return Returns the index of upper bound of the array.
      */
-    int GetUpperBound();
+    int getUpperBound();
 
 }

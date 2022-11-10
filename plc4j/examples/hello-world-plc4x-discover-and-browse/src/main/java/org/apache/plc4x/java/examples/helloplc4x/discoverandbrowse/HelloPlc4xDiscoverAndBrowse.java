@@ -71,7 +71,7 @@ public class HelloPlc4xDiscoverAndBrowse {
         System.out.printf("%s%s : %s (%s %s %s)%n",
             StringUtils.repeat("   ", Math.max(0, indent)),
             browseItem.getTag().getAddressString(),
-            browseItem.getPlcValueType().name(),
+            browseItem.getTag().getPlcValueType().name(),
             browseItem.isReadable() ? "R" : " ",
             browseItem.isWritable() ? "W" : " ",
             browseItem.isSubscribable() ? "S" : " ");

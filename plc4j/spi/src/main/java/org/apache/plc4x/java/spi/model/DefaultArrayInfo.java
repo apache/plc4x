@@ -31,17 +31,17 @@ public class DefaultArrayInfo implements ArrayInfo {
     }
 
     @Override
-    public int GetSize() {
+    public int getSize() {
         return upperBound - lowerBound;
     }
 
     @Override
-    public int GetLowerBound() {
+    public int getLowerBound() {
         return lowerBound;
     }
 
     @Override
-    public int GetUpperBound() {
+    public int getUpperBound() {
         return upperBound;
     }
 

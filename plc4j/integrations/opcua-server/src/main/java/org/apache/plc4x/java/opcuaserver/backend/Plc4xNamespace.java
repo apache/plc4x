@@ -112,7 +112,7 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
             try {
                 datatype = plc4xServer.getTag(tag, connectionString).getPlcValueType().getDefaultJavaType();
                 final int length = (plc4xServer.getTag(tag, connectionString).getArrayInfo().isEmpty()) ? 1 :
-                    plc4xServer.getTag(tag, connectionString).getArrayInfo().get(0).GetSize();
+                    plc4xServer.getTag(tag, connectionString).getArrayInfo().get(0).getSize();
                 typeId = Plc4xCommunication.getNodeId(plc4xServer.getTag(tag, connectionString).getPlcValueType());
 
 

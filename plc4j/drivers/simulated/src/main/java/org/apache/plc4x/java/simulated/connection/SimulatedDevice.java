@@ -103,9 +103,9 @@ public class SimulatedDevice {
                         break;
                     default:
                         try {
-                            final int lengthInBits = DataItem.getLengthInBits(value, tag.getPlcValueType().name(), tag.getArrayInfo().get(0).GetSize());
+                            final int lengthInBits = DataItem.getLengthInBits(value, tag.getPlcValueType().name(), tag.getArrayInfo().get(0).getSize());
                             final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
-                            DataItem.staticSerialize(writeBuffer, value, tag.getPlcValueType().name(), tag.getArrayInfo().get(0).GetSize(), ByteOrder.BIG_ENDIAN);
+                            DataItem.staticSerialize(writeBuffer, value, tag.getPlcValueType().name(), tag.getArrayInfo().get(0).getSize(), ByteOrder.BIG_ENDIAN);
                         } catch (SerializationException e) {
                             LOGGER.info("Write failed");
                         }
@@ -120,12 +120,12 @@ public class SimulatedDevice {
 
         short tagDataTypeSize = SimulatedDataTypeSizes.valueOf(tag.getPlcValueType().name()).getDataTypeSize();
 
-        byte[] b = new byte[tagDataTypeSize * tag.getArrayInfo().get(0).GetSize()];
+        byte[] b = new byte[tagDataTypeSize * tag.getArrayInfo().get(0).getSize()];
         random.nextBytes(b);
 
         ReadBuffer io = new ReadBufferByteBased(b);
         try {
-            return DataItem.staticParse(io, tag.getPlcValueType().name(), tag.getArrayInfo().get(0).GetSize());
+            return DataItem.staticParse(io, tag.getPlcValueType().name(), tag.getArrayInfo().get(0).getSize());
         } catch (ParseException e) {
             return null;
         }

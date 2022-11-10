@@ -41,8 +41,14 @@ public class SymbolicAdsTag implements AdsTag {
 
     private final String symbolicAddress;
 
-    public SymbolicAdsTag(String symbolicAddress) {
+    private final PlcValueType dataType;
+
+    private final List<ArrayInfo> arrayInfo;
+
+    public SymbolicAdsTag(String symbolicAddress, PlcValueType dataType, List<ArrayInfo> arrayInfo) {
         this.symbolicAddress = Objects.requireNonNull(symbolicAddress);
+        this.dataType = dataType;
+        this.arrayInfo = arrayInfo;
     }
 
     public static SymbolicAdsTag of(String address) {
@@ -52,7 +58,7 @@ public class SymbolicAdsTag implements AdsTag {
         }
         String symbolicAddress = matcher.group("symbolicAddress");
 
-        return new SymbolicAdsTag(symbolicAddress);
+        return new SymbolicAdsTag(symbolicAddress, null, null);
     }
 
     public static boolean matches(String address) {
@@ -70,12 +76,12 @@ public class SymbolicAdsTag implements AdsTag {
 
     @Override
     public PlcValueType getPlcValueType() {
-        return PlcValueType.NULL;
+        return dataType;
     }
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        return Collections.emptyList();
+        return arrayInfo;
     }
 
     @Override

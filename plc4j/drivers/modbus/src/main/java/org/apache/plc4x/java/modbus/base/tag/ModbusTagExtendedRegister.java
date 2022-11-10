@@ -43,7 +43,7 @@ public class ModbusTagExtendedRegister extends ModbusTag {
             address += ":" + getDataType().name();
         }
         if(getArrayInfo().size() > 0) {
-            address += "[" + getArrayInfo().get(0).GetUpperBound() + "]";
+            address += "[" + getArrayInfo().get(0).getUpperBound() + "]";
         }
         return address;
     }

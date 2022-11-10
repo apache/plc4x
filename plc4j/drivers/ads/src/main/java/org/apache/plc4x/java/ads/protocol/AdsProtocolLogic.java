@@ -43,6 +43,7 @@ import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
@@ -397,7 +398,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                                     // Subscribe to online-version changes (get the address from the collected data for symbol: "TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt")
                                     subscriptionTags.put("onlineVersion", new DefaultPlcSubscriptionTag(
                                         PlcSubscriptionType.CHANGE_OF_STATE,
-                                        new SymbolicAdsTag("TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt"),
+                                        new SymbolicAdsTag("TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt", org.apache.plc4x.java.api.types.PlcValueType.UDINT, Collections.emptyList()),
                                         Duration.ofMillis(1000)));
                                     // Subscribe to symbol-version changes (Address: GroupID: 0xF008, Offset: 0, Read length: 1)
                                     subscriptionTags.put("symbolVersion", new DefaultPlcSubscriptionTag(
@@ -499,12 +500,12 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 options.put("size-in-bytes", new PlcUDINT(symbol.getSize()));
 
                 if(plc4xPlcValueType == org.apache.plc4x.java.api.types.PlcValueType.List) {
-                    List<PlcBrowseItemArrayInfo> arrayInfo = new ArrayList<>();
+                    List<ArrayInfo> arrayInfo = new ArrayList<>();
                     for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : dataType.getArrayInfo()) {
-                        arrayInfo.add(new DefaultBrowseItemArrayInfo(
-                            adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
+                        arrayInfo.add(new DefaultArrayInfo(
+                            (int) adsDataTypeArrayInfo.getLowerBound(), (int) adsDataTypeArrayInfo.getUpperBound()));
                     }
-                    DefaultListPlcBrowseItem item = new DefaultListPlcBrowseItem( new SymbolicAdsTag(symbol.getName()), itemName, plc4xPlcValueType, arrayInfo,
+                    DefaultListPlcBrowseItem item = new DefaultListPlcBrowseItem( new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo), itemName,
                         true, !symbol.getFlagReadOnly(), true, childMap, options);
 
                     // Check if this item should be added to the result
@@ -513,7 +514,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         resultsForQuery.add(item);
                     }
                 } else {
-                    DefaultPlcBrowseItem item = new DefaultPlcBrowseItem(new SymbolicAdsTag(symbol.getName()), itemName, plc4xPlcValueType, true,
+                    DefaultPlcBrowseItem item = new DefaultPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, Collections.emptyList()), itemName, true,
                         !symbol.getFlagReadOnly(), true, childMap, options);
 
                     // Check if this item should be added to the result
@@ -566,18 +567,18 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             options.put("size-in-bytes", new PlcUDINT(childDataType.getSize()));
 
             if(plc4xPlcValueType == org.apache.plc4x.java.api.types.PlcValueType.List) {
-                List<PlcBrowseItemArrayInfo> arrayInfo = new ArrayList<>();
+                List<ArrayInfo> arrayInfo = new ArrayList<>();
                 for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : childDataType.getArrayInfo()) {
-                    arrayInfo.add(new DefaultBrowseItemArrayInfo(
-                        adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
+                    arrayInfo.add(new DefaultArrayInfo(
+                        (int) adsDataTypeArrayInfo.getLowerBound(), (int) adsDataTypeArrayInfo.getUpperBound()));
                 }
                 // Add the type itself.
-                values.add(new DefaultListPlcBrowseItem(new SymbolicAdsTag(basePath + "." + child.getPropertyName()), itemName,
-                    plc4xPlcValueType, arrayInfo,true, parentWritable, true, childMap, options));
+                values.add(new DefaultListPlcBrowseItem(new SymbolicAdsTag(basePath + "." + child.getPropertyName(), plc4xPlcValueType, arrayInfo), itemName,
+                    true, parentWritable, true, childMap, options));
             } else {
                 // Add the type itself.
-                values.add(new DefaultPlcBrowseItem(new SymbolicAdsTag(basePath + "." + child.getPropertyName()), itemName,
-                    plc4xPlcValueType,true, parentWritable, true, childMap, options));
+                values.add(new DefaultPlcBrowseItem(new SymbolicAdsTag(basePath + "." + child.getPropertyName(), plc4xPlcValueType, Collections.emptyList()), itemName,
+                    true, parentWritable, true, childMap, options));
             }
         }
         return values;
@@ -1202,7 +1203,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(resolvedTags.get((AdsTag) tag.getTag()).getPlcDataType());
                 DirectAdsTag directAdsTag = getDirectAdsTagForSymbolicName(tag.getTag());
                 // TODO: We should implement multi-dimensional arrays here ...
-                int numberOfElements = (tag.getArrayInfo().size() == 0) ? 1 : tag.getArrayInfo().get(0).GetSize();
+                int numberOfElements = (tag.getArrayInfo().size() == 0) ? 1 : tag.getArrayInfo().get(0).getSize();
                 return new AmsTCPPacket(new AdsAddDeviceNotificationRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
                     configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
                     0, getInvokeId(),

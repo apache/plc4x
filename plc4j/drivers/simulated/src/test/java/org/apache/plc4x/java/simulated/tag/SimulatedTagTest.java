@@ -37,7 +37,7 @@ public class SimulatedTagTest {
         assertThat(tag.getType(), equalTo(SimulatedTagType.RANDOM));
         assertThat(tag.getName(), equalTo("test"));
         assertThat(tag.getPlcValueType().name(), equalTo("DINT"));
-        assertThat(tag.getArrayInfo().get(0).GetSize(), equalTo(2));
+        assertThat(tag.getArrayInfo().get(0).getSize(), equalTo(2));
         assertThat(tag.toString(),
             equalTo("SimulatedTag{type=RANDOM, name='test', dataType='DINT', numElements=2}"));
     }

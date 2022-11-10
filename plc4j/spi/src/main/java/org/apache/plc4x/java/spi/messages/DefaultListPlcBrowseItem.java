@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcBrowseItemArrayInfo;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -36,25 +37,15 @@ import java.util.Map;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultListPlcBrowseItem extends DefaultPlcBrowseItem {
 
-    private final List<PlcBrowseItemArrayInfo> arrayInfo;
-
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public DefaultListPlcBrowseItem(@JsonProperty("tag") PlcTag tag,
                                     @JsonProperty("name") String name,
-                                    @JsonProperty("dataType") PlcValueType dataType,
-                                    @JsonProperty("arrayInfo") List<PlcBrowseItemArrayInfo> arrayInfo,
                                     @JsonProperty("readable") boolean readable,
                                     @JsonProperty("writable") boolean writable,
                                     @JsonProperty("subscribable") boolean subscribable,
                                     @JsonProperty("children") Map<String, PlcBrowseItem> children,
                                     @JsonProperty("options") Map<String, PlcValue> options) {
-        super(tag, name, dataType, readable, writable, subscribable, children, options);
-        this.arrayInfo = arrayInfo;
-    }
-
-    @Override
-    public List<PlcBrowseItemArrayInfo> getArrayInfo() {
-        return arrayInfo;
+        super(tag, name, readable, writable, subscribable, children, options);
     }
 
     @Override

@@ -39,8 +39,6 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
 
     private final String name;
 
-    private final PlcValueType dataType;
-
     private final boolean readable;
     private final boolean writable;
     private final boolean subscribable;
@@ -52,7 +50,6 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public DefaultPlcBrowseItem(@JsonProperty("tag") PlcTag tag,
                                 @JsonProperty("name") String name,
-                                @JsonProperty("dataType") PlcValueType dataType,
                                 @JsonProperty("readable") boolean readable,
                                 @JsonProperty("writable") boolean writable,
                                 @JsonProperty("subscribable") boolean subscribable,
@@ -60,7 +57,6 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
                                 @JsonProperty("options") Map<String, PlcValue> options) {
         this.tag = tag;
         this.name = name;
-        this.dataType = dataType;
         this.readable = readable;
         this.writable = writable;
         this.subscribable = subscribable;
@@ -76,11 +72,6 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public PlcValueType getPlcValueType() {
-        return dataType;
     }
 
     public boolean isReadable() {

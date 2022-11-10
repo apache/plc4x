@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcBrowseItemArrayInfo;
 import org.apache.plc4x.java.api.messages.PlcBrowseResponse;
+import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
@@ -106,14 +107,14 @@ public class ConnectionTabController {
 
     private TreeItem<ConnectionTabController.TreeEntry> getTreeItemForBrowseItem(PlcBrowseItem browseItem) {
         StringBuilder addressSuffix = new StringBuilder();
-        if ((browseItem.getPlcValueType() == PlcValueType.List) && (browseItem.getArrayInfo() != null)){
+        if ((browseItem.getTag().getPlcValueType() == PlcValueType.List) && (browseItem.getTag().getArrayInfo() != null)){
             addressSuffix.append(" ");
-            for (PlcBrowseItemArrayInfo arrayInfo : browseItem.getArrayInfo()) {
+            for (ArrayInfo arrayInfo : browseItem.getTag().getArrayInfo()) {
                 addressSuffix.append("[").append(arrayInfo.getLowerBound()).append(" .. ").append(arrayInfo.getUpperBound()).append("]");
             }
         }
         TreeItem<ConnectionTabController.TreeEntry> treeItem = new TreeItem<>(new ConnectionTabController.TreeEntry(
-            browseItem.getTag().getAddressString() + addressSuffix, browseItem.getName(), browseItem.getPlcValueType(),
+            browseItem.getTag().getAddressString() + addressSuffix, browseItem.getName(), browseItem.getTag().getPlcValueType(),
             browseItem.isReadable(), browseItem.isWritable(), browseItem.isSubscribable()));
         if(!browseItem.getChildren().isEmpty()) {
             // Sort the entries first.
