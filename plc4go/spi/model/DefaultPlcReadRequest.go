@@ -32,66 +32,66 @@ import (
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadRequestBuilder
 type DefaultPlcReadRequestBuilder struct {
 	reader                 spi.PlcReader
-	fieldHandler           spi.PlcFieldHandler
-	fieldNames             []string
-	fieldQueries           map[string]string
-	fields                 map[string]model.PlcField
+	tagHandler             spi.PlcTagHandler
+	tagNames               []string
+	tagAddresses           map[string]string
+	tags                   map[string]model.PlcTag
 	readRequestInterceptor interceptors.ReadRequestInterceptor
 }
 
-func NewDefaultPlcReadRequestBuilder(fieldHandler spi.PlcFieldHandler, reader spi.PlcReader) *DefaultPlcReadRequestBuilder {
-	return NewDefaultPlcReadRequestBuilderWithInterceptor(fieldHandler, reader, nil)
+func NewDefaultPlcReadRequestBuilder(tagHandler spi.PlcTagHandler, reader spi.PlcReader) *DefaultPlcReadRequestBuilder {
+	return NewDefaultPlcReadRequestBuilderWithInterceptor(tagHandler, reader, nil)
 }
 
-func NewDefaultPlcReadRequestBuilderWithInterceptor(fieldHandler spi.PlcFieldHandler, reader spi.PlcReader, readRequestInterceptor interceptors.ReadRequestInterceptor) *DefaultPlcReadRequestBuilder {
+func NewDefaultPlcReadRequestBuilderWithInterceptor(tagHandler spi.PlcTagHandler, reader spi.PlcReader, readRequestInterceptor interceptors.ReadRequestInterceptor) *DefaultPlcReadRequestBuilder {
 	return &DefaultPlcReadRequestBuilder{
 		reader:                 reader,
-		fieldHandler:           fieldHandler,
-		fieldNames:             make([]string, 0),
-		fieldQueries:           map[string]string{},
-		fields:                 map[string]model.PlcField{},
+		tagHandler:             tagHandler,
+		tagNames:               make([]string, 0),
+		tagAddresses:           map[string]string{},
+		tags:                   map[string]model.PlcTag{},
 		readRequestInterceptor: readRequestInterceptor,
 	}
 }
 
-func (d *DefaultPlcReadRequestBuilder) AddFieldQuery(name string, query string) model.PlcReadRequestBuilder {
-	d.fieldNames = append(d.fieldNames, name)
-	d.fieldQueries[name] = query
+func (d *DefaultPlcReadRequestBuilder) AddTagAddress(name string, query string) model.PlcReadRequestBuilder {
+	d.tagNames = append(d.tagNames, name)
+	d.tagAddresses[name] = query
 	return d
 }
 
-func (d *DefaultPlcReadRequestBuilder) AddField(name string, field model.PlcField) model.PlcReadRequestBuilder {
-	d.fieldNames = append(d.fieldNames, name)
-	d.fields[name] = field
+func (d *DefaultPlcReadRequestBuilder) AddTag(name string, tag model.PlcTag) model.PlcReadRequestBuilder {
+	d.tagNames = append(d.tagNames, name)
+	d.tags[name] = tag
 	return d
 }
 
 func (d *DefaultPlcReadRequestBuilder) Build() (model.PlcReadRequest, error) {
-	for _, name := range d.fieldNames {
-		if fieldQuery, ok := d.fieldQueries[name]; ok {
-			field, err := d.fieldHandler.ParseField(fieldQuery)
+	for _, name := range d.tagNames {
+		if tagAddress, ok := d.tagAddresses[name]; ok {
+			tag, err := d.tagHandler.ParseTag(tagAddress)
 			if err != nil {
-				return nil, errors.Wrapf(err, "Error parsing field query: %s", fieldQuery)
+				return nil, errors.Wrapf(err, "Error parsing tag query: %s", tagAddress)
 			}
-			d.fields[name] = field
+			d.tags[name] = tag
 		}
 	}
 	// Reset the queries
-	d.fieldQueries = map[string]string{}
+	d.tagAddresses = map[string]string{}
 
-	return NewDefaultPlcReadRequest(d.fields, d.fieldNames, d.reader, d.readRequestInterceptor), nil
+	return NewDefaultPlcReadRequest(d.tags, d.tagNames, d.reader, d.readRequestInterceptor), nil
 }
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadRequest
 type DefaultPlcReadRequest struct {
-	DefaultPlcFieldRequest
+	DefaultPlcTagRequest
 	reader                 spi.PlcReader
 	readRequestInterceptor interceptors.ReadRequestInterceptor
 }
 
-func NewDefaultPlcReadRequest(fields map[string]model.PlcField, fieldNames []string, reader spi.PlcReader, readRequestInterceptor interceptors.ReadRequestInterceptor) model.PlcReadRequest {
+func NewDefaultPlcReadRequest(tags map[string]model.PlcTag, tagNames []string, reader spi.PlcReader, readRequestInterceptor interceptors.ReadRequestInterceptor) model.PlcReadRequest {
 	return &DefaultPlcReadRequest{
-		DefaultPlcFieldRequest: NewDefaultPlcFieldRequest(fields, fieldNames),
+		DefaultPlcTagRequest:   NewDefaultPlcTagRequest(tags, tagNames),
 		reader:                 reader,
 		readRequestInterceptor: readRequestInterceptor,
 	}

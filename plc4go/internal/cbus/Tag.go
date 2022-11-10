@@ -47,24 +47,24 @@ func (s StatusRequestType) String() string {
 	return ""
 }
 
-type Field interface {
-	model.PlcField
+type Tag interface {
+	model.PlcTag
 
-	GetFieldType() FieldType
+	GetTagType() TagType
 }
 
-// StatusField can be used to query status using a P-to-MP-StatusRequest command
-type StatusField interface {
-	Field
+// StatusTag can be used to query status using a P-to-MP-StatusRequest command
+type StatusTag interface {
+	Tag
 
 	GetStatusRequestType() StatusRequestType
 	GetStartingGroupAddressLabel() *byte
 	GetApplication() readWriteModel.ApplicationIdContainer
 }
 
-func NewStatusField(statusRequestType StatusRequestType, startingGroupAddressLabel *byte, application readWriteModel.ApplicationIdContainer, numElements uint16) StatusField {
-	return &statusField{
-		fieldType:                 STATUS,
+func NewStatusTag(statusRequestType StatusRequestType, startingGroupAddressLabel *byte, application readWriteModel.ApplicationIdContainer, numElements uint16) StatusTag {
+	return &statusTag{
+		tagType:                   STATUS,
 		startingGroupAddressLabel: startingGroupAddressLabel,
 		statusRequestType:         statusRequestType,
 		application:               application,
@@ -72,128 +72,128 @@ func NewStatusField(statusRequestType StatusRequestType, startingGroupAddressLab
 	}
 }
 
-type CalField interface {
+type CalTag interface {
 	GetUnitAddress() readWriteModel.UnitAddress
 }
 
-// CALRecallField can be used to get device/network management fields
-type CALRecallField interface {
-	Field
-	CalField
+// CALRecallTag can be used to get device/network management tags
+type CALRecallTag interface {
+	Tag
+	CalTag
 
 	GetParameter() readWriteModel.Parameter
 	GetCount() uint8
 }
 
-func NewCALRecallField(unitAddress readWriteModel.UnitAddress, parameter readWriteModel.Parameter, count uint8, numElements uint16) CALRecallField {
-	return &calRecallField{
-		calField:    calField{unitAddress: unitAddress},
-		fieldType:   CAL_RECALL,
+func NewCALRecallTag(unitAddress readWriteModel.UnitAddress, parameter readWriteModel.Parameter, count uint8, numElements uint16) CALRecallTag {
+	return &calRecallTag{
+		calTag:      calTag{unitAddress: unitAddress},
+		tagType:     CAL_RECALL,
 		parameter:   parameter,
 		count:       count,
 		numElements: numElements,
 	}
 }
 
-// CALIdentifyField can be used to get device/network management fields
-type CALIdentifyField interface {
-	Field
-	CalField
+// CALIdentifyTag can be used to get device/network management tags
+type CALIdentifyTag interface {
+	Tag
+	CalTag
 
 	GetAttribute() readWriteModel.Attribute
 }
 
-func NewCALIdentifyField(unitAddress readWriteModel.UnitAddress, attribute readWriteModel.Attribute, numElements uint16) CALIdentifyField {
-	return &calIdentifyField{
-		calField:    calField{unitAddress: unitAddress},
-		fieldType:   CAL_IDENTIFY,
+func NewCALIdentifyTag(unitAddress readWriteModel.UnitAddress, attribute readWriteModel.Attribute, numElements uint16) CALIdentifyTag {
+	return &calIdentifyTag{
+		calTag:      calTag{unitAddress: unitAddress},
+		tagType:     CAL_IDENTIFY,
 		attribute:   attribute,
 		numElements: numElements,
 	}
 }
 
-// CALGetstatusField can be used to get device/network management fields
-type CALGetstatusField interface {
-	Field
-	CalField
+// CALGetstatusTag can be used to get device/network management tags
+type CALGetstatusTag interface {
+	Tag
+	CalTag
 
 	GetParameter() readWriteModel.Parameter
 	GetCount() uint8
 }
 
-func NewCALGetstatusField(unitAddress readWriteModel.UnitAddress, parameter readWriteModel.Parameter, count uint8, numElements uint16) CALGetstatusField {
-	return &calGetstatusField{
-		calField:    calField{unitAddress: unitAddress},
-		fieldType:   CAL_RECALL,
+func NewCALGetstatusTag(unitAddress readWriteModel.UnitAddress, parameter readWriteModel.Parameter, count uint8, numElements uint16) CALGetstatusTag {
+	return &calGetstatusTag{
+		calTag:      calTag{unitAddress: unitAddress},
+		tagType:     CAL_RECALL,
 		parameter:   parameter,
 		count:       count,
 		numElements: numElements,
 	}
 }
 
-// SALField can be used to send SAL commands
-type SALField interface {
-	Field
+// SALTag can be used to send SAL commands
+type SALTag interface {
+	Tag
 
 	GetApplication() readWriteModel.ApplicationIdContainer
 	GetSALCommand() string
 }
 
-func NewSALField(application readWriteModel.ApplicationIdContainer, salCommand string, numElements uint16) SALField {
-	return &salField{
-		fieldType:   SAL,
+func NewSALTag(application readWriteModel.ApplicationIdContainer, salCommand string, numElements uint16) SALTag {
+	return &salTag{
+		tagType:     SAL,
 		application: application,
 		salCommand:  salCommand,
 		numElements: numElements,
 	}
 }
 
-// SALMonitorField can be used to monitor sal fields
-type SALMonitorField interface {
-	Field
+// SALMonitorTag can be used to monitor sal tags
+type SALMonitorTag interface {
+	Tag
 
 	GetUnitAddress() *readWriteModel.UnitAddress
 	GetApplication() *readWriteModel.ApplicationIdContainer
 }
 
-func NewSALMonitorField(unitAddress *readWriteModel.UnitAddress, application *readWriteModel.ApplicationIdContainer, numElements uint16) SALMonitorField {
-	return &salMonitorField{
-		fieldType:   SAL_MONITOR,
+func NewSALMonitorTag(unitAddress *readWriteModel.UnitAddress, application *readWriteModel.ApplicationIdContainer, numElements uint16) SALMonitorTag {
+	return &salMonitorTag{
+		tagType:     SAL_MONITOR,
 		unitAddress: unitAddress,
 		application: application,
 		numElements: numElements,
 	}
 }
 
-// MMIMonitorField can be used to monitor mmi fields
-type MMIMonitorField interface {
-	Field
+// MMIMonitorTag can be used to monitor mmi tags
+type MMIMonitorTag interface {
+	Tag
 
 	GetUnitAddress() *readWriteModel.UnitAddress
 	GetApplication() *readWriteModel.ApplicationIdContainer
 }
 
-func NewMMIMonitorField(unitAddress *readWriteModel.UnitAddress, application *readWriteModel.ApplicationIdContainer, numElements uint16) SALMonitorField {
-	return &mmiMonitorField{
-		fieldType:   MMI_STATUS_MONITOR,
+func NewMMIMonitorTag(unitAddress *readWriteModel.UnitAddress, application *readWriteModel.ApplicationIdContainer, numElements uint16) SALMonitorTag {
+	return &mmiMonitorTag{
+		tagType:     MMI_STATUS_MONITOR,
 		unitAddress: unitAddress,
 		application: application,
 		numElements: numElements,
 	}
 }
 
-// UnitInfoField can be used to get information about unit(s)
-type UnitInfoField interface {
-	Field
+// UnitInfoTag can be used to get information about unit(s)
+type UnitInfoTag interface {
+	Tag
 
 	GetUnitAddress() *readWriteModel.UnitAddress
 	GetAttribute() *readWriteModel.Attribute
 }
 
-func NewUnitInfoField(unitAddress *readWriteModel.UnitAddress, attribute *readWriteModel.Attribute, numElements uint16) UnitInfoField {
-	return &unitInfoField{
+func NewUnitInfoTag(unitAddress *readWriteModel.UnitAddress, attribute *readWriteModel.Attribute, numElements uint16) UnitInfoTag {
+	return &unitInfoTag{
 		unitAddress: unitAddress,
-		fieldType:   UNIT_INFO,
+		tagType:     UNIT_INFO,
 		attribute:   attribute,
 		numElements: numElements,
 	}
@@ -205,63 +205,63 @@ func NewUnitInfoField(unitAddress *readWriteModel.UnitAddress, attribute *readWr
 // Internal section
 //
 
-type statusField struct {
-	fieldType                 FieldType
+type statusTag struct {
+	tagType                   TagType
 	statusRequestType         StatusRequestType
 	startingGroupAddressLabel *byte
 	application               readWriteModel.ApplicationIdContainer
 	numElements               uint16
 }
 
-type calField struct {
+type calTag struct {
 	unitAddress readWriteModel.UnitAddress
 }
 
-type calRecallField struct {
-	calField
-	fieldType   FieldType
+type calRecallTag struct {
+	calTag
+	tagType     TagType
 	parameter   readWriteModel.Parameter
 	count       uint8
 	numElements uint16
 }
 
-type calIdentifyField struct {
-	calField
-	fieldType   FieldType
+type calIdentifyTag struct {
+	calTag
+	tagType     TagType
 	attribute   readWriteModel.Attribute
 	numElements uint16
 }
 
-type calGetstatusField struct {
-	calField
-	fieldType   FieldType
+type calGetstatusTag struct {
+	calTag
+	tagType     TagType
 	parameter   readWriteModel.Parameter
 	count       uint8
 	numElements uint16
 }
 
-type salField struct {
-	fieldType   FieldType
+type salTag struct {
+	tagType     TagType
 	application readWriteModel.ApplicationIdContainer
 	salCommand  string
 	numElements uint16
 }
-type salMonitorField struct {
-	fieldType   FieldType
+type salMonitorTag struct {
+	tagType     TagType
 	unitAddress *readWriteModel.UnitAddress
 	application *readWriteModel.ApplicationIdContainer
 	numElements uint16
 }
 
-type mmiMonitorField struct {
-	fieldType   FieldType
+type mmiMonitorTag struct {
+	tagType     TagType
 	unitAddress *readWriteModel.UnitAddress
 	application *readWriteModel.ApplicationIdContainer
 	numElements uint16
 }
 
-type unitInfoField struct {
-	fieldType   FieldType
+type unitInfoTag struct {
+	tagType     TagType
 	unitAddress *readWriteModel.UnitAddress
 	attribute   *readWriteModel.Attribute
 	numElements uint16
@@ -273,7 +273,7 @@ type unitInfoField struct {
 ///////////////////////////////////////
 ///////////////////////////////////////
 
-func (s statusField) GetAddressString() string {
+func (s statusTag) GetAddressString() string {
 	statusRequestType := ""
 	switch s.statusRequestType {
 	case StatusRequestTypeBinaryState:
@@ -285,11 +285,11 @@ func (s statusField) GetAddressString() string {
 	return fmt.Sprintf("status/%s/%s", statusRequestType, s.application)
 }
 
-func (s statusField) GetValueType() values.PlcValueType {
+func (s statusTag) GetValueType() values.PlcValueType {
 	return values.NULL
 }
 
-func (s statusField) GetArrayInfo() []model.ArrayInfo {
+func (s statusTag) GetArrayInfo() []model.ArrayInfo {
 	if s.numElements != 1 {
 		return []model.ArrayInfo{
 			model2.DefaultArrayInfo{
@@ -301,23 +301,23 @@ func (s statusField) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func (s statusField) GetFieldType() FieldType {
-	return s.fieldType
+func (s statusTag) GetTagType() TagType {
+	return s.tagType
 }
 
-func (s statusField) GetStatusRequestType() StatusRequestType {
+func (s statusTag) GetStatusRequestType() StatusRequestType {
 	return s.statusRequestType
 }
 
-func (s statusField) GetStartingGroupAddressLabel() *byte {
+func (s statusTag) GetStartingGroupAddressLabel() *byte {
 	return s.startingGroupAddressLabel
 }
 
-func (s statusField) GetApplication() readWriteModel.ApplicationIdContainer {
+func (s statusTag) GetApplication() readWriteModel.ApplicationIdContainer {
 	return s.application
 }
 
-func (s statusField) Serialize() ([]byte, error) {
+func (s statusTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := s.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -325,8 +325,8 @@ func (s statusField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (s statusField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(s.fieldType.GetName()); err != nil {
+func (s statusTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(s.tagType.GetName()); err != nil {
 		return err
 	}
 
@@ -342,13 +342,13 @@ func (s statusField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) err
 		return err
 	}
 
-	if err := writeBuffer.PopContext(s.fieldType.GetName()); err != nil {
+	if err := writeBuffer.PopContext(s.tagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s statusField) String() string {
+func (s statusTag) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(s); err != nil {
 		return err.Error()
@@ -356,11 +356,11 @@ func (s statusField) String() string {
 	return writeBuffer.GetBox().String()
 }
 
-func (c calField) GetUnitAddress() readWriteModel.UnitAddress {
+func (c calTag) GetUnitAddress() readWriteModel.UnitAddress {
 	return c.unitAddress
 }
 
-func (c calField) Serialize() ([]byte, error) {
+func (c calTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := c.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -368,14 +368,14 @@ func (c calField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (c calField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (c calTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if unitAddress := c.unitAddress; unitAddress != nil {
 		return c.unitAddress.SerializeWithWriteBuffer(writeBuffer)
 	}
 	return nil
 }
 
-func (c calField) String() string {
+func (c calTag) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(c); err != nil {
 		return err.Error()
@@ -383,23 +383,23 @@ func (c calField) String() string {
 	return writeBuffer.GetBox().String()
 }
 
-func (c calRecallField) GetParameter() readWriteModel.Parameter {
+func (c calRecallTag) GetParameter() readWriteModel.Parameter {
 	return c.parameter
 }
 
-func (c calRecallField) GetCount() uint8 {
+func (c calRecallTag) GetCount() uint8 {
 	return c.count
 }
 
-func (c calRecallField) GetAddressString() string {
+func (c calRecallTag) GetAddressString() string {
 	return fmt.Sprintf("cal/%d/recall=%s", c.unitAddress.GetAddress(), c.parameter)
 }
 
-func (c calRecallField) GetValueType() values.PlcValueType {
+func (c calRecallTag) GetValueType() values.PlcValueType {
 	return values.Struct
 }
 
-func (c calRecallField) GetArrayInfo() []model.ArrayInfo {
+func (c calRecallTag) GetArrayInfo() []model.ArrayInfo {
 	if c.count != 1 {
 		return []model.ArrayInfo{
 			model2.DefaultArrayInfo{
@@ -411,11 +411,11 @@ func (c calRecallField) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func (s calRecallField) GetFieldType() FieldType {
-	return s.fieldType
+func (s calRecallTag) GetTagType() TagType {
+	return s.tagType
 }
 
-func (c calRecallField) Serialize() ([]byte, error) {
+func (c calRecallTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := c.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -423,12 +423,12 @@ func (c calRecallField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (c calRecallField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(c.fieldType.GetName()); err != nil {
+func (c calRecallTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(c.tagType.GetName()); err != nil {
 		return err
 	}
 
-	if err := c.calField.SerializeWithWriteBuffer(writeBuffer); err != nil {
+	if err := c.calTag.SerializeWithWriteBuffer(writeBuffer); err != nil {
 		return err
 	}
 
@@ -440,13 +440,13 @@ func (c calRecallField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		return err
 	}
 
-	if err := writeBuffer.PopContext(c.fieldType.GetName()); err != nil {
+	if err := writeBuffer.PopContext(c.tagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c calRecallField) String() string {
+func (c calRecallTag) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(c); err != nil {
 		return err.Error()
@@ -454,19 +454,19 @@ func (c calRecallField) String() string {
 	return writeBuffer.GetBox().String()
 }
 
-func (c calIdentifyField) GetAttribute() readWriteModel.Attribute {
+func (c calIdentifyTag) GetAttribute() readWriteModel.Attribute {
 	return c.attribute
 }
 
-func (c calIdentifyField) GetAddressString() string {
+func (c calIdentifyTag) GetAddressString() string {
 	return fmt.Sprintf("cal/%d/identify=%s", c.unitAddress.GetAddress(), c.GetAttribute())
 }
 
-func (c calIdentifyField) GetValueType() values.PlcValueType {
+func (c calIdentifyTag) GetValueType() values.PlcValueType {
 	return values.Struct
 }
 
-func (c calIdentifyField) GetArrayInfo() []model.ArrayInfo {
+func (c calIdentifyTag) GetArrayInfo() []model.ArrayInfo {
 	if c.numElements != 1 {
 		return []model.ArrayInfo{
 			model2.DefaultArrayInfo{
@@ -478,11 +478,11 @@ func (c calIdentifyField) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func (s calIdentifyField) GetFieldType() FieldType {
-	return s.fieldType
+func (s calIdentifyTag) GetTagType() TagType {
+	return s.tagType
 }
 
-func (c calIdentifyField) Serialize() ([]byte, error) {
+func (c calIdentifyTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := c.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -490,12 +490,12 @@ func (c calIdentifyField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (c calIdentifyField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(c.fieldType.GetName()); err != nil {
+func (c calIdentifyTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(c.tagType.GetName()); err != nil {
 		return err
 	}
 
-	if err := c.calField.SerializeWithWriteBuffer(writeBuffer); err != nil {
+	if err := c.calTag.SerializeWithWriteBuffer(writeBuffer); err != nil {
 		return err
 	}
 
@@ -503,13 +503,13 @@ func (c calIdentifyField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 		return err
 	}
 
-	if err := writeBuffer.PopContext(c.fieldType.GetName()); err != nil {
+	if err := writeBuffer.PopContext(c.tagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c calIdentifyField) String() string {
+func (c calIdentifyTag) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(c); err != nil {
 		return err.Error()
@@ -517,23 +517,23 @@ func (c calIdentifyField) String() string {
 	return writeBuffer.GetBox().String()
 }
 
-func (c calGetstatusField) GetParameter() readWriteModel.Parameter {
+func (c calGetstatusTag) GetParameter() readWriteModel.Parameter {
 	return c.parameter
 }
 
-func (c calGetstatusField) GetCount() uint8 {
+func (c calGetstatusTag) GetCount() uint8 {
 	return c.count
 }
 
-func (c calGetstatusField) GetAddressString() string {
+func (c calGetstatusTag) GetAddressString() string {
 	return fmt.Sprintf("cal/getstatus=%s, %d", c.parameter, c.GetCount())
 }
 
-func (c calGetstatusField) GetValueType() values.PlcValueType {
+func (c calGetstatusTag) GetValueType() values.PlcValueType {
 	return values.Struct
 }
 
-func (c calGetstatusField) GetArrayInfo() []model.ArrayInfo {
+func (c calGetstatusTag) GetArrayInfo() []model.ArrayInfo {
 	if c.count != 1 {
 		return []model.ArrayInfo{
 			model2.DefaultArrayInfo{
@@ -545,11 +545,11 @@ func (c calGetstatusField) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func (s calGetstatusField) GetFieldType() FieldType {
-	return s.fieldType
+func (s calGetstatusTag) GetTagType() TagType {
+	return s.tagType
 }
 
-func (c calGetstatusField) Serialize() ([]byte, error) {
+func (c calGetstatusTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := c.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -557,12 +557,12 @@ func (c calGetstatusField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (c calGetstatusField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(c.fieldType.GetName()); err != nil {
+func (c calGetstatusTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(c.tagType.GetName()); err != nil {
 		return err
 	}
 
-	if err := c.calField.SerializeWithWriteBuffer(writeBuffer); err != nil {
+	if err := c.calTag.SerializeWithWriteBuffer(writeBuffer); err != nil {
 		return err
 	}
 
@@ -574,13 +574,13 @@ func (c calGetstatusField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 		return err
 	}
 
-	if err := writeBuffer.PopContext(c.fieldType.GetName()); err != nil {
+	if err := writeBuffer.PopContext(c.tagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c calGetstatusField) String() string {
+func (c calGetstatusTag) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(c); err != nil {
 		return err.Error()
@@ -588,23 +588,23 @@ func (c calGetstatusField) String() string {
 	return writeBuffer.GetBox().String()
 }
 
-func (s salField) GetApplication() readWriteModel.ApplicationIdContainer {
+func (s salTag) GetApplication() readWriteModel.ApplicationIdContainer {
 	return s.application
 }
 
-func (s salField) GetSALCommand() string {
+func (s salTag) GetSALCommand() string {
 	return s.salCommand
 }
 
-func (s salField) GetAddressString() string {
+func (s salTag) GetAddressString() string {
 	return fmt.Sprintf("sal/%s/%s", s.application, s.salCommand)
 }
 
-func (s salField) GetValueType() values.PlcValueType {
+func (s salTag) GetValueType() values.PlcValueType {
 	return values.Struct
 }
 
-func (s salField) GetArrayInfo() []model.ArrayInfo {
+func (s salTag) GetArrayInfo() []model.ArrayInfo {
 	if s.numElements != 1 {
 		return []model.ArrayInfo{
 			model2.DefaultArrayInfo{
@@ -616,11 +616,11 @@ func (s salField) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func (s salField) GetFieldType() FieldType {
-	return s.fieldType
+func (s salTag) GetTagType() TagType {
+	return s.tagType
 }
 
-func (s salField) Serialize() ([]byte, error) {
+func (s salTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := s.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -628,8 +628,8 @@ func (s salField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (s salField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(s.fieldType.GetName()); err != nil {
+func (s salTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(s.tagType.GetName()); err != nil {
 		return err
 	}
 
@@ -641,13 +641,13 @@ func (s salField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error 
 		return err
 	}
 
-	if err := writeBuffer.PopContext(s.fieldType.GetName()); err != nil {
+	if err := writeBuffer.PopContext(s.tagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s salField) String() string {
+func (s salTag) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(s); err != nil {
 		return err.Error()
@@ -655,7 +655,7 @@ func (s salField) String() string {
 	return writeBuffer.GetBox().String()
 }
 
-func (s salMonitorField) GetAddressString() string {
+func (s salMonitorTag) GetAddressString() string {
 	unitAddress := "*"
 	if s.unitAddress != nil {
 		unitAddress = fmt.Sprintf("%d", (*s.unitAddress).GetAddress())
@@ -667,11 +667,11 @@ func (s salMonitorField) GetAddressString() string {
 	return fmt.Sprintf("salmonitor/%s/%s", unitAddress, application)
 }
 
-func (s salMonitorField) GetValueType() values.PlcValueType {
+func (s salMonitorTag) GetValueType() values.PlcValueType {
 	return values.Struct
 }
 
-func (s salMonitorField) GetArrayInfo() []model.ArrayInfo {
+func (s salMonitorTag) GetArrayInfo() []model.ArrayInfo {
 	if s.numElements != 1 {
 		return []model.ArrayInfo{
 			model2.DefaultArrayInfo{
@@ -683,19 +683,19 @@ func (s salMonitorField) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func (s salMonitorField) GetFieldType() FieldType {
-	return s.fieldType
+func (s salMonitorTag) GetTagType() TagType {
+	return s.tagType
 }
 
-func (s salMonitorField) GetUnitAddress() *readWriteModel.UnitAddress {
+func (s salMonitorTag) GetUnitAddress() *readWriteModel.UnitAddress {
 	return s.unitAddress
 }
 
-func (s salMonitorField) GetApplication() *readWriteModel.ApplicationIdContainer {
+func (s salMonitorTag) GetApplication() *readWriteModel.ApplicationIdContainer {
 	return s.application
 }
 
-func (s salMonitorField) Serialize() ([]byte, error) {
+func (s salMonitorTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := s.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -703,8 +703,8 @@ func (s salMonitorField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (s salMonitorField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(s.fieldType.GetName()); err != nil {
+func (s salMonitorTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(s.tagType.GetName()); err != nil {
 		return err
 	}
 
@@ -719,13 +719,13 @@ func (s salMonitorField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 		}
 	}
 
-	if err := writeBuffer.PopContext(s.fieldType.GetName()); err != nil {
+	if err := writeBuffer.PopContext(s.tagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s salMonitorField) String() string {
+func (s salMonitorTag) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(s); err != nil {
 		return err.Error()
@@ -733,7 +733,7 @@ func (s salMonitorField) String() string {
 	return writeBuffer.GetBox().String()
 }
 
-func (m mmiMonitorField) GetAddressString() string {
+func (m mmiMonitorTag) GetAddressString() string {
 	unitAddress := "*"
 	if m.unitAddress != nil {
 		unitAddress = fmt.Sprintf("%d", (*m.unitAddress).GetAddress())
@@ -745,11 +745,11 @@ func (m mmiMonitorField) GetAddressString() string {
 	return fmt.Sprintf("mmimonitor/%s/%s", unitAddress, application)
 }
 
-func (m mmiMonitorField) GetValueType() values.PlcValueType {
+func (m mmiMonitorTag) GetValueType() values.PlcValueType {
 	return values.Struct
 }
 
-func (m mmiMonitorField) GetArrayInfo() []model.ArrayInfo {
+func (m mmiMonitorTag) GetArrayInfo() []model.ArrayInfo {
 	if m.numElements != 1 {
 		return []model.ArrayInfo{
 			model2.DefaultArrayInfo{
@@ -761,19 +761,19 @@ func (m mmiMonitorField) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func (s mmiMonitorField) GetFieldType() FieldType {
-	return s.fieldType
+func (s mmiMonitorTag) GetTagType() TagType {
+	return s.tagType
 }
 
-func (m mmiMonitorField) GetUnitAddress() *readWriteModel.UnitAddress {
+func (m mmiMonitorTag) GetUnitAddress() *readWriteModel.UnitAddress {
 	return m.unitAddress
 }
 
-func (m mmiMonitorField) GetApplication() *readWriteModel.ApplicationIdContainer {
+func (m mmiMonitorTag) GetApplication() *readWriteModel.ApplicationIdContainer {
 	return m.application
 }
 
-func (m mmiMonitorField) Serialize() ([]byte, error) {
+func (m mmiMonitorTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -781,8 +781,8 @@ func (m mmiMonitorField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m mmiMonitorField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(m.fieldType.GetName()); err != nil {
+func (m mmiMonitorTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(m.tagType.GetName()); err != nil {
 		return err
 	}
 
@@ -797,13 +797,13 @@ func (m mmiMonitorField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 		}
 	}
 
-	if err := writeBuffer.PopContext(m.fieldType.GetName()); err != nil {
+	if err := writeBuffer.PopContext(m.tagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (m mmiMonitorField) String() string {
+func (m mmiMonitorTag) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
@@ -811,7 +811,7 @@ func (m mmiMonitorField) String() string {
 	return writeBuffer.GetBox().String()
 }
 
-func (u unitInfoField) GetAddressString() string {
+func (u unitInfoTag) GetAddressString() string {
 	unitAddressString := "*"
 	if u.unitAddress != nil {
 		unitAddressString = fmt.Sprintf("%d", (*u.unitAddress).GetAddress())
@@ -823,11 +823,11 @@ func (u unitInfoField) GetAddressString() string {
 	return fmt.Sprintf("cal/%s/identify=%s", unitAddressString, attributeString)
 }
 
-func (u unitInfoField) GetValueType() values.PlcValueType {
+func (u unitInfoTag) GetValueType() values.PlcValueType {
 	return values.Struct
 }
 
-func (u unitInfoField) GetArrayInfo() []model.ArrayInfo {
+func (u unitInfoTag) GetArrayInfo() []model.ArrayInfo {
 	if u.numElements != 1 {
 		return []model.ArrayInfo{
 			model2.DefaultArrayInfo{
@@ -839,19 +839,19 @@ func (u unitInfoField) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func (s unitInfoField) GetFieldType() FieldType {
-	return s.fieldType
+func (s unitInfoTag) GetTagType() TagType {
+	return s.tagType
 }
 
-func (u unitInfoField) GetUnitAddress() *readWriteModel.UnitAddress {
+func (u unitInfoTag) GetUnitAddress() *readWriteModel.UnitAddress {
 	return u.unitAddress
 }
 
-func (u unitInfoField) GetAttribute() *readWriteModel.Attribute {
+func (u unitInfoTag) GetAttribute() *readWriteModel.Attribute {
 	return u.attribute
 }
 
-func (u unitInfoField) Serialize() ([]byte, error) {
+func (u unitInfoTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := u.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -859,8 +859,8 @@ func (u unitInfoField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (u unitInfoField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(u.fieldType.GetName()); err != nil {
+func (u unitInfoTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(u.tagType.GetName()); err != nil {
 		return err
 	}
 
@@ -876,13 +876,13 @@ func (u unitInfoField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) e
 		}
 	}
 
-	if err := writeBuffer.PopContext(u.fieldType.GetName()); err != nil {
+	if err := writeBuffer.PopContext(u.tagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (u unitInfoField) String() string {
+func (u unitInfoTag) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(u); err != nil {
 		return err.Error()

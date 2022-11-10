@@ -26,7 +26,7 @@ import (
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseItem
 type DefaultPlcBrowseItem struct {
-	Field        model.PlcField
+	Tag          model.PlcTag
 	Name         string
 	DataTypeName string
 	Readable     bool
@@ -36,8 +36,8 @@ type DefaultPlcBrowseItem struct {
 	Options      map[string]values.PlcValue
 }
 
-func (d *DefaultPlcBrowseItem) GetField() model.PlcField {
-	return d.Field
+func (d *DefaultPlcBrowseItem) GetTag() model.PlcTag {
+	return d.Tag
 }
 
 func (d *DefaultPlcBrowseItem) GetName() string {

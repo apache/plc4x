@@ -32,10 +32,10 @@ import (
 func TestDevice_Get(t1 *testing.T) {
 	type fields struct {
 		Name  string
-		State map[simulatedField]*values.PlcValue
+		State map[simulatedTag]*values.PlcValue
 	}
 	type args struct {
-		field        simulatedField
+		field        simulatedTag
 		verifyOutput bool
 	}
 	tests := []struct {
@@ -48,12 +48,12 @@ func TestDevice_Get(t1 *testing.T) {
 			name: "simple state",
 			fields: fields{
 				Name: "hurz",
-				State: map[simulatedField]*values.PlcValue{
-					NewSimulatedField(FieldState, "boolField", model.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+				State: map[simulatedTag]*values.PlcValue{
+					NewSimulatedTag(TagState, "boolTag", model.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 				},
 			},
 			args: args{
-				field:        NewSimulatedField(FieldState, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
+				field:        NewSimulatedTag(TagState, "boolTag", model.SimulatedDataTypeSizes_BOOL, 1),
 				verifyOutput: true,
 			},
 			want: ToReference(values2.NewPlcBOOL(true)),
@@ -62,10 +62,10 @@ func TestDevice_Get(t1 *testing.T) {
 			name: "simple random",
 			fields: fields{
 				Name:  "hurz",
-				State: map[simulatedField]*values.PlcValue{},
+				State: map[simulatedTag]*values.PlcValue{},
 			},
 			args: args{
-				field:        NewSimulatedField(FieldRandom, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
+				field:        NewSimulatedTag(TagRandom, "boolTag", model.SimulatedDataTypeSizes_BOOL, 1),
 				verifyOutput: false,
 			},
 			want: ToReference(values2.NewPlcBOOL(true)),
@@ -74,10 +74,10 @@ func TestDevice_Get(t1 *testing.T) {
 			name: "simple stdout",
 			fields: fields{
 				Name:  "hurz",
-				State: map[simulatedField]*values.PlcValue{},
+				State: map[simulatedTag]*values.PlcValue{},
 			},
 			args: args{
-				field:        NewSimulatedField(FieldStdOut, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
+				field:        NewSimulatedTag(TagStdOut, "boolTag", model.SimulatedDataTypeSizes_BOOL, 1),
 				verifyOutput: false,
 			},
 			want: nil,
@@ -109,10 +109,10 @@ func TestDevice_Get(t1 *testing.T) {
 func TestDevice_Random(t1 *testing.T) {
 	type fields struct {
 		Name  string
-		State map[simulatedField]*values.PlcValue
+		State map[simulatedTag]*values.PlcValue
 	}
 	type args struct {
-		field   simulatedField
+		field   simulatedTag
 		numRuns int
 	}
 	tests := []struct {
@@ -125,10 +125,10 @@ func TestDevice_Random(t1 *testing.T) {
 			name: "simple random",
 			fields: fields{
 				Name:  "hurz",
-				State: map[simulatedField]*values.PlcValue{},
+				State: map[simulatedTag]*values.PlcValue{},
 			},
 			args: args{
-				field:   NewSimulatedField(FieldRandom, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
+				field:   NewSimulatedTag(TagRandom, "boolTag", model.SimulatedDataTypeSizes_BOOL, 1),
 				numRuns: 1000,
 			},
 			want: ToReference(values2.NewPlcBOOL(true)),
@@ -163,10 +163,10 @@ func TestDevice_Random(t1 *testing.T) {
 func TestDevice_Set(t1 *testing.T) {
 	type fields struct {
 		Name  string
-		State map[simulatedField]*values.PlcValue
+		State map[simulatedTag]*values.PlcValue
 	}
 	type args struct {
-		field         simulatedField
+		field         simulatedTag
 		value         *values.PlcValue
 		shouldBeSaved bool
 	}
@@ -179,10 +179,10 @@ func TestDevice_Set(t1 *testing.T) {
 			name: "simple state",
 			fields: fields{
 				Name:  "hurz",
-				State: map[simulatedField]*values.PlcValue{},
+				State: map[simulatedTag]*values.PlcValue{},
 			},
 			args: args{
-				field:         NewSimulatedField(FieldState, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
+				field:         NewSimulatedTag(TagState, "boolTag", model.SimulatedDataTypeSizes_BOOL, 1),
 				value:         ToReference(values2.NewPlcBOOL(true)),
 				shouldBeSaved: true,
 			},
@@ -191,10 +191,10 @@ func TestDevice_Set(t1 *testing.T) {
 			name: "simple random",
 			fields: fields{
 				Name:  "hurz",
-				State: map[simulatedField]*values.PlcValue{},
+				State: map[simulatedTag]*values.PlcValue{},
 			},
 			args: args{
-				field:         NewSimulatedField(FieldRandom, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
+				field:         NewSimulatedTag(TagRandom, "boolTag", model.SimulatedDataTypeSizes_BOOL, 1),
 				value:         ToReference(values2.NewPlcBOOL(true)),
 				shouldBeSaved: false,
 			},
@@ -203,10 +203,10 @@ func TestDevice_Set(t1 *testing.T) {
 			name: "simple stdout",
 			fields: fields{
 				Name:  "hurz",
-				State: map[simulatedField]*values.PlcValue{},
+				State: map[simulatedTag]*values.PlcValue{},
 			},
 			args: args{
-				field:         NewSimulatedField(FieldStdOut, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
+				field:         NewSimulatedTag(TagStdOut, "boolTag", model.SimulatedDataTypeSizes_BOOL, 1),
 				value:         ToReference(values2.NewPlcBOOL(true)),
 				shouldBeSaved: false,
 			},
@@ -238,10 +238,10 @@ func TestDevice_Set(t1 *testing.T) {
 func TestDevice_getRandomValue(t1 *testing.T) {
 	type fields struct {
 		Name  string
-		State map[simulatedField]*values.PlcValue
+		State map[simulatedTag]*values.PlcValue
 	}
 	type args struct {
-		field simulatedField
+		field simulatedTag
 	}
 	tests := []struct {
 		name   string

@@ -41,7 +41,7 @@ func TestWriter_Write(t *testing.T) {
 		options map[string][]string
 	}
 	type args struct {
-		fields     map[string]model.PlcField
+		fields     map[string]model.PlcTag
 		values     map[string]values.PlcValue
 		fieldNames []string
 	}
@@ -50,7 +50,7 @@ func TestWriter_Write(t *testing.T) {
 		fields       fields
 		args         args
 		want         model.PlcWriteResponse
-		newState     map[simulatedField]*values.PlcValue
+		newState     map[simulatedTag]*values.PlcValue
 		delayAtLeast time.Duration
 	}{
 		{
@@ -58,13 +58,13 @@ func TestWriter_Write(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name:  "hurz",
-					State: map[simulatedField]*values.PlcValue{},
+					State: map[simulatedTag]*values.PlcValue{},
 				},
 				options: map[string][]string{},
 			},
 			args: args{
-				fields: map[string]model.PlcField{
-					"test": NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1),
+				fields: map[string]model.PlcTag{
+					"test": NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1),
 				},
 				values: map[string]values.PlcValue{
 					"test": values2.NewPlcBOOL(true),
@@ -75,8 +75,8 @@ func TestWriter_Write(t *testing.T) {
 				map[string]model.PlcResponseCode{
 					"test": model.PlcResponseCode_OK,
 				}),
-			newState: map[simulatedField]*values.PlcValue{
-				NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+			newState: map[simulatedTag]*values.PlcValue{
+				NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 			},
 			delayAtLeast: 0,
 		},
@@ -85,15 +85,15 @@ func TestWriter_Write(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[simulatedField]*values.PlcValue{
-						NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+					State: map[simulatedTag]*values.PlcValue{
+						NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{},
 			},
 			args: args{
-				fields: map[string]model.PlcField{
-					"test": NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1),
+				fields: map[string]model.PlcTag{
+					"test": NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1),
 				},
 				values: map[string]values.PlcValue{
 					"test": values2.NewPlcBOOL(false),
@@ -104,8 +104,8 @@ func TestWriter_Write(t *testing.T) {
 				map[string]model.PlcResponseCode{
 					"test": model.PlcResponseCode_OK,
 				}),
-			newState: map[simulatedField]*values.PlcValue{
-				NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(false)),
+			newState: map[simulatedTag]*values.PlcValue{
+				NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(false)),
 			},
 			delayAtLeast: 0,
 		},
@@ -114,8 +114,8 @@ func TestWriter_Write(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[simulatedField]*values.PlcValue{
-						NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+					State: map[simulatedTag]*values.PlcValue{
+						NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{
@@ -123,8 +123,8 @@ func TestWriter_Write(t *testing.T) {
 				},
 			},
 			args: args{
-				fields: map[string]model.PlcField{
-					"test": NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1),
+				fields: map[string]model.PlcTag{
+					"test": NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1),
 				},
 				values: map[string]values.PlcValue{
 					"test": values2.NewPlcBOOL(false),
@@ -135,26 +135,26 @@ func TestWriter_Write(t *testing.T) {
 				map[string]model.PlcResponseCode{
 					"test": model.PlcResponseCode_OK,
 				}),
-			newState: map[simulatedField]*values.PlcValue{
-				NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(false)),
+			newState: map[simulatedTag]*values.PlcValue{
+				NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(false)),
 			},
 			delayAtLeast: 1000,
 		},
-		// Passing in a completely wrong type of field.
+		// Passing in a completely wrong type of tag.
 		{
-			name: "invalid field type",
+			name: "invalid tag type",
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[simulatedField]*values.PlcValue{
-						NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+					State: map[simulatedTag]*values.PlcValue{
+						NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{},
 			},
 			args: args{
-				fields: map[string]model.PlcField{
-					"test": s7.NewField(model4.MemoryArea_DATA_BLOCKS, 1, 1, 0, 1, model4.TransportSize_BOOL),
+				fields: map[string]model.PlcTag{
+					"test": s7.NewTag(model4.MemoryArea_DATA_BLOCKS, 1, 1, 0, 1, model4.TransportSize_BOOL),
 				},
 				values: map[string]values.PlcValue{
 					"test": values2.NewPlcBOOL(false),
@@ -165,8 +165,8 @@ func TestWriter_Write(t *testing.T) {
 				map[string]model.PlcResponseCode{
 					"test": model.PlcResponseCode_INVALID_ADDRESS,
 				}),
-			newState: map[simulatedField]*values.PlcValue{
-				NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+			newState: map[simulatedTag]*values.PlcValue{
+				NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 			},
 			delayAtLeast: 0,
 		},
@@ -193,7 +193,7 @@ func TestWriter_Write(t *testing.T) {
 				if !reflect.DeepEqual(writeResponse.GetRequest(), writeRequest) {
 					t.Errorf("Writer.Write() ReadRequest = %v, want %v", writeResponse.GetRequest(), writeRequest)
 				}
-				for _, fieldName := range writeRequest.GetFieldNames() {
+				for _, fieldName := range writeRequest.GetTagNames() {
 					if !reflect.DeepEqual(writeResponse.GetResponse().GetResponseCode(fieldName), tt.want.GetResponseCode(fieldName)) {
 						t.Errorf("Writer.Write() PlcResponse.ResponseCode = %v, want %v",
 							writeResponse.GetResponse().GetResponseCode(fieldName), tt.want.GetResponseCode(fieldName))

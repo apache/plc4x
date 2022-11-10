@@ -20,13 +20,14 @@
 package s7
 
 import (
+	"net/url"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"net/url"
 )
 
 type Driver struct {
@@ -38,7 +39,7 @@ type Driver struct {
 
 func NewDriver() plc4go.PlcDriver {
 	return &Driver{
-		DefaultDriver:           _default.NewDefaultDriver("s7", "Siemens S7 (Basic)", "tcp", NewFieldHandler()),
+		DefaultDriver:           _default.NewDefaultDriver("s7", "Siemens S7 (Basic)", "tcp", NewTagHandler()),
 		tm:                      *spi.NewRequestTransactionManager(1),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
@@ -96,7 +97,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	driverContext.awaitDisconnectComplete = m.awaitDisconnectComplete
 
 	// Create the new connection
-	connection := NewConnection(codec, configuration, driverContext, m.GetPlcFieldHandler(), &m.tm, options)
+	connection := NewConnection(codec, configuration, driverContext, m.GetPlcTagHandler(), &m.tm, options)
 	log.Debug().Msg("created connection, connecting now")
 	return connection.Connect()
 }

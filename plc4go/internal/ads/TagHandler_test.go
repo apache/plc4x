@@ -29,20 +29,20 @@ import (
 	model3 "github.com/apache/plc4x/plc4go/spi/model"
 )
 
-func TestFieldHandler_ParseQuery(t *testing.T) {
-	type fields struct {
-		directAdsStringField *regexp.Regexp
-		directAdsField       *regexp.Regexp
-		symbolicAdsField     *regexp.Regexp
+func TestTagHandler_ParseQuery(t *testing.T) {
+	type tags struct {
+		directAdsStringTag *regexp.Regexp
+		directAdsTag       *regexp.Regexp
+		symbolicAdsTag     *regexp.Regexp
 	}
 	type args struct {
 		query string
 	}
 	tests := []struct {
 		name    string
-		fields  fields
+		tags    tags
 		args    args
-		want    model.PlcField
+		want    model.PlcTag
 		wantErr bool
 	}{
 		// All tests without any array notation.
@@ -51,7 +51,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "1234/5678:BOOL",
 			},
-			want: DirectPlcField{
+			want: DirectPlcTag{
 				IndexGroup:   1234,
 				IndexOffset:  5678,
 				AdsDatatype:  model2.AdsDataType_BOOL,
@@ -63,7 +63,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "0x04D2/0x162E:BOOL",
 			},
-			want: DirectPlcField{
+			want: DirectPlcTag{
 				IndexGroup:   1234,
 				IndexOffset:  5678,
 				AdsDatatype:  model2.AdsDataType_BOOL,
@@ -75,7 +75,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "1234/5678:STRING(80)",
 			},
-			want: DirectPlcField{
+			want: DirectPlcTag{
 				IndexGroup:   1234,
 				IndexOffset:  5678,
 				AdsDatatype:  model2.AdsDataType_STRING,
@@ -87,7 +87,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "0x04D2/0x162E:WSTRING(80)",
 			},
-			want: DirectPlcField{
+			want: DirectPlcTag{
 				IndexGroup:   1234,
 				IndexOffset:  5678,
 				AdsDatatype:  model2.AdsDataType_WSTRING,
@@ -99,7 +99,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "MAIN.testVariable",
 			},
-			want: SymbolicPlcField{
+			want: SymbolicPlcTag{
 				SymbolicAddress: "MAIN.testVariable",
 			},
 		},
@@ -109,8 +109,8 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "1234/5678:BOOL[42]",
 			},
-			want: DirectPlcField{
-				PlcField: PlcField{
+			want: DirectPlcTag{
+				PlcTag: PlcTag{
 					arrayInfo: []model.ArrayInfo{
 						model3.DefaultArrayInfo{
 							LowerBound: 0,
@@ -129,8 +129,8 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "0x04D2/0x162E:BOOL[42]",
 			},
-			want: DirectPlcField{
-				PlcField: PlcField{
+			want: DirectPlcTag{
+				PlcTag: PlcTag{
 					arrayInfo: []model.ArrayInfo{
 						model3.DefaultArrayInfo{
 							LowerBound: 0,
@@ -149,8 +149,8 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "1234/5678:STRING(80)[42]",
 			},
-			want: DirectPlcField{
-				PlcField: PlcField{
+			want: DirectPlcTag{
+				PlcTag: PlcTag{
 					arrayInfo: []model.ArrayInfo{
 						model3.DefaultArrayInfo{
 							LowerBound: 0,
@@ -169,8 +169,8 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "0x04D2/0x162E:WSTRING(80)[42]",
 			},
-			want: DirectPlcField{
-				PlcField: PlcField{
+			want: DirectPlcTag{
+				PlcTag: PlcTag{
 					arrayInfo: []model.ArrayInfo{
 						model3.DefaultArrayInfo{
 							LowerBound: 0,
@@ -189,8 +189,8 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "MAIN.testVariable[42]",
 			},
-			want: SymbolicPlcField{
-				PlcField: PlcField{
+			want: SymbolicPlcTag{
+				PlcTag: PlcTag{
 					arrayInfo: []model.ArrayInfo{
 						model3.DefaultArrayInfo{
 							LowerBound: 0,
@@ -207,8 +207,8 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "1234/5678:BOOL[23..42]",
 			},
-			want: DirectPlcField{
-				PlcField: PlcField{
+			want: DirectPlcTag{
+				PlcTag: PlcTag{
 					arrayInfo: []model.ArrayInfo{
 						model3.DefaultArrayInfo{
 							LowerBound: 23,
@@ -227,8 +227,8 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "0x04D2/0x162E:BOOL[23..42]",
 			},
-			want: DirectPlcField{
-				PlcField: PlcField{
+			want: DirectPlcTag{
+				PlcTag: PlcTag{
 					arrayInfo: []model.ArrayInfo{
 						model3.DefaultArrayInfo{
 							LowerBound: 23,
@@ -247,8 +247,8 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "1234/5678:STRING(80)[23..42]",
 			},
-			want: DirectPlcField{
-				PlcField: PlcField{
+			want: DirectPlcTag{
+				PlcTag: PlcTag{
 					arrayInfo: []model.ArrayInfo{
 						model3.DefaultArrayInfo{
 							LowerBound: 23,
@@ -267,8 +267,8 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "0x04D2/0x162E:WSTRING(80)[23..42]",
 			},
-			want: DirectPlcField{
-				PlcField: PlcField{
+			want: DirectPlcTag{
+				PlcTag: PlcTag{
 					arrayInfo: []model.ArrayInfo{
 						model3.DefaultArrayInfo{
 							LowerBound: 23,
@@ -287,8 +287,8 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "MAIN.testVariable[23..42]",
 			},
-			want: SymbolicPlcField{
-				PlcField: PlcField{
+			want: SymbolicPlcTag{
+				PlcTag: PlcTag{
 					arrayInfo: []model.ArrayInfo{
 						model3.DefaultArrayInfo{
 							LowerBound: 23,
@@ -305,8 +305,8 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "1234/5678:BOOL[23:42]",
 			},
-			want: DirectPlcField{
-				PlcField: PlcField{
+			want: DirectPlcTag{
+				PlcTag: PlcTag{
 					arrayInfo: []model.ArrayInfo{
 						model3.DefaultArrayInfo{
 							LowerBound: 23,
@@ -325,8 +325,8 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "0x04D2/0x162E:BOOL[23:42]",
 			},
-			want: DirectPlcField{
-				PlcField: PlcField{
+			want: DirectPlcTag{
+				PlcTag: PlcTag{
 					arrayInfo: []model.ArrayInfo{
 						model3.DefaultArrayInfo{
 							LowerBound: 23,
@@ -345,8 +345,8 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "1234/5678:STRING(80)[23:42]",
 			},
-			want: DirectPlcField{
-				PlcField: PlcField{
+			want: DirectPlcTag{
+				PlcTag: PlcTag{
 					arrayInfo: []model.ArrayInfo{
 						model3.DefaultArrayInfo{
 							LowerBound: 23,
@@ -365,8 +365,8 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "0x04D2/0x162E:WSTRING(80)[23:42]",
 			},
-			want: DirectPlcField{
-				PlcField: PlcField{
+			want: DirectPlcTag{
+				PlcTag: PlcTag{
 					arrayInfo: []model.ArrayInfo{
 						model3.DefaultArrayInfo{
 							LowerBound: 23,
@@ -385,8 +385,8 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "MAIN.testVariable[23:42]",
 			},
-			want: SymbolicPlcField{
-				PlcField: PlcField{
+			want: SymbolicPlcTag{
+				PlcTag: PlcTag{
 					arrayInfo: []model.ArrayInfo{
 						model3.DefaultArrayInfo{
 							LowerBound: 23,
@@ -400,8 +400,8 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := NewFieldHandler()
-			got, err := m.ParseField(tt.args.query)
+			m := NewTagHandler()
+			got, err := m.ParseTag(tt.args.query)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ParseQuery() error = %v, wantErr %v", err, tt.wantErr)
 				return

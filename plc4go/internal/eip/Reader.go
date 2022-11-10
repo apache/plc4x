@@ -22,6 +22,10 @@ package eip
 import (
 	"context"
 	"encoding/binary"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
@@ -31,9 +35,6 @@ import (
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"strconv"
-	"strings"
-	"time"
 )
 
 type Reader struct {
@@ -58,9 +59,9 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
 
-		requestItems := make([]readWriteModel.CipService, len(readRequest.GetFieldNames()))
-		for i, fieldName := range readRequest.GetFieldNames() {
-			plcTag := readRequest.GetField(fieldName).(EIPPlcField)
+		requestItems := make([]readWriteModel.CipService, len(readRequest.GetTagNames()))
+		for i, tagName := range readRequest.GetTagNames() {
+			plcTag := readRequest.GetTag(tagName).(EIPPlcTag)
 			tag := plcTag.GetTag()
 			elements := uint16(1)
 			if plcTag.GetElementNb() > 1 {
@@ -71,7 +72,7 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding eip ansi for field %s", fieldName),
+					Err:      errors.Wrapf(err, "Error encoding eip ansi for tag %s", tagName),
 				}
 				return
 			}
@@ -368,23 +369,23 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 	plcValues := map[string]values.PlcValue{}
 	responseCodes := map[string]model.PlcResponseCode{}
 	switch response := response.(type) {
-	case readWriteModel.CipReadResponse: // only 1 field
+	case readWriteModel.CipReadResponse: // only 1 tag
 		cipReadResponse := response
-		fieldName := readRequest.GetFieldNames()[0]
-		field := readRequest.GetField(fieldName).(EIPPlcField)
+		tagName := readRequest.GetTagNames()[0]
+		tag := readRequest.GetTag(tagName).(EIPPlcTag)
 		code := decodeResponseCode(cipReadResponse.GetStatus())
 		var plcValue values.PlcValue
 		_type := cipReadResponse.GetDataType()
 		data := utils.NewReadBufferByteBased(cipReadResponse.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 		if code == model.PlcResponseCode_OK {
 			var err error
-			plcValue, err = parsePlcValue(field, data, _type)
+			plcValue, err = parsePlcValue(tag, data, _type)
 			if err != nil {
 				return nil, err
 			}
 		}
-		plcValues[fieldName] = plcValue
-		responseCodes[fieldName] = code
+		plcValues[tagName] = plcValue
+		responseCodes[tagName] = code
 	case readWriteModel.MultipleServiceResponse: //Multiple response
 		multipleServiceResponse := response
 		nb := multipleServiceResponse.GetServiceNb()
@@ -407,8 +408,8 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 			}
 		}
 		services := readWriteModel.NewServices(nb, multipleServiceResponse.GetOffsets(), arr, 0)
-		for i, fieldName := range readRequest.GetFieldNames() {
-			field := readRequest.GetField(fieldName).(EIPPlcField)
+		for i, tagName := range readRequest.GetTagNames() {
+			tag := readRequest.GetTag(tagName).(EIPPlcTag)
 			if cipReadResponse, ok := services.Services[i].(readWriteModel.CipReadResponse); ok {
 				code := decodeResponseCode(cipReadResponse.GetStatus())
 				_type := cipReadResponse.GetDataType()
@@ -416,16 +417,16 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 				var plcValue values.PlcValue
 				if code == model.PlcResponseCode_OK {
 					var err error
-					plcValue, err = parsePlcValue(field, data, _type)
+					plcValue, err = parsePlcValue(tag, data, _type)
 					if err != nil {
 						return nil, err
 					}
 				}
 
-				plcValues[fieldName] = plcValue
-				responseCodes[fieldName] = code
+				plcValues[tagName] = plcValue
+				responseCodes[tagName] = code
 			} else {
-				responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
+				responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
 			}
 		}
 	default:
@@ -437,8 +438,8 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 	return plc4goModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 }
 
-func parsePlcValue(field EIPPlcField, data utils.ReadBufferByteBased, _type readWriteModel.CIPDataTypeCode) (values.PlcValue, error) {
-	nb := field.GetElementNb()
+func parsePlcValue(tag EIPPlcTag, data utils.ReadBufferByteBased, _type readWriteModel.CIPDataTypeCode) (values.PlcValue, error) {
+	nb := tag.GetElementNb()
 	if nb > 1 {
 		list := make([]values.PlcValue, 0)
 		for i := uint16(0); i < nb; i++ {

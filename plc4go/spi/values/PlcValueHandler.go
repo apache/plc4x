@@ -87,9 +87,9 @@ const (
 type IEC61131ValueHandler struct {
 }
 
-func (m IEC61131ValueHandler) NewPlcValue(field model.PlcField, value interface{}) (values.PlcValue, error) {
-	/*	typeName := field.GetTypeName()
-		quantity := field.GetQuantity()
+func (m IEC61131ValueHandler) NewPlcValue(tag model.PlcTag, value interface{}) (values.PlcValue, error) {
+	/*	typeName := tag.GetTypeName()
+		quantity := tag.GetQuantity()
 		if quantity > 1 {
 			s := reflect.ValueOf(value)
 			if s.Kind() != reflect.Slice {
@@ -102,7 +102,7 @@ func (m IEC61131ValueHandler) NewPlcValue(field model.PlcField, value interface{
 
 			if len(curValues) != int(quantity) {
 				return nil, errors.New("number of actual values " + strconv.Itoa(len(curValues)) +
-					" doesn't match field size " + strconv.Itoa(int(quantity)))
+					" doesn't match tag size " + strconv.Itoa(int(quantity)))
 			}
 			var plcValues []values.PlcValue
 			for i := uint16(0); i < quantity; i++ {

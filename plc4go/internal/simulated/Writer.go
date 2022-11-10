@@ -63,15 +63,15 @@ func (w Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 
 		// Process the request
 		responseCodes := map[string]model.PlcResponseCode{}
-		for _, fieldName := range writeRequest.GetFieldNames() {
-			field := writeRequest.GetField(fieldName)
-			simulatedField, ok := field.(simulatedField)
+		for _, tagName := range writeRequest.GetTagNames() {
+			tag := writeRequest.GetTag(tagName)
+			simulatedTagVar, ok := tag.(simulatedTag)
 			if !ok {
-				responseCodes[fieldName] = model.PlcResponseCode_INVALID_ADDRESS
+				responseCodes[tagName] = model.PlcResponseCode_INVALID_ADDRESS
 			} else {
-				plcValue := writeRequest.GetValue(fieldName)
-				w.device.Set(simulatedField, &plcValue)
-				responseCodes[fieldName] = model.PlcResponseCode_OK
+				plcValue := writeRequest.GetValue(tagName)
+				w.device.Set(simulatedTagVar, &plcValue)
+				responseCodes[tagName] = model.PlcResponseCode_OK
 			}
 		}
 

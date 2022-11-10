@@ -94,8 +94,8 @@ func (m *Connection) executeSymbolicAddressQuery(ctx context.Context, query Symb
 	}
 
 	// Process the data type and symbol tables to produce the response.
-	fields := m.filterSymbols(query.GetSymbolicAddressPattern())
-	return apiModel.PlcResponseCode_OK, fields
+	tags := m.filterSymbols(query.GetSymbolicAddressPattern())
+	return apiModel.PlcResponseCode_OK, tags
 }
 
 func (m *Connection) filterSymbols(filterExpression string) []apiModel.PlcBrowseItem {
@@ -117,7 +117,7 @@ func (m *Connection) filterSymbols(filterExpression string) []apiModel.PlcBrowse
 		// Couldn't find the base symbol
 		return nil
 	} else if len(remainingSegments) == 0 {
-		// TODO: Convert the symbol itself into a PlcBrowseField
+		// TODO: Convert the symbol itself into a PlcBrowseTag
 		return nil
 	} else {
 		symbolDataTypeName := symbol.GetDataTypeName()
@@ -138,9 +138,9 @@ func (m *Connection) filterDataTypes(parentName string, currentType model.AdsDat
 				UpperBound: ai.GetUpperBound(),
 			})
 		}
-		foundField := &model2.DefaultPlcBrowseItem{
-			Field: SymbolicPlcField{
-				PlcField: PlcField{
+		foundTag := &model2.DefaultPlcBrowseItem{
+			Tag: SymbolicPlcTag{
+				PlcTag: PlcTag{
 					arrayInfo: arrayInfo,
 				},
 				SymbolicAddress: parentName,
@@ -152,7 +152,7 @@ func (m *Connection) filterDataTypes(parentName string, currentType model.AdsDat
 			Subscribable: false,
 			Options:      nil,
 		}
-		return []apiModel.PlcBrowseItem{foundField}
+		return []apiModel.PlcBrowseItem{foundTag}
 	}
 
 	currentAddressSegment := remainingAddressSegments[0]

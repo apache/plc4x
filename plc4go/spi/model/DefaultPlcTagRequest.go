@@ -23,27 +23,27 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcFieldRequest
-type DefaultPlcFieldRequest struct {
-	fields     map[string]model.PlcField
-	fieldNames []string
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcTagRequest
+type DefaultPlcTagRequest struct {
+	tags     map[string]model.PlcTag
+	tagNames []string
 }
 
-func (d *DefaultPlcFieldRequest) IsAPlcMessage() bool {
+func (d *DefaultPlcTagRequest) IsAPlcMessage() bool {
 	return true
 }
 
-func NewDefaultPlcFieldRequest(fields map[string]model.PlcField, fieldNames []string) DefaultPlcFieldRequest {
-	return DefaultPlcFieldRequest{fields: fields, fieldNames: fieldNames}
+func NewDefaultPlcTagRequest(tags map[string]model.PlcTag, tagNames []string) DefaultPlcTagRequest {
+	return DefaultPlcTagRequest{tags: tags, tagNames: tagNames}
 }
 
-func (d *DefaultPlcFieldRequest) GetFieldNames() []string {
-	return d.fieldNames
+func (d *DefaultPlcTagRequest) GetTagNames() []string {
+	return d.tagNames
 }
 
-func (d *DefaultPlcFieldRequest) GetField(name string) model.PlcField {
-	if field, ok := d.fields[name]; ok {
-		return field
+func (d *DefaultPlcTagRequest) GetTag(name string) model.PlcTag {
+	if tag, ok := d.tags[name]; ok {
+		return tag
 	}
 	return nil
 }

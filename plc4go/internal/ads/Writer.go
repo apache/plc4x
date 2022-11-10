@@ -59,7 +59,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) 
 		result := make(chan model.PlcWriteRequestResult)
 		go func() {
 			// If we are requesting only one field, use a
-			if len(writeRequest.GetFieldNames()) != 1 {
+			if len(writeRequest.GetTagNames()) != 1 {
 				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
@@ -67,12 +67,12 @@ func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) 
 				}
 				return
 			}
-			fieldName := writeRequest.GetFieldNames()[0]
+			fieldName := writeRequest.GetTagNames()[0]
 
 			// Get the ads field instance from the request
-			field := writeRequest.GetField(fieldName)
+			field := writeRequest.GetTag(fieldName)
 			if needsResolving(field) {
-				adsField, err := castToSymbolicPlcFieldFromPlcField(field)
+				adsField, err := castToSymbolicPlcTagFromPlcTag(field)
 				if err != nil {
 					result <- &plc4goModel.DefaultPlcWriteRequestResult{
 						Request:  writeRequest,
@@ -82,7 +82,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) 
 					log.Debug().Msgf("Invalid field item type %T", field)
 					return
 				}
-				field, err = m.reader.resolveField(ctx, adsField)
+				field, err = m.reader.resolveTag(ctx, adsField)
 				if err != nil {
 					result <- &plc4goModel.DefaultPlcWriteRequestResult{
 						Request:  writeRequest,
@@ -93,7 +93,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) 
 					return
 				}
 			}
-			adsField, err := castToDirectAdsFieldFromPlcField(field)
+			adsField, err := castToDirectAdsTagFromPlcTag(field)
 			if err != nil {
 				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
@@ -127,7 +127,7 @@ func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) 
 				0,
 				nil,
 			)/
-			switch adsField.FieldType {
+			switch adsField.TagType {
 			case DirectAdsStringField:
 				//userdata.Data = readWriteModel.NewAdsWriteRequest(adsField.IndexGroup, adsField.IndexOffset, data)
 				panic("implement me")
@@ -188,13 +188,13 @@ func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) 
 
 func (m *Writer) ToPlc4xWriteResponse(requestTcpPaket readWriteModel.AmsTCPPacket, responseTcpPaket readWriteModel.AmsTCPPacket, writeRequest model.PlcWriteRequest) (model.PlcWriteResponse, error) {
 	responseCodes := map[string]model.PlcResponseCode{}
-	fieldName := writeRequest.GetFieldNames()[0]
+	tagName := writeRequest.GetTagNames()[0]
 
 	// we default to an error until its proven wrong
-	responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
+	responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
 	switch writeResponse := responseTcpPaket.GetUserdata().(type) {
 	case readWriteModel.AdsWriteResponseExactly:
-		responseCodes[fieldName] = model.PlcResponseCode(writeResponse.GetResult())
+		responseCodes[tagName] = model.PlcResponseCode(writeResponse.GetResult())
 	default:
 		return nil, errors.Errorf("unsupported response type %T", responseTcpPaket.GetUserdata())
 	}

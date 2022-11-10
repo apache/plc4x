@@ -30,8 +30,8 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-type BacNetPlcField interface {
-	model.PlcField
+type BacNetPlcTag interface {
+	model.PlcTag
 
 	GetObjectId() objectId
 	GetProperties() []property
@@ -135,7 +135,7 @@ func (m plcTag) Serialize() ([]byte, error) {
 }
 
 func (m plcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("BacNetPlcField"); err != nil {
+	if err := writeBuffer.PushContext("BacNetPlcTag"); err != nil {
 		return err
 	}
 
@@ -155,7 +155,7 @@ func (m plcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 
-	if err := writeBuffer.PopContext("BacNetPlcField"); err != nil {
+	if err := writeBuffer.PopContext("BacNetPlcTag"); err != nil {
 		return err
 	}
 	return nil

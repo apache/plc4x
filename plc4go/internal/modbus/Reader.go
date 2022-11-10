@@ -21,6 +21,10 @@ package modbus
 
 import (
 	"context"
+	"math"
+	"sync/atomic"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
@@ -28,9 +32,6 @@ import (
 	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"math"
-	"sync/atomic"
-	"time"
 )
 
 type Reader struct {
@@ -52,40 +53,40 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 	log.Trace().Msg("Reading")
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
-		if len(readRequest.GetFieldNames()) != 1 {
+		if len(readRequest.GetTagNames()) != 1 {
 			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.New("modbus only supports single-item requests"),
 			}
-			log.Debug().Msgf("modbus only supports single-item requests. Got %d fields", len(readRequest.GetFieldNames()))
+			log.Debug().Msgf("modbus only supports single-item requests. Got %d tags", len(readRequest.GetTagNames()))
 			return
 		}
-		// If we are requesting only one field, use a
-		fieldName := readRequest.GetFieldNames()[0]
-		field := readRequest.GetField(fieldName)
-		modbusField, err := CastToModbusFieldFromPlcField(field)
+		// If we are requesting only one tag, use a
+		tagName := readRequest.GetTagNames()[0]
+		tag := readRequest.GetTag(tagName)
+		modbusTagVar, err := CastToModbusTagFromPlcTag(tag)
 		if err != nil {
 			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
-				Err:      errors.Wrap(err, "invalid field item type"),
+				Err:      errors.Wrap(err, "invalid tag item type"),
 			}
-			log.Debug().Msgf("Invalid field item type %T", field)
+			log.Debug().Msgf("Invalid tag item type %T", tag)
 			return
 		}
-		numWords := uint16(math.Ceil(float64(modbusField.Quantity*uint16(modbusField.Datatype.DataTypeSize())) / float64(2)))
+		numWords := uint16(math.Ceil(float64(modbusTagVar.Quantity*uint16(modbusTagVar.Datatype.DataTypeSize())) / float64(2)))
 		log.Debug().Msgf("Working with %d words", numWords)
 		var pdu readWriteModel.ModbusPDU = nil
-		switch modbusField.FieldType {
+		switch modbusTagVar.TagType {
 		case Coil:
-			pdu = readWriteModel.NewModbusPDUReadCoilsRequest(modbusField.Address, modbusField.Quantity)
+			pdu = readWriteModel.NewModbusPDUReadCoilsRequest(modbusTagVar.Address, modbusTagVar.Quantity)
 		case DiscreteInput:
-			pdu = readWriteModel.NewModbusPDUReadDiscreteInputsRequest(modbusField.Address, modbusField.Quantity)
+			pdu = readWriteModel.NewModbusPDUReadDiscreteInputsRequest(modbusTagVar.Address, modbusTagVar.Quantity)
 		case InputRegister:
-			pdu = readWriteModel.NewModbusPDUReadInputRegistersRequest(modbusField.Address, numWords)
+			pdu = readWriteModel.NewModbusPDUReadInputRegistersRequest(modbusTagVar.Address, numWords)
 		case HoldingRegister:
-			pdu = readWriteModel.NewModbusPDUReadHoldingRegistersRequest(modbusField.Address, numWords)
+			pdu = readWriteModel.NewModbusPDUReadHoldingRegistersRequest(modbusTagVar.Address, numWords)
 		case ExtendedRegister:
 			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
@@ -97,9 +98,9 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
-				Err:      errors.Errorf("unsupported field type %x", modbusField.FieldType),
+				Err:      errors.Errorf("unsupported tag type %x", modbusTagVar.TagType),
 			}
-			log.Debug().Msgf("Unsupported field type %x", modbusField.FieldType)
+			log.Debug().Msgf("Unsupported tag type %x", modbusTagVar.TagType)
 			return
 		}
 
@@ -179,24 +180,24 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 		return nil, errors.Errorf("unsupported response type %T", pdu)
 	}
 
-	// Get the field from the request
-	log.Trace().Msg("get a field from request")
-	fieldName := readRequest.GetFieldNames()[0]
-	field, err := CastToModbusFieldFromPlcField(readRequest.GetField(fieldName))
+	// Get the tag from the request
+	log.Trace().Msg("get a tag from request")
+	tagName := readRequest.GetTagNames()[0]
+	tag, err := CastToModbusTagFromPlcTag(readRequest.GetTag(tagName))
 	if err != nil {
-		return nil, errors.Wrap(err, "error casting to modbus-field")
+		return nil, errors.Wrap(err, "error casting to modbus-tag")
 	}
 
 	// Decode the data according to the information from the request
 	log.Trace().Msg("decode data")
-	value, err := readWriteModel.DataItemParse(data, field.Datatype, field.Quantity)
+	value, err := readWriteModel.DataItemParse(data, tag.Datatype, tag.Quantity)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing data item")
 	}
 	responseCodes := map[string]model.PlcResponseCode{}
 	plcValues := map[string]values.PlcValue{}
-	plcValues[fieldName] = value
-	responseCodes[fieldName] = model.PlcResponseCode_OK
+	plcValues[tagName] = value
+	responseCodes[tagName] = model.PlcResponseCode_OK
 
 	// Return the response
 	log.Trace().Msg("Returning the response")

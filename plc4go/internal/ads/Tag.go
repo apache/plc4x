@@ -34,25 +34,25 @@ import (
 
 const NONE = int32(-1)
 
-type PlcField struct {
-	model.PlcField
+type PlcTag struct {
+	model.PlcTag
 
 	arrayInfo []model.ArrayInfo
 }
 
-func needsResolving(plcTag model.PlcField) bool {
+func needsResolving(plcTag model.PlcTag) bool {
 	switch plcTag.(type) {
-	case SymbolicPlcField:
+	case SymbolicPlcTag:
 		return true
-	case DirectPlcField:
+	case DirectPlcTag:
 		return false
 	default:
 		return false
 	}
 }
 
-type DirectPlcField struct {
-	PlcField
+type DirectPlcTag struct {
+	PlcTag
 
 	IndexGroup   uint32
 	IndexOffset  uint32
@@ -60,26 +60,26 @@ type DirectPlcField struct {
 	StringLength int32
 }
 
-func newDirectAdsPlcField(indexGroup uint32, indexOffset uint32, adsDatatype adsModel.AdsDataType, stringLength int32, arrayInfo []model.ArrayInfo) (model.PlcField, error) {
-	return DirectPlcField{
+func newDirectAdsPlcTag(indexGroup uint32, indexOffset uint32, adsDatatype adsModel.AdsDataType, stringLength int32, arrayInfo []model.ArrayInfo) (model.PlcTag, error) {
+	return DirectPlcTag{
 		IndexGroup:   indexGroup,
 		IndexOffset:  indexOffset,
 		AdsDatatype:  adsDatatype,
 		StringLength: stringLength,
-		PlcField: PlcField{
+		PlcTag: PlcTag{
 			arrayInfo: arrayInfo,
 		},
 	}, nil
 }
 
-func castToDirectAdsFieldFromPlcField(plcTag model.PlcField) (DirectPlcField, error) {
-	if adsField, ok := plcTag.(DirectPlcField); ok {
-		return adsField, nil
+func castToDirectAdsTagFromPlcTag(plcTag model.PlcTag) (DirectPlcTag, error) {
+	if adsTag, ok := plcTag.(DirectPlcTag); ok {
+		return adsTag, nil
 	}
-	return DirectPlcField{}, errors.Errorf("couldn't %T cast to DirectPlcField", plcTag)
+	return DirectPlcTag{}, errors.Errorf("couldn't %T cast to DirectPlcTag", plcTag)
 }
 
-func (m DirectPlcField) GetAddressString() string {
+func (m DirectPlcTag) GetAddressString() string {
 	address := fmt.Sprintf("0x%d/%d:%s", m.IndexGroup, m.IndexOffset, m.AdsDatatype.String())
 	if m.AdsDatatype == adsModel.AdsDataType_STRING || m.AdsDatatype == adsModel.AdsDataType_WSTRING {
 		address = address + "(" + strconv.Itoa(int(m.StringLength)) + ")"
@@ -92,7 +92,7 @@ func (m DirectPlcField) GetAddressString() string {
 	return address
 }
 
-func (m DirectPlcField) GetValueType() values.PlcValueType {
+func (m DirectPlcTag) GetValueType() values.PlcValueType {
 	if plcValueType, ok := values.PlcValueByName(m.AdsDatatype.PlcValueType().String()); !ok {
 		return values.NULL
 	} else {
@@ -100,11 +100,11 @@ func (m DirectPlcField) GetValueType() values.PlcValueType {
 	}
 }
 
-func (m DirectPlcField) GetArrayInfo() []model.ArrayInfo {
+func (m DirectPlcTag) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func (m DirectPlcField) Serialize() ([]byte, error) {
+func (m DirectPlcTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -112,8 +112,8 @@ func (m DirectPlcField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m DirectPlcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("DirectPlcField"); err != nil {
+func (m DirectPlcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("DirectPlcTag"); err != nil {
 		return err
 	}
 
@@ -154,51 +154,51 @@ func (m DirectPlcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		}
 	}
 
-	if err := writeBuffer.PopContext("DirectPlcField"); err != nil {
+	if err := writeBuffer.PopContext("DirectPlcTag"); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (m DirectPlcField) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (m DirectPlcTag) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	panic(name)
 }
 
-type SymbolicPlcField struct {
-	PlcField
+type SymbolicPlcTag struct {
+	PlcTag
 
 	SymbolicAddress string
 }
 
-func newAdsSymbolicPlcField(symbolicAddress string, arrayInfo []model.ArrayInfo) (model.PlcField, error) {
-	return SymbolicPlcField{
+func newAdsSymbolicPlcTag(symbolicAddress string, arrayInfo []model.ArrayInfo) (model.PlcTag, error) {
+	return SymbolicPlcTag{
 		SymbolicAddress: symbolicAddress,
-		PlcField: PlcField{
+		PlcTag: PlcTag{
 			arrayInfo: arrayInfo,
 		},
 	}, nil
 }
 
-func castToSymbolicPlcFieldFromPlcField(plcTag model.PlcField) (SymbolicPlcField, error) {
-	if adsField, ok := plcTag.(SymbolicPlcField); ok {
-		return adsField, nil
+func castToSymbolicPlcTagFromPlcTag(plcTag model.PlcTag) (SymbolicPlcTag, error) {
+	if adsTag, ok := plcTag.(SymbolicPlcTag); ok {
+		return adsTag, nil
 	}
-	return SymbolicPlcField{}, errors.Errorf("couldn't cast %T to SymbolicPlcField", plcTag)
+	return SymbolicPlcTag{}, errors.Errorf("couldn't cast %T to SymbolicPlcTag", plcTag)
 }
 
-func (m SymbolicPlcField) GetAddressString() string {
+func (m SymbolicPlcTag) GetAddressString() string {
 	return m.SymbolicAddress
 }
 
-func (m SymbolicPlcField) GetValueType() values.PlcValueType {
+func (m SymbolicPlcTag) GetValueType() values.PlcValueType {
 	return values.NULL
 }
 
-func (m SymbolicPlcField) GetArrayInfo() []model.ArrayInfo {
+func (m SymbolicPlcTag) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func (m SymbolicPlcField) Serialize() ([]byte, error) {
+func (m SymbolicPlcTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -206,8 +206,8 @@ func (m SymbolicPlcField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m SymbolicPlcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("SymbolicPlcField"); err != nil {
+func (m SymbolicPlcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("SymbolicPlcTag"); err != nil {
 		return err
 	}
 
@@ -237,7 +237,7 @@ func (m SymbolicPlcField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 		}
 	}
 
-	if err := writeBuffer.PopContext("SymbolicPlcField"); err != nil {
+	if err := writeBuffer.PopContext("SymbolicPlcTag"); err != nil {
 		return err
 	}
 	return nil

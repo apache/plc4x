@@ -17,15 +17,12 @@
  * under the License.
  */
 
-package spi
+package model
 
-import "github.com/apache/plc4x/plc4go/pkg/api/model"
+import "github.com/apache/plc4x/plc4go/pkg/api/values"
 
-type PlcFieldHandler interface {
-
-	// ParseField Parser function to parse query strings for a given driver and produce PlcField instances from that
-	ParseField(fieldQuery string) (model.PlcField, error)
-
-	// ParseQuery Parser function to parse query strings for a given driver and produce PlcField instances from that
-	ParseQuery(query string) (model.PlcQuery, error)
+type PlcTag interface {
+	GetAddressString() string
+	GetValueType() values.PlcValueType
+	GetArrayInfo() []ArrayInfo
 }

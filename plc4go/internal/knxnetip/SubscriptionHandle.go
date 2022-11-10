@@ -20,24 +20,25 @@
 package knxnetip
 
 import (
-	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"time"
+
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type SubscriptionHandle struct {
 	*spiModel.DefaultPlcSubscriptionHandle
-	fieldName string
-	field     Field
-	fieldType spiModel.SubscriptionType
-	interval  time.Duration
+	tagName  string
+	tag      Tag
+	tagType  spiModel.SubscriptionType
+	interval time.Duration
 }
 
-func NewSubscriptionHandle(subscriber *Subscriber, fieldName string, field Field, fieldType spiModel.SubscriptionType, interval time.Duration) *SubscriptionHandle {
+func NewSubscriptionHandle(subscriber *Subscriber, tagName string, tag Tag, tagType spiModel.SubscriptionType, interval time.Duration) *SubscriptionHandle {
 	s := &SubscriptionHandle{
 		DefaultPlcSubscriptionHandle: spiModel.NewDefaultPlcSubscriptionHandle(subscriber),
-		fieldName:                    fieldName,
-		field:                        field,
-		fieldType:                    fieldType,
+		tagName:                      tagName,
+		tag:                          tag,
+		tagType:                      tagType,
 		interval:                     interval,
 	}
 	s.DefaultPlcSubscriptionHandle = spiModel.NewDefaultPlcSubscriptionHandleWithHandleToRegister(subscriber, s)

@@ -34,24 +34,24 @@ import (
 	"github.com/pkg/errors"
 )
 
-type FieldHandler struct {
-	directAdsStringField *regexp.Regexp
-	directAdsField       *regexp.Regexp
-	symbolicAdsField     *regexp.Regexp
-	arrayInfoSegment     *regexp.Regexp
+type TagHandler struct {
+	directAdsStringTag *regexp.Regexp
+	directAdsTag       *regexp.Regexp
+	symbolicAdsTag     *regexp.Regexp
+	arrayInfoSegment   *regexp.Regexp
 }
 
-func NewFieldHandler() FieldHandler {
-	return FieldHandler{
-		directAdsStringField: regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
-		directAdsField:       regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>\w+)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
-		symbolicAdsField:     regexp.MustCompile(`^(?P<symbolicAddress>[^\[]+)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
-		arrayInfoSegment:     regexp.MustCompile(`((^(?P<numElements>\d+)$)|(^((?P<startElement>\d+)\.\.(?P<endElement>\d+))$)|(^((?P<startElement2>\d+):(?P<numElements2>\d+)))$)`),
+func NewTagHandler() TagHandler {
+	return TagHandler{
+		directAdsStringTag: regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
+		directAdsTag:       regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>\w+)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
+		symbolicAdsTag:     regexp.MustCompile(`^(?P<symbolicAddress>[^\[]+)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
+		arrayInfoSegment:   regexp.MustCompile(`((^(?P<numElements>\d+)$)|(^((?P<startElement>\d+)\.\.(?P<endElement>\d+))$)|(^((?P<startElement2>\d+):(?P<numElements2>\d+)))$)`),
 	}
 }
 
-func (m FieldHandler) ParseField(query string) (apiModel.PlcField, error) {
-	if match := utils.GetSubgroupMatches(m.directAdsStringField, query); match != nil {
+func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
+	if match := utils.GetSubgroupMatches(m.directAdsStringTag, query); match != nil {
 		var indexGroup uint32
 		if indexGroupHexString := match["indexGroupHex"]; indexGroupHexString != "" {
 			decodeString, err := hex.DecodeString(indexGroupHexString)
@@ -157,8 +157,8 @@ func (m FieldHandler) ParseField(query string) (apiModel.PlcField, error) {
 			}
 		}
 
-		return newDirectAdsPlcField(indexGroup, indexOffset, adsDataType, stringLength, arrayInfo)
-	} else if match := utils.GetSubgroupMatches(m.directAdsField, query); match != nil {
+		return newDirectAdsPlcTag(indexGroup, indexOffset, adsDataType, stringLength, arrayInfo)
+	} else if match := utils.GetSubgroupMatches(m.directAdsTag, query); match != nil {
 		var indexGroup uint32
 		if indexGroupHexString := match["indexGroupHex"]; indexGroupHexString != "" {
 			decodeString, err := hex.DecodeString(indexGroupHexString)
@@ -257,8 +257,8 @@ func (m FieldHandler) ParseField(query string) (apiModel.PlcField, error) {
 			}
 		}
 
-		return newDirectAdsPlcField(indexGroup, indexOffset, adsDataType, NONE, arrayInfo)
-	} else if match := utils.GetSubgroupMatches(m.symbolicAdsField, query); match != nil {
+		return newDirectAdsPlcTag(indexGroup, indexOffset, adsDataType, NONE, arrayInfo)
+	} else if match := utils.GetSubgroupMatches(m.symbolicAdsTag, query); match != nil {
 		var arrayInfo []apiModel.ArrayInfo
 
 		if match["arrayInfo"] != "" {
@@ -312,19 +312,19 @@ func (m FieldHandler) ParseField(query string) (apiModel.PlcField, error) {
 			}
 		}
 
-		return newAdsSymbolicPlcField(match["symbolicAddress"], arrayInfo)
+		return newAdsSymbolicPlcTag(match["symbolicAddress"], arrayInfo)
 	} else {
 		return nil, errors.Errorf("Invalid address format for address '%s'", query)
 	}
 }
 
-func (m FieldHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {
+func (m TagHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {
 	return symbolicPlcQuery{
 		query: query,
 	}, nil
 }
 
-func (m FieldHandler) getUint32Value(stringValue string) (uint32, error) {
+func (m TagHandler) getUint32Value(stringValue string) (uint32, error) {
 	intValue, err := strconv.ParseUint(stringValue, 10, 32)
 	if err != nil {
 		return 0, fmt.Errorf("invalid number format parsing '%s' as int32: %v", stringValue, err)

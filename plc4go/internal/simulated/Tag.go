@@ -28,54 +28,54 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
-type Field interface {
-	apiModel.PlcField
+type Tag interface {
+	apiModel.PlcTag
 
-	GetFieldType() *FieldType
+	GetTagType() *TagType
 	GetName() string
 	GetDataTypeSize() *model.SimulatedDataTypeSizes
 }
 
-type simulatedField struct {
-	FieldType    FieldType
+type simulatedTag struct {
+	TagType      TagType
 	Name         string
 	DataTypeSize model.SimulatedDataTypeSizes
 	Quantity     uint16
 }
 
-func NewSimulatedField(fieldType FieldType, name string, dataTypeSize model.SimulatedDataTypeSizes, quantity uint16) simulatedField {
-	return simulatedField{
-		FieldType:    fieldType,
+func NewSimulatedTag(tagType TagType, name string, dataTypeSize model.SimulatedDataTypeSizes, quantity uint16) simulatedTag {
+	return simulatedTag{
+		TagType:      tagType,
 		Name:         name,
 		DataTypeSize: dataTypeSize,
 		Quantity:     quantity,
 	}
 }
 
-func (t simulatedField) GetFieldType() FieldType {
-	return t.FieldType
+func (t simulatedTag) GetTagType() TagType {
+	return t.TagType
 }
 
-func (t simulatedField) GetName() string {
+func (t simulatedTag) GetName() string {
 	return t.Name
 }
 
-func (t simulatedField) GetDataTypeSize() model.SimulatedDataTypeSizes {
+func (t simulatedTag) GetDataTypeSize() model.SimulatedDataTypeSizes {
 	return t.DataTypeSize
 }
 
-func (t simulatedField) GetAddressString() string {
-	return fmt.Sprintf("%s/%s:%s[%d]", t.FieldType.Name(), t.Name, t.DataTypeSize.String(), t.Quantity)
+func (t simulatedTag) GetAddressString() string {
+	return fmt.Sprintf("%s/%s:%s[%d]", t.TagType.Name(), t.Name, t.DataTypeSize.String(), t.Quantity)
 }
 
-func (t simulatedField) GetValueType() values.PlcValueType {
+func (t simulatedTag) GetValueType() values.PlcValueType {
 	if plcValueType, ok := values.PlcValueByName(t.DataTypeSize.String()); ok {
 		return plcValueType
 	}
 	return values.NULL
 }
 
-func (t simulatedField) GetArrayInfo() []apiModel.ArrayInfo {
+func (t simulatedTag) GetArrayInfo() []apiModel.ArrayInfo {
 	if t.Quantity != 1 {
 		return []apiModel.ArrayInfo{
 			spiModel.DefaultArrayInfo{

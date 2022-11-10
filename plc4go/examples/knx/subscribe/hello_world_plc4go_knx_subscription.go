@@ -55,14 +55,14 @@ func main() {
 	// Prepare a subscription-request
 	if subscriptionRequest, err := connection.SubscriptionRequestBuilder().
 		// Intentionally catching all without datatype and the temperature values of the first floor with type
-		AddChangeOfStateFieldQuery("all", "*/*/*").
-		AddChangeOfStateFieldQuery("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp").
+		AddChangeOfStateTagAddress("all", "*/*/*").
+		AddChangeOfStateTagAddress("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp").
 		AddPreRegisteredConsumer("all", func(event model.PlcSubscriptionEvent) {
-			// Iterate over all fields that were triggered in the current event.
-			for _, fieldName := range event.GetFieldNames() {
-				if event.GetResponseCode(fieldName) == model.PlcResponseCode_OK {
-					address := event.GetAddress(fieldName)
-					value := event.GetValue(fieldName)
+			// Iterate over all tags that were triggered in the current event.
+			for _, tagName := range event.GetTagNames() {
+				if event.GetResponseCode(tagName) == model.PlcResponseCode_OK {
+					address := event.GetAddress(tagName)
+					value := event.GetValue(tagName)
 					// If the plc-value was a raw-plcValue, we will try lazily decode the value
 					// In my installation all group addresses ending with "/10" are temperature values
 					// and ending on "/0" are light switch actions.
@@ -103,9 +103,9 @@ func main() {
 		}
 
 		// Do something with the response
-		for _, fieldName := range rrr.GetResponse().GetFieldNames() {
-			if rrr.GetResponse().GetResponseCode(fieldName) != model.PlcResponseCode_OK {
-				fmt.Printf("error an non-ok return code for field %s: %s\n", fieldName, rrr.GetResponse().GetResponseCode(fieldName).GetName())
+		for _, tagName := range rrr.GetResponse().GetTagNames() {
+			if rrr.GetResponse().GetResponseCode(tagName) != model.PlcResponseCode_OK {
+				fmt.Printf("error an non-ok return code for tag %s: %s\n", tagName, rrr.GetResponse().GetResponseCode(tagName).GetName())
 				continue
 			}
 		}

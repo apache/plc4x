@@ -44,10 +44,10 @@ func (d *DefaultPlcSubscriptionEvent) SerializeWithWriteBuffer(writeBuffer utils
 	if err := d.DefaultResponse.SerializeWithWriteBuffer(writeBuffer); err != nil {
 		return err
 	}
-	if err := writeBuffer.PushContext("fields", utils.WithRenderAsList(true)); err != nil {
+	if err := writeBuffer.PushContext("tags", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for name, elem := range d.fields {
+	for name, elem := range d.tags {
 
 		var elem interface{} = elem
 		if serializable, ok := elem.(utils.Serializable); ok {
@@ -67,7 +67,7 @@ func (d *DefaultPlcSubscriptionEvent) SerializeWithWriteBuffer(writeBuffer utils
 			}
 		}
 	}
-	if err := writeBuffer.PopContext("fields", utils.WithRenderAsList(true)); err != nil {
+	if err := writeBuffer.PopContext("tags", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
 	if err := writeBuffer.PushContext("types", utils.WithRenderAsList(true)); err != nil {

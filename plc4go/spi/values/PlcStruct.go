@@ -73,11 +73,11 @@ func (m PlcStruct) GetStruct() map[string]apiValues.PlcValue {
 func (m PlcStruct) GetString() string {
 	var sb strings.Builder
 	sb.WriteString("PlcStruct{\n")
-	for fieldName, fieldValue := range m.values {
+	for tagName, tagValue := range m.values {
 		sb.WriteString("  ")
-		sb.WriteString(fieldName)
+		sb.WriteString(tagName)
 		sb.WriteString(": \"")
-		sb.WriteString(fieldValue.GetString())
+		sb.WriteString(tagValue.GetString())
 		sb.WriteString("\"\n")
 	}
 	sb.WriteString("}")
@@ -100,20 +100,20 @@ func (m PlcStruct) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error
 	if err := writeBuffer.PushContext("PlcStruct"); err != nil {
 		return err
 	}
-	for fieldName, plcValue := range m.values {
-		if err := writeBuffer.PushContext(fieldName); err != nil {
+	for tagName, tagValue := range m.values {
+		if err := writeBuffer.PushContext(tagName); err != nil {
 			return err
 		}
 
-		if serializablePlcValue, ok := plcValue.(utils.Serializable); ok {
+		if serializablePlcValue, ok := tagValue.(utils.Serializable); ok {
 			if err := serializablePlcValue.SerializeWithWriteBuffer(writeBuffer); err != nil {
 				return err
 			}
 		} else {
-			return errors.Errorf("Error serializing. %T doesn't implement Serializable", plcValue)
+			return errors.Errorf("Error serializing. %T doesn't implement Serializable", tagValue)
 		}
 
-		if err := writeBuffer.PopContext(fieldName); err != nil {
+		if err := writeBuffer.PopContext(tagName); err != nil {
 			return err
 		}
 	}

@@ -77,7 +77,7 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 
 		// Parse the response data.
 		rb := utils.NewReadBufferByteBased(payload)
-		// If the size of the field is greater than 6, we have to skip the first byte
+		// If the size of the tag is greater than 6, we have to skip the first byte
 		if datapointType.DatapointMainType().SizeInBits() > 6 {
 			_, _ = rb.ReadUint8("datapointType", 8)
 		}

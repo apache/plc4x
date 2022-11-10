@@ -80,8 +80,8 @@ func main() {
 			return
 		}
 		brr := browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseItem) bool {
-			knxField := result.GetField()
-			knxAddress := knxField.GetAddressString()
+			knxTag := result.GetTag()
+			knxAddress := knxTag.GetAddressString()
 			log.Info().Msgf("Inspecting detected Device at KNX Address: %s", knxAddress)
 
 			// Try to get all the com-objects and the group addresses they are attached to.
@@ -115,12 +115,12 @@ func main() {
 				} else {
 					permissions += " "
 				}
-				log.Info().Msgf(" - %15s (%s) %s", result.GetField().GetAddressString(), permissions, result.GetName())
+				log.Info().Msgf(" - %15s (%s) %s", result.GetTag().GetAddressString(), permissions, result.GetName())
 			}
 
 			readRequest, err := connection.ReadRequestBuilder().
-				AddFieldQuery("applicationProgramVersion", knxAddress+"#3/13").
-				AddFieldQuery("interfaceProgramVersion", knxAddress+"#4/13").
+				AddTagAddress("applicationProgramVersion", knxAddress+"#3/13").
+				AddTagAddress("interfaceProgramVersion", knxAddress+"#4/13").
 				Build()
 			if err != nil {
 				log.Error().Msgf("Error creating read request for scanning %s", knxAddress)

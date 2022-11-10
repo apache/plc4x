@@ -40,7 +40,7 @@ type Driver struct {
 
 func NewDriver() plc4go.PlcDriver {
 	return &Driver{
-		DefaultDriver: _default.NewDefaultDriver("ads", "Beckhoff TwinCat ADS", "tcp", NewFieldHandler()),
+		DefaultDriver: _default.NewDefaultDriver("ads", "Beckhoff TwinCat ADS", "tcp", NewTagHandler()),
 	}
 }
 
@@ -80,7 +80,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	}
 
 	// Create the new connection
-	connection, err := NewConnection(codec, configuration, m.GetPlcFieldHandler(), options)
+	connection, err := NewConnection(codec, configuration, m.GetPlcTagHandler(), options)
 	if err != nil {
 		ch := make(chan plc4go.PlcConnectionConnectResult)
 		go func() {

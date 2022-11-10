@@ -60,7 +60,7 @@ type PlcBrowseRequestResult interface {
 }
 
 type PlcBrowseItem interface {
-	GetField() PlcField
+	GetTag() PlcTag
 
 	GetName() string
 	IsReadable() bool

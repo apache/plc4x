@@ -38,8 +38,8 @@ type PlcDriver interface {
 	// providing the transport code optional in the connection string
 	GetDefaultTransport() string
 
-	// CheckFieldQuery Have the driver parse the query string and provide feedback if it's not a valid one
-	CheckFieldQuery(query string) error
+	// CheckTagAddress Have the driver parse the query string and provide feedback if it's not a valid one
+	CheckTagAddress(tagAddress string) error
 	// CheckQuery Have the driver parse the query string and provide feedback if it's not a valid one
 	CheckQuery(query string) error
 

@@ -35,15 +35,15 @@ type DefaultDriver interface {
 	fmt.Stringer
 	plc4go.PlcDriver
 	spi.PlcDiscoverer
-	GetPlcFieldHandler() spi.PlcFieldHandler
+	GetPlcTagHandler() spi.PlcTagHandler
 }
 
-func NewDefaultDriver(protocolCode string, protocolName string, defaultTransport string, plcFieldHandler spi.PlcFieldHandler) DefaultDriver {
+func NewDefaultDriver(protocolCode string, protocolName string, defaultTransport string, plcTagHandler spi.PlcTagHandler) DefaultDriver {
 	return &defaultDriver{
 		protocolCode:     protocolCode,
 		protocolName:     protocolName,
 		defaultTransport: defaultTransport,
-		plcFieldHandler:  plcFieldHandler,
+		plcTagHandler:    plcTagHandler,
 	}
 }
 
@@ -57,7 +57,7 @@ type defaultDriver struct {
 	protocolCode     string
 	protocolName     string
 	defaultTransport string
-	plcFieldHandler  spi.PlcFieldHandler
+	plcTagHandler    spi.PlcTagHandler
 }
 
 //
@@ -78,13 +78,13 @@ func (d *defaultDriver) GetDefaultTransport() string {
 	return d.defaultTransport
 }
 
-func (d *defaultDriver) CheckFieldQuery(query string) error {
-	_, err := d.plcFieldHandler.ParseField(query)
+func (d *defaultDriver) CheckTagAddress(query string) error {
+	_, err := d.plcTagHandler.ParseTag(query)
 	return err
 }
 
 func (d *defaultDriver) CheckQuery(query string) error {
-	_, err := d.plcFieldHandler.ParseQuery(query)
+	_, err := d.plcTagHandler.ParseQuery(query)
 	return err
 }
 
@@ -104,8 +104,8 @@ func (d *defaultDriver) DiscoverWithContext(_ context.Context, callback func(eve
 	panic("not available")
 }
 
-func (d *defaultDriver) GetPlcFieldHandler() spi.PlcFieldHandler {
-	return d.plcFieldHandler
+func (d *defaultDriver) GetPlcTagHandler() spi.PlcTagHandler {
+	return d.plcTagHandler
 }
 
 func (d *defaultDriver) String() string {

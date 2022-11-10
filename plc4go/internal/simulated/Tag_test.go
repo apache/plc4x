@@ -28,7 +28,7 @@ import (
 
 func TestNewSimulatedField(t *testing.T) {
 	type args struct {
-		fieldType    FieldType
+		fieldType    TagType
 		name         string
 		dataTypeSize model.SimulatedDataTypeSizes
 		quantity     uint16
@@ -36,18 +36,18 @@ func TestNewSimulatedField(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want simulatedField
+		want simulatedTag
 	}{
 		{
 			name: "simple",
 			args: args{
-				fieldType:    FieldRandom,
+				fieldType:    TagRandom,
 				name:         "test",
 				dataTypeSize: model.SimulatedDataTypeSizes_BOOL,
 				quantity:     1,
 			},
-			want: simulatedField{
-				FieldType:    FieldRandom,
+			want: simulatedTag{
+				TagType:      TagRandom,
 				Name:         "test",
 				DataTypeSize: model.SimulatedDataTypeSizes_BOOL,
 				Quantity:     1,
@@ -56,8 +56,8 @@ func TestNewSimulatedField(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewSimulatedField(tt.args.fieldType, tt.args.name, tt.args.dataTypeSize, tt.args.quantity); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewSimulatedField() = %v, want %v", got, tt.want)
+			if got := NewSimulatedTag(tt.args.fieldType, tt.args.name, tt.args.dataTypeSize, tt.args.quantity); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewSimulatedTag() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -65,7 +65,7 @@ func TestNewSimulatedField(t *testing.T) {
 
 func TestSimulatedField_GetAddressString(t1 *testing.T) {
 	type fields struct {
-		FieldType    FieldType
+		FieldType    TagType
 		Name         string
 		DataTypeSize model.SimulatedDataTypeSizes
 		Quantity     uint16
@@ -78,7 +78,7 @@ func TestSimulatedField_GetAddressString(t1 *testing.T) {
 		{
 			name: "simple",
 			fields: fields{
-				FieldType:    FieldRandom,
+				FieldType:    TagRandom,
 				Name:         "test",
 				DataTypeSize: model.SimulatedDataTypeSizes_BOOL,
 				Quantity:     1,
@@ -88,8 +88,8 @@ func TestSimulatedField_GetAddressString(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := simulatedField{
-				FieldType:    tt.fields.FieldType,
+			t := simulatedTag{
+				TagType:      tt.fields.FieldType,
 				Name:         tt.fields.Name,
 				DataTypeSize: tt.fields.DataTypeSize,
 				Quantity:     tt.fields.Quantity,
@@ -103,7 +103,7 @@ func TestSimulatedField_GetAddressString(t1 *testing.T) {
 
 func TestSimulatedField_GetDataTypeSize(t1 *testing.T) {
 	type fields struct {
-		FieldType    FieldType
+		FieldType    TagType
 		Name         string
 		DataTypeSize model.SimulatedDataTypeSizes
 		Quantity     uint16
@@ -116,7 +116,7 @@ func TestSimulatedField_GetDataTypeSize(t1 *testing.T) {
 		{
 			name: "simple",
 			fields: fields{
-				FieldType:    FieldRandom,
+				FieldType:    TagRandom,
 				Name:         "test",
 				DataTypeSize: model.SimulatedDataTypeSizes_BOOL,
 				Quantity:     1,
@@ -126,8 +126,8 @@ func TestSimulatedField_GetDataTypeSize(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := simulatedField{
-				FieldType:    tt.fields.FieldType,
+			t := simulatedTag{
+				TagType:      tt.fields.FieldType,
 				Name:         tt.fields.Name,
 				DataTypeSize: tt.fields.DataTypeSize,
 				Quantity:     tt.fields.Quantity,
@@ -141,7 +141,7 @@ func TestSimulatedField_GetDataTypeSize(t1 *testing.T) {
 
 func TestSimulatedField_GetFieldType(t1 *testing.T) {
 	type fields struct {
-		FieldType    FieldType
+		FieldType    TagType
 		Name         string
 		DataTypeSize model.SimulatedDataTypeSizes
 		Quantity     uint16
@@ -149,29 +149,29 @@ func TestSimulatedField_GetFieldType(t1 *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   FieldType
+		want   TagType
 	}{
 		{
 			name: "simple",
 			fields: fields{
-				FieldType:    FieldRandom,
+				FieldType:    TagRandom,
 				Name:         "test",
 				DataTypeSize: model.SimulatedDataTypeSizes_BOOL,
 				Quantity:     1,
 			},
-			want: FieldRandom,
+			want: TagRandom,
 		},
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := simulatedField{
-				FieldType:    tt.fields.FieldType,
+			t := simulatedTag{
+				TagType:      tt.fields.FieldType,
 				Name:         tt.fields.Name,
 				DataTypeSize: tt.fields.DataTypeSize,
 				Quantity:     tt.fields.Quantity,
 			}
-			if got := t.GetFieldType(); got != tt.want {
-				t1.Errorf("GetFieldType() = %v, want %v", got, tt.want)
+			if got := t.GetTagType(); got != tt.want {
+				t1.Errorf("GetTagType() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -179,7 +179,7 @@ func TestSimulatedField_GetFieldType(t1 *testing.T) {
 
 func TestSimulatedField_GetName(t1 *testing.T) {
 	type fields struct {
-		FieldType    FieldType
+		FieldType    TagType
 		Name         string
 		DataTypeSize model.SimulatedDataTypeSizes
 		Quantity     uint16
@@ -192,7 +192,7 @@ func TestSimulatedField_GetName(t1 *testing.T) {
 		{
 			name: "simple",
 			fields: fields{
-				FieldType:    FieldRandom,
+				FieldType:    TagRandom,
 				Name:         "test",
 				DataTypeSize: model.SimulatedDataTypeSizes_BOOL,
 				Quantity:     1,
@@ -202,8 +202,8 @@ func TestSimulatedField_GetName(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := simulatedField{
-				FieldType:    tt.fields.FieldType,
+			t := simulatedTag{
+				TagType:      tt.fields.FieldType,
 				Name:         tt.fields.Name,
 				DataTypeSize: tt.fields.DataTypeSize,
 				Quantity:     tt.fields.Quantity,
@@ -215,9 +215,9 @@ func TestSimulatedField_GetName(t1 *testing.T) {
 	}
 }
 
-/*func TestSimulatedField_GetQuantity(t1 *testing.T) {
+/*func TestSimulatedTag_GetQuantity(t1 *testing.T) {
 	type fields struct {
-		FieldType    FieldType
+		TagType    TagType
 		Name         string
 		DataTypeSize model.SimulatedDataTypeSizes
 		Quantity     uint16
@@ -230,7 +230,7 @@ func TestSimulatedField_GetName(t1 *testing.T) {
 		{
 			name: "simple",
 			fields: fields{
-				FieldType:    FieldRandom,
+				TagType:    TagRandom,
 				Name:         "test",
 				DataTypeSize: model.SimulatedDataTypeSizes_BOOL,
 				Quantity:     1,
@@ -240,8 +240,8 @@ func TestSimulatedField_GetName(t1 *testing.T) {
 	}
 	for _, tt := range tests {
 		t1.Run(tt.name, func(t1 *testing.T) {
-			t := simulatedField{
-				FieldType:    tt.fields.FieldType,
+			t := simulatedTag{
+				TagType:    tt.fields.TagType,
 				Name:         tt.fields.Name,
 				DataTypeSize: tt.fields.DataTypeSize,
 				Quantity:     tt.fields.Quantity,

@@ -89,7 +89,7 @@ type Connection struct {
 
 */
 
-func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, fieldHandler spi.PlcFieldHandler, options map[string][]string) (*Connection, error) {
+func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, tagHandler spi.PlcTagHandler, options map[string][]string) (*Connection, error) {
 	reader := *NewReader(
 		messageCodec,
 		configuration.targetAmsNetId,
@@ -124,7 +124,7 @@ func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, f
 		}
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
-		_default.WithPlcFieldHandler(fieldHandler),
+		_default.WithPlcTagHandler(tagHandler),
 		_default.WithPlcValueHandler(NewValueHandler()),
 	)
 	return connection, nil
@@ -160,11 +160,11 @@ func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 }
 
 func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilder(m.GetPlcFieldHandler(), m.reader)
+	return internalModel.NewDefaultPlcReadRequestBuilder(m.GetPlcTagHandler(), m.reader)
 }
 
 func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
-	return internalModel.NewDefaultPlcWriteRequestBuilder(m.GetPlcFieldHandler(), m.GetPlcValueHandler(), m.writer)
+	return internalModel.NewDefaultPlcWriteRequestBuilder(m.GetPlcTagHandler(), m.GetPlcValueHandler(), m.writer)
 }
 
 func (m *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
@@ -176,7 +176,7 @@ func (m *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRe
 }
 
 func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	return internalModel.NewDefaultPlcBrowseRequestBuilder(m.GetPlcFieldHandler(), m)
+	return internalModel.NewDefaultPlcBrowseRequestBuilder(m.GetPlcTagHandler(), m)
 }
 
 func (m *Connection) GetTransportInstance() transports.TransportInstance {

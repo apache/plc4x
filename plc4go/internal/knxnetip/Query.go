@@ -70,10 +70,10 @@ type CommunicationObjectQuery struct {
 	MainGroup   uint8 // 5 Bits: Values 0-31
 	MiddleGroup uint8 // 3 Bits: values 0-7
 	SubGroup    uint8 // 8 Bits
-	DeviceField
+	DeviceTag
 }
 
-func NewCommunicationObjectQueryField(mainGroup uint8, middleGroup uint8, subGroup uint8) CommunicationObjectQuery {
+func NewCommunicationObjectQuery(mainGroup uint8, middleGroup uint8, subGroup uint8) CommunicationObjectQuery {
 	return CommunicationObjectQuery{
 		MainGroup:   mainGroup,
 		MiddleGroup: middleGroup,

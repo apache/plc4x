@@ -37,25 +37,25 @@ const (
 	AddressOffset = 1
 )
 
-type modbusField struct {
-	model.PlcField
+type modbusTag struct {
+	model.PlcTag
 
-	FieldType FieldType
-	Address   uint16
-	Quantity  uint16
-	Datatype  model2.ModbusDataType
+	TagType  TagType
+	Address  uint16
+	Quantity uint16
+	Datatype model2.ModbusDataType
 }
 
-func NewField(fieldType FieldType, address uint16, quantity uint16, datatype model2.ModbusDataType) modbusField {
-	return modbusField{
-		FieldType: fieldType,
-		Address:   address - AddressOffset,
-		Quantity:  quantity,
-		Datatype:  datatype,
+func NewTag(tagType TagType, address uint16, quantity uint16, datatype model2.ModbusDataType) modbusTag {
+	return modbusTag{
+		TagType:  tagType,
+		Address:  address - AddressOffset,
+		Quantity: quantity,
+		Datatype: datatype,
 	}
 }
 
-func NewModbusPlcFieldFromStrings(fieldType FieldType, addressString string, quantityString string, datatype model2.ModbusDataType) (model.PlcField, error) {
+func NewModbusPlcTagFromStrings(tagType TagType, addressString string, quantityString string, datatype model2.ModbusDataType) (model.PlcTag, error) {
 	address, err := strconv.ParseUint(addressString, 10, 16)
 	if err != nil {
 		return nil, errors.Errorf("Couldn't parse address string '%s' into an int", addressString)
@@ -69,14 +69,14 @@ func NewModbusPlcFieldFromStrings(fieldType FieldType, addressString string, qua
 		log.Warn().Err(err).Msgf("Error during parsing for %s. Falling back to 1", quantityString)
 		quantity = 1
 	}
-	return NewField(fieldType, uint16(address), uint16(quantity), datatype), nil
+	return NewTag(tagType, uint16(address), uint16(quantity), datatype), nil
 }
 
-func (m modbusField) GetAddressString() string {
-	return fmt.Sprintf("%dx%05d:%s[%d]", m.FieldType, m.Address, m.Datatype.String(), m.Quantity)
+func (m modbusTag) GetAddressString() string {
+	return fmt.Sprintf("%dx%05d:%s[%d]", m.TagType, m.Address, m.Datatype.String(), m.Quantity)
 }
 
-func (m modbusField) GetValueType() values.PlcValueType {
+func (m modbusTag) GetValueType() values.PlcValueType {
 	if plcValueType, ok := values.PlcValueByName(m.Datatype.String()); !ok {
 		return values.NULL
 	} else {
@@ -84,7 +84,7 @@ func (m modbusField) GetValueType() values.PlcValueType {
 	}
 }
 
-func (m modbusField) GetArrayInfo() []model.ArrayInfo {
+func (m modbusTag) GetArrayInfo() []model.ArrayInfo {
 	if m.Quantity != 1 {
 		return []model.ArrayInfo{
 			model3.DefaultArrayInfo{
@@ -96,14 +96,14 @@ func (m modbusField) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func CastToModbusFieldFromPlcField(plcTag model.PlcField) (modbusField, error) {
-	if modbusField, ok := plcTag.(modbusField); ok {
-		return modbusField, nil
+func CastToModbusTagFromPlcTag(plcTag model.PlcTag) (modbusTag, error) {
+	if modbusTagVar, ok := plcTag.(modbusTag); ok {
+		return modbusTagVar, nil
 	}
-	return modbusField{}, errors.New("couldn't cast to ModbusPlcField")
+	return modbusTag{}, errors.New("couldn't cast to ModbusPlcTag")
 }
 
-func (m modbusField) Serialize() ([]byte, error) {
+func (m modbusTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -111,8 +111,8 @@ func (m modbusField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m modbusField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(m.FieldType.GetName()); err != nil {
+func (m modbusTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(m.TagType.GetName()); err != nil {
 		return err
 	}
 
@@ -127,7 +127,7 @@ func (m modbusField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) err
 		return err
 	}
 
-	if err := writeBuffer.PopContext(m.FieldType.GetName()); err != nil {
+	if err := writeBuffer.PopContext(m.TagType.GetName()); err != nil {
 		return err
 	}
 	return nil

@@ -73,7 +73,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 	log.Trace().Msg("Reading")
 	result := make(chan apiModel.PlcReadRequestResult)
 	go func() {
-		if len(readRequest.GetFieldNames()) == 0 {
+		if len(readRequest.GetTagNames()) == 0 {
 			result <- &spiModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
@@ -84,27 +84,27 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 		// create the service request
 		var serviceRequest readWriteModel.BACnetConfirmedServiceRequest
 		quantity := uint32(1)
-		if len(readRequest.GetField(readRequest.GetFieldNames()[0]).GetArrayInfo()) > 0 {
-			quantity = readRequest.GetField(readRequest.GetFieldNames()[0]).GetArrayInfo()[0].GetUpperBound() - readRequest.GetField(readRequest.GetFieldNames()[0]).GetArrayInfo()[0].GetLowerBound()
+		if len(readRequest.GetTag(readRequest.GetTagNames()[0]).GetArrayInfo()) > 0 {
+			quantity = readRequest.GetTag(readRequest.GetTagNames()[0]).GetArrayInfo()[0].GetUpperBound() - readRequest.GetTag(readRequest.GetTagNames()[0]).GetArrayInfo()[0].GetLowerBound()
 		}
-		if isMultiRequest := len(readRequest.GetFieldNames()) > 1 || quantity > 1; !isMultiRequest {
+		if isMultiRequest := len(readRequest.GetTagNames()) > 1 || quantity > 1; !isMultiRequest {
 			// Single request
-			singleField := readRequest.GetField(readRequest.GetFieldNames()[0]).(BacNetPlcField)
-			objectIdentifier := readWriteModel.CreateBACnetContextTagObjectIdentifier(0, singleField.GetObjectId().getId(), singleField.GetObjectId().ObjectIdInstance)
-			propertyIdentifier := readWriteModel.CreateBACnetPropertyIdentifierTagged(1, singleField.GetProperties()[0].getId())
+			singleTag := readRequest.GetTag(readRequest.GetTagNames()[0]).(BacNetPlcTag)
+			objectIdentifier := readWriteModel.CreateBACnetContextTagObjectIdentifier(0, singleTag.GetObjectId().getId(), singleTag.GetObjectId().ObjectIdInstance)
+			propertyIdentifier := readWriteModel.CreateBACnetPropertyIdentifierTagged(1, singleTag.GetProperties()[0].getId())
 			var arrayIndex readWriteModel.BACnetContextTagUnsignedInteger
-			if value := singleField.GetProperties()[0].ArrayIndex; value != nil {
+			if value := singleTag.GetProperties()[0].ArrayIndex; value != nil {
 				arrayIndex = readWriteModel.CreateBACnetContextTagUnsignedInteger(2, *value)
 			}
 			serviceRequest = readWriteModel.NewBACnetConfirmedServiceRequestReadProperty(objectIdentifier, propertyIdentifier, arrayIndex, 0)
 		} else {
 			// Multi request
 			var data []readWriteModel.BACnetReadAccessSpecification
-			for _, fieldName := range readRequest.GetFieldNames() {
-				field := readRequest.GetField(fieldName).(BacNetPlcField)
-				objectIdentifier := readWriteModel.CreateBACnetContextTagObjectIdentifier(0, field.GetObjectId().getId(), field.GetObjectId().ObjectIdInstance)
+			for _, tagName := range readRequest.GetTagNames() {
+				tag := readRequest.GetTag(tagName).(BacNetPlcTag)
+				objectIdentifier := readWriteModel.CreateBACnetContextTagObjectIdentifier(0, tag.GetObjectId().getId(), tag.GetObjectId().ObjectIdInstance)
 				var listOfPropertyReferences []readWriteModel.BACnetPropertyReference
-				for _, _property := range field.GetProperties() {
+				for _, _property := range tag.GetProperties() {
 					propertyIdentifier := readWriteModel.CreateBACnetPropertyIdentifierTagged(0, _property.getId())
 					var arrayIndex readWriteModel.BACnetContextTagUnsignedInteger
 					if value := _property.ArrayIndex; value != nil {
@@ -300,9 +300,9 @@ func (m *Reader) ToPlc4xReadResponse(apdu readWriteModel.APDU, readRequest apiMo
 			"on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump "+
 			"containing a capture of the communication.",
 			errorClass, errorCode)
-		for _, fieldName := range readRequest.GetFieldNames() {
-			responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-			plcValues[fieldName] = spiValues.NewPlcNULL()
+		for _, tagName := range readRequest.GetTagNames() {
+			responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
+			plcValues[tagName] = spiValues.NewPlcNULL()
 		}
 		return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 	}
@@ -312,9 +312,9 @@ func (m *Reader) ToPlc4xReadResponse(apdu readWriteModel.APDU, readRequest apiMo
 			"on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump "+
 			"containing a capture of the communication.",
 			rejectReason)
-		for _, fieldName := range readRequest.GetFieldNames() {
-			responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-			plcValues[fieldName] = spiValues.NewPlcNULL()
+		for _, tagName := range readRequest.GetTagNames() {
+			responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
+			plcValues[tagName] = spiValues.NewPlcNULL()
 		}
 		return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 	}
@@ -324,9 +324,9 @@ func (m *Reader) ToPlc4xReadResponse(apdu readWriteModel.APDU, readRequest apiMo
 			"on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump "+
 			"containing a capture of the communication.",
 			abortReason)
-		for _, fieldName := range readRequest.GetFieldNames() {
-			responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-			plcValues[fieldName] = spiValues.NewPlcNULL()
+		for _, tagName := range readRequest.GetTagNames() {
+			responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
+			plcValues[tagName] = spiValues.NewPlcNULL()
 		}
 		return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 	}
@@ -334,19 +334,19 @@ func (m *Reader) ToPlc4xReadResponse(apdu readWriteModel.APDU, readRequest apiMo
 	switch complexAck := complexAck.(type) {
 	case readWriteModel.BACnetServiceAckReadPropertyExactly:
 		// TODO: super lazy implementation for now
-		responseCodes[readRequest.GetFieldNames()[0]] = apiModel.PlcResponseCode_OK
-		plcValues[readRequest.GetFieldNames()[0]] = spiValues.NewPlcSTRING(complexAck.GetValues().(fmt.Stringer).String())
+		responseCodes[readRequest.GetTagNames()[0]] = apiModel.PlcResponseCode_OK
+		plcValues[readRequest.GetTagNames()[0]] = spiValues.NewPlcSTRING(complexAck.GetValues().(fmt.Stringer).String())
 	case readWriteModel.BACnetServiceAckReadPropertyMultipleExactly:
 
 		// way to know how to interpret the responses is by aligning them with the
 		// items from the request as this information is not returned by the PLC.
-		if len(readRequest.GetFieldNames()) != len(complexAck.GetData()) {
+		if len(readRequest.GetTagNames()) != len(complexAck.GetData()) {
 			return nil, errors.New("The number of requested items doesn't match the number of returned items")
 		}
-		for i, fieldName := range readRequest.GetFieldNames() {
+		for i, tagName := range readRequest.GetTagNames() {
 			// TODO: super lazy implementation for now
-			responseCodes[fieldName] = apiModel.PlcResponseCode_OK
-			plcValues[fieldName] = spiValues.NewPlcSTRING(complexAck.GetData()[i].GetListOfResults().(fmt.Stringer).String())
+			responseCodes[tagName] = apiModel.PlcResponseCode_OK
+			plcValues[tagName] = spiValues.NewPlcSTRING(complexAck.GetData()[i].GetListOfResults().(fmt.Stringer).String())
 		}
 	}
 

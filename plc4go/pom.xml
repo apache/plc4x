@@ -420,7 +420,7 @@
                 <flag>Apache Software Foundation (ASF)</flag>
               </buildFlags>
               <packages>
-                <package>internal/modbus/fieldtype_string.go</package>
+                <package>internal/modbus/tagtype_string.go</package>
               </packages>
             </configuration>
           </execution>
@@ -437,7 +437,7 @@
                 <flag>Apache Software Foundation (ASF)</flag>
               </buildFlags>
               <packages>
-                <package>internal/cbus/fieldtype_string.go</package>
+                <package>internal/cbus/tagtype_string.go</package>
               </packages>
             </configuration>
           </execution>
@@ -454,7 +454,7 @@
                 <flag>Apache Software Foundation (ASF)</flag>
               </buildFlags>
               <packages>
-                <package>internal/s7/fieldtype_string.go</package>
+                <package>internal/s7/tagtype_string.go</package>
               </packages>
             </configuration>
           </execution>

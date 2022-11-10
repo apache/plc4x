@@ -17,29 +17,15 @@
  * under the License.
  */
 
-package cbus
+package spi
 
-import (
-	"fmt"
-	"github.com/stretchr/testify/assert"
-	"testing"
-)
+import "github.com/apache/plc4x/plc4go/pkg/api/model"
 
-func TestNonPanickingStrings(t *testing.T) {
-	suts := []fmt.Stringer{
-		&statusField{},
-		&calField{},
-		&calRecallField{},
-		&calIdentifyField{},
-		&calGetstatusField{},
-		&salField{},
-		&salMonitorField{},
-		&mmiMonitorField{},
-		&unitInfoField{},
-	}
-	for _, sut := range suts {
-		t.Run(fmt.Sprintf("%T", sut), func(t *testing.T) {
-			assert.NotEmptyf(t, sut.String(), "string should at least return type informations")
-		})
-	}
+type PlcTagHandler interface {
+
+	// ParseTag Parser function to parse tag address strings for a given driver and produce PlcTag instances from that
+	ParseTag(tagAddress string) (model.PlcTag, error)
+
+	// ParseQuery Parser function to parse query strings for a given driver and produce PlcTag instances from that
+	ParseQuery(query string) (model.PlcQuery, error)
 }

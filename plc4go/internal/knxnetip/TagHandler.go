@@ -30,7 +30,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-type FieldHandler struct {
+type TagHandler struct {
 	groupAddress3Level             *regexp.Regexp
 	groupAddress2Level             *regexp.Regexp
 	groupAddress1Level             *regexp.Regexp
@@ -40,8 +40,8 @@ type FieldHandler struct {
 	deviceCommunicationObjectQuery *regexp.Regexp
 }
 
-func NewFieldHandler() FieldHandler {
-	return FieldHandler{
+func NewTagHandler() TagHandler {
+	return TagHandler{
 		groupAddress3Level: regexp.MustCompile(`^(?P<mainGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))\/(?P<middleGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))\/(?P<subGroup>(\d{1,3}|\*|\[(\d{1,3}|\d{1,3}\-\d{1,3})(,(\d{1,3}|\d{1,3}\-\d{1,3}))*]))(:(?P<datatype>[a-zA-Z_]+))?$`),
 		groupAddress2Level: regexp.MustCompile(`^(?P<mainGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))/(?P<subGroup>(\d{1,4}|\*|\[(\d{1,4}|\d{1,4}\-\d{1,4})(,(\d{1,4}|\d{1,4}\-\d{1,4}))*]))(:(?P<datatype>[a-zA-Z_]+))?$`),
 		groupAddress1Level: regexp.MustCompile(`^(?P<mainGroup>(\d{1,5}|\*|\[(\d{1,5}|\d{1,5}\-\d{1,5})(,(\d{1,5}|\d{1,5}\-\d{1,5}))*]))(:(?P<datatype>[a-zA-Z_]+))?$`),
@@ -53,38 +53,38 @@ func NewFieldHandler() FieldHandler {
 	}
 }
 
-func (m FieldHandler) ParseField(fieldQuery string) (apiModel.PlcField, error) {
-	if match := utils.GetSubgroupMatches(m.groupAddress1Level, fieldQuery); match != nil {
-		fieldTypeName, ok := match["datatype"]
-		var fieldType driverModel.KnxDatapointType
+func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
+	if match := utils.GetSubgroupMatches(m.groupAddress1Level, tagAddress); match != nil {
+		tagTypeName, ok := match["datatype"]
+		var tagType driverModel.KnxDatapointType
 		if ok {
-			fieldType, ok = driverModel.KnxDatapointTypeByName(fieldTypeName)
+			tagType, ok = driverModel.KnxDatapointTypeByName(tagTypeName)
 			if !ok {
-				return nil, errors.Errorf("Unknown type %s", fieldTypeName)
+				return nil, errors.Errorf("Unknown type %s", tagTypeName)
 			}
 		}
-		return NewGroupAddress1LevelPlcField(match["mainGroup"], &fieldType), nil
-	} else if match := utils.GetSubgroupMatches(m.groupAddress2Level, fieldQuery); match != nil {
-		fieldTypeName, ok := match["datatype"]
-		var fieldType driverModel.KnxDatapointType
+		return NewGroupAddress1LevelPlcTag(match["mainGroup"], &tagType), nil
+	} else if match := utils.GetSubgroupMatches(m.groupAddress2Level, tagAddress); match != nil {
+		tagTypeName, ok := match["datatype"]
+		var tagType driverModel.KnxDatapointType
 		if ok {
-			fieldType, ok = driverModel.KnxDatapointTypeByName(fieldTypeName)
+			tagType, ok = driverModel.KnxDatapointTypeByName(tagTypeName)
 			if !ok {
-				return nil, errors.Errorf("Unknown type %s", fieldTypeName)
+				return nil, errors.Errorf("Unknown type %s", tagTypeName)
 			}
 		}
-		return NewGroupAddress2LevelPlcField(match["mainGroup"], match["subGroup"], &fieldType), nil
-	} else if match := utils.GetSubgroupMatches(m.groupAddress3Level, fieldQuery); match != nil {
-		fieldTypeName, ok := match["datatype"]
-		var fieldType driverModel.KnxDatapointType
+		return NewGroupAddress2LevelPlcTag(match["mainGroup"], match["subGroup"], &tagType), nil
+	} else if match := utils.GetSubgroupMatches(m.groupAddress3Level, tagAddress); match != nil {
+		tagTypeName, ok := match["datatype"]
+		var tagType driverModel.KnxDatapointType
 		if ok {
-			fieldType, ok = driverModel.KnxDatapointTypeByName(fieldTypeName)
+			tagType, ok = driverModel.KnxDatapointTypeByName(tagTypeName)
 			if !ok {
-				return nil, errors.Errorf("Unknown type %s", fieldTypeName)
+				return nil, errors.Errorf("Unknown type %s", tagTypeName)
 			}
 		}
-		return NewGroupAddress3LevelPlcField(match["mainGroup"], match["middleGroup"], match["subGroup"], &fieldType), nil
-	} else if match := utils.GetSubgroupMatches(m.devicePropertyAddress, fieldQuery); match != nil {
+		return NewGroupAddress3LevelPlcTag(match["mainGroup"], match["middleGroup"], match["subGroup"], &tagType), nil
+	} else if match := utils.GetSubgroupMatches(m.devicePropertyAddress, tagAddress); match != nil {
 		mainGroup, _ := strconv.ParseUint(match["mainGroup"], 10, 8)
 		middleGroup, _ := strconv.ParseUint(match["middleGroup"], 10, 8)
 		subGroup, _ := strconv.ParseUint(match["subGroup"], 10, 8)
@@ -100,15 +100,15 @@ func (m FieldHandler) ParseField(fieldQuery string) (apiModel.PlcField, error) {
 		if ok && len(numElements) > 0 {
 			numberOfElements, _ = strconv.ParseUint(numElements, 10, 8)
 		}
-		return NewDevicePropertyAddressPlcField(
+		return NewDevicePropertyAddressPlcTag(
 			uint8(mainGroup), uint8(middleGroup), uint8(subGroup), uint8(objectId), uint8(propertyId),
 			uint16(propertyIndex), uint8(numberOfElements)), nil
-	} else if match := utils.GetSubgroupMatches(m.deviceMemoryAddress, fieldQuery); match != nil {
-		fieldTypeName, ok := match["datatype"]
+	} else if match := utils.GetSubgroupMatches(m.deviceMemoryAddress, tagAddress); match != nil {
+		tagTypeName, ok := match["datatype"]
 		// This is a 0-255 valued 1-byte value.
-		fieldType := driverModel.KnxDatapointType_DPT_DecimalFactor
-		if ok && len(fieldTypeName) > 0 {
-			fieldType, _ = driverModel.KnxDatapointTypeByName(fieldTypeName)
+		tagType := driverModel.KnxDatapointType_DPT_DecimalFactor
+		if ok && len(tagTypeName) > 0 {
+			tagType, _ = driverModel.KnxDatapointTypeByName(tagTypeName)
 		}
 		mainGroup, _ := strconv.ParseUint(match["mainGroup"], 10, 8)
 		middleGroup, _ := strconv.ParseUint(match["middleGroup"], 10, 8)
@@ -127,18 +127,18 @@ func (m FieldHandler) ParseField(fieldQuery string) (apiModel.PlcField, error) {
 		if ok && len(numElements) > 0 {
 			numberOfElements, _ = strconv.ParseUint(numElements, 10, 8)
 		}
-		return NewDeviceMemoryAddressPlcField(uint8(mainGroup), uint8(middleGroup), uint8(subGroup), address, uint8(numberOfElements), &fieldType), nil
-	} else if match := utils.GetSubgroupMatches(m.deviceCommunicationObjectQuery, fieldQuery); match != nil {
+		return NewDeviceMemoryAddressPlcTag(uint8(mainGroup), uint8(middleGroup), uint8(subGroup), address, uint8(numberOfElements), &tagType), nil
+	} else if match := utils.GetSubgroupMatches(m.deviceCommunicationObjectQuery, tagAddress); match != nil {
 		mainGroup, _ := strconv.ParseUint(match["mainGroup"], 10, 8)
 		middleGroup, _ := strconv.ParseUint(match["middleGroup"], 10, 8)
 		subGroup, _ := strconv.ParseUint(match["subGroup"], 10, 8)
-		return NewCommunicationObjectQueryField(
+		return NewCommunicationObjectQuery(
 			uint8(mainGroup), uint8(middleGroup), uint8(subGroup)), nil
 	}
-	return nil, errors.New("Invalid address format for field '" + fieldQuery + "'")
+	return nil, errors.New("Invalid address format for tag '" + tagAddress + "'")
 }
 
-func (m FieldHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {
+func (m TagHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {
 	if match := utils.GetSubgroupMatches(m.deviceQuery, query); match != nil {
 		return NewDeviceQuery(
 			match["mainGroup"], match["middleGroup"], match["subGroup"]), nil

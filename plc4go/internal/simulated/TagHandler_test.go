@@ -34,7 +34,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    model.PlcField
+		want    model.PlcTag
 		wantErr bool
 	}{
 		{
@@ -42,7 +42,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "RANDOM/test_random:BOOL",
 			},
-			want:    NewSimulatedField(FieldRandom, "test_random", model2.SimulatedDataTypeSizes_BOOL, 1),
+			want:    NewSimulatedTag(TagRandom, "test_random", model2.SimulatedDataTypeSizes_BOOL, 1),
 			wantErr: false,
 		},
 		{
@@ -50,7 +50,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "RANDOM/test_random:BOOL[10]",
 			},
-			want:    NewSimulatedField(FieldRandom, "test_random", model2.SimulatedDataTypeSizes_BOOL, 10),
+			want:    NewSimulatedTag(TagRandom, "test_random", model2.SimulatedDataTypeSizes_BOOL, 10),
 			wantErr: false,
 		},
 		{
@@ -58,7 +58,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "STATE/test_state:BOOL",
 			},
-			want:    NewSimulatedField(FieldState, "test_state", model2.SimulatedDataTypeSizes_BOOL, 1),
+			want:    NewSimulatedTag(TagState, "test_state", model2.SimulatedDataTypeSizes_BOOL, 1),
 			wantErr: false,
 		},
 		{
@@ -66,7 +66,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "STATE/test_state:BOOL[42]",
 			},
-			want:    NewSimulatedField(FieldState, "test_state", model2.SimulatedDataTypeSizes_BOOL, 42),
+			want:    NewSimulatedTag(TagState, "test_state", model2.SimulatedDataTypeSizes_BOOL, 42),
 			wantErr: false,
 		},
 		{
@@ -74,7 +74,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "STDOUT/test_stdout:BOOL",
 			},
-			want:    NewSimulatedField(FieldStdOut, "test_stdout", model2.SimulatedDataTypeSizes_BOOL, 1),
+			want:    NewSimulatedTag(TagStdOut, "test_stdout", model2.SimulatedDataTypeSizes_BOOL, 1),
 			wantErr: false,
 		},
 		{
@@ -82,7 +82,7 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 			args: args{
 				query: "STDOUT/test_stdout:BOOL[23]",
 			},
-			want:    NewSimulatedField(FieldStdOut, "test_stdout", model2.SimulatedDataTypeSizes_BOOL, 23),
+			want:    NewSimulatedTag(TagStdOut, "test_stdout", model2.SimulatedDataTypeSizes_BOOL, 23),
 			wantErr: false,
 		},
 		{
@@ -120,8 +120,8 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := NewFieldHandler()
-			got, err := m.ParseField(tt.args.query)
+			m := NewTagHandler()
+			got, err := m.ParseTag(tt.args.query)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ParseQuery() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -136,22 +136,22 @@ func TestFieldHandler_ParseQuery(t *testing.T) {
 func TestFieldType_Name(t *testing.T) {
 	tests := []struct {
 		name string
-		e    FieldType
+		e    TagType
 		want string
 	}{
 		{
 			name: "simple random",
-			e:    FieldRandom,
+			e:    TagRandom,
 			want: "RANDOM",
 		},
 		{
 			name: "simple state",
-			e:    FieldState,
+			e:    TagState,
 			want: "STATE",
 		},
 		{
 			name: "simple stdout",
-			e:    FieldStdOut,
+			e:    TagStdOut,
 			want: "STDOUT",
 		},
 		{

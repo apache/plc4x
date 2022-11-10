@@ -28,16 +28,16 @@ import (
 )
 
 type DefaultPlcBrowseRequestBuilder struct {
-	fieldHandler spi.PlcFieldHandler
-	browser      spi.PlcBrowser
+	tagHandler spi.PlcTagHandler
+	browser    spi.PlcBrowser
 	// The double structure is in order to preserve the order of elements.
 	queryNames   []string
 	queryStrings map[string]string
 }
 
-func NewDefaultPlcBrowseRequestBuilder(fieldHandler spi.PlcFieldHandler, browser spi.PlcBrowser) *DefaultPlcBrowseRequestBuilder {
+func NewDefaultPlcBrowseRequestBuilder(tagHandler spi.PlcTagHandler, browser spi.PlcBrowser) *DefaultPlcBrowseRequestBuilder {
 	return &DefaultPlcBrowseRequestBuilder{
-		fieldHandler: fieldHandler,
+		tagHandler:   tagHandler,
 		browser:      browser,
 		queryStrings: map[string]string{},
 	}
@@ -52,7 +52,7 @@ func (d *DefaultPlcBrowseRequestBuilder) AddQuery(name string, query string) mod
 func (d *DefaultPlcBrowseRequestBuilder) Build() (model.PlcBrowseRequest, error) {
 	queries := map[string]model.PlcQuery{}
 	for name, queryString := range d.queryStrings {
-		query, err := d.fieldHandler.ParseQuery(queryString)
+		query, err := d.tagHandler.ParseQuery(queryString)
 		if err != nil {
 			return nil, errors.Wrapf(err, "Error parsing query: %s", query)
 		}

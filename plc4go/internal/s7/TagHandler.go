@@ -32,19 +32,19 @@ import (
 	"github.com/pkg/errors"
 )
 
-type FieldType uint8
+type TagType uint8
 
-//go:generate stringer -type FieldType
+//go:generate stringer -type TagType
 const (
-	S7Field       FieldType = 0x00
-	S7StringField FieldType = 0x01
+	S7Tag       TagType = 0x00
+	S7StringTag TagType = 0x01
 )
 
-func (i FieldType) GetName() string {
+func (i TagType) GetName() string {
 	return i.String()
 }
 
-type FieldHandler struct {
+type TagHandler struct {
 	addressPattern                *regexp.Regexp
 	dataBlockAddressPattern       *regexp.Regexp
 	dataBlockShortPattern         *regexp.Regexp
@@ -53,8 +53,8 @@ type FieldHandler struct {
 	plcProxyAddressPattern        *regexp.Regexp
 }
 
-func NewFieldHandler() FieldHandler {
-	return FieldHandler{
+func NewTagHandler() TagHandler {
+	return TagHandler{
 		addressPattern: regexp.MustCompile(`^%(?P<memoryArea>.)(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?`),
 		//blockNumber usually has its max hat around 64000 --> 5digits
 		dataBlockAddressPattern:       regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}).DB(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?`),
@@ -76,8 +76,8 @@ const (
 	MEMORY_AREA        = "memoryArea"
 )
 
-func (m FieldHandler) ParseField(query string) (model.PlcField, error) {
-	if match := utils.GetSubgroupMatches(m.dataBlockStringAddressPattern, query); match != nil {
+func (m TagHandler) ParseTag(tagAddress string) (model.PlcTag, error) {
+	if match := utils.GetSubgroupMatches(m.dataBlockStringAddressPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
 			return nil, errors.Errorf("Unknown type %s", match[DATA_TYPE])
@@ -120,8 +120,8 @@ func (m FieldHandler) ParseField(query string) (model.PlcField, error) {
 			return nil, errors.Errorf("Transfer size code '%d' doesn't match specified data type '%s'", transferSizeCode, dataType)
 		}
 
-		return NewStringField(memoryArea, 0, byteOffset, bitOffset, numElements, stringLength, dataType), nil
-	} else if match := utils.GetSubgroupMatches(m.dataBlockStringShortPattern, query); match != nil {
+		return NewStringTag(memoryArea, 0, byteOffset, bitOffset, numElements, stringLength, dataType), nil
+	} else if match := utils.GetSubgroupMatches(m.dataBlockStringShortPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
 			return nil, errors.Errorf("Unknown type %s", match[DATA_TYPE])
@@ -158,8 +158,8 @@ func (m FieldHandler) ParseField(query string) (model.PlcField, error) {
 			numElements = uint16(parsedNumElements)
 		}
 
-		return NewStringField(memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, dataType), nil
-	} else if match := utils.GetSubgroupMatches(m.dataBlockAddressPattern, query); match != nil {
+		return NewStringTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, dataType), nil
+	} else if match := utils.GetSubgroupMatches(m.dataBlockAddressPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
 			return nil, errors.Errorf("Unknown type %s", match[DATA_TYPE])
@@ -205,8 +205,8 @@ func (m FieldHandler) ParseField(query string) (model.PlcField, error) {
 			return nil, errors.Errorf("Transfer size code '%d' doesn't match specified data type '%s'", transferSizeCode, dataType)
 		}
 
-		return NewField(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType), nil
-	} else if match := utils.GetSubgroupMatches(m.dataBlockShortPattern, query); match != nil {
+		return NewTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType), nil
+	} else if match := utils.GetSubgroupMatches(m.dataBlockShortPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
 			return nil, errors.Errorf("Unknown type %s", match[DATA_TYPE])
@@ -247,22 +247,22 @@ func (m FieldHandler) ParseField(query string) (model.PlcField, error) {
 			numElements = uint16(parsedNumElements)
 		}
 
-		return NewField(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType), nil
-	} else if match := utils.GetSubgroupMatches(m.plcProxyAddressPattern, query); match != nil {
-		addressData, err := hex.DecodeString(strings.ReplaceAll(query, "[-]", ""))
+		return NewTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType), nil
+	} else if match := utils.GetSubgroupMatches(m.plcProxyAddressPattern, tagAddress); match != nil {
+		addressData, err := hex.DecodeString(strings.ReplaceAll(tagAddress, "[-]", ""))
 		if err != nil {
-			return nil, errors.Wrapf(err, "Unable to parse address: %s", query)
+			return nil, errors.Wrapf(err, "Unable to parse address: %s", tagAddress)
 		}
 		s7Address, err := readWriteModel.S7AddressAnyParse(addressData)
 		if err != nil {
-			return nil, errors.Wrapf(err, "Unable to parse address: %s", query)
+			return nil, errors.Wrapf(err, "Unable to parse address: %s", tagAddress)
 		}
 		s7AddressAny := s7Address.(readWriteModel.S7AddressAny)
 		if (s7AddressAny.GetTransportSize() != readWriteModel.TransportSize_BOOL) && s7AddressAny.GetBitAddress() != 0 {
 			return nil, errors.New("A bit offset other than 0 is only supported for type BOOL")
 		}
 
-		return NewField(
+		return NewTag(
 			s7AddressAny.GetArea(),
 			s7AddressAny.GetDbNumber(),
 			s7AddressAny.GetByteAddress(),
@@ -270,7 +270,7 @@ func (m FieldHandler) ParseField(query string) (model.PlcField, error) {
 			s7AddressAny.GetNumberOfElements(),
 			s7AddressAny.GetTransportSize(),
 		), nil
-	} else if match := utils.GetSubgroupMatches(m.addressPattern, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.addressPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
 			return nil, errors.Errorf("Unknown type %s", match[DATA_TYPE])
@@ -314,12 +314,12 @@ func (m FieldHandler) ParseField(query string) (model.PlcField, error) {
 			return nil, errors.New("A bit offset other than 0 is only supported for type BOOL")
 		}
 
-		return NewField(memoryArea, 0, byteOffset, bitOffset, numElements, dataType), nil
+		return NewTag(memoryArea, 0, byteOffset, bitOffset, numElements, dataType), nil
 	}
-	return nil, errors.Errorf("Unable to parse %s", query)
+	return nil, errors.Errorf("Unable to parse %s", tagAddress)
 }
 
-func (m FieldHandler) ParseQuery(query string) (model.PlcQuery, error) {
+func (m TagHandler) ParseQuery(query string) (model.PlcQuery, error) {
 	return nil, fmt.Errorf("queries not supported")
 }
 

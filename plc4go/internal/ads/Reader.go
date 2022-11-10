@@ -41,7 +41,7 @@ type Reader struct {
 	sourceAmsNetId        readWriteModel.AmsNetId
 	sourceAmsPort         uint16
 	messageCodec          spi.MessageCodec
-	fieldMapping          map[string]DirectPlcField
+	tagMapping            map[string]DirectPlcTag
 	mappingLock           sync.Mutex
 }
 
@@ -53,7 +53,7 @@ func NewReader(messageCodec spi.MessageCodec, targetAmsNetId readWriteModel.AmsN
 		sourceAmsNetId:        sourceAmsNetId,
 		sourceAmsPort:         sourceAmsPort,
 		messageCodec:          messageCodec,
-		fieldMapping:          make(map[string]DirectPlcField),
+		tagMapping:            make(map[string]DirectPlcTag),
 	}
 }
 
@@ -62,7 +62,7 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 	log.Trace().Msg("Reading")
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
-		if len(readRequest.GetFieldNames()) <= 1 {
+		if len(readRequest.GetTagNames()) <= 1 {
 			m.singleRead(ctx, readRequest, result)
 		} else {
 			m.multiRead(ctx, readRequest, result)
@@ -72,20 +72,20 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 }
 
 func (m *Reader) singleRead(ctx context.Context, readRequest model.PlcReadRequest, result chan model.PlcReadRequestResult) {
-	/*	if len(readRequest.GetFieldNames()) != 1 {
+	/*	if len(readRequest.GetTagNames()) != 1 {
 			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.New("ads only supports single-item requests"),
 			}
-			log.Debug().Msgf("ads only supports single-item requests. Got %d fields", len(readRequest.GetFieldNames()))
+			log.Debug().Msgf("ads only supports single-item requests. Got %d tags", len(readRequest.GetTagNames()))
 			return
 		}
 		// If we are requesting only one field, use a
-		fieldName := readRequest.GetFieldNames()[0]
-		field := readRequest.GetField(fieldName)
+		fieldName := readRequest.GetTagNames()[0]
+		field := readRequest.GetTag(fieldName)
 		if needsResolving(field) {
-			adsField, err := castToSymbolicPlcFieldFromPlcField(field)
+			adsField, err := castToSymbolicPlcTagFromPlcTag(field)
 			if err != nil {
 				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
@@ -95,7 +95,7 @@ func (m *Reader) singleRead(ctx context.Context, readRequest model.PlcReadReques
 				log.Debug().Msgf("Invalid field item type %T", field)
 				return
 			}
-			field, err = m.resolveField(ctx, adsField)
+			field, err = m.resolveTag(ctx, adsField)
 			if err != nil {
 				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
@@ -106,7 +106,7 @@ func (m *Reader) singleRead(ctx context.Context, readRequest model.PlcReadReques
 				return
 			}
 		}
-		adsField, err := castToDirectAdsFieldFromPlcField(field)
+		adsField, err := castToDirectAdsTagFromPlcTag(field)
 		if err != nil {
 			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
@@ -151,11 +151,11 @@ func (m *Reader) singleRead(ctx context.Context, readRequest model.PlcReadReques
 }
 
 func (m *Reader) multiRead(ctx context.Context, readRequest model.PlcReadRequest, result chan model.PlcReadRequestResult) {
-	/*	// Calculate the size of all fields together.
+	/*	// Calculate the size of all tags together.
 		// Calculate the expected size of the response data.
 		expectedResponseDataSize := uint32(0)
-		for _, fieldName := range readRequest.GetFieldNames() {
-			field, err := castToAdsFieldFromPlcField(readRequest.GetField(fieldName))
+		for _, fieldName := range readRequest.GetTagNames() {
+			field, err := castToAdsFieldFromPlcField(readRequest.GetTag(fieldName))
 			if err != nil {
 				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
@@ -187,11 +187,11 @@ func (m *Reader) multiRead(ctx context.Context, readRequest model.PlcReadRequest
 			expectedResponseDataSize += 4 + (size * field.GetNumberOfElements())
 		}
 
-		items := make([]readWriteModel.AdsMultiRequestItem, len(readRequest.GetFieldNames()))
-		for i, fieldName := range readRequest.GetFieldNames() {
-			field := readRequest.GetField(fieldName)
+		items := make([]readWriteModel.AdsMultiRequestItem, len(readRequest.GetTagNames()))
+		for i, fieldName := range readRequest.GetTagNames() {
+			field := readRequest.GetTag(fieldName)
 			if needsResolving(field) {
-				adsField, err := castToSymbolicPlcFieldFromPlcField(field)
+				adsField, err := castToSymbolicPlcTagFromPlcTag(field)
 				if err != nil {
 					result <- &plc4goModel.DefaultPlcReadRequestResult{
 						Request:  readRequest,
@@ -201,7 +201,7 @@ func (m *Reader) multiRead(ctx context.Context, readRequest model.PlcReadRequest
 					log.Debug().Msgf("Invalid field item type %T", field)
 					return
 				}
-				field, err = m.resolveField(ctx, adsField)
+				field, err = m.resolveTag(ctx, adsField)
 				if err != nil {
 					result <- &plc4goModel.DefaultPlcReadRequestResult{
 						Request:  readRequest,
@@ -212,7 +212,7 @@ func (m *Reader) multiRead(ctx context.Context, readRequest model.PlcReadRequest
 					return
 				}
 			}
-			adsField, err := castToDirectAdsFieldFromPlcField(field)
+			adsField, err := castToDirectAdsTagFromPlcTag(field)
 			if err != nil {
 				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
@@ -227,7 +227,7 @@ func (m *Reader) multiRead(ctx context.Context, readRequest model.PlcReadRequest
 		}
 		userdata := readWriteModel.NewAdsReadWriteRequest(
 			uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_MULTIPLE_READ),
-			uint32(len(readRequest.GetFieldNames())),
+			uint32(len(readRequest.GetTagNames())),
 			expectedResponseDataSize,
 			items,
 			nil,
@@ -295,14 +295,14 @@ func (m *Reader) sendOverTheWire(ctx context.Context, userdata readWriteModel.Am
 	}
 }
 
-func (m *Reader) resolveField(ctx context.Context, symbolicField SymbolicPlcField) (DirectPlcField, error) {
-	/*	if directPlcField, ok := m.fieldMapping[symbolicField]; ok {
+func (m *Reader) resolveTag(ctx context.Context, symbolicTag SymbolicPlcTag) (DirectPlcTag, error) {
+	/*	if directPlcField, ok := m.tagMapping[symbolicField]; ok {
 			return directPlcField, nil
 		}
 		m.mappingLock.Lock()
 		defer m.mappingLock.Unlock()
 		// In case a previous one has already
-		if directPlcField, ok := m.fieldMapping[symbolicField]; ok {
+		if directPlcField, ok := m.tagMapping[symbolicField]; ok {
 			return directPlcField, nil
 		}
 		userdata := readWriteModel.NewAdsReadWriteRequest(
@@ -319,34 +319,34 @@ func (m *Reader) resolveField(ctx context.Context, symbolicField SymbolicPlcFiel
 			m.getInvokeId())
 		result := make(chan model.PlcReadRequestResult)
 		go func() {
-			dummyRequest := plc4goModel.NewDefaultPlcReadRequest(map[string]model.PlcField{"dummy": DirectPlcField{PlcField: PlcField{Datatype: readWriteModel.AdsDataType_UINT32}}}, []string{"dummy"}, nil, nil)
+			dummyRequest := plc4goModel.NewDefaultPlcReadRequest(map[string]model.PlcTag{"dummy": DirectPlcTag{PlcTag: PlcTag{Datatype: readWriteModel.AdsDataType_UINT32}}}, []string{"dummy"}, nil, nil)
 			m.sendOverTheWire(ctx, userdata, dummyRequest, result)
 		}()
 		// We wait synchronous for the resolution response before we can continue
 		response := <-result
 		if response.GetErr() != nil {
 			log.Debug().Err(response.GetErr()).Msg("Error during resolve")
-			return DirectPlcField{}, response.GetErr()
+			return DirectPlcTag{}, response.GetErr()
 		}
 		if response.GetResponse().GetResponseCode("dummy") != model.PlcResponseCode_OK {
-			return DirectPlcField{}, errors.Errorf("Got a response error %#v", response.GetResponse().GetResponseCode("dummy"))
+			return DirectPlcTag{}, errors.Errorf("Got a response error %#v", response.GetResponse().GetResponseCode("dummy"))
 		}
 		handle := response.GetResponse().GetValue("dummy").GetUint32()
 		log.Debug().Uint32("handle", handle).Str("symbolicAddress", symbolicField.SymbolicAddress).Msg("Resolved symbolic address")
-		directPlcField := DirectPlcField{
+		directPlcField := DirectPlcTag{
 			IndexGroup:  uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_SYM_VALBYHND),
 			IndexOffset: handle,
-			PlcField:    symbolicField.PlcField,
+			PlcTag:    symbolicField.PlcTag,
 		}
-		switch directPlcField.FieldType {
+		switch directPlcField.TagType {
 		case SymbolicAdsField:
-			directPlcField.FieldType = DirectAdsField
+			directPlcField.TagType = DirectAdsField
 		case SymbolicAdsStringField:
-			directPlcField.FieldType = DirectAdsStringField
+			directPlcField.TagType = DirectAdsStringField
 		}
-		m.fieldMapping[symbolicField] = directPlcField
+		m.tagMapping[symbolicField] = directPlcField
 		return directPlcField, nil*/
-	return DirectPlcField{}, nil
+	return DirectPlcTag{}, nil
 }
 
 func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
@@ -355,15 +355,15 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 	switch data := amsTcpPaket.GetUserdata().(type) {
 	case readWriteModel.AdsReadResponse:
 		rb = utils.NewReadBufferByteBased(data.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-		for _, fieldName := range readRequest.GetFieldNames() {
+		for _, fieldName := range readRequest.GetTagNames() {
 			responseCodes[fieldName] = model.PlcResponseCode_OK
 		}
 	case readWriteModel.AdsReadWriteResponse:
 		rb = utils.NewReadBufferByteBased(data.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 		// When parsing a multi-item response, the error codes of each items come
 		// in sequence and then come the values.
-		for _, fieldName := range readRequest.GetFieldNames() {
-			if len(readRequest.GetFieldNames()) <= 1 {
+		for _, fieldName := range readRequest.GetTagNames() {
+			if len(readRequest.GetTagNames()) <= 1 {
 				// TODO: the comment above seems strange as there is no such spec for response codes per field so maybe this is a speciality
 				break
 			}
@@ -389,9 +389,9 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 
 	plcValues := map[string]values.PlcValue{}
 	// Get the field from the request
-	for _, fieldName := range readRequest.GetFieldNames() {
+	for _, fieldName := range readRequest.GetTagNames() {
 		log.Debug().Msgf("get a field from request with name %s", fieldName)
-		field, err := castToAdsFieldFromPlcField(readRequest.GetField(fieldName))
+		field, err := castToAdsFieldFromPlcField(readRequest.GetTag(fieldName))
 		if err != nil {
 			return nil, errors.Wrap(err, "error casting to ads-field")
 		}

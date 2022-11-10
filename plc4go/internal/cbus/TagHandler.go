@@ -32,11 +32,11 @@ import (
 	"github.com/pkg/errors"
 )
 
-type FieldType uint8
+type TagType uint8
 
-//go:generate stringer -type FieldType
+//go:generate stringer -type TagType
 const (
-	STATUS FieldType = iota
+	STATUS TagType = iota
 	// TODO: implement
 	CAL_RESET
 	CAL_RECALL
@@ -56,11 +56,11 @@ const (
 	UNIT_INFO
 )
 
-func (i FieldType) GetName() string {
+func (i TagType) GetName() string {
 	return i.String()
 }
 
-type FieldHandler struct {
+type TagHandler struct {
 	statusRequestPattern *regexp.Regexp
 	calPattern           *regexp.Regexp
 	salPattern           *regexp.Regexp
@@ -69,8 +69,8 @@ type FieldHandler struct {
 	unityQuery           *regexp.Regexp
 }
 
-func NewFieldHandler() FieldHandler {
-	return FieldHandler{
+func NewTagHandler() TagHandler {
+	return TagHandler{
 		statusRequestPattern: regexp.MustCompile(`^status/(?P<statusRequestType>(?P<binary>binary)|level=0x(?P<startingGroupAddressLabel>00|20|40|60|80|A0|C0|E0))/(?P<application>.*)`),
 		calPattern:           regexp.MustCompile(`^cal/(?P<unitAddress>.+)/(?P<calType>reset|recall=\[(?P<recallParamNo>\w+), ?(?P<recallCount>\d+)]|identify=(?P<identifyAttribute>\w+)|getstatus=(?P<getstatusParamNo>\w+), ?(?P<getstatusCount>\d+)|write=\[(?P<writeParamNo>\w+), ?(?P<writeCode>0[xX][0-9a-fA-F][0-9a-fA-F])]|identifyReply=(?P<replyAttribute>\w+)|reply=(?P<replyParamNo>\w+)|status=(?P<statusApplication>.*)|statusExtended=(?P<statusExtendedApplication>.*))`),
 		salPattern:           regexp.MustCompile(`^sal/(?P<application>.*)/(?P<salCommand>.*)`),
@@ -112,29 +112,29 @@ var PossibleSalCommands = map[readWriteModel.ApplicationId][]CommandAndArguments
 	readWriteModel.ApplicationId_HVAC_ACTUATOR:                      c2nl(readWriteModel.LightingCommandTypeValues),
 }
 
-func (m FieldHandler) ParseField(fieldQuery string) (model.PlcField, error) {
-	if match := utils.GetSubgroupMatches(m.statusRequestPattern, fieldQuery); match != nil {
+func (m TagHandler) ParseTag(tagAddress string) (model.PlcTag, error) {
+	if match := utils.GetSubgroupMatches(m.statusRequestPattern, tagAddress); match != nil {
 		return m.handleStatusRequestPattern(match)
-	} else if match := utils.GetSubgroupMatches(m.calPattern, fieldQuery); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.calPattern, tagAddress); match != nil {
 		return m.handleCalPattern(match)
-	} else if match := utils.GetSubgroupMatches(m.salPattern, fieldQuery); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.salPattern, tagAddress); match != nil {
 		return m.handleSALPattern(match)
-	} else if match := utils.GetSubgroupMatches(m.salMonitorPattern, fieldQuery); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.salMonitorPattern, tagAddress); match != nil {
 		return m.handleSALMonitorPattern(match)
-	} else if match := utils.GetSubgroupMatches(m.mmiMonitorPattern, fieldQuery); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.mmiMonitorPattern, tagAddress); match != nil {
 		return m.handleMMIMonitorPattern(match)
-	} else if match := utils.GetSubgroupMatches(m.unityQuery, fieldQuery); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.unityQuery, tagAddress); match != nil {
 		return m.handleUnitQuery(match)
 	} else {
-		return nil, errors.Errorf("Unable to parse %s", fieldQuery)
+		return nil, errors.Errorf("Unable to parse %s", tagAddress)
 	}
 }
 
-func (m FieldHandler) ParseQuery(_ string) (model.PlcQuery, error) {
+func (m TagHandler) ParseQuery(_ string) (model.PlcQuery, error) {
 	return nil, fmt.Errorf("queries not supported")
 }
 
-func (m FieldHandler) handleStatusRequestPattern(match map[string]string) (model.PlcField, error) {
+func (m TagHandler) handleStatusRequestPattern(match map[string]string) (model.PlcTag, error) {
 	var startingGroupAddressLabel *byte
 	var statusRequestType StatusRequestType
 	statusRequestArgument := match["statusRequestType"]
@@ -157,10 +157,10 @@ func (m FieldHandler) handleStatusRequestPattern(match map[string]string) (model
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting application id from argument")
 	}
-	return NewStatusField(statusRequestType, startingGroupAddressLabel, application, 1), nil
+	return NewStatusTag(statusRequestType, startingGroupAddressLabel, application, 1), nil
 }
 
-func (m FieldHandler) handleCalPattern(match map[string]string) (model.PlcField, error) {
+func (m TagHandler) handleCalPattern(match map[string]string) (model.PlcTag, error) {
 	var unitAddress readWriteModel.UnitAddress
 	unitAddressArgument := match["unitAddress"]
 	if strings.HasPrefix(unitAddressArgument, "0x") {
@@ -214,7 +214,7 @@ func (m FieldHandler) handleCalPattern(match map[string]string) (model.PlcField,
 			return nil, errors.Wrap(err, "recallCount not a valid number")
 		}
 		count = uint8(atoi)
-		return NewCALRecallField(unitAddress, recalParamNo, count, 1), nil
+		return NewCALRecallTag(unitAddress, recalParamNo, count, 1), nil
 	case strings.HasPrefix(calTypeArgument, "identify="):
 		var attribute readWriteModel.Attribute
 		attributeArgument := match["identifyAttribute"]
@@ -238,7 +238,7 @@ func (m FieldHandler) handleCalPattern(match map[string]string) (model.PlcField,
 				attribute = parameterByName
 			}
 		}
-		return NewCALIdentifyField(unitAddress, attribute, 1), nil
+		return NewCALIdentifyTag(unitAddress, attribute, 1), nil
 	case strings.HasPrefix(calTypeArgument, "getstatus="):
 		var recalParamNo readWriteModel.Parameter
 		recallParamNoArgument := match["getstatusParamNo"]
@@ -268,7 +268,7 @@ func (m FieldHandler) handleCalPattern(match map[string]string) (model.PlcField,
 			return nil, errors.Wrap(err, "getstatusCount not a valid number")
 		}
 		count = uint8(atoi)
-		return NewCALGetstatusField(unitAddress, recalParamNo, count, 1), nil
+		return NewCALGetstatusTag(unitAddress, recalParamNo, count, 1), nil
 	case strings.HasPrefix(calTypeArgument, "write="):
 		panic("Not implemented") // TODO: implement me
 	case strings.HasPrefix(calTypeArgument, "identifyReply="):
@@ -284,7 +284,7 @@ func (m FieldHandler) handleCalPattern(match map[string]string) (model.PlcField,
 	}
 }
 
-func (m FieldHandler) handleSALPattern(match map[string]string) (model.PlcField, error) {
+func (m TagHandler) handleSALPattern(match map[string]string) (model.PlcTag, error) {
 	application, err := applicationIdFromArgument(match["application"])
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting application id from argument")
@@ -305,10 +305,10 @@ func (m FieldHandler) handleSALPattern(match map[string]string) (model.PlcField,
 	if !isValid {
 		return nil, errors.Errorf("Invalid sal command %s for %s. Allowed requests: %s", salCommand, application, PossibleSalCommands[application.ApplicationId()])
 	}
-	return NewSALField(application, salCommand, numElements), nil
+	return NewSALTag(application, salCommand, numElements), nil
 }
 
-func (m FieldHandler) handleSALMonitorPattern(match map[string]string) (model.PlcField, error) {
+func (m TagHandler) handleSALMonitorPattern(match map[string]string) (model.PlcTag, error) {
 	var unitAddress *readWriteModel.UnitAddress
 	{
 		unitAddressArgument := match["unitAddress"]
@@ -350,10 +350,10 @@ func (m FieldHandler) handleSALMonitorPattern(match map[string]string) (model.Pl
 		}
 	}
 
-	return NewSALMonitorField(unitAddress, application, 1), nil
+	return NewSALMonitorTag(unitAddress, application, 1), nil
 }
 
-func (m FieldHandler) handleMMIMonitorPattern(match map[string]string) (model.PlcField, error) {
+func (m TagHandler) handleMMIMonitorPattern(match map[string]string) (model.PlcTag, error) {
 	var unitAddress *readWriteModel.UnitAddress
 	{
 		unitAddressArgument := match["unitAddress"]
@@ -395,10 +395,10 @@ func (m FieldHandler) handleMMIMonitorPattern(match map[string]string) (model.Pl
 		}
 	}
 
-	return NewMMIMonitorField(unitAddress, application, 1), nil
+	return NewMMIMonitorTag(unitAddress, application, 1), nil
 }
 
-func (m FieldHandler) handleUnitQuery(match map[string]string) (model.PlcField, error) {
+func (m TagHandler) handleUnitQuery(match map[string]string) (model.PlcTag, error) {
 	var unitAddress *readWriteModel.UnitAddress
 	unitAddressArgument := match["unitAddress"]
 	if unitAddressArgument == "*" {
@@ -454,7 +454,7 @@ func (m FieldHandler) handleUnitQuery(match map[string]string) (model.PlcField, 
 			attribute = &attributeVar
 		}
 	}
-	return NewUnitInfoField(unitAddress, attribute, 1), nil
+	return NewUnitInfoTag(unitAddress, attribute, 1), nil
 }
 
 func applicationIdFromArgument(applicationIdArgument string) (readWriteModel.ApplicationIdContainer, error) {

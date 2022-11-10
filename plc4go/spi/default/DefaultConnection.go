@@ -33,7 +33,7 @@ import (
 )
 
 // DefaultConnectionRequirements defines the required at a implementing connection when using DefaultConnection
-// additional options can be set using the functions returning WithOption (e.g. WithDefaultTtl, WithPlcFieldHandler...)
+// additional options can be set using the functions returning WithOption (e.g. WithDefaultTtl, WithPlcTagHandler...)
 type DefaultConnectionRequirements interface {
 	// GetConnection should return the implementing connection when using DefaultConnection
 	GetConnection() plc4go.PlcConnection
@@ -60,8 +60,8 @@ func WithDefaultTtl(defaultTtl time.Duration) options.WithOption {
 	return withDefaultTtl{defaultTtl: defaultTtl}
 }
 
-func WithPlcFieldHandler(plcFieldHandler spi.PlcFieldHandler) options.WithOption {
-	return withPlcFieldHandler{plcFieldHandler: plcFieldHandler}
+func WithPlcTagHandler(tagHandler spi.PlcTagHandler) options.WithOption {
+	return withPlcTagHandler{plcTagHandler: tagHandler}
 }
 
 func WithPlcValueHandler(plcValueHandler spi.PlcValueHandler) options.WithOption {
@@ -131,9 +131,9 @@ type withDefaultTtl struct {
 	defaultTtl time.Duration
 }
 
-type withPlcFieldHandler struct {
+type withPlcTagHandler struct {
 	options.Option
-	plcFieldHandler spi.PlcFieldHandler
+	plcTagHandler spi.PlcTagHandler
 }
 
 type withPlcValueHandler struct {
@@ -147,21 +147,21 @@ type defaultConnection struct {
 	defaultTtl time.Duration
 	// connected indicates if a connection is connected
 	connected    bool
-	fieldHandler spi.PlcFieldHandler
+	tagHandler   spi.PlcTagHandler
 	valueHandler spi.PlcValueHandler
 }
 
 func buildDefaultConnection(requirements DefaultConnectionRequirements, options ...options.WithOption) DefaultConnection {
 	defaultTtl := time.Second * 10
-	var fieldHandler spi.PlcFieldHandler
+	var tagHandler spi.PlcTagHandler
 	var valueHandler spi.PlcValueHandler
 
 	for _, option := range options {
 		switch option.(type) {
 		case withDefaultTtl:
 			defaultTtl = option.(withDefaultTtl).defaultTtl
-		case withPlcFieldHandler:
-			fieldHandler = option.(withPlcFieldHandler).plcFieldHandler
+		case withPlcTagHandler:
+			tagHandler = option.(withPlcTagHandler).plcTagHandler
 		case withPlcValueHandler:
 			valueHandler = option.(withPlcValueHandler).plcValueHandler
 		}
@@ -171,7 +171,7 @@ func buildDefaultConnection(requirements DefaultConnectionRequirements, options 
 		requirements,
 		defaultTtl,
 		false,
-		fieldHandler,
+		tagHandler,
 		valueHandler,
 	}
 }
@@ -326,8 +326,8 @@ func (d *defaultConnection) GetTransportInstance() transports.TransportInstance 
 	return nil
 }
 
-func (d *defaultConnection) GetPlcFieldHandler() spi.PlcFieldHandler {
-	return d.fieldHandler
+func (d *defaultConnection) GetPlcTagHandler() spi.PlcTagHandler {
+	return d.tagHandler
 }
 
 func (d *defaultConnection) GetPlcValueHandler() spi.PlcValueHandler {

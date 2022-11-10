@@ -66,8 +66,8 @@ func TestManualCBusDriverMixed(t *testing.T) {
 		gotMMI := make(chan bool)
 		gotSAL := make(chan bool)
 		subscriptionRequest, err := plcConnection.SubscriptionRequestBuilder().
-			AddEventFieldQuery("mmi", "mmimonitor/*/*").
-			AddEventFieldQuery("sal", "salmonitor/*/*").
+			AddEventTagAddress("mmi", "mmimonitor/*/*").
+			AddEventTagAddress("sal", "salmonitor/*/*").
 			AddPreRegisteredConsumer("mmi", func(event model.PlcSubscriptionEvent) {
 				fmt.Printf("mmi:\n%s", event)
 				if _, ok := event.GetValue("mmi").GetStruct()["SALData"]; ok {
@@ -176,7 +176,7 @@ func TestManualCBusRead(t *testing.T) {
 	connection := connectionResult.GetConnection()
 	defer connection.Close()
 	readRequest, err := connection.ReadRequestBuilder().
-		AddFieldQuery("asd", "cal/3/identify=OutputUnitSummary").
+		AddTagAddress("asd", "cal/3/identify=OutputUnitSummary").
 		Build()
 	require.NoError(t, err)
 	readRequestResult := <-readRequest.Execute()

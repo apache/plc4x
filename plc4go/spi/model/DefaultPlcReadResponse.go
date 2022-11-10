@@ -39,15 +39,15 @@ func NewDefaultPlcReadResponse(request model.PlcReadRequest, responseCodes map[s
 	}
 }
 
-func (d *DefaultPlcReadResponse) GetFieldNames() []string {
-	var fieldNames []string
-	// We take the field names from the request to keep order as map is not ordered
-	for _, name := range d.request.GetFieldNames() {
+func (d *DefaultPlcReadResponse) GetTagNames() []string {
+	var tagNames []string
+	// We take the tag names from the request to keep order as map is not ordered
+	for _, name := range d.request.GetTagNames() {
 		if _, ok := d.values[name]; ok {
-			fieldNames = append(fieldNames, name)
+			tagNames = append(tagNames, name)
 		}
 	}
-	return fieldNames
+	return tagNames
 }
 
 func (d *DefaultPlcReadResponse) GetRequest() model.PlcReadRequest {

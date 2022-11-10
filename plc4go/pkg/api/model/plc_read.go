@@ -26,8 +26,8 @@ import (
 )
 
 type PlcReadRequestBuilder interface {
-	AddFieldQuery(name string, fieldQuery string) PlcReadRequestBuilder
-	AddField(name string, field PlcField) PlcReadRequestBuilder
+	AddTagAddress(tagName string, tagAddress string) PlcReadRequestBuilder
+	AddTag(tagName string, tag PlcTag) PlcReadRequestBuilder
 	Build() (PlcReadRequest, error)
 }
 
@@ -42,14 +42,14 @@ type PlcReadRequest interface {
 	Execute() <-chan PlcReadRequestResult
 	ExecuteWithContext(ctx context.Context) <-chan PlcReadRequestResult
 
-	GetFieldNames() []string
-	GetField(name string) PlcField
+	GetTagNames() []string
+	GetTag(tagName string) PlcTag
 }
 
 type PlcReadResponse interface {
 	PlcResponse
 	GetRequest() PlcReadRequest
-	GetFieldNames() []string
-	GetResponseCode(name string) PlcResponseCode
-	GetValue(name string) values.PlcValue
+	GetTagNames() []string
+	GetResponseCode(tagName string) PlcResponseCode
+	GetValue(tagName string) values.PlcValue
 }

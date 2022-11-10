@@ -24,11 +24,12 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
-	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	_default "github.com/apache/plc4x/plc4go/spi/default"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -103,7 +104,7 @@ type KnxMemoryReadFragment struct {
 type Connection struct {
 	messageCodec             spi.MessageCodec
 	options                  map[string][]string
-	fieldHandler             spi.PlcFieldHandler
+	tagHandler               spi.PlcTagHandler
 	valueHandler             spi.PlcValueHandler
 	connectionStateTimer     *time.Ticker
 	quitConnectionStateTimer chan struct{}
@@ -165,10 +166,10 @@ type InternalResult struct {
 	err             error
 }
 
-func NewConnection(transportInstance transports.TransportInstance, options map[string][]string, fieldHandler spi.PlcFieldHandler) *Connection {
+func NewConnection(transportInstance transports.TransportInstance, options map[string][]string, tagHandler spi.PlcTagHandler) *Connection {
 	connection := &Connection{
 		options:      options,
-		fieldHandler: fieldHandler,
+		tagHandler:   tagHandler,
 		valueHandler: NewValueHandler(),
 		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(
 			internalModel.NewDefaultPlcReadRequest,
@@ -462,26 +463,26 @@ func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 
 func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 	return internalModel.NewDefaultPlcReadRequestBuilder(
-		m.fieldHandler, NewReader(m))
+		m.tagHandler, NewReader(m))
 }
 
 func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 	return internalModel.NewDefaultPlcWriteRequestBuilder(
-		m.fieldHandler, m.valueHandler, NewWriter(m.messageCodec))
+		m.tagHandler, m.valueHandler, NewWriter(m.messageCodec))
 }
 
 func (m *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
 	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(
-		m.fieldHandler, m.valueHandler, NewSubscriber(m))
+		m.tagHandler, m.valueHandler, NewSubscriber(m))
 }
 
 func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	return internalModel.NewDefaultPlcBrowseRequestBuilder(m.fieldHandler, NewBrowser(m, m.messageCodec))
+	return internalModel.NewDefaultPlcBrowseRequestBuilder(m.tagHandler, NewBrowser(m, m.messageCodec))
 }
 
 func (m *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
 	return nil /*internalModel.NewDefaultPlcUnsubscriptionRequestBuilder(
-	  m.fieldHandler, m.valueHandler, NewSubscriber(m.messageCodec))*/
+	  m.tagHandler, m.valueHandler, NewSubscriber(m.messageCodec))*/
 }
 
 func (m *Connection) GetTransportInstance() transports.TransportInstance {
@@ -491,8 +492,8 @@ func (m *Connection) GetTransportInstance() transports.TransportInstance {
 	return nil
 }
 
-func (m *Connection) GetPlcFieldHandler() spi.PlcFieldHandler {
-	return m.fieldHandler
+func (m *Connection) GetPlcTagHandler() spi.PlcTagHandler {
+	return m.tagHandler
 }
 
 func (m *Connection) GetPlcValueHandler() spi.PlcValueHandler {

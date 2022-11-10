@@ -30,8 +30,8 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-type PlcField interface {
-	model.PlcField
+type PlcTag interface {
+	model.PlcTag
 
 	GetDataType() readWriteModel.TransportSize
 	GetNumElements() uint16
@@ -42,7 +42,7 @@ type PlcField interface {
 }
 
 type plcTag struct {
-	FieldType   FieldType
+	TagType     TagType
 	MemoryArea  readWriteModel.MemoryArea
 	BlockNumber uint16
 	ByteOffset  uint16
@@ -51,9 +51,9 @@ type plcTag struct {
 	Datatype    readWriteModel.TransportSize
 }
 
-func NewField(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWriteModel.TransportSize) PlcField {
+func NewTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWriteModel.TransportSize) PlcTag {
 	return plcTag{
-		FieldType:   S7Field,
+		TagType:     S7Tag,
 		MemoryArea:  memoryArea,
 		BlockNumber: blockNumber,
 		ByteOffset:  byteOffset,
@@ -63,15 +63,15 @@ func NewField(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffs
 	}
 }
 
-type PlcStringField struct {
+type PlcStringTag struct {
 	plcTag
 	stringLength uint16
 }
 
-func NewStringField(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWriteModel.TransportSize) PlcStringField {
-	return PlcStringField{
+func NewStringTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWriteModel.TransportSize) PlcStringTag {
+	return PlcStringTag{
 		plcTag: plcTag{
-			FieldType:   S7StringField,
+			TagType:     S7StringTag,
 			MemoryArea:  memoryArea,
 			BlockNumber: blockNumber,
 			ByteOffset:  byteOffset,
@@ -85,7 +85,7 @@ func NewStringField(memoryArea readWriteModel.MemoryArea, blockNumber uint16, by
 
 func (m plcTag) GetAddressString() string {
 	// TODO: add missing variables like memory area, block number, byte offset, bit offset
-	return fmt.Sprintf("%d:%s[%d]", m.FieldType, m.Datatype, m.NumElements)
+	return fmt.Sprintf("%d:%s[%d]", m.TagType, m.Datatype, m.NumElements)
 }
 
 func (m plcTag) GetValueType() values.PlcValueType {
@@ -143,7 +143,7 @@ func (m plcTag) Serialize() ([]byte, error) {
 }
 
 func (m plcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(m.FieldType.GetName()); err != nil {
+	if err := writeBuffer.PushContext(m.TagType.GetName()); err != nil {
 		return err
 	}
 
@@ -166,13 +166,13 @@ func (m plcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 
-	if err := writeBuffer.PopContext(m.FieldType.GetName()); err != nil {
+	if err := writeBuffer.PopContext(m.TagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (m PlcStringField) Serialize() ([]byte, error) {
+func (m PlcStringTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
@@ -180,8 +180,8 @@ func (m PlcStringField) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m PlcStringField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(m.FieldType.GetName()); err != nil {
+func (m PlcStringTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(m.TagType.GetName()); err != nil {
 		return err
 	}
 
@@ -207,7 +207,7 @@ func (m PlcStringField) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		return err
 	}
 
-	if err := writeBuffer.PopContext(m.FieldType.GetName()); err != nil {
+	if err := writeBuffer.PopContext(m.TagType.GetName()); err != nil {
 		return err
 	}
 	return nil

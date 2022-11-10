@@ -37,9 +37,9 @@ func NewValueHandler() ValueHandler {
 	return ValueHandler{}
 }
 
-func (m ValueHandler) NewPlcValue(field apiModel.PlcField, value interface{}) (apiValues.PlcValue, error) {
-	if cbusField, ok := field.(Field); ok {
-		switch cbusField.GetFieldType() {
+func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value interface{}) (apiValues.PlcValue, error) {
+	if cbusTag, ok := tag.(Tag); ok {
+		switch cbusTag.GetTagType() {
 		case
 			CAL_WRITE,
 			CAL_IDENTIFY_REPLY,
@@ -48,7 +48,7 @@ func (m ValueHandler) NewPlcValue(field apiModel.PlcField, value interface{}) (a
 			panic("Implement me") //TODO: implement me
 		case SAL:
 			var curValues []any
-			if len(field.GetArrayInfo()) > 0 && field.GetArrayInfo()[0].GetSize() > 1 {
+			if len(tag.GetArrayInfo()) > 0 && tag.GetArrayInfo()[0].GetSize() > 1 {
 				s := reflect.ValueOf(value)
 				if s.Kind() != reflect.Slice {
 					return nil, errors.New("couldn't cast value to []interface{}")
@@ -61,14 +61,14 @@ func (m ValueHandler) NewPlcValue(field apiModel.PlcField, value interface{}) (a
 				curValues = append(curValues, value)
 			}
 
-			field := field.(*salField)
-			salCommand := field.salCommand
-			switch field.application.ApplicationId() {
+			tmpSalTag := tag.(*salTag)
+			salCommand := tmpSalTag.salCommand
+			switch tmpSalTag.application.ApplicationId() {
 			case readWriteModel.ApplicationId_FREE_USAGE:
 				switch salCommand {
 				// TODO:implement
 				default:
-					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, tmpSalTag.application.ApplicationId())
 				}
 			case readWriteModel.ApplicationId_TEMPERATURE_BROADCAST:
 				switch salCommand {
@@ -86,13 +86,13 @@ func (m ValueHandler) NewPlcValue(field apiModel.PlcField, value interface{}) (a
 					}
 					return spiValues.NewPlcList([]apiValues.PlcValue{temperatureGroup, temperatureByte}), nil
 				default:
-					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, tmpSalTag.application.ApplicationId())
 				}
 			case readWriteModel.ApplicationId_ROOM_CONTROL_SYSTEM:
 				switch salCommand {
 				// TODO:implement
 				default:
-					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, tmpSalTag.application.ApplicationId())
 				}
 			case readWriteModel.ApplicationId_LIGHTING,
 				readWriteModel.ApplicationId_VENTILATION,
@@ -145,7 +145,7 @@ func (m ValueHandler) NewPlcValue(field apiModel.PlcField, value interface{}) (a
 				case readWriteModel.LightingCommandType_LABEL.PLC4XEnumName():
 					panic("Implement me") //TODO: implement me
 				default:
-					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, tmpSalTag.application.ApplicationId())
 				}
 			case readWriteModel.ApplicationId_AIR_CONDITIONING:
 				switch salCommand {
@@ -200,7 +200,7 @@ func (m ValueHandler) NewPlcValue(field apiModel.PlcField, value interface{}) (a
 				case readWriteModel.AirConditioningCommandType_HUMIDITY_SCHEDULE_ENTRY.PLC4XEnumName():
 					panic("Implement me") //TODO: implement me
 				default:
-					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, tmpSalTag.application.ApplicationId())
 				}
 			case readWriteModel.ApplicationId_TRIGGER_CONTROL:
 				switch salCommand {
@@ -215,14 +215,14 @@ func (m ValueHandler) NewPlcValue(field apiModel.PlcField, value interface{}) (a
 				case readWriteModel.TriggerControlCommandType_LABEL.PLC4XEnumName():
 					panic("Implement me") //TODO: implement me
 				default:
-					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, tmpSalTag.application.ApplicationId())
 				}
 			case readWriteModel.ApplicationId_ENABLE_CONTROL:
 				switch salCommand {
 				case readWriteModel.EnableControlCommandType_SET_NETWORK_VARIABLE.PLC4XEnumName():
 					panic("Implement me") //TODO: implement me
 				default:
-					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, tmpSalTag.application.ApplicationId())
 				}
 			case readWriteModel.ApplicationId_SECURITY:
 				switch salCommand {
@@ -233,14 +233,14 @@ func (m ValueHandler) NewPlcValue(field apiModel.PlcField, value interface{}) (a
 				case readWriteModel.SecurityCommandType_EVENT.PLC4XEnumName():
 					panic("Implement me") // TODO: implement
 				default:
-					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, tmpSalTag.application.ApplicationId())
 				}
 			case readWriteModel.ApplicationId_METERING:
 				switch salCommand {
 				case readWriteModel.MeteringCommandType_EVENT.PLC4XEnumName():
 					panic("Implement me") // TODO: implement
 				default:
-					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, tmpSalTag.application.ApplicationId())
 				}
 			case readWriteModel.ApplicationId_ACCESS_CONTROL:
 				switch salCommand {
@@ -261,7 +261,7 @@ func (m ValueHandler) NewPlcValue(field apiModel.PlcField, value interface{}) (a
 				case readWriteModel.AccessControlCommandType_INVALID_ACCESS.PLC4XEnumName():
 					panic("Implement me") // TODO: implement
 				default:
-					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, tmpSalTag.application.ApplicationId())
 				}
 			case readWriteModel.ApplicationId_CLOCK_AND_TIMEKEEPING:
 				switch salCommand {
@@ -270,27 +270,27 @@ func (m ValueHandler) NewPlcValue(field apiModel.PlcField, value interface{}) (a
 				case readWriteModel.ClockAndTimekeepingCommandType_REQUEST_REFRESH.PLC4XEnumName():
 					panic("Implement me") // TODO: implement
 				default:
-					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, tmpSalTag.application.ApplicationId())
 				}
 			case readWriteModel.ApplicationId_TELEPHONY_STATUS_AND_CONTROL:
 				switch salCommand {
 				case readWriteModel.TelephonyCommandType_EVENT.PLC4XEnumName():
 					panic("Implement me") // TODO: implement
 				default:
-					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, tmpSalTag.application.ApplicationId())
 				}
 			case readWriteModel.ApplicationId_MEASUREMENT:
 				switch salCommand {
 				case readWriteModel.MeasurementCommandType_MEASUREMENT_EVENT.PLC4XEnumName():
 					panic("Implement me") // TODO: implement
 				default:
-					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, tmpSalTag.application.ApplicationId())
 				}
 			case readWriteModel.ApplicationId_TESTING:
 				switch salCommand {
 				// TODO:implement
 				default:
-					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, tmpSalTag.application.ApplicationId())
 				}
 			case readWriteModel.ApplicationId_MEDIA_TRANSPORT_CONTROL:
 				switch salCommand {
@@ -339,7 +339,7 @@ func (m ValueHandler) NewPlcValue(field apiModel.PlcField, value interface{}) (a
 				case readWriteModel.MediaTransportControlCommandType_FAST_FORWARD.PLC4XEnumName():
 					panic("Implement me") // TODO: implement me
 				default:
-					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, tmpSalTag.application.ApplicationId())
 				}
 			case readWriteModel.ApplicationId_ERROR_REPORTING:
 				switch salCommand {
@@ -352,12 +352,12 @@ func (m ValueHandler) NewPlcValue(field apiModel.PlcField, value interface{}) (a
 				case readWriteModel.ErrorReportingCommandType_CLEAR_MOST_SEVERE.PLC4XEnumName():
 					panic("Implement me") // TODO: implement me
 				default:
-					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+					return nil, errors.Errorf("Unsupported command %s for %s", salCommand, tmpSalTag.application.ApplicationId())
 				}
 			default:
-				return nil, errors.Errorf("No support for %s", field.application)
+				return nil, errors.Errorf("No support for %s", tmpSalTag.application)
 			}
 		}
 	}
-	return m.IEC61131ValueHandler.NewPlcValue(field, value)
+	return m.IEC61131ValueHandler.NewPlcValue(tag, value)
 }

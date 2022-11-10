@@ -83,20 +83,20 @@ func (d DefaultPlcBrowseResponse) SerializeWithWriteBuffer(writeBuffer utils.Wri
 	if err := writeBuffer.PushContext("results"); err != nil {
 		return err
 	}
-	for fieldName, foundFields := range d.results {
-		if err := writeBuffer.PushContext(fieldName); err != nil {
+	for tagName, foundTags := range d.results {
+		if err := writeBuffer.PushContext(tagName); err != nil {
 			return err
 		}
-		for _, field := range foundFields {
-			if serializableField, ok := field.(utils.Serializable); ok {
-				if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
+		for _, tag := range foundTags {
+			if serializableTag, ok := tag.(utils.Serializable); ok {
+				if err := serializableTag.SerializeWithWriteBuffer(writeBuffer); err != nil {
 					return err
 				}
 			} else {
-				return errors.Errorf("Error serializing. Field %T doesn't implement Serializable", field)
+				return errors.Errorf("Error serializing. Tag %T doesn't implement Serializable", tag)
 			}
 		}
-		if err := writeBuffer.PopContext(fieldName); err != nil {
+		if err := writeBuffer.PopContext(tagName); err != nil {
 			return err
 		}
 	}

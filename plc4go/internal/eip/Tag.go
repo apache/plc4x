@@ -28,8 +28,8 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-type EIPPlcField interface {
-	model.PlcField
+type EIPPlcTag interface {
+	model.PlcTag
 
 	GetTag() string
 	GetType() readWrite.CIPDataTypeCode
@@ -58,7 +58,7 @@ func (m plcTag) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func NewField(tag string, _type readWrite.CIPDataTypeCode, elementNb uint16) plcTag {
+func NewTag(tag string, _type readWrite.CIPDataTypeCode, elementNb uint16) plcTag {
 	return plcTag{
 		Tag:       tag,
 		Type:      _type,
@@ -87,7 +87,7 @@ func (m plcTag) Serialize() ([]byte, error) {
 }
 
 func (m plcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("EipField"); err != nil {
+	if err := writeBuffer.PushContext("EipTag"); err != nil {
 		return err
 	}
 
@@ -110,7 +110,7 @@ func (m plcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 
-	if err := writeBuffer.PopContext("EipField"); err != nil {
+	if err := writeBuffer.PopContext("EipTag"); err != nil {
 		return err
 	}
 	return nil

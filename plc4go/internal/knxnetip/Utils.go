@@ -26,21 +26,21 @@ import (
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 )
 
-func NumericGroupAddressToString(numericAddress uint16, groupAddress GroupAddressField) string {
+func NumericGroupAddressToString(numericAddress uint16, groupAddress GroupAddressTag) string {
 	if groupAddress == nil {
 		return ""
 	}
 	switch groupAddress.(type) {
-	case GroupAddress3LevelPlcField:
+	case GroupAddress3LevelPlcTag:
 		main := numericAddress >> 11
 		middle := (numericAddress >> 8) & 0x07
 		sub := numericAddress & 0xFF
 		return strconv.Itoa(int(main)) + "/" + strconv.Itoa(int(middle)) + "/" + strconv.Itoa(int(sub))
-	case GroupAddress2LevelPlcField:
+	case GroupAddress2LevelPlcTag:
 		main := numericAddress >> 11
 		sub := numericAddress & 0x07FF
 		return strconv.Itoa(int(main)) + "/" + strconv.Itoa(int(sub))
-	case GroupAddress1LevelPlcField:
+	case GroupAddress1LevelPlcTag:
 		return strconv.Itoa(int(numericAddress))
 	default:
 		panic(fmt.Sprintf("Unmapped %T", groupAddress))

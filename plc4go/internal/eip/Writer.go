@@ -22,6 +22,9 @@ package eip
 import (
 	"context"
 	"encoding/binary"
+	"strings"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
@@ -30,8 +33,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"strings"
-	"time"
 )
 
 type Writer struct {
@@ -56,14 +57,14 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 	// TODO: handle context
 	result := make(chan model.PlcWriteRequestResult)
 	go func() {
-		items := make([]readWriteModel.CipService, len(writeRequest.GetFieldNames()))
-		for i, fieldName := range writeRequest.GetFieldNames() {
-			field := writeRequest.GetField(fieldName).(EIPPlcField)
-			value := writeRequest.GetValue(fieldName)
-			tag := field.GetTag()
+		items := make([]readWriteModel.CipService, len(writeRequest.GetTagNames()))
+		for i, tagName := range writeRequest.GetTagNames() {
+			eipTag := writeRequest.GetTag(tagName).(EIPPlcTag)
+			value := writeRequest.GetValue(tagName)
+			tag := eipTag.GetTag()
 			elements := uint16(1)
-			if field.GetElementNb() > 1 {
-				elements = field.GetElementNb()
+			if eipTag.GetElementNb() > 1 {
+				elements = eipTag.GetElementNb()
 			}
 			// We need the size of the request in words (0x91, tagLength, ... tag + possible pad)
 			// Taking half to get word size
@@ -78,12 +79,12 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 				dataLength += 2
 			}
 			requestPathSize := int8(dataLength / 2)
-			data, err := encodeValue(value, field.GetType(), elements)
+			data, err := encodeValue(value, eipTag.GetType(), elements)
 			if err != nil {
 				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding value for field %s", fieldName),
+					Err:      errors.Wrapf(err, "Error encoding value for eipTag %s", tagName),
 				}
 				return
 			}
@@ -92,11 +93,11 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding eip ansi for field %s", fieldName),
+					Err:      errors.Wrapf(err, "Error encoding eip ansi for eipTag %s", tagName),
 				}
 				return
 			}
-			items[i] = readWriteModel.NewCipWriteRequest(requestPathSize, ansi, field.GetType(), elements, data, 0)
+			items[i] = readWriteModel.NewCipWriteRequest(requestPathSize, ansi, eipTag.GetType(), elements, data, 0)
 		}
 
 		if len(items) == 1 {
@@ -309,11 +310,11 @@ func encodeValue(value values.PlcValue, _type readWriteModel.CIPDataTypeCode, el
 func (m Writer) ToPlc4xWriteResponse(response readWriteModel.CipService, writeRequest model.PlcWriteRequest) (model.PlcWriteResponse, error) {
 	responseCodes := map[string]model.PlcResponseCode{}
 	switch response := response.(type) {
-	case readWriteModel.CipWriteResponse: // only 1 field
+	case readWriteModel.CipWriteResponse: // only 1 tag
 		cipReadResponse := response
-		fieldName := writeRequest.GetFieldNames()[0]
+		tagName := writeRequest.GetTagNames()[0]
 		code := decodeResponseCode(cipReadResponse.GetStatus())
-		responseCodes[fieldName] = code
+		responseCodes[tagName] = code
 	case readWriteModel.MultipleServiceResponse: //Multiple response
 		multipleServiceResponse := response
 		nb := multipleServiceResponse.GetServiceNb()
@@ -336,12 +337,12 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.CipService, writeRe
 			}
 		}
 		services := readWriteModel.NewServices(nb, multipleServiceResponse.GetOffsets(), arr, 0)
-		for i, fieldName := range writeRequest.GetFieldNames() {
+		for i, tagName := range writeRequest.GetTagNames() {
 			if writeResponse, ok := services.Services[i].(readWriteModel.CipWriteResponse); ok {
 				code := decodeResponseCode(writeResponse.GetStatus())
-				responseCodes[fieldName] = code
+				responseCodes[tagName] = code
 			} else {
-				responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
+				responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
 			}
 		}
 	default:

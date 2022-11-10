@@ -20,21 +20,22 @@
 package simulated
 
 import (
+	"reflect"
+	"testing"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	internalModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"reflect"
-	"testing"
-	"time"
 )
 
 func TestConnection_Connect(t *testing.T) {
 	type fields struct {
 		device       *Device
-		fieldHandler spi.PlcFieldHandler
+		fieldHandler spi.PlcTagHandler
 		valueHandler spi.PlcValueHandler
 		options      map[string][]string
 		connected    bool
@@ -50,14 +51,14 @@ func TestConnection_Connect(t *testing.T) {
 			name: "simple",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    false,
 			},
 			want: _default.NewDefaultPlcConnectionConnectResult(&Connection{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				tagHandler:   NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    true,
@@ -71,14 +72,14 @@ func TestConnection_Connect(t *testing.T) {
 			name: "already connected",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    true,
 			},
 			want: _default.NewDefaultPlcConnectionConnectResult(&Connection{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				tagHandler:   NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    true,
@@ -92,7 +93,7 @@ func TestConnection_Connect(t *testing.T) {
 			name: "delayed connected",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options: map[string][]string{
 					"connectionDelay": {"1000"},
@@ -101,7 +102,7 @@ func TestConnection_Connect(t *testing.T) {
 			},
 			want: _default.NewDefaultPlcConnectionConnectResult(&Connection{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				tagHandler:   NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options: map[string][]string{
 					"connectionDelay": {"1000"},
@@ -116,7 +117,7 @@ func TestConnection_Connect(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Connection{
 				device:       tt.fields.device,
-				fieldHandler: tt.fields.fieldHandler,
+				tagHandler:   tt.fields.fieldHandler,
 				valueHandler: tt.fields.valueHandler,
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
@@ -155,7 +156,7 @@ func TestConnection_Connect(t *testing.T) {
 func TestConnection_Close(t *testing.T) {
 	type fields struct {
 		device       *Device
-		fieldHandler spi.PlcFieldHandler
+		fieldHandler spi.PlcTagHandler
 		valueHandler spi.PlcValueHandler
 		options      map[string][]string
 		connected    bool
@@ -171,14 +172,14 @@ func TestConnection_Close(t *testing.T) {
 			name: "simple",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    true,
 			},
 			want: _default.NewDefaultPlcConnectionCloseResult(&Connection{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				tagHandler:   NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    false,
@@ -190,14 +191,14 @@ func TestConnection_Close(t *testing.T) {
 			name: "not connected",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    false,
 			},
 			want: _default.NewDefaultPlcConnectionCloseResult(&Connection{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				tagHandler:   NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    false,
@@ -209,7 +210,7 @@ func TestConnection_Close(t *testing.T) {
 			name: "delayed close",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options: map[string][]string{
 					"closingDelay": {"1000"},
@@ -218,7 +219,7 @@ func TestConnection_Close(t *testing.T) {
 			},
 			want: _default.NewDefaultPlcConnectionCloseResult(&Connection{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				tagHandler:   NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options: map[string][]string{
 					"closingDelay": {"1000"},
@@ -233,7 +234,7 @@ func TestConnection_Close(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Connection{
 				device:       tt.fields.device,
-				fieldHandler: tt.fields.fieldHandler,
+				tagHandler:   tt.fields.fieldHandler,
 				valueHandler: tt.fields.valueHandler,
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
@@ -271,7 +272,7 @@ func TestConnection_Close(t *testing.T) {
 func TestConnection_BlockingClose(t *testing.T) {
 	type fields struct {
 		device       *Device
-		fieldHandler spi.PlcFieldHandler
+		fieldHandler spi.PlcTagHandler
 		valueHandler spi.PlcValueHandler
 		options      map[string][]string
 		connected    bool
@@ -285,7 +286,7 @@ func TestConnection_BlockingClose(t *testing.T) {
 			name: "simple",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    true,
@@ -296,7 +297,7 @@ func TestConnection_BlockingClose(t *testing.T) {
 			name: "not connected",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    false,
@@ -307,7 +308,7 @@ func TestConnection_BlockingClose(t *testing.T) {
 			name: "delayed close",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options: map[string][]string{
 					"closingDelay": {"1000"},
@@ -321,7 +322,7 @@ func TestConnection_BlockingClose(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Connection{
 				device:       tt.fields.device,
-				fieldHandler: tt.fields.fieldHandler,
+				tagHandler:   tt.fields.fieldHandler,
 				valueHandler: tt.fields.valueHandler,
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
@@ -358,7 +359,7 @@ func TestConnection_BlockingClose(t *testing.T) {
 func TestConnection_GetMetadata(t *testing.T) {
 	type fields struct {
 		device       *Device
-		fieldHandler spi.PlcFieldHandler
+		fieldHandler spi.PlcTagHandler
 		valueHandler spi.PlcValueHandler
 		options      map[string][]string
 		connected    bool
@@ -390,7 +391,7 @@ func TestConnection_GetMetadata(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Connection{
 				device:       tt.fields.device,
-				fieldHandler: tt.fields.fieldHandler,
+				tagHandler:   tt.fields.fieldHandler,
 				valueHandler: tt.fields.valueHandler,
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
@@ -405,7 +406,7 @@ func TestConnection_GetMetadata(t *testing.T) {
 func TestConnection_IsConnected(t *testing.T) {
 	type fields struct {
 		device       *Device
-		fieldHandler spi.PlcFieldHandler
+		fieldHandler spi.PlcTagHandler
 		valueHandler spi.PlcValueHandler
 		options      map[string][]string
 		connected    bool
@@ -419,7 +420,7 @@ func TestConnection_IsConnected(t *testing.T) {
 			name: "simple",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    true,
@@ -430,7 +431,7 @@ func TestConnection_IsConnected(t *testing.T) {
 			name: "not connected",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    false,
@@ -442,7 +443,7 @@ func TestConnection_IsConnected(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Connection{
 				device:       tt.fields.device,
-				fieldHandler: tt.fields.fieldHandler,
+				tagHandler:   tt.fields.fieldHandler,
 				valueHandler: tt.fields.valueHandler,
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
@@ -457,7 +458,7 @@ func TestConnection_IsConnected(t *testing.T) {
 func TestConnection_Ping(t *testing.T) {
 	type fields struct {
 		device       *Device
-		fieldHandler spi.PlcFieldHandler
+		fieldHandler spi.PlcTagHandler
 		valueHandler spi.PlcValueHandler
 		options      map[string][]string
 		connected    bool
@@ -472,7 +473,7 @@ func TestConnection_Ping(t *testing.T) {
 			name: "simple",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    true,
@@ -484,7 +485,7 @@ func TestConnection_Ping(t *testing.T) {
 			name: "delayed ping",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options: map[string][]string{
 					"pingDelay": {"1000"},
@@ -499,7 +500,7 @@ func TestConnection_Ping(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Connection{
 				device:       tt.fields.device,
-				fieldHandler: tt.fields.fieldHandler,
+				tagHandler:   tt.fields.fieldHandler,
 				valueHandler: tt.fields.valueHandler,
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
@@ -532,7 +533,7 @@ func TestConnection_Ping(t *testing.T) {
 func TestConnection_BrowseRequestBuilder(t *testing.T) {
 	type fields struct {
 		device       *Device
-		fieldHandler spi.PlcFieldHandler
+		fieldHandler spi.PlcTagHandler
 		valueHandler spi.PlcValueHandler
 		options      map[string][]string
 		connected    bool
@@ -546,7 +547,7 @@ func TestConnection_BrowseRequestBuilder(t *testing.T) {
 			name: "simple",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    true,
@@ -558,7 +559,7 @@ func TestConnection_BrowseRequestBuilder(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Connection{
 				device:       tt.fields.device,
-				fieldHandler: tt.fields.fieldHandler,
+				tagHandler:   tt.fields.fieldHandler,
 				valueHandler: tt.fields.valueHandler,
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
@@ -576,7 +577,7 @@ func TestConnection_BrowseRequestBuilder(t *testing.T) {
 func TestConnection_ReadRequestBuilder(t *testing.T) {
 	type fields struct {
 		device       *Device
-		fieldHandler spi.PlcFieldHandler
+		fieldHandler spi.PlcTagHandler
 		valueHandler spi.PlcValueHandler
 		options      map[string][]string
 		connected    bool
@@ -590,19 +591,19 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 			name: "simple",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    true,
 			},
-			want: internalModel.NewDefaultPlcReadRequestBuilder(NewFieldHandler(), NewReader(NewDevice("hurz"), map[string][]string{}, nil)),
+			want: internalModel.NewDefaultPlcReadRequestBuilder(NewTagHandler(), NewReader(NewDevice("hurz"), map[string][]string{}, nil)),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Connection{
 				device:       tt.fields.device,
-				fieldHandler: tt.fields.fieldHandler,
+				tagHandler:   tt.fields.fieldHandler,
 				valueHandler: tt.fields.valueHandler,
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
@@ -617,7 +618,7 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 	type fields struct {
 		device       *Device
-		fieldHandler spi.PlcFieldHandler
+		fieldHandler spi.PlcTagHandler
 		valueHandler spi.PlcValueHandler
 		options      map[string][]string
 		connected    bool
@@ -631,7 +632,7 @@ func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 			name: "simple",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    true,
@@ -643,7 +644,7 @@ func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Connection{
 				device:       tt.fields.device,
-				fieldHandler: tt.fields.fieldHandler,
+				tagHandler:   tt.fields.fieldHandler,
 				valueHandler: tt.fields.valueHandler,
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
@@ -661,7 +662,7 @@ func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 	type fields struct {
 		device       *Device
-		fieldHandler spi.PlcFieldHandler
+		fieldHandler spi.PlcTagHandler
 		valueHandler spi.PlcValueHandler
 		options      map[string][]string
 		connected    bool
@@ -675,7 +676,7 @@ func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 			name: "simple",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    true,
@@ -687,7 +688,7 @@ func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Connection{
 				device:       tt.fields.device,
-				fieldHandler: tt.fields.fieldHandler,
+				tagHandler:   tt.fields.fieldHandler,
 				valueHandler: tt.fields.valueHandler,
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
@@ -705,7 +706,7 @@ func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 func TestConnection_WriteRequestBuilder(t *testing.T) {
 	type fields struct {
 		device       *Device
-		fieldHandler spi.PlcFieldHandler
+		fieldHandler spi.PlcTagHandler
 		valueHandler spi.PlcValueHandler
 		options      map[string][]string
 		connected    bool
@@ -719,19 +720,19 @@ func TestConnection_WriteRequestBuilder(t *testing.T) {
 			name: "simple",
 			fields: fields{
 				device:       NewDevice("hurz"),
-				fieldHandler: NewFieldHandler(),
+				fieldHandler: NewTagHandler(),
 				valueHandler: NewValueHandler(),
 				options:      map[string][]string{},
 				connected:    true,
 			},
-			want: internalModel.NewDefaultPlcWriteRequestBuilder(NewFieldHandler(), NewValueHandler(), NewWriter(NewDevice("hurz"), map[string][]string{}, nil)),
+			want: internalModel.NewDefaultPlcWriteRequestBuilder(NewTagHandler(), NewValueHandler(), NewWriter(NewDevice("hurz"), map[string][]string{}, nil)),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Connection{
 				device:       tt.fields.device,
-				fieldHandler: tt.fields.fieldHandler,
+				tagHandler:   tt.fields.fieldHandler,
 				valueHandler: tt.fields.valueHandler,
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,

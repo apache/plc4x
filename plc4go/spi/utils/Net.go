@@ -166,7 +166,7 @@ func lockupIpsUsingArp(ctx context.Context, netInterface net.Interface, ipNet *n
 		}()
 	}()
 	writeArp := func(handle *pcap.Handle, iface net.Interface, addr net.IPNet) error {
-		// Set up all the layers' fields we can.
+		// Set up all the layers' tags we can.
 		eth := layers.Ethernet{
 			SrcMAC:       iface.HardwareAddr,
 			DstMAC:       net.HardwareAddr{0xff, 0xff, 0xff, 0xff, 0xff, 0xff},

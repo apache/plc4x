@@ -51,7 +51,7 @@ func NewBrowser(connection *Connection, messageCodec spi.MessageCodec) *Browser 
 func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
 	var queryResults []apiModel.PlcBrowseItem
 	/*switch query := query.(type) {
-	case *unitInfoField:
+	case *unitInfoTag:
 		allUnits := false
 		var units []readWriteModel.UnitAddress
 		allAttributes := false
@@ -111,9 +111,9 @@ func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrow
 				} else {
 					event.Msgf("unit %d: Query %s", unitAddress, attribute)
 				}
-				readFieldName := fmt.Sprintf("%s/%d/%s", queryName, unitAddress, attribute)
+				readTagName := fmt.Sprintf("%s/%d/%s", queryName, unitAddress, attribute)
 				readRequest, _ := m.connection.ReadRequestBuilder().
-					AddField(readFieldName, NewCALIdentifyField(unit, attribute, 1)).
+					AddTag(readTagName, NewCALIdentifyTag(unit, attribute, 1)).
 					Build()
 				timeoutCtx, timeoutCancel := context.WithTimeout(ctx, time.Second*2)
 				requestResult := <-readRequest.ExecuteWithContext(timeoutCtx)
@@ -125,18 +125,18 @@ func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrow
 					continue unitLoop
 				}
 				response := requestResult.GetResponse()
-				if code := response.GetResponseCode(readFieldName); code != apiModel.PlcResponseCode_OK {
-					event.Msgf("unit %d: error reading field %s. Code %s", unitAddress, attribute, code)
+				if code := response.GetResponseCode(readTagName); code != apiModel.PlcResponseCode_OK {
+					event.Msgf("unit %d: error reading tag %s. Code %s", unitAddress, attribute, code)
 					continue unitLoop
 				}
 				queryResult := &model.DefaultPlcBrowseItem{
-					Field:        NewCALIdentifyField(unit, attribute, 1),
+					Tag:        NewCALIdentifyTag(unit, attribute, 1),
 					Name:         queryName,
 					Readable:     true,
 					Writable:     false,
 					Subscribable: false,
 					Options: map[string]values.PlcValue{
-						"CurrentValue": response.GetValue(readFieldName),
+						"CurrentValue": response.GetValue(readTagName),
 					},
 				}
 				if interceptor != nil {
@@ -154,7 +154,7 @@ func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrow
 func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any, error) {
 	// We need to presubscribe to catch the 2 followup responses
 	subscriptionRequest, err := m.connection.SubscriptionRequestBuilder().
-		AddEventFieldQuery("installationMMIMonitor", "mmimonitor/*/NETWORK_CONTROL").
+		AddEventTagAddress("installationMMIMonitor", "mmimonitor/*/NETWORK_CONTROL").
 		Build()
 	if err != nil {
 		return nil, errors.Wrap(err, "Error subscribing to the installation MMI")
@@ -192,12 +192,12 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		}
 		rootStruct := rootValue.GetStruct()
 		if applicationValue := rootStruct["application"]; applicationValue == nil || !applicationValue.IsString() || applicationValue.GetString() != "NETWORK_CONTROL" {
-			log.Warn().Msgf("Ignoring %v should contain a application field of type string with value NETWORK_CONTROL", rootStruct)
+			log.Warn().Msgf("Ignoring %v should contain a application tag of type string with value NETWORK_CONTROL", rootStruct)
 			return
 		}
 		var blockStart int
 		if blockStartValue := rootStruct["blockStart"]; blockStartValue == nil || !blockStartValue.IsByte() {
-			log.Warn().Msgf("Ignoring %v should contain a blockStart field of type byte", rootStruct)
+			log.Warn().Msgf("Ignoring %v should contain a blockStart tag of type byte", rootStruct)
 			return
 		} else {
 			blockStart = int(blockStartValue.GetByte())
@@ -221,7 +221,7 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		}
 
 		if plcListValue := rootStruct["values"]; plcListValue == nil || !plcListValue.IsList() {
-			log.Warn().Msgf("Ignoring %v should contain a values field of type list", rootStruct)
+			log.Warn().Msgf("Ignoring %v should contain a values tag of type list", rootStruct)
 			return
 		} else {
 			for unitByteAddress, plcValue := range plcListValue.GetList() {
@@ -245,7 +245,7 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 	defer plcConsumerRegistration.Unregister()
 
 	readRequest, err := m.connection.ReadRequestBuilder().
-		AddFieldQuery("installationMMI", "status/binary/0xFF").
+		AddTagAddress("installationMMI", "status/binary/0xFF").
 		Build()
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting the installation MMI")
@@ -263,17 +263,17 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		}
 		rootStruct := rootValue.GetStruct()
 		if applicationValue := rootStruct["application"]; applicationValue == nil || !applicationValue.IsString() || applicationValue.GetString() != "NETWORK_CONTROL" {
-			return nil, errors.Errorf("%v should contain a application field of type string with value NETWORK_CONTROL", rootStruct)
+			return nil, errors.Errorf("%v should contain a application tag of type string with value NETWORK_CONTROL", rootStruct)
 		}
 		var blockStart int
 		if blockStartValue := rootStruct["blockStart"]; blockStartValue == nil || !blockStartValue.IsByte() || blockStartValue.GetByte() != 0 {
-			return nil, errors.Errorf("%v should contain a blockStart field of type byte with value 0", rootStruct)
+			return nil, errors.Errorf("%v should contain a blockStart tag of type byte with value 0", rootStruct)
 		} else {
 			blockStart = int(blockStartValue.GetByte())
 		}
 
 		if plcListValue := rootStruct["values"]; plcListValue == nil || !plcListValue.IsList() {
-			return nil, errors.Errorf("%v should contain a values field of type list", rootStruct)
+			return nil, errors.Errorf("%v should contain a values tag of type list", rootStruct)
 		} else {
 			for unitByteAddress, plcValue := range plcListValue.GetList() {
 				unitByteAddress = blockStart + unitByteAddress

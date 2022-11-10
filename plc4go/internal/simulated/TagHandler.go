@@ -30,80 +30,80 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-type FieldType uint8
+type TagType uint8
 
 const (
-	FieldRandom FieldType = iota
-	FieldState
-	FieldStdOut
+	TagRandom TagType = iota
+	TagState
+	TagStdOut
 )
 
-func (e FieldType) Name() string {
+func (e TagType) Name() string {
 	switch e {
-	case FieldRandom:
+	case TagRandom:
 		return "RANDOM"
-	case FieldState:
+	case TagState:
 		return "STATE"
-	case FieldStdOut:
+	case TagStdOut:
 		return "STDOUT"
 	default:
 		return "UNKNOWN"
 	}
 }
 
-type FieldHandler struct {
+type TagHandler struct {
 	simulatedQuery *regexp.Regexp
 }
 
-func NewFieldHandler() FieldHandler {
-	return FieldHandler{
+func NewTagHandler() TagHandler {
+	return TagHandler{
 		simulatedQuery: regexp.MustCompile(`^(?P<type>\w+)/(?P<name>[a-zA-Z0-9_\\.]+):(?P<dataType>[a-zA-Z0-9]+)(\[(?P<numElements>\d+)])?$`),
 	}
 }
 
-func (m FieldHandler) ParseField(query string) (apiModel.PlcField, error) {
-	if match := utils.GetSubgroupMatches(m.simulatedQuery, query); match != nil {
-		fieldTypeName, ok := match["type"]
-		var fieldType FieldType
+func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
+	if match := utils.GetSubgroupMatches(m.simulatedQuery, tagAddress); match != nil {
+		tagTypeName, ok := match["type"]
+		var tagType TagType
 		if ok {
-			switch fieldTypeName {
+			switch tagTypeName {
 			case "RANDOM":
-				fieldType = FieldRandom
+				tagType = TagRandom
 				break
 			case "STATE":
-				fieldType = FieldState
+				tagType = TagState
 				break
 			case "STDOUT":
-				fieldType = FieldStdOut
+				tagType = TagStdOut
 			default:
-				return nil, errors.New("unknown field type '" + fieldTypeName + "'")
+				return nil, errors.New("unknown tag type '" + tagTypeName + "'")
 			}
 		}
-		fieldName, ok := match["name"]
-		fieldDataTypeName, ok := match["dataType"]
-		var fieldDataType model.SimulatedDataTypeSizes
+		tagName, ok := match["name"]
+		tagDataTypeName, ok := match["dataType"]
+		var tagDataType model.SimulatedDataTypeSizes
 		if ok {
-			fieldDataType, _ = model.SimulatedDataTypeSizesByName(fieldDataTypeName)
-			if fieldDataType == 0 {
-				return nil, errors.New("unknown field data-type '" + fieldDataTypeName + "'")
+			tagDataType, _ = model.SimulatedDataTypeSizesByName(tagDataTypeName)
+			if tagDataType == 0 {
+				return nil, errors.New("unknown tag data-type '" + tagDataTypeName + "'")
 			}
 		}
-		fieldNumElementsText, ok := match["numElements"]
-		var fieldNumElements uint16
-		if ok && len(fieldNumElementsText) > 0 {
-			num, err := strconv.Atoi(fieldNumElementsText)
+		tagNumElementsText, ok := match["numElements"]
+		var tagNumElements uint16
+		if ok && len(tagNumElementsText) > 0 {
+			num, err := strconv.Atoi(tagNumElementsText)
 			if err != nil {
-				return nil, errors.New("invalid size '" + fieldNumElementsText + "'")
+				return nil, errors.New("invalid size '" + tagNumElementsText + "'")
 			}
-			fieldNumElements = uint16(num)
+			tagNumElements = uint16(num)
 		} else {
-			fieldNumElements = 1
+			tagNumElements = 1
 		}
-		return NewSimulatedField(fieldType, fieldName, fieldDataType, fieldNumElements), nil
+		return NewSimulatedTag(tagType, tagName, tagDataType, tagNumElements), nil
 	}
-	return nil, errors.New("Invalid address format for address '" + query + "'")
+	return nil, errors.New("Invalid address format for address '" + tagAddress + "'")
 }
 
-func (m FieldHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {
+func (m TagHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {
 	return nil, fmt.Errorf("queries not supported")
 }

@@ -33,35 +33,35 @@ import (
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteRequestBuilder
 type DefaultPlcWriteRequestBuilder struct {
 	writer                  spi.PlcWriter
-	fieldHandler            spi.PlcFieldHandler
+	tagHandler              spi.PlcTagHandler
 	valueHandler            spi.PlcValueHandler
-	fieldNames              []string
-	fieldQueries            map[string]string
-	fields                  map[string]model.PlcField
+	tagNames                []string
+	tagAddresses            map[string]string
+	tags                    map[string]model.PlcTag
 	values                  map[string]interface{}
 	writeRequestInterceptor interceptors.WriteRequestInterceptor
 }
 
-func NewDefaultPlcWriteRequestBuilder(fieldHandler spi.PlcFieldHandler, valueHandler spi.PlcValueHandler, writer spi.PlcWriter) *DefaultPlcWriteRequestBuilder {
+func NewDefaultPlcWriteRequestBuilder(tagHandler spi.PlcTagHandler, valueHandler spi.PlcValueHandler, writer spi.PlcWriter) *DefaultPlcWriteRequestBuilder {
 	return &DefaultPlcWriteRequestBuilder{
 		writer:       writer,
-		fieldHandler: fieldHandler,
+		tagHandler:   tagHandler,
 		valueHandler: valueHandler,
-		fieldNames:   make([]string, 0),
-		fieldQueries: map[string]string{},
-		fields:       map[string]model.PlcField{},
+		tagNames:     make([]string, 0),
+		tagAddresses: map[string]string{},
+		tags:         map[string]model.PlcTag{},
 		values:       map[string]interface{}{},
 	}
 }
 
-func NewDefaultPlcWriteRequestBuilderWithInterceptor(fieldHandler spi.PlcFieldHandler, valueHandler spi.PlcValueHandler, writer spi.PlcWriter, writeRequestInterceptor interceptors.WriteRequestInterceptor) *DefaultPlcWriteRequestBuilder {
+func NewDefaultPlcWriteRequestBuilderWithInterceptor(tagHandler spi.PlcTagHandler, valueHandler spi.PlcValueHandler, writer spi.PlcWriter, writeRequestInterceptor interceptors.WriteRequestInterceptor) *DefaultPlcWriteRequestBuilder {
 	return &DefaultPlcWriteRequestBuilder{
 		writer:                  writer,
-		fieldHandler:            fieldHandler,
+		tagHandler:              tagHandler,
 		valueHandler:            valueHandler,
-		fieldNames:              make([]string, 0),
-		fieldQueries:            map[string]string{},
-		fields:                  map[string]model.PlcField{},
+		tagNames:                make([]string, 0),
+		tagAddresses:            map[string]string{},
+		tags:                    map[string]model.PlcTag{},
 		values:                  map[string]interface{}{},
 		writeRequestInterceptor: writeRequestInterceptor,
 	}
@@ -75,56 +75,56 @@ func (m *DefaultPlcWriteRequestBuilder) GetWriteRequestInterceptor() interceptor
 	return m.writeRequestInterceptor
 }
 
-func (m *DefaultPlcWriteRequestBuilder) AddFieldQuery(name string, fieldQuery string, value interface{}) model.PlcWriteRequestBuilder {
-	m.fieldNames = append(m.fieldNames, name)
-	m.fieldQueries[name] = fieldQuery
+func (m *DefaultPlcWriteRequestBuilder) AddTagAddress(name string, tagAddress string, value interface{}) model.PlcWriteRequestBuilder {
+	m.tagNames = append(m.tagNames, name)
+	m.tagAddresses[name] = tagAddress
 	m.values[name] = value
 	return m
 }
 
-func (m *DefaultPlcWriteRequestBuilder) AddField(name string, field model.PlcField, value interface{}) model.PlcWriteRequestBuilder {
-	m.fieldNames = append(m.fieldNames, name)
-	m.fields[name] = field
+func (m *DefaultPlcWriteRequestBuilder) AddTag(name string, tag model.PlcTag, value interface{}) model.PlcWriteRequestBuilder {
+	m.tagNames = append(m.tagNames, name)
+	m.tags[name] = tag
 	m.values[name] = value
 	return m
 }
 
 func (m *DefaultPlcWriteRequestBuilder) Build() (model.PlcWriteRequest, error) {
-	// Parse any unparsed fieldQueries
-	for _, name := range m.fieldNames {
-		if fieldQuery, ok := m.fieldQueries[name]; ok {
-			field, err := m.fieldHandler.ParseField(fieldQuery)
+	// Parse any unparsed tagAddresses
+	for _, name := range m.tagNames {
+		if tagAddress, ok := m.tagAddresses[name]; ok {
+			tag, err := m.tagHandler.ParseTag(tagAddress)
 			if err != nil {
-				return nil, errors.Wrapf(err, "Error parsing field query: %s", fieldQuery)
+				return nil, errors.Wrapf(err, "Error parsing tag query: %s", tagAddress)
 			}
-			m.fields[name] = field
+			m.tags[name] = tag
 		}
 	}
 	// Reset the queries
-	m.fieldQueries = map[string]string{}
+	m.tagAddresses = map[string]string{}
 
-	// Process the values for fields.
+	// Process the values for tags.
 	plcValues := make(map[string]values.PlcValue)
-	for name, field := range m.fields {
+	for name, field := range m.tags {
 		value, err := m.valueHandler.NewPlcValue(field, m.values[name])
 		if err != nil {
-			//			return nil, errors.Wrapf(err, "Error parsing value of type: %s", field.GetTypeName())
+			//			return nil, errors.Wrapf(err, "Error parsing value of type: %s", tag.GetTypeName())
 		}
 		plcValues[name] = value
 	}
-	return NewDefaultPlcWriteRequest(m.fields, m.fieldNames, plcValues, m.writer, m.writeRequestInterceptor), nil
+	return NewDefaultPlcWriteRequest(m.tags, m.tagNames, plcValues, m.writer, m.writeRequestInterceptor), nil
 }
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteRequest
 type DefaultPlcWriteRequest struct {
-	DefaultPlcFieldRequest
+	DefaultPlcTagRequest
 	values                  map[string]values.PlcValue
 	writer                  spi.PlcWriter
 	writeRequestInterceptor interceptors.WriteRequestInterceptor
 }
 
-func NewDefaultPlcWriteRequest(fields map[string]model.PlcField, fieldNames []string, values map[string]values.PlcValue, writer spi.PlcWriter, writeRequestInterceptor interceptors.WriteRequestInterceptor) model.PlcWriteRequest {
-	return &DefaultPlcWriteRequest{NewDefaultPlcFieldRequest(fields, fieldNames), values, writer, writeRequestInterceptor}
+func NewDefaultPlcWriteRequest(fields map[string]model.PlcTag, fieldNames []string, values map[string]values.PlcValue, writer spi.PlcWriter, writeRequestInterceptor interceptors.WriteRequestInterceptor) model.PlcWriteRequest {
+	return &DefaultPlcWriteRequest{NewDefaultPlcTagRequest(fields, fieldNames), values, writer, writeRequestInterceptor}
 }
 
 func (d *DefaultPlcWriteRequest) Execute() <-chan model.PlcWriteRequestResult {

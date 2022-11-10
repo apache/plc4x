@@ -30,12 +30,12 @@ import (
 	"github.com/pkg/errors"
 )
 
-type FieldHandler struct {
+type TagHandler struct {
 	addressPattern *regexp.Regexp
 }
 
-func NewFieldHandler() FieldHandler {
-	return FieldHandler{
+func NewTagHandler() TagHandler {
+	return TagHandler{
 		addressPattern: regexp.MustCompile(`^%(?P<tag>[a-zA-Z_.0-9]+\[?[0-9]*]?):?(?P<dataType>[A-Z]*):?(?P<elementNb>[0-9]*)`),
 	}
 }
@@ -46,7 +46,7 @@ const (
 	ELEMENT_NB = "elementNb"
 )
 
-func (m FieldHandler) ParseField(query string) (model.PlcField, error) {
+func (m TagHandler) ParseTag(query string) (model.PlcTag, error) {
 	if match := utils.GetSubgroupMatches(m.addressPattern, query); match != nil {
 		tag := match[TAG]
 		_type, ok := readWriteModel.CIPDataTypeCodeByName(match[DATA_TYPE])
@@ -55,11 +55,11 @@ func (m FieldHandler) ParseField(query string) (model.PlcField, error) {
 		}
 		parsedUint, _ := strconv.ParseUint(match[ELEMENT_NB], 10, 16)
 		elementNb := uint16(parsedUint)
-		return NewField(tag, _type, elementNb), nil
+		return NewTag(tag, _type, elementNb), nil
 	}
 	return nil, errors.Errorf("Unable to parse %s", query)
 }
 
-func (m FieldHandler) ParseQuery(query string) (model.PlcQuery, error) {
+func (m TagHandler) ParseQuery(query string) (model.PlcQuery, error) {
 	return nil, fmt.Errorf("queries not supported")
 }

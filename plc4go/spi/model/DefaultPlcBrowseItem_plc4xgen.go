@@ -42,20 +42,20 @@ func (d *DefaultPlcBrowseItem) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		return err
 	}
 
-	if d.Field != nil {
-		if serializableField, ok := d.Field.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("field"); err != nil {
+	if d.Tag != nil {
+		if serializableField, ok := d.Tag.(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("tag"); err != nil {
 				return err
 			}
 			if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
 				return err
 			}
-			if err := writeBuffer.PopContext("field"); err != nil {
+			if err := writeBuffer.PopContext("tag"); err != nil {
 				return err
 			}
 		} else {
-			stringValue := fmt.Sprintf("%v", d.Field)
-			if err := writeBuffer.WriteString("field", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			stringValue := fmt.Sprintf("%v", d.Tag)
+			if err := writeBuffer.WriteString("tag", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
 				return err
 			}
 		}

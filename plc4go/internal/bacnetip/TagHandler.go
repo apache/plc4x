@@ -31,13 +31,13 @@ import (
 	"github.com/pkg/errors"
 )
 
-type FieldHandler struct {
+type TagHandler struct {
 	addressPattern       *regexp.Regexp
 	propertyFieldPattern *regexp.Regexp
 }
 
-func NewFieldHandler() FieldHandler {
-	return FieldHandler{
+func NewTagHandler() TagHandler {
+	return TagHandler{
 		addressPattern:       regexp.MustCompile(`^(?P<objectType>[\d\w]+),(?P<objectInstance>\d+)/(?P<propertyIdentifiers>[\d\w]+(?:\[\d+])?(?:&[\d\w]+(?:\[\d+])?)*)`),
 		propertyFieldPattern: regexp.MustCompile(`^(?P<propertyIdentifier>[\d\w]+)(?:\[(?P<arrayIndex>\d+)])?$`),
 	}
@@ -51,8 +51,8 @@ const (
 	ARRAY_INDEX          = "arrayIndex"
 )
 
-func (m FieldHandler) ParseField(fieldString string) (model.PlcField, error) {
-	if addressMatch := utils.GetSubgroupMatches(m.addressPattern, fieldString); addressMatch != nil {
+func (m TagHandler) ParseTag(tagString string) (model.PlcTag, error) {
+	if addressMatch := utils.GetSubgroupMatches(m.addressPattern, tagString); addressMatch != nil {
 		var result plcTag
 		{
 			objectTypeMatch := addressMatch[OBJECT_TYPE]
@@ -104,9 +104,9 @@ func (m FieldHandler) ParseField(fieldString string) (model.PlcField, error) {
 		}
 		return result, nil
 	}
-	return nil, errors.Errorf("Unable to parse %s", fieldString)
+	return nil, errors.Errorf("Unable to parse %s", tagString)
 }
 
-func (m FieldHandler) ParseQuery(_ string) (model.PlcQuery, error) {
+func (m TagHandler) ParseQuery(_ string) (model.PlcQuery, error) {
 	return nil, fmt.Errorf("queries not supported")
 }

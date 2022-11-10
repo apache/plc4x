@@ -204,7 +204,7 @@ func readFromPlc(t *testing.T, cache plcConnectionCache, connectionString string
 		}()
 
 		// Prepare a read request.
-		readRequest, err := connection.ReadRequestBuilder().AddFieldQuery("test", resourceString).Build()
+		readRequest, err := connection.ReadRequestBuilder().AddTagAddress("test", resourceString).Build()
 		if err != nil {
 			t.Errorf("PlcConnectionCache.ReadRequest.Build() error = %v", err)
 			return ch

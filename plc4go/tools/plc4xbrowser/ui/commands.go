@@ -159,7 +159,7 @@ var rootCommand = Command{
 				} else {
 					start := time.Now()
 					readRequest, err := connection.ReadRequestBuilder().
-						AddFieldQuery("readField", split[1]).
+						AddTagAddress("readField", split[1]).
 						Build()
 					if err != nil {
 						return errors.Wrapf(err, "%s can't read", connectionsString)
@@ -223,7 +223,7 @@ var rootCommand = Command{
 				} else {
 					start := time.Now()
 					writeRequest, err := connection.WriteRequestBuilder().
-						AddFieldQuery("writeField", split[1], split[2]).
+						AddTagAddress("writeField", split[1], split[2]).
 						Build()
 					if err != nil {
 						return errors.Wrapf(err, "%s can't write", connectionsString)
@@ -371,7 +371,7 @@ var rootCommand = Command{
 					return errors.Errorf("%s not connected", connectionsString)
 				} else {
 					subscriptionRequest, err := connection.SubscriptionRequestBuilder().
-						AddEventFieldQuery("subscriptionField", split[1]).
+						AddEventTagAddress("subscriptionField", split[1]).
 						AddPreRegisteredConsumer("subscriptionField", func(event model.PlcSubscriptionEvent) {
 							numberOfMessagesReceived++
 							messageReceived(numberOfMessagesReceived, time.Now(), event)

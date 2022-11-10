@@ -42,27 +42,27 @@ func NewWriter(messageCodec spi.MessageCodec) Writer {
 func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
 	// TODO: handle context
 	result := make(chan model.PlcWriteRequestResult)
-	// If we are requesting only one field, use a
-	if len(writeRequest.GetFieldNames()) == 1 {
-		fieldName := writeRequest.GetFieldNames()[0]
+	// If we are requesting only one tag, use a
+	if len(writeRequest.GetTagNames()) == 1 {
+		tagName := writeRequest.GetTagNames()[0]
 
-		// Get the KnxNetIp field instance from the request
-		field := writeRequest.GetField(fieldName)
-		groupAddressField, err := CastToGroupAddressFieldFromPlcField(field)
+		// Get the KnxNetIp tag instance from the request
+		tag := writeRequest.GetTag(tagName)
+		groupAddressTag, err := CastToGroupAddressTagFromPlcTag(tag)
 		if err != nil {
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
-				Err:      errors.New("invalid field item type"),
+				Err:      errors.New("invalid tag item type"),
 			}
 			return result
 		}
 
 		// Get the value from the request and serialize it to a byte array
-		value := writeRequest.GetValue(fieldName)
-		fieldType := groupAddressField.GetFieldType()
+		value := writeRequest.GetValue(tagName)
+		tagType := groupAddressTag.GetTagType()
 		// TODO: why do we ignore the bytes here?
-		if _, err := readWriteModel.KnxDatapointSerialize(value, *fieldType); err != nil {
+		if _, err := readWriteModel.KnxDatapointSerialize(value, *tagType); err != nil {
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
