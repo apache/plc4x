@@ -35,10 +35,7 @@ type ApplicationLayerMessageCodec struct {
 
 func NewApplicationLayerMessageCodec(transportInstance transports.TransportInstance, deviceInventory *DeviceInventory) *ApplicationLayerMessageCodec {
 	return &ApplicationLayerMessageCodec{
-		TransactionStateMachine{
-			MessageCodec:    NewMessageCodec(transportInstance),
-			deviceInventory: deviceInventory,
-		},
+		NewTransactionStateMachine(NewMessageCodec(transportInstance), deviceInventory),
 	}
 }
 

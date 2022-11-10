@@ -45,7 +45,7 @@ type APDUComplexAck interface {
 	// GetServiceAck returns ServiceAck (property field)
 	GetServiceAck() BACnetServiceAck
 	// GetSegmentServiceChoice returns SegmentServiceChoice (property field)
-	GetSegmentServiceChoice() *uint8
+	GetSegmentServiceChoice() *BACnetConfirmedServiceChoice
 	// GetSegment returns Segment (property field)
 	GetSegment() []byte
 	// GetApduHeaderReduction returns ApduHeaderReduction (virtual field)
@@ -70,7 +70,7 @@ type _APDUComplexAck struct {
 	SequenceNumber       *uint8
 	ProposedWindowSize   *uint8
 	ServiceAck           BACnetServiceAck
-	SegmentServiceChoice *uint8
+	SegmentServiceChoice *BACnetConfirmedServiceChoice
 	Segment              []byte
 	// Reserved Fields
 	reservedField0 *uint8
@@ -125,7 +125,7 @@ func (m *_APDUComplexAck) GetServiceAck() BACnetServiceAck {
 	return m.ServiceAck
 }
 
-func (m *_APDUComplexAck) GetSegmentServiceChoice() *uint8 {
+func (m *_APDUComplexAck) GetSegmentServiceChoice() *BACnetConfirmedServiceChoice {
 	return m.SegmentServiceChoice
 }
 
@@ -172,7 +172,7 @@ func (m *_APDUComplexAck) GetSegmentReduction() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewAPDUComplexAck factory function for _APDUComplexAck
-func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceAck BACnetServiceAck, segmentServiceChoice *uint8, segment []byte, apduLength uint16) *_APDUComplexAck {
+func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceAck BACnetServiceAck, segmentServiceChoice *BACnetConfirmedServiceChoice, segment []byte, apduLength uint16) *_APDUComplexAck {
 	_result := &_APDUComplexAck{
 		SegmentedMessage:     segmentedMessage,
 		MoreFollows:          moreFollows,
@@ -362,13 +362,19 @@ func APDUComplexAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint1
 	}
 
 	// Optional Field (segmentServiceChoice) (Can be skipped, if a given expression evaluates to false)
-	var segmentServiceChoice *uint8 = nil
+	var segmentServiceChoice *BACnetConfirmedServiceChoice = nil
 	if bool(segmentedMessage) && bool(bool((*sequenceNumber) != (0))) {
-		_val, _err := readBuffer.ReadUint8("segmentServiceChoice", 8)
+		if pullErr := readBuffer.PullContext("segmentServiceChoice"); pullErr != nil {
+			return nil, errors.Wrap(pullErr, "Error pulling for segmentServiceChoice")
+		}
+		_val, _err := BACnetConfirmedServiceChoiceParseWithBuffer(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'segmentServiceChoice' field of APDUComplexAck")
 		}
 		segmentServiceChoice = &_val
+		if closeErr := readBuffer.CloseContext("segmentServiceChoice"); closeErr != nil {
+			return nil, errors.Wrap(closeErr, "Error closing for segmentServiceChoice")
+		}
 	}
 
 	// Virtual field
@@ -501,10 +507,16 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 		}
 
 		// Optional Field (segmentServiceChoice) (Can be skipped, if the value is null)
-		var segmentServiceChoice *uint8 = nil
+		var segmentServiceChoice *BACnetConfirmedServiceChoice = nil
 		if m.GetSegmentServiceChoice() != nil {
+			if pushErr := writeBuffer.PushContext("segmentServiceChoice"); pushErr != nil {
+				return errors.Wrap(pushErr, "Error pushing for segmentServiceChoice")
+			}
 			segmentServiceChoice = m.GetSegmentServiceChoice()
-			_segmentServiceChoiceErr := writeBuffer.WriteUint8("segmentServiceChoice", 8, *(segmentServiceChoice))
+			_segmentServiceChoiceErr := writeBuffer.WriteSerializable(segmentServiceChoice)
+			if popErr := writeBuffer.PopContext("segmentServiceChoice"); popErr != nil {
+				return errors.Wrap(popErr, "Error popping for segmentServiceChoice")
+			}
 			if _segmentServiceChoiceErr != nil {
 				return errors.Wrap(_segmentServiceChoiceErr, "Error serializing 'segmentServiceChoice' field")
 			}

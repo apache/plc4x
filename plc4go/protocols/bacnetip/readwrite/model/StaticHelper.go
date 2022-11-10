@@ -798,8 +798,7 @@ func CreateBACnetContextTagUnsignedInteger(tagNumber uint8, value uint) BACnetCo
 	return NewBACnetContextTagUnsignedInteger(payload, header, tagNumber)
 }
 
-func CreateUnsignedPayload(value uint) (uint32, BACnetTagPayloadUnsignedInteger) {
-	var length uint32
+func CreateUnsignedPayload(value uint) (length uint32, payload BACnetTagPayloadUnsignedInteger) {
 	var valueUint8 *uint8
 	var valueUint16 *uint16
 	var valueUint24 *uint32
@@ -827,8 +826,8 @@ func CreateUnsignedPayload(value uint) (uint32, BACnetTagPayloadUnsignedInteger)
 		valueUint32_ := uint32(value)
 		valueUint32 = &valueUint32_
 	}
-	payload := NewBACnetTagPayloadUnsignedInteger(valueUint8, valueUint16, valueUint24, valueUint32, valueUint40, valueUint48, valueUint56, valueUint64, length)
-	return length, payload
+	payload = NewBACnetTagPayloadUnsignedInteger(valueUint8, valueUint16, valueUint24, valueUint32, valueUint40, valueUint48, valueUint56, valueUint64, length)
+	return
 }
 
 func CreateBACnetApplicationTagSignedInteger(value int) BACnetApplicationTagSignedInteger {

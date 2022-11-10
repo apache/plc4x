@@ -748,14 +748,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := model.TagClassByName(parserArguments[1])
 		return model.BACnetLiftFaultTaggedParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "MaxApduLengthAcceptedTagged":
-		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
-		if err != nil {
-			return nil, err
-		}
-		tagNumber := uint8(parsedUint0)
-		tagClass, _ := model.TagClassByName(parserArguments[1])
-		return model.MaxApduLengthAcceptedTaggedParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
 	case "BACnetPropertyStatesEnclosed":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1585,14 +1577,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "BACnetAuthenticationFactor":
 		return model.BACnetAuthenticationFactorParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "MaxSegmentsAcceptedTagged":
-		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
-		if err != nil {
-			return nil, err
-		}
-		tagNumber := uint8(parsedUint0)
-		tagClass, _ := model.TagClassByName(parserArguments[1])
-		return model.MaxSegmentsAcceptedTaggedParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
 	case "BACnetWriteAccessSpecification":
 		return model.BACnetWriteAccessSpecificationParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetLightingCommandEnclosed":

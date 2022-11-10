@@ -297,7 +297,8 @@
             [validation '(!segmentedMessage && serviceRequest != null) || segmentedMessage'
                         "service request should be set"                     ]
             // When we read the first segment we want the service choice to be part of the bytes so we only read it > 0
-            [optional uint 8    segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
+            [optional BACnetConfirmedServiceChoice
+                                segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
             [virtual  uint 16   segmentReduction
                                     '(segmentServiceChoice != null)?(apduHeaderReduction+1):apduHeaderReduction'       ]
             [array    byte      segment
@@ -312,7 +313,8 @@
         ['SIMPLE_ACK_PDU' *SimpleAck
             [reserved uint 4    '0'                                     ]
             [simple   uint 8    originalInvokeId                        ]
-            [simple   uint 8    serviceChoice                           ]
+            [simple   BACnetConfirmedServiceChoice
+                                serviceChoice                           ]
         ]
         ['COMPLEX_ACK_PDU' *ComplexAck
             [simple   bit       segmentedMessage                        ]
@@ -329,7 +331,8 @@
             [validation '(!segmentedMessage && serviceAck != null) || segmentedMessage'
                         "service ack should be set"                     ]
             // When we read the first segment we want the service choice to be part of the bytes so we only read it > 0
-            [optional uint 8    segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
+            [optional BACnetConfirmedServiceChoice
+                                segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
             [virtual  uint 16   segmentReduction
                                     '(segmentServiceChoice != null)?(apduHeaderReduction+1):apduHeaderReduction'
                                                                         ]
