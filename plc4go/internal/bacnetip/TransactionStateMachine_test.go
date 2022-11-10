@@ -325,11 +325,14 @@ func TestTransactionStateMachine_handleOutboundMessage(t1 *testing.T) {
 					var deviceInventory = DeviceInventory{
 						devices: map[string]DeviceEntry{
 							"123": {
-								DeviceIdentifier:          nil,
-								MaximumApduLengthAccepted: readWriteModel.MaxApduLengthAccepted_NUM_OCTETS_206,
-								SegmentationSupported:     readWriteModel.BACnetSegmentation_SEGMENTED_BOTH,
-								VendorId:                  0,
-								DeviceObjects:             nil,
+								DeviceIdentifier: nil,
+								MaximumApduLengthAccepted: func() *readWriteModel.MaxApduLengthAccepted {
+									x := readWriteModel.MaxApduLengthAccepted_NUM_OCTETS_206
+									return &x
+								}(),
+								SegmentationSupported: readWriteModel.BACnetSegmentation_SEGMENTED_BOTH,
+								VendorId:              0,
+								DeviceObjects:         nil,
 							},
 						},
 					}

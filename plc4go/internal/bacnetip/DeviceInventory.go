@@ -31,32 +31,39 @@ type DeviceInventory struct {
 	devices map[string]DeviceEntry
 }
 
-func (d *DeviceInventory) getEntryForDestination(destination []uint8) (DeviceEntry, error) {
+func (d *DeviceInventory) getEntryForDestination(destination []uint8) (*DeviceEntry, error) {
 	d.RLock()
 	defer d.RUnlock()
 	deviceKey := string(destination)
 	deviceEntry, ok := d.devices[deviceKey]
 	if !ok {
-		return NoDeviceEntry, errors.Errorf("no entry found for device key %s", deviceKey)
+		return nil, errors.Errorf("no entry found for device key %s", deviceKey)
 	}
-	return deviceEntry, nil
+	return &deviceEntry, nil
 }
 
-var NoDeviceEntry = DeviceEntry{
+var defaultMaxApduLength = readWriteModel.MaxApduLengthAccepted_NUM_OCTETS_1024
+var defaultMaxSegmentsAccepted = readWriteModel.MaxSegmentsAccepted_NUM_SEGMENTS_16
+
+// DeviceEntryDefault is a device entry with default entries
+var DeviceEntryDefault = DeviceEntry{
 	DeviceIdentifier:          nil,
-	MaximumApduLengthAccepted: readWriteModel.MaxApduLengthAccepted_NUM_OCTETS_1024,
+	MaximumApduLengthAccepted: &defaultMaxApduLength,
+	MaximumNpduLength:         nil, //note as we are ip we don't care about this
 	SegmentationSupported:     readWriteModel.BACnetSegmentation_SEGMENTED_BOTH,
-	MaxSegmentsAccepted:       16,
+	MaxSegmentsAccepted:       &defaultMaxSegmentsAccepted,
 	APDUSegmentTimeout:        5000,
 	APDUTimeout:               3000,
 	NumberOfAPDURetries:       3,
 }
 
+// TODO: switch that to a pointer and all entries that might be missing too
 type DeviceEntry struct {
 	DeviceIdentifier          readWriteModel.BACnetTagPayloadObjectIdentifier
-	MaximumApduLengthAccepted readWriteModel.MaxApduLengthAccepted
+	MaximumApduLengthAccepted *readWriteModel.MaxApduLengthAccepted
+	MaximumNpduLength         *uint
 	SegmentationSupported     readWriteModel.BACnetSegmentation
-	MaxSegmentsAccepted       readWriteModel.MaxSegmentsAccepted
+	MaxSegmentsAccepted       *readWriteModel.MaxSegmentsAccepted
 	APDUSegmentTimeout        uint
 	APDUTimeout               uint
 	NumberOfAPDURetries       uint
