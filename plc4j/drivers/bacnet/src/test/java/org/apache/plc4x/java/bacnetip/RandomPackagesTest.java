@@ -3605,7 +3605,7 @@ public class RandomPackagesTest {
                     .extracting(BVLCOriginalUnicastNPDU::getNpdu)
                     .extracting(NPDU::getApdu)
                     .asInstanceOf(InstanceOfAssertFactories.type(APDUSegmentAck.class))
-                    .extracting(APDUSegmentAck::getNegativeAck, APDUSegmentAck::getServer, APDUSegmentAck::getOriginalInvokeId, APDUSegmentAck::getSequenceNumber, APDUSegmentAck::getProposedWindowSize)
+                    .extracting(APDUSegmentAck::getNegativeAck, APDUSegmentAck::getServer, APDUSegmentAck::getOriginalInvokeId, APDUSegmentAck::getSequenceNumber, APDUSegmentAck::getActualWindowSize)
                     .containsExactly(false, false, (short) 195, (short) 0, (short) 16)),
             DynamicTest.dynamicTest("No. 6 - Complex-ACK     atomicReadFile[195]  (Message fragment 1)",
                 () -> assertThat(pcapEvaluator.nextBVLC())
@@ -3649,7 +3649,7 @@ public class RandomPackagesTest {
                     .extracting(BVLCOriginalUnicastNPDU::getNpdu)
                     .extracting(NPDU::getApdu)
                     .asInstanceOf(InstanceOfAssertFactories.type(APDUSegmentAck.class))
-                    .extracting(APDUSegmentAck::getNegativeAck, APDUSegmentAck::getServer, APDUSegmentAck::getOriginalInvokeId, APDUSegmentAck::getSequenceNumber, APDUSegmentAck::getProposedWindowSize)
+                    .extracting(APDUSegmentAck::getNegativeAck, APDUSegmentAck::getServer, APDUSegmentAck::getOriginalInvokeId, APDUSegmentAck::getSequenceNumber, APDUSegmentAck::getActualWindowSize)
                     .containsExactly(false, false, (short) 195, (short) 4, (short) 16)),
             DynamicTest.dynamicTest("Manually put together payload",
                 () -> assertThat(baos.toByteArray())

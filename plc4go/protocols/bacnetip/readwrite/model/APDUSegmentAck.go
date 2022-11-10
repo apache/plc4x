@@ -39,8 +39,8 @@ type APDUSegmentAck interface {
 	GetOriginalInvokeId() uint8
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() uint8
-	// GetProposedWindowSize returns ProposedWindowSize (property field)
-	GetProposedWindowSize() uint8
+	// GetActualWindowSize returns ActualWindowSize (property field)
+	GetActualWindowSize() uint8
 }
 
 // APDUSegmentAckExactly can be used when we want exactly this type and not a type which fulfills APDUSegmentAck.
@@ -53,11 +53,11 @@ type APDUSegmentAckExactly interface {
 // _APDUSegmentAck is the data-structure of this message
 type _APDUSegmentAck struct {
 	*_APDU
-	NegativeAck        bool
-	Server             bool
-	OriginalInvokeId   uint8
-	SequenceNumber     uint8
-	ProposedWindowSize uint8
+	NegativeAck      bool
+	Server           bool
+	OriginalInvokeId uint8
+	SequenceNumber   uint8
+	ActualWindowSize uint8
 	// Reserved Fields
 	reservedField0 *uint8
 }
@@ -103,8 +103,8 @@ func (m *_APDUSegmentAck) GetSequenceNumber() uint8 {
 	return m.SequenceNumber
 }
 
-func (m *_APDUSegmentAck) GetProposedWindowSize() uint8 {
-	return m.ProposedWindowSize
+func (m *_APDUSegmentAck) GetActualWindowSize() uint8 {
+	return m.ActualWindowSize
 }
 
 ///////////////////////
@@ -113,14 +113,14 @@ func (m *_APDUSegmentAck) GetProposedWindowSize() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewAPDUSegmentAck factory function for _APDUSegmentAck
-func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, proposedWindowSize uint8, apduLength uint16) *_APDUSegmentAck {
+func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8, apduLength uint16) *_APDUSegmentAck {
 	_result := &_APDUSegmentAck{
-		NegativeAck:        negativeAck,
-		Server:             server,
-		OriginalInvokeId:   originalInvokeId,
-		SequenceNumber:     sequenceNumber,
-		ProposedWindowSize: proposedWindowSize,
-		_APDU:              NewAPDU(apduLength),
+		NegativeAck:      negativeAck,
+		Server:           server,
+		OriginalInvokeId: originalInvokeId,
+		SequenceNumber:   sequenceNumber,
+		ActualWindowSize: actualWindowSize,
+		_APDU:            NewAPDU(apduLength),
 	}
 	_result._APDU._APDUChildRequirements = _result
 	return _result
@@ -163,7 +163,7 @@ func (m *_APDUSegmentAck) GetLengthInBitsConditional(lastItem bool) uint16 {
 	// Simple field (sequenceNumber)
 	lengthInBits += 8
 
-	// Simple field (proposedWindowSize)
+	// Simple field (actualWindowSize)
 	lengthInBits += 8
 
 	return lengthInBits
@@ -231,12 +231,12 @@ func APDUSegmentAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint1
 	}
 	sequenceNumber := _sequenceNumber
 
-	// Simple Field (proposedWindowSize)
-	_proposedWindowSize, _proposedWindowSizeErr := readBuffer.ReadUint8("proposedWindowSize", 8)
-	if _proposedWindowSizeErr != nil {
-		return nil, errors.Wrap(_proposedWindowSizeErr, "Error parsing 'proposedWindowSize' field of APDUSegmentAck")
+	// Simple Field (actualWindowSize)
+	_actualWindowSize, _actualWindowSizeErr := readBuffer.ReadUint8("actualWindowSize", 8)
+	if _actualWindowSizeErr != nil {
+		return nil, errors.Wrap(_actualWindowSizeErr, "Error parsing 'actualWindowSize' field of APDUSegmentAck")
 	}
-	proposedWindowSize := _proposedWindowSize
+	actualWindowSize := _actualWindowSize
 
 	if closeErr := readBuffer.CloseContext("APDUSegmentAck"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for APDUSegmentAck")
@@ -247,12 +247,12 @@ func APDUSegmentAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint1
 		_APDU: &_APDU{
 			ApduLength: apduLength,
 		},
-		NegativeAck:        negativeAck,
-		Server:             server,
-		OriginalInvokeId:   originalInvokeId,
-		SequenceNumber:     sequenceNumber,
-		ProposedWindowSize: proposedWindowSize,
-		reservedField0:     reservedField0,
+		NegativeAck:      negativeAck,
+		Server:           server,
+		OriginalInvokeId: originalInvokeId,
+		SequenceNumber:   sequenceNumber,
+		ActualWindowSize: actualWindowSize,
+		reservedField0:   reservedField0,
 	}
 	_child._APDU._APDUChildRequirements = _child
 	return _child, nil
@@ -318,11 +318,11 @@ func (m *_APDUSegmentAck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}
 
-		// Simple Field (proposedWindowSize)
-		proposedWindowSize := uint8(m.GetProposedWindowSize())
-		_proposedWindowSizeErr := writeBuffer.WriteUint8("proposedWindowSize", 8, (proposedWindowSize))
-		if _proposedWindowSizeErr != nil {
-			return errors.Wrap(_proposedWindowSizeErr, "Error serializing 'proposedWindowSize' field")
+		// Simple Field (actualWindowSize)
+		actualWindowSize := uint8(m.GetActualWindowSize())
+		_actualWindowSizeErr := writeBuffer.WriteUint8("actualWindowSize", 8, (actualWindowSize))
+		if _actualWindowSizeErr != nil {
+			return errors.Wrap(_actualWindowSizeErr, "Error serializing 'actualWindowSize' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUSegmentAck"); popErr != nil {

@@ -347,7 +347,7 @@
             [simple   bit       server                                  ]
             [simple   uint 8    originalInvokeId                        ]
             [simple   uint 8    sequenceNumber                          ]
-            [simple   uint 8    proposedWindowSize                      ]
+            [simple   uint 8    actualWindowSize                        ]
         ]
         ['ERROR_PDU' *Error
             [reserved uint 4    '0x00'                                  ]
