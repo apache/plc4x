@@ -24,12 +24,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-enum plc4c_driver_simulated_field_type_t { RANDOM, STATE, STDOUT };
-typedef enum plc4c_driver_simulated_field_type_t
-    plc4c_driver_simulated_field_type;
+enum plc4c_driver_simulated_tag_type_t { RANDOM, STATE, STDOUT };
+typedef enum plc4c_driver_simulated_tag_type_t
+    plc4c_driver_simulated_tag_type;
 
-typedef enum plc4c_driver_simulated_field_datatype_t
-    plc4c_driver_simulated_field_datatype;
+typedef enum plc4c_driver_simulated_tag_datatype_t
+    plc4c_driver_simulated_tag_datatype;
 
 // State definitions
 enum plc4c_driver_simulated_disconnect_states {
@@ -50,7 +50,7 @@ enum write_states {
 
 struct plc4c_driver_simulated_item_t {
   char *name;
-  plc4c_driver_simulated_field_type type;
+  plc4c_driver_simulated_tag_type type;
   plc4c_data_type data_type;
   int num_elements;
 };
@@ -118,7 +118,7 @@ plc4c_return_code plc4c_driver_simulated_read_machine_function(
       read_response->read_request = read_request;
       plc4c_utils_list_create(&(read_response->items));
 
-      // Process every field in the request.
+      // Process every tag in the request.
       plc4c_list_element *cur_element =
           plc4c_utils_list_head(read_request->items);
       while (cur_element != NULL) {
@@ -172,7 +172,7 @@ plc4c_return_code plc4c_driver_simulated_write_machine_function(
       write_response->write_request = write_request;
       plc4c_utils_list_create(&(write_response->response_items));
 
-      // Process every field in the request.
+      // Process every tag in the request.
       plc4c_list_element *cur_element =
           plc4c_utils_list_head(write_request->items);
       while (cur_element != NULL) {
@@ -233,7 +233,7 @@ plc4c_return_code plc4c_driver_simulated_write_machine_function(
 }
 
 plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
-  plc4c_driver_simulated_field_type type = RANDOM;
+  plc4c_driver_simulated_tag_type type = RANDOM;
   char *name = NULL;
   plc4c_data_type data_type = -1;
   int num_elements = 0;
