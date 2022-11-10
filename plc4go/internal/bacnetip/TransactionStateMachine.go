@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	"bytes"
 	"context"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -163,7 +164,7 @@ type OneShotTask struct {
 	_Task
 }
 
-// TODO: this is the interface to the outside for the SSM
+// TODO: this is the interface to the outside for the SSM // TODO: maybe we should port that as non interface first
 type ServiceAccessPoint interface {
 	GetDeviceInventory() *DeviceInventory
 	GetLocalDevice() DeviceEntry
@@ -176,6 +177,12 @@ type ServiceAccessPoint interface {
 	// TODO: wrap that properly
 	GetServerTransactions() []interface{}
 	GetApplicationTimeout() *uint
+}
+
+// TODO: interface to client // TODO: maybe we should port that as non interface first
+type Client interface {
+	request(apdu readWriteModel.APDU)
+	confirmation(apdu readWriteModel.APDU)
 }
 
 type SSMState uint8
@@ -472,18 +479,18 @@ type ClientSSM struct {
 	SSM
 }
 
-func NewClientSSM(sap ServiceAccessPoint, pduAddress []byte) (ClientSSM, error) {
+func NewClientSSM(sap ServiceAccessPoint, pduAddress []byte) (*ClientSSM, error) {
 	log.Debug().Interface("sap", sap).Bytes("pduAddress", pduAddress).Msg("init")
 	ssm, err := NewSSM(sap, pduAddress)
 	if err != nil {
-		return ClientSSM{}, err
+		return nil, err
 	}
 	// TODO: if deviceEntry is not there get it now...
 	if ssm.deviceEntry == nil {
 		// TODO: get entry for device, store it in inventory
 		log.Debug().Msg("Accquire device information")
 	}
-	return ClientSSM{
+	return &ClientSSM{
 		SSM: ssm,
 	}, nil
 }
@@ -997,18 +1004,18 @@ type ServerSSM struct {
 	segmentedResponseAccepted bool
 }
 
-func NewServerSSM(sap ServiceAccessPoint, pduAddress []byte) (ServerSSM, error) {
+func NewServerSSM(sap ServiceAccessPoint, pduAddress []byte) (*ServerSSM, error) {
 	log.Debug().Interface("sap", sap).Bytes("pduAddress", pduAddress).Msg("init")
 	ssm, err := NewSSM(sap, pduAddress)
 	if err != nil {
-		return ServerSSM{}, err
+		return nil, err
 	}
 	// TODO: if deviceEntry is not there get it now...
 	if &ssm.deviceEntry == nil {
 		// TODO: get entry for device, store it in inventory
 		log.Debug().Msg("Accquire device information")
 	}
-	return ServerSSM{
+	return &ServerSSM{
 		SSM:                       ssm,
 		segmentedResponseAccepted: true,
 	}, nil
@@ -1532,6 +1539,326 @@ func (s *ServerSSM) segmentedResponseTimeout() error {
 		if err := s.setState(ABORTED, nil); err != nil {
 			return errors.Wrap(err, "Error setting state to aborted")
 		}
+	}
+	return nil
+}
+
+type StateMachineAccessPoint struct {
+	Client
+	ServiceAccessPoint
+
+	localDevice           DeviceEntry
+	deviceInventory       *DeviceInventory
+	nextInvokeId          uint8
+	clientTransactions    []*ClientSSM
+	serverTransactions    []*ServerSSM
+	numberOfApduRetries   int
+	apduTimeout           int
+	maxApduLengthAccepted int
+	segmentationSupported readWriteModel.BACnetSegmentation
+	segmentTimeout        int
+	maxSegmentsAccepted   int
+	proposedWindowSize    int
+	dccEnableDisable      readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable
+	applicationTimeout    int
+}
+
+func NewStateMachineAccessPoint(localDevice DeviceEntry, deviceInventory *DeviceInventory, sapID int, cid int) StateMachineAccessPoint {
+	log.Debug().Msgf("NewStateMachineAccessPoint localDevice=%v deviceInventory=%v sap=%v cid=%v", localDevice, deviceInventory, sapID, cid)
+
+	// basic initialization
+	// TODO: init client
+	// TODO: init sap
+	return StateMachineAccessPoint{
+		// save a reference to the device information cache
+		localDevice:     localDevice,
+		deviceInventory: deviceInventory,
+
+		// client settings
+		nextInvokeId:       1,
+		clientTransactions: nil,
+
+		// server settings
+		serverTransactions: nil,
+
+		// confirmed request defaults
+		numberOfApduRetries:   3,
+		apduTimeout:           3000,
+		maxApduLengthAccepted: 1024,
+
+		// segmentation defaults
+		segmentationSupported: readWriteModel.BACnetSegmentation_NO_SEGMENTATION,
+		segmentTimeout:        1500,
+		maxSegmentsAccepted:   2,
+		proposedWindowSize:    2,
+
+		// device communication control
+		dccEnableDisable: readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE,
+
+		// how long the state machine is willing to wait for the application
+		// layer to form a response and send it
+		applicationTimeout: 3000,
+	}
+}
+
+// getNextInvokeId Called by clients to get an unused invoke ID
+func (s *StateMachineAccessPoint) getNextInvokeId(address []byte) (uint8, error) {
+	log.Debug().Msg("getNextInvokeId")
+
+	initialID := s.nextInvokeId
+	for {
+		invokeId := s.nextInvokeId
+		s.nextInvokeId++
+
+		// see if we've checked for them all
+		if initialID == s.nextInvokeId {
+			return 0, errors.New("No available invoke ID")
+		}
+
+		if len(s.clientTransactions) == 0 {
+			return invokeId, nil
+		}
+
+		// TODO: double check that the logic here is right
+		for _, tr := range s.clientTransactions {
+			if invokeId == tr.invokeId && bytes.Equal(address, tr.pduAddress) {
+				return invokeId, nil
+			}
+		}
+	}
+}
+
+// confirmation Packets coming up the stack are APDU's
+func (s *StateMachineAccessPoint) confirmation(apdu readWriteModel.APDU, pduSource []byte) error {
+	log.Debug().Msgf("confirmation\n%s", apdu)
+
+	// check device communication control
+	switch s.dccEnableDisable {
+	case readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE:
+		log.Debug().Msg("communications enabled")
+	case readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE:
+		switch {
+		case apdu.GetApduType() == readWriteModel.ApduType_CONFIRMED_REQUEST_PDU &&
+			apdu.(readWriteModel.APDUConfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL:
+			log.Debug().Msg("continue with DCC request")
+		case apdu.GetApduType() == readWriteModel.ApduType_CONFIRMED_REQUEST_PDU &&
+			apdu.(readWriteModel.APDUConfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetConfirmedServiceChoice_REINITIALIZE_DEVICE:
+			log.Debug().Msg("continue with reinitialize device")
+		case apdu.GetApduType() == readWriteModel.ApduType_UNCONFIRMED_REQUEST_PDU &&
+			apdu.(readWriteModel.APDUUnconfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetUnconfirmedServiceChoice_WHO_IS:
+			log.Debug().Msg("continue with Who-Is")
+		default:
+			log.Debug().Msg("not a Who-Is, dropped")
+			return nil
+		}
+	case readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION:
+		log.Debug().Msg("initiation disabled")
+	}
+
+	switch apdu := apdu.(type) {
+	case readWriteModel.APDUConfirmedRequestExactly:
+		// Find duplicates of this request
+		var tr *ServerSSM
+		for _, serverTransactionElement := range s.serverTransactions {
+			if apdu.GetInvokeId() == serverTransactionElement.invokeId && bytes.Equal(pduSource, serverTransactionElement.pduAddress) {
+				tr = serverTransactionElement
+				break
+			}
+		}
+		if tr == nil {
+			// build a server transaction
+			var err error
+			tr, err = NewServerSSM(s, pduSource)
+			if err != nil {
+				return errors.Wrap(err, "Error building server ssm")
+			}
+			s.serverTransactions = append(s.serverTransactions, tr)
+		}
+
+		// let it run with the apdu
+		if err := tr.indication(apdu); err != nil {
+			return errors.Wrap(err, "error runnning indication")
+		}
+	case readWriteModel.APDUUnconfirmedRequestExactly:
+		// deliver directly to the application
+		s.SapRequest(apdu)
+	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUComplexAckExactly, readWriteModel.APDUErrorExactly, readWriteModel.APDURejectExactly:
+		// find the client transaction this is acking
+		var tr *ClientSSM
+		for _, tr := range s.clientTransactions {
+			if apdu.(interface{ GetOriginalInvokeId() uint8 }).GetOriginalInvokeId() == tr.invokeId && bytes.Equal(pduSource, tr.pduAddress) {
+				break
+			}
+		}
+		if tr == nil {
+			// TODO: log at least
+			return nil
+		}
+
+		// send the packet on to the transaction
+		if err := tr.confirmation(apdu); err != nil {
+			return errors.Wrap(err, "error running confirmation")
+		}
+	case readWriteModel.APDUAbortExactly:
+		// find the transaction being aborted
+		if apdu.GetServer() {
+			var tr *ClientSSM
+			for _, tr := range s.clientTransactions {
+				if apdu.(interface{ GetOriginalInvokeId() uint8 }).GetOriginalInvokeId() == tr.invokeId && bytes.Equal(pduSource, tr.pduAddress) {
+					break
+				}
+			}
+			if tr == nil {
+				// TODO: log at least
+				return nil
+			}
+
+			// send the packet on to the transaction
+			if err := tr.confirmation(apdu); err != nil {
+				return errors.Wrap(err, "error running confirmation")
+			}
+		} else {
+			var tr *ServerSSM
+			for _, serverTransactionElement := range s.serverTransactions {
+				if apdu.GetOriginalInvokeId() == serverTransactionElement.invokeId && bytes.Equal(pduSource, serverTransactionElement.pduAddress) {
+					tr = serverTransactionElement
+					break
+				}
+			}
+			if tr == nil {
+				// TODO: log at least
+				return nil
+			}
+
+			// send the packet on to the transaction
+			if err := tr.indication(apdu); err != nil {
+				return errors.Wrap(err, "error running indication")
+			}
+		}
+	case readWriteModel.APDUSegmentAckExactly:
+		// find the transaction being aborted
+		if apdu.GetServer() {
+			var tr *ClientSSM
+			for _, tr := range s.clientTransactions {
+				if apdu.(interface{ GetOriginalInvokeId() uint8 }).GetOriginalInvokeId() == tr.invokeId && bytes.Equal(pduSource, tr.pduAddress) {
+					break
+				}
+			}
+			if tr == nil {
+				// TODO: log at least
+				return nil
+			}
+
+			// send the packet on to the transaction
+			if err := tr.confirmation(apdu); err != nil {
+				return errors.Wrap(err, "error running confirmation")
+			}
+		} else {
+			var tr *ServerSSM
+			for _, serverTransactionElement := range s.serverTransactions {
+				if apdu.GetOriginalInvokeId() == serverTransactionElement.invokeId && bytes.Equal(pduSource, serverTransactionElement.pduAddress) {
+					tr = serverTransactionElement
+					break
+				}
+			}
+			if tr == nil {
+				// TODO: log at least
+				return nil
+			}
+
+			// send the packet on to the transaction
+			if err := tr.indication(apdu); err != nil {
+				return errors.Wrap(err, "error running indication")
+			}
+		}
+	default:
+		return errors.Errorf("invalid APDU %T", apdu)
+	}
+	return nil
+}
+
+// sapIndication This function is called when the application is requesting a new transaction as a client.
+func (s *StateMachineAccessPoint) sapIndication(apdu readWriteModel.APDU, pduDestination []byte) error {
+	log.Debug().Msgf("sapIndication\n%s", apdu)
+
+	// check device communication control
+	switch s.dccEnableDisable {
+	case readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE:
+		log.Debug().Msg("communications enabled")
+	case readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE:
+		log.Debug().Msg("communications disabled")
+		return nil
+	case readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION:
+		log.Debug().Msg("initiation disabled")
+		if apdu.GetApduType() == readWriteModel.ApduType_UNCONFIRMED_REQUEST_PDU && apdu.(readWriteModel.APDUUnconfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetUnconfirmedServiceChoice_I_AM {
+			log.Debug().Msg("continue with I-Am")
+		} else {
+			log.Debug().Msg("not an I-Am")
+			return nil
+		}
+	}
+
+	switch apdu := apdu.(type) {
+	case readWriteModel.APDUUnconfirmedRequestExactly:
+		// deliver to the device
+		s.request(apdu)
+	case readWriteModel.APDUConfirmedRequestExactly:
+		// make sure it has an invoke ID
+		// TODO: here it is getting slightly different: usually we give the invoke id from the outside as it is build already. So maybe we need to adjust that (we never create it, we need to check for collisions but maybe we should change that so we move the creation down here)
+		// s.getNextInvokeId()...
+		for _, tr := range s.clientTransactions {
+			if apdu.GetInvokeId() == tr.invokeId && bytes.Equal(pduDestination, tr.pduAddress) {
+				return errors.New("invoke ID in use")
+			}
+		}
+
+		// warning for bogus requests
+		// TODO: not sure if we have that or if it is relvant (localstationaddr)
+
+		// create a client transaction state machine
+		tr, err := NewClientSSM(s, pduDestination)
+		if err != nil {
+			return errors.Wrap(err, "error creating client ssm")
+		}
+
+		// add it to our transactions to track it
+		s.clientTransactions = append(s.clientTransactions, tr)
+
+		// let it run
+		if err := tr.indication(apdu); err != nil {
+			return errors.Wrap(err, "error doing indication")
+		}
+	default:
+		return errors.Errorf("invalid APDU %T", apdu)
+	}
+
+	return nil
+}
+
+// sapConfirmation This function is called when the application is responding to a request, the apdu may be a simple
+//        ack, complex ack, error, reject or abort
+func (s *StateMachineAccessPoint) sapConfirmation(apdu readWriteModel.APDU, pduDestination []byte) error {
+	log.Debug().Msgf("sapConfirmation\n%s", apdu)
+	switch apdu.(type) {
+	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUComplexAckExactly, readWriteModel.APDUErrorExactly, readWriteModel.APDURejectExactly:
+		// find the client transaction this is acking
+		var tr *ServerSSM
+		for _, tr := range s.serverTransactions {
+			if apdu.(interface{ GetOriginalInvokeId() uint8 }).GetOriginalInvokeId() == tr.invokeId && bytes.Equal(pduDestination, tr.pduAddress) {
+				break
+			}
+		}
+		if tr == nil {
+			// TODO: log at least
+			return nil
+		}
+
+		// pass control to the transaction
+		if err := tr.confirmation(apdu); err != nil {
+			return errors.Wrap(err, "error running confirmation")
+		}
+	default:
+		return errors.Errorf("invalid APDU %T", apdu)
 	}
 	return nil
 }
