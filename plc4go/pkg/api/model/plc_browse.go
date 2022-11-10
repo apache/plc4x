@@ -64,7 +64,7 @@ type PlcBrowseItem interface {
 
 	GetName() string
 	IsReadable() bool
-	IsWritable() bool9Edz$7r4
+	IsWritable() bool
 	IsSubscribable() bool
 	GetChildren() map[string]PlcBrowseItem
 	GetOptions() map[string]values.PlcValue

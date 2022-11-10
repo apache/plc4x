@@ -34,12 +34,12 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestTag">
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz</name>
               <address>holding-register:1:REAL</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send Modbus Input-Register Read Request">
@@ -93,15 +93,15 @@
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <hurz>
-                <ModbusFieldHoldingRegister>
+                <ModbusTagHoldingRegister>
                   <address dataType="uint" bitLength="16">0</address>
                   <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                </ModbusFieldHoldingRegister>
+                </ModbusTagHoldingRegister>
               </hurz>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <hurz>
@@ -121,12 +121,12 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestTag">
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz</name>
               <address>holding-register:1:REAL[2]</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send Modbus Input-Register Read Request">
@@ -180,15 +180,15 @@
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <hurz>
-                <ModbusFieldHoldingRegister>
+                <ModbusTagHoldingRegister>
                   <address dataType="uint" bitLength="16">0</address>
                   <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                </ModbusFieldHoldingRegister>
+                </ModbusTagHoldingRegister>
               </hurz>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <hurz>
@@ -211,16 +211,16 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestTag">
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>holding-register:1:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestTag">
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz2</name>
               <address>holding-register:3:REAL</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send First Item Modbus Input-Register Read Request">
@@ -322,22 +322,22 @@
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <hurz1>
-                <ModbusFieldHoldingRegister>
+                <ModbusTagHoldingRegister>
                   <address dataType="uint" bitLength="16">0</address>
                   <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                </ModbusFieldHoldingRegister>
+                </ModbusTagHoldingRegister>
               </hurz1>
               <hurz2>
-                <ModbusFieldHoldingRegister>
+                <ModbusTagHoldingRegister>
                   <address dataType="uint" bitLength="16">2</address>
                   <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                </ModbusFieldHoldingRegister>
+                </ModbusTagHoldingRegister>
               </hurz2>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <hurz1>
@@ -363,13 +363,13 @@
     <steps>
       <api-request name="Receive Write Request from application">
         <TestWriteRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
               <name>hurz</name>
               <address>holding-register:1:REAL</address>
               <value>3.1415927</value>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestWriteRequest>
       </api-request>
       <outgoing-plc-message name="Send Modbus Input-Register Write Request">
@@ -425,20 +425,20 @@
       <api-response name="Report Write Response to application">
         <PlcWriteResponse>
           <PlcWriteRequest>
-            <fields>
+            <tags>
               <hurz>
-                <ModbusFieldHoldingRegister>
+                <ModbusTagHoldingRegister>
                   <address dataType="uint" bitLength="16">0</address>
                   <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                </ModbusFieldHoldingRegister>
+                </ModbusTagHoldingRegister>
                 <value dataType="string" bitLength="72" encoding="UTF-8">3.1415927</value>
               </hurz>
-            </fields>
+            </tags>
           </PlcWriteRequest>
-          <fields>
+          <tags>
             <hurz dataType="string" bitLength="16" encoding="UTF-8">OK</hurz>
-          </fields>
+          </tags>
         </PlcWriteResponse>
       </api-response>
     </steps>
@@ -449,14 +449,14 @@
     <steps>
       <api-request name="Receive Write Request from application">
         <TestWriteRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
               <name>hurz</name>
               <address>holding-register:1:REAL[2]</address>
               <value>3.1415927</value>
               <value>3.1415927</value>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestWriteRequest>
       </api-request>
       <outgoing-plc-message name="Send Modbus Input-Register Write Request">
@@ -512,21 +512,21 @@
       <api-response name="Report Write Response to application">
         <PlcWriteResponse>
           <PlcWriteRequest>
-            <fields>
+            <tags>
               <hurz>
-                <ModbusFieldHoldingRegister>
+                <ModbusTagHoldingRegister>
                   <address dataType="uint" bitLength="16">0</address>
                   <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                </ModbusFieldHoldingRegister>
+                </ModbusTagHoldingRegister>
                 <value dataType="string" bitLength="72" encoding="UTF-8">3.1415927</value>
                 <value dataType="string" bitLength="72" encoding="UTF-8">3.1415927</value>
               </hurz>
-            </fields>
+            </tags>
           </PlcWriteRequest>
-          <fields>
+          <tags>
             <hurz dataType="string" bitLength="16" encoding="UTF-8">OK</hurz>
-          </fields>
+          </tags>
         </PlcWriteResponse>
       </api-response>
     </steps>

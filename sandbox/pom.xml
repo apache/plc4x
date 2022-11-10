@@ -57,7 +57,6 @@
   </build>
 
   <modules>
-    <module>code-gen</module>
     <module>discovery</module>
     <module>test-java-df1-driver</module>
   </modules>
