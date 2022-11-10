@@ -643,7 +643,7 @@ public class RandomPackagesTest {
                 dump(bvlc);
                 NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                 APDUSimpleAck apduSimpleAck = (APDUSimpleAck) npdu.getApdu();
-                assertEquals(15, apduSimpleAck.getServiceChoice());
+                assertEquals(BACnetConfirmedServiceChoice.WRITE_PROPERTY, apduSimpleAck.getServiceChoice());
             }),
             DynamicTest.dynamicTest("No. 145-200 - Skip to 200 Misc packages",
                 () -> {
@@ -748,7 +748,7 @@ public class RandomPackagesTest {
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUSimpleAck apduSimpleAck = (APDUSimpleAck) npdu.getApdu();
                     assertEquals(119, apduSimpleAck.getOriginalInvokeId());
-                    assertEquals(2, apduSimpleAck.getServiceChoice());
+                    assertEquals(BACnetConfirmedServiceChoice.CONFIRMED_EVENT_NOTIFICATION, apduSimpleAck.getServiceChoice());
                 }),
             DynamicTest.dynamicTest("No. 3 - Confirmed-REQ   confirmedEventNotification[120] event-enrollment,11 analog-input,1",
                 () -> {
@@ -805,7 +805,7 @@ public class RandomPackagesTest {
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUSimpleAck apduSimpleAck = (APDUSimpleAck) npdu.getApdu();
                     assertEquals(120, apduSimpleAck.getOriginalInvokeId());
-                    assertEquals(2, apduSimpleAck.getServiceChoice());
+                    assertEquals(BACnetConfirmedServiceChoice.CONFIRMED_EVENT_NOTIFICATION, apduSimpleAck.getServiceChoice());
                 }),
             DynamicTest.dynamicTest("No. 5 - Unconfirmed-REQ who-Is 140 140",
                 () -> {
@@ -941,7 +941,7 @@ public class RandomPackagesTest {
                     dump(bvlc);
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUSimpleAck apduSimpleAck = (APDUSimpleAck) npdu.getApdu();
-                    assertEquals((short) 5, apduSimpleAck.getServiceChoice());
+                    assertEquals(BACnetConfirmedServiceChoice.SUBSCRIBE_COV, apduSimpleAck.getServiceChoice());
                 }),
             DynamicTest.dynamicTest("No. 3 - Unconfirmed-REQ unconfirmedCOVNotification device,12345 binary-input,0 present-value status-flags",
                 () -> {
