@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +123,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) GetLengthInBytes
 }
 
 func BACnetFaultParameterFaultExtendedParametersEntryDateParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryDate, error) {
-	return BACnetFaultParameterFaultExtendedParametersEntryDateParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetFaultParameterFaultExtendedParametersEntryDateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetFaultParameterFaultExtendedParametersEntryDateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryDate, error) {
@@ -163,7 +162,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryDateParseWithBuffer(readBuf
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

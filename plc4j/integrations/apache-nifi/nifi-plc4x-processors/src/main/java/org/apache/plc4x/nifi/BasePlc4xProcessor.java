@@ -93,11 +93,11 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         return connectionString;
     }
 
-    Collection<String> getFields() {
+    Collection<String> getTags() {
         return addressMap.keySet();
     }
-    String getAddress(String field) {
-        return addressMap.get(field);
+    String getAddress(String tagName) {
+        return addressMap.get(tagName);
     }
     
 	@Override

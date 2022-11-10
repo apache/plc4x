@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -165,7 +164,7 @@ func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBytes() uint16 {
 }
 
 func IdentifyReplyCommandNetworkVoltageParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkVoltage, error) {
-	return IdentifyReplyCommandNetworkVoltageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), attribute, numBytes) // TODO: get endianness from mspec
+	return IdentifyReplyCommandNetworkVoltageParseWithBuffer(utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
 func IdentifyReplyCommandNetworkVoltageParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkVoltage, error) {
@@ -226,7 +225,7 @@ func IdentifyReplyCommandNetworkVoltageParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_IdentifyReplyCommandNetworkVoltage) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

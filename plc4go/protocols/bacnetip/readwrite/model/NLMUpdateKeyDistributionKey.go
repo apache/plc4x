@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -137,7 +136,7 @@ func (m *_NLMUpdateKeyDistributionKey) GetLengthInBytes() uint16 {
 }
 
 func NLMUpdateKeyDistributionKeyParse(theBytes []byte, apduLength uint16) (NLMUpdateKeyDistributionKey, error) {
-	return NLMUpdateKeyDistributionKeyParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength) // TODO: get endianness from mspec
+	return NLMUpdateKeyDistributionKeyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMUpdateKeyDistributionKeyParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMUpdateKeyDistributionKey, error) {
@@ -186,7 +185,7 @@ func NLMUpdateKeyDistributionKeyParseWithBuffer(readBuffer utils.ReadBuffer, apd
 }
 
 func (m *_NLMUpdateKeyDistributionKey) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

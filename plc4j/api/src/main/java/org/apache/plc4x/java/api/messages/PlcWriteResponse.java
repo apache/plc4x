@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-public interface PlcWriteResponse extends PlcFieldResponse {
+public interface PlcWriteResponse extends PlcTagResponse {
 
     @Override
     PlcWriteRequest getRequest();

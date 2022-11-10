@@ -271,8 +271,8 @@ def checkLibPcap(String minVersion, String os, String arch) {
             // On my M1 Mac I found the libs in: "/opt/homebrew/Cellar/libpcap/1.10.1/lib"
             if (new File("/usr/local/Cellar/libpcap/1.10.1/lib").exists()) {
                 System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.1/lib");
-            } else if (new File("/opt/homebrew/Cellar/libpcap/1.10.1/lib").exists()) {
-                System.getProperties().setProperty("jna.library.path", "/opt/homebrew/Cellar/libpcap/1.10.1/lib");
+            } else if (new File("/opt/homebrew/opt/libpcap/lib").exists()) {
+                System.getProperties().setProperty("jna.library.path", "/opt/homebrew/opt/libpcap/lib");
             }
             // java.lang.UnsatisfiedLinkError: Can't load library: /Users/christoferdutz/Library/Caches/JNA/temp/jna877652535357666533.tmp
         }

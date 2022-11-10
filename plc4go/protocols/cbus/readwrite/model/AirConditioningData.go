@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -133,7 +132,7 @@ func (m *_AirConditioningData) GetLengthInBytes() uint16 {
 }
 
 func AirConditioningDataParse(theBytes []byte) (AirConditioningData, error) {
-	return AirConditioningDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return AirConditioningDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func AirConditioningDataParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningData, error) {

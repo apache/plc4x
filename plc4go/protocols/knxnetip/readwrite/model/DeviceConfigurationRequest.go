@@ -140,7 +140,7 @@ func (m *_DeviceConfigurationRequest) GetLengthInBytes() uint16 {
 }
 
 func DeviceConfigurationRequestParse(theBytes []byte, totalLength uint16) (DeviceConfigurationRequest, error) {
-	return DeviceConfigurationRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength) // TODO: get endianness from mspec
+	return DeviceConfigurationRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
 }
 
 func DeviceConfigurationRequestParseWithBuffer(readBuffer utils.ReadBuffer, totalLength uint16) (DeviceConfigurationRequest, error) {
@@ -193,7 +193,7 @@ func DeviceConfigurationRequestParseWithBuffer(readBuffer utils.ReadBuffer, tota
 }
 
 func (m *_DeviceConfigurationRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

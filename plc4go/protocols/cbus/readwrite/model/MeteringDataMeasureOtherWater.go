@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -104,7 +103,7 @@ func (m *_MeteringDataMeasureOtherWater) GetLengthInBytes() uint16 {
 }
 
 func MeteringDataMeasureOtherWaterParse(theBytes []byte) (MeteringDataMeasureOtherWater, error) {
-	return MeteringDataMeasureOtherWaterParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return MeteringDataMeasureOtherWaterParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func MeteringDataMeasureOtherWaterParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringDataMeasureOtherWater, error) {
@@ -129,7 +128,7 @@ func MeteringDataMeasureOtherWaterParseWithBuffer(readBuffer utils.ReadBuffer) (
 }
 
 func (m *_MeteringDataMeasureOtherWater) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

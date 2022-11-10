@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,7 +106,7 @@ func (m *_COTPParameter) GetLengthInBytes() uint16 {
 }
 
 func COTPParameterParse(theBytes []byte, rest uint8) (COTPParameter, error) {
-	return COTPParameterParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), rest) // TODO: get endianness from mspec
+	return COTPParameterParseWithBuffer(utils.NewReadBufferByteBased(theBytes), rest)
 }
 
 func COTPParameterParseWithBuffer(readBuffer utils.ReadBuffer, rest uint8) (COTPParameter, error) {

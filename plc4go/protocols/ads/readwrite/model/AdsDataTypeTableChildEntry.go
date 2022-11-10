@@ -306,7 +306,7 @@ func (m *_AdsDataTypeTableChildEntry) GetLengthInBytes() uint16 {
 }
 
 func AdsDataTypeTableChildEntryParse(theBytes []byte) (AdsDataTypeTableChildEntry, error) {
-	return AdsDataTypeTableChildEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return AdsDataTypeTableChildEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
 func AdsDataTypeTableChildEntryParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDataTypeTableChildEntry, error) {
@@ -319,7 +319,6 @@ func AdsDataTypeTableChildEntryParseWithBuffer(readBuffer utils.ReadBuffer) (Ads
 	_ = currentPos
 	var startPos = positionAware.GetPos()
 	_ = startPos
-	var curPos uint16
 
 	// Simple Field (entryLength)
 	_entryLength, _entryLengthErr := readBuffer.ReadUint32("entryLength", 32)
@@ -506,7 +505,7 @@ func AdsDataTypeTableChildEntryParseWithBuffer(readBuffer utils.ReadBuffer) (Ads
 		return nil, errors.Wrap(closeErr, "Error closing for children")
 	}
 	// Byte Array field (rest)
-	numberOfBytesrest := int(uint16(entryLength) - uint16(curPos))
+	numberOfBytesrest := int(uint16(entryLength) - uint16((positionAware.GetPos() - startPos)))
 	rest, _readArrayErr := readBuffer.ReadByteArray("rest", numberOfBytesrest)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'rest' field of AdsDataTypeTableChildEntry")
@@ -538,7 +537,7 @@ func AdsDataTypeTableChildEntryParseWithBuffer(readBuffer utils.ReadBuffer) (Ads
 }
 
 func (m *_AdsDataTypeTableChildEntry) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

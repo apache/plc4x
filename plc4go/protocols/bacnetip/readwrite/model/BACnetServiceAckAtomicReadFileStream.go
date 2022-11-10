@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -137,7 +136,7 @@ func (m *_BACnetServiceAckAtomicReadFileStream) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckAtomicReadFileStreamParse(theBytes []byte) (BACnetServiceAckAtomicReadFileStream, error) {
-	return BACnetServiceAckAtomicReadFileStreamParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetServiceAckAtomicReadFileStreamParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetServiceAckAtomicReadFileStreamParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetServiceAckAtomicReadFileStream, error) {
@@ -190,7 +189,7 @@ func BACnetServiceAckAtomicReadFileStreamParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_BACnetServiceAckAtomicReadFileStream) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

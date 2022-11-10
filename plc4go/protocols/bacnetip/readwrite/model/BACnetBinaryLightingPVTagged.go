@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -140,7 +139,7 @@ func (m *_BACnetBinaryLightingPVTagged) GetLengthInBytes() uint16 {
 }
 
 func BACnetBinaryLightingPVTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetBinaryLightingPVTagged, error) {
-	return BACnetBinaryLightingPVTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+	return BACnetBinaryLightingPVTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetBinaryLightingPVTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetBinaryLightingPVTagged, error) {
@@ -215,7 +214,7 @@ func BACnetBinaryLightingPVTaggedParseWithBuffer(readBuffer utils.ReadBuffer, ta
 }
 
 func (m *_BACnetBinaryLightingPVTagged) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

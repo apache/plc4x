@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -98,7 +96,7 @@ func (m BACnetAccessRuleTimeRangeSpecifier) GetLengthInBytes() uint16 {
 }
 
 func BACnetAccessRuleTimeRangeSpecifierParse(theBytes []byte) (BACnetAccessRuleTimeRangeSpecifier, error) {
-	return BACnetAccessRuleTimeRangeSpecifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetAccessRuleTimeRangeSpecifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetAccessRuleTimeRangeSpecifierParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessRuleTimeRangeSpecifier, error) {
@@ -115,7 +113,7 @@ func BACnetAccessRuleTimeRangeSpecifierParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (e BACnetAccessRuleTimeRangeSpecifier) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

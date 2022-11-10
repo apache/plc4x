@@ -47,7 +47,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     private boolean canWrite = false;
     private boolean canSubscribe = false;
     private boolean canBrowse = false;
-    private PlcFieldHandler fieldHandler;
+    private PlcTagHandler tagHandler;
     private PlcValueHandler valueHandler;
     private Plc4xProtocolBase<?> protocol;
     private BaseOptimizer optimizer;
@@ -61,13 +61,13 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     }
 
     protected AbstractPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe, boolean canBrowse,
-                                    PlcFieldHandler fieldHandler, PlcValueHandler valueHandler,
+                                    PlcTagHandler tagHandler, PlcValueHandler valueHandler,
                                     BaseOptimizer optimizer, PlcAuthentication authentication) {
         this.canRead = canRead;
         this.canWrite = canWrite;
         this.canSubscribe = canSubscribe;
         this.canBrowse = canBrowse;
-        this.fieldHandler = fieldHandler;
+        this.tagHandler = tagHandler;
         this.valueHandler = valueHandler;
         this.optimizer = optimizer;
         this.authentication = authentication;
@@ -109,8 +109,8 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         return canBrowse;
     }
 
-    public PlcFieldHandler getPlcFieldHandler() {
-        return this.fieldHandler;
+    public PlcTagHandler getPlcTagHandler() {
+        return this.tagHandler;
     }
 
     public PlcValueHandler getPlcValueHandler() {
@@ -126,7 +126,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         if (!canRead()) {
             throw new PlcUnsupportedOperationException("The connection does not support reading");
         }
-        return new DefaultPlcReadRequest.Builder(this, getPlcFieldHandler());
+        return new DefaultPlcReadRequest.Builder(this, getPlcTagHandler());
     }
 
     @Override
@@ -134,7 +134,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         if (!canWrite()) {
             throw new PlcUnsupportedOperationException("The connection does not support writing");
         }
-        return new DefaultPlcWriteRequest.Builder(this, getPlcFieldHandler(), getPlcValueHandler());
+        return new DefaultPlcWriteRequest.Builder(this, getPlcTagHandler(), getPlcValueHandler());
     }
 
     @Override
@@ -142,7 +142,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         if (!canSubscribe()) {
             throw new PlcUnsupportedOperationException("The connection does not support subscription");
         }
-        return new DefaultPlcSubscriptionRequest.Builder(this, getPlcFieldHandler());
+        return new DefaultPlcSubscriptionRequest.Builder(this, getPlcTagHandler());
     }
 
     @Override
@@ -158,7 +158,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         if (!canBrowse) {
             throw new PlcUnsupportedOperationException("The connection does not support browsing");
         }
-        return new DefaultPlcBrowseRequest.Builder(this);
+        return new DefaultPlcBrowseRequest.Builder(this, getPlcTagHandler());
     }
 
     @Override
@@ -206,6 +206,11 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     @Override
     public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
         return protocol.browse(browseRequest);
+    }
+
+    @Override
+    public CompletableFuture<PlcBrowseResponse> browseWithInterceptor(PlcBrowseRequest browseRequest, PlcBrowseRequestInterceptor interceptor) {
+        return protocol.browseWithInterceptor(browseRequest, interceptor);
     }
 
 }

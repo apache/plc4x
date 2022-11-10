@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 
@@ -38,21 +38,21 @@ public class DefaultPlcSubscriptionEvent extends DefaultPlcReadResponse implemen
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public DefaultPlcSubscriptionEvent(@JsonProperty("timestamp") Instant timestamp,
-                                       @JsonProperty("fields") Map<String, ResponseItem<PlcValue>> fields) {
-        super(null, fields);
+                                       @JsonProperty("tags") Map<String, ResponseItem<PlcValue>> tags) {
+        super(null, tags);
         this.timestamp = timestamp;
     }
 
     @Override
     @JsonIgnore
-    public Collection<String> getFieldNames() {
+    public Collection<String> getTagNames() {
         return getValues().keySet();
     }
 
     @Override
     @JsonIgnore
-    public PlcField getField(String name) {
-        throw new UnsupportedOperationException("getField('" + name + "') not supported on " + this.getClass());
+    public PlcTag getTag(String name) {
+        throw new UnsupportedOperationException("getTag('" + name + "') not supported on " + this.getClass());
     }
 
     @Override

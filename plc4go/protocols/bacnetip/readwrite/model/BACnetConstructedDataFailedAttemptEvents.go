@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -138,7 +137,7 @@ func (m *_BACnetConstructedDataFailedAttemptEvents) GetLengthInBytes() uint16 {
 }
 
 func BACnetConstructedDataFailedAttemptEventsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFailedAttemptEvents, error) {
-	return BACnetConstructedDataFailedAttemptEventsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument) // TODO: get endianness from mspec
+	return BACnetConstructedDataFailedAttemptEventsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
 func BACnetConstructedDataFailedAttemptEventsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFailedAttemptEvents, error) {
@@ -163,7 +162,6 @@ func BACnetConstructedDataFailedAttemptEventsParseWithBuffer(readBuffer utils.Re
 				return nil, errors.Wrap(_err, "Error parsing 'failedAttemptEvents' field of BACnetConstructedDataFailedAttemptEvents")
 			}
 			failedAttemptEvents = append(failedAttemptEvents, _item.(BACnetAccessEventTagged))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("failedAttemptEvents", utils.WithRenderAsList(true)); closeErr != nil {
@@ -187,7 +185,7 @@ func BACnetConstructedDataFailedAttemptEventsParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_BACnetConstructedDataFailedAttemptEvents) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -157,7 +156,7 @@ func (m *_AirConditioningDataSetHvacUpperGuardLimit) GetLengthInBytes() uint16 {
 }
 
 func AirConditioningDataSetHvacUpperGuardLimitParse(theBytes []byte) (AirConditioningDataSetHvacUpperGuardLimit, error) {
-	return AirConditioningDataSetHvacUpperGuardLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return AirConditioningDataSetHvacUpperGuardLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func AirConditioningDataSetHvacUpperGuardLimitParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningDataSetHvacUpperGuardLimit, error) {
@@ -232,7 +231,7 @@ func AirConditioningDataSetHvacUpperGuardLimitParseWithBuffer(readBuffer utils.R
 }
 
 func (m *_AirConditioningDataSetHvacUpperGuardLimit) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

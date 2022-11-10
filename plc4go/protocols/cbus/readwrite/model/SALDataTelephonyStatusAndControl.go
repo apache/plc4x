@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -128,7 +127,7 @@ func (m *_SALDataTelephonyStatusAndControl) GetLengthInBytes() uint16 {
 }
 
 func SALDataTelephonyStatusAndControlParse(theBytes []byte, applicationId ApplicationId) (SALDataTelephonyStatusAndControl, error) {
-	return SALDataTelephonyStatusAndControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+	return SALDataTelephonyStatusAndControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
 func SALDataTelephonyStatusAndControlParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTelephonyStatusAndControl, error) {
@@ -167,7 +166,7 @@ func SALDataTelephonyStatusAndControlParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_SALDataTelephonyStatusAndControl) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

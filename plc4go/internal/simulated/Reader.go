@@ -21,12 +21,13 @@ package simulated
 
 import (
 	"context"
+	"strconv"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
 	model2 "github.com/apache/plc4x/plc4go/spi/model"
-	"strconv"
-	"time"
 )
 
 type Reader struct {
@@ -64,20 +65,20 @@ func (r Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-ch
 		// Process the request
 		responseCodes := make(map[string]model.PlcResponseCode)
 		responseValues := make(map[string]values.PlcValue)
-		for _, fieldName := range readRequest.GetFieldNames() {
-			field := readRequest.GetField(fieldName)
-			simulatedField, ok := field.(SimulatedField)
+		for _, tagName := range readRequest.GetTagNames() {
+			tag := readRequest.GetTag(tagName)
+			simulatedTagVar, ok := tag.(simulatedTag)
 			if !ok {
-				responseCodes[fieldName] = model.PlcResponseCode_INVALID_ADDRESS
-				responseValues[fieldName] = nil
+				responseCodes[tagName] = model.PlcResponseCode_INVALID_ADDRESS
+				responseValues[tagName] = nil
 			} else {
-				value := r.device.Get(simulatedField)
+				value := r.device.Get(simulatedTagVar)
 				if value == nil {
-					responseCodes[fieldName] = model.PlcResponseCode_NOT_FOUND
-					responseValues[fieldName] = nil
+					responseCodes[tagName] = model.PlcResponseCode_NOT_FOUND
+					responseValues[tagName] = nil
 				} else {
-					responseCodes[fieldName] = model.PlcResponseCode_OK
-					responseValues[fieldName] = *value
+					responseCodes[tagName] = model.PlcResponseCode_OK
+					responseValues[tagName] = *value
 				}
 			}
 		}

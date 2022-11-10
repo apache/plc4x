@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -110,7 +108,7 @@ func (m SzlModuleTypeClass) GetLengthInBytes() uint16 {
 }
 
 func SzlModuleTypeClassParse(theBytes []byte) (SzlModuleTypeClass, error) {
-	return SzlModuleTypeClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return SzlModuleTypeClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func SzlModuleTypeClassParseWithBuffer(readBuffer utils.ReadBuffer) (SzlModuleTypeClass, error) {
@@ -127,7 +125,7 @@ func SzlModuleTypeClassParseWithBuffer(readBuffer utils.ReadBuffer) (SzlModuleTy
 }
 
 func (e SzlModuleTypeClass) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

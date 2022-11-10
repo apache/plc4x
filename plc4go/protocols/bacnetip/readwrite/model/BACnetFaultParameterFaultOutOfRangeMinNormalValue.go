@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -153,7 +152,7 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) GetLengthInBytes() 
 }
 
 func BACnetFaultParameterFaultOutOfRangeMinNormalValueParse(theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValue, error) {
-	return BACnetFaultParameterFaultOutOfRangeMinNormalValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+	return BACnetFaultParameterFaultOutOfRangeMinNormalValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetFaultParameterFaultOutOfRangeMinNormalValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValue, error) {

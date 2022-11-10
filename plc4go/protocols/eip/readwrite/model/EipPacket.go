@@ -156,7 +156,7 @@ func (m *_EipPacket) GetLengthInBytes() uint16 {
 }
 
 func EipPacketParse(theBytes []byte) (EipPacket, error) {
-	return EipPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return EipPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func EipPacketParseWithBuffer(readBuffer utils.ReadBuffer) (EipPacket, error) {

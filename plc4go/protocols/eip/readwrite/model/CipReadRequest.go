@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -150,7 +149,7 @@ func (m *_CipReadRequest) GetLengthInBytes() uint16 {
 }
 
 func CipReadRequestParse(theBytes []byte, serviceLen uint16) (CipReadRequest, error) {
-	return CipReadRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceLen) // TODO: get endianness from mspec
+	return CipReadRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceLen)
 }
 
 func CipReadRequestParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint16) (CipReadRequest, error) {
@@ -200,7 +199,7 @@ func CipReadRequestParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint1
 }
 
 func (m *_CipReadRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

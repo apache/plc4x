@@ -126,7 +126,7 @@ func (m *_DeviceConfigurationAck) GetLengthInBytes() uint16 {
 }
 
 func DeviceConfigurationAckParse(theBytes []byte) (DeviceConfigurationAck, error) {
-	return DeviceConfigurationAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return DeviceConfigurationAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func DeviceConfigurationAckParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceConfigurationAck, error) {
@@ -165,7 +165,7 @@ func DeviceConfigurationAckParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceC
 }
 
 func (m *_DeviceConfigurationAck) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -130,7 +129,7 @@ func (m *_BACnetCalendarEntry) GetLengthInBytes() uint16 {
 }
 
 func BACnetCalendarEntryParse(theBytes []byte) (BACnetCalendarEntry, error) {
-	return BACnetCalendarEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetCalendarEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetCalendarEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCalendarEntry, error) {

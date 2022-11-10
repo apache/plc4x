@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +121,7 @@ func (m *_NLM) GetLengthInBytes() uint16 {
 }
 
 func NLMParse(theBytes []byte, apduLength uint16) (NLM, error) {
-	return NLMParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength) // TODO: get endianness from mspec
+	return NLMParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLM, error) {

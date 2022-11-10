@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -116,7 +114,7 @@ func (m BACnetAccessCredentialDisable) GetLengthInBytes() uint16 {
 }
 
 func BACnetAccessCredentialDisableParse(theBytes []byte) (BACnetAccessCredentialDisable, error) {
-	return BACnetAccessCredentialDisableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetAccessCredentialDisableParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetAccessCredentialDisableParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessCredentialDisable, error) {
@@ -133,7 +131,7 @@ func BACnetAccessCredentialDisableParseWithBuffer(readBuffer utils.ReadBuffer) (
 }
 
 func (e BACnetAccessCredentialDisable) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

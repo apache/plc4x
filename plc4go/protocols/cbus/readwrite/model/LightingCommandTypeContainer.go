@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -837,7 +835,7 @@ func (m LightingCommandTypeContainer) GetLengthInBytes() uint16 {
 }
 
 func LightingCommandTypeContainerParse(theBytes []byte) (LightingCommandTypeContainer, error) {
-	return LightingCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return LightingCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func LightingCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (LightingCommandTypeContainer, error) {
@@ -854,7 +852,7 @@ func LightingCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (L
 }
 
 func (e LightingCommandTypeContainer) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

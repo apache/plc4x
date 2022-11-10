@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +123,7 @@ func (m *_BACnetTimerStateChangeValueOctetString) GetLengthInBytes() uint16 {
 }
 
 func BACnetTimerStateChangeValueOctetStringParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueOctetString, error) {
-	return BACnetTimerStateChangeValueOctetStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument) // TODO: get endianness from mspec
+	return BACnetTimerStateChangeValueOctetStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
 func BACnetTimerStateChangeValueOctetStringParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueOctetString, error) {
@@ -165,7 +164,7 @@ func BACnetTimerStateChangeValueOctetStringParseWithBuffer(readBuffer utils.Read
 }
 
 func (m *_BACnetTimerStateChangeValueOctetString) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

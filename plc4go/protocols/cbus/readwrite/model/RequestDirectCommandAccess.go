@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -181,7 +180,7 @@ func (m *_RequestDirectCommandAccess) GetLengthInBytes() uint16 {
 }
 
 func RequestDirectCommandAccessParse(theBytes []byte, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {
-	return RequestDirectCommandAccessParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+	return RequestDirectCommandAccessParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func RequestDirectCommandAccessParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {
@@ -256,7 +255,7 @@ func RequestDirectCommandAccessParseWithBuffer(readBuffer utils.ReadBuffer, cBus
 }
 
 func (m *_RequestDirectCommandAccess) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

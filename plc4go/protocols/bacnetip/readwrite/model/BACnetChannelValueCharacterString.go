@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +123,7 @@ func (m *_BACnetChannelValueCharacterString) GetLengthInBytes() uint16 {
 }
 
 func BACnetChannelValueCharacterStringParse(theBytes []byte) (BACnetChannelValueCharacterString, error) {
-	return BACnetChannelValueCharacterStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetChannelValueCharacterStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetChannelValueCharacterStringParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueCharacterString, error) {
@@ -163,7 +162,7 @@ func BACnetChannelValueCharacterStringParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetChannelValueCharacterString) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

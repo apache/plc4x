@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -158,7 +156,7 @@ func (m PinMode) GetLengthInBytes() uint16 {
 }
 
 func PinModeParse(theBytes []byte) (PinMode, error) {
-	return PinModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return PinModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func PinModeParseWithBuffer(readBuffer utils.ReadBuffer) (PinMode, error) {
@@ -175,7 +173,7 @@ func PinModeParseWithBuffer(readBuffer utils.ReadBuffer) (PinMode, error) {
 }
 
 func (e PinMode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

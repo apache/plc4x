@@ -127,7 +127,7 @@ func (m *_TPKTPacket) GetLengthInBytes() uint16 {
 }
 
 func TPKTPacketParse(theBytes []byte) (TPKTPacket, error) {
-	return TPKTPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return TPKTPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func TPKTPacketParseWithBuffer(readBuffer utils.ReadBuffer) (TPKTPacket, error) {
@@ -197,7 +197,7 @@ func TPKTPacketParseWithBuffer(readBuffer utils.ReadBuffer) (TPKTPacket, error) 
 }
 
 func (m *_TPKTPacket) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

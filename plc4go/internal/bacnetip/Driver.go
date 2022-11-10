@@ -22,6 +22,11 @@ package bacnetip
 import (
 	"context"
 	"fmt"
+	"math"
+	"net"
+	"net/url"
+	"strconv"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
@@ -32,10 +37,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"math"
-	"net"
-	"net/url"
-	"strconv"
 )
 
 type Driver struct {
@@ -48,7 +49,7 @@ type Driver struct {
 
 func NewDriver() plc4go.PlcDriver {
 	return &Driver{
-		DefaultDriver:           _default.NewDefaultDriver("bacnet-ip", "BACnet/IP", "udp", NewFieldHandler()),
+		DefaultDriver:           _default.NewDefaultDriver("bacnet-ip", "BACnet/IP", "udp", NewTagHandler()),
 		tm:                      *spi.NewRequestTransactionManager(math.MaxInt),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
@@ -127,7 +128,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	log.Debug().Msgf("working with codec %#v", codec)
 
 	// Create the new connection
-	connection := NewConnection(codec, m.GetPlcFieldHandler(), &m.tm, options)
+	connection := NewConnection(codec, m.GetPlcTagHandler(), &m.tm, options)
 	log.Debug().Msg("created connection, connecting now")
 	return connection.Connect()
 }

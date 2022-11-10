@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -92,7 +90,7 @@ func (m CIPStructTypeCode) GetLengthInBytes() uint16 {
 }
 
 func CIPStructTypeCodeParse(theBytes []byte) (CIPStructTypeCode, error) {
-	return CIPStructTypeCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return CIPStructTypeCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func CIPStructTypeCodeParseWithBuffer(readBuffer utils.ReadBuffer) (CIPStructTypeCode, error) {
@@ -109,7 +107,7 @@ func CIPStructTypeCodeParseWithBuffer(readBuffer utils.ReadBuffer) (CIPStructTyp
 }
 
 func (e CIPStructTypeCode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

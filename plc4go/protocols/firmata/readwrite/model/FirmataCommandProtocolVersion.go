@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -137,7 +136,7 @@ func (m *_FirmataCommandProtocolVersion) GetLengthInBytes() uint16 {
 }
 
 func FirmataCommandProtocolVersionParse(theBytes []byte, response bool) (FirmataCommandProtocolVersion, error) {
-	return FirmataCommandProtocolVersionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+	return FirmataCommandProtocolVersionParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func FirmataCommandProtocolVersionParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataCommandProtocolVersion, error) {
@@ -180,7 +179,7 @@ func FirmataCommandProtocolVersionParseWithBuffer(readBuffer utils.ReadBuffer, r
 }
 
 func (m *_FirmataCommandProtocolVersion) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -83,7 +83,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
 
     public PlcDINT(Long value) {
         if (value < minValue || value > maxValue) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.intValue();
         this.isNullable = false;
@@ -91,7 +91,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
 
     public PlcDINT(Float value) {
         if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.intValue();
         this.isNullable = false;
@@ -99,7 +99,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
 
     public PlcDINT(Double value) {
         if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.intValue();
         this.isNullable = false;
@@ -107,7 +107,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
 
     public PlcDINT(BigInteger value) {
         if ((value.compareTo(BigInteger.valueOf(minValue)) < 0) || (value.compareTo(BigInteger.valueOf(maxValue)) > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.intValue();
         this.isNullable = true;
@@ -115,7 +115,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
 
     public PlcDINT(BigDecimal value) {
         if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.intValue();
         this.isNullable = true;
@@ -126,7 +126,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
             this.value = Integer.parseInt(value.trim());
             this.isNullable = false;
         } catch (Exception e) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
         }
     }
 

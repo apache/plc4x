@@ -23,13 +23,14 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
 	"net"
 	"net/url"
 	"regexp"
 	"strconv"
+
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/pkg/errors"
 )
 
 type Transport struct {
@@ -128,7 +129,7 @@ func (m *TransportInstance) ConnectWithContext(ctx context.Context) error {
 
 	m.LocalAddress = m.tcpConn.LocalAddr().(*net.TCPAddr)
 
-	m.reader = bufio.NewReader(m.tcpConn)
+	m.reader = bufio.NewReaderSize(m.tcpConn, 100000)
 
 	return nil
 }

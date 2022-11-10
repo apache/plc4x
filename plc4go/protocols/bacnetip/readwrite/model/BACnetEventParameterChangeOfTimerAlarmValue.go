@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +125,7 @@ func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetLengthInBytes() uint16
 }
 
 func BACnetEventParameterChangeOfTimerAlarmValueParse(theBytes []byte, tagNumber uint8) (BACnetEventParameterChangeOfTimerAlarmValue, error) {
-	return BACnetEventParameterChangeOfTimerAlarmValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+	return BACnetEventParameterChangeOfTimerAlarmValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetEventParameterChangeOfTimerAlarmValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfTimerAlarmValue, error) {
@@ -164,7 +163,6 @@ func BACnetEventParameterChangeOfTimerAlarmValueParseWithBuffer(readBuffer utils
 				return nil, errors.Wrap(_err, "Error parsing 'alarmValues' field of BACnetEventParameterChangeOfTimerAlarmValue")
 			}
 			alarmValues = append(alarmValues, _item.(BACnetTimerStateTagged))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("alarmValues", utils.WithRenderAsList(true)); closeErr != nil {
@@ -198,7 +196,7 @@ func BACnetEventParameterChangeOfTimerAlarmValueParseWithBuffer(readBuffer utils
 }
 
 func (m *_BACnetEventParameterChangeOfTimerAlarmValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

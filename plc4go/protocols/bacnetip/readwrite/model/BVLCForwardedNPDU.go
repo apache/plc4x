@@ -153,7 +153,7 @@ func (m *_BVLCForwardedNPDU) GetLengthInBytes() uint16 {
 }
 
 func BVLCForwardedNPDUParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCForwardedNPDU, error) {
-	return BVLCForwardedNPDUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength) // TODO: get endianness from mspec
+	return BVLCForwardedNPDUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
 }
 
 func BVLCForwardedNPDUParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCForwardedNPDU, error) {
@@ -224,7 +224,7 @@ func BVLCForwardedNPDUParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLe
 }
 
 func (m *_BVLCForwardedNPDU) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

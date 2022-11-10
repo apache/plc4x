@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -204,7 +203,7 @@ func (m *_AlarmMessageObjectPushType) GetLengthInBytes() uint16 {
 }
 
 func AlarmMessageObjectPushTypeParse(theBytes []byte) (AlarmMessageObjectPushType, error) {
-	return AlarmMessageObjectPushTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return AlarmMessageObjectPushTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func AlarmMessageObjectPushTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmMessageObjectPushType, error) {
@@ -353,7 +352,7 @@ func AlarmMessageObjectPushTypeParseWithBuffer(readBuffer utils.ReadBuffer) (Ala
 }
 
 func (m *_AlarmMessageObjectPushType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

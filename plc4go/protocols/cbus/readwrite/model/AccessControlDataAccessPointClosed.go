@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +104,7 @@ func (m *_AccessControlDataAccessPointClosed) GetLengthInBytes() uint16 {
 }
 
 func AccessControlDataAccessPointClosedParse(theBytes []byte) (AccessControlDataAccessPointClosed, error) {
-	return AccessControlDataAccessPointClosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return AccessControlDataAccessPointClosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func AccessControlDataAccessPointClosedParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlDataAccessPointClosed, error) {
@@ -130,7 +129,7 @@ func AccessControlDataAccessPointClosedParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_AccessControlDataAccessPointClosed) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

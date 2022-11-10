@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -144,7 +143,7 @@ func (m *_CBusCommand) GetLengthInBytes() uint16 {
 }
 
 func CBusCommandParse(theBytes []byte, cBusOptions CBusOptions) (CBusCommand, error) {
-	return CBusCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+	return CBusCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func CBusCommandParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommand, error) {

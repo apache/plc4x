@@ -18,16 +18,15 @@
  */
 package org.apache.plc4x.java.df1;
 
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.df1.configuration.Df1Configuration;
-import org.apache.plc4x.java.df1.field.Df1FieldHandler;
+import org.apache.plc4x.java.df1.field.Df1TagHandler;
 import org.apache.plc4x.java.df1.protocol.Df1ProtocolLogic;
 import org.apache.plc4x.java.df1.readwrite.DF1Command;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 public class DF1PlcDriver extends GeneratedDriverBase<DF1Command> {
 
@@ -52,13 +51,13 @@ public class DF1PlcDriver extends GeneratedDriverBase<DF1Command> {
     }
 
     @Override
-    protected Df1FieldHandler getFieldHandler() {
-        return new Df1FieldHandler();
+    protected Df1TagHandler getTagHandler() {
+        return new Df1TagHandler();
     }
 
     @Override
-    protected PlcValueHandler getValueHandler() {
-        return new IEC61131ValueHandler();
+    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
+        return new PlcValueHandler();
     }
 
     @Override

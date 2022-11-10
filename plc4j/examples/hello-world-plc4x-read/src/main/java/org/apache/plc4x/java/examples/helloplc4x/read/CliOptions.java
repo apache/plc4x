@@ -25,7 +25,7 @@ public class CliOptions {
     private static Options options;
 
     private final String connectionString;
-    private final String[] fieldAddress;
+    private final String[] tagAddress;
 
     public static CliOptions fromArgs(String[] args) {
         options = new Options();
@@ -41,9 +41,9 @@ public class CliOptions {
         options.addOption(
             Option.builder()
                 .type(String.class)
-                .longOpt("field-addresses")
+                .longOpt("tag-addresses")
                 .hasArgs()
-                .desc("Field Addresses (Space separated).")
+                .desc("Tag Addresses (Space separated).")
                 .required()
                 .build());
 
@@ -53,9 +53,9 @@ public class CliOptions {
             commandLine = parser.parse(options, args);
 
             String connectionString = commandLine.getOptionValue("connection-string");
-            String[] fieldAddress = commandLine.getOptionValues("field-addresses");
+            String[] tagAddress = commandLine.getOptionValues("tag-addresses");
 
-            return new CliOptions(connectionString, fieldAddress);
+            return new CliOptions(connectionString, tagAddress);
         } catch (ParseException e) {
             System.err.println(e.getMessage());
             return null;
@@ -67,17 +67,17 @@ public class CliOptions {
         formatter.printHelp("HelloPlc4x", options);
     }
 
-    public CliOptions(String connectionString, String[] fieldAddress) {
+    public CliOptions(String connectionString, String[] tagAddress) {
         this.connectionString = connectionString;
-        this.fieldAddress = fieldAddress;
+        this.tagAddress = tagAddress;
     }
 
     public String getConnectionString() {
         return connectionString;
     }
 
-    public String[] getFieldAddress() {
-        return fieldAddress;
+    public String[] getTagAddress() {
+        return tagAddress;
     }
 
 }

@@ -20,7 +20,7 @@ package org.apache.plc4x.test.migration;
 
 /**
  * Indicates an exception where a migration could happen.
- * The field {@code newXml} can be used as new value.
+ * The tag {@code newXml} can be used as new value.
  */
 public class MigrationException extends RuntimeException {
     public final String newXml;

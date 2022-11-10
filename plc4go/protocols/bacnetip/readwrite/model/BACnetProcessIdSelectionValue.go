@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +123,7 @@ func (m *_BACnetProcessIdSelectionValue) GetLengthInBytes() uint16 {
 }
 
 func BACnetProcessIdSelectionValueParse(theBytes []byte) (BACnetProcessIdSelectionValue, error) {
-	return BACnetProcessIdSelectionValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetProcessIdSelectionValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetProcessIdSelectionValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetProcessIdSelectionValue, error) {
@@ -163,7 +162,7 @@ func BACnetProcessIdSelectionValueParseWithBuffer(readBuffer utils.ReadBuffer) (
 }
 
 func (m *_BACnetProcessIdSelectionValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

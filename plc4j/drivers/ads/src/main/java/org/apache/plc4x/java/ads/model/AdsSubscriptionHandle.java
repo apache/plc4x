@@ -26,21 +26,21 @@ import java.util.Objects;
 
 public class AdsSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
-    private final String plcFieldName;
+    private final String tagName;
 
     private final AdsDataTypeTableEntry adsDataType;
 
     private final Long notificationHandle;
 
-    public AdsSubscriptionHandle(PlcSubscriber plcSubscriber, String plcFieldName, AdsDataTypeTableEntry adsDataType, Long notificationHandle) {
+    public AdsSubscriptionHandle(PlcSubscriber plcSubscriber, String tagName, AdsDataTypeTableEntry adsDataType, Long notificationHandle) {
         super(plcSubscriber);
-        this.plcFieldName = plcFieldName;
+        this.tagName = tagName;
         this.adsDataType = adsDataType;
         this.notificationHandle = notificationHandle;
     }
 
-    public String getPlcFieldName() {
-        return plcFieldName;
+    public String getTagName() {
+        return tagName;
     }
 
     public AdsDataTypeTableEntry getAdsDataType() {
@@ -63,20 +63,20 @@ public class AdsSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             return false;
         }
         AdsSubscriptionHandle that = (AdsSubscriptionHandle) o;
-        return Objects.equals(plcFieldName, that.plcFieldName) &&
+        return Objects.equals(tagName, that.tagName) &&
             adsDataType == that.adsDataType &&
             Objects.equals(notificationHandle, that.notificationHandle);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), plcFieldName, adsDataType, notificationHandle);
+        return Objects.hash(super.hashCode(), tagName, adsDataType, notificationHandle);
     }
 
     @Override
     public String toString() {
         return "AdsSubscriptionHandle{" +
-            "plcFieldName='" + plcFieldName + '\'' +
+            "tagName='" + tagName + '\'' +
             ", adsDataType=" + adsDataType +
             ", notificationHandle=" + notificationHandle +
             "} " + super.toString();

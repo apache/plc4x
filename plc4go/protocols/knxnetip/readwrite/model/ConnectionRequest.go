@@ -148,7 +148,7 @@ func (m *_ConnectionRequest) GetLengthInBytes() uint16 {
 }
 
 func ConnectionRequestParse(theBytes []byte) (ConnectionRequest, error) {
-	return ConnectionRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return ConnectionRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func ConnectionRequestParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionRequest, error) {
@@ -215,7 +215,7 @@ func ConnectionRequestParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionRe
 }
 
 func (m *_ConnectionRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

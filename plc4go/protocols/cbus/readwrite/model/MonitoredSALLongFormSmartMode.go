@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -230,7 +229,7 @@ func (m *_MonitoredSALLongFormSmartMode) GetLengthInBytes() uint16 {
 }
 
 func MonitoredSALLongFormSmartModeParse(theBytes []byte, cBusOptions CBusOptions) (MonitoredSALLongFormSmartMode, error) {
-	return MonitoredSALLongFormSmartModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+	return MonitoredSALLongFormSmartModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func MonitoredSALLongFormSmartModeParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSALLongFormSmartMode, error) {
@@ -412,7 +411,7 @@ func MonitoredSALLongFormSmartModeParseWithBuffer(readBuffer utils.ReadBuffer, c
 }
 
 func (m *_MonitoredSALLongFormSmartMode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

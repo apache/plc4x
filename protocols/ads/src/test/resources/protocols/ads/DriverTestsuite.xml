@@ -54,12 +54,12 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+          ®<tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz</name>
               <address>00004040/00000008:BOOL</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send Ads Read Request">
@@ -177,7 +177,7 @@
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <hurz>
                 <DirectAdsField>
                   <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
@@ -186,7 +186,7 @@
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </DirectAdsField>
               </hurz>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <hurz>
@@ -211,16 +211,16 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>00004040/00000008:BOOL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz2</name>
               <address>00004040/00000012:BOOL</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send Ads Read Request">
@@ -339,7 +339,7 @@
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <hurz1>
                 <DirectAdsField>
                   <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
@@ -356,7 +356,7 @@
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </DirectAdsField>
               </hurz2>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <hurz1>
@@ -388,12 +388,12 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>main.f_trigDateiGelesen.M:BOOL</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send Resolve Symbolic Address Request">
@@ -627,7 +627,7 @@
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <hurz1>
                 <SymbolicAdsField>
                   <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
@@ -635,7 +635,7 @@
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </SymbolicAdsField>
               </hurz1>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <hurz1>
@@ -660,12 +660,12 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>main.f_trigDateiGelesen.M:BOOL</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send Resolve Symbolic Address Request">
@@ -901,7 +901,7 @@
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <hurz1>
                 <SymbolicAdsField>
                   <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
@@ -909,7 +909,7 @@
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </SymbolicAdsField>
               </hurz1>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <hurz1>
@@ -924,12 +924,12 @@
       <delay>500</delay>
       <api-request name="Receive a second Read Request for the same resource from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>main.f_trigDateiGelesen.M:BOOL</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send Ads Read Request directly using the preciously resolved address">
@@ -1051,7 +1051,7 @@
       <api-response name="Report Read Response to application again">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <hurz1>
                 <SymbolicAdsField>
                   <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
@@ -1059,7 +1059,7 @@
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </SymbolicAdsField>
               </hurz1>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <hurz1>

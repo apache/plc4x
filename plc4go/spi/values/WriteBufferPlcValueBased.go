@@ -20,10 +20,11 @@
 package values
 
 import (
+	"math/big"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"math/big"
 )
 
 type WriteBufferPlcValueBased interface {
@@ -90,7 +91,7 @@ func (p *writeBufferPlcValueBased) WriteByte(logicalName string, value byte, _ .
 
 func (p *writeBufferPlcValueBased) WriteByteArray(logicalName string, data []byte, _ ...utils.WithWriterArgs) error {
 	p.move(uint(len(data) * 8))
-	return p.appendValue(logicalName, NewPlcByteArray(data))
+	return p.appendValue(logicalName, NewPlcRawByteArray(data))
 }
 
 func (p *writeBufferPlcValueBased) WriteUint8(logicalName string, bitLength uint8, value uint8, _ ...utils.WithWriterArgs) error {
@@ -136,7 +137,7 @@ func (p *writeBufferPlcValueBased) WriteInt64(logicalName string, bitLength uint
 func (p *writeBufferPlcValueBased) WriteBigInt(logicalName string, bitLength uint8, value *big.Int, _ ...utils.WithWriterArgs) error {
 	p.move(uint(bitLength))
 	// TODO: check if we set the type dynamic here...
-	return p.appendValue(logicalName, NewPlcByteArray(value.Bytes()))
+	return p.appendValue(logicalName, NewPlcRawByteArray(value.Bytes()))
 }
 
 func (p *writeBufferPlcValueBased) WriteFloat32(logicalName string, bitLength uint8, value float32, _ ...utils.WithWriterArgs) error {
@@ -156,7 +157,7 @@ func (p *writeBufferPlcValueBased) WriteBigFloat(logicalName string, bitLength u
 	if err != nil {
 		return errors.Wrapf(err, "Error writing %s", logicalName)
 	}
-	return p.appendValue(logicalName, NewPlcByteArray(encode))
+	return p.appendValue(logicalName, NewPlcRawByteArray(encode))
 }
 
 func (p *writeBufferPlcValueBased) WriteString(logicalName string, bitLength uint32, _ string, value string, _ ...utils.WithWriterArgs) error {

@@ -140,7 +140,7 @@ func (m *_ModbusRtuADU) GetLengthInBytes() uint16 {
 }
 
 func ModbusRtuADUParse(theBytes []byte, driverType DriverType, response bool) (ModbusRtuADU, error) {
-	return ModbusRtuADUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response) // TODO: get endianness from mspec
+	return ModbusRtuADUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response)
 }
 
 func ModbusRtuADUParseWithBuffer(readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusRtuADU, error) {
@@ -204,7 +204,7 @@ func ModbusRtuADUParseWithBuffer(readBuffer utils.ReadBuffer, driverType DriverT
 }
 
 func (m *_ModbusRtuADU) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

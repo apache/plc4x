@@ -122,7 +122,7 @@ func (m *_DF1Symbol) GetLengthInBytes() uint16 {
 }
 
 func DF1SymbolParse(theBytes []byte) (DF1Symbol, error) {
-	return DF1SymbolParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return DF1SymbolParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func DF1SymbolParseWithBuffer(readBuffer utils.ReadBuffer) (DF1Symbol, error) {

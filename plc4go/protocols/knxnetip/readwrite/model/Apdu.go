@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -134,7 +133,7 @@ func (m *_Apdu) GetLengthInBytes() uint16 {
 }
 
 func ApduParse(theBytes []byte, dataLength uint8) (Apdu, error) {
-	return ApduParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), dataLength) // TODO: get endianness from mspec
+	return ApduParseWithBuffer(utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
 func ApduParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (Apdu, error) {

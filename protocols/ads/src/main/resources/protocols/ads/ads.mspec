@@ -223,21 +223,21 @@
 
         ['ADS_ADD_DEVICE_NOTIFICATION', 'false' AdsAddDeviceNotificationRequest
             // 4 bytes	Index Group of the data, which should be sent per notification.
-            [simple uint 32 indexGroup]
+            [simple     uint 32      indexGroup      ]
             // 4 bytes	Index Offset of the data, which should be sent per notification.
-            [simple uint 32 indexOffset]
+            [simple     uint 32      indexOffset     ]
             // 4 bytes	Index Offset of the data, which should be sent per notification.
             // 4 bytes	Length of data in bytes, which should be sent per notification.
-            [simple uint 32 length]
-            // 4 bytes	See description of the structure ADSTRANSMODE at the ADS-DLL.
-            [simple uint 32 transmissionMode]
+            [simple     uint 32      length          ]
+            // 4 bytes	The type of subscription.
+            [simple     AdsTransMode transmissionMode]
             // 4 bytes	At the latest after this time, the ADS Device Notification is called. The unit is 1ms.
-            [simple uint 32 maxDelay]
+            [simple     uint 32      maxDelayInMs    ]
             // 4 bytes	The ADS server checks if the value changes in this time slice. The unit is 1ms
-            [simple uint 32 cycleTime]
+            [simple     uint 32      cycleTimeInMs   ]
             // 16bytes	Must be set to 0
-            [reserved   uint       64       '0x0000' ]
-            [reserved   uint       64       '0x0000' ]
+            [reserved   uint 64      '0x0000'        ]
+            [reserved   uint 64      '0x0000'        ]
         ]
         ['ADS_ADD_DEVICE_NOTIFICATION', 'true' AdsAddDeviceNotificationResponse
             // 4 bytes	ADS error number
@@ -984,4 +984,15 @@
     ['300' IO                 ]
     ['200' REAL_TIME_CORE     ]
     ['100' EVENT_SYSTEM_LOGGER]
+]
+
+// See here: https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_adsnetref/7313078411.html&id=
+[enum uint 32 AdsTransMode
+    ['0' NONE                ]
+    ['1' CLIENT_CYCLE        ]
+    ['2' CLIENT_ON_CHANGE    ]
+    ['3' CYCLIC              ]
+    ['4' ON_CHANGE           ]
+    ['5' CYCLIC_IN_CONTEXT   ]
+    ['6' ON_CHANGE_IN_CONTEXT]
 ]

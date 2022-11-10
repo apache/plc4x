@@ -38,9 +38,9 @@ public class JobConfigurationTriggeredImpl extends JobConfigurationImpl {
      * @param triggerConfig configuration string for triggered jobs
      * @param scrapeRate    rate in which the data should be acquired
      * @param sources       source alias (<b>not</b> connection string but the alias (from @{@link ScraperConfigurationClassicImpl}).
-     * @param fields        Map from field alias (how it is named in the result map) to plc4x field query
+     * @param tags        Map from tag alias (how it is named in the result map) to plc4x tag query
      */
-    public JobConfigurationTriggeredImpl(String name, String triggerConfig, Integer scrapeRate, List<String> sources, Map<String, String> fields) {
-        super(name, triggerConfig, scrapeRate, sources, fields);
+    public JobConfigurationTriggeredImpl(String name, String triggerConfig, Integer scrapeRate, List<String> sources, Map<String, String> tags) {
+        super(name, triggerConfig, scrapeRate, sources, tags);
     }
 }

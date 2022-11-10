@@ -21,6 +21,8 @@ package s7
 
 import (
 	"context"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
@@ -28,7 +30,6 @@ import (
 	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"time"
 )
 
 type Writer struct {
@@ -49,27 +50,27 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 	// TODO: handle context
 	result := make(chan model.PlcWriteRequestResult)
 	go func() {
-		parameterItems := make([]readWriteModel.S7VarRequestParameterItem, len(writeRequest.GetFieldNames()))
-		payloadItems := make([]readWriteModel.S7VarPayloadDataItem, len(writeRequest.GetFieldNames()))
-		for i, fieldName := range writeRequest.GetFieldNames() {
-			field := writeRequest.GetField(fieldName)
-			plcValue := writeRequest.GetValue(fieldName)
-			s7Address, err := encodeS7Address(field)
+		parameterItems := make([]readWriteModel.S7VarRequestParameterItem, len(writeRequest.GetTagNames()))
+		payloadItems := make([]readWriteModel.S7VarPayloadDataItem, len(writeRequest.GetTagNames()))
+		for i, tagName := range writeRequest.GetTagNames() {
+			tag := writeRequest.GetTag(tagName)
+			plcValue := writeRequest.GetValue(tagName)
+			s7Address, err := encodeS7Address(tag)
 			if err != nil {
 				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding s7 address for field %s", fieldName),
+					Err:      errors.Wrapf(err, "Error encoding s7 address for tag %s", tagName),
 				}
 				return
 			}
 			parameterItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(s7Address)
-			value, err := serializePlcValue(field, plcValue)
+			value, err := serializePlcValue(tag, plcValue)
 			if err != nil {
 				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding value for field %s", fieldName),
+					Err:      errors.Wrapf(err, "Error encoding value for tag %s", tagName),
 				}
 				return
 			}
@@ -177,8 +178,8 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeReq
 		if (errorClass == 129) && (errorCode == 4) {
 			log.Warn().Msg("Got an error response from the PLC. This particular response code usually indicates " +
 				"that PUT/GET is not enabled on the PLC.")
-			for _, fieldName := range writeRequest.GetFieldNames() {
-				responseCodes[fieldName] = model.PlcResponseCode_ACCESS_DENIED
+			for _, tagName := range writeRequest.GetTagNames() {
+				responseCodes[tagName] = model.PlcResponseCode_ACCESS_DENIED
 			}
 			log.Trace().Msg("Returning the response")
 			return plc4goModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
@@ -188,8 +189,8 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeReq
 				"on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump "+
 				"containing a capture of the communication.",
 				errorClass, errorCode)
-			for _, fieldName := range writeRequest.GetFieldNames() {
-				responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
+			for _, tagName := range writeRequest.GetTagNames() {
+				responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
 			}
 			return plc4goModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
 		}
@@ -201,18 +202,18 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeReq
 	// If the numbers of items don't match, we're in big trouble as the only
 	// way to know how to interpret the responses is by aligning them with the
 	// items from the request as this information is not returned by the PLC.
-	if len(writeRequest.GetFieldNames()) != len(payload.GetItems()) {
+	if len(writeRequest.GetTagNames()) != len(payload.GetItems()) {
 		return nil, errors.New("The number of requested items doesn't match the number of returned items")
 	}
 
 	payloadItems := payload.GetItems()
-	for i, fieldName := range writeRequest.GetFieldNames() {
+	for i, tagName := range writeRequest.GetTagNames() {
 		payloadItem := payloadItems[i]
 
 		responseCode := decodeResponseCode(payloadItem.GetReturnCode())
 		// Decode the data according to the information from the request
 		log.Trace().Msg("decode data")
-		responseCodes[fieldName] = responseCode
+		responseCodes[tagName] = responseCode
 	}
 
 	// Return the response
@@ -220,19 +221,19 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.S7Message, writeReq
 	return plc4goModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
 }
 
-func serializePlcValue(field model.PlcField, plcValue values.PlcValue) (readWriteModel.S7VarPayloadDataItem, error) {
-	s7Field, ok := field.(PlcField)
+func serializePlcValue(tag model.PlcTag, plcValue values.PlcValue) (readWriteModel.S7VarPayloadDataItem, error) {
+	s7Tag, ok := tag.(PlcTag)
 	if !ok {
-		return nil, errors.Errorf("Unsupported address type %t", field)
+		return nil, errors.Errorf("Unsupported address type %t", tag)
 	}
-	transportSize := s7Field.GetDataType().DataTransportSize()
+	transportSize := s7Tag.GetDataType().DataTransportSize()
 	stringLength := uint16(254)
-	if s7StringField, ok := field.(*PlcStringField); ok {
-		stringLength = s7StringField.stringLength
+	if s7StringTag, ok := tag.(*PlcStringTag); ok {
+		stringLength = s7StringTag.stringLength
 	}
-	data, err := readWriteModel.DataItemSerialize(plcValue, s7Field.GetDataType().DataProtocolId(), int32(stringLength))
+	data, err := readWriteModel.DataItemSerialize(plcValue, s7Tag.GetDataType().DataProtocolId(), int32(stringLength))
 	if err != nil {
-		return nil, errors.Wrapf(err, "Error serializing field item of type: '%v'", s7Field.GetDataType())
+		return nil, errors.Wrapf(err, "Error serializing tag item of type: '%v'", s7Tag.GetDataType())
 	}
 	return readWriteModel.NewS7VarPayloadDataItem(
 		readWriteModel.DataTransportErrorCode_OK,

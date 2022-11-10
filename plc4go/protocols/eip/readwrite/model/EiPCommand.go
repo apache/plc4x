@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -104,7 +102,7 @@ func (m EiPCommand) GetLengthInBytes() uint16 {
 }
 
 func EiPCommandParse(theBytes []byte) (EiPCommand, error) {
-	return EiPCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return EiPCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func EiPCommandParseWithBuffer(readBuffer utils.ReadBuffer) (EiPCommand, error) {
@@ -121,7 +119,7 @@ func EiPCommandParseWithBuffer(readBuffer utils.ReadBuffer) (EiPCommand, error) 
 }
 
 func (e EiPCommand) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

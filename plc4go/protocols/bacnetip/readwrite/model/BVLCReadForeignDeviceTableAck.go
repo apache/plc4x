@@ -133,7 +133,7 @@ func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBytes() uint16 {
 }
 
 func BVLCReadForeignDeviceTableAckParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCReadForeignDeviceTableAck, error) {
-	return BVLCReadForeignDeviceTableAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength) // TODO: get endianness from mspec
+	return BVLCReadForeignDeviceTableAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
 }
 
 func BVLCReadForeignDeviceTableAckParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCReadForeignDeviceTableAck, error) {
@@ -180,7 +180,7 @@ func BVLCReadForeignDeviceTableAckParseWithBuffer(readBuffer utils.ReadBuffer, b
 }
 
 func (m *_BVLCReadForeignDeviceTableAck) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

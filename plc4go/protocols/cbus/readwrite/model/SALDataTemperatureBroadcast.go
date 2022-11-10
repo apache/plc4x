@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -128,7 +127,7 @@ func (m *_SALDataTemperatureBroadcast) GetLengthInBytes() uint16 {
 }
 
 func SALDataTemperatureBroadcastParse(theBytes []byte, applicationId ApplicationId) (SALDataTemperatureBroadcast, error) {
-	return SALDataTemperatureBroadcastParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+	return SALDataTemperatureBroadcastParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
 func SALDataTemperatureBroadcastParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTemperatureBroadcast, error) {
@@ -167,7 +166,7 @@ func SALDataTemperatureBroadcastParseWithBuffer(readBuffer utils.ReadBuffer, app
 }
 
 func (m *_SALDataTemperatureBroadcast) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

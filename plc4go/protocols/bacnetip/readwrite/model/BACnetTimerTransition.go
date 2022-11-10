@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -134,7 +132,7 @@ func (m BACnetTimerTransition) GetLengthInBytes() uint16 {
 }
 
 func BACnetTimerTransitionParse(theBytes []byte) (BACnetTimerTransition, error) {
-	return BACnetTimerTransitionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetTimerTransitionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetTimerTransitionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimerTransition, error) {
@@ -151,7 +149,7 @@ func BACnetTimerTransitionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTi
 }
 
 func (e BACnetTimerTransition) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

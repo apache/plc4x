@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -148,7 +147,7 @@ func (m *_HVACStartTime) GetLengthInBytes() uint16 {
 }
 
 func HVACStartTimeParse(theBytes []byte) (HVACStartTime, error) {
-	return HVACStartTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return HVACStartTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func HVACStartTimeParseWithBuffer(readBuffer utils.ReadBuffer) (HVACStartTime, error) {
@@ -203,7 +202,7 @@ func HVACStartTimeParseWithBuffer(readBuffer utils.ReadBuffer) (HVACStartTime, e
 }
 
 func (m *_HVACStartTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

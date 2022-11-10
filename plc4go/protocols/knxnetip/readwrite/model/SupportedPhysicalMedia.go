@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -417,7 +415,7 @@ func (m SupportedPhysicalMedia) GetLengthInBytes() uint16 {
 }
 
 func SupportedPhysicalMediaParse(theBytes []byte) (SupportedPhysicalMedia, error) {
-	return SupportedPhysicalMediaParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return SupportedPhysicalMediaParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func SupportedPhysicalMediaParseWithBuffer(readBuffer utils.ReadBuffer) (SupportedPhysicalMedia, error) {
@@ -434,7 +432,7 @@ func SupportedPhysicalMediaParseWithBuffer(readBuffer utils.ReadBuffer) (Support
 }
 
 func (e SupportedPhysicalMedia) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

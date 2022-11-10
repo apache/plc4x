@@ -104,7 +104,7 @@ func (m *_FirmataMessage) GetLengthInBytes() uint16 {
 }
 
 func FirmataMessageParse(theBytes []byte, response bool) (FirmataMessage, error) {
-	return FirmataMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+	return FirmataMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
 }
 
 func FirmataMessageParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataMessage, error) {

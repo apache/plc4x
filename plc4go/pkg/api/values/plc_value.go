@@ -157,106 +157,171 @@ type RawPlcValue interface {
 type PlcValueType uint8
 
 const (
-	BINT PlcValueType = iota
-	BIT_STRING
-	BOOL
-	BREAL
-	BYTE
-	BYTE_ARRAY
-	CHAR
-	DATE
-	DATE_AND_TIME
-	DINT
-	DWORD
-	INT
-	LINT
-	LIST
-	LREAL
-	LTIME
-	LWORD
-	NULL
-	RAW_PLC_VALUE
-	REAL
-	STRUCT
-	SINT
-	STRING
-	TIME
-	TIME_OF_DAY
-	UDINT
-	UINT
-	ULINT
-	USINT
-	WCHAR
-	WORD
-	WSTRING
+	NULL           PlcValueType = 0x00
+	BOOL           PlcValueType = 0x01
+	BYTE           PlcValueType = 0x02
+	WORD           PlcValueType = 0x03
+	DWORD          PlcValueType = 0x04
+	LWORD          PlcValueType = 0x05
+	USINT          PlcValueType = 0x11
+	UINT           PlcValueType = 0x12
+	UDINT          PlcValueType = 0x13
+	ULINT          PlcValueType = 0x14
+	SINT           PlcValueType = 0x21
+	INT            PlcValueType = 0x22
+	DINT           PlcValueType = 0x23
+	LINT           PlcValueType = 0x24
+	REAL           PlcValueType = 0x31
+	LREAL          PlcValueType = 0x32
+	CHAR           PlcValueType = 0x41
+	WCHAR          PlcValueType = 0x42
+	STRING         PlcValueType = 0x43
+	WSTRING        PlcValueType = 0x44
+	TIME           PlcValueType = 0x51
+	LTIME          PlcValueType = 0x52
+	DATE           PlcValueType = 0x53
+	LDATE          PlcValueType = 0x54
+	TIME_OF_DAY    PlcValueType = 0x55
+	LTIME_OF_DAY   PlcValueType = 0x56
+	DATE_AND_TIME  PlcValueType = 0x57
+	LDATE_AND_TIME PlcValueType = 0x58
+	Struct         PlcValueType = 0x61
+	List           PlcValueType = 0x62
+	RAW_BYTE_ARRAY PlcValueType = 0x71
 )
 
 func (p PlcValueType) String() string {
 	switch {
-	case p == BINT:
-		return "BINT"
-	case p == BIT_STRING:
-		return "BIT_STRING"
-	case p == BOOL:
-		return "BOOL"
-	case p == BREAL:
-		return "BREAL"
-	case p == BYTE:
-		return "BYTE"
-	case p == BYTE_ARRAY:
-		return "BYTE_ARRAY"
-	case p == CHAR:
-		return "CHAR"
-	case p == DATE:
-		return "DATE"
-	case p == DATE_AND_TIME:
-		return "DATE_AND_TIME"
-	case p == DINT:
-		return "DINT"
-	case p == DWORD:
-		return "DWORD"
-	case p == INT:
-		return "INT"
-	case p == LINT:
-		return "LINT"
-	case p == LIST:
-		return "LIST"
-	case p == LREAL:
-		return "LREAL"
-	case p == LTIME:
-		return "LTIME"
-	case p == LWORD:
-		return "LWORD"
 	case p == NULL:
 		return "NULL"
-	case p == RAW_PLC_VALUE:
-		return "RAW_PLC_VALUE"
-	case p == REAL:
-		return "REAL"
-	case p == STRUCT:
-		return "STRUCT"
-	case p == SINT:
-		return "SINT"
-	case p == STRING:
-		return "STRING"
-	case p == TIME:
-		return "TIME"
-	case p == TIME_OF_DAY:
-		return "TIME_OF_DAY"
-	case p == UDINT:
-		return "UDINT"
-	case p == UINT:
-		return "UINT"
-	case p == ULINT:
-		return "ULINT"
-	case p == USINT:
-		return "USINT"
-	case p == WCHAR:
-		return "WCHAR"
+	case p == BOOL:
+		return "BOOL"
+	case p == BYTE:
+		return "BYTE"
 	case p == WORD:
 		return "WORD"
+	case p == DWORD:
+		return "DWORD"
+	case p == LWORD:
+		return "LWORD"
+	case p == USINT:
+		return "USINT"
+	case p == UINT:
+		return "UINT"
+	case p == UDINT:
+		return "UDINT"
+	case p == ULINT:
+		return "ULINT"
+	case p == SINT:
+		return "SINT"
+	case p == INT:
+		return "INT"
+	case p == DINT:
+		return "DINT"
+	case p == LINT:
+		return "LINT"
+	case p == REAL:
+		return "REAL"
+	case p == LREAL:
+		return "LREAL"
+	case p == CHAR:
+		return "CHAR"
+	case p == WCHAR:
+		return "WCHAR"
+	case p == STRING:
+		return "STRING"
 	case p == WSTRING:
 		return "WSTRING"
+	case p == TIME:
+		return "TIME"
+	case p == LTIME:
+		return "LTIME"
+	case p == DATE:
+		return "DATE"
+	case p == LDATE:
+		return "LDATE"
+	case p == TIME_OF_DAY:
+		return "TIME_OF_DAY"
+	case p == LTIME_OF_DAY:
+		return "LTIME_OF_DAY"
+	case p == DATE_AND_TIME:
+		return "DATE_AND_TIME"
+	case p == LDATE_AND_TIME:
+		return "LDATE_AND_TIME"
+	case p == Struct:
+		return "Struct"
+	case p == List:
+		return "List"
+	case p == RAW_BYTE_ARRAY:
+		return "RAW_BYTE_ARRAY"
 	}
 	return "Unknown"
+}
+
+func PlcValueByName(value string) (PlcValueType, bool) {
+	switch value {
+	case "NULL":
+		return NULL, true
+	case "BOOL":
+		return BOOL, true
+	case "BYTE":
+		return BYTE, true
+	case "WORD":
+		return WORD, true
+	case "DWORD":
+		return DWORD, true
+	case "LWORD":
+		return LWORD, true
+	case "USINT":
+		return USINT, true
+	case "UINT":
+		return UINT, true
+	case "UDINT":
+		return UDINT, true
+	case "ULINT":
+		return ULINT, true
+	case "SINT":
+		return SINT, true
+	case "INT":
+		return INT, true
+	case "DINT":
+		return DINT, true
+	case "LINT":
+		return LINT, true
+	case "REAL":
+		return REAL, true
+	case "LREAL":
+		return LREAL, true
+	case "CHAR":
+		return CHAR, true
+	case "WCHAR":
+		return WCHAR, true
+	case "STRING":
+		return STRING, true
+	case "WSTRING":
+		return WSTRING, true
+	case "TIME":
+		return TIME, true
+	case "LTIME":
+		return LTIME, true
+	case "DATE":
+		return DATE, true
+	case "LDATE":
+		return LDATE, true
+	case "TIME_OF_DAY":
+		return TIME_OF_DAY, true
+	case "LTIME_OF_DAY":
+		return LTIME_OF_DAY, true
+	case "DATE_AND_TIME":
+		return DATE_AND_TIME, true
+	case "LDATE_AND_TIME":
+		return LDATE_AND_TIME, true
+	case "Struct":
+		return Struct, true
+	case "List":
+		return List, true
+	case "RAW_BYTE_ARRAY":
+		return RAW_BYTE_ARRAY, true
+	}
+	return NULL, false
 }

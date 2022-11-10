@@ -23,6 +23,13 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"os"
+	"runtime/debug"
+	"strconv"
+	"strings"
+	"testing"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	api "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -32,12 +39,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/subchen/go-xmldom"
-	"os"
-	"runtime/debug"
-	"strconv"
-	"strings"
-	"testing"
-	"time"
 )
 
 type DriverTestsuite struct {
@@ -159,10 +160,10 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			// Assemble a read-request according to the information in the test xml
 			log.Trace().Msg("Assemble read request")
 			rrb := connection.ReadRequestBuilder()
-			for _, fieldNode := range step.payload.GetChild("fields").GetChildren("field") {
-				fieldName := fieldNode.GetChild("name").Text
-				fieldAddress := fieldNode.GetChild("address").Text
-				rrb.AddQuery(fieldName, fieldAddress)
+			for _, tagNode := range step.payload.GetChild("tags").GetChildren("tag") {
+				tagName := tagNode.GetChild("name").Text
+				tagAddress := tagNode.GetChild("address").Text
+				rrb.AddTagAddress(tagName, tagAddress)
 			}
 			readRequest, err := rrb.Build()
 			if err != nil {
@@ -178,27 +179,27 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		case "TestWriteRequest":
 			log.Trace().Msg("Assemble write request")
 			wrb := connection.WriteRequestBuilder()
-			for _, fieldNode := range step.payload.GetChild("fields").GetChildren("field") {
-				fieldName := fieldNode.GetChild("name").Text
-				fieldAddress := fieldNode.GetChild("address").Text
+			for _, tagNode := range step.payload.GetChild("tags").GetChildren("tag") {
+				tagName := tagNode.GetChild("name").Text
+				tagAddress := tagNode.GetChild("address").Text
 
 				he, ok := connection.(spi.HandlerExposer)
 				if !ok {
 					return errors.New("connection is not a HandlerExposer")
 				}
-				field, err := he.GetPlcFieldHandler().ParseQuery(fieldAddress)
+				tag, err := he.GetPlcTagHandler().ParseTag(tagAddress)
 				if err != nil {
-					return errors.Wrapf(err, "error parsing address: %s", fieldAddress)
+					return errors.Wrapf(err, "error parsing address: %s", tagAddress)
 				}
-				if field.GetQuantity() > 1 {
-					var fieldValue []string
-					for _, valueChild := range fieldNode.GetChildren("value") {
-						fieldValue = append(fieldValue, valueChild.Text)
+				if len(tag.GetArrayInfo()) > 0 {
+					var tagValue []string
+					for _, valueChild := range tagNode.GetChildren("value") {
+						tagValue = append(tagValue, valueChild.Text)
 					}
-					wrb.AddQuery(fieldName, fieldAddress, fieldValue)
+					wrb.AddTagAddress(tagName, tagAddress, tagValue)
 				} else {
-					fieldValue := fieldNode.GetChild("value").Text
-					wrb.AddQuery(fieldName, fieldAddress, fieldValue)
+					tagValue := tagNode.GetChild("value").Text
+					wrb.AddTagAddress(tagName, tagAddress, tagValue)
 				}
 			}
 			writeRequest, err := wrb.Build()

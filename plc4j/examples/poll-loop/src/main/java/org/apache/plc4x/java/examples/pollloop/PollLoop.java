@@ -93,7 +93,7 @@ public class PollLoop {
                 // variables names are the same as the actual variable read
                 PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
                 for (int i = 0; i < variables.size(); i++) {
-                    builder.addItem(variables.get(i), variables.get(i));
+                    builder.addTagAddress(variables.get(i), variables.get(i));
                 }
                 PlcReadRequest readRequest = builder.build();
 
@@ -200,23 +200,23 @@ public class PollLoop {
         collector.start();
     }
 
-    public static Object[] response2Event(PlcReadResponse response, List<String> fieldNames) {
-        // field names are returned in sorted order we do not want that
-        Object[] event = new Object[fieldNames.size() + 1];
+    public static Object[] response2Event(PlcReadResponse response, List<String> tagNames) {
+        // tag names are returned in sorted order we do not want that
+        Object[] event = new Object[tagNames.size() + 1];
 
         event[0] = System.currentTimeMillis();
 
-        for (int i = 0; i < fieldNames.size(); i++) {
-            if (response.getResponseCode(fieldNames.get(i)) == PlcResponseCode.OK) {
-                PlcValue value = response.getPlcValue(fieldNames.get(i));
+        for (int i = 0; i < tagNames.size(); i++) {
+            if (response.getResponseCode(tagNames.get(i)) == PlcResponseCode.OK) {
+                PlcValue value = response.getPlcValue(tagNames.get(i));
                 event[i + 1] = value.toString();
             }
 
             // Something went wrong, to output an error message instead.
             else {
                 System.out.println(
-                    "Error[" + fieldNames.get(i) + "]: " + response
-                        .getResponseCode(fieldNames.get(i))
+                    "Error[" + tagNames.get(i) + "]: " + response
+                        .getResponseCode(tagNames.get(i))
                         .name());
             }
         }

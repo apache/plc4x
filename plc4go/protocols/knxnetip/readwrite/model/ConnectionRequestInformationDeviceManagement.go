@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -106,7 +105,7 @@ func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBytes() uint1
 }
 
 func ConnectionRequestInformationDeviceManagementParse(theBytes []byte) (ConnectionRequestInformationDeviceManagement, error) {
-	return ConnectionRequestInformationDeviceManagementParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return ConnectionRequestInformationDeviceManagementParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func ConnectionRequestInformationDeviceManagementParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionRequestInformationDeviceManagement, error) {
@@ -131,7 +130,7 @@ func ConnectionRequestInformationDeviceManagementParseWithBuffer(readBuffer util
 }
 
 func (m *_ConnectionRequestInformationDeviceManagement) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

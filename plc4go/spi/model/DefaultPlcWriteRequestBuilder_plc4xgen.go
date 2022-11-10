@@ -61,20 +61,20 @@ func (d *DefaultPlcWriteRequestBuilder) SerializeWithWriteBuffer(writeBuffer uti
 		}
 	}
 
-	if d.fieldHandler != nil {
-		if serializableField, ok := d.fieldHandler.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("fieldHandler"); err != nil {
+	if d.tagHandler != nil {
+		if serializableField, ok := d.tagHandler.(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("tagHandler"); err != nil {
 				return err
 			}
 			if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
 				return err
 			}
-			if err := writeBuffer.PopContext("fieldHandler"); err != nil {
+			if err := writeBuffer.PopContext("tagHandler"); err != nil {
 				return err
 			}
 		} else {
-			stringValue := fmt.Sprintf("%v", d.fieldHandler)
-			if err := writeBuffer.WriteString("fieldHandler", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			stringValue := fmt.Sprintf("%v", d.tagHandler)
+			if err := writeBuffer.WriteString("tagHandler", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
 				return err
 			}
 		}
@@ -98,33 +98,33 @@ func (d *DefaultPlcWriteRequestBuilder) SerializeWithWriteBuffer(writeBuffer uti
 			}
 		}
 	}
-	if err := writeBuffer.PushContext("queries", utils.WithRenderAsList(true)); err != nil {
+	if err := writeBuffer.PushContext("tagNames", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for name, elem := range d.queries {
+	for _, elem := range d.tagNames {
+		if err := writeBuffer.WriteString("", uint32(len(elem)*8), "UTF-8", elem); err != nil {
+			return err
+		}
+	}
+	if err := writeBuffer.PopContext("tagNames", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+	if err := writeBuffer.PushContext("tagAddresses", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+	for name, elem := range d.tagAddresses {
 
 		if err := writeBuffer.WriteString(name, uint32(len(elem)*8), "UTF-8", elem); err != nil {
 			return err
 		}
 	}
-	if err := writeBuffer.PopContext("queries", utils.WithRenderAsList(true)); err != nil {
+	if err := writeBuffer.PopContext("tagAddresses", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	if err := writeBuffer.PushContext("queryNames", utils.WithRenderAsList(true)); err != nil {
+	if err := writeBuffer.PushContext("tags", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for _, elem := range d.queryNames {
-		if err := writeBuffer.WriteString("", uint32(len(elem)*8), "UTF-8", elem); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("queryNames", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	if err := writeBuffer.PushContext("fields", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	for name, elem := range d.fields {
+	for name, elem := range d.tags {
 
 		var elem interface{} = elem
 		if serializable, ok := elem.(utils.Serializable); ok {
@@ -144,18 +144,7 @@ func (d *DefaultPlcWriteRequestBuilder) SerializeWithWriteBuffer(writeBuffer uti
 			}
 		}
 	}
-	if err := writeBuffer.PopContext("fields", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	if err := writeBuffer.PushContext("fieldNames", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	for _, elem := range d.fieldNames {
-		if err := writeBuffer.WriteString("", uint32(len(elem)*8), "UTF-8", elem); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("fieldNames", utils.WithRenderAsList(true)); err != nil {
+	if err := writeBuffer.PopContext("tags", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
 	if err := writeBuffer.PushContext("values", utils.WithRenderAsList(true)); err != nil {

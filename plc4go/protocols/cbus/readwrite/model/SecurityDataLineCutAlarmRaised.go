@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -104,7 +103,7 @@ func (m *_SecurityDataLineCutAlarmRaised) GetLengthInBytes() uint16 {
 }
 
 func SecurityDataLineCutAlarmRaisedParse(theBytes []byte) (SecurityDataLineCutAlarmRaised, error) {
-	return SecurityDataLineCutAlarmRaisedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return SecurityDataLineCutAlarmRaisedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataLineCutAlarmRaisedParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataLineCutAlarmRaised, error) {
@@ -129,7 +128,7 @@ func SecurityDataLineCutAlarmRaisedParseWithBuffer(readBuffer utils.ReadBuffer) 
 }
 
 func (m *_SecurityDataLineCutAlarmRaised) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

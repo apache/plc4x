@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,7 +98,7 @@ func (m *_ComObjectTable) GetLengthInBytes() uint16 {
 }
 
 func ComObjectTableParse(theBytes []byte, firmwareType FirmwareType) (ComObjectTable, error) {
-	return ComObjectTableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), firmwareType) // TODO: get endianness from mspec
+	return ComObjectTableParseWithBuffer(utils.NewReadBufferByteBased(theBytes), firmwareType)
 }
 
 func ComObjectTableParseWithBuffer(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTable, error) {

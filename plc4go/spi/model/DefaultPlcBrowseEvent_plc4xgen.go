@@ -61,7 +61,7 @@ func (d *DefaultPlcBrowseEvent) SerializeWithWriteBuffer(writeBuffer utils.Write
 		}
 	}
 
-	if err := writeBuffer.WriteString("fieldName", uint32(len(d.FieldName)*8), "UTF-8", d.FieldName); err != nil {
+	if err := writeBuffer.WriteString("queryName", uint32(len(d.QueryName)*8), "UTF-8", d.QueryName); err != nil {
 		return err
 	}
 

@@ -41,7 +41,7 @@ func (d *DefaultPlcBrowseRequest) SerializeWithWriteBuffer(writeBuffer utils.Wri
 	if err := writeBuffer.PushContext("PlcBrowseRequest"); err != nil {
 		return err
 	}
-	if err := d.DefaultRequest.SerializeWithWriteBuffer(writeBuffer); err != nil {
+	if err := d.DefaultPlcRequest.SerializeWithWriteBuffer(writeBuffer); err != nil {
 		return err
 	}
 
@@ -62,6 +62,43 @@ func (d *DefaultPlcBrowseRequest) SerializeWithWriteBuffer(writeBuffer utils.Wri
 				return err
 			}
 		}
+	}
+	if err := writeBuffer.PushContext("queryNames", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+	for _, elem := range d.queryNames {
+		if err := writeBuffer.WriteString("", uint32(len(elem)*8), "UTF-8", elem); err != nil {
+			return err
+		}
+	}
+	if err := writeBuffer.PopContext("queryNames", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+	if err := writeBuffer.PushContext("queries", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+	for name, elem := range d.queries {
+
+		var elem interface{} = elem
+		if serializable, ok := elem.(utils.Serializable); ok {
+			if err := writeBuffer.PushContext(name); err != nil {
+				return err
+			}
+			if err := serializable.SerializeWithWriteBuffer(writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext(name); err != nil {
+				return err
+			}
+		} else {
+			elemAsString := fmt.Sprintf("%v", elem)
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
+				return err
+			}
+		}
+	}
+	if err := writeBuffer.PopContext("queries", utils.WithRenderAsList(true)); err != nil {
+		return err
 	}
 	if err := writeBuffer.PopContext("PlcBrowseRequest"); err != nil {
 		return err

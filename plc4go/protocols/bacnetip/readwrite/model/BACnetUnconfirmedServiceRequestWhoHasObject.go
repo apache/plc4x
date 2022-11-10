@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -130,7 +129,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) GetLengthInBytes() uint16
 }
 
 func BACnetUnconfirmedServiceRequestWhoHasObjectParse(theBytes []byte) (BACnetUnconfirmedServiceRequestWhoHasObject, error) {
-	return BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHasObject, error) {

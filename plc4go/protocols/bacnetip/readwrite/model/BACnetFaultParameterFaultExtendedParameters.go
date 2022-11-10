@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +125,7 @@ func (m *_BACnetFaultParameterFaultExtendedParameters) GetLengthInBytes() uint16
 }
 
 func BACnetFaultParameterFaultExtendedParametersParse(theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultExtendedParameters, error) {
-	return BACnetFaultParameterFaultExtendedParametersParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+	return BACnetFaultParameterFaultExtendedParametersParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetFaultParameterFaultExtendedParametersParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultExtendedParameters, error) {
@@ -164,7 +163,6 @@ func BACnetFaultParameterFaultExtendedParametersParseWithBuffer(readBuffer utils
 				return nil, errors.Wrap(_err, "Error parsing 'parameters' field of BACnetFaultParameterFaultExtendedParameters")
 			}
 			parameters = append(parameters, _item.(BACnetFaultParameterFaultExtendedParametersEntry))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("parameters", utils.WithRenderAsList(true)); closeErr != nil {
@@ -198,7 +196,7 @@ func BACnetFaultParameterFaultExtendedParametersParseWithBuffer(readBuffer utils
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParameters) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -179,7 +178,7 @@ func (m *_BACnetEventParameterUnsignedOutOfRange) GetLengthInBytes() uint16 {
 }
 
 func BACnetEventParameterUnsignedOutOfRangeParse(theBytes []byte) (BACnetEventParameterUnsignedOutOfRange, error) {
-	return BACnetEventParameterUnsignedOutOfRangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetEventParameterUnsignedOutOfRangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetEventParameterUnsignedOutOfRangeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterUnsignedOutOfRange, error) {
@@ -288,7 +287,7 @@ func BACnetEventParameterUnsignedOutOfRangeParseWithBuffer(readBuffer utils.Read
 }
 
 func (m *_BACnetEventParameterUnsignedOutOfRange) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

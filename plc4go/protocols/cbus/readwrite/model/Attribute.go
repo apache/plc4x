@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -284,7 +282,7 @@ func (m Attribute) GetLengthInBytes() uint16 {
 }
 
 func AttributeParse(theBytes []byte) (Attribute, error) {
-	return AttributeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return AttributeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func AttributeParseWithBuffer(readBuffer utils.ReadBuffer) (Attribute, error) {
@@ -301,7 +299,7 @@ func AttributeParseWithBuffer(readBuffer utils.ReadBuffer) (Attribute, error) {
 }
 
 func (e Attribute) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

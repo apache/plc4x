@@ -21,16 +21,17 @@ package testutils
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi/values"
-	"github.com/rs/zerolog/log"
-	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"reflect"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/values"
+	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
 )
 
 type ManualTestCase struct {
@@ -85,9 +86,9 @@ func (m *ManualTestSuite) Run() plc4go.PlcConnection {
 	log.Info().Msg("Reading all types in separate requests")
 	// Run all entries separately:
 	for _, testCase := range m.TestCases {
-		fieldName := testCase.Address
-		m.t.Run(fieldName, func(t *testing.T) {
-			m.runSingleTest(t, connection, fieldName, testCase)
+		tagName := testCase.Address
+		m.t.Run(tagName, func(t *testing.T) {
+			m.runSingleTest(t, connection, tagName, testCase)
 		})
 	}
 	m.t.Run("combinedTest", func(t *testing.T) {
@@ -96,10 +97,10 @@ func (m *ManualTestSuite) Run() plc4go.PlcConnection {
 	return connection
 }
 
-func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConnection, fieldName string, testCase ManualTestCase) {
+func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConnection, tagName string, testCase ManualTestCase) {
 	// Prepare the read-request
 	readRequestBuilder := connection.ReadRequestBuilder()
-	readRequestBuilder.AddQuery(fieldName, testCase.Address)
+	readRequestBuilder.AddTagAddress(tagName, testCase.Address)
 	readRequest, err := readRequestBuilder.Build()
 	if err != nil {
 		panic(err)
@@ -115,13 +116,13 @@ func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConne
 	readResponse := readResponseResult.GetResponse()
 
 	// Check the result
-	assert.Equalf(t, 1, len(readResponse.GetFieldNames()), "response should have a field for %s", fieldName)
-	assert.Equalf(t, fieldName, readResponse.GetFieldNames()[0], "first field should be equal to %s", fieldName)
-	assert.Equalf(t, model.PlcResponseCode_OK, readResponse.GetResponseCode(fieldName), "response code should be ok for %s", fieldName)
-	assert.NotNil(t, readResponse.GetValue(fieldName), fieldName)
+	assert.Equalf(t, 1, len(readResponse.GetTagNames()), "response should have a tag for %s", tagName)
+	assert.Equalf(t, tagName, readResponse.GetTagNames()[0], "first tag should be equal to %s", tagName)
+	assert.Equalf(t, model.PlcResponseCode_OK, readResponse.GetResponseCode(tagName), "response code should be ok for %s", tagName)
+	assert.NotNil(t, readResponse.GetValue(tagName), tagName)
 	expectation := reflect.ValueOf(testCase.ExpectedReadValue)
-	if readResponse.GetValue(fieldName).IsList() && (expectation.Kind() == reflect.Slice || expectation.Kind() == reflect.Array) {
-		plcList := readResponse.GetValue(fieldName).GetList()
+	if readResponse.GetValue(tagName).IsList() && (expectation.Kind() == reflect.Slice || expectation.Kind() == reflect.Array) {
+		plcList := readResponse.GetValue(tagName).GetList()
 		for j := 0; j < expectation.Len(); j++ {
 			var actual any
 			actual = plcList[j]
@@ -135,10 +136,10 @@ func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConne
 					t.Fatalf("%T not yet mapped", actualCasted)
 				}
 			}
-			assert.Equal(t, expectation.Index(j).Interface(), actual, fmt.Sprintf("%s[%d]", fieldName, j))
+			assert.Equal(t, expectation.Index(j).Interface(), actual, fmt.Sprintf("%s[%d]", tagName, j))
 		}
 	} else {
-		assert.Equal(t, fmt.Sprint(testCase.ExpectedReadValue), readResponse.GetValue(fieldName).GetString(), fieldName)
+		assert.Equal(t, fmt.Sprint(testCase.ExpectedReadValue), readResponse.GetValue(tagName).GetString(), tagName)
 	}
 }
 
@@ -163,8 +164,8 @@ func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnec
 
 		builder := connection.ReadRequestBuilder()
 		for _, testCase := range shuffledTestcases {
-			fieldName := testCase.Address
-			builder.AddQuery(fieldName, testCase.Address)
+			tagName := testCase.Address
+			builder.AddTagAddress(tagName, testCase.Address)
 		}
 		readRequest, err := builder.Build()
 		if err != nil {
@@ -181,14 +182,14 @@ func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnec
 		readResponse := readResponseResult.GetResponse()
 
 		// Check the result
-		assert.Equal(t, len(shuffledTestcases), len(readResponse.GetFieldNames()))
+		assert.Equal(t, len(shuffledTestcases), len(readResponse.GetTagNames()))
 		for _, testCase := range shuffledTestcases {
-			fieldName := testCase.Address
-			assert.Equalf(t, model.PlcResponseCode_OK, readResponse.GetResponseCode(fieldName), "response code should be ok for %s", fieldName)
-			assert.NotNil(t, readResponse.GetValue(fieldName))
+			tagName := testCase.Address
+			assert.Equalf(t, model.PlcResponseCode_OK, readResponse.GetResponseCode(tagName), "response code should be ok for %s", tagName)
+			assert.NotNil(t, readResponse.GetValue(tagName))
 			expectation := reflect.ValueOf(testCase.ExpectedReadValue)
-			if readResponse.GetValue(fieldName).IsList() && (expectation.Kind() == reflect.Slice || expectation.Kind() == reflect.Array) {
-				plcList := readResponse.GetValue(fieldName).GetList()
+			if readResponse.GetValue(tagName).IsList() && (expectation.Kind() == reflect.Slice || expectation.Kind() == reflect.Array) {
+				plcList := readResponse.GetValue(tagName).GetList()
 				for j := 0; j < expectation.Len(); j++ {
 					var actual any
 					actual = plcList[j]
@@ -202,10 +203,10 @@ func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnec
 							t.Fatalf("%T not yet mapped", actualCasted)
 						}
 					}
-					assert.Equal(t, expectation.Index(j).Interface(), actual, fmt.Sprintf("%s[%d]", fieldName, j))
+					assert.Equal(t, expectation.Index(j).Interface(), actual, fmt.Sprintf("%s[%d]", tagName, j))
 				}
 			} else {
-				assert.Equal(t, fmt.Sprint(testCase.ExpectedReadValue), readResponse.GetValue(fieldName).GetString(), fieldName)
+				assert.Equal(t, fmt.Sprint(testCase.ExpectedReadValue), readResponse.GetValue(tagName).GetString(), tagName)
 			}
 		}
 	}

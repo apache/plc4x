@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SimpleAliasRegistry implements AliasRegistry {
 
     /**
-     * Map from alias -> plc field address
+     * Map from alias -> plc tag address
      */
     private final Map<String, String> aliasMap;
 

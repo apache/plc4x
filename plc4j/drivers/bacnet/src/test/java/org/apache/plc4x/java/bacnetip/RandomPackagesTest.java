@@ -27,7 +27,6 @@ import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.utils.ascii.AsciiBox;
 import org.apache.plc4x.java.spi.utils.ascii.AsciiBoxWriter;
 import org.apache.plc4x.java.spi.utils.hex.Hex;
-import org.apache.plc4x.test.RequireAllTestsFlag;
 import org.apache.plc4x.test.RequirePcapNg;
 import org.apache.plc4x.test.hex.HexDiff;
 import org.assertj.core.api.InstanceOfAssertFactories;
@@ -57,7 +56,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 // Tests from http://kargs.net/captures
 @RequirePcapNg
-@RequireAllTestsFlag
+//@RequireAllTestsFlag
 @Tag("require-all-tests")
 @Tag("bacnet-regression")
 public class RandomPackagesTest {
@@ -2667,8 +2666,7 @@ public class RandomPackagesTest {
                             .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getMessageText)
                             .extracting(BACnetContextTagCharacterString::getPayload)
                             .extracting(BACnetTagPayloadCharacterString::getValue)
-                            // TODO: check if there is a general problem with bacnet string parsing as we should not read that null byte at the end
-                            .isEqualTo("BO_1\u0000");
+                            .isEqualTo("BO_1");
                         assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
                             .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getNotifyType)
                             .extracting(BACnetNotifyTypeTagged::getValue)

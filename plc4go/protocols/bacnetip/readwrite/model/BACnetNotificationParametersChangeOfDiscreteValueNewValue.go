@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -161,7 +160,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetLengthIn
 }
 
 func BACnetNotificationParametersChangeOfDiscreteValueNewValueParse(theBytes []byte, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValue, error) {
-	return BACnetNotificationParametersChangeOfDiscreteValueNewValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+	return BACnetNotificationParametersChangeOfDiscreteValueNewValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetNotificationParametersChangeOfDiscreteValueNewValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValue, error) {

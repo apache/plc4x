@@ -22,12 +22,13 @@ package values
 import (
 	"encoding/binary"
 	"fmt"
+	"strings"
+	"time"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"strings"
-	"time"
 )
 
 type PlcList struct {
@@ -204,7 +205,7 @@ func (m PlcList) GetStruct() map[string]apiValues.PlcValue {
 ///
 
 func (m PlcList) GetPlcValueType() apiValues.PlcValueType {
-	return apiValues.LIST
+	return apiValues.List
 }
 
 func (m PlcList) Serialize() ([]byte, error) {

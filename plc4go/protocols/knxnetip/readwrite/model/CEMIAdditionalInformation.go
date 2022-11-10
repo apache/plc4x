@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -101,7 +100,7 @@ func (m *_CEMIAdditionalInformation) GetLengthInBytes() uint16 {
 }
 
 func CEMIAdditionalInformationParse(theBytes []byte) (CEMIAdditionalInformation, error) {
-	return CEMIAdditionalInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return CEMIAdditionalInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func CEMIAdditionalInformationParseWithBuffer(readBuffer utils.ReadBuffer) (CEMIAdditionalInformation, error) {

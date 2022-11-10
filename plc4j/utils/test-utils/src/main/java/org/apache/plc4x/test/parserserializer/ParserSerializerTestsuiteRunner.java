@@ -21,7 +21,6 @@ package org.apache.plc4x.test.parserserializer;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.spi.generation.*;
-import org.apache.plc4x.java.spi.utils.ascii.AsciiBox;
 import org.apache.plc4x.java.spi.utils.ascii.AsciiBoxWriter;
 import org.apache.plc4x.test.XmlTestsuiteLoader;
 import org.apache.plc4x.test.dom4j.LocationAwareDocumentFactory;
@@ -200,7 +199,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(parsedOutput.getLengthInBytes(), testSuite.getByteOrder());
             parsedOutput.serialize(writeBuffer);
             LOGGER.info("Serializing passed for testcase {}", testcase);
-            byte[] data = writeBuffer.getData();
+            byte[] data = writeBuffer.getBytes();
             if (testcaseRaw.length != data.length) {
                 LOGGER.info("Expected a byte array with a length of {} but got one with {}", testcaseRaw.length, data.length);
             }

@@ -20,14 +20,13 @@ package org.apache.plc4x.java.eip.readwrite;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.eip.readwrite.configuration.EIPConfiguration;
-import org.apache.plc4x.java.eip.readwrite.field.EipField;
-import org.apache.plc4x.java.eip.readwrite.field.EipFieldHandler;
+import org.apache.plc4x.java.eip.readwrite.tag.EipTag;
+import org.apache.plc4x.java.eip.readwrite.tag.EipTagHandler;
 import org.apache.plc4x.java.eip.readwrite.protocol.EipProtocolLogic;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
@@ -52,13 +51,13 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     }
 
     @Override
-    protected PlcFieldHandler getFieldHandler() {
-        return new EipFieldHandler();
+    protected PlcTagHandler getTagHandler() {
+        return new EipTagHandler();
     }
 
     @Override
-    protected PlcValueHandler getValueHandler() {
-        return new IEC61131ValueHandler();
+    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
+        return new PlcValueHandler();
     }
 
     /**
@@ -119,8 +118,8 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     }
 
     @Override
-    public EipField prepareField(String query){
-        return EipField.of(query);
+    public EipTag prepareTag(String tagAddress){
+        return EipTag.of(tagAddress);
     }
 
 }

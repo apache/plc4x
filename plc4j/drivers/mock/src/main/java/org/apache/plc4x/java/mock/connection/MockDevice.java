@@ -34,11 +34,11 @@ import java.util.function.Consumer;
  */
 public interface MockDevice {
 
-    ResponseItem<PlcValue> read(String fieldQuery);
+    ResponseItem<PlcValue> read(String tagQuery);
 
-    PlcResponseCode write(String fieldQuery, Object value);
+    PlcResponseCode write(String tagQuery, Object value);
 
-    ResponseItem<PlcSubscriptionHandle> subscribe(String fieldQuery);
+    ResponseItem<PlcSubscriptionHandle> subscribe(String tagQuery);
 
     void unsubscribe();
 

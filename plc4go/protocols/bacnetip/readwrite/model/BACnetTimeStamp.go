@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -130,7 +129,7 @@ func (m *_BACnetTimeStamp) GetLengthInBytes() uint16 {
 }
 
 func BACnetTimeStampParse(theBytes []byte) (BACnetTimeStamp, error) {
-	return BACnetTimeStampParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetTimeStampParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetTimeStampParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimeStamp, error) {

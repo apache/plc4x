@@ -21,6 +21,8 @@ package s7
 
 import (
 	"context"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
@@ -29,7 +31,6 @@ import (
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"time"
 )
 
 type Reader struct {
@@ -52,15 +53,15 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
 
-		requestItems := make([]readWriteModel.S7VarRequestParameterItem, len(readRequest.GetFieldNames()))
-		for i, fieldName := range readRequest.GetFieldNames() {
-			field := readRequest.GetField(fieldName)
-			address, err := encodeS7Address(field)
+		requestItems := make([]readWriteModel.S7VarRequestParameterItem, len(readRequest.GetTagNames()))
+		for i, tagName := range readRequest.GetTagNames() {
+			tag := readRequest.GetTag(tagName)
+			address, err := encodeS7Address(tag)
 			if err != nil {
 				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding s7 address for field %s", fieldName),
+					Err:      errors.Wrapf(err, "Error encoding s7 address for tag %s", tagName),
 				}
 				return
 			}
@@ -175,9 +176,9 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 		if (errorClass == 129) && (errorCode == 4) {
 			log.Warn().Msg("Got an error response from the PLC. This particular response code usually indicates " +
 				"that PUT/GET is not enabled on the PLC.")
-			for _, fieldName := range readRequest.GetFieldNames() {
-				responseCodes[fieldName] = model.PlcResponseCode_ACCESS_DENIED
-				plcValues[fieldName] = spiValues.NewPlcNULL()
+			for _, tagName := range readRequest.GetTagNames() {
+				responseCodes[tagName] = model.PlcResponseCode_ACCESS_DENIED
+				plcValues[tagName] = spiValues.NewPlcNULL()
 			}
 			log.Trace().Msg("Returning the response")
 			return plc4goModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
@@ -187,9 +188,9 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 				"on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump "+
 				"containing a capture of the communication.",
 				errorClass, errorCode)
-			for _, fieldName := range readRequest.GetFieldNames() {
-				responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
-				plcValues[fieldName] = spiValues.NewPlcNULL()
+			for _, tagName := range readRequest.GetTagNames() {
+				responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
+				plcValues[tagName] = spiValues.NewPlcNULL()
 			}
 			return plc4goModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 		}
@@ -201,25 +202,25 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 	// If the numbers of items don't match, we're in big trouble as the only
 	// way to know how to interpret the responses is by aligning them with the
 	// items from the request as this information is not returned by the PLC.
-	if len(readRequest.GetFieldNames()) != len(payload.GetItems()) {
+	if len(readRequest.GetTagNames()) != len(payload.GetItems()) {
 		return nil, errors.New("The number of requested items doesn't match the number of returned items")
 	}
 
 	payloadItems := payload.GetItems()
-	for i, fieldName := range readRequest.GetFieldNames() {
-		field := readRequest.GetField(fieldName).(PlcField)
+	for i, tagName := range readRequest.GetTagNames() {
+		tag := readRequest.GetTag(tagName).(PlcTag)
 		payloadItem := payloadItems[i]
 
 		responseCode := decodeResponseCode(payloadItem.GetReturnCode())
 		// Decode the data according to the information from the request
 		log.Trace().Msg("decode data")
-		responseCodes[fieldName] = responseCode
+		responseCodes[tagName] = responseCode
 		if responseCode == model.PlcResponseCode_OK {
-			plcValue, err := readWriteModel.DataItemParse(payloadItem.GetData(), field.GetDataType().DataProtocolId(), int32(field.GetNumElements()))
+			plcValue, err := readWriteModel.DataItemParse(payloadItem.GetData(), tag.GetDataType().DataProtocolId(), int32(tag.GetNumElements()))
 			if err != nil {
 				return nil, errors.Wrap(err, "Error parsing data item")
 			}
-			plcValues[fieldName] = plcValue
+			plcValues[tagName] = plcValue
 		}
 	}
 
@@ -228,15 +229,15 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 	return plc4goModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 }
 
-// Currently we only support the S7 Any type of addresses. This helper simply converts the S7Field from PLC4X into
+// Currently we only support the S7 Any type of addresses. This helper simply converts the S7Tag from PLC4X into
 // S7Address objects.
-func encodeS7Address(field model.PlcField) (readWriteModel.S7Address, error) {
-	s7Field, ok := field.(PlcField)
+func encodeS7Address(tag model.PlcTag) (readWriteModel.S7Address, error) {
+	s7Tag, ok := tag.(PlcTag)
 	if !ok {
-		return nil, errors.Errorf("Unsupported address type %t", field)
+		return nil, errors.Errorf("Unsupported address type %t", tag)
 	}
-	transportSize := s7Field.GetDataType()
-	numElements := s7Field.GetNumElements()
+	transportSize := s7Tag.GetDataType()
+	numElements := s7Tag.GetNumElements()
 	// For these date-types we have to convert the requests to simple byte-array requests
 	// As otherwise the S7 will deny them with "Data type not supported" replies.
 	if (transportSize == readWriteModel.TransportSize_TIME) /*|| (transportSize == TransportSize.S7_S5TIME)*/ ||
@@ -248,25 +249,25 @@ func encodeS7Address(field model.PlcField) (readWriteModel.S7Address, error) {
 	if transportSize == readWriteModel.TransportSize_STRING {
 		transportSize = readWriteModel.TransportSize_CHAR
 		stringLength := uint16(254)
-		if s7StringField, ok := field.(PlcStringField); ok {
-			stringLength = s7StringField.stringLength
+		if s7StringTag, ok := tag.(PlcStringTag); ok {
+			stringLength = s7StringTag.stringLength
 		}
 		numElements = numElements * (stringLength + 2)
 	} else if transportSize == readWriteModel.TransportSize_WSTRING {
 		transportSize = readWriteModel.TransportSize_CHAR
 		stringLength := uint16(254)
-		if s7StringField, ok := field.(PlcStringField); ok {
-			stringLength = s7StringField.stringLength
+		if s7StringTag, ok := tag.(PlcStringTag); ok {
+			stringLength = s7StringTag.stringLength
 		}
 		numElements = numElements * (stringLength + 2) * 2
 	}
 	return readWriteModel.NewS7AddressAny(
 		transportSize,
 		numElements,
-		s7Field.GetBlockNumber(),
-		s7Field.GetMemoryArea(),
-		s7Field.GetByteOffset(),
-		s7Field.GetBitOffset(),
+		s7Tag.GetBlockNumber(),
+		s7Tag.GetMemoryArea(),
+		s7Tag.GetByteOffset(),
+		s7Tag.GetBitOffset(),
 	), nil
 }
 

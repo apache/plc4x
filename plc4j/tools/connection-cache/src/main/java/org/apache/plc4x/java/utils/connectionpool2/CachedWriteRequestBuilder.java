@@ -18,9 +18,8 @@
  */
 package org.apache.plc4x.java.utils.connectionpool2;
 
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 
 public class CachedWriteRequestBuilder implements PlcWriteRequest.Builder {
 
@@ -33,8 +32,14 @@ public class CachedWriteRequestBuilder implements PlcWriteRequest.Builder {
     }
 
     @Override
-    public PlcWriteRequest.Builder addItem(String name, String fieldQuery, Object... values) {
-        builder.addItem(name, fieldQuery, values);
+    public PlcWriteRequest.Builder addTagAddress(String name, String tagAddress, Object... values) {
+        builder.addTagAddress(name, tagAddress, values);
+        return this;
+    }
+
+    @Override
+    public PlcWriteRequest.Builder addTag(String name, PlcTag tag, Object... values) {
+        builder.addTag(name, tag, values);
         return this;
     }
 

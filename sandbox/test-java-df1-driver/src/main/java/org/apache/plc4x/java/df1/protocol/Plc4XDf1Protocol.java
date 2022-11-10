@@ -24,11 +24,11 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.df1.field.Df1Tag;
 import org.apache.plc4x.java.spi.values.PlcDINT;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.df1.field.Df1Field;
 import org.apache.plc4x.java.spi.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
@@ -56,12 +56,12 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcReq
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws Exception {
         logger.trace("Received Request {} to send out", msg);
         if (msg.getRequest() instanceof PlcReadRequest) {
-            for (PlcField field : ((PlcReadRequest) msg.getRequest()).getFields()) {
-                if (!(field instanceof Df1Field)) {
+            for (PlcTag field : ((PlcReadRequest) msg.getRequest()).getTags()) {
+                if (!(field instanceof Df1Tag)) {
                     throw new IllegalArgumentException("Invalid field type found inside Df1 Request");
                 }
-                int address = ((Df1Field) field).getAddress();
-                short size = ((Df1Field) field).getDataType().getLength();
+                int address = ((Df1Tag) field).getAddress();
+                short size = ((Df1Tag) field).getDataType().getLength();
                 int transactionId = this.transactionId.getAndIncrement();
                 while (((transactionId & 0xFF) == 0x10) || (((transactionId >>> 8) & 0xFF) == 0x10)) {
                     // prevent that one of the transactionID bytes is 0x10, which has to be escaped by double 0x10 and makes life a lot harder
@@ -71,7 +71,7 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcReq
 
                 requests.put(transactionId, msg);
 
-                switch (((Df1Field) field).getAddress_type()) {
+                switch (((Df1Tag) field).getAddressType()) {
                     case OFFSET:
                         out.add(new DF1UnprotectedReadRequest((short) 0x00, (short)transactionId, address, size));
                         break;
@@ -129,11 +129,11 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcReq
             - create Response
              */
             // We can do this as we have only one fieldName in DF1
-            final String fieldName = ((PlcReadRequest) request).getFieldNames().iterator().next();
+            final String fieldName = ((PlcReadRequest) request).getTagNames().iterator().next();
             // TODO can there be another code than ok?
             final PlcResponseCode responseCode = PlcResponseCode.OK;
             // TODO maybe check for different status bytes
-            final Df1Field field = (Df1Field) ((PlcReadRequest) request).getField(fieldName);
+            final Df1Tag field = (Df1Tag) ((PlcReadRequest) request).getTag(fieldName);
             // Cast byte and create response item
             PlcValue responseItem = null;
             byte[] data = ((DF1UnprotectedReadResponse)command).getData();

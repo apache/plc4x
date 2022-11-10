@@ -37,7 +37,7 @@ type ModbusAsciiDriver struct {
 
 func NewModbusAsciiDriver() *ModbusAsciiDriver {
 	return &ModbusAsciiDriver{
-		DefaultDriver: _default.NewDefaultDriver("modbus-ascii", "Modbus ASCII", "serial", NewFieldHandler()),
+		DefaultDriver: _default.NewDefaultDriver("modbus-ascii", "Modbus ASCII", "serial", NewTagHandler()),
 	}
 }
 
@@ -96,7 +96,7 @@ func (m ModbusAsciiDriver) GetConnection(transportUrl url.URL, transports map[st
 	log.Debug().Uint8("unitIdentifier", unitIdentifier).Msgf("using unit identifier %d", unitIdentifier)
 
 	// Create the new connection
-	connection := NewConnection(unitIdentifier, codec, options, m.GetPlcFieldHandler())
+	connection := NewConnection(unitIdentifier, codec, options, m.GetPlcTagHandler())
 	log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
 	return connection.Connect()
 }

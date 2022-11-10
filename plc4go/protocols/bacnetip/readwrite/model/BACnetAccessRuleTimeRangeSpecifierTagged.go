@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -113,7 +112,7 @@ func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) GetLengthInBytes() uint16 {
 }
 
 func BACnetAccessRuleTimeRangeSpecifierTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetAccessRuleTimeRangeSpecifierTagged, error) {
-	return BACnetAccessRuleTimeRangeSpecifierTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, tagClass) // TODO: get endianness from mspec
+	return BACnetAccessRuleTimeRangeSpecifierTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
 func BACnetAccessRuleTimeRangeSpecifierTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessRuleTimeRangeSpecifierTagged, error) {
@@ -172,7 +171,7 @@ func BACnetAccessRuleTimeRangeSpecifierTaggedParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

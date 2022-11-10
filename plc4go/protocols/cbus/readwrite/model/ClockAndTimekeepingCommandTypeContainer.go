@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -249,7 +247,7 @@ func (m ClockAndTimekeepingCommandTypeContainer) GetLengthInBytes() uint16 {
 }
 
 func ClockAndTimekeepingCommandTypeContainerParse(theBytes []byte) (ClockAndTimekeepingCommandTypeContainer, error) {
-	return ClockAndTimekeepingCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return ClockAndTimekeepingCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func ClockAndTimekeepingCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (ClockAndTimekeepingCommandTypeContainer, error) {
@@ -266,7 +264,7 @@ func ClockAndTimekeepingCommandTypeContainerParseWithBuffer(readBuffer utils.Rea
 }
 
 func (e ClockAndTimekeepingCommandTypeContainer) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -104,7 +103,7 @@ func (m *_FirmataCommand) GetLengthInBytes() uint16 {
 }
 
 func FirmataCommandParse(theBytes []byte, response bool) (FirmataCommand, error) {
-	return FirmataCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+	return FirmataCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func FirmataCommandParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataCommand, error) {

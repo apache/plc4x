@@ -110,7 +110,7 @@ func (m *_EipDisconnectRequest) GetLengthInBytes() uint16 {
 }
 
 func EipDisconnectRequestParse(theBytes []byte) (EipDisconnectRequest, error) {
-	return EipDisconnectRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return EipDisconnectRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
 func EipDisconnectRequestParseWithBuffer(readBuffer utils.ReadBuffer) (EipDisconnectRequest, error) {
@@ -135,7 +135,7 @@ func EipDisconnectRequestParseWithBuffer(readBuffer utils.ReadBuffer) (EipDiscon
 }
 
 func (m *_EipDisconnectRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

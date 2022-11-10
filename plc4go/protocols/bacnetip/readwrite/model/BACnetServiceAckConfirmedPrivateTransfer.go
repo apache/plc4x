@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -151,7 +150,7 @@ func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetLengthInBytes() uint16 {
 }
 
 func BACnetServiceAckConfirmedPrivateTransferParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckConfirmedPrivateTransfer, error) {
-	return BACnetServiceAckConfirmedPrivateTransferParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), serviceAckLength) // TODO: get endianness from mspec
+	return BACnetServiceAckConfirmedPrivateTransferParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckLength)
 }
 
 func BACnetServiceAckConfirmedPrivateTransferParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckConfirmedPrivateTransfer, error) {
@@ -229,7 +228,7 @@ func BACnetServiceAckConfirmedPrivateTransferParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_BACnetServiceAckConfirmedPrivateTransfer) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

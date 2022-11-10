@@ -41,17 +41,17 @@
   <testcase>
     <name>Expedited SDO read request</name>
     <description>
-      Single field read request which answers with 4 bytes of data.
+      Single tags read request which answers with 4 bytes of data.
     </description>
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>expeditedSdo</name>
               <address>SDO:1:1000/22:UNSIGNED32</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send SDO Initialize Upload Request">
@@ -181,16 +181,16 @@
       <api-response name="Report Read Response to application (expedited)">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <expeditedSdo>
-                <CANOpenSDOField>
+                <CANOpenSDOTag>
                   <node dataType="int" bitLength="64">1</node>
                   <index dataType="int" bitLength="64">1000</index>
                   <subIndex dataType="int" bitLength="64">22</subIndex>
                   <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
-                </CANOpenSDOField>
+                </CANOpenSDOTag>
               </expeditedSdo>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <expeditedSdo>
@@ -209,17 +209,17 @@
   <testcase>
     <name>Expedited SDO read request - short</name>
     <description>
-      Single field read request which answers with 4 bytes of data.
+      Single tag read request which answers with 4 bytes of data.
     </description>
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>expeditedShort</name>
               <address>SDO:1:9186/1:UNSIGNED8</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send SDO Initialize Upload Request">
@@ -304,16 +304,16 @@
       <api-response name="Report Read Response to application (expedited short)">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <expeditedShort>
-                <CANOpenSDOField>
+                <CANOpenSDOTag>
                   <node dataType="int" bitLength="64">1</node>
                   <index dataType="int" bitLength="64">9186</index>
                   <subIndex dataType="int" bitLength="64">1</subIndex>
                   <dataType dataType="string" bitLength="72" encoding="UTF-8">UNSIGNED8</dataType>
-                </CANOpenSDOField>
+                </CANOpenSDOTag>
               </expeditedShort>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <expeditedShort>
@@ -332,17 +332,17 @@
   <testcase>
     <name>Expedited SDO read request - custom answer node id</name>
     <description>
-      Single field read request which answers with 4 bytes of data.
+      Single tag read request which answers with 4 bytes of data.
     </description>
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>expeditedSdoCustomAnswer</name>
               <address>SDO:1/2:1000/22:UNSIGNED32</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send SDO Initialize Upload Request">
@@ -473,16 +473,16 @@
       <api-response name="Report Read Response to application (custom answer id)">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <expeditedSdoCustomAnswer>
-                <CANOpenSDOField>
+                <CANOpenSDOTag>
                   <node dataType="int" bitLength="64">1</node>
                   <index dataType="int" bitLength="64">1000</index>
                   <subIndex dataType="int" bitLength="64">22</subIndex>
                   <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
-                </CANOpenSDOField>
+                </CANOpenSDOTag>
               </expeditedSdoCustomAnswer>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <expeditedSdoCustomAnswer>
@@ -501,17 +501,17 @@
   <testcase>
     <name>Segmented SDO read request</name>
     <description>
-      Single field read request which answers with 8 bytes of data which must go over two CAN frames.
+      Single tag read request which answers with 8 bytes of data which must go over two CAN frames.
     </description>
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>segmentedSdo</name>
               <address>SDO:2:2000/44:RECORD</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
 
@@ -792,16 +792,16 @@
       <api-response name="Report Read Response to application (segmented)">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <segmentedSdo>
-                <CANOpenSDOField>
+                <CANOpenSDOTag>
                   <node dataType="int" bitLength="64">2</node>
                   <index dataType="int" bitLength="64">2000</index>
                   <subIndex dataType="int" bitLength="64">44</subIndex>
                   <dataType dataType="string" bitLength="48" encoding="UTF-8">RECORD</dataType>
-                </CANOpenSDOField>
+                </CANOpenSDOTag>
               </segmentedSdo>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <segmentedSdo>
@@ -829,17 +829,17 @@
   <testcase>
     <name>Expedited SDO read request with abort answer</name>
     <description>
-      Single field read request which answers with 4 bytes of data.
+      Single tag read request which answers with 4 bytes of data.
     </description>
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>TheFailingField</name>
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>TheFailingTag</name>
               <address>SDO:1:1000/22:UNSIGNED32</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send SDO Initialize Upload Request">
@@ -917,24 +917,24 @@
       <api-response name="Report Read Response to application (abort)">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
-              <TheFailingField>
-                <CANOpenSDOField>
+            <tags>
+              <TheFailingTag>
+                <CANOpenSDOTag>
                   <node dataType="int" bitLength="64">1</node>
                   <index dataType="int" bitLength="64">1000</index>
                   <subIndex dataType="int" bitLength="64">22</subIndex>
                   <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
-                </CANOpenSDOField>
-              </TheFailingField>
-            </fields>
+                </CANOpenSDOTag>
+              </TheFailingTag>
+            </tags>
           </PlcReadRequest>
           <values>
-            <TheFailingField>
+            <TheFailingTag>
               <ResponseItem>
                 <result dataType="string" bitLength="96" encoding="UTF-8">REMOTE_ERROR</result>
                 <PlcLINT dataType="int" bitLength="64">84082688</PlcLINT>
               </ResponseItem>
-            </TheFailingField>
+            </TheFailingTag>
           </values>
         </PlcReadResponse>
       </api-response>

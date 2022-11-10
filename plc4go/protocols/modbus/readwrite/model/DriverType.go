@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -104,7 +102,7 @@ func (m DriverType) GetLengthInBytes() uint16 {
 }
 
 func DriverTypeParse(theBytes []byte) (DriverType, error) {
-	return DriverTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return DriverTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func DriverTypeParseWithBuffer(readBuffer utils.ReadBuffer) (DriverType, error) {
@@ -121,7 +119,7 @@ func DriverTypeParseWithBuffer(readBuffer utils.ReadBuffer) (DriverType, error) 
 }
 
 func (e DriverType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -250,8 +250,9 @@ int main(int argc, char** argv) {
         result = plc4c_connection_create_read_request(connection, &read_request);
         CHECK_RESULT(result != OK, result, "plc4c_connection_create_read_request failed\n");
         
-        result = plc4c_read_request_add_item(read_request, "A_REQUEST", ITEM_STR);
-        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
+        result = plc4c_read_request_add_tag_address(read_request, "A_REQUEST",
+                                                    ITEM_STR);
+        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_tag_address failed\n");
 
         result = plc4c_read_request_execute(read_request, &read_request_execution);
         CHECK_RESULT(result != OK, result, "plc4c_read_request_execute failed\n");

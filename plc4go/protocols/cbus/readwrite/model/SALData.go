@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -122,7 +121,7 @@ func (m *_SALData) GetLengthInBytes() uint16 {
 }
 
 func SALDataParse(theBytes []byte, applicationId ApplicationId) (SALData, error) {
-	return SALDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), applicationId) // TODO: get endianness from mspec
+	return SALDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
 func SALDataParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALData, error) {

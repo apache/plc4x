@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -133,7 +132,7 @@ func (m *_ListOfCovNotifications) GetLengthInBytes() uint16 {
 }
 
 func ListOfCovNotificationsParse(theBytes []byte) (ListOfCovNotifications, error) {
-	return ListOfCovNotificationsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return ListOfCovNotificationsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func ListOfCovNotificationsParseWithBuffer(readBuffer utils.ReadBuffer) (ListOfCovNotifications, error) {
@@ -184,7 +183,6 @@ func ListOfCovNotificationsParseWithBuffer(readBuffer utils.ReadBuffer) (ListOfC
 				return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field of ListOfCovNotifications")
 			}
 			listOfValues = append(listOfValues, _item.(ListOfCovNotificationsValue))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("listOfValues", utils.WithRenderAsList(true)); closeErr != nil {
@@ -218,7 +216,7 @@ func ListOfCovNotificationsParseWithBuffer(readBuffer utils.ReadBuffer) (ListOfC
 }
 
 func (m *_ListOfCovNotifications) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

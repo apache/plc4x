@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -122,7 +120,7 @@ func (m BaudRateSelector) GetLengthInBytes() uint16 {
 }
 
 func BaudRateSelectorParse(theBytes []byte) (BaudRateSelector, error) {
-	return BaudRateSelectorParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BaudRateSelectorParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BaudRateSelectorParseWithBuffer(readBuffer utils.ReadBuffer) (BaudRateSelector, error) {
@@ -139,7 +137,7 @@ func BaudRateSelectorParseWithBuffer(readBuffer utils.ReadBuffer) (BaudRateSelec
 }
 
 func (e BaudRateSelector) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

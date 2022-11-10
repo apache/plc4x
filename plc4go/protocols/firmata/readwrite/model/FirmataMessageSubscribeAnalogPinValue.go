@@ -142,7 +142,7 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) GetLengthInBytes() uint16 {
 }
 
 func FirmataMessageSubscribeAnalogPinValueParse(theBytes []byte, response bool) (FirmataMessageSubscribeAnalogPinValue, error) {
-	return FirmataMessageSubscribeAnalogPinValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+	return FirmataMessageSubscribeAnalogPinValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
 }
 
 func FirmataMessageSubscribeAnalogPinValueParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataMessageSubscribeAnalogPinValue, error) {
@@ -203,7 +203,7 @@ func FirmataMessageSubscribeAnalogPinValueParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_FirmataMessageSubscribeAnalogPinValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

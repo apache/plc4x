@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -170,7 +169,7 @@ func (m *_DF1RequestProtectedTypedLogicalRead) GetLengthInBytes() uint16 {
 }
 
 func DF1RequestProtectedTypedLogicalReadParse(theBytes []byte) (DF1RequestProtectedTypedLogicalRead, error) {
-	return DF1RequestProtectedTypedLogicalReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return DF1RequestProtectedTypedLogicalReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func DF1RequestProtectedTypedLogicalReadParseWithBuffer(readBuffer utils.ReadBuffer) (DF1RequestProtectedTypedLogicalRead, error) {
@@ -235,7 +234,7 @@ func DF1RequestProtectedTypedLogicalReadParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_DF1RequestProtectedTypedLogicalRead) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -104,7 +103,7 @@ func (m *_S7Parameter) GetLengthInBytes() uint16 {
 }
 
 func S7ParameterParse(theBytes []byte, messageType uint8) (S7Parameter, error) {
-	return S7ParameterParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), messageType) // TODO: get endianness from mspec
+	return S7ParameterParseWithBuffer(utils.NewReadBufferByteBased(theBytes), messageType)
 }
 
 func S7ParameterParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8) (S7Parameter, error) {

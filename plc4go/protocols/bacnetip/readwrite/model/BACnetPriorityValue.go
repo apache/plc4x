@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -141,7 +140,7 @@ func (m *_BACnetPriorityValue) GetLengthInBytes() uint16 {
 }
 
 func BACnetPriorityValueParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValue, error) {
-	return BACnetPriorityValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), objectTypeArgument) // TODO: get endianness from mspec
+	return BACnetPriorityValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
 func BACnetPriorityValueParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValue, error) {

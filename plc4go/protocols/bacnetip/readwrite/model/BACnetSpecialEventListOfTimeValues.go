@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +125,7 @@ func (m *_BACnetSpecialEventListOfTimeValues) GetLengthInBytes() uint16 {
 }
 
 func BACnetSpecialEventListOfTimeValuesParse(theBytes []byte, tagNumber uint8) (BACnetSpecialEventListOfTimeValues, error) {
-	return BACnetSpecialEventListOfTimeValuesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+	return BACnetSpecialEventListOfTimeValuesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetSpecialEventListOfTimeValuesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetSpecialEventListOfTimeValues, error) {
@@ -164,7 +163,6 @@ func BACnetSpecialEventListOfTimeValuesParseWithBuffer(readBuffer utils.ReadBuff
 				return nil, errors.Wrap(_err, "Error parsing 'listOfTimeValues' field of BACnetSpecialEventListOfTimeValues")
 			}
 			listOfTimeValues = append(listOfTimeValues, _item.(BACnetTimeValue))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("listOfTimeValues", utils.WithRenderAsList(true)); closeErr != nil {
@@ -198,7 +196,7 @@ func BACnetSpecialEventListOfTimeValuesParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetSpecialEventListOfTimeValues) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

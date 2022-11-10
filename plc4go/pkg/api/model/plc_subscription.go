@@ -21,37 +21,38 @@ package model
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
 type PlcSubscriptionEvent interface {
 	PlcResponse
-	// GetFieldNames returns all field name which can be found in this event
-	GetFieldNames() []string
-	// GetResponseCode returns the PlcResponseCode for a field
-	GetResponseCode(name string) PlcResponseCode
+	// GetTagNames returns all tag names which can be found in this event
+	GetTagNames() []string
+	// GetResponseCode returns the PlcResponseCode for a tag
+	GetResponseCode(tagName string) PlcResponseCode
 	// GetAddress returns the address for an event. This is meant to for reading or writing one item.
-	// Sometimes there are fields which can't be directly addressed (e.g. only through a broadcast).
+	// Sometimes there are tags which can't be directly addressed (e.g. only through a broadcast).
 	// In that case (if applicable) the GetSource contains the source information about the sending device.
-	GetAddress(name string) string
+	GetAddress(tagName string) string
 	// GetSource returns usually the same as GetAddress in case when the address contains information about the source.
-	// If we have a field which is not directly addressable (see doc for GetAddress) the source is useful to identify the device.
-	GetSource(name string) string
-	// GetValue returns the field value for a named field.
-	GetValue(name string) values.PlcValue
+	// If we have a tag which is not directly addressable (see doc for GetAddress) the source is useful to identify the device.
+	GetSource(tagName string) string
+	// GetValue returns the tag value for a named tag.
+	GetValue(tagName string) values.PlcValue
 }
 
 type PlcSubscriptionEventConsumer func(event PlcSubscriptionEvent)
 
 type PlcSubscriptionRequestBuilder interface {
-	AddCyclicQuery(name string, query string, interval time.Duration) PlcSubscriptionRequestBuilder
-	AddCyclicField(name string, field PlcField, interval time.Duration) PlcSubscriptionRequestBuilder
-	AddChangeOfStateQuery(name string, query string) PlcSubscriptionRequestBuilder
-	AddChangeOfStateField(name string, field PlcField) PlcSubscriptionRequestBuilder
-	AddEventQuery(name string, query string) PlcSubscriptionRequestBuilder
-	AddEventField(name string, field PlcField) PlcSubscriptionRequestBuilder
-	AddPreRegisteredConsumer(name string, consumer PlcSubscriptionEventConsumer) PlcSubscriptionRequestBuilder
+	AddCyclicTagAddress(tagName string, tagAddress string, interval time.Duration) PlcSubscriptionRequestBuilder
+	AddCyclicTag(tagName string, tag PlcTag, interval time.Duration) PlcSubscriptionRequestBuilder
+	AddChangeOfStateTagAddress(tagName string, tagAddress string) PlcSubscriptionRequestBuilder
+	AddChangeOfStateTag(tagName string, tag PlcTag) PlcSubscriptionRequestBuilder
+	AddEventTagAddress(tagName string, tagAddress string) PlcSubscriptionRequestBuilder
+	AddEventTag(tagName string, tag PlcTag) PlcSubscriptionRequestBuilder
+	AddPreRegisteredConsumer(tagName string, consumer PlcSubscriptionEventConsumer) PlcSubscriptionRequestBuilder
 	Build() (PlcSubscriptionRequest, error)
 }
 
@@ -69,7 +70,7 @@ type PlcSubscriptionRequest interface {
 
 type PlcSubscriptionResponse interface {
 	GetRequest() PlcSubscriptionRequest
-	GetFieldNames() []string
+	GetTagNames() []string
 	GetResponseCode(name string) PlcResponseCode
 	GetSubscriptionHandle(name string) (PlcSubscriptionHandle, error)
 	GetSubscriptionHandles() []PlcSubscriptionHandle

@@ -126,7 +126,7 @@ func (m *_FirmataMessageCommand) GetLengthInBytes() uint16 {
 }
 
 func FirmataMessageCommandParse(theBytes []byte, response bool) (FirmataMessageCommand, error) {
-	return FirmataMessageCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+	return FirmataMessageCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
 }
 
 func FirmataMessageCommandParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataMessageCommand, error) {
@@ -167,7 +167,7 @@ func FirmataMessageCommandParseWithBuffer(readBuffer utils.ReadBuffer, response 
 }
 
 func (m *_FirmataMessageCommand) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

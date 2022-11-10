@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -133,7 +132,7 @@ func (m *_LightingData) GetLengthInBytes() uint16 {
 }
 
 func LightingDataParse(theBytes []byte) (LightingData, error) {
-	return LightingDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return LightingDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func LightingDataParseWithBuffer(readBuffer utils.ReadBuffer) (LightingData, error) {

@@ -21,8 +21,9 @@ package model
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNonPanickingStrings(t *testing.T) {
@@ -44,11 +45,11 @@ func TestNonPanickingStrings(t *testing.T) {
 		&DefaultPlcWriteRequest{},
 		&DefaultPlcWriteRequestResult{},
 		&DefaultPlcWriteResponse{},
-		&DefaultRequest{},
+		&DefaultPlcRequest{},
 		&DefaultResponse{},
 		&DefaultPlcBrowseRequestResult{},
 		&DefaultPlcBrowseRequest{},
-		&DefaultPlcBrowseQueryResult{},
+		&DefaultPlcBrowseItem{},
 		&DefaultPlcBrowseEvent{},
 	}
 	for _, sut := range suts {

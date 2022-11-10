@@ -37,10 +37,10 @@ func NewDefaultPlcSubscriptionResponse(request model.PlcSubscriptionRequest, res
 		request:         request,
 		values:          values,
 	}
-	for subscriptionFieldName, consumers := range request.(*DefaultPlcSubscriptionRequest).preRegisteredConsumers {
-		subscriptionHandle, err := plcSubscriptionResponse.GetSubscriptionHandle(subscriptionFieldName)
+	for subscriptionTagName, consumers := range request.(*DefaultPlcSubscriptionRequest).preRegisteredConsumers {
+		subscriptionHandle, err := plcSubscriptionResponse.GetSubscriptionHandle(subscriptionTagName)
 		if subscriptionHandle == nil || err != nil {
-			panic("PlcSubscriptionHandle for " + subscriptionFieldName + " not found")
+			panic("PlcSubscriptionHandle for " + subscriptionTagName + " not found")
 		}
 		for _, consumer := range consumers {
 			subscriptionHandle.Register(consumer)
@@ -53,15 +53,15 @@ func (d *DefaultPlcSubscriptionResponse) GetRequest() model.PlcSubscriptionReque
 	return d.request
 }
 
-func (d *DefaultPlcSubscriptionResponse) GetFieldNames() []string {
-	var fieldNames []string
-	// We take the field names from the request to keep order as map is not ordered
-	for _, name := range d.request.(*DefaultPlcSubscriptionRequest).GetFieldNames() {
+func (d *DefaultPlcSubscriptionResponse) GetTagNames() []string {
+	var tagNames []string
+	// We take the tag names from the request to keep order as map is not ordered
+	for _, name := range d.request.(*DefaultPlcSubscriptionRequest).GetTagNames() {
 		if _, ok := d.responseCodes[name]; ok {
-			fieldNames = append(fieldNames, name)
+			tagNames = append(tagNames, name)
 		}
 	}
-	return fieldNames
+	return tagNames
 }
 
 func (d *DefaultPlcSubscriptionResponse) GetSubscriptionHandle(name string) (model.PlcSubscriptionHandle, error) {

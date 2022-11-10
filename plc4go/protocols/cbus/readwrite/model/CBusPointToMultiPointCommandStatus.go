@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -133,7 +132,7 @@ func (m *_CBusPointToMultiPointCommandStatus) GetLengthInBytes() uint16 {
 }
 
 func CBusPointToMultiPointCommandStatusParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToMultiPointCommandStatus, error) {
-	return CBusPointToMultiPointCommandStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cBusOptions) // TODO: get endianness from mspec
+	return CBusPointToMultiPointCommandStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
 func CBusPointToMultiPointCommandStatusParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToMultiPointCommandStatus, error) {
@@ -210,7 +209,7 @@ func CBusPointToMultiPointCommandStatusParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_CBusPointToMultiPointCommandStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

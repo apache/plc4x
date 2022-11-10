@@ -22,10 +22,11 @@ package utils
 import (
 	"bytes"
 	"encoding/binary"
-	"github.com/icza/bitio"
-	"github.com/pkg/errors"
 	"math"
 	"math/big"
+
+	"github.com/icza/bitio"
+	"github.com/pkg/errors"
 )
 
 type ReadBufferByteBased interface {
@@ -279,6 +280,7 @@ func (rb *byteReadBuffer) ReadBigInt(_ string, bitLength uint64, _ ...WithReader
 		}
 		// we now read the bits
 		data := rb.reader.TryReadBits(bitToRead)
+		rb.pos += bitLength
 
 		// and check for uneven bits for a right shift at the end
 		correction = 64 - bitToRead

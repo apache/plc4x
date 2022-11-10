@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -110,7 +108,7 @@ func (m EventType) GetLengthInBytes() uint16 {
 }
 
 func EventTypeParse(theBytes []byte) (EventType, error) {
-	return EventTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return EventTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func EventTypeParseWithBuffer(readBuffer utils.ReadBuffer) (EventType, error) {
@@ -127,7 +125,7 @@ func EventTypeParseWithBuffer(readBuffer utils.ReadBuffer) (EventType, error) {
 }
 
 func (e EventType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

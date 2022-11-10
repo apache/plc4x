@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -104,7 +102,7 @@ func (m BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) 
 }
 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParse(theBytes []byte) (BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, error) {
-	return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, error) {
@@ -121,7 +119,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParse
 }
 
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

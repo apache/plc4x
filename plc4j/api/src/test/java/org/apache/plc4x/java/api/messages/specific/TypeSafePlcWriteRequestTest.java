@@ -18,14 +18,7 @@
  */
 package org.apache.plc4x.java.api.messages.specific;
 
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.model.PlcField;
-
-import java.util.Collections;
-
-import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class TypeSafePlcWriteRequestTest {
 
@@ -52,8 +45,8 @@ public class TypeSafePlcWriteRequestTest {
     }
 
     @Test
-    public void addItem() {
-        new TypeSafePlcWriteRequest<>(String.class).addItem(writeRequestItemString);
+    public void addField() {
+        new TypeSafePlcWriteRequest<>(String.class).addField(writeRequestItemString);
     }
 
     @Test

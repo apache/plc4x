@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +125,7 @@ func (m *_NLMDisconnectConnectionToNetwork) GetLengthInBytes() uint16 {
 }
 
 func NLMDisconnectConnectionToNetworkParse(theBytes []byte, apduLength uint16) (NLMDisconnectConnectionToNetwork, error) {
-	return NLMDisconnectConnectionToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), apduLength) // TODO: get endianness from mspec
+	return NLMDisconnectConnectionToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
 func NLMDisconnectConnectionToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMDisconnectConnectionToNetwork, error) {
@@ -161,7 +160,7 @@ func NLMDisconnectConnectionToNetworkParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_NLMDisconnectConnectionToNetwork) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -150,7 +149,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetLengthIn
 }
 
 func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse(theBytes []byte) (BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, error) {
-	return BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, error) {

@@ -133,7 +133,7 @@ func (m *_BVLCWriteBroadcastDistributionTable) GetLengthInBytes() uint16 {
 }
 
 func BVLCWriteBroadcastDistributionTableParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCWriteBroadcastDistributionTable, error) {
-	return BVLCWriteBroadcastDistributionTableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength) // TODO: get endianness from mspec
+	return BVLCWriteBroadcastDistributionTableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
 }
 
 func BVLCWriteBroadcastDistributionTableParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCWriteBroadcastDistributionTable, error) {
@@ -180,7 +180,7 @@ func BVLCWriteBroadcastDistributionTableParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BVLCWriteBroadcastDistributionTable) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

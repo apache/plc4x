@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -110,7 +108,7 @@ func (m BACnetDoorValue) GetLengthInBytes() uint16 {
 }
 
 func BACnetDoorValueParse(theBytes []byte) (BACnetDoorValue, error) {
-	return BACnetDoorValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return BACnetDoorValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func BACnetDoorValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDoorValue, error) {
@@ -127,7 +125,7 @@ func BACnetDoorValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDoorValu
 }
 
 func (e BACnetDoorValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -127,7 +126,7 @@ func (m *_BACnetReadAccessResultListOfResults) GetLengthInBytes() uint16 {
 }
 
 func BACnetReadAccessResultListOfResultsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetReadAccessResultListOfResults, error) {
-	return BACnetReadAccessResultListOfResultsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber, objectTypeArgument) // TODO: get endianness from mspec
+	return BACnetReadAccessResultListOfResultsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument)
 }
 
 func BACnetReadAccessResultListOfResultsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetReadAccessResultListOfResults, error) {
@@ -165,7 +164,6 @@ func BACnetReadAccessResultListOfResultsParseWithBuffer(readBuffer utils.ReadBuf
 				return nil, errors.Wrap(_err, "Error parsing 'listOfReadAccessProperty' field of BACnetReadAccessResultListOfResults")
 			}
 			listOfReadAccessProperty = append(listOfReadAccessProperty, _item.(BACnetReadAccessProperty))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("listOfReadAccessProperty", utils.WithRenderAsList(true)); closeErr != nil {
@@ -200,7 +198,7 @@ func BACnetReadAccessResultListOfResultsParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BACnetReadAccessResultListOfResults) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

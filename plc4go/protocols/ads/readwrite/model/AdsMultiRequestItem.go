@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,7 +98,7 @@ func (m *_AdsMultiRequestItem) GetLengthInBytes() uint16 {
 }
 
 func AdsMultiRequestItemParse(theBytes []byte, indexGroup uint32) (AdsMultiRequestItem, error) {
-	return AdsMultiRequestItemParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), indexGroup) // TODO: get endianness from mspec
+	return AdsMultiRequestItemParseWithBuffer(utils.NewReadBufferByteBased(theBytes), indexGroup)
 }
 
 func AdsMultiRequestItemParseWithBuffer(readBuffer utils.ReadBuffer, indexGroup uint32) (AdsMultiRequestItem, error) {

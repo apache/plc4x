@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +125,7 @@ func (m *_LightingLabelOptions) GetLengthInBytes() uint16 {
 }
 
 func LightingLabelOptionsParse(theBytes []byte) (LightingLabelOptions, error) {
-	return LightingLabelOptionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return LightingLabelOptionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func LightingLabelOptionsParseWithBuffer(readBuffer utils.ReadBuffer) (LightingLabelOptions, error) {
@@ -248,7 +247,7 @@ func LightingLabelOptionsParseWithBuffer(readBuffer utils.ReadBuffer) (LightingL
 }
 
 func (m *_LightingLabelOptions) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

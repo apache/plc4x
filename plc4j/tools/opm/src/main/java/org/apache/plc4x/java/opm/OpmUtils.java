@@ -51,7 +51,7 @@ final class OpmUtils {
 
     static String getOrResolveAddress(AliasRegistry registry, String addressString) {
         if (!isValidExpression(addressString)) {
-            throw new IllegalArgumentException("Invalid Syntax, either use field address (no starting $) " +
+            throw new IllegalArgumentException("Invalid Syntax, either use tag address (no starting $) " +
                 "or an alias with Syntax ${xxx}. But given was '" + addressString + "'");
         }
         if (!isAlias(addressString)) {

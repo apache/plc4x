@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -153,7 +152,7 @@ func (m *_BACnetLogRecordLogDatum) GetLengthInBytes() uint16 {
 }
 
 func BACnetLogRecordLogDatumParse(theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatum, error) {
-	return BACnetLogRecordLogDatumParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), tagNumber) // TODO: get endianness from mspec
+	return BACnetLogRecordLogDatumParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
 func BACnetLogRecordLogDatumParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatum, error) {

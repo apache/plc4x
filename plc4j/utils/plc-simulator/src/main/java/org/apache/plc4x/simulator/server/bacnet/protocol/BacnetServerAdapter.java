@@ -92,7 +92,7 @@ public class BacnetServerAdapter extends ChannelInboundHandlerAdapter {
             return;
         }
         BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) bvlc;
-        // TODO: get messageTypeField
+        // TODO: get messageTypeTag
         APDU apdu = bvlcOriginalUnicastNPDU.getNpdu().getApdu();
         if (apdu instanceof APDUUnconfirmedRequest) {
             APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) apdu;

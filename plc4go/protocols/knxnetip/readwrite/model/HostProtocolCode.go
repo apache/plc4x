@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -98,7 +96,7 @@ func (m HostProtocolCode) GetLengthInBytes() uint16 {
 }
 
 func HostProtocolCodeParse(theBytes []byte) (HostProtocolCode, error) {
-	return HostProtocolCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return HostProtocolCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func HostProtocolCodeParseWithBuffer(readBuffer utils.ReadBuffer) (HostProtocolCode, error) {
@@ -115,7 +113,7 @@ func HostProtocolCodeParseWithBuffer(readBuffer utils.ReadBuffer) (HostProtocolC
 }
 
 func (e HostProtocolCode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

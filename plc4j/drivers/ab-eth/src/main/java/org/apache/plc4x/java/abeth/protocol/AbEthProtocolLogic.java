@@ -19,12 +19,12 @@
 package org.apache.plc4x.java.abeth.protocol;
 
 import org.apache.plc4x.java.abeth.configuration.AbEthConfiguration;
-import org.apache.plc4x.java.abeth.field.AbEthField;
+import org.apache.plc4x.java.abeth.tag.AbEthTag;
 import org.apache.plc4x.java.abeth.readwrite.*;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcResponse;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.ConversationContext;
@@ -33,7 +33,7 @@ import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcINT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,17 +85,17 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
 
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        // TODO: Warning ... we are senging one request per field ... the result has to be merged back together ...
-        for (String fieldName : readRequest.getFieldNames()) {
-            PlcField field = readRequest.getField(fieldName);
-            if (!(field instanceof AbEthField)) {
-                logger.error("The field should have been of type AbEthField");
+        // TODO: Warning ... we are senging one request per tag ... the result has to be merged back together ...
+        for (String tagName : readRequest.getTagNames()) {
+            PlcTag tag = readRequest.getTag(tagName);
+            if (!(tag instanceof AbEthTag)) {
+                logger.error("The tag should have been of type AbEthTag");
             }
-            AbEthField abEthField = (AbEthField) field;
+            AbEthTag abEthTag = (AbEthTag) tag;
 
             DF1RequestProtectedTypedLogicalRead logicalRead = new DF1RequestProtectedTypedLogicalRead(
-                abEthField.getByteSize(), abEthField.getFileNumber(), abEthField.getFileType().getTypeCode(),
-                abEthField.getElementNumber(), (short) 0); // Subelementnumber default to zero
+                abEthTag.getByteSize(), abEthTag.getFileNumber(), abEthTag.getFileType().getTypeCode(),
+                abEthTag.getElementNumber(), (short) 0); // Subelementnumber default to zero
 
             final int transactionCounter = transactionCounterGenerator.incrementAndGet();
             // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
@@ -129,7 +129,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
 //                    future.complete(((PlcReadResponse) decodeReadResponse(p, ((InternalPlcReadRequest) readRequest))));
                 }));
 
-            // TODO: This aborts reading other fields after sending the first fields request ... refactor.
+            // TODO: This aborts reading other tags after sending the first tags request ... refactor.
             return future;
         }
         // TODO: Should return an aggregated future ....
@@ -144,14 +144,14 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
     private PlcResponse decodeReadResponse(
         CIPEncapsulationReadResponse plcReadResponse, PlcReadRequest plcReadRequest) {
         Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
-        for (String fieldName : plcReadRequest.getFieldNames()) {
-            AbEthField field = (AbEthField) plcReadRequest.getField(fieldName);
+        for (String tagName : plcReadRequest.getTagNames()) {
+            AbEthTag tag = (AbEthTag) plcReadRequest.getTag(tagName);
             PlcResponseCode responseCode = decodeResponseCode(plcReadResponse.getResponse().getStatus());
 
             PlcValue plcValue = null;
             if (responseCode == PlcResponseCode.OK) {
                 try {
-                    switch (field.getFileType()) {
+                    switch (tag.getFileType()) {
                         case INTEGER: // output as single bytes
                             if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
@@ -159,7 +159,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
                                 if(data.size() == 1) {
                                     plcValue = new PlcINT(data.get(0));
                                 } else {
-                                    plcValue = IEC61131ValueHandler.of(data);
+                                    plcValue = PlcValueHandler.of(data);
                                 }
                             }
                             break;
@@ -168,9 +168,9 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 List<Short> data = df1PTLR.getData();
                                 if (((data.get(1)>> 7) & 1) == 0)  {
-                                    plcValue = IEC61131ValueHandler.of((data.get(1) << 8) + data.get(0));  // positive number
+                                    plcValue = PlcValueHandler.of((data.get(1) << 8) + data.get(0));  // positive number
                                 } else {
-                                    plcValue = IEC61131ValueHandler.of((((~data.get(1) & 0b01111111) << 8) + (~(data.get(0)-1) & 0b11111111))  * -1);  // negative number
+                                    plcValue = PlcValueHandler.of((((~data.get(1) & 0b01111111) << 8) + (~(data.get(0)-1) & 0b11111111))  * -1);  // negative number
                                 }
                             }
                             break;
@@ -179,9 +179,9 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 List<Short> data = df1PTLR.getData();
                                 if (((data.get(3)>> 7) & 1) == 0)  {
-                                    plcValue = IEC61131ValueHandler.of((data.get(3) << 24) + (data.get(2) << 16) + (data.get(1) << 8) + data.get(0));  // positive number
+                                    plcValue = PlcValueHandler.of((data.get(3) << 24) + (data.get(2) << 16) + (data.get(1) << 8) + data.get(0));  // positive number
                                 } else {
-                                    plcValue = IEC61131ValueHandler.of((((~data.get(3) & 0b01111111) << 24) + ((~(data.get(2)-1) & 0b11111111) << 16)+ ((~(data.get(1)-1) & 0b11111111) << 8) + (~(data.get(0)-1) & 0b11111111))  * -1);  // negative number
+                                    plcValue = PlcValueHandler.of((((~data.get(3) & 0b01111111) << 24) + ((~(data.get(2)-1) & 0b11111111) << 16)+ ((~(data.get(1)-1) & 0b11111111) << 8) + (~(data.get(0)-1) & 0b11111111))  * -1);  // negative number
                                 }
                             }
                             break;
@@ -189,24 +189,24 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
                             if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 List<Short> data = df1PTLR.getData();
-                                if (field.getBitNumber() < 8) {
-                                    plcValue = IEC61131ValueHandler.of((data.get(0) & (1 <<  field.getBitNumber())) != 0);         // read from first byte
+                                if (tag.getBitNumber() < 8) {
+                                    plcValue = PlcValueHandler.of((data.get(0) & (1 <<  tag.getBitNumber())) != 0);         // read from first byte
                                 } else {
-                                    plcValue = IEC61131ValueHandler.of((data.get(1) & (1 << (field.getBitNumber() - 8) )) != 0);   // read from second byte
+                                    plcValue = PlcValueHandler.of((data.get(1) & (1 << (tag.getBitNumber() - 8) )) != 0);   // read from second byte
                                 }
                             }
                             break;
                         default:
-                            logger.warn("Problem during decoding of field {}: Decoding of file type not implemented; " +
-                                "FieldInformation: {}", fieldName, field);
+                            logger.warn("Problem during decoding of tag {}: Decoding of file type not implemented; " +
+                                "TagInformation: {}", tagName, tag);
                     }
                 }
                 catch (Exception e) {
-                    logger.warn("Some other error occurred casting field {}, FieldInformation: {}",fieldName, field,e);
+                    logger.warn("Some other error occurred casting tag {}, TagInformation: {}",tagName, tag,e);
                 }
             }
             ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
-            values.put(fieldName, result);
+            values.put(tagName, result);
         }
 
         // TODO: Double check if it's really a InternalPlcReadRequest ...

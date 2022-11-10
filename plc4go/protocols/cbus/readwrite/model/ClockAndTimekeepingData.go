@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -143,7 +142,7 @@ func (m *_ClockAndTimekeepingData) GetLengthInBytes() uint16 {
 }
 
 func ClockAndTimekeepingDataParse(theBytes []byte) (ClockAndTimekeepingData, error) {
-	return ClockAndTimekeepingDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return ClockAndTimekeepingDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func ClockAndTimekeepingDataParseWithBuffer(readBuffer utils.ReadBuffer) (ClockAndTimekeepingData, error) {

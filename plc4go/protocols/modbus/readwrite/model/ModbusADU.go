@@ -102,7 +102,7 @@ func (m *_ModbusADU) GetLengthInBytes() uint16 {
 }
 
 func ModbusADUParse(theBytes []byte, driverType DriverType, response bool) (ModbusADU, error) {
-	return ModbusADUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response) // TODO: get endianness from mspec
+	return ModbusADUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response)
 }
 
 func ModbusADUParseWithBuffer(readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusADU, error) {

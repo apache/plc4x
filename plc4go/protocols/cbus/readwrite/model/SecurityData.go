@@ -20,7 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -143,7 +142,7 @@ func (m *_SecurityData) GetLengthInBytes() uint16 {
 }
 
 func SecurityDataParse(theBytes []byte) (SecurityData, error) {
-	return SecurityDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return SecurityDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func SecurityDataParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityData, error) {

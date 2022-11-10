@@ -19,16 +19,15 @@
 package org.apache.plc4x.java.bacnetip;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetIpConfiguration;
-import org.apache.plc4x.java.bacnetip.field.BacNetIpFieldHandler;
+import org.apache.plc4x.java.bacnetip.tag.BacNetIpTagHandler;
 import org.apache.plc4x.java.bacnetip.protocol.BacNetIpProtocolLogic;
 import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
@@ -71,13 +70,13 @@ public class BacNetIpDriver extends GeneratedDriverBase<BVLC> {
     }
 
     @Override
-    protected BacNetIpFieldHandler getFieldHandler() {
-        return new BacNetIpFieldHandler();
+    protected BacNetIpTagHandler getTagHandler() {
+        return new BacNetIpTagHandler();
     }
 
     @Override
-    protected PlcValueHandler getValueHandler() {
-        return new IEC61131ValueHandler();
+    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
+        return new PlcValueHandler();
     }
 
     @Override
