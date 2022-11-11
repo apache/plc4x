@@ -19,6 +19,7 @@
 
 from asyncio import Protocol, Future
 from dataclasses import dataclass
+from typing import Union
 
 
 @dataclass
@@ -32,6 +33,6 @@ class Plc4xBaseProtocol(Protocol):
     def connection_made(self):
         self.connected = True
 
-    def connection_lost(self, exc: Exception | None) -> None:
+    def connection_lost(self, exc: Union[Exception, None]) -> None:
         self.connected = False
         raise ConnectionError

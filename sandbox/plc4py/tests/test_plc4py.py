@@ -34,13 +34,13 @@ def test_version():
 
 async def test_plc_driver_manager_init():
     driver_manager = PlcDriverManager()
-    async with driver_manager.connection("modbus:tcp://127.0.0.1:502") as connection:
+    async with driver_manager.connection("mock:tcp://127.0.0.1:502") as connection:
         assert isinstance(connection, PlcConnection)
 
 
-async def test_plc_driver_manager_init_modbus():
+async def manual_test_plc_driver_manager_init_modbus():
     driver_manager = PlcDriverManager()
-    async with driver_manager.connection("modbus:tcp://127.0.0.1:502") as connection:
+    async with driver_manager.connection("nodbus:tcp://127.0.0.1:502") as connection:
         assert isinstance(connection, ModbusConnection)
 
 
