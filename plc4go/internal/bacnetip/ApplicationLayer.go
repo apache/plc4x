@@ -1834,7 +1834,7 @@ func NewApplicationServiceAccessPoint(aseID *int, sapID *int) (*ApplicationServi
 
 // TODO: big WIP
 func (a *ApplicationServiceAccessPoint) Indication(apdu readWriteModel.APDU) error {
-	log.Debug().Msgf("indication\n%s", apdu)
+	log.Debug().Msgf("Indication\n%s", apdu)
 
 	switch apdu := apdu.(type) {
 	case readWriteModel.APDUConfirmedRequestExactly:
@@ -1850,14 +1850,35 @@ func (a *ApplicationServiceAccessPoint) Indication(apdu readWriteModel.APDU) err
 		// TODO: the handling here gets a bit different now... need to wrap the head around how to do this (error handling etc)
 
 		if errorFound == nil {
-			if err := a.SapResponse(apdu); err != nil {
+			if err := a.SapRequest(apdu); err != nil {
+				return err
+			}
+		} else {
+			log.Debug().Err(errorFound).Msg("got error")
+
+			// TODO: map it to a error... code temporary placeholder
+			a.Response(readWriteModel.NewAPDUReject(apdu.GetInvokeId(), nil, 0))
+		}
+	case readWriteModel.APDUUnconfirmedRequestExactly:
+		//assume no errors found
+		var errorFound error
+		if !readWriteModel.BACnetUnconfirmedServiceChoiceKnows(uint8(apdu.GetServiceRequest().GetServiceChoice())) {
+			errorFound = errors.New("unrecognized service")
+		}
+
+		if errorFound == nil {
+			errorFound = a.SapRequest(apdu)
+		}
+		// TODO: the handling here gets a bit different now... need to wrap the head around how to do this (error handling etc)
+
+		if errorFound == nil {
+			if err := a.SapRequest(apdu); err != nil {
 				return err
 			}
 		} else {
 			log.Debug().Err(errorFound).Msg("got error")
 		}
 
-	case readWriteModel.APDUUnconfirmedRequestExactly:
 	default:
 		return errors.Errorf("unknown PDU type %T", apdu)
 	}
@@ -1865,11 +1886,28 @@ func (a *ApplicationServiceAccessPoint) Indication(apdu readWriteModel.APDU) err
 }
 
 // TODO: big WIP
+func (a *ApplicationServiceAccessPoint) SapIndication(apdu readWriteModel.APDU, pduDestination []byte) error {
+	log.Debug().Msgf("SapIndication\n%s", apdu)
+
+	// TODO: check if we need to check apdu here
+
+	return a.Request(apdu)
+}
+
+// TODO: big WIP
 func (a *ApplicationServiceAccessPoint) Confirmation(apdu readWriteModel.APDU) error {
-	panic("not yet implemented")
+	log.Debug().Msgf("Confirmation\n%s", apdu)
+
+	// TODO: check if we need to check apdu here
+
+	return a.SapResponse(apdu)
 }
 
 // TODO: big WIP
 func (a *ApplicationServiceAccessPoint) SapConfirmation(apdu readWriteModel.APDU, pduDestination []byte) error {
-	panic("not yet implemented")
+	log.Debug().Msgf("SapConfirmation\n%s", apdu)
+
+	// TODO: check if we need to check apdu here
+
+	return a.Response(apdu)
 }
