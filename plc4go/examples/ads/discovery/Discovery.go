@@ -17,26 +17,20 @@
  * under the License.
  */
 
-package ads
+package main
 
 import (
-	"testing"
+	"context"
+	"time"
 
-	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
+	"github.com/apache/plc4x/plc4go/internal/ads"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
-func TestBrowserManual(t *testing.T) {
-	t.Skip("manual test")
-	driverManager := plc4go.NewPlcDriverManager()
-	drivers.RegisterAdsDriver(driverManager)
-	connectionChan := driverManager.GetConnection("ads:tcp://192.168.23.20?sourceAmsNetId=192.168.23.200.1.1&sourceAmsPort=65534&targetAmsNetId=192.168.23.20.1.1&targetAmsPort=851")
-	connection := <-connectionChan
-	browseRequest, err := connection.GetConnection().BrowseRequestBuilder().AddQuery("all", "MAIN.rivianTest01.RotationalPosition").Build()
-	if err != nil {
-		panic(err)
-	}
-	browseResponseChannel := browseRequest.Execute()
-	browseResponse := <-browseResponseChannel
-	print(browseResponse)
+func main() {
+	discoverer := ads.NewDiscoverer()
+	discoverer.Discover(context.Background(), func(event model.PlcDiscoveryItem) {
+		print(event)
+	})
+	time.Sleep(time.Second * 5)
 }
