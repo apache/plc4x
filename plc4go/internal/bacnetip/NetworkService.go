@@ -28,6 +28,10 @@ func NewNetworkServiceAccessPoint() (*NetworkServiceAccessPoint, error) {
 	return nil, nil
 }
 
+func (n *NetworkServiceAccessPoint) bind(server _Server, net interface{}, address interface{}) error {
+	panic("not implemented yet")
+}
+
 type NetworkServiceElement struct {
 	// TODO: implement me
 }
