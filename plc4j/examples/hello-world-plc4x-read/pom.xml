@@ -32,7 +32,7 @@
   <description>Hello world application for PLC4X using the read-API.</description>
 
   <properties>
-    <app.main.class>org.apache.plc4x.java.examples.helloplc4x.discoverandbrowse.HelloPlc4xRead</app.main.class>
+    <app.main.class>org.apache.plc4x.java.examples.helloplc4x.read.HelloPlc4xRead</app.main.class>
   </properties>
 
   <dependencies>
