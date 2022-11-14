@@ -133,6 +133,6 @@ jobs:
 
       - name: Run mvnw
         run: |
-          ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -T 1C -B -P'with-sandbox,with-python' -pl :plc4py ${{ steps.platform_opts.outputs.platform_opts }} install || ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-sandbox,with-python' -pl :plc4py ${{ steps.platform_opts.outputs.platform_opts }} install
+          ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -T 1C -B -P'with-sandbox,with-python' -pl :plc4py -am ${{ steps.platform_opts.outputs.platform_opts }} install || ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-sandbox,with-python' -pl :plc4py -am ${{ steps.platform_opts.outputs.platform_opts }} install
       
           
