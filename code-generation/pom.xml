@@ -37,7 +37,6 @@
     <module>language-base-freemarker</module>
     <module>protocol-base-mspec</module>
     <module>protocol-test</module>
-
     <module>language-java</module>
   </modules>
 
@@ -60,6 +59,13 @@
       <id>with-go</id>
       <modules>
         <module>language-go</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>with-python</id>
+      <modules>
+        <module>language-python</module>
       </modules>
     </profile>
   </profiles>
