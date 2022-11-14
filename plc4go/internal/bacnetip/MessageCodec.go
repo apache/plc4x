@@ -20,23 +20,80 @@
 package bacnetip
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
+	"net"
+	"net/url"
+	"time"
 )
 
 // ApplicationLayerMessageCodec is a wrapper for MessageCodec which takes care of segmentation, retries etc.
 type ApplicationLayerMessageCodec struct {
-	TransactionStateMachine
+	bipSimpleApplication *BIPSimpleApplication
+	messageCode          *MessageCodec
+	deviceInfoCache      DeviceInfoCache
 }
 
-func NewApplicationLayerMessageCodec(transportInstance transports.TransportInstance, deviceInventory *DeviceInventory) *ApplicationLayerMessageCodec {
-	return &ApplicationLayerMessageCodec{
-		NewTransactionStateMachine(NewMessageCodec(transportInstance), deviceInventory),
+func NewApplicationLayerMessageCodec(udpTransport *udp.Transport, transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr) (*ApplicationLayerMessageCodec, error) {
+	// Have the transport create a new transport-instance.
+	transportInstance, err := udpTransport.CreateTransportInstanceForLocalAddress(transportUrl, options, localAddress)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating transport instance")
 	}
+	_ = transportInstance
+	a := &ApplicationLayerMessageCodec{}
+	application, err := NewBIPSimpleApplication(LocalDeviceObject{}, localAddress, &a.deviceInfoCache, nil)
+	if err != nil {
+		return nil, err
+	}
+	a.bipSimpleApplication = application
+	a.messageCode = NewMessageCodec(transportInstance)
+	return a, nil
+}
+
+func (m *ApplicationLayerMessageCodec) GetCodec() spi.MessageCodec {
+	return m
+}
+
+func (m *ApplicationLayerMessageCodec) Connect() error {
+	return m.messageCode.Connect()
+}
+
+func (m *ApplicationLayerMessageCodec) ConnectWithContext(ctx context.Context) error {
+	return m.messageCode.ConnectWithContext(ctx)
+}
+
+func (m *ApplicationLayerMessageCodec) Disconnect() error {
+	if err := m.bipSimpleApplication.Close(); err != nil {
+		log.Error().Err(err).Msg("error closing application")
+	}
+	return m.messageCode.Disconnect()
+}
+
+func (m *ApplicationLayerMessageCodec) IsRunning() bool {
+	return m.messageCode.IsRunning()
+}
+
+func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
+	panic("not yet mapped")
+}
+
+func (m *ApplicationLayerMessageCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+	panic("not yet mapped")
+}
+
+func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+	panic("not yet mapped")
+}
+
+func (m *ApplicationLayerMessageCodec) GetDefaultIncomingMessageChannel() chan spi.Message {
+	return m.messageCode.GetDefaultIncomingMessageChannel()
 }
 
 type MessageCodec struct {

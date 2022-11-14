@@ -29,6 +29,19 @@ func NewWhoIsIAmServices() (*WhoIsIAmServices, error) {
 	return nil, nil
 }
 
+var defaultMaxApduLength = readWriteModel.MaxApduLengthAccepted_NUM_OCTETS_1024
+var defaultMaxSegmentsAccepted = readWriteModel.MaxSegmentsAccepted_NUM_SEGMENTS_16
+
+// _LocalDeviceObjectDefault is a device entry with default entries
+var _LocalDeviceObjectDefault = LocalDeviceObject{
+	MaximumApduLengthAccepted: &defaultMaxApduLength,
+	SegmentationSupported:     readWriteModel.BACnetSegmentation_SEGMENTED_BOTH,
+	MaxSegmentsAccepted:       &defaultMaxSegmentsAccepted,
+	APDUSegmentTimeout:        5000,
+	APDUTimeout:               3000,
+	NumberOfAPDURetries:       3,
+}
+
 type LocalDeviceObject struct {
 	NumberOfAPDURetries       uint
 	APDUTimeout               uint
@@ -40,11 +53,11 @@ type LocalDeviceObject struct {
 
 func NewLocalDeviceObject() *LocalDeviceObject {
 	return &LocalDeviceObject{
-		NumberOfAPDURetries:       0,
-		APDUTimeout:               0,
-		SegmentationSupported:     0,
-		APDUSegmentTimeout:        0,
-		MaxSegmentsAccepted:       nil,
-		MaximumApduLengthAccepted: nil,
+		NumberOfAPDURetries:       _LocalDeviceObjectDefault.NumberOfAPDURetries,
+		APDUTimeout:               _LocalDeviceObjectDefault.APDUTimeout,
+		SegmentationSupported:     _LocalDeviceObjectDefault.SegmentationSupported,
+		APDUSegmentTimeout:        _LocalDeviceObjectDefault.APDUSegmentTimeout,
+		MaxSegmentsAccepted:       _LocalDeviceObjectDefault.MaxSegmentsAccepted,
+		MaximumApduLengthAccepted: _LocalDeviceObjectDefault.MaximumApduLengthAccepted,
 	}
 }
