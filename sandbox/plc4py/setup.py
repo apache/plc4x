@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="plc4py",
-    version="0.10a0",
+    version="0.11a0",
     description="Plc4py The Python Industrial IOT Adapter",
     classifiers=[
         "Development Status :: 3 - Alpha",
