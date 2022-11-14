@@ -19,10 +19,32 @@
 
 package bacnetip
 
+import readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
 type WhoIsIAmServices struct {
 }
 
 func NewWhoIsIAmServices() (*WhoIsIAmServices, error) {
 	// TODO: implement me
 	return nil, nil
+}
+
+type LocalDeviceObject struct {
+	NumberOfAPDURetries       uint
+	APDUTimeout               uint
+	SegmentationSupported     readWriteModel.BACnetSegmentation
+	APDUSegmentTimeout        uint
+	MaxSegmentsAccepted       *readWriteModel.MaxSegmentsAccepted
+	MaximumApduLengthAccepted *readWriteModel.MaxApduLengthAccepted
+}
+
+func NewLocalDeviceObject() *LocalDeviceObject {
+	return &LocalDeviceObject{
+		NumberOfAPDURetries:       0,
+		APDUTimeout:               0,
+		SegmentationSupported:     0,
+		APDUSegmentTimeout:        0,
+		MaxSegmentsAccepted:       nil,
+		MaximumApduLengthAccepted: nil,
+	}
 }

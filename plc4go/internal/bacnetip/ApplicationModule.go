@@ -20,9 +20,183 @@
 package bacnetip
 
 import (
+	"bytes"
+	"encoding/binary"
+	"fmt"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
+	"hash/fnv"
 )
+
+type DeviceInfo struct {
+	DeviceIdentifier readWriteModel.BACnetTagPayloadObjectIdentifier
+	Address          []byte
+
+	MaximumApduLengthAccepted *readWriteModel.MaxApduLengthAccepted
+	SegmentationSupported     *readWriteModel.BACnetSegmentation
+	MaxSegmentsAccepted       *readWriteModel.MaxSegmentsAccepted
+	VendorId                  *readWriteModel.BACnetVendorId
+	MaximumNpduLength         *uint
+
+	_refCount int
+	_cacheKey DeviceInfoCacheKey
+}
+
+func NewDeviceInfo(deviceIdentifier readWriteModel.BACnetTagPayloadObjectIdentifier, address []byte) *DeviceInfo {
+	return &DeviceInfo{
+		DeviceIdentifier: deviceIdentifier,
+		Address:          address,
+
+		MaximumApduLengthAccepted: func() *readWriteModel.MaxApduLengthAccepted {
+			octets1024 := readWriteModel.MaxApduLengthAccepted_NUM_OCTETS_1024
+			return &octets1024
+		}(),
+		SegmentationSupported: func() *readWriteModel.BACnetSegmentation {
+			noSegmentation := readWriteModel.BACnetSegmentation_NO_SEGMENTATION
+			return &noSegmentation
+		}(),
+	}
+}
+
+// DeviceInfoCacheKey caches by either Instance, PduSource of both
+type DeviceInfoCacheKey struct {
+	Instance  *uint32
+	PduSource []byte
+}
+
+func (k DeviceInfoCacheKey) HashKey() uint32 {
+	h := fnv.New32a()
+	if k.Instance != nil {
+		_ = binary.Write(h, binary.BigEndian, *k.Instance)
+	}
+	_, _ = h.Write(k.PduSource)
+	return h.Sum32()
+}
+
+func (k DeviceInfoCacheKey) String() string {
+	return fmt.Sprintf("key: %d/%x", k.Instance, k.PduSource)
+}
+
+type DeviceInfoCache struct {
+	cache map[uint32]DeviceInfo
+}
+
+func NewDeviceInfoCache() *DeviceInfoCache {
+	return &DeviceInfoCache{
+		cache: make(map[uint32]DeviceInfo),
+	}
+}
+
+// HasDeviceInfo Return true if cache has information about the device.
+func (i *DeviceInfoCache) HasDeviceInfo(key DeviceInfoCacheKey) bool {
+	_, ok := i.cache[key.HashKey()]
+	return ok
+}
+
+// IAmDeviceInfo Create a device information record based on the contents of an IAmRequest and put it in the cache.
+func (i *DeviceInfoCache) IAmDeviceInfo(iAm readWriteModel.BACnetUnconfirmedServiceRequestIAm, pduSource []byte) {
+	log.Debug().Msgf("IAmDeviceInfo\n%s", iAm)
+
+	deviceIdentifier := iAm.GetDeviceIdentifier()
+	// Get the device instance
+	deviceInstance := deviceIdentifier.GetInstanceNumber()
+
+	// get the existing cache record if it exists
+	deviceInfo, ok := i.cache[DeviceInfoCacheKey{&deviceInstance, nil}.HashKey()]
+
+	// maybe there is a record for this address
+	if !ok {
+		deviceInfo, ok = i.cache[DeviceInfoCacheKey{nil, pduSource}.HashKey()]
+	}
+
+	// make a new one using the class provided
+	if !ok {
+		deviceInfo = DeviceInfo{
+			DeviceIdentifier: deviceIdentifier.GetPayload(),
+			Address:          pduSource,
+		}
+	}
+
+	// jam in the correct values
+	maximumApduLengthAccepted := readWriteModel.MaxApduLengthAccepted(iAm.GetMaximumApduLengthAcceptedLength().GetActualValue())
+	deviceInfo.MaximumApduLengthAccepted = &maximumApduLengthAccepted
+	sementationSupported := iAm.GetSegmentationSupported().GetValue()
+	deviceInfo.SegmentationSupported = &sementationSupported
+	vendorId := iAm.GetVendorId().GetValue()
+	deviceInfo.VendorId = &vendorId
+
+	// tell the cache this is an updated record
+	i.UpdateDeviceInfo(deviceInfo)
+}
+
+// GetDeviceInfo gets a DeviceInfo from cache
+func (i *DeviceInfoCache) GetDeviceInfo(key DeviceInfoCacheKey) (DeviceInfo, bool) {
+	log.Debug().Msgf("GetDeviceInfo %s", key)
+
+	// get the info if it's there
+	deviceInfo, ok := i.cache[key.HashKey()]
+	log.Debug().Msgf("deviceInfo: %#v", deviceInfo)
+
+	return deviceInfo, ok
+}
+
+// UpdateDeviceInfo The application has updated one or more fields in the device information record and the cache needs
+//        to be updated to reflect the changes.  If this is a cached version of a persistent record then this is the
+//        opportunity to update the database.
+func (i *DeviceInfoCache) UpdateDeviceInfo(deviceInfo DeviceInfo) {
+	log.Debug().Msgf("UpdateDeviceInfo %#v", deviceInfo)
+
+	// get the current key
+	cacheKey := deviceInfo._cacheKey
+	if cacheKey.Instance != nil && deviceInfo.DeviceIdentifier.GetInstanceNumber() != *cacheKey.Instance {
+		instanceNumber := deviceInfo.DeviceIdentifier.GetInstanceNumber()
+		cacheKey.Instance = &instanceNumber
+		delete(i.cache, cacheKey.HashKey())
+		i.cache[DeviceInfoCacheKey{Instance: &instanceNumber}.HashKey()] = deviceInfo
+	}
+	if bytes.Compare(deviceInfo.Address, cacheKey.PduSource) != 0 {
+		cacheKey.PduSource = deviceInfo.Address
+		delete(i.cache, cacheKey.HashKey())
+		i.cache[DeviceInfoCacheKey{PduSource: cacheKey.PduSource}.HashKey()] = deviceInfo
+	}
+
+	// update the key
+	instanceNumber := deviceInfo.DeviceIdentifier.GetInstanceNumber()
+	deviceInfo._cacheKey = DeviceInfoCacheKey{
+		Instance:  &instanceNumber,
+		PduSource: deviceInfo.Address,
+	}
+	i.cache[deviceInfo._cacheKey.HashKey()] = deviceInfo
+}
+
+// Acquire Return the known information about the device and mark the record as being used by a segmentation state
+//        machine.
+func (i *DeviceInfoCache) Acquire(key DeviceInfoCacheKey) (DeviceInfo, bool) {
+	log.Debug().Msgf("Acquire %#v", key)
+
+	deviceInfo, ok := i.cache[key.HashKey()]
+	if ok {
+		deviceInfo._refCount++
+		i.cache[key.HashKey()] = deviceInfo
+	}
+
+	return deviceInfo, ok
+}
+
+// Release This function is called by the segmentation state machine when it has finished with the device information.
+func (i *DeviceInfoCache) Release(deviceInfo DeviceInfo) error {
+
+	//this information record might be used by more than one SSM
+	if deviceInfo._refCount == 0 {
+		return errors.New("reference count")
+	}
+
+	// decrement the reference count
+	deviceInfo._refCount--
+	i.cache[deviceInfo._cacheKey.HashKey()] = deviceInfo
+	return nil
+}
 
 // TODO: implement
 type Application struct {
@@ -58,7 +232,7 @@ type BIPSimpleApplication struct {
 	mux          *UDPMultiplexer
 }
 
-func NewBIPSimpleApplication(localDevice DeviceEntry, localAddress, deviceInfoCache *DeviceInventory, aseID *int) (*BIPSimpleApplication, error) {
+func NewBIPSimpleApplication(localDevice LocalDeviceObject, localAddress, deviceInfoCache *DeviceInfoCache, aseID *int) (*BIPSimpleApplication, error) {
 	b := &BIPSimpleApplication{}
 	var err error
 	b.ApplicationIOController, err = NewApplicationIOController(localDevice, localAddress, deviceInfoCache, aseID)

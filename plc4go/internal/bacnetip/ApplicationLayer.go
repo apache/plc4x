@@ -75,8 +75,8 @@ type segmentAPDU struct {
 type SSMSAPRequirements interface {
 	_ServiceAccessPoint
 	_Client
-	GetDeviceInventory() *DeviceInventory
-	GetLocalDevice() DeviceEntry
+	GetDeviceInfoCache() *DeviceInfoCache
+	GetLocalDevice() LocalDeviceObject
 	GetProposedWindowSize() uint8
 	GetClientTransactions() []*ClientSSM
 	GetServerTransactions() []*ServerSSM
@@ -89,8 +89,8 @@ type SSM struct {
 
 	ssmSAP SSMSAPRequirements
 
-	pduAddress  []byte
-	deviceEntry *DeviceEntry
+	pduAddress []byte
+	deviceInfo *DeviceInfo
 
 	invokeId uint8
 
@@ -116,15 +116,16 @@ type SSM struct {
 
 func NewSSM(sap SSMSAPRequirements, pduAddress []byte) (SSM, error) {
 	log.Debug().Interface("sap", sap).Bytes("pdu_address", pduAddress).Msg("init")
-	deviceEntry, err := sap.GetDeviceInventory().getEntryForDestination(pduAddress)
-	if err != nil {
-		return SSM{}, errors.Wrap(err, "Can't create SSM")
+	var deviceInfo *DeviceInfo
+	deviceInfoTemp, ok := sap.GetDeviceInfoCache().GetDeviceInfo(DeviceInfoCacheKey{PduSource: pduAddress})
+	if ok {
+		deviceInfo = &deviceInfoTemp
 	}
 	localDevice := sap.GetLocalDevice()
 	return SSM{
 		ssmSAP:                sap,
 		pduAddress:            pduAddress,
-		deviceEntry:           deviceEntry,
+		deviceInfo:            deviceInfo,
 		state:                 IDLE,
 		numberOfApduRetries:   localDevice.NumberOfAPDURetries,
 		apduTimeout:           localDevice.APDUTimeout,
@@ -342,7 +343,7 @@ func NewClientSSM(sap SSMSAPRequirements, pduAddress []byte) (*ClientSSM, error)
 		return nil, err
 	}
 	// TODO: if deviceEntry is not there get it now...
-	if ssm.deviceEntry == nil {
+	if ssm.deviceInfo == nil {
 		// TODO: get entry for device, store it in inventory
 		log.Debug().Msg("Accquire device information")
 	}
@@ -362,7 +363,7 @@ func (s *ClientSSM) setState(newState SSMState, timer *uint) error {
 	if s.state == COMPLETED || s.state == ABORTED {
 		log.Debug().Msg("remove from active transaction")
 		s.ssmSAP.GetClientTransactions() // TODO remove "this" transaction from the list
-		if s.deviceEntry == nil {
+		if s.deviceInfo == nil {
 			// TODO: release device entry
 			log.Debug().Msg("release device entry")
 		}
@@ -395,13 +396,13 @@ func (s *ClientSSM) Indication(apdu readWriteModel.APDU) error { // TODO: maybe 
 
 	// if the max apdu length of the server isn't known, assume that it is the same size as our own and will be the segment
 	//        size
-	if s.deviceEntry == nil || s.deviceEntry.MaximumApduLengthAccepted != nil {
+	if s.deviceInfo == nil || s.deviceInfo.MaximumApduLengthAccepted != nil {
 		s.segmentSize = uint(s.maxApduLengthAccepted.NumberOfOctets())
-	} else if s.deviceEntry.MaximumNpduLength == nil {
+	} else if s.deviceInfo.MaximumNpduLength == nil {
 		//      if the max npdu length of the server isn't known, assume that it is the same as the max apdu length accepted
 		s.segmentSize = uint(s.maxApduLengthAccepted.NumberOfOctets())
 	} else {
-		s.segmentSize = utils.Min(*s.deviceEntry.MaximumNpduLength, uint(s.maxApduLengthAccepted.NumberOfOctets()))
+		s.segmentSize = utils.Min(*s.deviceInfo.MaximumNpduLength, uint(s.maxApduLengthAccepted.NumberOfOctets()))
 	}
 	log.Debug().Msgf("segment size %d", s.segmentSize)
 
@@ -426,9 +427,9 @@ func (s *ClientSSM) Indication(apdu readWriteModel.APDU) error { // TODO: maybe 
 			return s.Response(abort)
 		}
 
-		if s.deviceEntry == nil {
+		if s.deviceInfo == nil {
 			log.Debug().Msg("no server info for segmentation support")
-		} else if s.deviceEntry.SegmentationSupported != readWriteModel.BACnetSegmentation_SEGMENTED_TRANSMIT && s.deviceEntry.SegmentationSupported != readWriteModel.BACnetSegmentation_SEGMENTED_BOTH {
+		} else if *s.deviceInfo.SegmentationSupported != readWriteModel.BACnetSegmentation_SEGMENTED_TRANSMIT && *s.deviceInfo.SegmentationSupported != readWriteModel.BACnetSegmentation_SEGMENTED_BOTH {
 			log.Debug().Msg("server can't receive segmented requests")
 			abort, err := s.abort(readWriteModel.BACnetAbortReason_SEGMENTATION_NOT_SUPPORTED)
 			if err != nil {
@@ -438,11 +439,11 @@ func (s *ClientSSM) Indication(apdu readWriteModel.APDU) error { // TODO: maybe 
 		}
 
 		// make sure we don't exceed the number of segments in our request that the server said it was willing to accept
-		if s.deviceEntry == nil {
+		if s.deviceInfo == nil {
 			log.Debug().Msg("no server info for maximum number of segments")
-		} else if s.deviceEntry.MaxSegmentsAccepted == nil {
+		} else if s.deviceInfo.MaxSegmentsAccepted == nil {
 			log.Debug().Msgf("server doesn't say maximum number of segments")
-		} else if s.segmentCount > s.deviceEntry.MaxSegmentsAccepted.MaxSegments() {
+		} else if s.segmentCount > s.deviceInfo.MaxSegmentsAccepted.MaxSegments() {
 			log.Debug().Msg("server can't receive enough segments")
 			abort, err := s.abort(readWriteModel.BACnetAbortReason_APDU_TOO_LONG)
 			if err != nil {
@@ -909,7 +910,7 @@ func NewServerSSM(sap SSMSAPRequirements, pduAddress []byte) (*ServerSSM, error)
 		return nil, err
 	}
 	// TODO: if deviceEntry is not there get it now...
-	if &ssm.deviceEntry == nil {
+	if &ssm.deviceInfo == nil {
 		// TODO: get entry for device, store it in inventory
 		log.Debug().Msg("Accquire device information")
 	}
@@ -930,7 +931,7 @@ func (s *ServerSSM) setState(newState SSMState, timer *uint) error {
 	if s.state == COMPLETED || s.state == ABORTED {
 		log.Debug().Msg("remove from active transaction")
 		s.ssmSAP.GetServerTransactions() // TODO remove "this" transaction from the list
-		if s.deviceEntry != nil {
+		if s.deviceInfo != nil {
 			// TODO: release device entry
 			log.Debug().Msg("release device entry")
 		}
@@ -1020,10 +1021,10 @@ func (s *ServerSSM) Confirmation(apdu readWriteModel.APDU) error {
 
 		// the segment size is the minimum of the size of the largest packet that can be delivered to the client and the
 		//            largest it can accept
-		if s.deviceEntry == nil || s.deviceEntry.MaximumNpduLength == nil {
+		if s.deviceInfo == nil || s.deviceInfo.MaximumNpduLength == nil {
 			s.segmentSize = uint(s.maxApduLengthAccepted.NumberOfOctets())
 		} else {
-			s.segmentSize = utils.Min(*s.deviceEntry.MaximumNpduLength, uint(s.maxApduLengthAccepted.NumberOfOctets()))
+			s.segmentSize = utils.Min(*s.deviceInfo.MaximumNpduLength, uint(s.maxApduLengthAccepted.NumberOfOctets()))
 		}
 
 		// compute the segment count
@@ -1158,16 +1159,18 @@ func (s *ServerSSM) idle(apdu readWriteModel.APDU) error {
 	s.segmentedResponseAccepted = apduConfirmedRequest.GetSegmentedResponseAccepted()
 
 	// if there is a cache record, check to see if it needs to be updated
-	if apduConfirmedRequest.GetSegmentedResponseAccepted() && s.deviceEntry != nil {
-		switch s.deviceEntry.SegmentationSupported {
+	if apduConfirmedRequest.GetSegmentedResponseAccepted() && s.deviceInfo != nil {
+		switch *s.deviceInfo.SegmentationSupported {
 		case readWriteModel.BACnetSegmentation_NO_SEGMENTATION:
 			log.Debug().Msg("client actually supports segmented receive")
-			s.deviceEntry.SegmentationSupported = readWriteModel.BACnetSegmentation_SEGMENTED_RECEIVE
+			segmentedReceive := readWriteModel.BACnetSegmentation_SEGMENTED_RECEIVE
+			s.deviceInfo.SegmentationSupported = &segmentedReceive
 
 		// TODO: bacpypes updates the cache here but as we have a pointer  to the entry we should need that. Maybe we should because concurrency... lets see later
 		case readWriteModel.BACnetSegmentation_SEGMENTED_TRANSMIT:
 			log.Debug().Msg("client actually supports both segmented transmit and receive")
-			s.deviceEntry.SegmentationSupported = readWriteModel.BACnetSegmentation_SEGMENTED_BOTH
+			segmentedBoth := readWriteModel.BACnetSegmentation_SEGMENTED_BOTH
+			s.deviceInfo.SegmentationSupported = &segmentedBoth
 
 			// TODO: bacpypes updates the cache here but as we have a pointer  to the entry we should need that. Maybe we should because concurrency... lets see later
 		case readWriteModel.BACnetSegmentation_SEGMENTED_RECEIVE, readWriteModel.BACnetSegmentation_SEGMENTED_BOTH:
@@ -1182,11 +1185,11 @@ func (s *ServerSSM) idle(apdu readWriteModel.APDU) error {
 	//        received
 	getMaxApduLengthAccepted := apduConfirmedRequest.GetMaxApduLengthAccepted()
 	s.maxApduLengthAccepted = &getMaxApduLengthAccepted
-	if s.deviceEntry != nil && s.deviceEntry.MaximumApduLengthAccepted != nil {
-		if *s.deviceEntry.MaximumApduLengthAccepted < *s.maxApduLengthAccepted {
+	if s.deviceInfo != nil && s.deviceInfo.MaximumApduLengthAccepted != nil {
+		if *s.deviceInfo.MaximumApduLengthAccepted < *s.maxApduLengthAccepted {
 			log.Debug().Msg("apdu max reponse encoding error")
 		} else {
-			s.maxApduLengthAccepted = s.deviceEntry.MaximumApduLengthAccepted
+			s.maxApduLengthAccepted = s.deviceInfo.MaximumApduLengthAccepted
 		}
 	}
 	log.Debug().Msgf("maxApduLengthAccepted %s", *s.maxApduLengthAccepted)
@@ -1459,8 +1462,8 @@ type StateMachineAccessPoint struct {
 	*Client
 	*ServiceAccessPoint
 
-	localDevice           DeviceEntry
-	deviceInventory       *DeviceInventory
+	localDevice           LocalDeviceObject
+	deviceInventory       *DeviceInfoCache
 	nextInvokeId          uint8
 	clientTransactions    []*ClientSSM
 	serverTransactions    []*ServerSSM
@@ -1475,7 +1478,7 @@ type StateMachineAccessPoint struct {
 	applicationTimeout    uint
 }
 
-func NewStateMachineAccessPoint(localDevice DeviceEntry, deviceInventory *DeviceInventory, sapID *int, cid *int) (*StateMachineAccessPoint, error) {
+func NewStateMachineAccessPoint(localDevice LocalDeviceObject, deviceInventory *DeviceInfoCache, sapID *int, cid *int) (*StateMachineAccessPoint, error) {
 	log.Debug().Msgf("NewStateMachineAccessPoint localDevice=%v deviceInventory=%v sap=%v cid=%v", localDevice, deviceInventory, sapID, cid)
 
 	s := &StateMachineAccessPoint{
@@ -1788,11 +1791,11 @@ func (s *StateMachineAccessPoint) SapConfirmation(apdu readWriteModel.APDU, pduD
 	return nil
 }
 
-func (s *StateMachineAccessPoint) GetDeviceInventory() *DeviceInventory {
+func (s *StateMachineAccessPoint) GetDeviceInfoCache() *DeviceInfoCache {
 	return s.deviceInventory
 }
 
-func (s *StateMachineAccessPoint) GetLocalDevice() DeviceEntry {
+func (s *StateMachineAccessPoint) GetLocalDevice() LocalDeviceObject {
 	return s.localDevice
 }
 

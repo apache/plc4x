@@ -26,6 +26,7 @@ import (
 	"time"
 )
 
+// TODO: migrate into device info cache
 type DeviceInventory struct {
 	sync.RWMutex
 	devices map[string]DeviceEntry
