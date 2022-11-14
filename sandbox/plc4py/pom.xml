@@ -79,6 +79,7 @@
               <protocolName>modbus</protocolName>
               <languageName>python</languageName>
               <outputFlavor>read-write</outputFlavor>
+              <outputDir>${project.basedir}/plc4py/protocols</outputDir>
             </configuration>
           </execution>
         </executions>
@@ -108,6 +109,22 @@
                 <argument>-m</argument>
                 <argument>venv</argument>
                 <argument>./venv</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>python-black</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${python.venv.bin}python3</executable>
+              <arguments>
+                <argument>-m</argument>
+                <argument>black</argument>
+                <argument>.</argument>
               </arguments>
             </configuration>
           </execution>

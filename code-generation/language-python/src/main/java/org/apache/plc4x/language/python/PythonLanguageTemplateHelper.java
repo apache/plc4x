@@ -55,9 +55,12 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
 
     public String packageName(String protocolName, String languageName, String languageFlavorName) {
         return Optional.ofNullable(options.get("package")).orElseGet(() ->
-            "org.apache.plc4x." + String.join("", languageName.split("-")) + "." +
                 String.join("", protocolName.split("-")) + "." +
                 String.join("", languageFlavorName.split("-")));
+    }
+
+    public String packageName(String languageFlavorName) {
+        return String.join("", languageFlavorName.split("\\-"));
     }
 
     @Override

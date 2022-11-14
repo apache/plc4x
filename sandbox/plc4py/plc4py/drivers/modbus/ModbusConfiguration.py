@@ -20,7 +20,6 @@ from plc4py.spi.configuration.PlcConfiguration import PlcConfiguration
 
 
 class ModbusConfiguration(PlcConfiguration):
-
     def __init__(self, url):
         super().__init__(url)
 

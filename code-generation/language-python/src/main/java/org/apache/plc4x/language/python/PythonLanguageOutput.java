@@ -42,7 +42,7 @@ public class PythonLanguageOutput extends FreemarkerLanguageOutput {
 
     @Override
     public String getName() {
-        return "python";
+        return "Python";
     }
 
     @Override
