@@ -20,7 +20,7 @@
 import asyncio
 import logging
 from dataclasses import dataclass, field
-from typing import Awaitable, Type
+from typing import Awaitable, Type, List
 
 import plc4py
 
@@ -75,7 +75,7 @@ class MockPlcFieldHandler:
 class MockDevice:
     fields: dict[str, PlcValue] = field(default_factory=lambda: {})
 
-    def read(self, field: str) -> list[ResponseItem[PlcValue]]:
+    def read(self, field: str) -> List[ResponseItem[PlcValue]]:
         """
         Reads one field from the Mock Device
         """
