@@ -18,7 +18,7 @@
 #
 import re
 from dataclasses import InitVar, dataclass, field
-from typing import Optional
+from typing import Optional, Dict
 
 
 @dataclass
@@ -28,7 +28,7 @@ class PlcConfiguration:
     transport: Optional[str] = None
     host: Optional[str] = None
     port: Optional[int] = None
-    parameters: dict[str, str] = field(default_factory=lambda: {})
+    parameters: Dict[str, str] = field(default_factory=lambda: {})
 
     def __post_init__(self, url):
         self._parse_configuration(url)
