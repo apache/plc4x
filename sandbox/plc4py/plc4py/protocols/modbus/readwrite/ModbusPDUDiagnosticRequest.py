@@ -35,12 +35,12 @@ class ModbusPDUDiagnosticRequest(PlcMessage,ModbusPDU):
     data: c_uint16
 
     # Accessors for discriminator values.
-    def c_bool getErrorFlag() {
-        return (c_bool) false
-    def c_uint8 getFunctionFlag() {
+    def getErrorFlag(self) -> c_bool:
+        return (c_bool) False
+    def getFunctionFlag(self) -> c_uint8:
         return (c_uint8) 0x08
-    def c_bool getResponse() {
-        return (c_bool) false
+    def getResponse(self) -> c_bool:
+        return (c_bool) False
 
 
     def __post_init__(self):
@@ -49,10 +49,10 @@ class ModbusPDUDiagnosticRequest(PlcMessage,ModbusPDU):
 
 
     def getSubFunction(self) -> c_uint16:
-        return subFunction
+        return self.subFunction
 
     def getData(self) -> c_uint16:
-        return data
+        return self.data
 
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
@@ -128,7 +128,7 @@ class ModbusPDUDiagnosticRequestBuilder(ModbusPDUModbusPDUBuilder: subFunction: 
         self.data = data
 
 
-        def build(
+        def build(self,
         ) -> ModbusPDUDiagnosticRequest:
         modbusPDUDiagnosticRequest: ModbusPDUDiagnosticRequest = ModbusPDUDiagnosticRequest(
             subFunction, 

@@ -41,10 +41,10 @@ class ModbusDeviceInformationObject(PlcMessage):
 
 
     def getObjectId(self) -> c_uint8:
-        return objectId
+        return self.objectId
 
     def getData(self) -> []c_byte:
-        return data
+        return self.data
 
 
     def serialize(self, writeBuffer: WriteBuffer):

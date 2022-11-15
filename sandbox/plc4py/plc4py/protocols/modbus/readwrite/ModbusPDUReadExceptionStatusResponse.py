@@ -33,12 +33,12 @@ class ModbusPDUReadExceptionStatusResponse(PlcMessage,ModbusPDU):
     value: c_uint8
 
     # Accessors for discriminator values.
-    def c_bool getErrorFlag() {
-        return (c_bool) false
-    def c_uint8 getFunctionFlag() {
+    def getErrorFlag(self) -> c_bool:
+        return (c_bool) False
+    def getFunctionFlag(self) -> c_uint8:
         return (c_uint8) 0x07
-    def c_bool getResponse() {
-        return (c_bool) true
+    def getResponse(self) -> c_bool:
+        return (c_bool) True
 
 
     def __post_init__(self):
@@ -47,7 +47,7 @@ class ModbusPDUReadExceptionStatusResponse(PlcMessage,ModbusPDU):
 
 
     def getValue(self) -> c_uint8:
-        return value
+        return self.value
 
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
@@ -114,7 +114,7 @@ class ModbusPDUReadExceptionStatusResponse(PlcMessage,ModbusPDU):
 class ModbusPDUReadExceptionStatusResponseBuilder(ModbusPDUModbusPDUBuilder: value: c_uint8def ModbusPDUReadExceptionStatusResponseBuilder( c_uint8 value ):        self.value = value
 
 
-        def build(
+        def build(self,
         ) -> ModbusPDUReadExceptionStatusResponse:
         modbusPDUReadExceptionStatusResponse: ModbusPDUReadExceptionStatusResponse = ModbusPDUReadExceptionStatusResponse(
             value

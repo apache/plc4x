@@ -34,12 +34,12 @@ class ModbusPDUReadFifoQueueResponse(PlcMessage,ModbusPDU):
     fifoValue: []c_uint16
 
     # Accessors for discriminator values.
-    def c_bool getErrorFlag() {
-        return (c_bool) false
-    def c_uint8 getFunctionFlag() {
+    def getErrorFlag(self) -> c_bool:
+        return (c_bool) False
+    def getFunctionFlag(self) -> c_uint8:
         return (c_uint8) 0x18
-    def c_bool getResponse() {
-        return (c_bool) true
+    def getResponse(self) -> c_bool:
+        return (c_bool) True
 
 
     def __post_init__(self):
@@ -48,7 +48,7 @@ class ModbusPDUReadFifoQueueResponse(PlcMessage,ModbusPDU):
 
 
     def getFifoValue(self) -> []c_uint16:
-        return fifoValue
+        return self.fifoValue
 
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
@@ -135,7 +135,7 @@ class ModbusPDUReadFifoQueueResponse(PlcMessage,ModbusPDU):
 class ModbusPDUReadFifoQueueResponseBuilder(ModbusPDUModbusPDUBuilder: fifoValue: []c_uint16def ModbusPDUReadFifoQueueResponseBuilder( []c_uint16 fifoValue ):        self.fifoValue = fifoValue
 
 
-        def build(
+        def build(self,
         ) -> ModbusPDUReadFifoQueueResponse:
         modbusPDUReadFifoQueueResponse: ModbusPDUReadFifoQueueResponse = ModbusPDUReadFifoQueueResponse(
             fifoValue

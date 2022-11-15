@@ -36,12 +36,12 @@ class ModbusPDUMaskWriteHoldingRegisterRequest(PlcMessage,ModbusPDU):
     orMask: c_uint16
 
     # Accessors for discriminator values.
-    def c_bool getErrorFlag() {
-        return (c_bool) false
-    def c_uint8 getFunctionFlag() {
+    def getErrorFlag(self) -> c_bool:
+        return (c_bool) False
+    def getFunctionFlag(self) -> c_uint8:
         return (c_uint8) 0x16
-    def c_bool getResponse() {
-        return (c_bool) false
+    def getResponse(self) -> c_bool:
+        return (c_bool) False
 
 
     def __post_init__(self):
@@ -50,13 +50,13 @@ class ModbusPDUMaskWriteHoldingRegisterRequest(PlcMessage,ModbusPDU):
 
 
     def getReferenceAddress(self) -> c_uint16:
-        return referenceAddress
+        return self.referenceAddress
 
     def getAndMask(self) -> c_uint16:
-        return andMask
+        return self.andMask
 
     def getOrMask(self) -> c_uint16:
-        return orMask
+        return self.orMask
 
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
@@ -141,7 +141,7 @@ class ModbusPDUMaskWriteHoldingRegisterRequestBuilder(ModbusPDUModbusPDUBuilder:
         self.orMask = orMask
 
 
-        def build(
+        def build(self,
         ) -> ModbusPDUMaskWriteHoldingRegisterRequest:
         modbusPDUMaskWriteHoldingRegisterRequest: ModbusPDUMaskWriteHoldingRegisterRequest = ModbusPDUMaskWriteHoldingRegisterRequest(
             referenceAddress, 

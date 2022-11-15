@@ -37,12 +37,12 @@ class ModbusPDUWriteMultipleHoldingRegistersRequest(PlcMessage,ModbusPDU):
     value: []c_byte
 
     # Accessors for discriminator values.
-    def c_bool getErrorFlag() {
-        return (c_bool) false
-    def c_uint8 getFunctionFlag() {
+    def getErrorFlag(self) -> c_bool:
+        return (c_bool) False
+    def getFunctionFlag(self) -> c_uint8:
         return (c_uint8) 0x10
-    def c_bool getResponse() {
-        return (c_bool) false
+    def getResponse(self) -> c_bool:
+        return (c_bool) False
 
 
     def __post_init__(self):
@@ -51,13 +51,13 @@ class ModbusPDUWriteMultipleHoldingRegistersRequest(PlcMessage,ModbusPDU):
 
 
     def getStartingAddress(self) -> c_uint16:
-        return startingAddress
+        return self.startingAddress
 
     def getQuantity(self) -> c_uint16:
-        return quantity
+        return self.quantity
 
     def getValue(self) -> []c_byte:
-        return value
+        return self.value
 
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
@@ -153,7 +153,7 @@ class ModbusPDUWriteMultipleHoldingRegistersRequestBuilder(ModbusPDUModbusPDUBui
         self.value = value
 
 
-        def build(
+        def build(self,
         ) -> ModbusPDUWriteMultipleHoldingRegistersRequest:
         modbusPDUWriteMultipleHoldingRegistersRequest: ModbusPDUWriteMultipleHoldingRegistersRequest = ModbusPDUWriteMultipleHoldingRegistersRequest(
             startingAddress, 

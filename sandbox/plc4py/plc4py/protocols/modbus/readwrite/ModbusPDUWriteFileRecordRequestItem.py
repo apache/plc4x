@@ -44,16 +44,16 @@ class ModbusPDUWriteFileRecordRequestItem(PlcMessage):
 
 
     def getReferenceType(self) -> c_uint8:
-        return referenceType
+        return self.referenceType
 
     def getFileNumber(self) -> c_uint16:
-        return fileNumber
+        return self.fileNumber
 
     def getRecordNumber(self) -> c_uint16:
-        return recordNumber
+        return self.recordNumber
 
     def getRecordData(self) -> []c_byte:
-        return recordData
+        return self.recordData
 
 
     def serialize(self, writeBuffer: WriteBuffer):

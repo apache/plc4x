@@ -34,12 +34,12 @@ class ModbusPDUWriteFileRecordRequest(PlcMessage,ModbusPDU):
     items: []ModbusPDUWriteFileRecordRequestItem
 
     # Accessors for discriminator values.
-    def c_bool getErrorFlag() {
-        return (c_bool) false
-    def c_uint8 getFunctionFlag() {
+    def getErrorFlag(self) -> c_bool:
+        return (c_bool) False
+    def getFunctionFlag(self) -> c_uint8:
         return (c_uint8) 0x15
-    def c_bool getResponse() {
-        return (c_bool) false
+    def getResponse(self) -> c_bool:
+        return (c_bool) False
 
 
     def __post_init__(self):
@@ -48,7 +48,7 @@ class ModbusPDUWriteFileRecordRequest(PlcMessage,ModbusPDU):
 
 
     def getItems(self) -> []ModbusPDUWriteFileRecordRequestItem:
-        return items
+        return self.items
 
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
@@ -95,7 +95,7 @@ class ModbusPDUWriteFileRecordRequest(PlcMessage,ModbusPDU):
 
         byteCount: c_uint8 = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
 
-        items: []ModbusPDUWriteFileRecordRequestItem = readLengthArrayField("items", new DataReaderComplexDefault<>(() -> ModbusPDUWriteFileRecordRequestItem.staticParse(readBuffer), readBuffer), byteCount)
+        items: []ModbusPDUWriteFileRecordRequestItem = readLengthArrayField("items", DataReaderComplexDefault<>(() -> ModbusPDUWriteFileRecordRequestItem.staticParse(readBuffer), readBuffer), byteCount)
 
         readBuffer.closeContext("ModbusPDUWriteFileRecordRequest")
         # Create the instance
@@ -128,7 +128,7 @@ class ModbusPDUWriteFileRecordRequest(PlcMessage,ModbusPDU):
 class ModbusPDUWriteFileRecordRequestBuilder(ModbusPDUModbusPDUBuilder: items: []ModbusPDUWriteFileRecordRequestItemdef ModbusPDUWriteFileRecordRequestBuilder( []ModbusPDUWriteFileRecordRequestItem items ):        self.items = items
 
 
-        def build(
+        def build(self,
         ) -> ModbusPDUWriteFileRecordRequest:
         modbusPDUWriteFileRecordRequest: ModbusPDUWriteFileRecordRequest = ModbusPDUWriteFileRecordRequest(
             items

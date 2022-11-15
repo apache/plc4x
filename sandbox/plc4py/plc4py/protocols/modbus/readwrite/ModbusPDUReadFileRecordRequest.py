@@ -34,12 +34,12 @@ class ModbusPDUReadFileRecordRequest(PlcMessage,ModbusPDU):
     items: []ModbusPDUReadFileRecordRequestItem
 
     # Accessors for discriminator values.
-    def c_bool getErrorFlag() {
-        return (c_bool) false
-    def c_uint8 getFunctionFlag() {
+    def getErrorFlag(self) -> c_bool:
+        return (c_bool) False
+    def getFunctionFlag(self) -> c_uint8:
         return (c_uint8) 0x14
-    def c_bool getResponse() {
-        return (c_bool) false
+    def getResponse(self) -> c_bool:
+        return (c_bool) False
 
 
     def __post_init__(self):
@@ -48,7 +48,7 @@ class ModbusPDUReadFileRecordRequest(PlcMessage,ModbusPDU):
 
 
     def getItems(self) -> []ModbusPDUReadFileRecordRequestItem:
-        return items
+        return self.items
 
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
@@ -95,7 +95,7 @@ class ModbusPDUReadFileRecordRequest(PlcMessage,ModbusPDU):
 
         byteCount: c_uint8 = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
 
-        items: []ModbusPDUReadFileRecordRequestItem = readLengthArrayField("items", new DataReaderComplexDefault<>(() -> ModbusPDUReadFileRecordRequestItem.staticParse(readBuffer), readBuffer), byteCount)
+        items: []ModbusPDUReadFileRecordRequestItem = readLengthArrayField("items", DataReaderComplexDefault<>(() -> ModbusPDUReadFileRecordRequestItem.staticParse(readBuffer), readBuffer), byteCount)
 
         readBuffer.closeContext("ModbusPDUReadFileRecordRequest")
         # Create the instance
@@ -128,7 +128,7 @@ class ModbusPDUReadFileRecordRequest(PlcMessage,ModbusPDU):
 class ModbusPDUReadFileRecordRequestBuilder(ModbusPDUModbusPDUBuilder: items: []ModbusPDUReadFileRecordRequestItemdef ModbusPDUReadFileRecordRequestBuilder( []ModbusPDUReadFileRecordRequestItem items ):        self.items = items
 
 
-        def build(
+        def build(self,
         ) -> ModbusPDUReadFileRecordRequest:
         modbusPDUReadFileRecordRequest: ModbusPDUReadFileRecordRequest = ModbusPDUReadFileRecordRequest(
             items

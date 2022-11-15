@@ -27,23 +27,19 @@ from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType
 import math
 
-    
+
 @dataclass
 class ModbusADU(ABC, PlcMessage):
     # Arguments.
     response: c_bool
 
-
-
     def __post_init__(self):
-        super().__init__( )
+        super().__init__()
 
     # Abstract accessors for discriminator values.
     @abstractmethod
     def getDriverType(self) -> DriverType:
         pass
-
-
 
     @abstractmethod
     def serializeModbusADUChild(writeBuffer: WriteBuffer) -> None:
@@ -59,7 +55,6 @@ class ModbusADU(ABC, PlcMessage):
 
         writeBuffer.popContext("ModbusADU")
 
-
     def getLengthInBytes(self) -> int:
         return int(math.ceil(float(self.getLengthInBits() / 8.0)))
 
@@ -71,11 +66,12 @@ class ModbusADU(ABC, PlcMessage):
 
         return lengthInBits
 
-
-    def staticParse(readBuffer: ReadBuffer , args) -> ModbusADU:
+    def staticParse(readBuffer: ReadBuffer, args) -> ModbusADU:
         positionAware: PositionAware = readBuffer
         if (args is None) or (args.length is not 2):
-            raise PlcRuntimeException("Wrong number of arguments, expected 2, but got " + args.length)
+            raise PlcRuntimeException(
+                "Wrong number of arguments, expected 2, but got " + args.length
+            )
 
         driverType: DriverType = None
         if isinstance(args[0], DriverType):
@@ -83,7 +79,10 @@ class ModbusADU(ABC, PlcMessage):
         elif isinstance(args[0], str):
             driverType = DriverType.valueOf(str(args[0]))
         else:
-            raise PlcRuntimeException("Argument 0 expected to be of type DriverType or a string which is parseable but was " + args[0].getClass().getName())
+            raise PlcRuntimeException(
+                "Argument 0 expected to be of type DriverType or a string which is parseable but was "
+                + args[0].getClass().getName()
+            )
 
         response: c_bool = None
         if isinstance(args[1], c_bool):
@@ -91,13 +90,17 @@ class ModbusADU(ABC, PlcMessage):
         elif isinstance(args[1], str):
             response = c_bool.valueOf(str(args[1]))
         else:
-            raise PlcRuntimeException("Argument 1 expected to be of type c_bool or a string which is parseable but was " + args[1].getClass().getName())
+            raise PlcRuntimeException(
+                "Argument 1 expected to be of type c_bool or a string which is parseable but was "
+                + args[1].getClass().getName()
+            )
 
         return staticParse(readBuffer, driverType, response)
 
-
     @staticmethod
-    def staticParseContext(readBuffer: ReadBuffer, driverType: DriverType, response: c_bool) -> ModbusADU:
+    def staticParseContext(
+        readBuffer: ReadBuffer, driverType: DriverType, response: c_bool
+    ) -> ModbusADU:
         readBuffer.pullContext("ModbusADU")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
@@ -105,24 +108,30 @@ class ModbusADU(ABC, PlcMessage):
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: ModbusADUBuilder = None
-        if EvaluationHelper.equals( driverType, DriverType.MODBUS_TCP ):
+        if EvaluationHelper.equals(driverType, DriverType.MODBUS_TCP):
 
             builder = ModbusTcpADU.staticParseBuilder(readBuffer, driverType, response)
-        if EvaluationHelper.equals( driverType, DriverType.MODBUS_RTU ):
+        if EvaluationHelper.equals(driverType, DriverType.MODBUS_RTU):
 
             builder = ModbusRtuADU.staticParseBuilder(readBuffer, driverType, response)
-        if 
+        if EvaluationHelper.equals(driverType, DriverType.MODBUS_ASCII):
 
-            builder = ModbusAsciiADU.staticParseBuilder(readBuffer, driverType, response)
+            builder = ModbusAsciiADU.staticParseBuilder(
+                readBuffer, driverType, response
+            )
         if builder is None:
-            raise ParseException("Unsupported case for discriminated type"+" parameters ["+"driverType="+driverType+"]")
-
+            raise ParseException(
+                "Unsupported case for discriminated type"
+                + " parameters ["
+                + "driverType="
+                + driverType
+                + "]"
+            )
 
         readBuffer.closeContext("ModbusADU")
         # Create the instance
-        _modbusADU: ModbusADU = builder.build(response )
+        _modbusADU: ModbusADU = builder.build(response)
         return _modbusADU
-
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -146,10 +155,7 @@ class ModbusADU(ABC, PlcMessage):
 
         return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
+
 class ModbusADUBuilder:
-    def build( response: c_bool ) -> ModbusADU:
+    def build(self, response: c_bool) -> ModbusADU:
         pass
-
-
-
-

@@ -39,7 +39,7 @@ class ModbusRtuADU(PlcMessage,ModbusADU):
     response: c_bool
 
     # Accessors for discriminator values.
-    def DriverType getDriverType() {
+    def getDriverType(self) -> DriverType:
         return DriverType.MODBUS_RTU
 
 
@@ -49,10 +49,10 @@ class ModbusRtuADU(PlcMessage,ModbusADU):
 
 
     def getAddress(self) -> c_uint8:
-        return address
+        return self.address
 
     def getPdu(self) -> ModbusPDU:
-        return pdu
+        return self.pdu
 
 
     def serializeModbusADUChild(self, writeBuffer: WriteBuffer):
@@ -64,7 +64,7 @@ class ModbusRtuADU(PlcMessage,ModbusADU):
         writeSimpleField("address", address, writeUnsignedShort(writeBuffer, 8), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
         # Simple Field (pdu)
-        writeSimpleField("pdu", pdu, new DataWriterComplexDefault<>(writeBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+        writeSimpleField("pdu", pdu, DataWriterComplexDefault<>(writeBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
         # Checksum Field (checksum) (Calculated)
         writeChecksumField("crc", (c_uint16) (modbus.readwrite.utils.StaticHelper.rtuCrcCheck(address, pdu)), writeUnsignedInt(writeBuffer, 16))
@@ -100,7 +100,7 @@ class ModbusRtuADU(PlcMessage,ModbusADU):
 
         address: c_uint8 = readSimpleField("address", readUnsignedShort(readBuffer, 8), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
-        pdu: ModbusPDU = readSimpleField("pdu", new DataReaderComplexDefault<>(() -> ModbusPDU.staticParse(readBuffer, (c_bool) (response)), readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+        pdu: ModbusPDU = readSimpleField("pdu", DataReaderComplexDefault<>(() -> ModbusPDU.staticParse(readBuffer, (c_bool) (response)), readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
         crc: c_uint16 = readChecksumField("crc", readUnsignedInt(readBuffer, 16), (c_uint16) (modbus.readwrite.utils.StaticHelper.rtuCrcCheck(address, pdu)), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
@@ -137,7 +137,7 @@ class ModbusRtuADUBuilder(ModbusADUModbusADUBuilder: address: c_uint8 pdu: Modbu
             self.response = response
 
 
-        def build(
+        def build(self,
             
                 response: c_bool
         ) -> ModbusRtuADU:

@@ -34,12 +34,12 @@ class ModbusPDUWriteFileRecordResponse(PlcMessage,ModbusPDU):
     items: []ModbusPDUWriteFileRecordResponseItem
 
     # Accessors for discriminator values.
-    def c_bool getErrorFlag() {
-        return (c_bool) false
-    def c_uint8 getFunctionFlag() {
+    def getErrorFlag(self) -> c_bool:
+        return (c_bool) False
+    def getFunctionFlag(self) -> c_uint8:
         return (c_uint8) 0x15
-    def c_bool getResponse() {
-        return (c_bool) true
+    def getResponse(self) -> c_bool:
+        return (c_bool) True
 
 
     def __post_init__(self):
@@ -48,7 +48,7 @@ class ModbusPDUWriteFileRecordResponse(PlcMessage,ModbusPDU):
 
 
     def getItems(self) -> []ModbusPDUWriteFileRecordResponseItem:
-        return items
+        return self.items
 
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
@@ -95,7 +95,7 @@ class ModbusPDUWriteFileRecordResponse(PlcMessage,ModbusPDU):
 
         byteCount: c_uint8 = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
 
-        items: []ModbusPDUWriteFileRecordResponseItem = readLengthArrayField("items", new DataReaderComplexDefault<>(() -> ModbusPDUWriteFileRecordResponseItem.staticParse(readBuffer), readBuffer), byteCount)
+        items: []ModbusPDUWriteFileRecordResponseItem = readLengthArrayField("items", DataReaderComplexDefault<>(() -> ModbusPDUWriteFileRecordResponseItem.staticParse(readBuffer), readBuffer), byteCount)
 
         readBuffer.closeContext("ModbusPDUWriteFileRecordResponse")
         # Create the instance
@@ -128,7 +128,7 @@ class ModbusPDUWriteFileRecordResponse(PlcMessage,ModbusPDU):
 class ModbusPDUWriteFileRecordResponseBuilder(ModbusPDUModbusPDUBuilder: items: []ModbusPDUWriteFileRecordResponseItemdef ModbusPDUWriteFileRecordResponseBuilder( []ModbusPDUWriteFileRecordResponseItem items ):        self.items = items
 
 
-        def build(
+        def build(self,
         ) -> ModbusPDUWriteFileRecordResponse:
         modbusPDUWriteFileRecordResponse: ModbusPDUWriteFileRecordResponse = ModbusPDUWriteFileRecordResponse(
             items

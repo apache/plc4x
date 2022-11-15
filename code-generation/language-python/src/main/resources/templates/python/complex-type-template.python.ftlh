@@ -110,7 +110,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         <#-- If the discriminator name matches that of another field, suppress the methods generation -->
         <#if !discriminatedChildType.isNonDiscriminatorField(discriminatorName)><#--&& !discriminatedChildType.isParserArgument(discriminatorName)-->
             <#assign discriminatorType = helper.getDiscriminatorTypes()[discriminatorName]>
-    def ${helper.getLanguageTypeNameForTypeReference(discriminatorType)} get${discriminatorName?cap_first}() {
+    def get${discriminatorName?cap_first}(self) -> ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}:
             <#if discriminatorValue?? && !helper.isWildcard(discriminatorValue)>
                 <#if discriminatorType.isEnumTypeReference()>
         return ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(null, discriminatorType, discriminatorValue, parserArguments)}
@@ -174,7 +174,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
 </#list>
 <#list type.propertyFields as field>
     def get${field.name?cap_first}(self) -> ${helper.getLanguageTypeNameForField(field)}:
-        return ${field.name}
+        return self.${field.name}
 
 </#list>
 <#list type.virtualFields as field>
@@ -305,7 +305,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
                         <#if optionalField.type.isEnumTypeReference()>
         writeOptionalEnumField("${optionalField.name}", "${helper.getLanguageTypeNameForField(field)}", ${optionalField.name}, ${helper.getEnumDataWriterCall(optionalField.type, optionalField.name, "value")}<#if optionalField.conditionExpression.present>, ${helper.toSerializationExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}</#if>)
                         <#elseif optionalField.type.isDataIoTypeReference()>
-        writeOptionalField("${optionalField.name}", ${optionalField.name}, new DataWriterDataIoDefault(writeBuffer, (wb, val) -> ${optionalField.type.asComplexTypeReference().orElseThrow().name}.staticSerialize(wb, val<#if optionalField.type.asComplexTypeReference().orElseThrow().params?has_content>, <#list optionalField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(optionalField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list></#if>))<#if optionalField.conditionExpression.present>, ${helper.toSerializationExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}</#if>)
+        writeOptionalField("${optionalField.name}", ${optionalField.name}, DataWriterDataIoDefault(writeBuffer, (wb, val) -> ${optionalField.type.asComplexTypeReference().orElseThrow().name}.staticSerialize(wb, val<#if optionalField.type.asComplexTypeReference().orElseThrow().params?has_content>, <#list optionalField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(optionalField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list></#if>))<#if optionalField.conditionExpression.present>, ${helper.toSerializationExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}</#if>)
                         <#else>
         writeOptionalField("${optionalField.name}", ${optionalField.name}, ${helper.getDataWriterCall(typedField.type, optionalField.name)}<#if optionalField.conditionExpression.present>, ${helper.toSerializationExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}</#if>)
                         </#if>
@@ -333,7 +333,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
                         <#if typedField.type.isEnumTypeReference()>
         writeSimpleEnumField("${simpleField.name}", "${helper.getLanguageTypeNameForField(field)}", ${simpleField.name}, ${helper.getEnumDataWriterCall(simpleField.type, simpleField.name, "value")})
                         <#elseif simpleField.type.isDataIoTypeReference()>
-        writeSimpleField("${simpleField.name}", ${simpleField.name}, new DataWriterDataIoDefault(writeBuffer, (wb, val) -> ${simpleField.type.asComplexTypeReference().orElseThrow().name}.staticSerialize(wb, val<#if simpleField.type.asComplexTypeReference().orElseThrow().params?has_content>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(simpleField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list></#if>)))
+        writeSimpleField("${simpleField.name}", ${simpleField.name}, DataWriterDataIoDefault(writeBuffer, (wb, val) -> ${simpleField.type.asComplexTypeReference().orElseThrow().name}.staticSerialize(wb, val<#if simpleField.type.asComplexTypeReference().orElseThrow().params?has_content>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(simpleField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list></#if>)))
                         <#else>
         writeSimpleField("${simpleField.name}", ${simpleField.name}, ${helper.getDataWriterCall(typedField.type, simpleField.name)}${helper.getFieldOptions(typedField, parserArguments)})</#if>
                         <#break>
@@ -699,10 +699,10 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         builder: ${type.name}Builder = None
                 <#list switchField.cases as case>
                     <#if case.discriminatorValueTerms?has_content>
-        if <@compress single_line=true><#sep>
+        if <@compress single_line=true>
                             <#list case.discriminatorValueTerms as discriminatorValueTerm>
                                 <#if helper.isWildcard(discriminatorValueTerm)>
-                                    true
+                                    True
                                 <#else>
                                     <#assign discriminatorExpression=switchField.discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
                                     <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.discriminatorName]>
@@ -711,10 +711,10 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
                                     <#if discriminatorType.isEnumTypeReference()>
                                         ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(switchField, discriminatorType, discriminatorValueTerm, parserArguments)}
                                     <#else>
-                                        (${helper.getLanguageTypeNameForTypeReference(discriminatorType, true)}) ${helper.toParseExpression(switchField, discriminatorType, discriminatorValueTerm, parserArguments)}
+                                        ${helper.getLanguageTypeNameForTypeReference(discriminatorType, true)}(${helper.toParseExpression(switchField, discriminatorType, discriminatorValueTerm, parserArguments)})
                                     </#if>
                                 </#if>
-                                <#sep> and </#sep>
+                                <#sep>) and </#sep>
                             </#list>
                             ):</@compress>
                         </#if>
@@ -855,7 +855,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
 
     <#if type.isDiscriminatedParentTypeDefinition()>
 class ${type.name}Builder:
-    <@compress single_line=true>def build(
+    <@compress single_line=true>def build(self,
 <#list type.propertyFields as field>
     ${field.name}: ${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep>
 </#list>
@@ -917,7 +917,7 @@ class ${type.name}Builder(${type.parentType.orElseThrow().name}${type.parentType
     </#list>
 
 
-        def build(
+        def build(self,
         <#list type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields as field>
             ${field.name}: ${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep>
         </#list>

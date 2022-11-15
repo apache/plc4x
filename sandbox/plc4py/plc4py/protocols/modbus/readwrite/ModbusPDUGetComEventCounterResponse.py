@@ -35,12 +35,12 @@ class ModbusPDUGetComEventCounterResponse(PlcMessage,ModbusPDU):
     eventCount: c_uint16
 
     # Accessors for discriminator values.
-    def c_bool getErrorFlag() {
-        return (c_bool) false
-    def c_uint8 getFunctionFlag() {
+    def getErrorFlag(self) -> c_bool:
+        return (c_bool) False
+    def getFunctionFlag(self) -> c_uint8:
         return (c_uint8) 0x0B
-    def c_bool getResponse() {
-        return (c_bool) true
+    def getResponse(self) -> c_bool:
+        return (c_bool) True
 
 
     def __post_init__(self):
@@ -49,10 +49,10 @@ class ModbusPDUGetComEventCounterResponse(PlcMessage,ModbusPDU):
 
 
     def getStatus(self) -> c_uint16:
-        return status
+        return self.status
 
     def getEventCount(self) -> c_uint16:
-        return eventCount
+        return self.eventCount
 
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
@@ -128,7 +128,7 @@ class ModbusPDUGetComEventCounterResponseBuilder(ModbusPDUModbusPDUBuilder: stat
         self.eventCount = eventCount
 
 
-        def build(
+        def build(self,
         ) -> ModbusPDUGetComEventCounterResponse:
         modbusPDUGetComEventCounterResponse: ModbusPDUGetComEventCounterResponse = ModbusPDUGetComEventCounterResponse(
             status, 

@@ -36,12 +36,12 @@ class ModbusPDUReadDeviceIdentificationRequest(PlcMessage,ModbusPDU):
     MEITYPE: c_uint8 = 0x0E
 
     # Accessors for discriminator values.
-    def c_bool getErrorFlag() {
-        return (c_bool) false
-    def c_uint8 getFunctionFlag() {
+    def getErrorFlag(self) -> c_bool:
+        return (c_bool) False
+    def getFunctionFlag(self) -> c_uint8:
         return (c_uint8) 0x2B
-    def c_bool getResponse() {
-        return (c_bool) false
+    def getResponse(self) -> c_bool:
+        return (c_bool) False
 
 
     def __post_init__(self):
@@ -50,10 +50,10 @@ class ModbusPDUReadDeviceIdentificationRequest(PlcMessage,ModbusPDU):
 
 
     def getLevel(self) -> ModbusDeviceInformationLevel:
-        return level
+        return self.level
 
     def getObjectId(self) -> c_uint8:
-        return objectId
+        return self.objectId
 
     def getMeiType(self) -> c_uint8:
         return MEITYPE
@@ -68,7 +68,7 @@ class ModbusPDUReadDeviceIdentificationRequest(PlcMessage,ModbusPDU):
                         writeConstField("meiType", MEITYPE, writeUnsignedShort(writeBuffer, 8))
 
         # Simple Field (level)
-        writeSimpleEnumField("level", "ModbusDeviceInformationLevel", level, new DataWriterEnumDefault<>(ModbusDeviceInformationLevel::getValue, ModbusDeviceInformationLevel::name, writeUnsignedShort(writeBuffer, 8)))
+        writeSimpleEnumField("level", "ModbusDeviceInformationLevel", level, DataWriterEnumDefault<>(ModbusDeviceInformationLevel::getValue, ModbusDeviceInformationLevel::name, writeUnsignedShort(writeBuffer, 8)))
 
 
         # Simple Field (objectId)
@@ -105,7 +105,7 @@ class ModbusPDUReadDeviceIdentificationRequest(PlcMessage,ModbusPDU):
 
         meiType: c_uint8 = readConstField("meiType", readUnsignedShort(readBuffer, 8), ModbusPDUReadDeviceIdentificationRequest.MEITYPE)
 
-        level: ModbusDeviceInformationLevel = readEnumField("level", "ModbusDeviceInformationLevel", new DataReaderEnumDefault<>(ModbusDeviceInformationLevel::enumForValue, readUnsignedShort(readBuffer, 8)))
+        level: ModbusDeviceInformationLevel = readEnumField("level", "ModbusDeviceInformationLevel", DataReaderEnumDefault<>(ModbusDeviceInformationLevel::enumForValue, readUnsignedShort(readBuffer, 8)))
 
         objectId: c_uint8 = readSimpleField("objectId", readUnsignedShort(readBuffer, 8))
 
@@ -141,7 +141,7 @@ class ModbusPDUReadDeviceIdentificationRequestBuilder(ModbusPDUModbusPDUBuilder:
         self.objectId = objectId
 
 
-        def build(
+        def build(self,
         ) -> ModbusPDUReadDeviceIdentificationRequest:
         modbusPDUReadDeviceIdentificationRequest: ModbusPDUReadDeviceIdentificationRequest = ModbusPDUReadDeviceIdentificationRequest(
             level, 

@@ -34,12 +34,12 @@ class ModbusPDUReadFileRecordResponse(PlcMessage,ModbusPDU):
     items: []ModbusPDUReadFileRecordResponseItem
 
     # Accessors for discriminator values.
-    def c_bool getErrorFlag() {
-        return (c_bool) false
-    def c_uint8 getFunctionFlag() {
+    def getErrorFlag(self) -> c_bool:
+        return (c_bool) False
+    def getFunctionFlag(self) -> c_uint8:
         return (c_uint8) 0x14
-    def c_bool getResponse() {
-        return (c_bool) true
+    def getResponse(self) -> c_bool:
+        return (c_bool) True
 
 
     def __post_init__(self):
@@ -48,7 +48,7 @@ class ModbusPDUReadFileRecordResponse(PlcMessage,ModbusPDU):
 
 
     def getItems(self) -> []ModbusPDUReadFileRecordResponseItem:
-        return items
+        return self.items
 
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
@@ -95,7 +95,7 @@ class ModbusPDUReadFileRecordResponse(PlcMessage,ModbusPDU):
 
         byteCount: c_uint8 = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
 
-        items: []ModbusPDUReadFileRecordResponseItem = readLengthArrayField("items", new DataReaderComplexDefault<>(() -> ModbusPDUReadFileRecordResponseItem.staticParse(readBuffer), readBuffer), byteCount)
+        items: []ModbusPDUReadFileRecordResponseItem = readLengthArrayField("items", DataReaderComplexDefault<>(() -> ModbusPDUReadFileRecordResponseItem.staticParse(readBuffer), readBuffer), byteCount)
 
         readBuffer.closeContext("ModbusPDUReadFileRecordResponse")
         # Create the instance
@@ -128,7 +128,7 @@ class ModbusPDUReadFileRecordResponse(PlcMessage,ModbusPDU):
 class ModbusPDUReadFileRecordResponseBuilder(ModbusPDUModbusPDUBuilder: items: []ModbusPDUReadFileRecordResponseItemdef ModbusPDUReadFileRecordResponseBuilder( []ModbusPDUReadFileRecordResponseItem items ):        self.items = items
 
 
-        def build(
+        def build(self,
         ) -> ModbusPDUReadFileRecordResponse:
         modbusPDUReadFileRecordResponse: ModbusPDUReadFileRecordResponse = ModbusPDUReadFileRecordResponse(
             items

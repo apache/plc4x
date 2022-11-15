@@ -34,11 +34,11 @@ class ModbusPDUError(PlcMessage,ModbusPDU):
     exceptionCode: ModbusErrorCode
 
     # Accessors for discriminator values.
-    def c_bool getErrorFlag() {
-        return (c_bool) true
-    def c_uint8 getFunctionFlag() {
+    def getErrorFlag(self) -> c_bool:
+        return (c_bool) True
+    def getFunctionFlag(self) -> c_uint8:
         return 0
-    def c_bool getResponse() {
+    def getResponse(self) -> c_bool:
         return False
 
 
@@ -48,7 +48,7 @@ class ModbusPDUError(PlcMessage,ModbusPDU):
 
 
     def getExceptionCode(self) -> ModbusErrorCode:
-        return exceptionCode
+        return self.exceptionCode
 
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
@@ -57,7 +57,7 @@ class ModbusPDUError(PlcMessage,ModbusPDU):
         writeBuffer.pushContext("ModbusPDUError")
 
         # Simple Field (exceptionCode)
-        writeSimpleEnumField("exceptionCode", "ModbusErrorCode", exceptionCode, new DataWriterEnumDefault<>(ModbusErrorCode::getValue, ModbusErrorCode::name, writeUnsignedShort(writeBuffer, 8)))
+        writeSimpleEnumField("exceptionCode", "ModbusErrorCode", exceptionCode, DataWriterEnumDefault<>(ModbusErrorCode::getValue, ModbusErrorCode::name, writeUnsignedShort(writeBuffer, 8)))
 
 
         writeBuffer.popContext("ModbusPDUError")
@@ -83,7 +83,7 @@ class ModbusPDUError(PlcMessage,ModbusPDU):
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-        exceptionCode: ModbusErrorCode = readEnumField("exceptionCode", "ModbusErrorCode", new DataReaderEnumDefault<>(ModbusErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)))
+        exceptionCode: ModbusErrorCode = readEnumField("exceptionCode", "ModbusErrorCode", DataReaderEnumDefault<>(ModbusErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)))
 
         readBuffer.closeContext("ModbusPDUError")
         # Create the instance
@@ -116,7 +116,7 @@ class ModbusPDUError(PlcMessage,ModbusPDU):
 class ModbusPDUErrorBuilder(ModbusPDUModbusPDUBuilder: exceptionCode: ModbusErrorCodedef ModbusPDUErrorBuilder( ModbusErrorCode exceptionCode ):        self.exceptionCode = exceptionCode
 
 
-        def build(
+        def build(self,
         ) -> ModbusPDUError:
         modbusPDUError: ModbusPDUError = ModbusPDUError(
             exceptionCode

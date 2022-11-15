@@ -41,7 +41,7 @@ class ModbusTcpADU(PlcMessage,ModbusADU):
     PROTOCOLIDENTIFIER: c_uint16 = 0x0000
 
     # Accessors for discriminator values.
-    def DriverType getDriverType() {
+    def getDriverType(self) -> DriverType:
         return DriverType.MODBUS_TCP
 
 
@@ -51,13 +51,13 @@ class ModbusTcpADU(PlcMessage,ModbusADU):
 
 
     def getTransactionIdentifier(self) -> c_uint16:
-        return transactionIdentifier
+        return self.transactionIdentifier
 
     def getUnitIdentifier(self) -> c_uint8:
-        return unitIdentifier
+        return self.unitIdentifier
 
     def getPdu(self) -> ModbusPDU:
-        return pdu
+        return self.pdu
 
     def getProtocolIdentifier(self) -> c_uint16:
         return PROTOCOLIDENTIFIER
@@ -82,7 +82,7 @@ class ModbusTcpADU(PlcMessage,ModbusADU):
         writeSimpleField("unitIdentifier", unitIdentifier, writeUnsignedShort(writeBuffer, 8), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
         # Simple Field (pdu)
-        writeSimpleField("pdu", pdu, new DataWriterComplexDefault<>(writeBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+        writeSimpleField("pdu", pdu, DataWriterComplexDefault<>(writeBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
         writeBuffer.popContext("ModbusTcpADU")
 
@@ -127,7 +127,7 @@ class ModbusTcpADU(PlcMessage,ModbusADU):
 
         unitIdentifier: c_uint8 = readSimpleField("unitIdentifier", readUnsignedShort(readBuffer, 8), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
-        pdu: ModbusPDU = readSimpleField("pdu", new DataReaderComplexDefault<>(() -> ModbusPDU.staticParse(readBuffer, (c_bool) (response)), readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+        pdu: ModbusPDU = readSimpleField("pdu", DataReaderComplexDefault<>(() -> ModbusPDU.staticParse(readBuffer, (c_bool) (response)), readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
         readBuffer.closeContext("ModbusTcpADU")
         # Create the instance
@@ -163,7 +163,7 @@ class ModbusTcpADUBuilder(ModbusADUModbusADUBuilder: transactionIdentifier: c_ui
             self.response = response
 
 
-        def build(
+        def build(self,
             
                 response: c_bool
         ) -> ModbusTcpADU:

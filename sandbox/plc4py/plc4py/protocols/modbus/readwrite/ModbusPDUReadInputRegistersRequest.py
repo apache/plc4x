@@ -35,12 +35,12 @@ class ModbusPDUReadInputRegistersRequest(PlcMessage,ModbusPDU):
     quantity: c_uint16
 
     # Accessors for discriminator values.
-    def c_bool getErrorFlag() {
-        return (c_bool) false
-    def c_uint8 getFunctionFlag() {
+    def getErrorFlag(self) -> c_bool:
+        return (c_bool) False
+    def getFunctionFlag(self) -> c_uint8:
         return (c_uint8) 0x04
-    def c_bool getResponse() {
-        return (c_bool) false
+    def getResponse(self) -> c_bool:
+        return (c_bool) False
 
 
     def __post_init__(self):
@@ -49,10 +49,10 @@ class ModbusPDUReadInputRegistersRequest(PlcMessage,ModbusPDU):
 
 
     def getStartingAddress(self) -> c_uint16:
-        return startingAddress
+        return self.startingAddress
 
     def getQuantity(self) -> c_uint16:
-        return quantity
+        return self.quantity
 
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
@@ -128,7 +128,7 @@ class ModbusPDUReadInputRegistersRequestBuilder(ModbusPDUModbusPDUBuilder: start
         self.quantity = quantity
 
 
-        def build(
+        def build(self,
         ) -> ModbusPDUReadInputRegistersRequest:
         modbusPDUReadInputRegistersRequest: ModbusPDUReadInputRegistersRequest = ModbusPDUReadInputRegistersRequest(
             startingAddress, 

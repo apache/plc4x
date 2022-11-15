@@ -41,10 +41,10 @@ class ModbusPDUReadFileRecordResponseItem(PlcMessage):
 
 
     def getReferenceType(self) -> c_uint8:
-        return referenceType
+        return self.referenceType
 
     def getData(self) -> []c_byte:
-        return data
+        return self.data
 
 
     def serialize(self, writeBuffer: WriteBuffer):

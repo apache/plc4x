@@ -32,12 +32,12 @@ import math
 class ModbusPDUReportServerIdRequest(PlcMessage,ModbusPDU):
 
     # Accessors for discriminator values.
-    def c_bool getErrorFlag() {
-        return (c_bool) false
-    def c_uint8 getFunctionFlag() {
+    def getErrorFlag(self) -> c_bool:
+        return (c_bool) False
+    def getFunctionFlag(self) -> c_uint8:
         return (c_uint8) 0x11
-    def c_bool getResponse() {
-        return (c_bool) false
+    def getResponse(self) -> c_bool:
+        return (c_bool) False
 
 
     def __post_init__(self):
@@ -101,7 +101,7 @@ class ModbusPDUReportServerIdRequest(PlcMessage,ModbusPDU):
 
 class ModbusPDUReportServerIdRequestBuilder(ModbusPDUModbusPDUBuilder:def ModbusPDUReportServerIdRequestBuilder( ):
 
-        def build(
+        def build(self,
         ) -> ModbusPDUReportServerIdRequest:
         modbusPDUReportServerIdRequest: ModbusPDUReportServerIdRequest = ModbusPDUReportServerIdRequest(
 )

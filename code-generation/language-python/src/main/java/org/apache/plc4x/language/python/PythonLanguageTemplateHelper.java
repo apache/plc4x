@@ -393,7 +393,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         if (typeReference.isEnumTypeReference()) {
             final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
             final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
-            return "new DataReaderEnumDefault<>(" + languageTypeName + "::" + resolverMethod + ", " + getDataReaderCall(enumBaseTypeReference) + ")";
+            return "DataReaderEnumDefault<>(" + languageTypeName + "::" + resolverMethod + ", " + getDataReaderCall(enumBaseTypeReference) + ")";
         } else if (typeReference.isArrayTypeReference()) {
             final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
             return getDataReaderCall(arrayTypeReference.getElementTypeReference(), resolverMethod);
@@ -424,7 +424,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     .append(toParseExpression(null, argumentType, paramTerm, null))
                     .append(")");
             }
-            return "new DataReaderComplexDefault<>(() -> " + parserCallString + ".staticParse(readBuffer" + paramsString + "), readBuffer)";
+            return "DataReaderComplexDefault<>(() -> " + parserCallString + ".staticParse(readBuffer" + paramsString + "), readBuffer)";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }
@@ -477,7 +477,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
             return getDataWriterCall(arrayTypeReference.getElementTypeReference(), fieldName);
         } else if (typeReference.isComplexTypeReference()) {
-            return "new DataWriterComplexDefault<>(writeBuffer)";
+            return "DataWriterComplexDefault<>(writeBuffer)";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }
@@ -494,7 +494,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         } else {
             outputTypeReference = getEnumFieldSimpleTypeReference(typeReference.asNonSimpleTypeReference().orElseThrow(), attributeName);
         }
-        return "new DataWriterEnumDefault<>(" + languageTypeName + "::get" + StringUtils.capitalize(attributeName) + ", " + languageTypeName + "::name, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
+        return "DataWriterEnumDefault<>(" + languageTypeName + "::get" + StringUtils.capitalize(attributeName) + ", " + languageTypeName + "::name, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
     }
 
     public String getDataWriterCall(SimpleTypeReference simpleTypeReference) {
@@ -670,7 +670,8 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             return tracer + "null";
         } else if (literal instanceof BooleanLiteral) {
             tracer = tracer.dive("boolean literal instanceOf");
-            return tracer + Boolean.toString(((BooleanLiteral) literal).getValue());
+            String bool = Boolean.toString(((BooleanLiteral) literal).getValue());
+            return tracer + bool.substring(0,1).toUpperCase() + bool.substring(1);
         } else if (literal instanceof NumericLiteral) {
             tracer = tracer.dive("numeric literal instanceOf");
             final String numberString = ((NumericLiteral) literal).getNumber().toString();

@@ -34,12 +34,12 @@ class ModbusPDUReadWriteMultipleHoldingRegistersResponse(PlcMessage,ModbusPDU):
     value: []c_byte
 
     # Accessors for discriminator values.
-    def c_bool getErrorFlag() {
-        return (c_bool) false
-    def c_uint8 getFunctionFlag() {
+    def getErrorFlag(self) -> c_bool:
+        return (c_bool) False
+    def getFunctionFlag(self) -> c_uint8:
         return (c_uint8) 0x17
-    def c_bool getResponse() {
-        return (c_bool) true
+    def getResponse(self) -> c_bool:
+        return (c_bool) True
 
 
     def __post_init__(self):
@@ -48,7 +48,7 @@ class ModbusPDUReadWriteMultipleHoldingRegistersResponse(PlcMessage,ModbusPDU):
 
 
     def getValue(self) -> []c_byte:
-        return value
+        return self.value
 
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
@@ -126,7 +126,7 @@ class ModbusPDUReadWriteMultipleHoldingRegistersResponse(PlcMessage,ModbusPDU):
 class ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder(ModbusPDUModbusPDUBuilder: value: []c_bytedef ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder( []c_byte value ):        self.value = value
 
 
-        def build(
+        def build(self,
         ) -> ModbusPDUReadWriteMultipleHoldingRegistersResponse:
         modbusPDUReadWriteMultipleHoldingRegistersResponse: ModbusPDUReadWriteMultipleHoldingRegistersResponse = ModbusPDUReadWriteMultipleHoldingRegistersResponse(
             value
