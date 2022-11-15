@@ -22,26 +22,29 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 
+from ctypes import c_bool
+from ctypes import c_uint16
+from ctypes import c_uint8
+from plc4py.api.messages.PlcMessage import PlcMessage
+import math
 
+    
 @dataclass
 class ModbusPDUGetComEventCounterResponse(PlcMessage,ModbusPDU):
-            status: c_uint16
-            eventCount: c_uint16
+    status: c_uint16
+    eventCount: c_uint16
 
     # Accessors for discriminator values.
     def c_bool getErrorFlag() {
         return (c_bool) false
-    }
     def c_uint8 getFunctionFlag() {
         return (c_uint8) 0x0B
-    }
     def c_bool getResponse() {
         return (c_bool) true
-    }
 
 
     def __post_init__(self):
-super().__init__( )
+        super().__init__( )
 
 
 
@@ -54,20 +57,20 @@ super().__init__( )
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
-            startPos: int = positionAware.getPos()
-            writeBuffer.pushContext("ModbusPDUGetComEventCounterResponse")
+        startPos: int = positionAware.getPos()
+        writeBuffer.pushContext("ModbusPDUGetComEventCounterResponse")
 
-                        # Simple Field (status)
-                            writeSimpleField("status", status, writeUnsignedInt(writeBuffer, 16))
+        # Simple Field (status)
+        writeSimpleField("status", status, writeUnsignedInt(writeBuffer, 16))
 
-                        # Simple Field (eventCount)
-                            writeSimpleField("eventCount", eventCount, writeUnsignedInt(writeBuffer, 16))
+        # Simple Field (eventCount)
+        writeSimpleField("eventCount", eventCount, writeUnsignedInt(writeBuffer, 16))
 
-            writeBuffer.popContext("ModbusPDUGetComEventCounterResponse")
+        writeBuffer.popContext("ModbusPDUGetComEventCounterResponse")
 
 
     def getLengthInBytes(self) -> int:
-        return int(math.ceil(float(getLengthInBits() / 8.0)))
+        return int(math.ceil(float(self.getLengthInBits() / 8.0)))
 
     def getLengthInBits(self) -> int:
         lengthInBits: int = super().getLengthInBits()
@@ -82,54 +85,43 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUGetComEventCounterResponseBuilder:
+    @staticmethod
+    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUGetComEventCounterResponseBuilder:
         readBuffer.pullContext("ModbusPDUGetComEventCounterResponse")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                status: c_uint16 = readSimpleField("status", readUnsignedInt(readBuffer, 16))
+        status: c_uint16 = readSimpleField("status", readUnsignedInt(readBuffer, 16))
 
-                eventCount: c_uint16 = readSimpleField("eventCount", readUnsignedInt(readBuffer, 16))
+        eventCount: c_uint16 = readSimpleField("eventCount", readUnsignedInt(readBuffer, 16))
 
-    readBuffer.closeContext("ModbusPDUGetComEventCounterResponse")
-    # Create the instance
-        return ModbusPDUGetComEventCounterResponseBuilder(
-            status, 
-            eventCount
-        
-        )
+        readBuffer.closeContext("ModbusPDUGetComEventCounterResponse")
+        # Create the instance
+        return ModbusPDUGetComEventCounterResponseBuilder(status, eventCount )
 
 
     def equals(self, o: object) -> bool:
-        if this == o:
+        if self == o:
             return True
 
-        if not (instanceof(o, ModbusPDUGetComEventCounterResponse):
+        if not isinstance(o, ModbusPDUGetComEventCounterResponse):
             return False
 
         that: ModbusPDUGetComEventCounterResponse = ModbusPDUGetComEventCounterResponse(o)
-        return
-            (getStatus() == that.getStatus()) &&
-            (getEventCount() == that.getEventCount()) &&
-            super().equals(that) &&
-            True
+        return (getStatus() == that.getStatus()) && (getEventCount() == that.getEventCount()) && super().equals(that) && True
 
     def hashCode(self) -> int:
-        return Objects.hash(
-            super().hashCode(),
-            getStatus(),
-            getEventCount()
-        )
+        return hash(super().hashCode(), getStatus(), getEventCount() )
 
-    def toString(self) -> str:
-        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(true, true)
+    def __str__(self) -> str:
+        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
         try:
-            writeBufferBoxBased.writeSerializable(this)
-        except SerializationException:
+            writeBufferBoxBased.writeSerializable(self)
+        except SerializationException as e:
             raise RuntimeException(e)
 
-        return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+        return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
 class ModbusPDUGetComEventCounterResponseBuilder(ModbusPDUModbusPDUBuilder: status: c_uint16 eventCount: c_uint16def ModbusPDUGetComEventCounterResponseBuilder( c_uint16 status, c_uint16 eventCount ):        self.status = status
@@ -143,5 +135,6 @@ class ModbusPDUGetComEventCounterResponseBuilder(ModbusPDUModbusPDUBuilder: stat
             eventCount
 )
         return modbusPDUGetComEventCounterResponse
+
 
 

@@ -22,22 +22,29 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 
+from ctypes import c_bool
+from ctypes import c_uint16
+from ctypes import c_uint8
+from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.protocols.modbus.readwrite.DriverType import DriverType
+from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
+import math
 
+    
 @dataclass
 class ModbusRtuADU(PlcMessage,ModbusADU):
-            address: c_uint8
-            pdu: ModbusPDU
-        # Arguments.
-            response: c_bool
+    address: c_uint8
+    pdu: ModbusPDU
+    # Arguments.
+    response: c_bool
 
     # Accessors for discriminator values.
     def DriverType getDriverType() {
         return DriverType.MODBUS_RTU
-    }
 
 
     def __post_init__(self):
-super().__init__( self.response )
+        super().__init__( self.response )
 
 
 
@@ -50,23 +57,23 @@ super().__init__( self.response )
 
     def serializeModbusADUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
-            startPos: int = positionAware.getPos()
-            writeBuffer.pushContext("ModbusRtuADU")
+        startPos: int = positionAware.getPos()
+        writeBuffer.pushContext("ModbusRtuADU")
 
-                        # Simple Field (address)
-                            writeSimpleField("address", address, writeUnsignedShort(writeBuffer, 8), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+        # Simple Field (address)
+        writeSimpleField("address", address, writeUnsignedShort(writeBuffer, 8), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
-                        # Simple Field (pdu)
-                            writeSimpleField("pdu", pdu, new DataWriterComplexDefault<>(writeBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+        # Simple Field (pdu)
+        writeSimpleField("pdu", pdu, new DataWriterComplexDefault<>(writeBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
-                        # Checksum Field (checksum) (Calculated)
-                        writeChecksumField("crc", (c_uint16) (modbus.readwrite.utils.StaticHelper.rtuCrcCheck(address, pdu)), writeUnsignedInt(writeBuffer, 16))
+        # Checksum Field (checksum) (Calculated)
+        writeChecksumField("crc", (c_uint16) (modbus.readwrite.utils.StaticHelper.rtuCrcCheck(address, pdu)), writeUnsignedInt(writeBuffer, 16))
 
-            writeBuffer.popContext("ModbusRtuADU")
+        writeBuffer.popContext("ModbusRtuADU")
 
 
     def getLengthInBytes(self) -> int:
-        return int(math.ceil(float(getLengthInBits() / 8.0)))
+        return int(math.ceil(float(self.getLengthInBits() / 8.0)))
 
     def getLengthInBits(self) -> int:
         lengthInBits: int = super().getLengthInBits()
@@ -84,58 +91,45 @@ super().__init__( self.response )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, DriverType driverType, c_bool response) -> ModbusRtuADUBuilder:
+    @staticmethod
+    def staticParseBuilder(readBuffer: ReadBuffer, driverType: DriverType, response: c_bool) -> ModbusRtuADUBuilder:
         readBuffer.pullContext("ModbusRtuADU")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                address: c_uint8 = readSimpleField("address", readUnsignedShort(readBuffer, 8), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+        address: c_uint8 = readSimpleField("address", readUnsignedShort(readBuffer, 8), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
-                pdu: ModbusPDU = readSimpleField("pdu", new DataReaderComplexDefault<>(() -> ModbusPDU.staticParse(readBuffer, (c_bool) (response)), readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+        pdu: ModbusPDU = readSimpleField("pdu", new DataReaderComplexDefault<>(() -> ModbusPDU.staticParse(readBuffer, (c_bool) (response)), readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
-                crc: c_uint16 = readChecksumField("crc", readUnsignedInt(readBuffer, 16), (c_uint16) (modbus.readwrite.utils.StaticHelper.rtuCrcCheck(address, pdu)), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+        crc: c_uint16 = readChecksumField("crc", readUnsignedInt(readBuffer, 16), (c_uint16) (modbus.readwrite.utils.StaticHelper.rtuCrcCheck(address, pdu)), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
-    readBuffer.closeContext("ModbusRtuADU")
-    # Create the instance
-        return ModbusRtuADUBuilder(
-            address, 
-            pdu
-            , 
-            response
-        
-        )
+        readBuffer.closeContext("ModbusRtuADU")
+        # Create the instance
+        return ModbusRtuADUBuilder(address, pdu , response )
 
 
     def equals(self, o: object) -> bool:
-        if this == o:
+        if self == o:
             return True
 
-        if not (instanceof(o, ModbusRtuADU):
+        if not isinstance(o, ModbusRtuADU):
             return False
 
         that: ModbusRtuADU = ModbusRtuADU(o)
-        return
-            (getAddress() == that.getAddress()) &&
-            (getPdu() == that.getPdu()) &&
-            super().equals(that) &&
-            True
+        return (getAddress() == that.getAddress()) && (getPdu() == that.getPdu()) && super().equals(that) && True
 
     def hashCode(self) -> int:
-        return Objects.hash(
-            super().hashCode(),
-            getAddress(),
-            getPdu()
-        )
+        return hash(super().hashCode(), getAddress(), getPdu() )
 
-    def toString(self) -> str:
-        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(true, true)
+    def __str__(self) -> str:
+        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
         try:
-            writeBufferBoxBased.writeSerializable(this)
-        except SerializationException:
+            writeBufferBoxBased.writeSerializable(self)
+        except SerializationException as e:
             raise RuntimeException(e)
 
-        return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+        return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
 class ModbusRtuADUBuilder(ModbusADUModbusADUBuilder: address: c_uint8 pdu: ModbusPDU response: c_booldef ModbusRtuADUBuilder( c_uint8 address, ModbusPDU pdu , c_bool response ):        self.address = address
@@ -145,7 +139,7 @@ class ModbusRtuADUBuilder(ModbusADUModbusADUBuilder: address: c_uint8 pdu: Modbu
 
         def build(
             
-                c_bool response
+                response: c_bool
         ) -> ModbusRtuADU:
         modbusRtuADU: ModbusRtuADU = ModbusRtuADU(
             address, 
@@ -154,5 +148,6 @@ class ModbusRtuADUBuilder(ModbusADUModbusADUBuilder: address: c_uint8 pdu: Modbu
                 response
         )
         return modbusRtuADU
+
 
 

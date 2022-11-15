@@ -37,11 +37,19 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.function.Function;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PythonLanguageTemplateHelper.class);
+
     private final Map<String, String> options;
+
+    public SortedSet<String> requiredImports = new TreeSet<>();
+
+    public SortedSet<String> requiredImportsForDataIo = new TreeSet<>();
 
     public PythonLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
                                       Map<String, String> options) {
@@ -72,6 +80,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 ComplexTypeReference complexTypeReference = propertyField.getType().asComplexTypeReference().orElseThrow(IllegalStateException::new);
                 final TypeDefinition typeDefinition = getTypeDefinitions().get(complexTypeReference.getName());
                 if (typeDefinition instanceof DataIoTypeDefinition) {
+                    emitRequiredImport(complexTypeReference.getName());
                     return "PlcValue";
                 }
             }
@@ -103,54 +112,70 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             return "[]" + getLanguageTypeNameForTypeReference(elementTypeReference);
         }
         if (typeReference.isNonSimpleTypeReference()) {
+            emitRequiredImport("from plc4py.protocols." + protocolName + "." + flavorName.replace("-", "") + "." + typeReference.asNonSimpleTypeReference().orElseThrow().getName() + " import " + typeReference.asNonSimpleTypeReference().orElseThrow().getName());
             return typeReference.asNonSimpleTypeReference().orElseThrow().getName();
         }
         SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow();
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
+                emitRequiredImport("from ctypes import c_bool");
                 return "c_bool";
             case BYTE:
+                emitRequiredImport("from ctypes import c_byte");
                 return "c_byte";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = simpleTypeReference.asIntegerTypeReference().orElseThrow();
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
+                    emitRequiredImport("from ctypes import c_uint8");
                     return "c_uint8";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
+                    emitRequiredImport("from ctypes import c_uint16");
                     return "c_uint16";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
+                    emitRequiredImport("from ctypes import c_uint32");
                     return "c_uint32";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
+                    emitRequiredImport("from ctypes import c_uint64");
                     return "c_uint64";
                 }
+                emitRequiredImport("from ctypes import c_longlong");
                 return "c_longlong";
             case INT:
                 IntegerTypeReference integerTypeReference = simpleTypeReference.asIntegerTypeReference().orElseThrow();
                 if (integerTypeReference.getSizeInBits() <= 8) {
+                    emitRequiredImport("from ctypes import c_int8");
                     return "c_int8";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
+                    emitRequiredImport("from ctypes import c_int16");
                     return "c_int16";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
+                    emitRequiredImport("from ctypes import c_int32");
                     return "c_int32";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
+                    emitRequiredImport("from ctypes import c_int64");
                     return "c_int64";
                 }
+                emitRequiredImport("from ctypes import c_longlong");
                 return "c_longlong";
             case FLOAT:
             case UFLOAT:
                 FloatTypeReference floatTypeReference = simpleTypeReference.asFloatTypeReference().orElseThrow();
                 int sizeInBits = floatTypeReference.getSizeInBits();
                 if (sizeInBits <= 32) {
+                    emitRequiredImport("from ctypes import c_float");
                     return "c_float";
                 }
                 if (sizeInBits <= 64) {
+                    emitRequiredImport("from ctypes import c_double");
                     return "c_double";
                 }
+                emitRequiredImport("from ctypes import c_longdouble");
                 return "c_longdouble";
             case STRING:
             case VSTRING:
@@ -1250,6 +1275,34 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
 
     public boolean needsLongMarker(Optional<SimpleTypeReference> baseTypeReference) {
         return baseTypeReference.isPresent() && baseTypeReference.get().isIntegerTypeReference() && baseTypeReference.get().asIntegerTypeReference().orElseThrow().getSizeInBits() >= 32;
+    }
+
+    public void emitRequiredImport(String requiredImport) {
+        LOGGER.debug("emitting import '\"{}\"'", requiredImport);
+        requiredImports.add(requiredImport);
+    }
+
+    public void emitRequiredImport(String alias, String requiredImport) {
+        LOGGER.debug("emitting import '{} \"{}'\"", alias, requiredImport);
+        requiredImports.add(alias + ' ' + '"' + requiredImport + '"');
+    }
+
+    public Set<String> getRequiredImports() {
+        return requiredImports;
+    }
+
+    public void emitDataIoRequiredImport(String requiredImport) {
+        LOGGER.debug("emitting io import '\"{}\"'", requiredImport);
+        requiredImportsForDataIo.add(requiredImport);
+    }
+
+    public void emitDataIoRequiredImport(String alias, String requiredImport) {
+        LOGGER.debug("emitting data io import '{} \"{}'\"", alias, requiredImport);
+        requiredImportsForDataIo.add(alias + ' ' + '"' + requiredImport + '"');
+    }
+
+    public Set<String> getRequiredImportsForDataIo() {
+        return requiredImportsForDataIo;
     }
 
 }

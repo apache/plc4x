@@ -22,16 +22,21 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 
+from ctypes import c_byte
+from ctypes import c_uint8
+from plc4py.api.messages.PlcMessage import PlcMessage
+import math
 
+    
 @dataclass
 class ModbusDeviceInformationObject(PlcMessage):
-            objectId: c_uint8
-            data: []c_byte
+    objectId: c_uint8
+    data: []c_byte
 
 
 
     def __post_init__(self):
-super().__init__( )
+        super().__init__( )
 
 
 
@@ -44,24 +49,24 @@ super().__init__( )
 
     def serialize(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
-            startPos: int = positionAware.getPos()
-            writeBuffer.pushContext("ModbusDeviceInformationObject")
+        startPos: int = positionAware.getPos()
+        writeBuffer.pushContext("ModbusDeviceInformationObject")
 
-                        # Simple Field (objectId)
-                            writeSimpleField("objectId", objectId, writeUnsignedShort(writeBuffer, 8))
+        # Simple Field (objectId)
+        writeSimpleField("objectId", objectId, writeUnsignedShort(writeBuffer, 8))
 
-                        # Implicit Field (objectLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-                        c_uint8 objectLength = (c_uint8) (COUNT(getData()))
-                        writeImplicitField("objectLength", objectLength, writeUnsignedShort(writeBuffer, 8))
+        # Implicit Field (objectLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+        c_uint8 objectLength = (c_uint8) (COUNT(getData()))
+        writeImplicitField("objectLength", objectLength, writeUnsignedShort(writeBuffer, 8))
 
-                        # Array Field (data)
-                        writeByteArrayField("data", data, writeByteArray(writeBuffer, 8))
+        # Array Field (data)
+        writeByteArrayField("data", data, writeByteArray(writeBuffer, 8))
 
-            writeBuffer.popContext("ModbusDeviceInformationObject")
+        writeBuffer.popContext("ModbusDeviceInformationObject")
 
 
     def getLengthInBytes(self) -> int:
-        return int(math.ceil(float(getLengthInBits() / 8.0)))
+        return int(math.ceil(float(self.getLengthInBits() / 8.0)))
 
     def getLengthInBits(self) -> int:
         lengthInBits: int = 0
@@ -84,56 +89,49 @@ super().__init__( )
     def staticParse(readBuffer: ReadBuffer , args) -> ModbusDeviceInformationObject:
         positionAware: PositionAware = readBuffer
         return staticParse(readBuffer)
-    }
 
-    def  staticParse(readBuffer: ReadBuffer) -> ModbusDeviceInformationObject:
+
+    @staticmethod
+    def staticParseContext(readBuffer: ReadBuffer) -> ModbusDeviceInformationObject:
         readBuffer.pullContext("ModbusDeviceInformationObject")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                objectId: c_uint8 = readSimpleField("objectId", readUnsignedShort(readBuffer, 8))
+        objectId: c_uint8 = readSimpleField("objectId", readUnsignedShort(readBuffer, 8))
 
-                objectLength: c_uint8 = readImplicitField("objectLength", readUnsignedShort(readBuffer, 8))
+        objectLength: c_uint8 = readImplicitField("objectLength", readUnsignedShort(readBuffer, 8))
 
-                    data: byte[] = readBuffer.readByteArray("data", Math.toIntExact(objectLength))
+        data: byte[] = readBuffer.readByteArray("data", Math.toIntExact(objectLength))
 
-    readBuffer.closeContext("ModbusDeviceInformationObject")
-    # Create the instance
-        _modbusDeviceInformationObject: ModbusDeviceInformationObject = ModbusDeviceInformationObject(
-            objectId, 
-            data
-        )
+        readBuffer.closeContext("ModbusDeviceInformationObject")
+        # Create the instance
+        _modbusDeviceInformationObject: ModbusDeviceInformationObject = ModbusDeviceInformationObject(objectId, data )
         return _modbusDeviceInformationObject
 
 
     def equals(self, o: object) -> bool:
-        if this == o:
+        if self == o:
             return True
 
-        if not (instanceof(o, ModbusDeviceInformationObject):
+        if not isinstance(o, ModbusDeviceInformationObject):
             return False
 
         that: ModbusDeviceInformationObject = ModbusDeviceInformationObject(o)
-        return
-            (getObjectId() == that.getObjectId()) &&
-            (getData() == that.getData()) &&
-            True
+        return (getObjectId() == that.getObjectId()) && (getData() == that.getData()) && True
 
     def hashCode(self) -> int:
-        return Objects.hash(
-            getObjectId(),
-            getData()
-        )
+        return hash(getObjectId(), getData() )
 
-    def toString(self) -> str:
-        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(true, true)
+    def __str__(self) -> str:
+        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
         try:
-            writeBufferBoxBased.writeSerializable(this)
-        except SerializationException:
+            writeBufferBoxBased.writeSerializable(self)
+        except SerializationException as e:
             raise RuntimeException(e)
 
-        return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+        return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
+
 
 
 

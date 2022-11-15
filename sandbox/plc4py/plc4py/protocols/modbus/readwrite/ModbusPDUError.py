@@ -22,25 +22,28 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 
+from ctypes import c_bool
+from ctypes import c_uint8
+from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.protocols.modbus.readwrite.ModbusErrorCode import ModbusErrorCode
+import math
 
+    
 @dataclass
 class ModbusPDUError(PlcMessage,ModbusPDU):
-            exceptionCode: ModbusErrorCode
+    exceptionCode: ModbusErrorCode
 
     # Accessors for discriminator values.
     def c_bool getErrorFlag() {
         return (c_bool) true
-    }
     def c_uint8 getFunctionFlag() {
         return 0
-    }
     def c_bool getResponse() {
         return False
-    }
 
 
     def __post_init__(self):
-super().__init__( )
+        super().__init__( )
 
 
 
@@ -50,18 +53,18 @@ super().__init__( )
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
-            startPos: int = positionAware.getPos()
-            writeBuffer.pushContext("ModbusPDUError")
+        startPos: int = positionAware.getPos()
+        writeBuffer.pushContext("ModbusPDUError")
 
-                        # Simple Field (exceptionCode)
-                            writeSimpleEnumField("exceptionCode", "ModbusErrorCode", exceptionCode, new DataWriterEnumDefault<>(ModbusErrorCode::getValue, ModbusErrorCode::name, writeUnsignedShort(writeBuffer, 8)))
+        # Simple Field (exceptionCode)
+        writeSimpleEnumField("exceptionCode", "ModbusErrorCode", exceptionCode, new DataWriterEnumDefault<>(ModbusErrorCode::getValue, ModbusErrorCode::name, writeUnsignedShort(writeBuffer, 8)))
 
 
-            writeBuffer.popContext("ModbusPDUError")
+        writeBuffer.popContext("ModbusPDUError")
 
 
     def getLengthInBytes(self) -> int:
-        return int(math.ceil(float(getLengthInBits() / 8.0)))
+        return int(math.ceil(float(self.getLengthInBits() / 8.0)))
 
     def getLengthInBits(self) -> int:
         lengthInBits: int = super().getLengthInBits()
@@ -73,49 +76,41 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUErrorBuilder:
+    @staticmethod
+    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUErrorBuilder:
         readBuffer.pullContext("ModbusPDUError")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                exceptionCode: ModbusErrorCode = readEnumField("exceptionCode", "ModbusErrorCode", new DataReaderEnumDefault<>(ModbusErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)))
+        exceptionCode: ModbusErrorCode = readEnumField("exceptionCode", "ModbusErrorCode", new DataReaderEnumDefault<>(ModbusErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)))
 
-    readBuffer.closeContext("ModbusPDUError")
-    # Create the instance
-        return ModbusPDUErrorBuilder(
-            exceptionCode
-        
-        )
+        readBuffer.closeContext("ModbusPDUError")
+        # Create the instance
+        return ModbusPDUErrorBuilder(exceptionCode )
 
 
     def equals(self, o: object) -> bool:
-        if this == o:
+        if self == o:
             return True
 
-        if not (instanceof(o, ModbusPDUError):
+        if not isinstance(o, ModbusPDUError):
             return False
 
         that: ModbusPDUError = ModbusPDUError(o)
-        return
-            (getExceptionCode() == that.getExceptionCode()) &&
-            super().equals(that) &&
-            True
+        return (getExceptionCode() == that.getExceptionCode()) && super().equals(that) && True
 
     def hashCode(self) -> int:
-        return Objects.hash(
-            super().hashCode(),
-            getExceptionCode()
-        )
+        return hash(super().hashCode(), getExceptionCode() )
 
-    def toString(self) -> str:
-        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(true, true)
+    def __str__(self) -> str:
+        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
         try:
-            writeBufferBoxBased.writeSerializable(this)
-        except SerializationException:
+            writeBufferBoxBased.writeSerializable(self)
+        except SerializationException as e:
             raise RuntimeException(e)
 
-        return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+        return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
 class ModbusPDUErrorBuilder(ModbusPDUModbusPDUBuilder: exceptionCode: ModbusErrorCodedef ModbusPDUErrorBuilder( ModbusErrorCode exceptionCode ):        self.exceptionCode = exceptionCode
@@ -127,5 +122,6 @@ class ModbusPDUErrorBuilder(ModbusPDUModbusPDUBuilder: exceptionCode: ModbusErro
             exceptionCode
 )
         return modbusPDUError
+
 
 

@@ -22,25 +22,28 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 
+from ctypes import c_bool
+from ctypes import c_uint8
+from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.protocols.modbus.readwrite.ModbusPDUWriteFileRecordRequestItem import ModbusPDUWriteFileRecordRequestItem
+import math
 
+    
 @dataclass
 class ModbusPDUWriteFileRecordRequest(PlcMessage,ModbusPDU):
-            items: []ModbusPDUWriteFileRecordRequestItem
+    items: []ModbusPDUWriteFileRecordRequestItem
 
     # Accessors for discriminator values.
     def c_bool getErrorFlag() {
         return (c_bool) false
-    }
     def c_uint8 getFunctionFlag() {
         return (c_uint8) 0x15
-    }
     def c_bool getResponse() {
         return (c_bool) false
-    }
 
 
     def __post_init__(self):
-super().__init__( )
+        super().__init__( )
 
 
 
@@ -50,21 +53,21 @@ super().__init__( )
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
-            startPos: int = positionAware.getPos()
-            writeBuffer.pushContext("ModbusPDUWriteFileRecordRequest")
+        startPos: int = positionAware.getPos()
+        writeBuffer.pushContext("ModbusPDUWriteFileRecordRequest")
 
-                        # Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-                        c_uint8 byteCount = (c_uint8) (ARRAY_SIZE_IN_BYTES(getItems()))
-                        writeImplicitField("byteCount", byteCount, writeUnsignedShort(writeBuffer, 8))
+        # Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+        c_uint8 byteCount = (c_uint8) (ARRAY_SIZE_IN_BYTES(getItems()))
+        writeImplicitField("byteCount", byteCount, writeUnsignedShort(writeBuffer, 8))
 
-                        # Array Field (items)
-                        writeComplexTypeArrayField("items", items, writeBuffer)
+        # Array Field (items)
+        writeComplexTypeArrayField("items", items, writeBuffer)
 
-            writeBuffer.popContext("ModbusPDUWriteFileRecordRequest")
+        writeBuffer.popContext("ModbusPDUWriteFileRecordRequest")
 
 
     def getLengthInBytes(self) -> int:
-        return int(math.ceil(float(getLengthInBits() / 8.0)))
+        return int(math.ceil(float(self.getLengthInBits() / 8.0)))
 
     def getLengthInBits(self) -> int:
         lengthInBits: int = super().getLengthInBits()
@@ -83,51 +86,43 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUWriteFileRecordRequestBuilder:
+    @staticmethod
+    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUWriteFileRecordRequestBuilder:
         readBuffer.pullContext("ModbusPDUWriteFileRecordRequest")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                byteCount: c_uint8 = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
+        byteCount: c_uint8 = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
 
-                            items: []ModbusPDUWriteFileRecordRequestItem = readLengthArrayField("items", new DataReaderComplexDefault<>(() -> ModbusPDUWriteFileRecordRequestItem.staticParse(readBuffer), readBuffer), byteCount)
+        items: []ModbusPDUWriteFileRecordRequestItem = readLengthArrayField("items", new DataReaderComplexDefault<>(() -> ModbusPDUWriteFileRecordRequestItem.staticParse(readBuffer), readBuffer), byteCount)
 
-    readBuffer.closeContext("ModbusPDUWriteFileRecordRequest")
-    # Create the instance
-        return ModbusPDUWriteFileRecordRequestBuilder(
-            items
-        
-        )
+        readBuffer.closeContext("ModbusPDUWriteFileRecordRequest")
+        # Create the instance
+        return ModbusPDUWriteFileRecordRequestBuilder(items )
 
 
     def equals(self, o: object) -> bool:
-        if this == o:
+        if self == o:
             return True
 
-        if not (instanceof(o, ModbusPDUWriteFileRecordRequest):
+        if not isinstance(o, ModbusPDUWriteFileRecordRequest):
             return False
 
         that: ModbusPDUWriteFileRecordRequest = ModbusPDUWriteFileRecordRequest(o)
-        return
-            (getItems() == that.getItems()) &&
-            super().equals(that) &&
-            True
+        return (getItems() == that.getItems()) && super().equals(that) && True
 
     def hashCode(self) -> int:
-        return Objects.hash(
-            super().hashCode(),
-            getItems()
-        )
+        return hash(super().hashCode(), getItems() )
 
-    def toString(self) -> str:
-        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(true, true)
+    def __str__(self) -> str:
+        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
         try:
-            writeBufferBoxBased.writeSerializable(this)
-        except SerializationException:
+            writeBufferBoxBased.writeSerializable(self)
+        except SerializationException as e:
             raise RuntimeException(e)
 
-        return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+        return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
 class ModbusPDUWriteFileRecordRequestBuilder(ModbusPDUModbusPDUBuilder: items: []ModbusPDUWriteFileRecordRequestItemdef ModbusPDUWriteFileRecordRequestBuilder( []ModbusPDUWriteFileRecordRequestItem items ):        self.items = items
@@ -139,5 +134,6 @@ class ModbusPDUWriteFileRecordRequestBuilder(ModbusPDUModbusPDUBuilder: items: [
             items
 )
         return modbusPDUWriteFileRecordRequest
+
 
 

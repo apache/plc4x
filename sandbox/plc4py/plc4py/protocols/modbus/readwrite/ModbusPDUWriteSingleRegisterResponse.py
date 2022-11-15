@@ -22,26 +22,29 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 
+from ctypes import c_bool
+from ctypes import c_uint16
+from ctypes import c_uint8
+from plc4py.api.messages.PlcMessage import PlcMessage
+import math
 
+    
 @dataclass
 class ModbusPDUWriteSingleRegisterResponse(PlcMessage,ModbusPDU):
-            address: c_uint16
-            value: c_uint16
+    address: c_uint16
+    value: c_uint16
 
     # Accessors for discriminator values.
     def c_bool getErrorFlag() {
         return (c_bool) false
-    }
     def c_uint8 getFunctionFlag() {
         return (c_uint8) 0x06
-    }
     def c_bool getResponse() {
         return (c_bool) true
-    }
 
 
     def __post_init__(self):
-super().__init__( )
+        super().__init__( )
 
 
 
@@ -54,20 +57,20 @@ super().__init__( )
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
-            startPos: int = positionAware.getPos()
-            writeBuffer.pushContext("ModbusPDUWriteSingleRegisterResponse")
+        startPos: int = positionAware.getPos()
+        writeBuffer.pushContext("ModbusPDUWriteSingleRegisterResponse")
 
-                        # Simple Field (address)
-                            writeSimpleField("address", address, writeUnsignedInt(writeBuffer, 16))
+        # Simple Field (address)
+        writeSimpleField("address", address, writeUnsignedInt(writeBuffer, 16))
 
-                        # Simple Field (value)
-                            writeSimpleField("value", value, writeUnsignedInt(writeBuffer, 16))
+        # Simple Field (value)
+        writeSimpleField("value", value, writeUnsignedInt(writeBuffer, 16))
 
-            writeBuffer.popContext("ModbusPDUWriteSingleRegisterResponse")
+        writeBuffer.popContext("ModbusPDUWriteSingleRegisterResponse")
 
 
     def getLengthInBytes(self) -> int:
-        return int(math.ceil(float(getLengthInBits() / 8.0)))
+        return int(math.ceil(float(self.getLengthInBits() / 8.0)))
 
     def getLengthInBits(self) -> int:
         lengthInBits: int = super().getLengthInBits()
@@ -82,54 +85,43 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUWriteSingleRegisterResponseBuilder:
+    @staticmethod
+    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUWriteSingleRegisterResponseBuilder:
         readBuffer.pullContext("ModbusPDUWriteSingleRegisterResponse")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                address: c_uint16 = readSimpleField("address", readUnsignedInt(readBuffer, 16))
+        address: c_uint16 = readSimpleField("address", readUnsignedInt(readBuffer, 16))
 
-                value: c_uint16 = readSimpleField("value", readUnsignedInt(readBuffer, 16))
+        value: c_uint16 = readSimpleField("value", readUnsignedInt(readBuffer, 16))
 
-    readBuffer.closeContext("ModbusPDUWriteSingleRegisterResponse")
-    # Create the instance
-        return ModbusPDUWriteSingleRegisterResponseBuilder(
-            address, 
-            value
-        
-        )
+        readBuffer.closeContext("ModbusPDUWriteSingleRegisterResponse")
+        # Create the instance
+        return ModbusPDUWriteSingleRegisterResponseBuilder(address, value )
 
 
     def equals(self, o: object) -> bool:
-        if this == o:
+        if self == o:
             return True
 
-        if not (instanceof(o, ModbusPDUWriteSingleRegisterResponse):
+        if not isinstance(o, ModbusPDUWriteSingleRegisterResponse):
             return False
 
         that: ModbusPDUWriteSingleRegisterResponse = ModbusPDUWriteSingleRegisterResponse(o)
-        return
-            (getAddress() == that.getAddress()) &&
-            (getValue() == that.getValue()) &&
-            super().equals(that) &&
-            True
+        return (getAddress() == that.getAddress()) && (getValue() == that.getValue()) && super().equals(that) && True
 
     def hashCode(self) -> int:
-        return Objects.hash(
-            super().hashCode(),
-            getAddress(),
-            getValue()
-        )
+        return hash(super().hashCode(), getAddress(), getValue() )
 
-    def toString(self) -> str:
-        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(true, true)
+    def __str__(self) -> str:
+        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
         try:
-            writeBufferBoxBased.writeSerializable(this)
-        except SerializationException:
+            writeBufferBoxBased.writeSerializable(self)
+        except SerializationException as e:
             raise RuntimeException(e)
 
-        return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+        return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
 class ModbusPDUWriteSingleRegisterResponseBuilder(ModbusPDUModbusPDUBuilder: address: c_uint16 value: c_uint16def ModbusPDUWriteSingleRegisterResponseBuilder( c_uint16 address, c_uint16 value ):        self.address = address
@@ -143,5 +135,6 @@ class ModbusPDUWriteSingleRegisterResponseBuilder(ModbusPDUModbusPDUBuilder: add
             value
 )
         return modbusPDUWriteSingleRegisterResponse
+
 
 

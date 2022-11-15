@@ -22,25 +22,28 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 
+from ctypes import c_bool
+from ctypes import c_byte
+from ctypes import c_uint8
+from plc4py.api.messages.PlcMessage import PlcMessage
+import math
 
+    
 @dataclass
 class ModbusPDUReadInputRegistersResponse(PlcMessage,ModbusPDU):
-            value: []c_byte
+    value: []c_byte
 
     # Accessors for discriminator values.
     def c_bool getErrorFlag() {
         return (c_bool) false
-    }
     def c_uint8 getFunctionFlag() {
         return (c_uint8) 0x04
-    }
     def c_bool getResponse() {
         return (c_bool) true
-    }
 
 
     def __post_init__(self):
-super().__init__( )
+        super().__init__( )
 
 
 
@@ -50,21 +53,21 @@ super().__init__( )
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
-            startPos: int = positionAware.getPos()
-            writeBuffer.pushContext("ModbusPDUReadInputRegistersResponse")
+        startPos: int = positionAware.getPos()
+        writeBuffer.pushContext("ModbusPDUReadInputRegistersResponse")
 
-                        # Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-                        c_uint8 byteCount = (c_uint8) (COUNT(getValue()))
-                        writeImplicitField("byteCount", byteCount, writeUnsignedShort(writeBuffer, 8))
+        # Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+        c_uint8 byteCount = (c_uint8) (COUNT(getValue()))
+        writeImplicitField("byteCount", byteCount, writeUnsignedShort(writeBuffer, 8))
 
-                        # Array Field (value)
-                        writeByteArrayField("value", value, writeByteArray(writeBuffer, 8))
+        # Array Field (value)
+        writeByteArrayField("value", value, writeByteArray(writeBuffer, 8))
 
-            writeBuffer.popContext("ModbusPDUReadInputRegistersResponse")
+        writeBuffer.popContext("ModbusPDUReadInputRegistersResponse")
 
 
     def getLengthInBytes(self) -> int:
-        return int(math.ceil(float(getLengthInBits() / 8.0)))
+        return int(math.ceil(float(self.getLengthInBits() / 8.0)))
 
     def getLengthInBits(self) -> int:
         lengthInBits: int = super().getLengthInBits()
@@ -81,51 +84,43 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUReadInputRegistersResponseBuilder:
+    @staticmethod
+    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUReadInputRegistersResponseBuilder:
         readBuffer.pullContext("ModbusPDUReadInputRegistersResponse")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                byteCount: c_uint8 = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
+        byteCount: c_uint8 = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
 
-                    value: byte[] = readBuffer.readByteArray("value", Math.toIntExact(byteCount))
+        value: byte[] = readBuffer.readByteArray("value", Math.toIntExact(byteCount))
 
-    readBuffer.closeContext("ModbusPDUReadInputRegistersResponse")
-    # Create the instance
-        return ModbusPDUReadInputRegistersResponseBuilder(
-            value
-        
-        )
+        readBuffer.closeContext("ModbusPDUReadInputRegistersResponse")
+        # Create the instance
+        return ModbusPDUReadInputRegistersResponseBuilder(value )
 
 
     def equals(self, o: object) -> bool:
-        if this == o:
+        if self == o:
             return True
 
-        if not (instanceof(o, ModbusPDUReadInputRegistersResponse):
+        if not isinstance(o, ModbusPDUReadInputRegistersResponse):
             return False
 
         that: ModbusPDUReadInputRegistersResponse = ModbusPDUReadInputRegistersResponse(o)
-        return
-            (getValue() == that.getValue()) &&
-            super().equals(that) &&
-            True
+        return (getValue() == that.getValue()) && super().equals(that) && True
 
     def hashCode(self) -> int:
-        return Objects.hash(
-            super().hashCode(),
-            getValue()
-        )
+        return hash(super().hashCode(), getValue() )
 
-    def toString(self) -> str:
-        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(true, true)
+    def __str__(self) -> str:
+        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
         try:
-            writeBufferBoxBased.writeSerializable(this)
-        except SerializationException:
+            writeBufferBoxBased.writeSerializable(self)
+        except SerializationException as e:
             raise RuntimeException(e)
 
-        return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+        return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
 class ModbusPDUReadInputRegistersResponseBuilder(ModbusPDUModbusPDUBuilder: value: []c_bytedef ModbusPDUReadInputRegistersResponseBuilder( []c_byte value ):        self.value = value
@@ -137,5 +132,6 @@ class ModbusPDUReadInputRegistersResponseBuilder(ModbusPDUModbusPDUBuilder: valu
             value
 )
         return modbusPDUReadInputRegistersResponse
+
 
 

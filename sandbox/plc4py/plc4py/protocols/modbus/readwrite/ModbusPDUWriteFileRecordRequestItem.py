@@ -22,18 +22,24 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 
+from ctypes import c_byte
+from ctypes import c_uint16
+from ctypes import c_uint8
+from plc4py.api.messages.PlcMessage import PlcMessage
+import math
 
+    
 @dataclass
 class ModbusPDUWriteFileRecordRequestItem(PlcMessage):
-            referenceType: c_uint8
-            fileNumber: c_uint16
-            recordNumber: c_uint16
-            recordData: []c_byte
+    referenceType: c_uint8
+    fileNumber: c_uint16
+    recordNumber: c_uint16
+    recordData: []c_byte
 
 
 
     def __post_init__(self):
-super().__init__( )
+        super().__init__( )
 
 
 
@@ -52,30 +58,30 @@ super().__init__( )
 
     def serialize(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
-            startPos: int = positionAware.getPos()
-            writeBuffer.pushContext("ModbusPDUWriteFileRecordRequestItem")
+        startPos: int = positionAware.getPos()
+        writeBuffer.pushContext("ModbusPDUWriteFileRecordRequestItem")
 
-                        # Simple Field (referenceType)
-                            writeSimpleField("referenceType", referenceType, writeUnsignedShort(writeBuffer, 8))
+        # Simple Field (referenceType)
+        writeSimpleField("referenceType", referenceType, writeUnsignedShort(writeBuffer, 8))
 
-                        # Simple Field (fileNumber)
-                            writeSimpleField("fileNumber", fileNumber, writeUnsignedInt(writeBuffer, 16))
+        # Simple Field (fileNumber)
+        writeSimpleField("fileNumber", fileNumber, writeUnsignedInt(writeBuffer, 16))
 
-                        # Simple Field (recordNumber)
-                            writeSimpleField("recordNumber", recordNumber, writeUnsignedInt(writeBuffer, 16))
+        # Simple Field (recordNumber)
+        writeSimpleField("recordNumber", recordNumber, writeUnsignedInt(writeBuffer, 16))
 
-                        # Implicit Field (recordLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-                        c_uint16 recordLength = (c_uint16) ((COUNT(getRecordData())) / (2))
-                        writeImplicitField("recordLength", recordLength, writeUnsignedInt(writeBuffer, 16))
+        # Implicit Field (recordLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+        c_uint16 recordLength = (c_uint16) ((COUNT(getRecordData())) / (2))
+        writeImplicitField("recordLength", recordLength, writeUnsignedInt(writeBuffer, 16))
 
-                        # Array Field (recordData)
-                        writeByteArrayField("recordData", recordData, writeByteArray(writeBuffer, 8))
+        # Array Field (recordData)
+        writeByteArrayField("recordData", recordData, writeByteArray(writeBuffer, 8))
 
-            writeBuffer.popContext("ModbusPDUWriteFileRecordRequestItem")
+        writeBuffer.popContext("ModbusPDUWriteFileRecordRequestItem")
 
 
     def getLengthInBytes(self) -> int:
-        return int(math.ceil(float(getLengthInBits() / 8.0)))
+        return int(math.ceil(float(self.getLengthInBits() / 8.0)))
 
     def getLengthInBits(self) -> int:
         lengthInBits: int = 0
@@ -104,66 +110,53 @@ super().__init__( )
     def staticParse(readBuffer: ReadBuffer , args) -> ModbusPDUWriteFileRecordRequestItem:
         positionAware: PositionAware = readBuffer
         return staticParse(readBuffer)
-    }
 
-    def  staticParse(readBuffer: ReadBuffer) -> ModbusPDUWriteFileRecordRequestItem:
+
+    @staticmethod
+    def staticParseContext(readBuffer: ReadBuffer) -> ModbusPDUWriteFileRecordRequestItem:
         readBuffer.pullContext("ModbusPDUWriteFileRecordRequestItem")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                referenceType: c_uint8 = readSimpleField("referenceType", readUnsignedShort(readBuffer, 8))
+        referenceType: c_uint8 = readSimpleField("referenceType", readUnsignedShort(readBuffer, 8))
 
-                fileNumber: c_uint16 = readSimpleField("fileNumber", readUnsignedInt(readBuffer, 16))
+        fileNumber: c_uint16 = readSimpleField("fileNumber", readUnsignedInt(readBuffer, 16))
 
-                recordNumber: c_uint16 = readSimpleField("recordNumber", readUnsignedInt(readBuffer, 16))
+        recordNumber: c_uint16 = readSimpleField("recordNumber", readUnsignedInt(readBuffer, 16))
 
-                recordLength: c_uint16 = readImplicitField("recordLength", readUnsignedInt(readBuffer, 16))
+        recordLength: c_uint16 = readImplicitField("recordLength", readUnsignedInt(readBuffer, 16))
 
-                    recordData: byte[] = readBuffer.readByteArray("recordData", Math.toIntExact((recordLength) * (2)))
+        recordData: byte[] = readBuffer.readByteArray("recordData", Math.toIntExact((recordLength) * (2)))
 
-    readBuffer.closeContext("ModbusPDUWriteFileRecordRequestItem")
-    # Create the instance
-        _modbusPDUWriteFileRecordRequestItem: ModbusPDUWriteFileRecordRequestItem = ModbusPDUWriteFileRecordRequestItem(
-            referenceType, 
-            fileNumber, 
-            recordNumber, 
-            recordData
-        )
+        readBuffer.closeContext("ModbusPDUWriteFileRecordRequestItem")
+        # Create the instance
+        _modbusPDUWriteFileRecordRequestItem: ModbusPDUWriteFileRecordRequestItem = ModbusPDUWriteFileRecordRequestItem(referenceType, fileNumber, recordNumber, recordData )
         return _modbusPDUWriteFileRecordRequestItem
 
 
     def equals(self, o: object) -> bool:
-        if this == o:
+        if self == o:
             return True
 
-        if not (instanceof(o, ModbusPDUWriteFileRecordRequestItem):
+        if not isinstance(o, ModbusPDUWriteFileRecordRequestItem):
             return False
 
         that: ModbusPDUWriteFileRecordRequestItem = ModbusPDUWriteFileRecordRequestItem(o)
-        return
-            (getReferenceType() == that.getReferenceType()) &&
-            (getFileNumber() == that.getFileNumber()) &&
-            (getRecordNumber() == that.getRecordNumber()) &&
-            (getRecordData() == that.getRecordData()) &&
-            True
+        return (getReferenceType() == that.getReferenceType()) && (getFileNumber() == that.getFileNumber()) && (getRecordNumber() == that.getRecordNumber()) && (getRecordData() == that.getRecordData()) && True
 
     def hashCode(self) -> int:
-        return Objects.hash(
-            getReferenceType(),
-            getFileNumber(),
-            getRecordNumber(),
-            getRecordData()
-        )
+        return hash(getReferenceType(), getFileNumber(), getRecordNumber(), getRecordData() )
 
-    def toString(self) -> str:
-        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(true, true)
+    def __str__(self) -> str:
+        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
         try:
-            writeBufferBoxBased.writeSerializable(this)
-        except SerializationException:
+            writeBufferBoxBased.writeSerializable(self)
+        except SerializationException as e:
             raise RuntimeException(e)
 
-        return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+        return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
+
 
 
 

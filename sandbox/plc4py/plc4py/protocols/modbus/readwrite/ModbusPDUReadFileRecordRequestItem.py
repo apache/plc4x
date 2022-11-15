@@ -22,18 +22,23 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 
+from ctypes import c_uint16
+from ctypes import c_uint8
+from plc4py.api.messages.PlcMessage import PlcMessage
+import math
 
+    
 @dataclass
 class ModbusPDUReadFileRecordRequestItem(PlcMessage):
-            referenceType: c_uint8
-            fileNumber: c_uint16
-            recordNumber: c_uint16
-            recordLength: c_uint16
+    referenceType: c_uint8
+    fileNumber: c_uint16
+    recordNumber: c_uint16
+    recordLength: c_uint16
 
 
 
     def __post_init__(self):
-super().__init__( )
+        super().__init__( )
 
 
 
@@ -52,26 +57,26 @@ super().__init__( )
 
     def serialize(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
-            startPos: int = positionAware.getPos()
-            writeBuffer.pushContext("ModbusPDUReadFileRecordRequestItem")
+        startPos: int = positionAware.getPos()
+        writeBuffer.pushContext("ModbusPDUReadFileRecordRequestItem")
 
-                        # Simple Field (referenceType)
-                            writeSimpleField("referenceType", referenceType, writeUnsignedShort(writeBuffer, 8))
+        # Simple Field (referenceType)
+        writeSimpleField("referenceType", referenceType, writeUnsignedShort(writeBuffer, 8))
 
-                        # Simple Field (fileNumber)
-                            writeSimpleField("fileNumber", fileNumber, writeUnsignedInt(writeBuffer, 16))
+        # Simple Field (fileNumber)
+        writeSimpleField("fileNumber", fileNumber, writeUnsignedInt(writeBuffer, 16))
 
-                        # Simple Field (recordNumber)
-                            writeSimpleField("recordNumber", recordNumber, writeUnsignedInt(writeBuffer, 16))
+        # Simple Field (recordNumber)
+        writeSimpleField("recordNumber", recordNumber, writeUnsignedInt(writeBuffer, 16))
 
-                        # Simple Field (recordLength)
-                            writeSimpleField("recordLength", recordLength, writeUnsignedInt(writeBuffer, 16))
+        # Simple Field (recordLength)
+        writeSimpleField("recordLength", recordLength, writeUnsignedInt(writeBuffer, 16))
 
-            writeBuffer.popContext("ModbusPDUReadFileRecordRequestItem")
+        writeBuffer.popContext("ModbusPDUReadFileRecordRequestItem")
 
 
     def getLengthInBytes(self) -> int:
-        return int(math.ceil(float(getLengthInBits() / 8.0)))
+        return int(math.ceil(float(self.getLengthInBits() / 8.0)))
 
     def getLengthInBits(self) -> int:
         lengthInBits: int = 0
@@ -95,64 +100,51 @@ super().__init__( )
     def staticParse(readBuffer: ReadBuffer , args) -> ModbusPDUReadFileRecordRequestItem:
         positionAware: PositionAware = readBuffer
         return staticParse(readBuffer)
-    }
 
-    def  staticParse(readBuffer: ReadBuffer) -> ModbusPDUReadFileRecordRequestItem:
+
+    @staticmethod
+    def staticParseContext(readBuffer: ReadBuffer) -> ModbusPDUReadFileRecordRequestItem:
         readBuffer.pullContext("ModbusPDUReadFileRecordRequestItem")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                referenceType: c_uint8 = readSimpleField("referenceType", readUnsignedShort(readBuffer, 8))
+        referenceType: c_uint8 = readSimpleField("referenceType", readUnsignedShort(readBuffer, 8))
 
-                fileNumber: c_uint16 = readSimpleField("fileNumber", readUnsignedInt(readBuffer, 16))
+        fileNumber: c_uint16 = readSimpleField("fileNumber", readUnsignedInt(readBuffer, 16))
 
-                recordNumber: c_uint16 = readSimpleField("recordNumber", readUnsignedInt(readBuffer, 16))
+        recordNumber: c_uint16 = readSimpleField("recordNumber", readUnsignedInt(readBuffer, 16))
 
-                recordLength: c_uint16 = readSimpleField("recordLength", readUnsignedInt(readBuffer, 16))
+        recordLength: c_uint16 = readSimpleField("recordLength", readUnsignedInt(readBuffer, 16))
 
-    readBuffer.closeContext("ModbusPDUReadFileRecordRequestItem")
-    # Create the instance
-        _modbusPDUReadFileRecordRequestItem: ModbusPDUReadFileRecordRequestItem = ModbusPDUReadFileRecordRequestItem(
-            referenceType, 
-            fileNumber, 
-            recordNumber, 
-            recordLength
-        )
+        readBuffer.closeContext("ModbusPDUReadFileRecordRequestItem")
+        # Create the instance
+        _modbusPDUReadFileRecordRequestItem: ModbusPDUReadFileRecordRequestItem = ModbusPDUReadFileRecordRequestItem(referenceType, fileNumber, recordNumber, recordLength )
         return _modbusPDUReadFileRecordRequestItem
 
 
     def equals(self, o: object) -> bool:
-        if this == o:
+        if self == o:
             return True
 
-        if not (instanceof(o, ModbusPDUReadFileRecordRequestItem):
+        if not isinstance(o, ModbusPDUReadFileRecordRequestItem):
             return False
 
         that: ModbusPDUReadFileRecordRequestItem = ModbusPDUReadFileRecordRequestItem(o)
-        return
-            (getReferenceType() == that.getReferenceType()) &&
-            (getFileNumber() == that.getFileNumber()) &&
-            (getRecordNumber() == that.getRecordNumber()) &&
-            (getRecordLength() == that.getRecordLength()) &&
-            True
+        return (getReferenceType() == that.getReferenceType()) && (getFileNumber() == that.getFileNumber()) && (getRecordNumber() == that.getRecordNumber()) && (getRecordLength() == that.getRecordLength()) && True
 
     def hashCode(self) -> int:
-        return Objects.hash(
-            getReferenceType(),
-            getFileNumber(),
-            getRecordNumber(),
-            getRecordLength()
-        )
+        return hash(getReferenceType(), getFileNumber(), getRecordNumber(), getRecordLength() )
 
-    def toString(self) -> str:
-        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(true, true)
+    def __str__(self) -> str:
+        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
         try:
-            writeBufferBoxBased.writeSerializable(this)
-        except SerializationException:
+            writeBufferBoxBased.writeSerializable(self)
+        except SerializationException as e:
             raise RuntimeException(e)
 
-        return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+        return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
+
 
 
 

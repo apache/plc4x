@@ -22,27 +22,31 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 
+from ctypes import c_bool
+from ctypes import c_byte
+from ctypes import c_uint16
+from ctypes import c_uint8
+from plc4py.api.messages.PlcMessage import PlcMessage
+import math
 
+    
 @dataclass
 class ModbusPDUWriteMultipleHoldingRegistersRequest(PlcMessage,ModbusPDU):
-            startingAddress: c_uint16
-            quantity: c_uint16
-            value: []c_byte
+    startingAddress: c_uint16
+    quantity: c_uint16
+    value: []c_byte
 
     # Accessors for discriminator values.
     def c_bool getErrorFlag() {
         return (c_bool) false
-    }
     def c_uint8 getFunctionFlag() {
         return (c_uint8) 0x10
-    }
     def c_bool getResponse() {
         return (c_bool) false
-    }
 
 
     def __post_init__(self):
-super().__init__( )
+        super().__init__( )
 
 
 
@@ -58,27 +62,27 @@ super().__init__( )
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
-            startPos: int = positionAware.getPos()
-            writeBuffer.pushContext("ModbusPDUWriteMultipleHoldingRegistersRequest")
+        startPos: int = positionAware.getPos()
+        writeBuffer.pushContext("ModbusPDUWriteMultipleHoldingRegistersRequest")
 
-                        # Simple Field (startingAddress)
-                            writeSimpleField("startingAddress", startingAddress, writeUnsignedInt(writeBuffer, 16))
+        # Simple Field (startingAddress)
+        writeSimpleField("startingAddress", startingAddress, writeUnsignedInt(writeBuffer, 16))
 
-                        # Simple Field (quantity)
-                            writeSimpleField("quantity", quantity, writeUnsignedInt(writeBuffer, 16))
+        # Simple Field (quantity)
+        writeSimpleField("quantity", quantity, writeUnsignedInt(writeBuffer, 16))
 
-                        # Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-                        c_uint8 byteCount = (c_uint8) (COUNT(getValue()))
-                        writeImplicitField("byteCount", byteCount, writeUnsignedShort(writeBuffer, 8))
+        # Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+        c_uint8 byteCount = (c_uint8) (COUNT(getValue()))
+        writeImplicitField("byteCount", byteCount, writeUnsignedShort(writeBuffer, 8))
 
-                        # Array Field (value)
-                        writeByteArrayField("value", value, writeByteArray(writeBuffer, 8))
+        # Array Field (value)
+        writeByteArrayField("value", value, writeByteArray(writeBuffer, 8))
 
-            writeBuffer.popContext("ModbusPDUWriteMultipleHoldingRegistersRequest")
+        writeBuffer.popContext("ModbusPDUWriteMultipleHoldingRegistersRequest")
 
 
     def getLengthInBytes(self) -> int:
-        return int(math.ceil(float(getLengthInBits() / 8.0)))
+        return int(math.ceil(float(self.getLengthInBits() / 8.0)))
 
     def getLengthInBits(self) -> int:
         lengthInBits: int = super().getLengthInBits()
@@ -101,61 +105,47 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUWriteMultipleHoldingRegistersRequestBuilder:
+    @staticmethod
+    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUWriteMultipleHoldingRegistersRequestBuilder:
         readBuffer.pullContext("ModbusPDUWriteMultipleHoldingRegistersRequest")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                startingAddress: c_uint16 = readSimpleField("startingAddress", readUnsignedInt(readBuffer, 16))
+        startingAddress: c_uint16 = readSimpleField("startingAddress", readUnsignedInt(readBuffer, 16))
 
-                quantity: c_uint16 = readSimpleField("quantity", readUnsignedInt(readBuffer, 16))
+        quantity: c_uint16 = readSimpleField("quantity", readUnsignedInt(readBuffer, 16))
 
-                byteCount: c_uint8 = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
+        byteCount: c_uint8 = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
 
-                    value: byte[] = readBuffer.readByteArray("value", Math.toIntExact(byteCount))
+        value: byte[] = readBuffer.readByteArray("value", Math.toIntExact(byteCount))
 
-    readBuffer.closeContext("ModbusPDUWriteMultipleHoldingRegistersRequest")
-    # Create the instance
-        return ModbusPDUWriteMultipleHoldingRegistersRequestBuilder(
-            startingAddress, 
-            quantity, 
-            value
-        
-        )
+        readBuffer.closeContext("ModbusPDUWriteMultipleHoldingRegistersRequest")
+        # Create the instance
+        return ModbusPDUWriteMultipleHoldingRegistersRequestBuilder(startingAddress, quantity, value )
 
 
     def equals(self, o: object) -> bool:
-        if this == o:
+        if self == o:
             return True
 
-        if not (instanceof(o, ModbusPDUWriteMultipleHoldingRegistersRequest):
+        if not isinstance(o, ModbusPDUWriteMultipleHoldingRegistersRequest):
             return False
 
         that: ModbusPDUWriteMultipleHoldingRegistersRequest = ModbusPDUWriteMultipleHoldingRegistersRequest(o)
-        return
-            (getStartingAddress() == that.getStartingAddress()) &&
-            (getQuantity() == that.getQuantity()) &&
-            (getValue() == that.getValue()) &&
-            super().equals(that) &&
-            True
+        return (getStartingAddress() == that.getStartingAddress()) && (getQuantity() == that.getQuantity()) && (getValue() == that.getValue()) && super().equals(that) && True
 
     def hashCode(self) -> int:
-        return Objects.hash(
-            super().hashCode(),
-            getStartingAddress(),
-            getQuantity(),
-            getValue()
-        )
+        return hash(super().hashCode(), getStartingAddress(), getQuantity(), getValue() )
 
-    def toString(self) -> str:
-        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(true, true)
+    def __str__(self) -> str:
+        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
         try:
-            writeBufferBoxBased.writeSerializable(this)
-        except SerializationException:
+            writeBufferBoxBased.writeSerializable(self)
+        except SerializationException as e:
             raise RuntimeException(e)
 
-        return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+        return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
 class ModbusPDUWriteMultipleHoldingRegistersRequestBuilder(ModbusPDUModbusPDUBuilder: startingAddress: c_uint16 quantity: c_uint16 value: []c_bytedef ModbusPDUWriteMultipleHoldingRegistersRequestBuilder( c_uint16 startingAddress, c_uint16 quantity, []c_byte value ):        self.startingAddress = startingAddress
@@ -171,5 +161,6 @@ class ModbusPDUWriteMultipleHoldingRegistersRequestBuilder(ModbusPDUModbusPDUBui
             value
 )
         return modbusPDUWriteMultipleHoldingRegistersRequest
+
 
 

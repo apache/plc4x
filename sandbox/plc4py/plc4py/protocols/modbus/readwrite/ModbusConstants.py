@@ -22,15 +22,19 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 
+from ctypes import c_uint16
+from plc4py.api.messages.PlcMessage import PlcMessage
+import math
 
+    
 @dataclass
 class ModbusConstants(PlcMessage):
-            MODBUSTCPDEFAULTPORT: c_uint16 = 502
+    MODBUSTCPDEFAULTPORT: c_uint16 = 502
 
 
 
     def __post_init__(self):
-super().__init__( )
+        super().__init__( )
 
 
 
@@ -40,17 +44,17 @@ super().__init__( )
 
     def serialize(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
-            startPos: int = positionAware.getPos()
-            writeBuffer.pushContext("ModbusConstants")
+        startPos: int = positionAware.getPos()
+        writeBuffer.pushContext("ModbusConstants")
 
-                        # Const Field (modbusTcpDefaultPort)
+        # Const Field (modbusTcpDefaultPort)
                         writeConstField("modbusTcpDefaultPort", MODBUSTCPDEFAULTPORT, writeUnsignedInt(writeBuffer, 16))
 
-            writeBuffer.popContext("ModbusConstants")
+        writeBuffer.popContext("ModbusConstants")
 
 
     def getLengthInBytes(self) -> int:
-        return int(math.ceil(float(getLengthInBits() / 8.0)))
+        return int(math.ceil(float(self.getLengthInBits() / 8.0)))
 
     def getLengthInBits(self) -> int:
         lengthInBits: int = 0
@@ -65,46 +69,45 @@ super().__init__( )
     def staticParse(readBuffer: ReadBuffer , args) -> ModbusConstants:
         positionAware: PositionAware = readBuffer
         return staticParse(readBuffer)
-    }
 
-    def  staticParse(readBuffer: ReadBuffer) -> ModbusConstants:
+
+    @staticmethod
+    def staticParseContext(readBuffer: ReadBuffer) -> ModbusConstants:
         readBuffer.pullContext("ModbusConstants")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                modbusTcpDefaultPort: c_uint16 = readConstField("modbusTcpDefaultPort", readUnsignedInt(readBuffer, 16), ModbusConstants.MODBUSTCPDEFAULTPORT)
+        modbusTcpDefaultPort: c_uint16 = readConstField("modbusTcpDefaultPort", readUnsignedInt(readBuffer, 16), ModbusConstants.MODBUSTCPDEFAULTPORT)
 
-    readBuffer.closeContext("ModbusConstants")
-    # Create the instance
-        _modbusConstants: ModbusConstants = ModbusConstants(
-        )
+        readBuffer.closeContext("ModbusConstants")
+        # Create the instance
+        _modbusConstants: ModbusConstants = ModbusConstants()
         return _modbusConstants
 
 
     def equals(self, o: object) -> bool:
-        if this == o:
+        if self == o:
             return True
 
-        if not (instanceof(o, ModbusConstants):
+        if not isinstance(o, ModbusConstants):
             return False
 
         that: ModbusConstants = ModbusConstants(o)
-        return
-            True
+        return True
 
     def hashCode(self) -> int:
-        return Objects.hash(
-        )
+        return hash()
 
-    def toString(self) -> str:
-        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(true, true)
+    def __str__(self) -> str:
+        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
         try:
-            writeBufferBoxBased.writeSerializable(this)
-        except SerializationException:
+            writeBufferBoxBased.writeSerializable(self)
+        except SerializationException as e:
             raise RuntimeException(e)
 
-        return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+        return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
+
 
 
 
