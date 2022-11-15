@@ -22,20 +22,26 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 
+from ctypes import c_bool
+from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.protocols.modbus.readwrite.DriverType import DriverType
+import math
 
+    
 @dataclass
 class ModbusADU(ABC, PlcMessage):
-        # Arguments.
-            response: c_bool
+    # Arguments.
+    response: c_bool
 
 
 
     def __post_init__(self):
-super().__init__( )
+        super().__init__( )
 
     # Abstract accessors for discriminator values.
     @abstractmethod
     def getDriverType(self) -> DriverType:
+        pass
 
 
 
@@ -45,23 +51,23 @@ super().__init__( )
 
     def serialize(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
-            startPos: int = positionAware.getPos()
-            writeBuffer.pushContext("ModbusADU")
+        startPos: int = positionAware.getPos()
+        writeBuffer.pushContext("ModbusADU")
 
-                        # Switch field (Serialize the sub-type)
-                        serializeModbusADUChild(writeBuffer)
+        # Switch field (Serialize the sub-type)
+        self.serializeModbusADUChild(writeBuffer)
 
-            writeBuffer.popContext("ModbusADU")
+        writeBuffer.popContext("ModbusADU")
 
 
     def getLengthInBytes(self) -> int:
-        return int(math.ceil(float(getLengthInBits() / 8.0)))
+        return int(math.ceil(float(self.getLengthInBits() / 8.0)))
 
     def getLengthInBits(self) -> int:
         lengthInBits: int = 0
         _value: ModbusADU = self
 
-        # Length of sub-type elements will be added by sub-type...
+        # Length of subtype elements will be added by sub-type...
 
         return lengthInBits
 
@@ -74,7 +80,7 @@ super().__init__( )
         driverType: DriverType = None
         if isinstance(args[0], DriverType):
             driverType = DriverType(args[0])
-        elif isinstance(args[0], String):
+        elif isinstance(args[0], str):
             driverType = DriverType.valueOf(str(args[0]))
         else:
             raise PlcRuntimeException("Argument 0 expected to be of type DriverType or a string which is parseable but was " + args[0].getClass().getName())
@@ -82,65 +88,68 @@ super().__init__( )
         response: c_bool = None
         if isinstance(args[1], c_bool):
             response = c_bool(args[1])
-        elif isinstance(args[1], String):
+        elif isinstance(args[1], str):
             response = c_bool.valueOf(str(args[1]))
         else:
             raise PlcRuntimeException("Argument 1 expected to be of type c_bool or a string which is parseable but was " + args[1].getClass().getName())
 
         return staticParse(readBuffer, driverType, response)
-    }
 
-    def  staticParse(readBuffer: ReadBuffer, DriverType driverType, c_bool response) -> ModbusADU:
+
+    @staticmethod
+    def staticParseContext(readBuffer: ReadBuffer, driverType: DriverType, response: c_bool) -> ModbusADU:
         readBuffer.pullContext("ModbusADU")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-                builder: ModbusADUBuilder = None
-if EvaluationHelper.equals( driverType, DriverType.MODBUS_TCP ) ) :builder = ModbusTcpADU.staticParseBuilder(readBuffer, driverType, response)                     else:
-if EvaluationHelper.equals( driverType, DriverType.MODBUS_RTU ) ) :builder = ModbusRtuADU.staticParseBuilder(readBuffer, driverType, response)                     else:
-if:builder = ModbusAsciiADU.staticParseBuilder(readBuffer, driverType, response)                    
-                if builder is None:
-                    raise ParseException("Unsupported case for discriminated type"+" parameters ["+"driverType="+driverType+"]")
+        # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+        builder: ModbusADUBuilder = None
+        if EvaluationHelper.equals( driverType, DriverType.MODBUS_TCP ):
+
+            builder = ModbusTcpADU.staticParseBuilder(readBuffer, driverType, response)
+        if EvaluationHelper.equals( driverType, DriverType.MODBUS_RTU ):
+
+            builder = ModbusRtuADU.staticParseBuilder(readBuffer, driverType, response)
+        if 
+
+            builder = ModbusAsciiADU.staticParseBuilder(readBuffer, driverType, response)
+        if builder is None:
+            raise ParseException("Unsupported case for discriminated type"+" parameters ["+"driverType="+driverType+"]")
 
 
-    readBuffer.closeContext("ModbusADU")
-    # Create the instance
-        _modbusADU: ModbusADU = builder.build(
-            
-                response
-        )
+        readBuffer.closeContext("ModbusADU")
+        # Create the instance
+        _modbusADU: ModbusADU = builder.build(response )
         return _modbusADU
 
 
     def equals(self, o: object) -> bool:
-        if this == o:
+        if self == o:
             return True
 
-        if not (instanceof(o, ModbusADU):
+        if not isinstance(o, ModbusADU):
             return False
 
         that: ModbusADU = ModbusADU(o)
-        return
-            True
+        return True
 
     def hashCode(self) -> int:
-        return Objects.hash(
-        )
+        return hash()
 
-    def toString(self) -> str:
-        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(true, true)
+    def __str__(self) -> str:
+        writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
         try:
-            writeBufferBoxBased.writeSerializable(this)
-        except SerializationException:
+            writeBufferBoxBased.writeSerializable(self)
+        except SerializationException as e:
             raise RuntimeException(e)
 
-        return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+        return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 class ModbusADUBuilder:
-    def build( c_bool response ) -> ModbusADU:
+    def build( response: c_bool ) -> ModbusADU:
         pass
+
 
 
 
