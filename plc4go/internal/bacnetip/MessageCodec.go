@@ -21,6 +21,7 @@ package bacnetip
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/local"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
@@ -38,17 +39,23 @@ type ApplicationLayerMessageCodec struct {
 	bipSimpleApplication *BIPSimpleApplication
 	messageCode          *MessageCodec
 	deviceInfoCache      DeviceInfoCache
+
+	localAddress  *net.UDPAddr
+	remoteAddress *net.UDPAddr
 }
 
-func NewApplicationLayerMessageCodec(udpTransport *udp.Transport, transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr) (*ApplicationLayerMessageCodec, error) {
+func NewApplicationLayerMessageCodec(udpTransport *udp.Transport, transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr, remoteAddress *net.UDPAddr) (*ApplicationLayerMessageCodec, error) {
 	// Have the transport create a new transport-instance.
 	transportInstance, err := udpTransport.CreateTransportInstanceForLocalAddress(transportUrl, options, localAddress)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating transport instance")
 	}
 	_ = transportInstance
-	a := &ApplicationLayerMessageCodec{}
-	application, err := NewBIPSimpleApplication(LocalDeviceObject{}, localAddress, &a.deviceInfoCache, nil)
+	a := &ApplicationLayerMessageCodec{
+		localAddress:  localAddress,
+		remoteAddress: remoteAddress,
+	}
+	application, err := NewBIPSimpleApplication(&local.LocalDeviceObject{}, localAddress, &a.deviceInfoCache, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +88,22 @@ func (m *ApplicationLayerMessageCodec) IsRunning() bool {
 }
 
 func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
-	panic("not yet mapped")
+	iocb, err := NewIOCB(message.(model.APDU), m.remoteAddress)
+	if err != nil {
+		return errors.Wrap(err, "error creating IOCB")
+	}
+	go func() {
+		go m.bipSimpleApplication.RequestIO(iocb)
+		iocb.Wait()
+		if iocb.ioError != nil {
+			// TODO: handle error
+		} else if iocb.ioResponse != nil {
+			// TODO: response?
+		} else {
+			// TODO: what now?
+		}
+	}()
+	return nil
 }
 
 func (m *ApplicationLayerMessageCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {

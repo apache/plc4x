@@ -112,18 +112,18 @@ func (m *Driver) DiscoverWithContext(ctx context.Context, callback func(event ap
 
 type ApplicationManager struct {
 	sync.Mutex
-	applications map[string]spi.MessageCodec
+	applications map[string]*ApplicationLayerMessageCodec
 }
 
-func (a *ApplicationManager) getApplicationLayerMessageCode(transport *udp.Transport, transportUrl url.URL, options map[string][]string) (spi.MessageCodec, error) {
+func (a *ApplicationManager) getApplicationLayerMessageCode(transport *udp.Transport, transportUrl url.URL, options map[string][]string) (*ApplicationLayerMessageCodec, error) {
 	var localAddress *net.UDPAddr
+	var remoteAddr *net.UDPAddr
 	{
 		host := transportUrl.Host
 		port := transportUrl.Port()
 		if transportUrl.Port() == "" {
 			port = options["defaultUdpPort"][0]
 		}
-		var remoteAddr *net.UDPAddr
 		if resolvedRemoteAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%s", host, port)); err != nil {
 			panic(err)
 		} else {
@@ -141,7 +141,7 @@ func (a *ApplicationManager) getApplicationLayerMessageCode(transport *udp.Trans
 	defer a.Unlock()
 	messageCodec, ok := a.applications[localAddress.String()]
 	if !ok {
-		newMessageCodec, err := NewApplicationLayerMessageCodec(transport, transportUrl, options, localAddress)
+		newMessageCodec, err := NewApplicationLayerMessageCodec(transport, transportUrl, options, localAddress, remoteAddr)
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating application layer code")
 		}

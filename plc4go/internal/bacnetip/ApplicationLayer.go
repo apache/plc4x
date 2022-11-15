@@ -21,6 +21,7 @@ package bacnetip
 
 import (
 	"bytes"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/local"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -31,33 +32,33 @@ import (
 type SSMState uint8
 
 const (
-	IDLE SSMState = iota
-	SEGMENTED_REQUEST
-	AWAIT_CONFIRMATION
-	AWAIT_RESPONSE
-	SEGMENTED_RESPONSE
-	SEGMENTED_CONFIRMATION
-	COMPLETED
-	ABORTED
+	SSMState_IDLE SSMState = iota
+	SSMState_SEGMENTED_REQUEST
+	SSMState_AWAIT_CONFIRMATION
+	SSMState_AWAIT_RESPONSE
+	SSMState_SEGMENTED_RESPONSE
+	SSMState_SEGMENTED_CONFIRMATION
+	SSMState_COMPLETED
+	SSMState_ABORTED
 )
 
 func (s SSMState) String() string {
 	switch s {
-	case IDLE:
+	case SSMState_IDLE:
 		return "IDLE"
-	case SEGMENTED_REQUEST:
+	case SSMState_SEGMENTED_REQUEST:
 		return "SEGMENTED_REQUEST"
-	case AWAIT_CONFIRMATION:
+	case SSMState_AWAIT_CONFIRMATION:
 		return "AWAIT_CONFIRMATION"
-	case AWAIT_RESPONSE:
+	case SSMState_AWAIT_RESPONSE:
 		return "AWAIT_RESPONSE"
-	case SEGMENTED_RESPONSE:
+	case SSMState_SEGMENTED_RESPONSE:
 		return "SEGMENTED_RESPONSE"
-	case SEGMENTED_CONFIRMATION:
+	case SSMState_SEGMENTED_CONFIRMATION:
 		return "SEGMENTED_CONFIRMATION"
-	case COMPLETED:
+	case SSMState_COMPLETED:
 		return "COMPLETED"
-	case ABORTED:
+	case SSMState_ABORTED:
 		return "ABORTED"
 	default:
 		return "Unknown"
@@ -76,7 +77,7 @@ type SSMSAPRequirements interface {
 	_ServiceAccessPoint
 	_Client
 	GetDeviceInfoCache() *DeviceInfoCache
-	GetLocalDevice() LocalDeviceObject
+	GetLocalDevice() *local.LocalDeviceObject
 	GetProposedWindowSize() uint8
 	GetClientTransactions() []*ClientSSM
 	GetServerTransactions() []*ServerSSM
@@ -126,7 +127,7 @@ func NewSSM(sap SSMSAPRequirements, pduAddress []byte) (SSM, error) {
 		ssmSAP:                sap,
 		pduAddress:            pduAddress,
 		deviceInfo:            deviceInfo,
-		state:                 IDLE,
+		state:                 SSMState_IDLE,
 		numberOfApduRetries:   localDevice.NumberOfAPDURetries,
 		apduTimeout:           localDevice.APDUTimeout,
 		segmentationSupported: localDevice.SegmentationSupported,
@@ -163,7 +164,7 @@ func (s *SSM) restartTimer(millis uint) {
 // setState This function is called when the derived class wants to change state
 func (s *SSM) setState(newState SSMState, timer *uint) error {
 	log.Debug().Msgf("setState %s timer=%d", newState, timer)
-	if s.state == COMPLETED || s.state == ABORTED {
+	if s.state == SSMState_COMPLETED || s.state == SSMState_ABORTED {
 		return errors.Errorf("Invalid state transition from %s to %s", s.state, newState)
 	}
 
@@ -360,7 +361,7 @@ func (s *ClientSSM) setState(newState SSMState, timer *uint) error {
 		return errors.Wrap(err, "error during SSM state transition")
 	}
 
-	if s.state == COMPLETED || s.state == ABORTED {
+	if s.state == SSMState_COMPLETED || s.state == SSMState_ABORTED {
 		log.Debug().Msg("remove from active transaction")
 		s.ssmSAP.GetClientTransactions() // TODO remove "this" transaction from the list
 		if s.deviceInfo == nil {
@@ -458,7 +459,7 @@ func (s *ClientSSM) Indication(apdu readWriteModel.APDU) error { // TODO: maybe 
 		// unsegmented
 		s.sentAllSegments = true
 		s.retryCount = 0
-		if err := s.setState(AWAIT_CONFIRMATION, &s.apduTimeout); err != nil {
+		if err := s.setState(SSMState_AWAIT_CONFIRMATION, &s.apduTimeout); err != nil {
 			return errors.Wrap(err, "error switching state")
 		}
 	} else {
@@ -468,7 +469,7 @@ func (s *ClientSSM) Indication(apdu readWriteModel.APDU) error { // TODO: maybe 
 		s.segmentRetryCount = 0
 		s.initialSequenceNumber = 0
 		s.actualWindowSize = nil
-		if err := s.setState(SEGMENTED_REQUEST, &s.segmentTimeout); err != nil {
+		if err := s.setState(SSMState_SEGMENTED_REQUEST, &s.segmentTimeout); err != nil {
 			return errors.Wrap(err, "error switching state")
 		}
 	}
@@ -497,11 +498,11 @@ func (s *ClientSSM) Confirmation(apdu readWriteModel.APDU) error {
 	log.Debug().Msgf("confirmation\n%s", apdu)
 
 	switch s.state {
-	case SEGMENTED_REQUEST:
+	case SSMState_SEGMENTED_REQUEST:
 		return s.segmentedRequest(apdu)
-	case AWAIT_CONFIRMATION:
+	case SSMState_AWAIT_CONFIRMATION:
 		return s.awaitConfirmation(apdu)
-	case SEGMENTED_CONFIRMATION:
+	case SSMState_SEGMENTED_CONFIRMATION:
 		return s.segmentedConfirmation(apdu)
 	default:
 		return errors.Errorf("Invalid state %s", s.state)
@@ -512,13 +513,13 @@ func (s *ClientSSM) Confirmation(apdu readWriteModel.APDU) error {
 func (s *ClientSSM) processTask() error {
 	log.Debug().Msg("processTask")
 	switch s.state {
-	case SEGMENTED_REQUEST:
+	case SSMState_SEGMENTED_REQUEST:
 		return s.segmentedRequestTimeout()
-	case AWAIT_CONFIRMATION:
+	case SSMState_AWAIT_CONFIRMATION:
 		return s.awaitConfirmationTimeout()
-	case SEGMENTED_CONFIRMATION:
+	case SSMState_SEGMENTED_CONFIRMATION:
 		return s.segmentedConfirmationTimeout()
-	case COMPLETED, ABORTED:
+	case SSMState_COMPLETED, SSMState_ABORTED:
 		return nil
 	default:
 		return errors.Errorf("Invalid state %s", s.state)
@@ -530,7 +531,7 @@ func (s *ClientSSM) abort(reason readWriteModel.BACnetAbortReason) (readWriteMod
 	log.Debug().Msgf("abort\n%s", reason)
 
 	// change the state to aborted
-	if err := s.setState(ABORTED, nil); err != nil {
+	if err := s.setState(SSMState_ABORTED, nil); err != nil {
 		return nil, errors.Wrap(err, "Error setting state to aborted")
 	}
 
@@ -558,7 +559,7 @@ func (s *ClientSSM) segmentedRequest(apdu readWriteModel.APDU) error {
 		} else if s.sentAllSegments {
 			log.Debug().Msg("all done sending request")
 
-			if err := s.setState(AWAIT_CONFIRMATION, &s.apduTimeout); err != nil {
+			if err := s.setState(SSMState_AWAIT_CONFIRMATION, &s.apduTimeout); err != nil {
 				return errors.Wrap(err, "error switching state")
 			}
 		} else {
@@ -587,7 +588,7 @@ func (s *ClientSSM) segmentedRequest(apdu readWriteModel.APDU) error {
 				log.Debug().Err(err).Msg("error sending response")
 			}
 		} else {
-			if err := s.setState(COMPLETED, nil); err != nil {
+			if err := s.setState(SSMState_COMPLETED, nil); err != nil {
 				return errors.Wrap(err, "error switching state")
 			}
 		}
@@ -607,7 +608,7 @@ func (s *ClientSSM) segmentedRequest(apdu readWriteModel.APDU) error {
 			}
 		} else if !apdu.GetSegmentedMessage() {
 			// ack is not segmented
-			if err := s.setState(COMPLETED, nil); err != nil {
+			if err := s.setState(SSMState_COMPLETED, nil); err != nil {
 				return errors.Wrap(err, "error switching state")
 			}
 			if err := s.Response(apdu); err != nil {
@@ -624,13 +625,13 @@ func (s *ClientSSM) segmentedRequest(apdu readWriteModel.APDU) error {
 			s.actualWindowSize = &minWindowSize
 			s.lastSequenceNumber = 0
 			s.initialSequenceNumber = 0
-			if err := s.setState(SEGMENTED_CONFIRMATION, &s.segmentTimeout); err != nil {
+			if err := s.setState(SSMState_SEGMENTED_CONFIRMATION, &s.segmentTimeout); err != nil {
 				return errors.Wrap(err, "error switching state")
 			}
 		}
 	case readWriteModel.APDUErrorExactly:
 		log.Debug().Msg("error/reject/abort")
-		if err := s.setState(COMPLETED, nil); err != nil {
+		if err := s.setState(SSMState_COMPLETED, nil); err != nil {
 			return errors.Wrap(err, "error switching state")
 		}
 		if err := s.Response(apdu); err != nil {
@@ -685,7 +686,7 @@ func (s *ClientSSM) awaitConfirmation(apdu readWriteModel.APDU) error {
 	case readWriteModel.APDUAbortExactly:
 		log.Debug().Msg("Server aborted")
 
-		if err := s.setState(ABORTED, nil); err != nil {
+		if err := s.setState(SSMState_ABORTED, nil); err != nil {
 			return errors.Wrap(err, "error switching state")
 		}
 		if err := s.Response(apdu); err != nil {
@@ -694,7 +695,7 @@ func (s *ClientSSM) awaitConfirmation(apdu readWriteModel.APDU) error {
 	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUErrorExactly, readWriteModel.APDURejectExactly:
 		log.Debug().Msg("simple ack, error or reject")
 
-		if err := s.setState(COMPLETED, nil); err != nil {
+		if err := s.setState(SSMState_COMPLETED, nil); err != nil {
 			return errors.Wrap(err, "error switching state")
 		}
 		if err := s.Response(apdu); err != nil {
@@ -706,7 +707,7 @@ func (s *ClientSSM) awaitConfirmation(apdu readWriteModel.APDU) error {
 		if !apdu.GetSegmentedMessage() {
 			log.Debug().Msg("unsegmented")
 
-			if err := s.setState(COMPLETED, nil); err != nil {
+			if err := s.setState(SSMState_COMPLETED, nil); err != nil {
 				return errors.Wrap(err, "error switching state")
 			}
 			if err := s.Response(apdu); err != nil {
@@ -733,7 +734,7 @@ func (s *ClientSSM) awaitConfirmation(apdu readWriteModel.APDU) error {
 			s.actualWindowSize = apdu.GetProposedWindowSize()
 			s.lastSequenceNumber = 0
 			s.initialSequenceNumber = 0
-			if err := s.setState(SEGMENTED_CONFIRMATION, nil); err != nil {
+			if err := s.setState(SSMState_SEGMENTED_CONFIRMATION, nil); err != nil {
 				return errors.Wrap(err, "error switching state")
 			}
 
@@ -858,7 +859,7 @@ func (s *ClientSSM) segmentedConfirmation(apdu readWriteModel.APDU) error {
 			log.Debug().Err(err).Msg("error sending request")
 		}
 
-		if err := s.setState(COMPLETED, nil); err != nil {
+		if err := s.setState(SSMState_COMPLETED, nil); err != nil {
 			return errors.Wrap(err, "error switching state")
 		}
 		// TODO: this is nonsense... We need to parse the service and the apdu not sure where to get it from now...
@@ -928,7 +929,7 @@ func (s *ServerSSM) setState(newState SSMState, timer *uint) error {
 		return errors.Wrap(err, "error during SSM state transition")
 	}
 
-	if s.state == COMPLETED || s.state == ABORTED {
+	if s.state == SSMState_COMPLETED || s.state == SSMState_ABORTED {
 		log.Debug().Msg("remove from active transaction")
 		s.ssmSAP.GetServerTransactions() // TODO remove "this" transaction from the list
 		if s.deviceInfo != nil {
@@ -954,13 +955,13 @@ func (s *ServerSSM) Indication(apdu readWriteModel.APDU) error { // TODO: maybe 
 	// make sure we're getting confirmed requests
 
 	switch s.state {
-	case IDLE:
+	case SSMState_IDLE:
 		return s.idle(apdu)
-	case SEGMENTED_REQUEST:
+	case SSMState_SEGMENTED_REQUEST:
 		return s.segmentedRequest(apdu)
-	case AWAIT_RESPONSE:
+	case SSMState_AWAIT_RESPONSE:
 		return s.awaitResponse(apdu)
-	case SEGMENTED_RESPONSE:
+	case SSMState_SEGMENTED_RESPONSE:
 		return s.segmentedResponse(apdu)
 	default:
 		return errors.Errorf("invalid state %s", s.state)
@@ -984,7 +985,7 @@ func (s *ServerSSM) Confirmation(apdu readWriteModel.APDU) error {
 	log.Debug().Msgf("confirmation\n%s", apdu)
 
 	// check to see we are in the correct state
-	if s.state != AWAIT_RESPONSE {
+	if s.state != SSMState_AWAIT_RESPONSE {
 		log.Debug().Msg("warning: no expecting a response")
 	}
 
@@ -993,7 +994,7 @@ func (s *ServerSSM) Confirmation(apdu readWriteModel.APDU) error {
 	case readWriteModel.APDUAbortExactly:
 		log.Debug().Msg("abort")
 
-		if err := s.setState(ABORTED, nil); err != nil {
+		if err := s.setState(SSMState_ABORTED, nil); err != nil {
 			return errors.Wrap(err, "Error setting state to aborted")
 		}
 
@@ -1004,7 +1005,7 @@ func (s *ServerSSM) Confirmation(apdu readWriteModel.APDU) error {
 		log.Debug().Msg("simple ack, error or reject")
 
 		// transaction completed
-		if err := s.setState(COMPLETED, nil); err != nil {
+		if err := s.setState(SSMState_COMPLETED, nil); err != nil {
 			return errors.Wrap(err, "Error setting state to aborted")
 		}
 
@@ -1086,7 +1087,7 @@ func (s *ServerSSM) Confirmation(apdu readWriteModel.APDU) error {
 				if err := s.Response(apdu); err != nil {
 					log.Debug().Err(err).Msg("error sending response")
 				}
-				if err := s.setState(COMPLETED, nil); err != nil {
+				if err := s.setState(SSMState_COMPLETED, nil); err != nil {
 					return errors.Wrap(err, "Error setting state to aborted")
 				}
 			} else {
@@ -1097,7 +1098,7 @@ func (s *ServerSSM) Confirmation(apdu readWriteModel.APDU) error {
 				if err := s.Response(segment); err != nil {
 					log.Debug().Err(err).Msg("error sending response")
 				}
-				if err := s.setState(SEGMENTED_RESPONSE, nil); err != nil {
+				if err := s.setState(SSMState_SEGMENTED_RESPONSE, nil); err != nil {
 					return errors.Wrap(err, "Error setting state to aborted")
 				}
 			}
@@ -1114,13 +1115,13 @@ func (s *ServerSSM) Confirmation(apdu readWriteModel.APDU) error {
 func (s *ServerSSM) processTask() error {
 	log.Debug().Msg("processTask")
 	switch s.state {
-	case SEGMENTED_REQUEST:
+	case SSMState_SEGMENTED_REQUEST:
 		return s.segmentedRequestTimeout()
-	case AWAIT_CONFIRMATION:
+	case SSMState_AWAIT_CONFIRMATION:
 		return s.awaitResponseTimeout()
-	case SEGMENTED_CONFIRMATION:
+	case SSMState_SEGMENTED_CONFIRMATION:
 		return s.segmentedResponseTimeout()
-	case COMPLETED, ABORTED:
+	case SSMState_COMPLETED, SSMState_ABORTED:
 		return nil
 	default:
 		return errors.Errorf("Invalid state %s", s.state)
@@ -1132,7 +1133,7 @@ func (s *ServerSSM) abort(reason readWriteModel.BACnetAbortReason) (readWriteMod
 	log.Debug().Msgf("abort\n%s", reason)
 
 	// change the state to aborted
-	if err := s.setState(ABORTED, nil); err != nil {
+	if err := s.setState(SSMState_ABORTED, nil); err != nil {
 		return nil, errors.Wrap(err, "Error setting state to aborted")
 	}
 
@@ -1200,7 +1201,7 @@ func (s *ServerSSM) idle(apdu readWriteModel.APDU) error {
 
 	// unsegmented request
 	if len(apduConfirmedRequest.GetSegment()) <= 0 {
-		if err := s.setState(AWAIT_RESPONSE, nil); err != nil {
+		if err := s.setState(SSMState_AWAIT_RESPONSE, nil); err != nil {
 			return errors.Wrap(err, "Error setting state to aborted")
 		}
 		return s.Request(apdu)
@@ -1228,7 +1229,7 @@ func (s *ServerSSM) idle(apdu readWriteModel.APDU) error {
 	// initialize the state
 	s.lastSequenceNumber = 0
 	s.initialSequenceNumber = 0
-	if err := s.setState(SEGMENTED_REQUEST, &s.segmentTimeout); err != nil {
+	if err := s.setState(SSMState_SEGMENTED_REQUEST, &s.segmentTimeout); err != nil {
 		return errors.Wrap(err, "Error setting state to aborted")
 	}
 
@@ -1243,7 +1244,7 @@ func (s *ServerSSM) segmentedRequest(apdu readWriteModel.APDU) error {
 
 	// some kind of problem
 	if _, ok := apdu.(readWriteModel.APDUAbortExactly); ok {
-		if err := s.setState(COMPLETED, nil); err != nil {
+		if err := s.setState(SSMState_COMPLETED, nil); err != nil {
 			return errors.Wrap(err, "Error setting state to aborted")
 		}
 		return s.Response(apdu)
@@ -1312,7 +1313,7 @@ func (s *ServerSSM) segmentedRequest(apdu readWriteModel.APDU) error {
 
 		// forward the whole thing to the application
 		applicationTimeout := s.ssmSAP.GetApplicationTimeout()
-		if err := s.setState(AWAIT_RESPONSE, &applicationTimeout); err != nil {
+		if err := s.setState(SSMState_AWAIT_RESPONSE, &applicationTimeout); err != nil {
 			return errors.Wrap(err, "Error setting state to aborted")
 		}
 		// TODO: here we need to rebuild again yada yada
@@ -1348,7 +1349,7 @@ func (s *ServerSSM) segmentedRequestTimeout() error {
 	log.Debug().Msg("segmentedRequestTimeout")
 
 	// give up
-	if err := s.setState(ABORTED, nil); err != nil {
+	if err := s.setState(SSMState_ABORTED, nil); err != nil {
 		return errors.Wrap(err, "Error setting state to aborted")
 	}
 	return nil
@@ -1364,7 +1365,7 @@ func (s *ServerSSM) awaitResponse(apdu readWriteModel.APDU) error {
 		log.Debug().Msg("client aborting this request")
 
 		// forward to the application
-		if err := s.setState(ABORTED, nil); err != nil {
+		if err := s.setState(SSMState_ABORTED, nil); err != nil {
 			return errors.Wrap(err, "Error setting state to aborted")
 		}
 		if err := s.Request(apdu); err != nil { // send it ot the device
@@ -1410,7 +1411,7 @@ func (s *ServerSSM) segmentedResponse(apdu readWriteModel.APDU) error {
 		} else if s.sentAllSegments {
 			// final ack received?
 			log.Debug().Msg("all done sending response")
-			if err := s.setState(COMPLETED, nil); err != nil {
+			if err := s.setState(SSMState_COMPLETED, nil); err != nil {
 				return errors.Wrap(err, "Error setting state to aborted")
 			}
 		} else {
@@ -1427,7 +1428,7 @@ func (s *ServerSSM) segmentedResponse(apdu readWriteModel.APDU) error {
 		}
 	// some kind of problem
 	case readWriteModel.APDUAbortExactly:
-		if err := s.setState(COMPLETED, nil); err != nil {
+		if err := s.setState(SSMState_COMPLETED, nil); err != nil {
 			return errors.Wrap(err, "Error setting state to aborted")
 		}
 		if err := s.Response(apdu); err != nil { // send it ot the application
@@ -1451,7 +1452,7 @@ func (s *ServerSSM) segmentedResponseTimeout() error {
 		}
 	} else {
 		// five up
-		if err := s.setState(ABORTED, nil); err != nil {
+		if err := s.setState(SSMState_ABORTED, nil); err != nil {
 			return errors.Wrap(err, "Error setting state to aborted")
 		}
 	}
@@ -1462,7 +1463,7 @@ type StateMachineAccessPoint struct {
 	*Client
 	*ServiceAccessPoint
 
-	localDevice           LocalDeviceObject
+	localDevice           *local.LocalDeviceObject
 	deviceInventory       *DeviceInfoCache
 	nextInvokeId          uint8
 	clientTransactions    []*ClientSSM
@@ -1478,7 +1479,7 @@ type StateMachineAccessPoint struct {
 	applicationTimeout    uint
 }
 
-func NewStateMachineAccessPoint(localDevice LocalDeviceObject, deviceInventory *DeviceInfoCache, sapID *int, cid *int) (*StateMachineAccessPoint, error) {
+func NewStateMachineAccessPoint(localDevice *local.LocalDeviceObject, deviceInventory *DeviceInfoCache, sapID *int, cid *int) (*StateMachineAccessPoint, error) {
 	log.Debug().Msgf("NewStateMachineAccessPoint localDevice=%v deviceInventory=%v sap=%v cid=%v", localDevice, deviceInventory, sapID, cid)
 
 	s := &StateMachineAccessPoint{
@@ -1795,7 +1796,7 @@ func (s *StateMachineAccessPoint) GetDeviceInfoCache() *DeviceInfoCache {
 	return s.deviceInventory
 }
 
-func (s *StateMachineAccessPoint) GetLocalDevice() LocalDeviceObject {
+func (s *StateMachineAccessPoint) GetLocalDevice() *local.LocalDeviceObject {
 	return s.localDevice
 }
 
@@ -1860,7 +1861,7 @@ func (a *ApplicationServiceAccessPoint) Indication(apdu readWriteModel.APDU) err
 			log.Debug().Err(errorFound).Msg("got error")
 
 			// TODO: map it to a error... code temporary placeholder
-			a.Response(readWriteModel.NewAPDUReject(apdu.GetInvokeId(), nil, 0))
+			return a.Response(readWriteModel.NewAPDUReject(apdu.GetInvokeId(), nil, 0))
 		}
 	case readWriteModel.APDUUnconfirmedRequestExactly:
 		//assume no errors found
