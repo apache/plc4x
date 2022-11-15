@@ -29,32 +29,32 @@ import java.util.Map;
 
 public enum ModbusDataType {
 
-BOOL( (short) 1 , (short) 2 ) , BYTE( (short) 2 , (short) 2 ) , WORD( (short) 3 , (short) 2 ) , DWORD( (short) 4 , (short) 4 ) , LWORD( (short) 5 , (short) 8 ) , SINT( (short) 6 , (short) 2 ) , INT( (short) 7 , (short) 2 ) , DINT( (short) 8 , (short) 4 ) , LINT( (short) 9 , (short) 8 ) , USINT( (short) 10 , (short) 2 ) , UINT( (short) 11 , (short) 2 ) , UDINT( (short) 12 , (short) 4 ) , ULINT( (short) 13 , (short) 8 ) , REAL( (short) 14 , (short) 4 ) , LREAL( (short) 15 , (short) 8 ) , TIME( (short) 16 , (short) 8 ) , LTIME( (short) 17 , (short) 8 ) , DATE( (short) 18 , (short) 8 ) , LDATE( (short) 19 , (short) 8 ) , TIME_OF_DAY( (short) 20 , (short) 8 ) , LTIME_OF_DAY( (short) 21 , (short) 8 ) , DATE_AND_TIME( (short) 22 , (short) 8 ) , LDATE_AND_TIME( (short) 23 , (short) 8 ) , CHAR( (short) 24 , (short) 1 ) , WCHAR( (short) 25 , (short) 2 ) , STRING( (short) 26 , (short) 1 ) , WSTRING( (short) 27 , (short) 2 ) ;
-    private static final Map<Short, ModbusDataType> map;
+BOOL( (c_uint8) 1 , (c_uint8) 2 ) , BYTE( (c_uint8) 2 , (c_uint8) 2 ) , WORD( (c_uint8) 3 , (c_uint8) 2 ) , DWORD( (c_uint8) 4 , (c_uint8) 4 ) , LWORD( (c_uint8) 5 , (c_uint8) 8 ) , SINT( (c_uint8) 6 , (c_uint8) 2 ) , INT( (c_uint8) 7 , (c_uint8) 2 ) , DINT( (c_uint8) 8 , (c_uint8) 4 ) , LINT( (c_uint8) 9 , (c_uint8) 8 ) , USINT( (c_uint8) 10 , (c_uint8) 2 ) , UINT( (c_uint8) 11 , (c_uint8) 2 ) , UDINT( (c_uint8) 12 , (c_uint8) 4 ) , ULINT( (c_uint8) 13 , (c_uint8) 8 ) , REAL( (c_uint8) 14 , (c_uint8) 4 ) , LREAL( (c_uint8) 15 , (c_uint8) 8 ) , TIME( (c_uint8) 16 , (c_uint8) 8 ) , LTIME( (c_uint8) 17 , (c_uint8) 8 ) , DATE( (c_uint8) 18 , (c_uint8) 8 ) , LDATE( (c_uint8) 19 , (c_uint8) 8 ) , TIME_OF_DAY( (c_uint8) 20 , (c_uint8) 8 ) , LTIME_OF_DAY( (c_uint8) 21 , (c_uint8) 8 ) , DATE_AND_TIME( (c_uint8) 22 , (c_uint8) 8 ) , LDATE_AND_TIME( (c_uint8) 23 , (c_uint8) 8 ) , CHAR( (c_uint8) 24 , (c_uint8) 1 ) , WCHAR( (c_uint8) 25 , (c_uint8) 2 ) , STRING( (c_uint8) 26 , (c_uint8) 1 ) , WSTRING( (c_uint8) 27 , (c_uint8) 2 ) ;
+    private static final Map<c_uint8, ModbusDataType> map;
     static {
         map = new HashMap<>();
         for (ModbusDataType value : ModbusDataType.values()) {
-            map.put((short) value.getValue(), value);
+            map.put((c_uint8) value.getValue(), value);
         }
     }
 
-    private short value;
-        private short dataTypeSize;
+    private c_uint8 value;
+        private c_uint8 dataTypeSize;
 
-    ModbusDataType(short value, short dataTypeSize) {
+    ModbusDataType(c_uint8 value, c_uint8 dataTypeSize) {
         this.value = value;
         this.dataTypeSize = dataTypeSize;
     }
 
-    public short getValue() {
+    public c_uint8 getValue() {
         return value;
     }
 
-    public short getDataTypeSize() {
+    public c_uint8 getDataTypeSize() {
         return dataTypeSize;
     }
 
-    public static ModbusDataType firstEnumForFieldDataTypeSize(short fieldValue) {
+    public static ModbusDataType firstEnumForFieldDataTypeSize(c_uint8 fieldValue) {
         for (ModbusDataType _val : ModbusDataType.values()) {
             if(_val.getDataTypeSize() == fieldValue) {
                 return _val;
@@ -63,7 +63,7 @@ BOOL( (short) 1 , (short) 2 ) , BYTE( (short) 2 , (short) 2 ) , WORD( (short) 3 
         return null;
     }
 
-    public static List<ModbusDataType> enumsForFieldDataTypeSize(short fieldValue) {
+    public static List<ModbusDataType> enumsForFieldDataTypeSize(c_uint8 fieldValue) {
         List<ModbusDataType> _values = new ArrayList();
         for (ModbusDataType _val : ModbusDataType.values()) {
             if(_val.getDataTypeSize() == fieldValue) {
@@ -73,11 +73,11 @@ BOOL( (short) 1 , (short) 2 ) , BYTE( (short) 2 , (short) 2 ) , WORD( (short) 3 
         return _values;
     }
 
-    public static ModbusDataType enumForValue(short value) {
+    public static ModbusDataType enumForValue(c_uint8 value) {
         return map.get(value);
     }
 
-    public static Boolean isDefined(short value) {
+    public static Boolean isDefined(c_uint8 value) {
         return map.containsKey(value);
     }
 

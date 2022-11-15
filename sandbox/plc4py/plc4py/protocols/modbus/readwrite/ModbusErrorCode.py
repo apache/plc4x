@@ -29,30 +29,30 @@ import java.util.Map;
 
 public enum ModbusErrorCode {
 
-ILLEGAL_FUNCTION( (short) 1 ) , ILLEGAL_DATA_ADDRESS( (short) 2 ) , ILLEGAL_DATA_VALUE( (short) 3 ) , SLAVE_DEVICE_FAILURE( (short) 4 ) , ACKNOWLEDGE( (short) 5 ) , SLAVE_DEVICE_BUSY( (short) 6 ) , NEGATIVE_ACKNOWLEDGE( (short) 7 ) , MEMORY_PARITY_ERROR( (short) 8 ) , GATEWAY_PATH_UNAVAILABLE( (short) 10 ) , GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND( (short) 11 ) ;
-    private static final Map<Short, ModbusErrorCode> map;
+ILLEGAL_FUNCTION( (c_uint8) 1 ) , ILLEGAL_DATA_ADDRESS( (c_uint8) 2 ) , ILLEGAL_DATA_VALUE( (c_uint8) 3 ) , SLAVE_DEVICE_FAILURE( (c_uint8) 4 ) , ACKNOWLEDGE( (c_uint8) 5 ) , SLAVE_DEVICE_BUSY( (c_uint8) 6 ) , NEGATIVE_ACKNOWLEDGE( (c_uint8) 7 ) , MEMORY_PARITY_ERROR( (c_uint8) 8 ) , GATEWAY_PATH_UNAVAILABLE( (c_uint8) 10 ) , GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND( (c_uint8) 11 ) ;
+    private static final Map<c_uint8, ModbusErrorCode> map;
     static {
         map = new HashMap<>();
         for (ModbusErrorCode value : ModbusErrorCode.values()) {
-            map.put((short) value.getValue(), value);
+            map.put((c_uint8) value.getValue(), value);
         }
     }
 
-    private short value;
+    private c_uint8 value;
 
-    ModbusErrorCode(short value) {
+    ModbusErrorCode(c_uint8 value) {
         this.value = value;
     }
 
-    public short getValue() {
+    public c_uint8 getValue() {
         return value;
     }
 
-    public static ModbusErrorCode enumForValue(short value) {
+    public static ModbusErrorCode enumForValue(c_uint8 value) {
         return map.get(value);
     }
 
-    public static Boolean isDefined(short value) {
+    public static Boolean isDefined(c_uint8 value) {
         return map.containsKey(value);
     }
 

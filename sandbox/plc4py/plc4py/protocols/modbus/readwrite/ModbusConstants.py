@@ -25,7 +25,7 @@ from dataclasses import dataclass
 
 @dataclass
 class ModbusConstants(PlcMessage):
-            MODBUSTCPDEFAULTPORT: Integer = 502
+            MODBUSTCPDEFAULTPORT: c_uint16 = 502
 
 
 
@@ -34,7 +34,7 @@ super().__init__( )
 
 
 
-    def getModbusTcpDefaultPort(self) -> int:
+    def getModbusTcpDefaultPort(self) -> c_uint16:
         return MODBUSTCPDEFAULTPORT
 
 
@@ -73,7 +73,7 @@ super().__init__( )
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                modbusTcpDefaultPort: int = readConstField("modbusTcpDefaultPort", readUnsignedInt(readBuffer, 16), ModbusConstants.MODBUSTCPDEFAULTPORT)
+                modbusTcpDefaultPort: c_uint16 = readConstField("modbusTcpDefaultPort", readUnsignedInt(readBuffer, 16), ModbusConstants.MODBUSTCPDEFAULTPORT)
 
     readBuffer.closeContext("ModbusConstants")
     # Create the instance
@@ -105,4 +105,6 @@ super().__init__( )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
 

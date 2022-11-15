@@ -26,7 +26,7 @@ from dataclasses import dataclass
 @dataclass
 class ModbusADU(ABC, PlcMessage):
         # Arguments.
-            response: Boolean
+            response: c_bool
 
 
 
@@ -79,18 +79,18 @@ super().__init__( )
         else:
             raise PlcRuntimeException("Argument 0 expected to be of type DriverType or a string which is parseable but was " + args[0].getClass().getName())
 
-        response: Boolean = None
-        if isinstance(args[1], Boolean):
-            response = Boolean(args[1])
+        response: c_bool = None
+        if isinstance(args[1], c_bool):
+            response = c_bool(args[1])
         elif isinstance(args[1], String):
-            response = Boolean.valueOf(str(args[1]))
+            response = c_bool.valueOf(str(args[1]))
         else:
-            raise PlcRuntimeException("Argument 1 expected to be of type Boolean or a string which is parseable but was " + args[1].getClass().getName())
+            raise PlcRuntimeException("Argument 1 expected to be of type c_bool or a string which is parseable but was " + args[1].getClass().getName())
 
         return staticParse(readBuffer, driverType, response)
     }
 
-    def  staticParse(readBuffer: ReadBuffer, DriverType driverType, Boolean response) -> ModbusADU:
+    def  staticParse(readBuffer: ReadBuffer, DriverType driverType, c_bool response) -> ModbusADU:
         readBuffer.pullContext("ModbusADU")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
@@ -112,12 +112,6 @@ if:builder = ModbusAsciiADU.staticParseBuilder(readBuffer, driverType, response)
                 response
         )
         return _modbusADU
-
-        class ModbusADUBuilder:
-            def build(
-            
-                Boolean response
-        ) -> ModbusADU:
 
 
     def equals(self, o: object) -> bool:
@@ -143,4 +137,10 @@ if:builder = ModbusAsciiADU.staticParseBuilder(readBuffer, driverType, response)
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+class ModbusADUBuilder:
+    def build( c_bool response ) -> ModbusADU:
+        pass
+
+
 

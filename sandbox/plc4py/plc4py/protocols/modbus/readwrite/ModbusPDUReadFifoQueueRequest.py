@@ -25,17 +25,17 @@ from dataclasses import dataclass
 
 @dataclass
 class ModbusPDUReadFifoQueueRequest(PlcMessage,ModbusPDU):
-            fifoPointerAddress: int
+            fifoPointerAddress: c_uint16
 
     # Accessors for discriminator values.
-    def Boolean getErrorFlag() {
-        return (boolean) false
+    def c_bool getErrorFlag() {
+        return (c_bool) false
     }
-    def Short getFunctionFlag() {
-        return (short) 0x18
+    def c_uint8 getFunctionFlag() {
+        return (c_uint8) 0x18
     }
-    def Boolean getResponse() {
-        return (boolean) false
+    def c_bool getResponse() {
+        return (c_bool) false
     }
 
 
@@ -44,7 +44,7 @@ super().__init__( )
 
 
 
-    def getFifoPointerAddress(self) -> int:
+    def getFifoPointerAddress(self) -> c_uint16:
         return fifoPointerAddress
 
 
@@ -72,13 +72,13 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, Boolean response) -> ModbusPDUReadFifoQueueRequestBuilder:
+    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUReadFifoQueueRequestBuilder:
         readBuffer.pullContext("ModbusPDUReadFifoQueueRequest")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                fifoPointerAddress: int = readSimpleField("fifoPointerAddress", readUnsignedInt(readBuffer, 16))
+                fifoPointerAddress: c_uint16 = readSimpleField("fifoPointerAddress", readUnsignedInt(readBuffer, 16))
 
     readBuffer.closeContext("ModbusPDUReadFifoQueueRequest")
     # Create the instance
@@ -86,23 +86,6 @@ super().__init__( )
             fifoPointerAddress
         
         )
-
-        class ModbusPDUReadFifoQueueRequestBuilder(ModbusPDUModbusPDUBuilder {
-        fifoPointerAddress: int
-
-        def ModbusPDUReadFifoQueueRequestBuilder(
-            int fifoPointerAddress
-        
-        ):
-            self.fifoPointerAddress = fifoPointerAddress
-
-
-        def build(
-        ) -> ModbusPDUReadFifoQueueRequest:
-            modbusPDUReadFifoQueueRequest: ModbusPDUReadFifoQueueRequest = ModbusPDUReadFifoQueueRequest(
-                fifoPointerAddress
-)
-            return modbusPDUReadFifoQueueRequest
 
 
     def equals(self, o: object) -> bool:
@@ -132,4 +115,16 @@ super().__init__( )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
+class ModbusPDUReadFifoQueueRequestBuilder(ModbusPDUModbusPDUBuilder: fifoPointerAddress: c_uint16def ModbusPDUReadFifoQueueRequestBuilder( c_uint16 fifoPointerAddress ):        self.fifoPointerAddress = fifoPointerAddress
+
+
+        def build(
+        ) -> ModbusPDUReadFifoQueueRequest:
+        modbusPDUReadFifoQueueRequest: ModbusPDUReadFifoQueueRequest = ModbusPDUReadFifoQueueRequest(
+            fifoPointerAddress
+)
+        return modbusPDUReadFifoQueueRequest
+
 

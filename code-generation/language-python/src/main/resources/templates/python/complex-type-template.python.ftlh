@@ -795,92 +795,6 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         return _${type.name?uncap_first}
     </#if>
 
-    <#if type.isDiscriminatedParentTypeDefinition()>
-        class ${type.name}Builder:
-            def build(
-        <#list type.propertyFields as field>
-            ${helper.getLanguageTypeNameForField(field)} ${field.name}<#sep>, </#sep>
-            </#list>
-        <#if filteredParserArguments?has_content>
-            <#if type.propertyFields?has_content>, </#if>
-            <#list filteredParserArguments as arg>
-                ${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep>
-            </#list>
-        </#if>
-        ) -> ${type.name}:
-
-    </#if>
-    <#if type.isDiscriminatedChildTypeDefinition()>
-        class ${type.name}Builder(${type.parentType.orElseThrow().name}${type.parentType.orElseThrow().name}Builder {
-        <#if type.propertyFields?has_content>
-            <#list type.propertyFields as field>
-        ${field.name}: ${helper.getLanguageTypeNameForField(field)}
-            </#list>
-        </#if>
-        <#if filteredParserArguments?has_content>
-            <#list filteredParserArguments as arg>
-        ${arg.name}: ${helper.getLanguageTypeNameForTypeReference(arg.type)}
-            </#list>
-        </#if>
-        <#list reservedFields as reservedField>
-        reservedField${reservedField?index}: ${helper.getLanguageTypeNameForTypeReference(reservedField.type, false)}
-        </#list>
-
-        def ${type.name}Builder(
-        <#list type.propertyFields as field>
-            ${helper.getLanguageTypeNameForField(field)} ${field.name}<#sep>, </#sep>
-        </#list>
-        <#if filteredParserArguments?has_content>
-            <#if type.propertyFields?has_content>, </#if>
-            <#list filteredParserArguments as arg>
-                ${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep>
-            </#list>
-        </#if>
-        <#if (type.propertyFields?has_content || filteredParentParserArguments?has_content) && reservedFields?has_content>,</#if>
-        <#list reservedFields as reservedField>
-            ${helper.getLanguageTypeNameForTypeReference(reservedField.type, false)} reservedField${reservedField?index}<#sep>, </#sep>
-        </#list>
-        ):
-        <#list type.propertyFields as field>
-            self.${field.name} = ${field.name}
-        </#list>
-        <#if filteredParserArguments?has_content>
-            <#list filteredParserArguments as arg>
-            self.${arg.name} = ${arg.name}
-            </#list>
-        </#if>
-        <#list reservedFields as reservedField>
-            self.reservedField${reservedField?index} = reservedField${reservedField?index}
-        </#list>
-
-
-        def build(
-        <#list type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields as field>
-            ${helper.getLanguageTypeNameForField(field)} ${field.name}<#sep>, </#sep>
-        </#list>
-        <#if filteredParentParserArguments?has_content>
-            <#if type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields?has_content>, </#if>
-                <#list filteredParentParserArguments as arg>
-                ${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep>
-                </#list>
-            </#if>
-        ) -> ${type.name}:
-            ${type.name?uncap_first}: ${type.name} = ${type.name}(
-            <#list type.allPropertyFields as field>
-                ${field.name}<#sep>, </#sep>
-            </#list>
-        <#if filteredParserArguments?has_content>
-            <#if type.allPropertyFields?has_content>, </#if>
-            <#list filteredParserArguments as arg>
-                ${arg.name}<#sep>, </#sep>
-            </#list>
-        </#if>)
-        <#list reservedFields as reservedField>
-            ${type.name?uncap_first}.reservedField${reservedField?index} = reservedField${reservedField?index}
-        </#list>
-            return ${type.name?uncap_first}
-
-    </#if>
 
     def equals(self, o: object) -> bool:
         if this == o:
@@ -921,5 +835,97 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+    <#if type.isDiscriminatedParentTypeDefinition()>
+class ${type.name}Builder:
+    <@compress single_line=true>def build(
+<#list type.propertyFields as field>
+    ${helper.getLanguageTypeNameForField(field)} ${field.name}<#sep>, </#sep>
+</#list>
+<#if filteredParserArguments?has_content>
+    <#if type.propertyFields?has_content>, </#if>
+    <#list filteredParserArguments as arg>
+        ${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep>
+    </#list>
+</#if>
+) -> ${type.name}:</@compress>
+        pass
+
+    </#if>
+
+    <#if type.isDiscriminatedChildTypeDefinition()>
+<@compress single_line=true>
+class ${type.name}Builder(${type.parentType.orElseThrow().name}${type.parentType.orElseThrow().name}Builder:
+<#if type.propertyFields?has_content>
+    <#list type.propertyFields as field>
+        ${field.name}: ${helper.getLanguageTypeNameForField(field)}
+    </#list>
+</#if>
+<#if filteredParserArguments?has_content>
+    <#list filteredParserArguments as arg>
+        ${arg.name}: ${helper.getLanguageTypeNameForTypeReference(arg.type)}
+    </#list>
+</#if>
+<#list reservedFields as reservedField>
+    reservedField${reservedField?index}: ${helper.getLanguageTypeNameForTypeReference(reservedField.type, false)}
+</#list>
+</@compress>
+    <@compress single_line=true>
+    def ${type.name}Builder(
+    <#list type.propertyFields as field>
+        ${helper.getLanguageTypeNameForField(field)} ${field.name}<#sep>, </#sep>
+    </#list>
+    <#if filteredParserArguments?has_content>
+        <#if type.propertyFields?has_content>, </#if>
+        <#list filteredParserArguments as arg>
+            ${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep>
+        </#list>
+    </#if>
+    <#if (type.propertyFields?has_content || filteredParentParserArguments?has_content) && reservedFields?has_content>,</#if>
+    <#list reservedFields as reservedField>
+        ${helper.getLanguageTypeNameForTypeReference(reservedField.type, false)} reservedField${reservedField?index}<#sep>, </#sep>
+    </#list>
+    ):
+    </@compress>
+    <#list type.propertyFields as field>
+        self.${field.name} = ${field.name}
+    </#list>
+    <#if filteredParserArguments?has_content>
+        <#list filteredParserArguments as arg>
+            self.${arg.name} = ${arg.name}
+        </#list>
+    </#if>
+    <#list reservedFields as reservedField>
+        self.reservedField${reservedField?index} = reservedField${reservedField?index}
+    </#list>
+
+
+        def build(
+        <#list type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields as field>
+            ${helper.getLanguageTypeNameForField(field)} ${field.name}<#sep>, </#sep>
+        </#list>
+        <#if filteredParentParserArguments?has_content>
+            <#if type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields?has_content>, </#if>
+            <#list filteredParentParserArguments as arg>
+                ${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep>
+            </#list>
+        </#if>
+        ) -> ${type.name}:
+        ${type.name?uncap_first}: ${type.name} = ${type.name}(
+        <#list type.allPropertyFields as field>
+            ${field.name}<#sep>, </#sep>
+        </#list>
+        <#if filteredParserArguments?has_content>
+            <#if type.allPropertyFields?has_content>, </#if>
+            <#list filteredParserArguments as arg>
+                ${arg.name}<#sep>, </#sep>
+            </#list>
+        </#if>)
+        <#list reservedFields as reservedField>
+            ${type.name?uncap_first}.reservedField${reservedField?index} = reservedField${reservedField?index}
+        </#list>
+        return ${type.name?uncap_first}
+
+    </#if>
 
 </#outputformat>

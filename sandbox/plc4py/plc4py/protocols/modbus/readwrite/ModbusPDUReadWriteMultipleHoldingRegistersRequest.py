@@ -25,21 +25,21 @@ from dataclasses import dataclass
 
 @dataclass
 class ModbusPDUReadWriteMultipleHoldingRegistersRequest(PlcMessage,ModbusPDU):
-            readStartingAddress: int
-            readQuantity: int
-            writeStartingAddress: int
-            writeQuantity: int
-            value: byte[]
+            readStartingAddress: c_uint16
+            readQuantity: c_uint16
+            writeStartingAddress: c_uint16
+            writeQuantity: c_uint16
+            value: []c_byte
 
     # Accessors for discriminator values.
-    def Boolean getErrorFlag() {
-        return (boolean) false
+    def c_bool getErrorFlag() {
+        return (c_bool) false
     }
-    def Short getFunctionFlag() {
-        return (short) 0x17
+    def c_uint8 getFunctionFlag() {
+        return (c_uint8) 0x17
     }
-    def Boolean getResponse() {
-        return (boolean) false
+    def c_bool getResponse() {
+        return (c_bool) false
     }
 
 
@@ -48,19 +48,19 @@ super().__init__( )
 
 
 
-    def getReadStartingAddress(self) -> int:
+    def getReadStartingAddress(self) -> c_uint16:
         return readStartingAddress
 
-    def getReadQuantity(self) -> int:
+    def getReadQuantity(self) -> c_uint16:
         return readQuantity
 
-    def getWriteStartingAddress(self) -> int:
+    def getWriteStartingAddress(self) -> c_uint16:
         return writeStartingAddress
 
-    def getWriteQuantity(self) -> int:
+    def getWriteQuantity(self) -> c_uint16:
         return writeQuantity
 
-    def getValue(self) -> byte[]:
+    def getValue(self) -> []c_byte:
         return value
 
 
@@ -82,7 +82,7 @@ super().__init__( )
                             writeSimpleField("writeQuantity", writeQuantity, writeUnsignedInt(writeBuffer, 16))
 
                         # Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-                        short byteCount = (short) (COUNT(getValue()))
+                        c_uint8 byteCount = (c_uint8) (COUNT(getValue()))
                         writeImplicitField("byteCount", byteCount, writeUnsignedShort(writeBuffer, 8))
 
                         # Array Field (value)
@@ -121,21 +121,21 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, Boolean response) -> ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder:
+    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder:
         readBuffer.pullContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                readStartingAddress: int = readSimpleField("readStartingAddress", readUnsignedInt(readBuffer, 16))
+                readStartingAddress: c_uint16 = readSimpleField("readStartingAddress", readUnsignedInt(readBuffer, 16))
 
-                readQuantity: int = readSimpleField("readQuantity", readUnsignedInt(readBuffer, 16))
+                readQuantity: c_uint16 = readSimpleField("readQuantity", readUnsignedInt(readBuffer, 16))
 
-                writeStartingAddress: int = readSimpleField("writeStartingAddress", readUnsignedInt(readBuffer, 16))
+                writeStartingAddress: c_uint16 = readSimpleField("writeStartingAddress", readUnsignedInt(readBuffer, 16))
 
-                writeQuantity: int = readSimpleField("writeQuantity", readUnsignedInt(readBuffer, 16))
+                writeQuantity: c_uint16 = readSimpleField("writeQuantity", readUnsignedInt(readBuffer, 16))
 
-                byteCount: short = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
+                byteCount: c_uint8 = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
 
                     value: byte[] = readBuffer.readByteArray("value", Math.toIntExact(byteCount))
 
@@ -149,39 +149,6 @@ super().__init__( )
             value
         
         )
-
-        class ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder(ModbusPDUModbusPDUBuilder {
-        readStartingAddress: int
-        readQuantity: int
-        writeStartingAddress: int
-        writeQuantity: int
-        value: byte[]
-
-        def ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder(
-            int readStartingAddress, 
-            int readQuantity, 
-            int writeStartingAddress, 
-            int writeQuantity, 
-            byte[] value
-        
-        ):
-            self.readStartingAddress = readStartingAddress
-            self.readQuantity = readQuantity
-            self.writeStartingAddress = writeStartingAddress
-            self.writeQuantity = writeQuantity
-            self.value = value
-
-
-        def build(
-        ) -> ModbusPDUReadWriteMultipleHoldingRegistersRequest:
-            modbusPDUReadWriteMultipleHoldingRegistersRequest: ModbusPDUReadWriteMultipleHoldingRegistersRequest = ModbusPDUReadWriteMultipleHoldingRegistersRequest(
-                readStartingAddress, 
-                readQuantity, 
-                writeStartingAddress, 
-                writeQuantity, 
-                value
-)
-            return modbusPDUReadWriteMultipleHoldingRegistersRequest
 
 
     def equals(self, o: object) -> bool:
@@ -219,4 +186,24 @@ super().__init__( )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
+class ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder(ModbusPDUModbusPDUBuilder: readStartingAddress: c_uint16 readQuantity: c_uint16 writeStartingAddress: c_uint16 writeQuantity: c_uint16 value: []c_bytedef ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder( c_uint16 readStartingAddress, c_uint16 readQuantity, c_uint16 writeStartingAddress, c_uint16 writeQuantity, []c_byte value ):        self.readStartingAddress = readStartingAddress
+        self.readQuantity = readQuantity
+        self.writeStartingAddress = writeStartingAddress
+        self.writeQuantity = writeQuantity
+        self.value = value
+
+
+        def build(
+        ) -> ModbusPDUReadWriteMultipleHoldingRegistersRequest:
+        modbusPDUReadWriteMultipleHoldingRegistersRequest: ModbusPDUReadWriteMultipleHoldingRegistersRequest = ModbusPDUReadWriteMultipleHoldingRegistersRequest(
+            readStartingAddress, 
+            readQuantity, 
+            writeStartingAddress, 
+            writeQuantity, 
+            value
+)
+        return modbusPDUReadWriteMultipleHoldingRegistersRequest
+
 

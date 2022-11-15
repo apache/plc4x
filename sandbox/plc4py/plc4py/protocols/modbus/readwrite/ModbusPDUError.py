@@ -28,14 +28,14 @@ class ModbusPDUError(PlcMessage,ModbusPDU):
             exceptionCode: ModbusErrorCode
 
     # Accessors for discriminator values.
-    def Boolean getErrorFlag() {
-        return (boolean) true
+    def c_bool getErrorFlag() {
+        return (c_bool) true
     }
-    def Short getFunctionFlag() {
+    def c_uint8 getFunctionFlag() {
         return 0
     }
-    def Boolean getResponse() {
-        return false
+    def c_bool getResponse() {
+        return False
     }
 
 
@@ -73,7 +73,7 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, Boolean response) -> ModbusPDUErrorBuilder:
+    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUErrorBuilder:
         readBuffer.pullContext("ModbusPDUError")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
@@ -87,23 +87,6 @@ super().__init__( )
             exceptionCode
         
         )
-
-        class ModbusPDUErrorBuilder(ModbusPDUModbusPDUBuilder {
-        exceptionCode: ModbusErrorCode
-
-        def ModbusPDUErrorBuilder(
-            ModbusErrorCode exceptionCode
-        
-        ):
-            self.exceptionCode = exceptionCode
-
-
-        def build(
-        ) -> ModbusPDUError:
-            modbusPDUError: ModbusPDUError = ModbusPDUError(
-                exceptionCode
-)
-            return modbusPDUError
 
 
     def equals(self, o: object) -> bool:
@@ -133,4 +116,16 @@ super().__init__( )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
+class ModbusPDUErrorBuilder(ModbusPDUModbusPDUBuilder: exceptionCode: ModbusErrorCodedef ModbusPDUErrorBuilder( ModbusErrorCode exceptionCode ):        self.exceptionCode = exceptionCode
+
+
+        def build(
+        ) -> ModbusPDUError:
+        modbusPDUError: ModbusPDUError = ModbusPDUError(
+            exceptionCode
+)
+        return modbusPDUError
+
 

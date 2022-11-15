@@ -25,8 +25,8 @@ from dataclasses import dataclass
 
 @dataclass
 class ModbusPDUReadFileRecordResponseItem(PlcMessage):
-            referenceType: short
-            data: byte[]
+            referenceType: c_uint8
+            data: []c_byte
 
 
 
@@ -35,10 +35,10 @@ super().__init__( )
 
 
 
-    def getReferenceType(self) -> short:
+    def getReferenceType(self) -> c_uint8:
         return referenceType
 
-    def getData(self) -> byte[]:
+    def getData(self) -> []c_byte:
         return data
 
 
@@ -48,7 +48,7 @@ super().__init__( )
             writeBuffer.pushContext("ModbusPDUReadFileRecordResponseItem")
 
                         # Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-                        short dataLength = (short) ((COUNT(getData())) + (1))
+                        c_uint8 dataLength = (c_uint8) ((COUNT(getData())) + (1))
                         writeImplicitField("dataLength", dataLength, writeUnsignedShort(writeBuffer, 8))
 
                         # Simple Field (referenceType)
@@ -92,9 +92,9 @@ super().__init__( )
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                dataLength: short = readImplicitField("dataLength", readUnsignedShort(readBuffer, 8))
+                dataLength: c_uint8 = readImplicitField("dataLength", readUnsignedShort(readBuffer, 8))
 
-                referenceType: short = readSimpleField("referenceType", readUnsignedShort(readBuffer, 8))
+                referenceType: c_uint8 = readSimpleField("referenceType", readUnsignedShort(readBuffer, 8))
 
                     data: byte[] = readBuffer.readByteArray("data", Math.toIntExact((dataLength) - (1)))
 
@@ -134,4 +134,6 @@ super().__init__( )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
 

@@ -25,17 +25,17 @@ from dataclasses import dataclass
 
 @dataclass
 class ModbusPDUWriteFileRecordRequest(PlcMessage,ModbusPDU):
-            items: List<ModbusPDUWriteFileRecordRequestItem>
+            items: []ModbusPDUWriteFileRecordRequestItem
 
     # Accessors for discriminator values.
-    def Boolean getErrorFlag() {
-        return (boolean) false
+    def c_bool getErrorFlag() {
+        return (c_bool) false
     }
-    def Short getFunctionFlag() {
-        return (short) 0x15
+    def c_uint8 getFunctionFlag() {
+        return (c_uint8) 0x15
     }
-    def Boolean getResponse() {
-        return (boolean) false
+    def c_bool getResponse() {
+        return (c_bool) false
     }
 
 
@@ -44,7 +44,7 @@ super().__init__( )
 
 
 
-    def getItems(self) -> List<ModbusPDUWriteFileRecordRequestItem>:
+    def getItems(self) -> []ModbusPDUWriteFileRecordRequestItem:
         return items
 
 
@@ -54,7 +54,7 @@ super().__init__( )
             writeBuffer.pushContext("ModbusPDUWriteFileRecordRequest")
 
                         # Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-                        short byteCount = (short) (ARRAY_SIZE_IN_BYTES(getItems()))
+                        c_uint8 byteCount = (c_uint8) (ARRAY_SIZE_IN_BYTES(getItems()))
                         writeImplicitField("byteCount", byteCount, writeUnsignedShort(writeBuffer, 8))
 
                         # Array Field (items)
@@ -83,15 +83,15 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, Boolean response) -> ModbusPDUWriteFileRecordRequestBuilder:
+    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUWriteFileRecordRequestBuilder:
         readBuffer.pullContext("ModbusPDUWriteFileRecordRequest")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                byteCount: short = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
+                byteCount: c_uint8 = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
 
-                            items: List<ModbusPDUWriteFileRecordRequestItem> = readLengthArrayField("items", new DataReaderComplexDefault<>(() -> ModbusPDUWriteFileRecordRequestItem.staticParse(readBuffer), readBuffer), byteCount)
+                            items: []ModbusPDUWriteFileRecordRequestItem = readLengthArrayField("items", new DataReaderComplexDefault<>(() -> ModbusPDUWriteFileRecordRequestItem.staticParse(readBuffer), readBuffer), byteCount)
 
     readBuffer.closeContext("ModbusPDUWriteFileRecordRequest")
     # Create the instance
@@ -99,23 +99,6 @@ super().__init__( )
             items
         
         )
-
-        class ModbusPDUWriteFileRecordRequestBuilder(ModbusPDUModbusPDUBuilder {
-        items: List<ModbusPDUWriteFileRecordRequestItem>
-
-        def ModbusPDUWriteFileRecordRequestBuilder(
-            List<ModbusPDUWriteFileRecordRequestItem> items
-        
-        ):
-            self.items = items
-
-
-        def build(
-        ) -> ModbusPDUWriteFileRecordRequest:
-            modbusPDUWriteFileRecordRequest: ModbusPDUWriteFileRecordRequest = ModbusPDUWriteFileRecordRequest(
-                items
-)
-            return modbusPDUWriteFileRecordRequest
 
 
     def equals(self, o: object) -> bool:
@@ -145,4 +128,16 @@ super().__init__( )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
+class ModbusPDUWriteFileRecordRequestBuilder(ModbusPDUModbusPDUBuilder: items: []ModbusPDUWriteFileRecordRequestItemdef ModbusPDUWriteFileRecordRequestBuilder( []ModbusPDUWriteFileRecordRequestItem items ):        self.items = items
+
+
+        def build(
+        ) -> ModbusPDUWriteFileRecordRequest:
+        modbusPDUWriteFileRecordRequest: ModbusPDUWriteFileRecordRequest = ModbusPDUWriteFileRecordRequest(
+            items
+)
+        return modbusPDUWriteFileRecordRequest
+
 

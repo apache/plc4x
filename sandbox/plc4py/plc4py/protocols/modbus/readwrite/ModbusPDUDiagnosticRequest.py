@@ -25,18 +25,18 @@ from dataclasses import dataclass
 
 @dataclass
 class ModbusPDUDiagnosticRequest(PlcMessage,ModbusPDU):
-            subFunction: int
-            data: int
+            subFunction: c_uint16
+            data: c_uint16
 
     # Accessors for discriminator values.
-    def Boolean getErrorFlag() {
-        return (boolean) false
+    def c_bool getErrorFlag() {
+        return (c_bool) false
     }
-    def Short getFunctionFlag() {
-        return (short) 0x08
+    def c_uint8 getFunctionFlag() {
+        return (c_uint8) 0x08
     }
-    def Boolean getResponse() {
-        return (boolean) false
+    def c_bool getResponse() {
+        return (c_bool) false
     }
 
 
@@ -45,10 +45,10 @@ super().__init__( )
 
 
 
-    def getSubFunction(self) -> int:
+    def getSubFunction(self) -> c_uint16:
         return subFunction
 
-    def getData(self) -> int:
+    def getData(self) -> c_uint16:
         return data
 
 
@@ -82,15 +82,15 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, Boolean response) -> ModbusPDUDiagnosticRequestBuilder:
+    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUDiagnosticRequestBuilder:
         readBuffer.pullContext("ModbusPDUDiagnosticRequest")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                subFunction: int = readSimpleField("subFunction", readUnsignedInt(readBuffer, 16))
+                subFunction: c_uint16 = readSimpleField("subFunction", readUnsignedInt(readBuffer, 16))
 
-                data: int = readSimpleField("data", readUnsignedInt(readBuffer, 16))
+                data: c_uint16 = readSimpleField("data", readUnsignedInt(readBuffer, 16))
 
     readBuffer.closeContext("ModbusPDUDiagnosticRequest")
     # Create the instance
@@ -99,27 +99,6 @@ super().__init__( )
             data
         
         )
-
-        class ModbusPDUDiagnosticRequestBuilder(ModbusPDUModbusPDUBuilder {
-        subFunction: int
-        data: int
-
-        def ModbusPDUDiagnosticRequestBuilder(
-            int subFunction, 
-            int data
-        
-        ):
-            self.subFunction = subFunction
-            self.data = data
-
-
-        def build(
-        ) -> ModbusPDUDiagnosticRequest:
-            modbusPDUDiagnosticRequest: ModbusPDUDiagnosticRequest = ModbusPDUDiagnosticRequest(
-                subFunction, 
-                data
-)
-            return modbusPDUDiagnosticRequest
 
 
     def equals(self, o: object) -> bool:
@@ -151,4 +130,18 @@ super().__init__( )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
+class ModbusPDUDiagnosticRequestBuilder(ModbusPDUModbusPDUBuilder: subFunction: c_uint16 data: c_uint16def ModbusPDUDiagnosticRequestBuilder( c_uint16 subFunction, c_uint16 data ):        self.subFunction = subFunction
+        self.data = data
+
+
+        def build(
+        ) -> ModbusPDUDiagnosticRequest:
+        modbusPDUDiagnosticRequest: ModbusPDUDiagnosticRequest = ModbusPDUDiagnosticRequest(
+            subFunction, 
+            data
+)
+        return modbusPDUDiagnosticRequest
+
 

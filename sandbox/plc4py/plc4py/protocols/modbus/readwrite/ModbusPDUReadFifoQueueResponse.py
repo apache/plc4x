@@ -25,17 +25,17 @@ from dataclasses import dataclass
 
 @dataclass
 class ModbusPDUReadFifoQueueResponse(PlcMessage,ModbusPDU):
-            fifoValue: List<Integer>
+            fifoValue: []c_uint16
 
     # Accessors for discriminator values.
-    def Boolean getErrorFlag() {
-        return (boolean) false
+    def c_bool getErrorFlag() {
+        return (c_bool) false
     }
-    def Short getFunctionFlag() {
-        return (short) 0x18
+    def c_uint8 getFunctionFlag() {
+        return (c_uint8) 0x18
     }
-    def Boolean getResponse() {
-        return (boolean) true
+    def c_bool getResponse() {
+        return (c_bool) true
     }
 
 
@@ -44,7 +44,7 @@ super().__init__( )
 
 
 
-    def getFifoValue(self) -> List<Integer>:
+    def getFifoValue(self) -> []c_uint16:
         return fifoValue
 
 
@@ -54,11 +54,11 @@ super().__init__( )
             writeBuffer.pushContext("ModbusPDUReadFifoQueueResponse")
 
                         # Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-                        int byteCount = (int) ((((COUNT(getFifoValue())) * (2))) + (2))
+                        c_uint16 byteCount = (c_uint16) ((((COUNT(getFifoValue())) * (2))) + (2))
                         writeImplicitField("byteCount", byteCount, writeUnsignedInt(writeBuffer, 16))
 
                         # Implicit Field (fifoCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-                        int fifoCount = (int) ((((COUNT(getFifoValue())) * (2))) / (2))
+                        c_uint16 fifoCount = (c_uint16) ((((COUNT(getFifoValue())) * (2))) / (2))
                         writeImplicitField("fifoCount", fifoCount, writeUnsignedInt(writeBuffer, 16))
 
                         # Array Field (fifoValue)
@@ -88,17 +88,17 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, Boolean response) -> ModbusPDUReadFifoQueueResponseBuilder:
+    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUReadFifoQueueResponseBuilder:
         readBuffer.pullContext("ModbusPDUReadFifoQueueResponse")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                byteCount: int = readImplicitField("byteCount", readUnsignedInt(readBuffer, 16))
+                byteCount: c_uint16 = readImplicitField("byteCount", readUnsignedInt(readBuffer, 16))
 
-                fifoCount: int = readImplicitField("fifoCount", readUnsignedInt(readBuffer, 16))
+                fifoCount: c_uint16 = readImplicitField("fifoCount", readUnsignedInt(readBuffer, 16))
 
-                        fifoValue: List<Integer> = readCountArrayField("fifoValue", readUnsignedInt(readBuffer, 16), fifoCount)
+                        fifoValue: []c_uint16 = readCountArrayField("fifoValue", readUnsignedInt(readBuffer, 16), fifoCount)
 
     readBuffer.closeContext("ModbusPDUReadFifoQueueResponse")
     # Create the instance
@@ -106,23 +106,6 @@ super().__init__( )
             fifoValue
         
         )
-
-        class ModbusPDUReadFifoQueueResponseBuilder(ModbusPDUModbusPDUBuilder {
-        fifoValue: List<Integer>
-
-        def ModbusPDUReadFifoQueueResponseBuilder(
-            List<Integer> fifoValue
-        
-        ):
-            self.fifoValue = fifoValue
-
-
-        def build(
-        ) -> ModbusPDUReadFifoQueueResponse:
-            modbusPDUReadFifoQueueResponse: ModbusPDUReadFifoQueueResponse = ModbusPDUReadFifoQueueResponse(
-                fifoValue
-)
-            return modbusPDUReadFifoQueueResponse
 
 
     def equals(self, o: object) -> bool:
@@ -152,4 +135,16 @@ super().__init__( )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
+class ModbusPDUReadFifoQueueResponseBuilder(ModbusPDUModbusPDUBuilder: fifoValue: []c_uint16def ModbusPDUReadFifoQueueResponseBuilder( []c_uint16 fifoValue ):        self.fifoValue = fifoValue
+
+
+        def build(
+        ) -> ModbusPDUReadFifoQueueResponse:
+        modbusPDUReadFifoQueueResponse: ModbusPDUReadFifoQueueResponse = ModbusPDUReadFifoQueueResponse(
+            fifoValue
+)
+        return modbusPDUReadFifoQueueResponse
+
 

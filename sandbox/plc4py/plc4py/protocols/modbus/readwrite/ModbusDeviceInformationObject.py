@@ -25,8 +25,8 @@ from dataclasses import dataclass
 
 @dataclass
 class ModbusDeviceInformationObject(PlcMessage):
-            objectId: short
-            data: byte[]
+            objectId: c_uint8
+            data: []c_byte
 
 
 
@@ -35,10 +35,10 @@ super().__init__( )
 
 
 
-    def getObjectId(self) -> short:
+    def getObjectId(self) -> c_uint8:
         return objectId
 
-    def getData(self) -> byte[]:
+    def getData(self) -> []c_byte:
         return data
 
 
@@ -51,7 +51,7 @@ super().__init__( )
                             writeSimpleField("objectId", objectId, writeUnsignedShort(writeBuffer, 8))
 
                         # Implicit Field (objectLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-                        short objectLength = (short) (COUNT(getData()))
+                        c_uint8 objectLength = (c_uint8) (COUNT(getData()))
                         writeImplicitField("objectLength", objectLength, writeUnsignedShort(writeBuffer, 8))
 
                         # Array Field (data)
@@ -92,9 +92,9 @@ super().__init__( )
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                objectId: short = readSimpleField("objectId", readUnsignedShort(readBuffer, 8))
+                objectId: c_uint8 = readSimpleField("objectId", readUnsignedShort(readBuffer, 8))
 
-                objectLength: short = readImplicitField("objectLength", readUnsignedShort(readBuffer, 8))
+                objectLength: c_uint8 = readImplicitField("objectLength", readUnsignedShort(readBuffer, 8))
 
                     data: byte[] = readBuffer.readByteArray("data", Math.toIntExact(objectLength))
 
@@ -134,4 +134,6 @@ super().__init__( )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
 

@@ -25,10 +25,10 @@ from dataclasses import dataclass
 
 @dataclass
 class ModbusAsciiADU(PlcMessage,ModbusADU):
-            address: short
+            address: c_uint8
             pdu: ModbusPDU
         # Arguments.
-            response: Boolean
+            response: c_bool
 
     # Accessors for discriminator values.
     def DriverType getDriverType() {
@@ -41,7 +41,7 @@ super().__init__( self.response )
 
 
 
-    def getAddress(self) -> short:
+    def getAddress(self) -> c_uint8:
         return address
 
     def getPdu(self) -> ModbusPDU:
@@ -60,7 +60,7 @@ super().__init__( self.response )
                             writeSimpleField("pdu", pdu, new DataWriterComplexDefault<>(writeBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
                         # Checksum Field (checksum) (Calculated)
-                        writeChecksumField("crc", (short) (modbus.readwrite.utils.StaticHelper.asciiLrcCheck(address, pdu)), writeUnsignedShort(writeBuffer, 8))
+                        writeChecksumField("crc", (c_uint8) (modbus.readwrite.utils.StaticHelper.asciiLrcCheck(address, pdu)), writeUnsignedShort(writeBuffer, 8))
 
             writeBuffer.popContext("ModbusAsciiADU")
 
@@ -84,17 +84,17 @@ super().__init__( self.response )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, DriverType driverType, Boolean response) -> ModbusAsciiADUBuilder:
+    def  staticParseBuilder(readBuffer: ReadBuffer, DriverType driverType, c_bool response) -> ModbusAsciiADUBuilder:
         readBuffer.pullContext("ModbusAsciiADU")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                address: short = readSimpleField("address", readUnsignedShort(readBuffer, 8), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+                address: c_uint8 = readSimpleField("address", readUnsignedShort(readBuffer, 8), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
-                pdu: ModbusPDU = readSimpleField("pdu", new DataReaderComplexDefault<>(() -> ModbusPDU.staticParse(readBuffer, (boolean) (response)), readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+                pdu: ModbusPDU = readSimpleField("pdu", new DataReaderComplexDefault<>(() -> ModbusPDU.staticParse(readBuffer, (c_bool) (response)), readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
-                crc: short = readChecksumField("crc", readUnsignedShort(readBuffer, 8), (short) (modbus.readwrite.utils.StaticHelper.asciiLrcCheck(address, pdu)), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+                crc: c_uint8 = readChecksumField("crc", readUnsignedShort(readBuffer, 8), (c_uint8) (modbus.readwrite.utils.StaticHelper.asciiLrcCheck(address, pdu)), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
     readBuffer.closeContext("ModbusAsciiADU")
     # Create the instance
@@ -105,35 +105,6 @@ super().__init__( self.response )
             response
         
         )
-
-        class ModbusAsciiADUBuilder(ModbusADUModbusADUBuilder {
-        address: short
-        pdu: ModbusPDU
-        response: Boolean
-
-        def ModbusAsciiADUBuilder(
-            short address, 
-            ModbusPDU pdu
-            , 
-                Boolean response
-        
-        ):
-            self.address = address
-            self.pdu = pdu
-            self.response = response
-
-
-        def build(
-            
-                Boolean response
-        ) -> ModbusAsciiADU:
-            modbusAsciiADU: ModbusAsciiADU = ModbusAsciiADU(
-                address, 
-                pdu
-            , 
-                response
-        )
-            return modbusAsciiADU
 
 
     def equals(self, o: object) -> bool:
@@ -165,4 +136,23 @@ super().__init__( self.response )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
+class ModbusAsciiADUBuilder(ModbusADUModbusADUBuilder: address: c_uint8 pdu: ModbusPDU response: c_booldef ModbusAsciiADUBuilder( c_uint8 address, ModbusPDU pdu , c_bool response ):        self.address = address
+        self.pdu = pdu
+            self.response = response
+
+
+        def build(
+            
+                c_bool response
+        ) -> ModbusAsciiADU:
+        modbusAsciiADU: ModbusAsciiADU = ModbusAsciiADU(
+            address, 
+            pdu
+            , 
+                response
+        )
+        return modbusAsciiADU
+
 

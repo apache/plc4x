@@ -25,17 +25,17 @@ from dataclasses import dataclass
 
 @dataclass
 class ModbusPDUReadHoldingRegistersResponse(PlcMessage,ModbusPDU):
-            value: byte[]
+            value: []c_byte
 
     # Accessors for discriminator values.
-    def Boolean getErrorFlag() {
-        return (boolean) false
+    def c_bool getErrorFlag() {
+        return (c_bool) false
     }
-    def Short getFunctionFlag() {
-        return (short) 0x03
+    def c_uint8 getFunctionFlag() {
+        return (c_uint8) 0x03
     }
-    def Boolean getResponse() {
-        return (boolean) true
+    def c_bool getResponse() {
+        return (c_bool) true
     }
 
 
@@ -44,7 +44,7 @@ super().__init__( )
 
 
 
-    def getValue(self) -> byte[]:
+    def getValue(self) -> []c_byte:
         return value
 
 
@@ -54,7 +54,7 @@ super().__init__( )
             writeBuffer.pushContext("ModbusPDUReadHoldingRegistersResponse")
 
                         # Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-                        short byteCount = (short) (COUNT(getValue()))
+                        c_uint8 byteCount = (c_uint8) (COUNT(getValue()))
                         writeImplicitField("byteCount", byteCount, writeUnsignedShort(writeBuffer, 8))
 
                         # Array Field (value)
@@ -81,13 +81,13 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, Boolean response) -> ModbusPDUReadHoldingRegistersResponseBuilder:
+    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUReadHoldingRegistersResponseBuilder:
         readBuffer.pullContext("ModbusPDUReadHoldingRegistersResponse")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                byteCount: short = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
+                byteCount: c_uint8 = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
 
                     value: byte[] = readBuffer.readByteArray("value", Math.toIntExact(byteCount))
 
@@ -97,23 +97,6 @@ super().__init__( )
             value
         
         )
-
-        class ModbusPDUReadHoldingRegistersResponseBuilder(ModbusPDUModbusPDUBuilder {
-        value: byte[]
-
-        def ModbusPDUReadHoldingRegistersResponseBuilder(
-            byte[] value
-        
-        ):
-            self.value = value
-
-
-        def build(
-        ) -> ModbusPDUReadHoldingRegistersResponse:
-            modbusPDUReadHoldingRegistersResponse: ModbusPDUReadHoldingRegistersResponse = ModbusPDUReadHoldingRegistersResponse(
-                value
-)
-            return modbusPDUReadHoldingRegistersResponse
 
 
     def equals(self, o: object) -> bool:
@@ -143,4 +126,16 @@ super().__init__( )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
+class ModbusPDUReadHoldingRegistersResponseBuilder(ModbusPDUModbusPDUBuilder: value: []c_bytedef ModbusPDUReadHoldingRegistersResponseBuilder( []c_byte value ):        self.value = value
+
+
+        def build(
+        ) -> ModbusPDUReadHoldingRegistersResponse:
+        modbusPDUReadHoldingRegistersResponse: ModbusPDUReadHoldingRegistersResponse = ModbusPDUReadHoldingRegistersResponse(
+            value
+)
+        return modbusPDUReadHoldingRegistersResponse
+
 

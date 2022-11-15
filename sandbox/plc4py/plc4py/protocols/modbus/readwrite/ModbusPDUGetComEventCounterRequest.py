@@ -27,14 +27,14 @@ from dataclasses import dataclass
 class ModbusPDUGetComEventCounterRequest(PlcMessage,ModbusPDU):
 
     # Accessors for discriminator values.
-    def Boolean getErrorFlag() {
-        return (boolean) false
+    def c_bool getErrorFlag() {
+        return (c_bool) false
     }
-    def Short getFunctionFlag() {
-        return (short) 0x0B
+    def c_uint8 getFunctionFlag() {
+        return (c_uint8) 0x0B
     }
-    def Boolean getResponse() {
-        return (boolean) false
+    def c_bool getResponse() {
+        return (c_bool) false
     }
 
 
@@ -62,7 +62,7 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, Boolean response) -> ModbusPDUGetComEventCounterRequestBuilder:
+    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUGetComEventCounterRequestBuilder:
         readBuffer.pullContext("ModbusPDUGetComEventCounterRequest")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
@@ -73,19 +73,6 @@ super().__init__( )
         return ModbusPDUGetComEventCounterRequestBuilder(
         
         )
-
-        class ModbusPDUGetComEventCounterRequestBuilder(ModbusPDUModbusPDUBuilder {
-
-        def ModbusPDUGetComEventCounterRequestBuilder(
-        
-        ):
-
-
-        def build(
-        ) -> ModbusPDUGetComEventCounterRequest:
-            modbusPDUGetComEventCounterRequest: ModbusPDUGetComEventCounterRequest = ModbusPDUGetComEventCounterRequest(
-)
-            return modbusPDUGetComEventCounterRequest
 
 
     def equals(self, o: object) -> bool:
@@ -113,4 +100,14 @@ super().__init__( )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
+class ModbusPDUGetComEventCounterRequestBuilder(ModbusPDUModbusPDUBuilder:def ModbusPDUGetComEventCounterRequestBuilder( ):
+
+        def build(
+        ) -> ModbusPDUGetComEventCounterRequest:
+        modbusPDUGetComEventCounterRequest: ModbusPDUGetComEventCounterRequest = ModbusPDUGetComEventCounterRequest(
+)
+        return modbusPDUGetComEventCounterRequest
+
 

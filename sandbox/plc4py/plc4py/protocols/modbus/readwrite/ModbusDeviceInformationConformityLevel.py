@@ -29,30 +29,30 @@ import java.util.Map;
 
 public enum ModbusDeviceInformationConformityLevel {
 
-BASIC_STREAM_ONLY( (short) 0x01 ) , REGULAR_STREAM_ONLY( (short) 0x02 ) , EXTENDED_STREAM_ONLY( (short) 0x03 ) ;
-    private static final Map<Short, ModbusDeviceInformationConformityLevel> map;
+BASIC_STREAM_ONLY( (c_uint8) 0x01 ) , REGULAR_STREAM_ONLY( (c_uint8) 0x02 ) , EXTENDED_STREAM_ONLY( (c_uint8) 0x03 ) ;
+    private static final Map<c_uint8, ModbusDeviceInformationConformityLevel> map;
     static {
         map = new HashMap<>();
         for (ModbusDeviceInformationConformityLevel value : ModbusDeviceInformationConformityLevel.values()) {
-            map.put((short) value.getValue(), value);
+            map.put((c_uint8) value.getValue(), value);
         }
     }
 
-    private short value;
+    private c_uint8 value;
 
-    ModbusDeviceInformationConformityLevel(short value) {
+    ModbusDeviceInformationConformityLevel(c_uint8 value) {
         this.value = value;
     }
 
-    public short getValue() {
+    public c_uint8 getValue() {
         return value;
     }
 
-    public static ModbusDeviceInformationConformityLevel enumForValue(short value) {
+    public static ModbusDeviceInformationConformityLevel enumForValue(c_uint8 value) {
         return map.get(value);
     }
 
-    public static Boolean isDefined(short value) {
+    public static Boolean isDefined(c_uint8 value) {
         return map.containsKey(value);
     }
 

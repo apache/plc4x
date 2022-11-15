@@ -93,81 +93,75 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
     }
 
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference, boolean allowPrimitive) {
-        Objects.requireNonNull(typeReference);
-        if (typeReference instanceof ArrayTypeReference) {
-            final ArrayTypeReference arrayTypeReference = (ArrayTypeReference) typeReference;
-            if (arrayTypeReference.getElementTypeReference().isByteBased()) {
-                return getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), allowPrimitive) + "[]";
-            } else {
-                return "List<" + getLanguageTypeNameForTypeReference(arrayTypeReference.getElementTypeReference(), false) + ">";
-            }
+        if (typeReference == null) {
+            // TODO: shouldn't this be an error case
+            return "";
         }
-        // DataIo data-types always have properties of type PlcValue
-        if (typeReference.isDataIoTypeReference()) {
-            return "PlcValue";
+        if (typeReference.isArrayTypeReference()) {
+            final ArrayTypeReference arrayTypeReference = (ArrayTypeReference) typeReference;
+            TypeReference elementTypeReference = arrayTypeReference.getElementTypeReference();
+            return "[]" + getLanguageTypeNameForTypeReference(elementTypeReference);
         }
         if (typeReference.isNonSimpleTypeReference()) {
             return typeReference.asNonSimpleTypeReference().orElseThrow().getName();
         }
-        SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+        SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow();
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return allowPrimitive ? boolean.class.getSimpleName() : Boolean.class.getSimpleName();
+                return "c_bool";
             case BYTE:
-                return allowPrimitive ? byte.class.getSimpleName() : Byte.class.getSimpleName();
+                return "c_byte";
             case UINT:
-                IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
-                    return allowPrimitive ? byte.class.getSimpleName() : Byte.class.getSimpleName();
-                }
+                IntegerTypeReference unsignedIntegerTypeReference = simpleTypeReference.asIntegerTypeReference().orElseThrow();
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return allowPrimitive ? short.class.getSimpleName() : Short.class.getSimpleName();
+                    return "c_uint8";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    return allowPrimitive ? int.class.getSimpleName() : Integer.class.getSimpleName();
+                    return "c_uint16";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    return allowPrimitive ? long.class.getSimpleName() : Long.class.getSimpleName();
+                    return "c_uint32";
                 }
-                return BigInteger.class.getSimpleName();
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
+                    return "c_uint64";
+                }
+                return "c_longlong";
             case INT:
-                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                IntegerTypeReference integerTypeReference = simpleTypeReference.asIntegerTypeReference().orElseThrow();
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return allowPrimitive ? byte.class.getSimpleName() : Byte.class.getSimpleName();
+                    return "c_int8";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return allowPrimitive ? short.class.getSimpleName() : Short.class.getSimpleName();
+                    return "c_int16";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return allowPrimitive ? int.class.getSimpleName() : Integer.class.getSimpleName();
+                    return "c_int32";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return allowPrimitive ? long.class.getSimpleName() : Long.class.getSimpleName();
+                    return "c_int64";
                 }
-                return BigInteger.class.getSimpleName();
+                return "c_longlong";
             case FLOAT:
             case UFLOAT:
-                FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
+                FloatTypeReference floatTypeReference = simpleTypeReference.asFloatTypeReference().orElseThrow();
                 int sizeInBits = floatTypeReference.getSizeInBits();
                 if (sizeInBits <= 32) {
-                    return allowPrimitive ? float.class.getSimpleName() : Float.class.getSimpleName();
+                    return "c_float";
                 }
                 if (sizeInBits <= 64) {
-                    return allowPrimitive ? double.class.getSimpleName() : Double.class.getSimpleName();
+                    return "c_double";
                 }
-                return BigDecimal.class.getSimpleName();
+                return "c_longdouble";
             case STRING:
             case VSTRING:
-                return String.class.getSimpleName();
+                return "str";
             case TIME:
-                return LocalTime.class.getSimpleName();
             case DATE:
-                return LocalDate.class.getSimpleName();
             case DATETIME:
-                return LocalDateTime.class.getSimpleName();
-
+                return "time.Time";
+            default:
+                throw new RuntimeException("Unsupported simple type");
         }
-        throw new RuntimeException("Unsupported simple type");
     }
 
     public String getPlcValueTypeForTypeReference(TypeReference typeReference) {
@@ -236,7 +230,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
             switch (simpleTypeReference.getBaseType()) {
                 case BIT:
-                    return "false";
+                    return "False";
                 case BYTE:
                     return "0";
                 case UINT:
@@ -247,7 +241,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
                         return "0l";
                     }
-                    return "null";
+                    return "None";
                 case INT:
                     IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                     if (integerTypeReference.getSizeInBits() <= 32) {
@@ -256,7 +250,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     if (integerTypeReference.getSizeInBits() <= 64) {
                         return "0l";
                     }
-                    return "null";
+                    return "None";
                 case FLOAT:
                     FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                     int sizeInBits = floatTypeReference.getSizeInBits();
@@ -266,14 +260,14 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     if (sizeInBits <= 64) {
                         return "0.0";
                     }
-                    return "null";
+                    return "None";
                 case STRING:
                 case VSTRING:
-                    return "null";
+                    return "None";
             }
             throw new FreemarkerException("Unmapped base-type" + simpleTypeReference.getBaseType());
         } else {
-            return "null";
+            return "None";
         }
     }
 

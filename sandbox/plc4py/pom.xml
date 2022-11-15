@@ -114,6 +114,21 @@
           </execution>
 
           <execution>
+            <id>python-install</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${python.venv.bin}pip3</executable>
+              <arguments>
+                <argument>install</argument>
+                <argument>.</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+          <execution>
             <id>python-black</id>
             <phase>generate-sources</phase>
             <goals>
@@ -124,21 +139,6 @@
               <arguments>
                 <argument>-m</argument>
                 <argument>black</argument>
-                <argument>.</argument>
-              </arguments>
-            </configuration>
-          </execution>
-
-          <execution>
-            <id>python-install</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>${python.venv.bin}pip3</executable>
-              <arguments>
-                <argument>install</argument>
                 <argument>.</argument>
               </arguments>
             </configuration>

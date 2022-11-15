@@ -25,18 +25,18 @@ from dataclasses import dataclass
 
 @dataclass
 class ModbusPDUGetComEventCounterResponse(PlcMessage,ModbusPDU):
-            status: int
-            eventCount: int
+            status: c_uint16
+            eventCount: c_uint16
 
     # Accessors for discriminator values.
-    def Boolean getErrorFlag() {
-        return (boolean) false
+    def c_bool getErrorFlag() {
+        return (c_bool) false
     }
-    def Short getFunctionFlag() {
-        return (short) 0x0B
+    def c_uint8 getFunctionFlag() {
+        return (c_uint8) 0x0B
     }
-    def Boolean getResponse() {
-        return (boolean) true
+    def c_bool getResponse() {
+        return (c_bool) true
     }
 
 
@@ -45,10 +45,10 @@ super().__init__( )
 
 
 
-    def getStatus(self) -> int:
+    def getStatus(self) -> c_uint16:
         return status
 
-    def getEventCount(self) -> int:
+    def getEventCount(self) -> c_uint16:
         return eventCount
 
 
@@ -82,15 +82,15 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, Boolean response) -> ModbusPDUGetComEventCounterResponseBuilder:
+    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUGetComEventCounterResponseBuilder:
         readBuffer.pullContext("ModbusPDUGetComEventCounterResponse")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                status: int = readSimpleField("status", readUnsignedInt(readBuffer, 16))
+                status: c_uint16 = readSimpleField("status", readUnsignedInt(readBuffer, 16))
 
-                eventCount: int = readSimpleField("eventCount", readUnsignedInt(readBuffer, 16))
+                eventCount: c_uint16 = readSimpleField("eventCount", readUnsignedInt(readBuffer, 16))
 
     readBuffer.closeContext("ModbusPDUGetComEventCounterResponse")
     # Create the instance
@@ -99,27 +99,6 @@ super().__init__( )
             eventCount
         
         )
-
-        class ModbusPDUGetComEventCounterResponseBuilder(ModbusPDUModbusPDUBuilder {
-        status: int
-        eventCount: int
-
-        def ModbusPDUGetComEventCounterResponseBuilder(
-            int status, 
-            int eventCount
-        
-        ):
-            self.status = status
-            self.eventCount = eventCount
-
-
-        def build(
-        ) -> ModbusPDUGetComEventCounterResponse:
-            modbusPDUGetComEventCounterResponse: ModbusPDUGetComEventCounterResponse = ModbusPDUGetComEventCounterResponse(
-                status, 
-                eventCount
-)
-            return modbusPDUGetComEventCounterResponse
 
 
     def equals(self, o: object) -> bool:
@@ -151,4 +130,18 @@ super().__init__( )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
+class ModbusPDUGetComEventCounterResponseBuilder(ModbusPDUModbusPDUBuilder: status: c_uint16 eventCount: c_uint16def ModbusPDUGetComEventCounterResponseBuilder( c_uint16 status, c_uint16 eventCount ):        self.status = status
+        self.eventCount = eventCount
+
+
+        def build(
+        ) -> ModbusPDUGetComEventCounterResponse:
+        modbusPDUGetComEventCounterResponse: ModbusPDUGetComEventCounterResponse = ModbusPDUGetComEventCounterResponse(
+            status, 
+            eventCount
+)
+        return modbusPDUGetComEventCounterResponse
+
 

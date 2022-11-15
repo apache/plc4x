@@ -25,10 +25,10 @@ from dataclasses import dataclass
 
 @dataclass
 class ModbusPDUWriteFileRecordRequestItem(PlcMessage):
-            referenceType: short
-            fileNumber: int
-            recordNumber: int
-            recordData: byte[]
+            referenceType: c_uint8
+            fileNumber: c_uint16
+            recordNumber: c_uint16
+            recordData: []c_byte
 
 
 
@@ -37,16 +37,16 @@ super().__init__( )
 
 
 
-    def getReferenceType(self) -> short:
+    def getReferenceType(self) -> c_uint8:
         return referenceType
 
-    def getFileNumber(self) -> int:
+    def getFileNumber(self) -> c_uint16:
         return fileNumber
 
-    def getRecordNumber(self) -> int:
+    def getRecordNumber(self) -> c_uint16:
         return recordNumber
 
-    def getRecordData(self) -> byte[]:
+    def getRecordData(self) -> []c_byte:
         return recordData
 
 
@@ -65,7 +65,7 @@ super().__init__( )
                             writeSimpleField("recordNumber", recordNumber, writeUnsignedInt(writeBuffer, 16))
 
                         # Implicit Field (recordLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-                        int recordLength = (int) ((COUNT(getRecordData())) / (2))
+                        c_uint16 recordLength = (c_uint16) ((COUNT(getRecordData())) / (2))
                         writeImplicitField("recordLength", recordLength, writeUnsignedInt(writeBuffer, 16))
 
                         # Array Field (recordData)
@@ -112,13 +112,13 @@ super().__init__( )
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                referenceType: short = readSimpleField("referenceType", readUnsignedShort(readBuffer, 8))
+                referenceType: c_uint8 = readSimpleField("referenceType", readUnsignedShort(readBuffer, 8))
 
-                fileNumber: int = readSimpleField("fileNumber", readUnsignedInt(readBuffer, 16))
+                fileNumber: c_uint16 = readSimpleField("fileNumber", readUnsignedInt(readBuffer, 16))
 
-                recordNumber: int = readSimpleField("recordNumber", readUnsignedInt(readBuffer, 16))
+                recordNumber: c_uint16 = readSimpleField("recordNumber", readUnsignedInt(readBuffer, 16))
 
-                recordLength: int = readImplicitField("recordLength", readUnsignedInt(readBuffer, 16))
+                recordLength: c_uint16 = readImplicitField("recordLength", readUnsignedInt(readBuffer, 16))
 
                     recordData: byte[] = readBuffer.readByteArray("recordData", Math.toIntExact((recordLength) * (2)))
 
@@ -164,4 +164,6 @@ super().__init__( )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
 

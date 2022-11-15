@@ -27,14 +27,14 @@ from dataclasses import dataclass
 class ModbusPDUReportServerIdRequest(PlcMessage,ModbusPDU):
 
     # Accessors for discriminator values.
-    def Boolean getErrorFlag() {
-        return (boolean) false
+    def c_bool getErrorFlag() {
+        return (c_bool) false
     }
-    def Short getFunctionFlag() {
-        return (short) 0x11
+    def c_uint8 getFunctionFlag() {
+        return (c_uint8) 0x11
     }
-    def Boolean getResponse() {
-        return (boolean) false
+    def c_bool getResponse() {
+        return (c_bool) false
     }
 
 
@@ -62,7 +62,7 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, Boolean response) -> ModbusPDUReportServerIdRequestBuilder:
+    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUReportServerIdRequestBuilder:
         readBuffer.pullContext("ModbusPDUReportServerIdRequest")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
@@ -73,19 +73,6 @@ super().__init__( )
         return ModbusPDUReportServerIdRequestBuilder(
         
         )
-
-        class ModbusPDUReportServerIdRequestBuilder(ModbusPDUModbusPDUBuilder {
-
-        def ModbusPDUReportServerIdRequestBuilder(
-        
-        ):
-
-
-        def build(
-        ) -> ModbusPDUReportServerIdRequest:
-            modbusPDUReportServerIdRequest: ModbusPDUReportServerIdRequest = ModbusPDUReportServerIdRequest(
-)
-            return modbusPDUReportServerIdRequest
 
 
     def equals(self, o: object) -> bool:
@@ -113,4 +100,14 @@ super().__init__( )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
+class ModbusPDUReportServerIdRequestBuilder(ModbusPDUModbusPDUBuilder:def ModbusPDUReportServerIdRequestBuilder( ):
+
+        def build(
+        ) -> ModbusPDUReportServerIdRequest:
+        modbusPDUReportServerIdRequest: ModbusPDUReportServerIdRequest = ModbusPDUReportServerIdRequest(
+)
+        return modbusPDUReportServerIdRequest
+
 

@@ -25,17 +25,17 @@ from dataclasses import dataclass
 
 @dataclass
 class ModbusPDUReadFileRecordRequest(PlcMessage,ModbusPDU):
-            items: List<ModbusPDUReadFileRecordRequestItem>
+            items: []ModbusPDUReadFileRecordRequestItem
 
     # Accessors for discriminator values.
-    def Boolean getErrorFlag() {
-        return (boolean) false
+    def c_bool getErrorFlag() {
+        return (c_bool) false
     }
-    def Short getFunctionFlag() {
-        return (short) 0x14
+    def c_uint8 getFunctionFlag() {
+        return (c_uint8) 0x14
     }
-    def Boolean getResponse() {
-        return (boolean) false
+    def c_bool getResponse() {
+        return (c_bool) false
     }
 
 
@@ -44,7 +44,7 @@ super().__init__( )
 
 
 
-    def getItems(self) -> List<ModbusPDUReadFileRecordRequestItem>:
+    def getItems(self) -> []ModbusPDUReadFileRecordRequestItem:
         return items
 
 
@@ -54,7 +54,7 @@ super().__init__( )
             writeBuffer.pushContext("ModbusPDUReadFileRecordRequest")
 
                         # Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-                        short byteCount = (short) (ARRAY_SIZE_IN_BYTES(getItems()))
+                        c_uint8 byteCount = (c_uint8) (ARRAY_SIZE_IN_BYTES(getItems()))
                         writeImplicitField("byteCount", byteCount, writeUnsignedShort(writeBuffer, 8))
 
                         # Array Field (items)
@@ -83,15 +83,15 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, Boolean response) -> ModbusPDUReadFileRecordRequestBuilder:
+    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUReadFileRecordRequestBuilder:
         readBuffer.pullContext("ModbusPDUReadFileRecordRequest")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                byteCount: short = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
+                byteCount: c_uint8 = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
 
-                            items: List<ModbusPDUReadFileRecordRequestItem> = readLengthArrayField("items", new DataReaderComplexDefault<>(() -> ModbusPDUReadFileRecordRequestItem.staticParse(readBuffer), readBuffer), byteCount)
+                            items: []ModbusPDUReadFileRecordRequestItem = readLengthArrayField("items", new DataReaderComplexDefault<>(() -> ModbusPDUReadFileRecordRequestItem.staticParse(readBuffer), readBuffer), byteCount)
 
     readBuffer.closeContext("ModbusPDUReadFileRecordRequest")
     # Create the instance
@@ -99,23 +99,6 @@ super().__init__( )
             items
         
         )
-
-        class ModbusPDUReadFileRecordRequestBuilder(ModbusPDUModbusPDUBuilder {
-        items: List<ModbusPDUReadFileRecordRequestItem>
-
-        def ModbusPDUReadFileRecordRequestBuilder(
-            List<ModbusPDUReadFileRecordRequestItem> items
-        
-        ):
-            self.items = items
-
-
-        def build(
-        ) -> ModbusPDUReadFileRecordRequest:
-            modbusPDUReadFileRecordRequest: ModbusPDUReadFileRecordRequest = ModbusPDUReadFileRecordRequest(
-                items
-)
-            return modbusPDUReadFileRecordRequest
 
 
     def equals(self, o: object) -> bool:
@@ -145,4 +128,16 @@ super().__init__( )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
+class ModbusPDUReadFileRecordRequestBuilder(ModbusPDUModbusPDUBuilder: items: []ModbusPDUReadFileRecordRequestItemdef ModbusPDUReadFileRecordRequestBuilder( []ModbusPDUReadFileRecordRequestItem items ):        self.items = items
+
+
+        def build(
+        ) -> ModbusPDUReadFileRecordRequest:
+        modbusPDUReadFileRecordRequest: ModbusPDUReadFileRecordRequest = ModbusPDUReadFileRecordRequest(
+            items
+)
+        return modbusPDUReadFileRecordRequest
+
 

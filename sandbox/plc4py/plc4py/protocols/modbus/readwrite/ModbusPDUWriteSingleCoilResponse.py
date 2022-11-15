@@ -25,18 +25,18 @@ from dataclasses import dataclass
 
 @dataclass
 class ModbusPDUWriteSingleCoilResponse(PlcMessage,ModbusPDU):
-            address: int
-            value: int
+            address: c_uint16
+            value: c_uint16
 
     # Accessors for discriminator values.
-    def Boolean getErrorFlag() {
-        return (boolean) false
+    def c_bool getErrorFlag() {
+        return (c_bool) false
     }
-    def Short getFunctionFlag() {
-        return (short) 0x05
+    def c_uint8 getFunctionFlag() {
+        return (c_uint8) 0x05
     }
-    def Boolean getResponse() {
-        return (boolean) true
+    def c_bool getResponse() {
+        return (c_bool) true
     }
 
 
@@ -45,10 +45,10 @@ super().__init__( )
 
 
 
-    def getAddress(self) -> int:
+    def getAddress(self) -> c_uint16:
         return address
 
-    def getValue(self) -> int:
+    def getValue(self) -> c_uint16:
         return value
 
 
@@ -82,15 +82,15 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, Boolean response) -> ModbusPDUWriteSingleCoilResponseBuilder:
+    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUWriteSingleCoilResponseBuilder:
         readBuffer.pullContext("ModbusPDUWriteSingleCoilResponse")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                address: int = readSimpleField("address", readUnsignedInt(readBuffer, 16))
+                address: c_uint16 = readSimpleField("address", readUnsignedInt(readBuffer, 16))
 
-                value: int = readSimpleField("value", readUnsignedInt(readBuffer, 16))
+                value: c_uint16 = readSimpleField("value", readUnsignedInt(readBuffer, 16))
 
     readBuffer.closeContext("ModbusPDUWriteSingleCoilResponse")
     # Create the instance
@@ -99,27 +99,6 @@ super().__init__( )
             value
         
         )
-
-        class ModbusPDUWriteSingleCoilResponseBuilder(ModbusPDUModbusPDUBuilder {
-        address: int
-        value: int
-
-        def ModbusPDUWriteSingleCoilResponseBuilder(
-            int address, 
-            int value
-        
-        ):
-            self.address = address
-            self.value = value
-
-
-        def build(
-        ) -> ModbusPDUWriteSingleCoilResponse:
-            modbusPDUWriteSingleCoilResponse: ModbusPDUWriteSingleCoilResponse = ModbusPDUWriteSingleCoilResponse(
-                address, 
-                value
-)
-            return modbusPDUWriteSingleCoilResponse
 
 
     def equals(self, o: object) -> bool:
@@ -151,4 +130,18 @@ super().__init__( )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
+class ModbusPDUWriteSingleCoilResponseBuilder(ModbusPDUModbusPDUBuilder: address: c_uint16 value: c_uint16def ModbusPDUWriteSingleCoilResponseBuilder( c_uint16 address, c_uint16 value ):        self.address = address
+        self.value = value
+
+
+        def build(
+        ) -> ModbusPDUWriteSingleCoilResponse:
+        modbusPDUWriteSingleCoilResponse: ModbusPDUWriteSingleCoilResponse = ModbusPDUWriteSingleCoilResponse(
+            address, 
+            value
+)
+        return modbusPDUWriteSingleCoilResponse
+
 

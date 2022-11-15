@@ -25,18 +25,18 @@ from dataclasses import dataclass
 
 @dataclass
 class ModbusPDUReadHoldingRegistersRequest(PlcMessage,ModbusPDU):
-            startingAddress: int
-            quantity: int
+            startingAddress: c_uint16
+            quantity: c_uint16
 
     # Accessors for discriminator values.
-    def Boolean getErrorFlag() {
-        return (boolean) false
+    def c_bool getErrorFlag() {
+        return (c_bool) false
     }
-    def Short getFunctionFlag() {
-        return (short) 0x03
+    def c_uint8 getFunctionFlag() {
+        return (c_uint8) 0x03
     }
-    def Boolean getResponse() {
-        return (boolean) false
+    def c_bool getResponse() {
+        return (c_bool) false
     }
 
 
@@ -45,10 +45,10 @@ super().__init__( )
 
 
 
-    def getStartingAddress(self) -> int:
+    def getStartingAddress(self) -> c_uint16:
         return startingAddress
 
-    def getQuantity(self) -> int:
+    def getQuantity(self) -> c_uint16:
         return quantity
 
 
@@ -82,15 +82,15 @@ super().__init__( )
         return lengthInBits
 
 
-    def  staticParseBuilder(readBuffer: ReadBuffer, Boolean response) -> ModbusPDUReadHoldingRegistersRequestBuilder:
+    def  staticParseBuilder(readBuffer: ReadBuffer, c_bool response) -> ModbusPDUReadHoldingRegistersRequestBuilder:
         readBuffer.pullContext("ModbusPDUReadHoldingRegistersRequest")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-                startingAddress: int = readSimpleField("startingAddress", readUnsignedInt(readBuffer, 16))
+                startingAddress: c_uint16 = readSimpleField("startingAddress", readUnsignedInt(readBuffer, 16))
 
-                quantity: int = readSimpleField("quantity", readUnsignedInt(readBuffer, 16))
+                quantity: c_uint16 = readSimpleField("quantity", readUnsignedInt(readBuffer, 16))
 
     readBuffer.closeContext("ModbusPDUReadHoldingRegistersRequest")
     # Create the instance
@@ -99,27 +99,6 @@ super().__init__( )
             quantity
         
         )
-
-        class ModbusPDUReadHoldingRegistersRequestBuilder(ModbusPDUModbusPDUBuilder {
-        startingAddress: int
-        quantity: int
-
-        def ModbusPDUReadHoldingRegistersRequestBuilder(
-            int startingAddress, 
-            int quantity
-        
-        ):
-            self.startingAddress = startingAddress
-            self.quantity = quantity
-
-
-        def build(
-        ) -> ModbusPDUReadHoldingRegistersRequest:
-            modbusPDUReadHoldingRegistersRequest: ModbusPDUReadHoldingRegistersRequest = ModbusPDUReadHoldingRegistersRequest(
-                startingAddress, 
-                quantity
-)
-            return modbusPDUReadHoldingRegistersRequest
 
 
     def equals(self, o: object) -> bool:
@@ -151,4 +130,18 @@ super().__init__( )
             raise RuntimeException(e)
 
         return "\n" + writeBufferBoxBased.getBox().toString()+ "\n"
+
+
+class ModbusPDUReadHoldingRegistersRequestBuilder(ModbusPDUModbusPDUBuilder: startingAddress: c_uint16 quantity: c_uint16def ModbusPDUReadHoldingRegistersRequestBuilder( c_uint16 startingAddress, c_uint16 quantity ):        self.startingAddress = startingAddress
+        self.quantity = quantity
+
+
+        def build(
+        ) -> ModbusPDUReadHoldingRegistersRequest:
+        modbusPDUReadHoldingRegistersRequest: ModbusPDUReadHoldingRegistersRequest = ModbusPDUReadHoldingRegistersRequest(
+            startingAddress, 
+            quantity
+)
+        return modbusPDUReadHoldingRegistersRequest
+
 

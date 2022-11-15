@@ -29,30 +29,30 @@ import java.util.Map;
 
 public enum ModbusDeviceInformationLevel {
 
-BASIC( (short) 0x01 ) , REGULAR( (short) 0x02 ) , EXTENDED( (short) 0x03 ) , INDIVIDUAL( (short) 0x04 ) ;
-    private static final Map<Short, ModbusDeviceInformationLevel> map;
+BASIC( (c_uint8) 0x01 ) , REGULAR( (c_uint8) 0x02 ) , EXTENDED( (c_uint8) 0x03 ) , INDIVIDUAL( (c_uint8) 0x04 ) ;
+    private static final Map<c_uint8, ModbusDeviceInformationLevel> map;
     static {
         map = new HashMap<>();
         for (ModbusDeviceInformationLevel value : ModbusDeviceInformationLevel.values()) {
-            map.put((short) value.getValue(), value);
+            map.put((c_uint8) value.getValue(), value);
         }
     }
 
-    private short value;
+    private c_uint8 value;
 
-    ModbusDeviceInformationLevel(short value) {
+    ModbusDeviceInformationLevel(c_uint8 value) {
         this.value = value;
     }
 
-    public short getValue() {
+    public c_uint8 getValue() {
         return value;
     }
 
-    public static ModbusDeviceInformationLevel enumForValue(short value) {
+    public static ModbusDeviceInformationLevel enumForValue(c_uint8 value) {
         return map.get(value);
     }
 
-    public static Boolean isDefined(short value) {
+    public static Boolean isDefined(c_uint8 value) {
         return map.containsKey(value);
     }
 
