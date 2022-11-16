@@ -28,25 +28,24 @@ from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 import math
 
-    
+
 @dataclass
-class ModbusPDUReadInputRegistersRequest(PlcMessage,ModbusPDU):
+class ModbusPDUReadInputRegistersRequest(PlcMessage, ModbusPDU):
     startingAddress: c_uint16
     quantity: c_uint16
 
     # Accessors for discriminator values.
     def getErrorFlag(self) -> c_bool:
-        return (c_bool) False
-    def getFunctionFlag(self) -> c_uint8:
-        return (c_uint8) 0x04
-    def getResponse(self) -> c_bool:
-        return (c_bool) False
+        return c_bool(False)
 
+    def getFunctionFlag(self) -> c_uint8:
+        return c_uint8(0x04)
+
+    def getResponse(self) -> c_bool:
+        return c_bool(False)
 
     def __post_init__(self):
-        super().__init__( )
-
-
+        super().__init__()
 
     def getStartingAddress(self) -> c_uint16:
         return self.startingAddress
@@ -54,20 +53,20 @@ class ModbusPDUReadInputRegistersRequest(PlcMessage,ModbusPDU):
     def getQuantity(self) -> c_uint16:
         return self.quantity
 
-
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
         startPos: int = positionAware.getPos()
         writeBuffer.pushContext("ModbusPDUReadInputRegistersRequest")
 
         # Simple Field (startingAddress)
-        writeSimpleField("startingAddress", startingAddress, writeUnsignedInt(writeBuffer, 16))
+        writeSimpleField(
+            "startingAddress", startingAddress, writeUnsignedInt(writeBuffer, 16)
+        )
 
         # Simple Field (quantity)
         writeSimpleField("quantity", quantity, writeUnsignedInt(writeBuffer, 16))
 
         writeBuffer.popContext("ModbusPDUReadInputRegistersRequest")
-
 
     def getLengthInBytes(self) -> int:
         return int(math.ceil(float(self.getLengthInBits() / 8.0)))
@@ -84,22 +83,26 @@ class ModbusPDUReadInputRegistersRequest(PlcMessage,ModbusPDU):
 
         return lengthInBits
 
-
     @staticmethod
-    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUReadInputRegistersRequestBuilder:
+    def staticParseBuilder(
+        readBuffer: ReadBuffer, response: c_bool
+    ) -> ModbusPDUReadInputRegistersRequestBuilder:
         readBuffer.pullContext("ModbusPDUReadInputRegistersRequest")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-        startingAddress: c_uint16 = readSimpleField("startingAddress", readUnsignedInt(readBuffer, 16))
+        startingAddress: c_uint16 = readSimpleField(
+            "startingAddress", readUnsignedInt(readBuffer, 16)
+        )
 
-        quantity: c_uint16 = readSimpleField("quantity", readUnsignedInt(readBuffer, 16))
+        quantity: c_uint16 = readSimpleField(
+            "quantity", readUnsignedInt(readBuffer, 16)
+        )
 
         readBuffer.closeContext("ModbusPDUReadInputRegistersRequest")
         # Create the instance
-        return ModbusPDUReadInputRegistersRequestBuilder(startingAddress, quantity )
-
+        return ModbusPDUReadInputRegistersRequestBuilder(startingAddress, quantity)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -109,10 +112,15 @@ class ModbusPDUReadInputRegistersRequest(PlcMessage,ModbusPDU):
             return False
 
         that: ModbusPDUReadInputRegistersRequest = ModbusPDUReadInputRegistersRequest(o)
-        return (getStartingAddress() == that.getStartingAddress()) && (getQuantity() == that.getQuantity()) && super().equals(that) && True
+        return (
+            (self.getStartingAddress() == that.getStartingAddress())
+            and (self.getQuantity() == that.getQuantity())
+            and super().equals(that)
+            and True
+        )
 
     def hashCode(self) -> int:
-        return hash(super().hashCode(), getStartingAddress(), getQuantity() )
+        return hash(super().hashCode(), self.getStartingAddress(), self.getQuantity())
 
     def __str__(self) -> str:
         writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
@@ -124,17 +132,18 @@ class ModbusPDUReadInputRegistersRequest(PlcMessage,ModbusPDU):
         return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
-class ModbusPDUReadInputRegistersRequestBuilder(ModbusPDUModbusPDUBuilder: startingAddress: c_uint16 quantity: c_uint16def ModbusPDUReadInputRegistersRequestBuilder( c_uint16 startingAddress, c_uint16 quantity ):        self.startingAddress = startingAddress
-        self.quantity = quantity
+@dataclass
+class ModbusPDUReadInputRegistersRequestBuilder(ModbusPDUModbusPDUBuilder):
+    startingAddress: c_uint16
+    quantity: c_uint16
 
+    def __post_init__(self):
+        pass
 
-        def build(self,
-        ) -> ModbusPDUReadInputRegistersRequest:
-        modbusPDUReadInputRegistersRequest: ModbusPDUReadInputRegistersRequest = ModbusPDUReadInputRegistersRequest(
-            startingAddress, 
-            quantity
-)
+    def build(
+        self,
+    ) -> ModbusPDUReadInputRegistersRequest:
+        modbusPDUReadInputRegistersRequest: ModbusPDUReadInputRegistersRequest = (
+            ModbusPDUReadInputRegistersRequest(self.startingAddress, self.quantity)
+        )
         return modbusPDUReadInputRegistersRequest
-
-
-

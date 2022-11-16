@@ -30,9 +30,9 @@ from plc4py.protocols.modbus.readwrite.DriverType import DriverType
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 import math
 
-    
+
 @dataclass
-class ModbusTcpADU(PlcMessage,ModbusADU):
+class ModbusTcpADU(PlcMessage, ModbusADU):
     transactionIdentifier: c_uint16
     unitIdentifier: c_uint8
     pdu: ModbusPDU
@@ -44,11 +44,8 @@ class ModbusTcpADU(PlcMessage,ModbusADU):
     def getDriverType(self) -> DriverType:
         return DriverType.MODBUS_TCP
 
-
     def __post_init__(self):
-        super().__init__( self.response )
-
-
+        super().__init__(self.response)
 
     def getTransactionIdentifier(self) -> c_uint16:
         return self.transactionIdentifier
@@ -62,30 +59,45 @@ class ModbusTcpADU(PlcMessage,ModbusADU):
     def getProtocolIdentifier(self) -> c_uint16:
         return PROTOCOLIDENTIFIER
 
-
     def serializeModbusADUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
         startPos: int = positionAware.getPos()
         writeBuffer.pushContext("ModbusTcpADU")
 
         # Simple Field (transactionIdentifier)
-        writeSimpleField("transactionIdentifier", transactionIdentifier, writeUnsignedInt(writeBuffer, 16), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+        writeSimpleField(
+            "transactionIdentifier",
+            transactionIdentifier,
+            writeUnsignedInt(writeBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+        )
 
         # Const Field (protocolIdentifier)
-                        writeConstField("protocolIdentifier", PROTOCOLIDENTIFIER, writeUnsignedInt(writeBuffer, 16))
+        writeConstField(
+            "protocolIdentifier", PROTOCOLIDENTIFIER, writeUnsignedInt(writeBuffer, 16)
+        )
 
         # Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        c_uint16 length = (c_uint16) ((getPdu().getLengthInBytes()) + (1))
+        length: c_uint16 = c_uint16(((self.getPdu().self.getLengthInBytes()) + (1)))
         writeImplicitField("length", length, writeUnsignedInt(writeBuffer, 16))
 
         # Simple Field (unitIdentifier)
-        writeSimpleField("unitIdentifier", unitIdentifier, writeUnsignedShort(writeBuffer, 8), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+        writeSimpleField(
+            "unitIdentifier",
+            unitIdentifier,
+            writeUnsignedShort(writeBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+        )
 
         # Simple Field (pdu)
-        writeSimpleField("pdu", pdu, DataWriterComplexDefault<>(writeBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+        writeSimpleField(
+            "pdu",
+            pdu,
+            DataWriterComplexDefault(writeBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+        )
 
         writeBuffer.popContext("ModbusTcpADU")
-
 
     def getLengthInBytes(self) -> int:
         return int(math.ceil(float(self.getLengthInBits() / 8.0)))
@@ -111,28 +123,51 @@ class ModbusTcpADU(PlcMessage,ModbusADU):
 
         return lengthInBits
 
-
     @staticmethod
-    def staticParseBuilder(readBuffer: ReadBuffer, driverType: DriverType, response: c_bool) -> ModbusTcpADUBuilder:
+    def staticParseBuilder(
+        readBuffer: ReadBuffer, driverType: DriverType, response: c_bool
+    ) -> ModbusTcpADUBuilder:
         readBuffer.pullContext("ModbusTcpADU")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-        transactionIdentifier: c_uint16 = readSimpleField("transactionIdentifier", readUnsignedInt(readBuffer, 16), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+        transactionIdentifier: c_uint16 = readSimpleField(
+            "transactionIdentifier",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+        )
 
-        protocolIdentifier: c_uint16 = readConstField("protocolIdentifier", readUnsignedInt(readBuffer, 16), ModbusTcpADU.PROTOCOLIDENTIFIER, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+        protocolIdentifier: c_uint16 = readConstField(
+            "protocolIdentifier",
+            readUnsignedInt(readBuffer, 16),
+            ModbusTcpADU.PROTOCOLIDENTIFIER,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+        )
 
-        length: c_uint16 = readImplicitField("length", readUnsignedInt(readBuffer, 16), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+        length: c_uint16 = readImplicitField(
+            "length",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+        )
 
-        unitIdentifier: c_uint8 = readSimpleField("unitIdentifier", readUnsignedShort(readBuffer, 8), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+        unitIdentifier: c_uint8 = readSimpleField(
+            "unitIdentifier",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+        )
 
-        pdu: ModbusPDU = readSimpleField("pdu", DataReaderComplexDefault<>(() -> ModbusPDU.staticParse(readBuffer, (c_bool) (response)), readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
+        pdu: ModbusPDU = readSimpleField(
+            "pdu",
+            DataReaderComplexDefault(
+                ModbusPDU.staticParse(readBuffer, c_bool(response)), readBuffer
+            ),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+        )
 
         readBuffer.closeContext("ModbusTcpADU")
         # Create the instance
-        return ModbusTcpADUBuilder(transactionIdentifier, unitIdentifier, pdu , response )
-
+        return ModbusTcpADUBuilder(transactionIdentifier, unitIdentifier, pdu, response)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -142,10 +177,21 @@ class ModbusTcpADU(PlcMessage,ModbusADU):
             return False
 
         that: ModbusTcpADU = ModbusTcpADU(o)
-        return (getTransactionIdentifier() == that.getTransactionIdentifier()) && (getUnitIdentifier() == that.getUnitIdentifier()) && (getPdu() == that.getPdu()) && super().equals(that) && True
+        return (
+            (self.getTransactionIdentifier() == that.getTransactionIdentifier())
+            and (self.getUnitIdentifier() == that.getUnitIdentifier())
+            and (self.getPdu() == that.getPdu())
+            and super().equals(that)
+            and True
+        )
 
     def hashCode(self) -> int:
-        return hash(super().hashCode(), getTransactionIdentifier(), getUnitIdentifier(), getPdu() )
+        return hash(
+            super().hashCode(),
+            self.getTransactionIdentifier(),
+            self.getUnitIdentifier(),
+            self.getPdu(),
+        )
 
     def __str__(self) -> str:
         writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
@@ -157,24 +203,18 @@ class ModbusTcpADU(PlcMessage,ModbusADU):
         return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
-class ModbusTcpADUBuilder(ModbusADUModbusADUBuilder: transactionIdentifier: c_uint16 unitIdentifier: c_uint8 pdu: ModbusPDU response: c_booldef ModbusTcpADUBuilder( c_uint16 transactionIdentifier, c_uint8 unitIdentifier, ModbusPDU pdu , c_bool response ):        self.transactionIdentifier = transactionIdentifier
-        self.unitIdentifier = unitIdentifier
-        self.pdu = pdu
-            self.response = response
+@dataclass
+class ModbusTcpADUBuilder(ModbusADUModbusADUBuilder):
+    transactionIdentifier: c_uint16
+    unitIdentifier: c_uint8
+    pdu: ModbusPDU
+    response: c_bool
 
+    def __post_init__(self):
+        pass
 
-        def build(self,
-            
-                response: c_bool
-        ) -> ModbusTcpADU:
+    def build(self, response: c_bool) -> ModbusTcpADU:
         modbusTcpADU: ModbusTcpADU = ModbusTcpADU(
-            transactionIdentifier, 
-            unitIdentifier, 
-            pdu
-            , 
-                response
+            self.transactionIdentifier, self.unitIdentifier, self.pdu, response
         )
         return modbusTcpADU
-
-
-

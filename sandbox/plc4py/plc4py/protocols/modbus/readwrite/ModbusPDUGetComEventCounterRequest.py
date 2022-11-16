@@ -27,24 +27,22 @@ from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 import math
 
-    
+
 @dataclass
-class ModbusPDUGetComEventCounterRequest(PlcMessage,ModbusPDU):
+class ModbusPDUGetComEventCounterRequest(PlcMessage, ModbusPDU):
 
     # Accessors for discriminator values.
     def getErrorFlag(self) -> c_bool:
-        return (c_bool) False
-    def getFunctionFlag(self) -> c_uint8:
-        return (c_uint8) 0x0B
-    def getResponse(self) -> c_bool:
-        return (c_bool) False
+        return c_bool(False)
 
+    def getFunctionFlag(self) -> c_uint8:
+        return c_uint8(0x0B)
+
+    def getResponse(self) -> c_bool:
+        return c_bool(False)
 
     def __post_init__(self):
-        super().__init__( )
-
-
-
+        super().__init__()
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
@@ -52,7 +50,6 @@ class ModbusPDUGetComEventCounterRequest(PlcMessage,ModbusPDU):
         writeBuffer.pushContext("ModbusPDUGetComEventCounterRequest")
 
         writeBuffer.popContext("ModbusPDUGetComEventCounterRequest")
-
 
     def getLengthInBytes(self) -> int:
         return int(math.ceil(float(self.getLengthInBits() / 8.0)))
@@ -63,9 +60,10 @@ class ModbusPDUGetComEventCounterRequest(PlcMessage,ModbusPDU):
 
         return lengthInBits
 
-
     @staticmethod
-    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUGetComEventCounterRequestBuilder:
+    def staticParseBuilder(
+        readBuffer: ReadBuffer, response: c_bool
+    ) -> ModbusPDUGetComEventCounterRequestBuilder:
         readBuffer.pullContext("ModbusPDUGetComEventCounterRequest")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
@@ -75,7 +73,6 @@ class ModbusPDUGetComEventCounterRequest(PlcMessage,ModbusPDU):
         # Create the instance
         return ModbusPDUGetComEventCounterRequestBuilder()
 
-
     def equals(self, o: object) -> bool:
         if self == o:
             return True
@@ -84,10 +81,10 @@ class ModbusPDUGetComEventCounterRequest(PlcMessage,ModbusPDU):
             return False
 
         that: ModbusPDUGetComEventCounterRequest = ModbusPDUGetComEventCounterRequest(o)
-        return super().equals(that) && True
+        return super().equals(that) and True
 
     def hashCode(self) -> int:
-        return hash(super().hashCode() )
+        return hash(super().hashCode())
 
     def __str__(self) -> str:
         writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
@@ -99,13 +96,15 @@ class ModbusPDUGetComEventCounterRequest(PlcMessage,ModbusPDU):
         return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
-class ModbusPDUGetComEventCounterRequestBuilder(ModbusPDUModbusPDUBuilder:def ModbusPDUGetComEventCounterRequestBuilder( ):
+@dataclass
+class ModbusPDUGetComEventCounterRequestBuilder(ModbusPDUModbusPDUBuilder):
+    def __post_init__(self):
+        pass
 
-        def build(self,
-        ) -> ModbusPDUGetComEventCounterRequest:
-        modbusPDUGetComEventCounterRequest: ModbusPDUGetComEventCounterRequest = ModbusPDUGetComEventCounterRequest(
-)
+    def build(
+        self,
+    ) -> ModbusPDUGetComEventCounterRequest:
+        modbusPDUGetComEventCounterRequest: ModbusPDUGetComEventCounterRequest = (
+            ModbusPDUGetComEventCounterRequest()
+        )
         return modbusPDUGetComEventCounterRequest
-
-
-

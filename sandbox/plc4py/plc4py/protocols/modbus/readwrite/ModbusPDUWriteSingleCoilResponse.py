@@ -28,32 +28,30 @@ from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 import math
 
-    
+
 @dataclass
-class ModbusPDUWriteSingleCoilResponse(PlcMessage,ModbusPDU):
+class ModbusPDUWriteSingleCoilResponse(PlcMessage, ModbusPDU):
     address: c_uint16
     value: c_uint16
 
     # Accessors for discriminator values.
     def getErrorFlag(self) -> c_bool:
-        return (c_bool) False
-    def getFunctionFlag(self) -> c_uint8:
-        return (c_uint8) 0x05
-    def getResponse(self) -> c_bool:
-        return (c_bool) True
+        return c_bool(False)
 
+    def getFunctionFlag(self) -> c_uint8:
+        return c_uint8(0x05)
+
+    def getResponse(self) -> c_bool:
+        return c_bool(True)
 
     def __post_init__(self):
-        super().__init__( )
-
-
+        super().__init__()
 
     def getAddress(self) -> c_uint16:
         return self.address
 
     def getValue(self) -> c_uint16:
         return self.value
-
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
@@ -67,7 +65,6 @@ class ModbusPDUWriteSingleCoilResponse(PlcMessage,ModbusPDU):
         writeSimpleField("value", value, writeUnsignedInt(writeBuffer, 16))
 
         writeBuffer.popContext("ModbusPDUWriteSingleCoilResponse")
-
 
     def getLengthInBytes(self) -> int:
         return int(math.ceil(float(self.getLengthInBits() / 8.0)))
@@ -84,9 +81,10 @@ class ModbusPDUWriteSingleCoilResponse(PlcMessage,ModbusPDU):
 
         return lengthInBits
 
-
     @staticmethod
-    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUWriteSingleCoilResponseBuilder:
+    def staticParseBuilder(
+        readBuffer: ReadBuffer, response: c_bool
+    ) -> ModbusPDUWriteSingleCoilResponseBuilder:
         readBuffer.pullContext("ModbusPDUWriteSingleCoilResponse")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
@@ -98,8 +96,7 @@ class ModbusPDUWriteSingleCoilResponse(PlcMessage,ModbusPDU):
 
         readBuffer.closeContext("ModbusPDUWriteSingleCoilResponse")
         # Create the instance
-        return ModbusPDUWriteSingleCoilResponseBuilder(address, value )
-
+        return ModbusPDUWriteSingleCoilResponseBuilder(address, value)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -109,10 +106,15 @@ class ModbusPDUWriteSingleCoilResponse(PlcMessage,ModbusPDU):
             return False
 
         that: ModbusPDUWriteSingleCoilResponse = ModbusPDUWriteSingleCoilResponse(o)
-        return (getAddress() == that.getAddress()) && (getValue() == that.getValue()) && super().equals(that) && True
+        return (
+            (self.getAddress() == that.getAddress())
+            and (self.getValue() == that.getValue())
+            and super().equals(that)
+            and True
+        )
 
     def hashCode(self) -> int:
-        return hash(super().hashCode(), getAddress(), getValue() )
+        return hash(super().hashCode(), self.getAddress(), self.getValue())
 
     def __str__(self) -> str:
         writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
@@ -124,17 +126,18 @@ class ModbusPDUWriteSingleCoilResponse(PlcMessage,ModbusPDU):
         return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
-class ModbusPDUWriteSingleCoilResponseBuilder(ModbusPDUModbusPDUBuilder: address: c_uint16 value: c_uint16def ModbusPDUWriteSingleCoilResponseBuilder( c_uint16 address, c_uint16 value ):        self.address = address
-        self.value = value
+@dataclass
+class ModbusPDUWriteSingleCoilResponseBuilder(ModbusPDUModbusPDUBuilder):
+    address: c_uint16
+    value: c_uint16
 
+    def __post_init__(self):
+        pass
 
-        def build(self,
-        ) -> ModbusPDUWriteSingleCoilResponse:
-        modbusPDUWriteSingleCoilResponse: ModbusPDUWriteSingleCoilResponse = ModbusPDUWriteSingleCoilResponse(
-            address, 
-            value
-)
+    def build(
+        self,
+    ) -> ModbusPDUWriteSingleCoilResponse:
+        modbusPDUWriteSingleCoilResponse: ModbusPDUWriteSingleCoilResponse = (
+            ModbusPDUWriteSingleCoilResponse(self.address, self.value)
+        )
         return modbusPDUWriteSingleCoilResponse
-
-
-

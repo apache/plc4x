@@ -109,7 +109,8 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         if (typeReference.isArrayTypeReference()) {
             final ArrayTypeReference arrayTypeReference = (ArrayTypeReference) typeReference;
             TypeReference elementTypeReference = arrayTypeReference.getElementTypeReference();
-            return "[]" + getLanguageTypeNameForTypeReference(elementTypeReference);
+            emitRequiredImport("from typing import List");
+            return "List[" + getLanguageTypeNameForTypeReference(elementTypeReference) + "]";
         }
         if (typeReference.isNonSimpleTypeReference()) {
             emitRequiredImport("from plc4py.protocols." + protocolName + "." + flavorName.replace("-", "") + "." + typeReference.asNonSimpleTypeReference().orElseThrow().getName() + " import " + typeReference.asNonSimpleTypeReference().orElseThrow().getName());
@@ -393,7 +394,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         if (typeReference.isEnumTypeReference()) {
             final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
             final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
-            return "DataReaderEnumDefault<>(" + languageTypeName + "::" + resolverMethod + ", " + getDataReaderCall(enumBaseTypeReference) + ")";
+            return "DataReaderEnumDefault(" + languageTypeName + "." + resolverMethod + ", " + getDataReaderCall(enumBaseTypeReference) + ")";
         } else if (typeReference.isArrayTypeReference()) {
             final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
             return getDataReaderCall(arrayTypeReference.getElementTypeReference(), resolverMethod);
@@ -418,13 +419,13 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 Term paramTerm = paramTerms.get(i);
                 final TypeReference argumentType = getArgumentType(complexTypeReference, i);
                 paramsString
-                    .append(", (")
+                    .append(", ")
                     .append(getLanguageTypeNameForTypeReference(argumentType, true))
-                    .append(") (")
+                    .append("(")
                     .append(toParseExpression(null, argumentType, paramTerm, null))
                     .append(")");
             }
-            return "DataReaderComplexDefault<>(() -> " + parserCallString + ".staticParse(readBuffer" + paramsString + "), readBuffer)";
+            return "DataReaderComplexDefault(" + parserCallString + ".staticParse(readBuffer" + paramsString + "), readBuffer)";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }
@@ -477,7 +478,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
             return getDataWriterCall(arrayTypeReference.getElementTypeReference(), fieldName);
         } else if (typeReference.isComplexTypeReference()) {
-            return "DataWriterComplexDefault<>(writeBuffer)";
+            return "DataWriterComplexDefault(writeBuffer)";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }
@@ -494,7 +495,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         } else {
             outputTypeReference = getEnumFieldSimpleTypeReference(typeReference.asNonSimpleTypeReference().orElseThrow(), attributeName);
         }
-        return "DataWriterEnumDefault<>(" + languageTypeName + "::get" + StringUtils.capitalize(attributeName) + ", " + languageTypeName + "::name, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
+        return "DataWriterEnumDefault(" + languageTypeName + ".get" + StringUtils.capitalize(attributeName) + ", " + languageTypeName + ".name, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
     }
 
     public String getDataWriterCall(SimpleTypeReference simpleTypeReference) {
@@ -1181,7 +1182,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             return tracer + variableLiteralName + "()" + ((variableLiteral.getIndex().isPresent() ? ".get(" + variableLiteral.getIndex().orElseThrow() + ")" : "") +
                 variableLiteral.getChild().map(child -> "." + toVariableExpressionRest(field, resultType, child)).orElse(""));
         }
-        return tracer + "get" + WordUtils.capitalize(variableLiteralName) + "()" + ((variableLiteral.getIndex().isPresent() ? ".get(" + variableLiteral.getIndex().orElseThrow() + ")" : "") +
+        return tracer + "self.get" + WordUtils.capitalize(variableLiteralName) + "()" + ((variableLiteral.getIndex().isPresent() ? ".get(" + variableLiteral.getIndex().orElseThrow() + ")" : "") +
             variableLiteral.getChild().map(child -> "." + toVariableExpressionRest(field, resultType, child)).orElse(""));
     }
 

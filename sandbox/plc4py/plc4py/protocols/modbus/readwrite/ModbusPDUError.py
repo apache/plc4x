@@ -28,28 +28,26 @@ from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusErrorCode import ModbusErrorCode
 import math
 
-    
+
 @dataclass
-class ModbusPDUError(PlcMessage,ModbusPDU):
+class ModbusPDUError(PlcMessage, ModbusPDU):
     exceptionCode: ModbusErrorCode
 
     # Accessors for discriminator values.
     def getErrorFlag(self) -> c_bool:
-        return (c_bool) True
+        return c_bool(True)
+
     def getFunctionFlag(self) -> c_uint8:
         return 0
+
     def getResponse(self) -> c_bool:
         return False
 
-
     def __post_init__(self):
-        super().__init__( )
-
-
+        super().__init__()
 
     def getExceptionCode(self) -> ModbusErrorCode:
         return self.exceptionCode
-
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
@@ -57,11 +55,18 @@ class ModbusPDUError(PlcMessage,ModbusPDU):
         writeBuffer.pushContext("ModbusPDUError")
 
         # Simple Field (exceptionCode)
-        writeSimpleEnumField("exceptionCode", "ModbusErrorCode", exceptionCode, DataWriterEnumDefault<>(ModbusErrorCode::getValue, ModbusErrorCode::name, writeUnsignedShort(writeBuffer, 8)))
-
+        writeSimpleEnumField(
+            "exceptionCode",
+            "ModbusErrorCode",
+            exceptionCode,
+            DataWriterEnumDefault(
+                ModbusErrorCode.getValue,
+                ModbusErrorCode.name,
+                writeUnsignedShort(writeBuffer, 8),
+            ),
+        )
 
         writeBuffer.popContext("ModbusPDUError")
-
 
     def getLengthInBytes(self) -> int:
         return int(math.ceil(float(self.getLengthInBits() / 8.0)))
@@ -75,20 +80,26 @@ class ModbusPDUError(PlcMessage,ModbusPDU):
 
         return lengthInBits
 
-
     @staticmethod
-    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUErrorBuilder:
+    def staticParseBuilder(
+        readBuffer: ReadBuffer, response: c_bool
+    ) -> ModbusPDUErrorBuilder:
         readBuffer.pullContext("ModbusPDUError")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-        exceptionCode: ModbusErrorCode = readEnumField("exceptionCode", "ModbusErrorCode", DataReaderEnumDefault<>(ModbusErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)))
+        exceptionCode: ModbusErrorCode = readEnumField(
+            "exceptionCode",
+            "ModbusErrorCode",
+            DataReaderEnumDefault(
+                ModbusErrorCode.enumForValue, readUnsignedShort(readBuffer, 8)
+            ),
+        )
 
         readBuffer.closeContext("ModbusPDUError")
         # Create the instance
-        return ModbusPDUErrorBuilder(exceptionCode )
-
+        return ModbusPDUErrorBuilder(exceptionCode)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -98,10 +109,14 @@ class ModbusPDUError(PlcMessage,ModbusPDU):
             return False
 
         that: ModbusPDUError = ModbusPDUError(o)
-        return (getExceptionCode() == that.getExceptionCode()) && super().equals(that) && True
+        return (
+            (self.getExceptionCode() == that.getExceptionCode())
+            and super().equals(that)
+            and True
+        )
 
     def hashCode(self) -> int:
-        return hash(super().hashCode(), getExceptionCode() )
+        return hash(super().hashCode(), self.getExceptionCode())
 
     def __str__(self) -> str:
         writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
@@ -113,15 +128,15 @@ class ModbusPDUError(PlcMessage,ModbusPDU):
         return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
-class ModbusPDUErrorBuilder(ModbusPDUModbusPDUBuilder: exceptionCode: ModbusErrorCodedef ModbusPDUErrorBuilder( ModbusErrorCode exceptionCode ):        self.exceptionCode = exceptionCode
+@dataclass
+class ModbusPDUErrorBuilder(ModbusPDUModbusPDUBuilder):
+    exceptionCode: ModbusErrorCode
 
+    def __post_init__(self):
+        pass
 
-        def build(self,
-        ) -> ModbusPDUError:
-        modbusPDUError: ModbusPDUError = ModbusPDUError(
-            exceptionCode
-)
+    def build(
+        self,
+    ) -> ModbusPDUError:
+        modbusPDUError: ModbusPDUError = ModbusPDUError(self.exceptionCode)
         return modbusPDUError
-
-
-

@@ -25,36 +25,44 @@ from dataclasses import dataclass
 from ctypes import c_bool
 from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
-from plc4py.protocols.modbus.readwrite.ModbusDeviceInformationConformityLevel import ModbusDeviceInformationConformityLevel
-from plc4py.protocols.modbus.readwrite.ModbusDeviceInformationLevel import ModbusDeviceInformationLevel
-from plc4py.protocols.modbus.readwrite.ModbusDeviceInformationMoreFollows import ModbusDeviceInformationMoreFollows
-from plc4py.protocols.modbus.readwrite.ModbusDeviceInformationObject import ModbusDeviceInformationObject
+from plc4py.protocols.modbus.readwrite.ModbusDeviceInformationConformityLevel import (
+    ModbusDeviceInformationConformityLevel,
+)
+from plc4py.protocols.modbus.readwrite.ModbusDeviceInformationLevel import (
+    ModbusDeviceInformationLevel,
+)
+from plc4py.protocols.modbus.readwrite.ModbusDeviceInformationMoreFollows import (
+    ModbusDeviceInformationMoreFollows,
+)
+from plc4py.protocols.modbus.readwrite.ModbusDeviceInformationObject import (
+    ModbusDeviceInformationObject,
+)
+from typing import List
 import math
 
-    
+
 @dataclass
-class ModbusPDUReadDeviceIdentificationResponse(PlcMessage,ModbusPDU):
+class ModbusPDUReadDeviceIdentificationResponse(PlcMessage, ModbusPDU):
     level: ModbusDeviceInformationLevel
     individualAccess: c_bool
     conformityLevel: ModbusDeviceInformationConformityLevel
     moreFollows: ModbusDeviceInformationMoreFollows
     nextObjectId: c_uint8
-    objects: []ModbusDeviceInformationObject
+    objects: List[ModbusDeviceInformationObject]
     MEITYPE: c_uint8 = 0x0E
 
     # Accessors for discriminator values.
     def getErrorFlag(self) -> c_bool:
-        return (c_bool) False
-    def getFunctionFlag(self) -> c_uint8:
-        return (c_uint8) 0x2B
-    def getResponse(self) -> c_bool:
-        return (c_bool) True
+        return c_bool(False)
 
+    def getFunctionFlag(self) -> c_uint8:
+        return c_uint8(0x2B)
+
+    def getResponse(self) -> c_bool:
+        return c_bool(True)
 
     def __post_init__(self):
-        super().__init__( )
-
-
+        super().__init__()
 
     def getLevel(self) -> ModbusDeviceInformationLevel:
         return self.level
@@ -71,12 +79,11 @@ class ModbusPDUReadDeviceIdentificationResponse(PlcMessage,ModbusPDU):
     def getNextObjectId(self) -> c_uint8:
         return self.nextObjectId
 
-    def getObjects(self) -> []ModbusDeviceInformationObject:
+    def getObjects(self) -> List[ModbusDeviceInformationObject]:
         return self.objects
 
     def getMeiType(self) -> c_uint8:
         return MEITYPE
-
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
@@ -84,35 +91,64 @@ class ModbusPDUReadDeviceIdentificationResponse(PlcMessage,ModbusPDU):
         writeBuffer.pushContext("ModbusPDUReadDeviceIdentificationResponse")
 
         # Const Field (meiType)
-                        writeConstField("meiType", MEITYPE, writeUnsignedShort(writeBuffer, 8))
+        writeConstField("meiType", MEITYPE, writeUnsignedShort(writeBuffer, 8))
 
         # Simple Field (level)
-        writeSimpleEnumField("level", "ModbusDeviceInformationLevel", level, DataWriterEnumDefault<>(ModbusDeviceInformationLevel::getValue, ModbusDeviceInformationLevel::name, writeUnsignedShort(writeBuffer, 8)))
-
+        writeSimpleEnumField(
+            "level",
+            "ModbusDeviceInformationLevel",
+            level,
+            DataWriterEnumDefault(
+                ModbusDeviceInformationLevel.getValue,
+                ModbusDeviceInformationLevel.name,
+                writeUnsignedShort(writeBuffer, 8),
+            ),
+        )
 
         # Simple Field (individualAccess)
-        writeSimpleField("individualAccess", individualAccess, writeBoolean(writeBuffer))
+        writeSimpleField(
+            "individualAccess", individualAccess, writeBoolean(writeBuffer)
+        )
 
         # Simple Field (conformityLevel)
-        writeSimpleEnumField("conformityLevel", "ModbusDeviceInformationConformityLevel", conformityLevel, DataWriterEnumDefault<>(ModbusDeviceInformationConformityLevel::getValue, ModbusDeviceInformationConformityLevel::name, writeUnsignedShort(writeBuffer, 7)))
-
+        writeSimpleEnumField(
+            "conformityLevel",
+            "ModbusDeviceInformationConformityLevel",
+            conformityLevel,
+            DataWriterEnumDefault(
+                ModbusDeviceInformationConformityLevel.getValue,
+                ModbusDeviceInformationConformityLevel.name,
+                writeUnsignedShort(writeBuffer, 7),
+            ),
+        )
 
         # Simple Field (moreFollows)
-        writeSimpleEnumField("moreFollows", "ModbusDeviceInformationMoreFollows", moreFollows, DataWriterEnumDefault<>(ModbusDeviceInformationMoreFollows::getValue, ModbusDeviceInformationMoreFollows::name, writeUnsignedShort(writeBuffer, 8)))
-
+        writeSimpleEnumField(
+            "moreFollows",
+            "ModbusDeviceInformationMoreFollows",
+            moreFollows,
+            DataWriterEnumDefault(
+                ModbusDeviceInformationMoreFollows.getValue,
+                ModbusDeviceInformationMoreFollows.name,
+                writeUnsignedShort(writeBuffer, 8),
+            ),
+        )
 
         # Simple Field (nextObjectId)
-        writeSimpleField("nextObjectId", nextObjectId, writeUnsignedShort(writeBuffer, 8))
+        writeSimpleField(
+            "nextObjectId", nextObjectId, writeUnsignedShort(writeBuffer, 8)
+        )
 
         # Implicit Field (numberOfObjects) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        c_uint8 numberOfObjects = (c_uint8) (COUNT(getObjects()))
-        writeImplicitField("numberOfObjects", numberOfObjects, writeUnsignedShort(writeBuffer, 8))
+        numberOfObjects: c_uint8 = c_uint8((COUNT(self.getObjects())))
+        writeImplicitField(
+            "numberOfObjects", numberOfObjects, writeUnsignedShort(writeBuffer, 8)
+        )
 
         # Array Field (objects)
         writeComplexTypeArrayField("objects", objects, writeBuffer)
 
         writeBuffer.popContext("ModbusPDUReadDeviceIdentificationResponse")
-
 
     def getLengthInBytes(self) -> int:
         return int(math.ceil(float(self.getLengthInBits() / 8.0)))
@@ -143,44 +179,81 @@ class ModbusPDUReadDeviceIdentificationResponse(PlcMessage,ModbusPDU):
         lengthInBits += 8
 
         # Array field
-        if objects is not None):
+        if self.objects is not None:
             i: int = 0
             for element in objects:
                 last: boolean = ++i >= objects.size()
                 lengthInBits += element.getLengthInBits()
 
-
-
         return lengthInBits
 
-
     @staticmethod
-    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUReadDeviceIdentificationResponseBuilder:
+    def staticParseBuilder(
+        readBuffer: ReadBuffer, response: c_bool
+    ) -> ModbusPDUReadDeviceIdentificationResponseBuilder:
         readBuffer.pullContext("ModbusPDUReadDeviceIdentificationResponse")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-        meiType: c_uint8 = readConstField("meiType", readUnsignedShort(readBuffer, 8), ModbusPDUReadDeviceIdentificationResponse.MEITYPE)
+        meiType: c_uint8 = readConstField(
+            "meiType",
+            readUnsignedShort(readBuffer, 8),
+            ModbusPDUReadDeviceIdentificationResponse.MEITYPE,
+        )
 
-        level: ModbusDeviceInformationLevel = readEnumField("level", "ModbusDeviceInformationLevel", DataReaderEnumDefault<>(ModbusDeviceInformationLevel::enumForValue, readUnsignedShort(readBuffer, 8)))
+        level: ModbusDeviceInformationLevel = readEnumField(
+            "level",
+            "ModbusDeviceInformationLevel",
+            DataReaderEnumDefault(
+                ModbusDeviceInformationLevel.enumForValue,
+                readUnsignedShort(readBuffer, 8),
+            ),
+        )
 
-        individualAccess: c_bool = readSimpleField("individualAccess", readBoolean(readBuffer))
+        individualAccess: c_bool = readSimpleField(
+            "individualAccess", readBoolean(readBuffer)
+        )
 
-        conformityLevel: ModbusDeviceInformationConformityLevel = readEnumField("conformityLevel", "ModbusDeviceInformationConformityLevel", DataReaderEnumDefault<>(ModbusDeviceInformationConformityLevel::enumForValue, readUnsignedShort(readBuffer, 7)))
+        conformityLevel: ModbusDeviceInformationConformityLevel = readEnumField(
+            "conformityLevel",
+            "ModbusDeviceInformationConformityLevel",
+            DataReaderEnumDefault(
+                ModbusDeviceInformationConformityLevel.enumForValue,
+                readUnsignedShort(readBuffer, 7),
+            ),
+        )
 
-        moreFollows: ModbusDeviceInformationMoreFollows = readEnumField("moreFollows", "ModbusDeviceInformationMoreFollows", DataReaderEnumDefault<>(ModbusDeviceInformationMoreFollows::enumForValue, readUnsignedShort(readBuffer, 8)))
+        moreFollows: ModbusDeviceInformationMoreFollows = readEnumField(
+            "moreFollows",
+            "ModbusDeviceInformationMoreFollows",
+            DataReaderEnumDefault(
+                ModbusDeviceInformationMoreFollows.enumForValue,
+                readUnsignedShort(readBuffer, 8),
+            ),
+        )
 
-        nextObjectId: c_uint8 = readSimpleField("nextObjectId", readUnsignedShort(readBuffer, 8))
+        nextObjectId: c_uint8 = readSimpleField(
+            "nextObjectId", readUnsignedShort(readBuffer, 8)
+        )
 
-        numberOfObjects: c_uint8 = readImplicitField("numberOfObjects", readUnsignedShort(readBuffer, 8))
+        numberOfObjects: c_uint8 = readImplicitField(
+            "numberOfObjects", readUnsignedShort(readBuffer, 8)
+        )
 
-        objects: []ModbusDeviceInformationObject = readCountArrayField("objects", DataReaderComplexDefault<>(() -> ModbusDeviceInformationObject.staticParse(readBuffer), readBuffer), numberOfObjects)
+        objects: List[ModbusDeviceInformationObject] = readCountArrayField(
+            "objects",
+            DataReaderComplexDefault(
+                ModbusDeviceInformationObject.staticParse(readBuffer), readBuffer
+            ),
+            numberOfObjects,
+        )
 
         readBuffer.closeContext("ModbusPDUReadDeviceIdentificationResponse")
         # Create the instance
-        return ModbusPDUReadDeviceIdentificationResponseBuilder(level, individualAccess, conformityLevel, moreFollows, nextObjectId, objects )
-
+        return ModbusPDUReadDeviceIdentificationResponseBuilder(
+            level, individualAccess, conformityLevel, moreFollows, nextObjectId, objects
+        )
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -189,11 +262,30 @@ class ModbusPDUReadDeviceIdentificationResponse(PlcMessage,ModbusPDU):
         if not isinstance(o, ModbusPDUReadDeviceIdentificationResponse):
             return False
 
-        that: ModbusPDUReadDeviceIdentificationResponse = ModbusPDUReadDeviceIdentificationResponse(o)
-        return (getLevel() == that.getLevel()) && (getIndividualAccess() == that.getIndividualAccess()) && (getConformityLevel() == that.getConformityLevel()) && (getMoreFollows() == that.getMoreFollows()) && (getNextObjectId() == that.getNextObjectId()) && (getObjects() == that.getObjects()) && super().equals(that) && True
+        that: ModbusPDUReadDeviceIdentificationResponse = (
+            ModbusPDUReadDeviceIdentificationResponse(o)
+        )
+        return (
+            (self.getLevel() == that.getLevel())
+            and (self.getIndividualAccess() == that.getIndividualAccess())
+            and (self.getConformityLevel() == that.getConformityLevel())
+            and (self.getMoreFollows() == that.getMoreFollows())
+            and (self.getNextObjectId() == that.getNextObjectId())
+            and (self.getObjects() == that.getObjects())
+            and super().equals(that)
+            and True
+        )
 
     def hashCode(self) -> int:
-        return hash(super().hashCode(), getLevel(), getIndividualAccess(), getConformityLevel(), getMoreFollows(), getNextObjectId(), getObjects() )
+        return hash(
+            super().hashCode(),
+            self.getLevel(),
+            self.getIndividualAccess(),
+            self.getConformityLevel(),
+            self.getMoreFollows(),
+            self.getNextObjectId(),
+            self.getObjects(),
+        )
 
     def __str__(self) -> str:
         writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
@@ -205,25 +297,27 @@ class ModbusPDUReadDeviceIdentificationResponse(PlcMessage,ModbusPDU):
         return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
-class ModbusPDUReadDeviceIdentificationResponseBuilder(ModbusPDUModbusPDUBuilder: level: ModbusDeviceInformationLevel individualAccess: c_bool conformityLevel: ModbusDeviceInformationConformityLevel moreFollows: ModbusDeviceInformationMoreFollows nextObjectId: c_uint8 objects: []ModbusDeviceInformationObjectdef ModbusPDUReadDeviceIdentificationResponseBuilder( ModbusDeviceInformationLevel level, c_bool individualAccess, ModbusDeviceInformationConformityLevel conformityLevel, ModbusDeviceInformationMoreFollows moreFollows, c_uint8 nextObjectId, []ModbusDeviceInformationObject objects ):        self.level = level
-        self.individualAccess = individualAccess
-        self.conformityLevel = conformityLevel
-        self.moreFollows = moreFollows
-        self.nextObjectId = nextObjectId
-        self.objects = objects
+@dataclass
+class ModbusPDUReadDeviceIdentificationResponseBuilder(ModbusPDUModbusPDUBuilder):
+    level: ModbusDeviceInformationLevel
+    individualAccess: c_bool
+    conformityLevel: ModbusDeviceInformationConformityLevel
+    moreFollows: ModbusDeviceInformationMoreFollows
+    nextObjectId: c_uint8
+    objects: List[ModbusDeviceInformationObject]
 
+    def __post_init__(self):
+        pass
 
-        def build(self,
-        ) -> ModbusPDUReadDeviceIdentificationResponse:
+    def build(
+        self,
+    ) -> ModbusPDUReadDeviceIdentificationResponse:
         modbusPDUReadDeviceIdentificationResponse: ModbusPDUReadDeviceIdentificationResponse = ModbusPDUReadDeviceIdentificationResponse(
-            level, 
-            individualAccess, 
-            conformityLevel, 
-            moreFollows, 
-            nextObjectId, 
-            objects
-)
+            self.level,
+            self.individualAccess,
+            self.conformityLevel,
+            self.moreFollows,
+            self.nextObjectId,
+            self.objects,
+        )
         return modbusPDUReadDeviceIdentificationResponse
-
-
-

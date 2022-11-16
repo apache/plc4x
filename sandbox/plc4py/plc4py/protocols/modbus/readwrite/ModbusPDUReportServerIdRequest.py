@@ -27,24 +27,22 @@ from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 import math
 
-    
+
 @dataclass
-class ModbusPDUReportServerIdRequest(PlcMessage,ModbusPDU):
+class ModbusPDUReportServerIdRequest(PlcMessage, ModbusPDU):
 
     # Accessors for discriminator values.
     def getErrorFlag(self) -> c_bool:
-        return (c_bool) False
-    def getFunctionFlag(self) -> c_uint8:
-        return (c_uint8) 0x11
-    def getResponse(self) -> c_bool:
-        return (c_bool) False
+        return c_bool(False)
 
+    def getFunctionFlag(self) -> c_uint8:
+        return c_uint8(0x11)
+
+    def getResponse(self) -> c_bool:
+        return c_bool(False)
 
     def __post_init__(self):
-        super().__init__( )
-
-
-
+        super().__init__()
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
@@ -52,7 +50,6 @@ class ModbusPDUReportServerIdRequest(PlcMessage,ModbusPDU):
         writeBuffer.pushContext("ModbusPDUReportServerIdRequest")
 
         writeBuffer.popContext("ModbusPDUReportServerIdRequest")
-
 
     def getLengthInBytes(self) -> int:
         return int(math.ceil(float(self.getLengthInBits() / 8.0)))
@@ -63,9 +60,10 @@ class ModbusPDUReportServerIdRequest(PlcMessage,ModbusPDU):
 
         return lengthInBits
 
-
     @staticmethod
-    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUReportServerIdRequestBuilder:
+    def staticParseBuilder(
+        readBuffer: ReadBuffer, response: c_bool
+    ) -> ModbusPDUReportServerIdRequestBuilder:
         readBuffer.pullContext("ModbusPDUReportServerIdRequest")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
@@ -75,7 +73,6 @@ class ModbusPDUReportServerIdRequest(PlcMessage,ModbusPDU):
         # Create the instance
         return ModbusPDUReportServerIdRequestBuilder()
 
-
     def equals(self, o: object) -> bool:
         if self == o:
             return True
@@ -84,10 +81,10 @@ class ModbusPDUReportServerIdRequest(PlcMessage,ModbusPDU):
             return False
 
         that: ModbusPDUReportServerIdRequest = ModbusPDUReportServerIdRequest(o)
-        return super().equals(that) && True
+        return super().equals(that) and True
 
     def hashCode(self) -> int:
-        return hash(super().hashCode() )
+        return hash(super().hashCode())
 
     def __str__(self) -> str:
         writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
@@ -99,13 +96,15 @@ class ModbusPDUReportServerIdRequest(PlcMessage,ModbusPDU):
         return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
-class ModbusPDUReportServerIdRequestBuilder(ModbusPDUModbusPDUBuilder:def ModbusPDUReportServerIdRequestBuilder( ):
+@dataclass
+class ModbusPDUReportServerIdRequestBuilder(ModbusPDUModbusPDUBuilder):
+    def __post_init__(self):
+        pass
 
-        def build(self,
-        ) -> ModbusPDUReportServerIdRequest:
-        modbusPDUReportServerIdRequest: ModbusPDUReportServerIdRequest = ModbusPDUReportServerIdRequest(
-)
+    def build(
+        self,
+    ) -> ModbusPDUReportServerIdRequest:
+        modbusPDUReportServerIdRequest: ModbusPDUReportServerIdRequest = (
+            ModbusPDUReportServerIdRequest()
+        )
         return modbusPDUReportServerIdRequest
-
-
-

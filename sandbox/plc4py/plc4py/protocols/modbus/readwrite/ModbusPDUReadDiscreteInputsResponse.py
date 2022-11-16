@@ -26,30 +26,29 @@ from ctypes import c_bool
 from ctypes import c_byte
 from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
+from typing import List
 import math
 
-    
+
 @dataclass
-class ModbusPDUReadDiscreteInputsResponse(PlcMessage,ModbusPDU):
-    value: []c_byte
+class ModbusPDUReadDiscreteInputsResponse(PlcMessage, ModbusPDU):
+    value: List[c_byte]
 
     # Accessors for discriminator values.
     def getErrorFlag(self) -> c_bool:
-        return (c_bool) False
-    def getFunctionFlag(self) -> c_uint8:
-        return (c_uint8) 0x02
-    def getResponse(self) -> c_bool:
-        return (c_bool) True
+        return c_bool(False)
 
+    def getFunctionFlag(self) -> c_uint8:
+        return c_uint8(0x02)
+
+    def getResponse(self) -> c_bool:
+        return c_bool(True)
 
     def __post_init__(self):
-        super().__init__( )
+        super().__init__()
 
-
-
-    def getValue(self) -> []c_byte:
+    def getValue(self) -> List[c_byte]:
         return self.value
-
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
@@ -57,14 +56,13 @@ class ModbusPDUReadDiscreteInputsResponse(PlcMessage,ModbusPDU):
         writeBuffer.pushContext("ModbusPDUReadDiscreteInputsResponse")
 
         # Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        c_uint8 byteCount = (c_uint8) (COUNT(getValue()))
+        byteCount: c_uint8 = c_uint8((COUNT(self.getValue())))
         writeImplicitField("byteCount", byteCount, writeUnsignedShort(writeBuffer, 8))
 
         # Array Field (value)
         writeByteArrayField("value", value, writeByteArray(writeBuffer, 8))
 
         writeBuffer.popContext("ModbusPDUReadDiscreteInputsResponse")
-
 
     def getLengthInBytes(self) -> int:
         return int(math.ceil(float(self.getLengthInBits() / 8.0)))
@@ -77,28 +75,29 @@ class ModbusPDUReadDiscreteInputsResponse(PlcMessage,ModbusPDU):
         lengthInBits += 8
 
         # Array field
-        if value is not None):
-            lengthInBits += 8 * value.length
-
+        if self.value is not None:
+            lengthInBits += 8 * self.value.length
 
         return lengthInBits
 
-
     @staticmethod
-    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUReadDiscreteInputsResponseBuilder:
+    def staticParseBuilder(
+        readBuffer: ReadBuffer, response: c_bool
+    ) -> ModbusPDUReadDiscreteInputsResponseBuilder:
         readBuffer.pullContext("ModbusPDUReadDiscreteInputsResponse")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-        byteCount: c_uint8 = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
+        byteCount: c_uint8 = readImplicitField(
+            "byteCount", readUnsignedShort(readBuffer, 8)
+        )
 
-        value: byte[] = readBuffer.readByteArray("value", Math.toIntExact(byteCount))
+        value: List[byte] = readBuffer.readByteArray("value", int(byteCount))
 
         readBuffer.closeContext("ModbusPDUReadDiscreteInputsResponse")
         # Create the instance
-        return ModbusPDUReadDiscreteInputsResponseBuilder(value )
-
+        return ModbusPDUReadDiscreteInputsResponseBuilder(value)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -107,11 +106,13 @@ class ModbusPDUReadDiscreteInputsResponse(PlcMessage,ModbusPDU):
         if not isinstance(o, ModbusPDUReadDiscreteInputsResponse):
             return False
 
-        that: ModbusPDUReadDiscreteInputsResponse = ModbusPDUReadDiscreteInputsResponse(o)
-        return (getValue() == that.getValue()) && super().equals(that) && True
+        that: ModbusPDUReadDiscreteInputsResponse = ModbusPDUReadDiscreteInputsResponse(
+            o
+        )
+        return (self.getValue() == that.getValue()) and super().equals(that) and True
 
     def hashCode(self) -> int:
-        return hash(super().hashCode(), getValue() )
+        return hash(super().hashCode(), self.getValue())
 
     def __str__(self) -> str:
         writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
@@ -123,15 +124,17 @@ class ModbusPDUReadDiscreteInputsResponse(PlcMessage,ModbusPDU):
         return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
-class ModbusPDUReadDiscreteInputsResponseBuilder(ModbusPDUModbusPDUBuilder: value: []c_bytedef ModbusPDUReadDiscreteInputsResponseBuilder( []c_byte value ):        self.value = value
+@dataclass
+class ModbusPDUReadDiscreteInputsResponseBuilder(ModbusPDUModbusPDUBuilder):
+    value: List[c_byte]
 
+    def __post_init__(self):
+        pass
 
-        def build(self,
-        ) -> ModbusPDUReadDiscreteInputsResponse:
-        modbusPDUReadDiscreteInputsResponse: ModbusPDUReadDiscreteInputsResponse = ModbusPDUReadDiscreteInputsResponse(
-            value
-)
+    def build(
+        self,
+    ) -> ModbusPDUReadDiscreteInputsResponse:
+        modbusPDUReadDiscreteInputsResponse: ModbusPDUReadDiscreteInputsResponse = (
+            ModbusPDUReadDiscreteInputsResponse(self.value)
+        )
         return modbusPDUReadDiscreteInputsResponse
-
-
-

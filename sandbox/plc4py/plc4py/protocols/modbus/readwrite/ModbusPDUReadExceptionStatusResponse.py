@@ -27,28 +27,26 @@ from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 import math
 
-    
+
 @dataclass
-class ModbusPDUReadExceptionStatusResponse(PlcMessage,ModbusPDU):
+class ModbusPDUReadExceptionStatusResponse(PlcMessage, ModbusPDU):
     value: c_uint8
 
     # Accessors for discriminator values.
     def getErrorFlag(self) -> c_bool:
-        return (c_bool) False
-    def getFunctionFlag(self) -> c_uint8:
-        return (c_uint8) 0x07
-    def getResponse(self) -> c_bool:
-        return (c_bool) True
+        return c_bool(False)
 
+    def getFunctionFlag(self) -> c_uint8:
+        return c_uint8(0x07)
+
+    def getResponse(self) -> c_bool:
+        return c_bool(True)
 
     def __post_init__(self):
-        super().__init__( )
-
-
+        super().__init__()
 
     def getValue(self) -> c_uint8:
         return self.value
-
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
@@ -59,7 +57,6 @@ class ModbusPDUReadExceptionStatusResponse(PlcMessage,ModbusPDU):
         writeSimpleField("value", value, writeUnsignedShort(writeBuffer, 8))
 
         writeBuffer.popContext("ModbusPDUReadExceptionStatusResponse")
-
 
     def getLengthInBytes(self) -> int:
         return int(math.ceil(float(self.getLengthInBits() / 8.0)))
@@ -73,9 +70,10 @@ class ModbusPDUReadExceptionStatusResponse(PlcMessage,ModbusPDU):
 
         return lengthInBits
 
-
     @staticmethod
-    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUReadExceptionStatusResponseBuilder:
+    def staticParseBuilder(
+        readBuffer: ReadBuffer, response: c_bool
+    ) -> ModbusPDUReadExceptionStatusResponseBuilder:
         readBuffer.pullContext("ModbusPDUReadExceptionStatusResponse")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
@@ -85,8 +83,7 @@ class ModbusPDUReadExceptionStatusResponse(PlcMessage,ModbusPDU):
 
         readBuffer.closeContext("ModbusPDUReadExceptionStatusResponse")
         # Create the instance
-        return ModbusPDUReadExceptionStatusResponseBuilder(value )
-
+        return ModbusPDUReadExceptionStatusResponseBuilder(value)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -95,11 +92,13 @@ class ModbusPDUReadExceptionStatusResponse(PlcMessage,ModbusPDU):
         if not isinstance(o, ModbusPDUReadExceptionStatusResponse):
             return False
 
-        that: ModbusPDUReadExceptionStatusResponse = ModbusPDUReadExceptionStatusResponse(o)
-        return (getValue() == that.getValue()) && super().equals(that) && True
+        that: ModbusPDUReadExceptionStatusResponse = (
+            ModbusPDUReadExceptionStatusResponse(o)
+        )
+        return (self.getValue() == that.getValue()) and super().equals(that) and True
 
     def hashCode(self) -> int:
-        return hash(super().hashCode(), getValue() )
+        return hash(super().hashCode(), self.getValue())
 
     def __str__(self) -> str:
         writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
@@ -111,15 +110,17 @@ class ModbusPDUReadExceptionStatusResponse(PlcMessage,ModbusPDU):
         return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
-class ModbusPDUReadExceptionStatusResponseBuilder(ModbusPDUModbusPDUBuilder: value: c_uint8def ModbusPDUReadExceptionStatusResponseBuilder( c_uint8 value ):        self.value = value
+@dataclass
+class ModbusPDUReadExceptionStatusResponseBuilder(ModbusPDUModbusPDUBuilder):
+    value: c_uint8
 
+    def __post_init__(self):
+        pass
 
-        def build(self,
-        ) -> ModbusPDUReadExceptionStatusResponse:
-        modbusPDUReadExceptionStatusResponse: ModbusPDUReadExceptionStatusResponse = ModbusPDUReadExceptionStatusResponse(
-            value
-)
+    def build(
+        self,
+    ) -> ModbusPDUReadExceptionStatusResponse:
+        modbusPDUReadExceptionStatusResponse: ModbusPDUReadExceptionStatusResponse = (
+            ModbusPDUReadExceptionStatusResponse(self.value)
+        )
         return modbusPDUReadExceptionStatusResponse
-
-
-

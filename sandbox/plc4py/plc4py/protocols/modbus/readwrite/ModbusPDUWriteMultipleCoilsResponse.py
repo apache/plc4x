@@ -28,25 +28,24 @@ from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 import math
 
-    
+
 @dataclass
-class ModbusPDUWriteMultipleCoilsResponse(PlcMessage,ModbusPDU):
+class ModbusPDUWriteMultipleCoilsResponse(PlcMessage, ModbusPDU):
     startingAddress: c_uint16
     quantity: c_uint16
 
     # Accessors for discriminator values.
     def getErrorFlag(self) -> c_bool:
-        return (c_bool) False
-    def getFunctionFlag(self) -> c_uint8:
-        return (c_uint8) 0x0F
-    def getResponse(self) -> c_bool:
-        return (c_bool) True
+        return c_bool(False)
 
+    def getFunctionFlag(self) -> c_uint8:
+        return c_uint8(0x0F)
+
+    def getResponse(self) -> c_bool:
+        return c_bool(True)
 
     def __post_init__(self):
-        super().__init__( )
-
-
+        super().__init__()
 
     def getStartingAddress(self) -> c_uint16:
         return self.startingAddress
@@ -54,20 +53,20 @@ class ModbusPDUWriteMultipleCoilsResponse(PlcMessage,ModbusPDU):
     def getQuantity(self) -> c_uint16:
         return self.quantity
 
-
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
         startPos: int = positionAware.getPos()
         writeBuffer.pushContext("ModbusPDUWriteMultipleCoilsResponse")
 
         # Simple Field (startingAddress)
-        writeSimpleField("startingAddress", startingAddress, writeUnsignedInt(writeBuffer, 16))
+        writeSimpleField(
+            "startingAddress", startingAddress, writeUnsignedInt(writeBuffer, 16)
+        )
 
         # Simple Field (quantity)
         writeSimpleField("quantity", quantity, writeUnsignedInt(writeBuffer, 16))
 
         writeBuffer.popContext("ModbusPDUWriteMultipleCoilsResponse")
-
 
     def getLengthInBytes(self) -> int:
         return int(math.ceil(float(self.getLengthInBits() / 8.0)))
@@ -84,22 +83,26 @@ class ModbusPDUWriteMultipleCoilsResponse(PlcMessage,ModbusPDU):
 
         return lengthInBits
 
-
     @staticmethod
-    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUWriteMultipleCoilsResponseBuilder:
+    def staticParseBuilder(
+        readBuffer: ReadBuffer, response: c_bool
+    ) -> ModbusPDUWriteMultipleCoilsResponseBuilder:
         readBuffer.pullContext("ModbusPDUWriteMultipleCoilsResponse")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-        startingAddress: c_uint16 = readSimpleField("startingAddress", readUnsignedInt(readBuffer, 16))
+        startingAddress: c_uint16 = readSimpleField(
+            "startingAddress", readUnsignedInt(readBuffer, 16)
+        )
 
-        quantity: c_uint16 = readSimpleField("quantity", readUnsignedInt(readBuffer, 16))
+        quantity: c_uint16 = readSimpleField(
+            "quantity", readUnsignedInt(readBuffer, 16)
+        )
 
         readBuffer.closeContext("ModbusPDUWriteMultipleCoilsResponse")
         # Create the instance
-        return ModbusPDUWriteMultipleCoilsResponseBuilder(startingAddress, quantity )
-
+        return ModbusPDUWriteMultipleCoilsResponseBuilder(startingAddress, quantity)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -108,11 +111,18 @@ class ModbusPDUWriteMultipleCoilsResponse(PlcMessage,ModbusPDU):
         if not isinstance(o, ModbusPDUWriteMultipleCoilsResponse):
             return False
 
-        that: ModbusPDUWriteMultipleCoilsResponse = ModbusPDUWriteMultipleCoilsResponse(o)
-        return (getStartingAddress() == that.getStartingAddress()) && (getQuantity() == that.getQuantity()) && super().equals(that) && True
+        that: ModbusPDUWriteMultipleCoilsResponse = ModbusPDUWriteMultipleCoilsResponse(
+            o
+        )
+        return (
+            (self.getStartingAddress() == that.getStartingAddress())
+            and (self.getQuantity() == that.getQuantity())
+            and super().equals(that)
+            and True
+        )
 
     def hashCode(self) -> int:
-        return hash(super().hashCode(), getStartingAddress(), getQuantity() )
+        return hash(super().hashCode(), self.getStartingAddress(), self.getQuantity())
 
     def __str__(self) -> str:
         writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
@@ -124,17 +134,18 @@ class ModbusPDUWriteMultipleCoilsResponse(PlcMessage,ModbusPDU):
         return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
-class ModbusPDUWriteMultipleCoilsResponseBuilder(ModbusPDUModbusPDUBuilder: startingAddress: c_uint16 quantity: c_uint16def ModbusPDUWriteMultipleCoilsResponseBuilder( c_uint16 startingAddress, c_uint16 quantity ):        self.startingAddress = startingAddress
-        self.quantity = quantity
+@dataclass
+class ModbusPDUWriteMultipleCoilsResponseBuilder(ModbusPDUModbusPDUBuilder):
+    startingAddress: c_uint16
+    quantity: c_uint16
 
+    def __post_init__(self):
+        pass
 
-        def build(self,
-        ) -> ModbusPDUWriteMultipleCoilsResponse:
-        modbusPDUWriteMultipleCoilsResponse: ModbusPDUWriteMultipleCoilsResponse = ModbusPDUWriteMultipleCoilsResponse(
-            startingAddress, 
-            quantity
-)
+    def build(
+        self,
+    ) -> ModbusPDUWriteMultipleCoilsResponse:
+        modbusPDUWriteMultipleCoilsResponse: ModbusPDUWriteMultipleCoilsResponse = (
+            ModbusPDUWriteMultipleCoilsResponse(self.startingAddress, self.quantity)
+        )
         return modbusPDUWriteMultipleCoilsResponse
-
-
-

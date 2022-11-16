@@ -27,28 +27,28 @@ from ctypes import c_byte
 from ctypes import c_uint16
 from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
+from typing import List
 import math
 
-    
+
 @dataclass
-class ModbusPDUWriteMultipleCoilsRequest(PlcMessage,ModbusPDU):
+class ModbusPDUWriteMultipleCoilsRequest(PlcMessage, ModbusPDU):
     startingAddress: c_uint16
     quantity: c_uint16
-    value: []c_byte
+    value: List[c_byte]
 
     # Accessors for discriminator values.
     def getErrorFlag(self) -> c_bool:
-        return (c_bool) False
-    def getFunctionFlag(self) -> c_uint8:
-        return (c_uint8) 0x0F
-    def getResponse(self) -> c_bool:
-        return (c_bool) False
+        return c_bool(False)
 
+    def getFunctionFlag(self) -> c_uint8:
+        return c_uint8(0x0F)
+
+    def getResponse(self) -> c_bool:
+        return c_bool(False)
 
     def __post_init__(self):
-        super().__init__( )
-
-
+        super().__init__()
 
     def getStartingAddress(self) -> c_uint16:
         return self.startingAddress
@@ -56,9 +56,8 @@ class ModbusPDUWriteMultipleCoilsRequest(PlcMessage,ModbusPDU):
     def getQuantity(self) -> c_uint16:
         return self.quantity
 
-    def getValue(self) -> []c_byte:
+    def getValue(self) -> List[c_byte]:
         return self.value
-
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
@@ -66,20 +65,21 @@ class ModbusPDUWriteMultipleCoilsRequest(PlcMessage,ModbusPDU):
         writeBuffer.pushContext("ModbusPDUWriteMultipleCoilsRequest")
 
         # Simple Field (startingAddress)
-        writeSimpleField("startingAddress", startingAddress, writeUnsignedInt(writeBuffer, 16))
+        writeSimpleField(
+            "startingAddress", startingAddress, writeUnsignedInt(writeBuffer, 16)
+        )
 
         # Simple Field (quantity)
         writeSimpleField("quantity", quantity, writeUnsignedInt(writeBuffer, 16))
 
         # Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        c_uint8 byteCount = (c_uint8) (COUNT(getValue()))
+        byteCount: c_uint8 = c_uint8((COUNT(self.getValue())))
         writeImplicitField("byteCount", byteCount, writeUnsignedShort(writeBuffer, 8))
 
         # Array Field (value)
         writeByteArrayField("value", value, writeByteArray(writeBuffer, 8))
 
         writeBuffer.popContext("ModbusPDUWriteMultipleCoilsRequest")
-
 
     def getLengthInBytes(self) -> int:
         return int(math.ceil(float(self.getLengthInBits() / 8.0)))
@@ -98,32 +98,39 @@ class ModbusPDUWriteMultipleCoilsRequest(PlcMessage,ModbusPDU):
         lengthInBits += 8
 
         # Array field
-        if value is not None):
-            lengthInBits += 8 * value.length
-
+        if self.value is not None:
+            lengthInBits += 8 * self.value.length
 
         return lengthInBits
 
-
     @staticmethod
-    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUWriteMultipleCoilsRequestBuilder:
+    def staticParseBuilder(
+        readBuffer: ReadBuffer, response: c_bool
+    ) -> ModbusPDUWriteMultipleCoilsRequestBuilder:
         readBuffer.pullContext("ModbusPDUWriteMultipleCoilsRequest")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-        startingAddress: c_uint16 = readSimpleField("startingAddress", readUnsignedInt(readBuffer, 16))
+        startingAddress: c_uint16 = readSimpleField(
+            "startingAddress", readUnsignedInt(readBuffer, 16)
+        )
 
-        quantity: c_uint16 = readSimpleField("quantity", readUnsignedInt(readBuffer, 16))
+        quantity: c_uint16 = readSimpleField(
+            "quantity", readUnsignedInt(readBuffer, 16)
+        )
 
-        byteCount: c_uint8 = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
+        byteCount: c_uint8 = readImplicitField(
+            "byteCount", readUnsignedShort(readBuffer, 8)
+        )
 
-        value: byte[] = readBuffer.readByteArray("value", Math.toIntExact(byteCount))
+        value: List[byte] = readBuffer.readByteArray("value", int(byteCount))
 
         readBuffer.closeContext("ModbusPDUWriteMultipleCoilsRequest")
         # Create the instance
-        return ModbusPDUWriteMultipleCoilsRequestBuilder(startingAddress, quantity, value )
-
+        return ModbusPDUWriteMultipleCoilsRequestBuilder(
+            startingAddress, quantity, value
+        )
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -133,10 +140,21 @@ class ModbusPDUWriteMultipleCoilsRequest(PlcMessage,ModbusPDU):
             return False
 
         that: ModbusPDUWriteMultipleCoilsRequest = ModbusPDUWriteMultipleCoilsRequest(o)
-        return (getStartingAddress() == that.getStartingAddress()) && (getQuantity() == that.getQuantity()) && (getValue() == that.getValue()) && super().equals(that) && True
+        return (
+            (self.getStartingAddress() == that.getStartingAddress())
+            and (self.getQuantity() == that.getQuantity())
+            and (self.getValue() == that.getValue())
+            and super().equals(that)
+            and True
+        )
 
     def hashCode(self) -> int:
-        return hash(super().hashCode(), getStartingAddress(), getQuantity(), getValue() )
+        return hash(
+            super().hashCode(),
+            self.getStartingAddress(),
+            self.getQuantity(),
+            self.getValue(),
+        )
 
     def __str__(self) -> str:
         writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
@@ -148,19 +166,21 @@ class ModbusPDUWriteMultipleCoilsRequest(PlcMessage,ModbusPDU):
         return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
-class ModbusPDUWriteMultipleCoilsRequestBuilder(ModbusPDUModbusPDUBuilder: startingAddress: c_uint16 quantity: c_uint16 value: []c_bytedef ModbusPDUWriteMultipleCoilsRequestBuilder( c_uint16 startingAddress, c_uint16 quantity, []c_byte value ):        self.startingAddress = startingAddress
-        self.quantity = quantity
-        self.value = value
+@dataclass
+class ModbusPDUWriteMultipleCoilsRequestBuilder(ModbusPDUModbusPDUBuilder):
+    startingAddress: c_uint16
+    quantity: c_uint16
+    value: List[c_byte]
 
+    def __post_init__(self):
+        pass
 
-        def build(self,
-        ) -> ModbusPDUWriteMultipleCoilsRequest:
-        modbusPDUWriteMultipleCoilsRequest: ModbusPDUWriteMultipleCoilsRequest = ModbusPDUWriteMultipleCoilsRequest(
-            startingAddress, 
-            quantity, 
-            value
-)
+    def build(
+        self,
+    ) -> ModbusPDUWriteMultipleCoilsRequest:
+        modbusPDUWriteMultipleCoilsRequest: ModbusPDUWriteMultipleCoilsRequest = (
+            ModbusPDUWriteMultipleCoilsRequest(
+                self.startingAddress, self.quantity, self.value
+            )
+        )
         return modbusPDUWriteMultipleCoilsRequest
-
-
-

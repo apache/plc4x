@@ -28,32 +28,30 @@ from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 import math
 
-    
+
 @dataclass
-class ModbusPDUWriteSingleRegisterResponse(PlcMessage,ModbusPDU):
+class ModbusPDUWriteSingleRegisterResponse(PlcMessage, ModbusPDU):
     address: c_uint16
     value: c_uint16
 
     # Accessors for discriminator values.
     def getErrorFlag(self) -> c_bool:
-        return (c_bool) False
-    def getFunctionFlag(self) -> c_uint8:
-        return (c_uint8) 0x06
-    def getResponse(self) -> c_bool:
-        return (c_bool) True
+        return c_bool(False)
 
+    def getFunctionFlag(self) -> c_uint8:
+        return c_uint8(0x06)
+
+    def getResponse(self) -> c_bool:
+        return c_bool(True)
 
     def __post_init__(self):
-        super().__init__( )
-
-
+        super().__init__()
 
     def getAddress(self) -> c_uint16:
         return self.address
 
     def getValue(self) -> c_uint16:
         return self.value
-
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
@@ -67,7 +65,6 @@ class ModbusPDUWriteSingleRegisterResponse(PlcMessage,ModbusPDU):
         writeSimpleField("value", value, writeUnsignedInt(writeBuffer, 16))
 
         writeBuffer.popContext("ModbusPDUWriteSingleRegisterResponse")
-
 
     def getLengthInBytes(self) -> int:
         return int(math.ceil(float(self.getLengthInBits() / 8.0)))
@@ -84,9 +81,10 @@ class ModbusPDUWriteSingleRegisterResponse(PlcMessage,ModbusPDU):
 
         return lengthInBits
 
-
     @staticmethod
-    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUWriteSingleRegisterResponseBuilder:
+    def staticParseBuilder(
+        readBuffer: ReadBuffer, response: c_bool
+    ) -> ModbusPDUWriteSingleRegisterResponseBuilder:
         readBuffer.pullContext("ModbusPDUWriteSingleRegisterResponse")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
@@ -98,8 +96,7 @@ class ModbusPDUWriteSingleRegisterResponse(PlcMessage,ModbusPDU):
 
         readBuffer.closeContext("ModbusPDUWriteSingleRegisterResponse")
         # Create the instance
-        return ModbusPDUWriteSingleRegisterResponseBuilder(address, value )
-
+        return ModbusPDUWriteSingleRegisterResponseBuilder(address, value)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -108,11 +105,18 @@ class ModbusPDUWriteSingleRegisterResponse(PlcMessage,ModbusPDU):
         if not isinstance(o, ModbusPDUWriteSingleRegisterResponse):
             return False
 
-        that: ModbusPDUWriteSingleRegisterResponse = ModbusPDUWriteSingleRegisterResponse(o)
-        return (getAddress() == that.getAddress()) && (getValue() == that.getValue()) && super().equals(that) && True
+        that: ModbusPDUWriteSingleRegisterResponse = (
+            ModbusPDUWriteSingleRegisterResponse(o)
+        )
+        return (
+            (self.getAddress() == that.getAddress())
+            and (self.getValue() == that.getValue())
+            and super().equals(that)
+            and True
+        )
 
     def hashCode(self) -> int:
-        return hash(super().hashCode(), getAddress(), getValue() )
+        return hash(super().hashCode(), self.getAddress(), self.getValue())
 
     def __str__(self) -> str:
         writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
@@ -124,17 +128,18 @@ class ModbusPDUWriteSingleRegisterResponse(PlcMessage,ModbusPDU):
         return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
-class ModbusPDUWriteSingleRegisterResponseBuilder(ModbusPDUModbusPDUBuilder: address: c_uint16 value: c_uint16def ModbusPDUWriteSingleRegisterResponseBuilder( c_uint16 address, c_uint16 value ):        self.address = address
-        self.value = value
+@dataclass
+class ModbusPDUWriteSingleRegisterResponseBuilder(ModbusPDUModbusPDUBuilder):
+    address: c_uint16
+    value: c_uint16
 
+    def __post_init__(self):
+        pass
 
-        def build(self,
-        ) -> ModbusPDUWriteSingleRegisterResponse:
-        modbusPDUWriteSingleRegisterResponse: ModbusPDUWriteSingleRegisterResponse = ModbusPDUWriteSingleRegisterResponse(
-            address, 
-            value
-)
+    def build(
+        self,
+    ) -> ModbusPDUWriteSingleRegisterResponse:
+        modbusPDUWriteSingleRegisterResponse: ModbusPDUWriteSingleRegisterResponse = (
+            ModbusPDUWriteSingleRegisterResponse(self.address, self.value)
+        )
         return modbusPDUWriteSingleRegisterResponse
-
-
-

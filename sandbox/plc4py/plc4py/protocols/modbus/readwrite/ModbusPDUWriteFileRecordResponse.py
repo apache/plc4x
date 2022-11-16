@@ -25,31 +25,32 @@ from dataclasses import dataclass
 from ctypes import c_bool
 from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
-from plc4py.protocols.modbus.readwrite.ModbusPDUWriteFileRecordResponseItem import ModbusPDUWriteFileRecordResponseItem
+from plc4py.protocols.modbus.readwrite.ModbusPDUWriteFileRecordResponseItem import (
+    ModbusPDUWriteFileRecordResponseItem,
+)
+from typing import List
 import math
 
-    
+
 @dataclass
-class ModbusPDUWriteFileRecordResponse(PlcMessage,ModbusPDU):
-    items: []ModbusPDUWriteFileRecordResponseItem
+class ModbusPDUWriteFileRecordResponse(PlcMessage, ModbusPDU):
+    items: List[ModbusPDUWriteFileRecordResponseItem]
 
     # Accessors for discriminator values.
     def getErrorFlag(self) -> c_bool:
-        return (c_bool) False
-    def getFunctionFlag(self) -> c_uint8:
-        return (c_uint8) 0x15
-    def getResponse(self) -> c_bool:
-        return (c_bool) True
+        return c_bool(False)
 
+    def getFunctionFlag(self) -> c_uint8:
+        return c_uint8(0x15)
+
+    def getResponse(self) -> c_bool:
+        return c_bool(True)
 
     def __post_init__(self):
-        super().__init__( )
+        super().__init__()
 
-
-
-    def getItems(self) -> []ModbusPDUWriteFileRecordResponseItem:
+    def getItems(self) -> List[ModbusPDUWriteFileRecordResponseItem]:
         return self.items
-
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
@@ -57,14 +58,13 @@ class ModbusPDUWriteFileRecordResponse(PlcMessage,ModbusPDU):
         writeBuffer.pushContext("ModbusPDUWriteFileRecordResponse")
 
         # Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        c_uint8 byteCount = (c_uint8) (ARRAY_SIZE_IN_BYTES(getItems()))
+        byteCount: c_uint8 = c_uint8((ARRAY_SIZE_IN_BYTES(self.getItems())))
         writeImplicitField("byteCount", byteCount, writeUnsignedShort(writeBuffer, 8))
 
         # Array Field (items)
         writeComplexTypeArrayField("items", items, writeBuffer)
 
         writeBuffer.popContext("ModbusPDUWriteFileRecordResponse")
-
 
     def getLengthInBytes(self) -> int:
         return int(math.ceil(float(self.getLengthInBits() / 8.0)))
@@ -77,30 +77,36 @@ class ModbusPDUWriteFileRecordResponse(PlcMessage,ModbusPDU):
         lengthInBits += 8
 
         # Array field
-        if items is not None):
+        if self.items is not None:
             for element in items:
                 lengthInBits += element.getLengthInBits()
 
-
-
         return lengthInBits
 
-
     @staticmethod
-    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUWriteFileRecordResponseBuilder:
+    def staticParseBuilder(
+        readBuffer: ReadBuffer, response: c_bool
+    ) -> ModbusPDUWriteFileRecordResponseBuilder:
         readBuffer.pullContext("ModbusPDUWriteFileRecordResponse")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-        byteCount: c_uint8 = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8))
+        byteCount: c_uint8 = readImplicitField(
+            "byteCount", readUnsignedShort(readBuffer, 8)
+        )
 
-        items: []ModbusPDUWriteFileRecordResponseItem = readLengthArrayField("items", DataReaderComplexDefault<>(() -> ModbusPDUWriteFileRecordResponseItem.staticParse(readBuffer), readBuffer), byteCount)
+        items: List[ModbusPDUWriteFileRecordResponseItem] = readLengthArrayField(
+            "items",
+            DataReaderComplexDefault(
+                ModbusPDUWriteFileRecordResponseItem.staticParse(readBuffer), readBuffer
+            ),
+            byteCount,
+        )
 
         readBuffer.closeContext("ModbusPDUWriteFileRecordResponse")
         # Create the instance
-        return ModbusPDUWriteFileRecordResponseBuilder(items )
-
+        return ModbusPDUWriteFileRecordResponseBuilder(items)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -110,10 +116,10 @@ class ModbusPDUWriteFileRecordResponse(PlcMessage,ModbusPDU):
             return False
 
         that: ModbusPDUWriteFileRecordResponse = ModbusPDUWriteFileRecordResponse(o)
-        return (getItems() == that.getItems()) && super().equals(that) && True
+        return (self.getItems() == that.getItems()) and super().equals(that) and True
 
     def hashCode(self) -> int:
-        return hash(super().hashCode(), getItems() )
+        return hash(super().hashCode(), self.getItems())
 
     def __str__(self) -> str:
         writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
@@ -125,15 +131,17 @@ class ModbusPDUWriteFileRecordResponse(PlcMessage,ModbusPDU):
         return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
-class ModbusPDUWriteFileRecordResponseBuilder(ModbusPDUModbusPDUBuilder: items: []ModbusPDUWriteFileRecordResponseItemdef ModbusPDUWriteFileRecordResponseBuilder( []ModbusPDUWriteFileRecordResponseItem items ):        self.items = items
+@dataclass
+class ModbusPDUWriteFileRecordResponseBuilder(ModbusPDUModbusPDUBuilder):
+    items: List[ModbusPDUWriteFileRecordResponseItem]
 
+    def __post_init__(self):
+        pass
 
-        def build(self,
-        ) -> ModbusPDUWriteFileRecordResponse:
-        modbusPDUWriteFileRecordResponse: ModbusPDUWriteFileRecordResponse = ModbusPDUWriteFileRecordResponse(
-            items
-)
+    def build(
+        self,
+    ) -> ModbusPDUWriteFileRecordResponse:
+        modbusPDUWriteFileRecordResponse: ModbusPDUWriteFileRecordResponse = (
+            ModbusPDUWriteFileRecordResponse(self.items)
+        )
         return modbusPDUWriteFileRecordResponse
-
-
-

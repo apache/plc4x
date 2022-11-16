@@ -27,24 +27,22 @@ from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 import math
 
-    
+
 @dataclass
-class ModbusPDUReadExceptionStatusRequest(PlcMessage,ModbusPDU):
+class ModbusPDUReadExceptionStatusRequest(PlcMessage, ModbusPDU):
 
     # Accessors for discriminator values.
     def getErrorFlag(self) -> c_bool:
-        return (c_bool) False
-    def getFunctionFlag(self) -> c_uint8:
-        return (c_uint8) 0x07
-    def getResponse(self) -> c_bool:
-        return (c_bool) False
+        return c_bool(False)
 
+    def getFunctionFlag(self) -> c_uint8:
+        return c_uint8(0x07)
+
+    def getResponse(self) -> c_bool:
+        return c_bool(False)
 
     def __post_init__(self):
-        super().__init__( )
-
-
-
+        super().__init__()
 
     def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
@@ -52,7 +50,6 @@ class ModbusPDUReadExceptionStatusRequest(PlcMessage,ModbusPDU):
         writeBuffer.pushContext("ModbusPDUReadExceptionStatusRequest")
 
         writeBuffer.popContext("ModbusPDUReadExceptionStatusRequest")
-
 
     def getLengthInBytes(self) -> int:
         return int(math.ceil(float(self.getLengthInBits() / 8.0)))
@@ -63,9 +60,10 @@ class ModbusPDUReadExceptionStatusRequest(PlcMessage,ModbusPDU):
 
         return lengthInBits
 
-
     @staticmethod
-    def staticParseBuilder(readBuffer: ReadBuffer, response: c_bool) -> ModbusPDUReadExceptionStatusRequestBuilder:
+    def staticParseBuilder(
+        readBuffer: ReadBuffer, response: c_bool
+    ) -> ModbusPDUReadExceptionStatusRequestBuilder:
         readBuffer.pullContext("ModbusPDUReadExceptionStatusRequest")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
@@ -75,7 +73,6 @@ class ModbusPDUReadExceptionStatusRequest(PlcMessage,ModbusPDU):
         # Create the instance
         return ModbusPDUReadExceptionStatusRequestBuilder()
 
-
     def equals(self, o: object) -> bool:
         if self == o:
             return True
@@ -83,11 +80,13 @@ class ModbusPDUReadExceptionStatusRequest(PlcMessage,ModbusPDU):
         if not isinstance(o, ModbusPDUReadExceptionStatusRequest):
             return False
 
-        that: ModbusPDUReadExceptionStatusRequest = ModbusPDUReadExceptionStatusRequest(o)
-        return super().equals(that) && True
+        that: ModbusPDUReadExceptionStatusRequest = ModbusPDUReadExceptionStatusRequest(
+            o
+        )
+        return super().equals(that) and True
 
     def hashCode(self) -> int:
-        return hash(super().hashCode() )
+        return hash(super().hashCode())
 
     def __str__(self) -> str:
         writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
@@ -99,13 +98,15 @@ class ModbusPDUReadExceptionStatusRequest(PlcMessage,ModbusPDU):
         return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
 
 
-class ModbusPDUReadExceptionStatusRequestBuilder(ModbusPDUModbusPDUBuilder:def ModbusPDUReadExceptionStatusRequestBuilder( ):
+@dataclass
+class ModbusPDUReadExceptionStatusRequestBuilder(ModbusPDUModbusPDUBuilder):
+    def __post_init__(self):
+        pass
 
-        def build(self,
-        ) -> ModbusPDUReadExceptionStatusRequest:
-        modbusPDUReadExceptionStatusRequest: ModbusPDUReadExceptionStatusRequest = ModbusPDUReadExceptionStatusRequest(
-)
+    def build(
+        self,
+    ) -> ModbusPDUReadExceptionStatusRequest:
+        modbusPDUReadExceptionStatusRequest: ModbusPDUReadExceptionStatusRequest = (
+            ModbusPDUReadExceptionStatusRequest()
+        )
         return modbusPDUReadExceptionStatusRequest
-
-
-
