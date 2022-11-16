@@ -89,7 +89,14 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 		return ch
 	}
 
-	codec, _ := m.applicationManager.getApplicationLayerMessageCode(udpTransport, transportUrl, options)
+	codec, err := m.applicationManager.getApplicationLayerMessageCodec(udpTransport, transportUrl, options)
+	if err != nil {
+		ch := make(chan plc4go.PlcConnectionConnectResult)
+		go func() {
+			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "error getting application layer message codec"))
+		}()
+		return ch
+	}
 	log.Debug().Msgf("working with codec %#v", codec)
 
 	// Create the new connection
@@ -115,7 +122,7 @@ type ApplicationManager struct {
 	applications map[string]*ApplicationLayerMessageCodec
 }
 
-func (a *ApplicationManager) getApplicationLayerMessageCode(transport *udp.Transport, transportUrl url.URL, options map[string][]string) (*ApplicationLayerMessageCodec, error) {
+func (a *ApplicationManager) getApplicationLayerMessageCodec(transport *udp.Transport, transportUrl url.URL, options map[string][]string) (*ApplicationLayerMessageCodec, error) {
 	var localAddress *net.UDPAddr
 	var remoteAddr *net.UDPAddr
 	{

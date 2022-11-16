@@ -20,7 +20,7 @@
 package bacnetip
 
 import (
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -42,8 +42,8 @@ func init() {
 
 // _Client is an interface used for documentation
 type _Client interface {
-	Request(apdu readWriteModel.APDU) error
-	Confirmation(apdu readWriteModel.APDU) error
+	Request(pdu spi.Message) error
+	Confirmation(pdu spi.Message) error
 	_setClientPeer(server _Server)
 }
 
@@ -78,16 +78,16 @@ func NewClient(cid *int, rootStruct _Client) (*Client, error) {
 	return c, nil
 }
 
-func (c *Client) Request(apdu readWriteModel.APDU) error {
-	log.Debug().Msgf("request\n%s", apdu)
+func (c *Client) Request(pdu spi.Message) error {
+	log.Debug().Msgf("request\n%s", pdu)
 
 	if c.clientPeer == nil {
 		return errors.New("unbound client")
 	}
-	return c.clientPeer.Indication(apdu)
+	return c.clientPeer.Indication(pdu)
 }
 
-func (c *Client) Confirmation(readWriteModel.APDU) error {
+func (c *Client) Confirmation(spi.Message) error {
 	panic("this should be implemented by outer struct")
 }
 
@@ -97,8 +97,8 @@ func (c *Client) _setClientPeer(server _Server) {
 
 // _Server is an interface used for documentation
 type _Server interface {
-	Indication(apdu readWriteModel.APDU) error
-	Response(apdu readWriteModel.APDU) error
+	Indication(pdu spi.Message) error
+	Response(pdu spi.Message) error
 	_setServerPeer(serverPeer _Client)
 }
 
@@ -133,17 +133,17 @@ func NewServer(sid *int, rootStruct _Server) (*Server, error) {
 	return s, nil
 }
 
-func (s *Server) Indication(readWriteModel.APDU) error {
+func (s *Server) Indication(spi.Message) error {
 	panic("this should be implemented by outer struct")
 }
 
-func (s *Server) Response(apdu readWriteModel.APDU) error {
-	log.Debug().Msgf("response\n%s", apdu)
+func (s *Server) Response(pdu spi.Message) error {
+	log.Debug().Msgf("response\n%s", pdu)
 
 	if s.serverPeer == nil {
 		return errors.New("unbound server")
 	}
-	return s.serverPeer.Confirmation(apdu)
+	return s.serverPeer.Confirmation(pdu)
 }
 
 func (s *Server) _setServerPeer(serverPeer _Client) {
@@ -152,10 +152,10 @@ func (s *Server) _setServerPeer(serverPeer _Client) {
 
 // _ServiceAccessPoint is a interface used for documentation
 type _ServiceAccessPoint interface {
-	SapConfirmation(apdu readWriteModel.APDU, pduDestination []byte) error
-	SapRequest(apdu readWriteModel.APDU) error
-	SapIndication(apdu readWriteModel.APDU, pduDestination []byte) error
-	SapResponse(apdu readWriteModel.APDU) error
+	SapConfirmation(pdu spi.Message) error
+	SapRequest(pdu spi.Message) error
+	SapIndication(pdu spi.Message) error
+	SapResponse(pdu spi.Message) error
 	_setServiceElement(serviceElement _ApplicationServiceElement)
 }
 
@@ -189,29 +189,29 @@ func NewServiceAccessPoint(sapID *int, rootStruct _ServiceAccessPoint) (*Service
 	return s, nil
 }
 
-func (s *ServiceAccessPoint) SapRequest(apdu readWriteModel.APDU) error {
-	log.Debug().Msgf("SapRequest(%d)\n%s", s.serviceID, apdu)
+func (s *ServiceAccessPoint) SapRequest(pdu spi.Message) error {
+	log.Debug().Msgf("SapRequest(%d)\n%s", s.serviceID, pdu)
 
 	if s.serviceElement == nil {
 		return errors.New("unbound service access point")
 	}
-	return s.serviceElement.Indication(apdu)
+	return s.serviceElement.Indication(pdu)
 }
 
-func (s *ServiceAccessPoint) SapIndication(readWriteModel.APDU, []byte) error {
+func (s *ServiceAccessPoint) SapIndication(spi.Message) error {
 	panic("this should be implemented by outer struct")
 }
 
-func (s *ServiceAccessPoint) SapResponse(apdu readWriteModel.APDU) error {
-	log.Debug().Msgf("SapResponse(%d)\n%s", s.serviceID, apdu)
+func (s *ServiceAccessPoint) SapResponse(pdu spi.Message) error {
+	log.Debug().Msgf("SapResponse(%d)\n%s", s.serviceID, pdu)
 
 	if s.serviceElement == nil {
 		return errors.New("unbound service access point")
 	}
-	return s.serviceElement.Confirmation(apdu)
+	return s.serviceElement.Confirmation(pdu)
 }
 
-func (s *ServiceAccessPoint) SapConfirmation(readWriteModel.APDU, []byte) error {
+func (s *ServiceAccessPoint) SapConfirmation(spi.Message) error {
 	panic("this should be implemented by outer struct")
 }
 
@@ -221,10 +221,10 @@ func (s *ServiceAccessPoint) _setServiceElement(serviceElement _ApplicationServi
 
 // _ApplicationServiceElement is a interface used for documentation
 type _ApplicationServiceElement interface {
-	Request(apdu readWriteModel.APDU) error
-	Indication(apdu readWriteModel.APDU) error
-	Response(apdu readWriteModel.APDU) error
-	Confirmation(apdu readWriteModel.APDU) error
+	Request(pdu spi.Message) error
+	Indication(pdu spi.Message) error
+	Response(pdu spi.Message) error
+	Confirmation(pdu spi.Message) error
 	_setElementService(elementService _ServiceAccessPoint)
 }
 
@@ -259,31 +259,31 @@ func NewApplicationServiceElement(aseID *int, rootStruct _ApplicationServiceElem
 	return a, nil
 }
 
-func (a *ApplicationServiceElement) Request(apdu readWriteModel.APDU) error {
-	log.Debug().Msgf("Request\n%s", apdu)
+func (a *ApplicationServiceElement) Request(pdu spi.Message) error {
+	log.Debug().Msgf("Request\n%s", pdu)
 
 	if a.elementService == nil {
 		return errors.New("unbound application service element")
 	}
 
-	return a.elementService.SapIndication(apdu, nil) // TODO: where to get the source from
+	return a.elementService.SapIndication(pdu)
 }
 
-func (a *ApplicationServiceElement) Indication(apdu readWriteModel.APDU) error {
+func (a *ApplicationServiceElement) Indication(spi.Message) error {
 	panic("this should be implemented by outer struct")
 }
 
-func (a *ApplicationServiceElement) Response(apdu readWriteModel.APDU) error {
-	log.Debug().Msgf("Response\n%s", apdu)
+func (a *ApplicationServiceElement) Response(pdu spi.Message) error {
+	log.Debug().Msgf("Response\n%s", pdu)
 
 	if a.elementService == nil {
 		return errors.New("unbound application service element")
 	}
 
-	return a.elementService.SapConfirmation(apdu, nil) // TODO: where to get the source from
+	return a.elementService.SapConfirmation(pdu)
 }
 
-func (a *ApplicationServiceElement) Confirmation(apdu readWriteModel.APDU) error {
+func (a *ApplicationServiceElement) Confirmation(spi.Message) error {
 	panic("this should be implemented by outer struct")
 }
 
@@ -365,7 +365,7 @@ func bind(args ...interface{}) error {
 	}
 
 	// go through the argument pairs
-	for i := 0; i < len(args); i++ {
+	for i := 0; i < len(args)-1; i++ {
 		client := args[i]
 		log.Debug().Msgf("client %v", client)
 		server := args[i+1]

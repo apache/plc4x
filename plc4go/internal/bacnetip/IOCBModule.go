@@ -1,8 +1,28 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package bacnetip
 
 import (
 	"container/heap"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"fmt"
+	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/plcerrors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -64,10 +84,10 @@ type _IOCB interface {
 	setIOController(ioController _IOController)
 	setIOState(newState IOCBState)
 	getIOState() IOCBState
-	setIOResponse(msg readWriteModel.APDU)
+	setIOResponse(msg spi.Message)
 	Trigger()
 	setIOError(err error)
-	getRequest() readWriteModel.APDU
+	getRequest() spi.Message
 	getDestination() net.Addr
 	getPriority() int
 	clearQueue()
@@ -79,10 +99,10 @@ var _identLock sync.Mutex
 
 type IOCB struct {
 	ioID           int
-	request        readWriteModel.APDU
+	request        spi.Message
 	destination    net.Addr
 	ioState        IOCBState
-	ioResponse     readWriteModel.APDU
+	ioResponse     spi.Message
 	ioError        error
 	ioController   _IOController
 	ioComplete     sync.Cond
@@ -94,7 +114,7 @@ type IOCB struct {
 	priority       int
 }
 
-func NewIOCB(request readWriteModel.APDU, destination net.Addr) (*IOCB, error) {
+func NewIOCB(request spi.Message, destination net.Addr) (*IOCB, error) {
 	// lock the identity sequence number
 	_identLock.Lock()
 
@@ -174,7 +194,7 @@ func (i *IOCB) Trigger() {
 
 // Complete Called to complete a transaction, usually when ProcessIO has shipped the IOCB off to some other thread or
 //        function.
-func (i *IOCB) Complete(apdu readWriteModel.APDU) error {
+func (i *IOCB) Complete(apdu spi.Message) error {
 	log.Debug().Msgf("Complete(%d)\n%s", i.ioID, apdu)
 
 	if i.ioController != nil {
@@ -237,7 +257,7 @@ func (i *IOCB) getIOState() IOCBState {
 	return i.ioState
 }
 
-func (i *IOCB) setIOResponse(msg readWriteModel.APDU) {
+func (i *IOCB) setIOResponse(msg spi.Message) {
 	i.ioResponse = msg
 }
 
@@ -245,7 +265,7 @@ func (i *IOCB) setIOError(err error) {
 	i.ioError = err
 }
 
-func (i *IOCB) getRequest() readWriteModel.APDU {
+func (i *IOCB) getRequest() spi.Message {
 	return i.request
 }
 
@@ -414,7 +434,7 @@ func (i *IOQueue) Abort(err error) {
 type _IOController interface {
 	Abort(err error) error
 	ProcessIO(iocb _IOCB) error
-	CompleteIO(iocb _IOCB, apdu readWriteModel.APDU) error
+	CompleteIO(iocb _IOCB, pdu spi.Message) error
 	AbortIO(iocb _IOCB, err error) error
 }
 
@@ -461,7 +481,7 @@ func (i *IOController) RequestIO(iocb _IOCB) error {
 }
 
 // ProcessIO Figure out how to respond to this request.  This must be provided by the derived class.
-func (i *IOController) ProcessIO(iocb _IOCB) error {
+func (i *IOController) ProcessIO(_IOCB) error {
 	return errors.New("IOController must implement process_io()")
 }
 
@@ -480,7 +500,7 @@ func (i *IOController) ActiveIO(iocb _IOCB) error {
 }
 
 // CompleteIO Called by a handler to return data to the client
-func (i *IOController) CompleteIO(iocb _IOCB, apdu readWriteModel.APDU) error {
+func (i *IOController) CompleteIO(iocb _IOCB, apdu spi.Message) error {
 	log.Debug().Msgf("CompleteIO %s\n%s", iocb, apdu)
 
 	// if it completed, leave it alone
@@ -559,11 +579,11 @@ func NewIOQController(name string) (*IOQController, error) {
 
 type SieveQueue struct {
 	*IOQController
-	requestFn func(apdu readWriteModel.APDU)
+	requestFn func(apdu spi.Message)
 	address   net.Addr
 }
 
-func NewSieveQueue(fn func(apdu readWriteModel.APDU), address net.Addr) (*SieveQueue, error) {
+func NewSieveQueue(fn func(apdu spi.Message), address net.Addr) (*SieveQueue, error) {
 	s := &SieveQueue{}
 	var err error
 	s.IOQController, err = NewIOQController(address.String())
@@ -586,4 +606,8 @@ func (s *SieveQueue) ProcessIO(iocb _IOCB) error {
 	// send the request
 	s.requestFn(iocb.getRequest())
 	return nil
+}
+
+func (s *SieveQueue) String() string {
+	return fmt.Sprintf("%#q", s)
 }

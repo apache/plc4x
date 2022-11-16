@@ -23,6 +23,7 @@ import (
 	"bytes"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/local"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -284,7 +285,7 @@ func (s *SSM) getSegment(index uint8) (segmentAPDU readWriteModel.APDU, moreFoll
 // TODO: check that function. looks a bit wonky to just append the payloads like that
 // appendSegment This function appends the apdu content to the end of the current APDU being built.  The segmentAPDU is
 //        the context
-func (s *SSM) appendSegment(apdu readWriteModel.APDU) error {
+func (s *SSM) appendSegment(apdu spi.Message) error {
 	log.Debug().Msgf("appendSegment\n%s", apdu)
 	switch apdu := apdu.(type) {
 	case readWriteModel.APDUConfirmedRequestExactly:
@@ -373,7 +374,7 @@ func (s *ClientSSM) setState(newState SSMState, timer *uint) error {
 }
 
 // Request This function is called by client transaction functions when it wants to send a message to the device
-func (s *ClientSSM) Request(apdu readWriteModel.APDU) error {
+func (s *ClientSSM) Request(apdu spi.Message) error {
 	log.Debug().Msgf("request\n%s", apdu)
 	// TODO: ensure apdu has destination, otherwise
 	// TODO: we would need a BVLC to send something or not... maybe the todo above is nonsense, as we are in a connection context
@@ -382,7 +383,7 @@ func (s *ClientSSM) Request(apdu readWriteModel.APDU) error {
 
 // Indication This function is called after the device has bound a new transaction and wants to start the process
 //        rolling
-func (s *ClientSSM) Indication(apdu readWriteModel.APDU) error { // TODO: maybe use another name for that
+func (s *ClientSSM) Indication(apdu spi.Message) error { // TODO: maybe use another name for that
 	log.Debug().Msgf("indication\n%s", apdu)
 	// make sure we're getting confirmed requests
 	var apduConfirmedRequest readWriteModel.APDUConfirmedRequest
@@ -391,7 +392,7 @@ func (s *ClientSSM) Indication(apdu readWriteModel.APDU) error { // TODO: maybe 
 	}
 
 	// save the request and set the segmentation context
-	if err := s.setSegmentationContext(apdu); err != nil {
+	if err := s.setSegmentationContext(apduConfirmedRequest); err != nil {
 		return errors.Wrap(err, "error setting context")
 	}
 
@@ -483,7 +484,7 @@ func (s *ClientSSM) Indication(apdu readWriteModel.APDU) error { // TODO: maybe 
 }
 
 // Response This function is called by client transaction functions when they want to send a message to the application.
-func (s *ClientSSM) Response(apdu readWriteModel.APDU) error {
+func (s *ClientSSM) Response(apdu spi.Message) error {
 	log.Debug().Msgf("response\n%s", apdu)
 	// make sure it has a good source and destination
 	// TODO: check if source == s.pduAddress
@@ -494,7 +495,7 @@ func (s *ClientSSM) Response(apdu readWriteModel.APDU) error {
 }
 
 // Confirmation This function is called by the device for all upstream messages related to the transaction.
-func (s *ClientSSM) Confirmation(apdu readWriteModel.APDU) error {
+func (s *ClientSSM) Confirmation(apdu spi.Message) error {
 	log.Debug().Msgf("confirmation\n%s", apdu)
 
 	switch s.state {
@@ -542,7 +543,7 @@ func (s *ClientSSM) abort(reason readWriteModel.BACnetAbortReason) (readWriteMod
 }
 
 // segmentedRequest This function is called when the client is sending a segmented request and receives an apdu
-func (s *ClientSSM) segmentedRequest(apdu readWriteModel.APDU) error {
+func (s *ClientSSM) segmentedRequest(apdu spi.Message) error {
 	log.Debug().Msgf("segmentedRequest\n%s", apdu)
 
 	switch apdu := apdu.(type) {
@@ -679,7 +680,7 @@ func (s *ClientSSM) segmentedRequestTimeout() error {
 	return nil
 }
 
-func (s *ClientSSM) awaitConfirmation(apdu readWriteModel.APDU) error {
+func (s *ClientSSM) awaitConfirmation(apdu spi.Message) error {
 	log.Debug().Msgf("awaitConfirmation\n%s", apdu)
 
 	switch apdu := apdu.(type) {
@@ -794,7 +795,7 @@ func (s *ClientSSM) awaitConfirmationTimeout() error {
 	return nil
 }
 
-func (s *ClientSSM) segmentedConfirmation(apdu readWriteModel.APDU) error {
+func (s *ClientSSM) segmentedConfirmation(apdu spi.Message) error {
 	log.Debug().Msgf("segmentedConfirmation\n%s", apdu)
 
 	// the only messages we should be getting are complex acks
@@ -941,7 +942,7 @@ func (s *ServerSSM) setState(newState SSMState, timer *uint) error {
 }
 
 // Request This function is called by transaction functions to send to the application
-func (s *ServerSSM) Request(apdu readWriteModel.APDU) error {
+func (s *ServerSSM) Request(apdu spi.Message) error {
 	log.Debug().Msgf("request\n%s", apdu)
 	// TODO: ensure apdu has destination, otherwise
 	// TODO: we would need a BVLC to send something or not... maybe the todo above is nonsense, as we are in a connection context
@@ -950,7 +951,7 @@ func (s *ServerSSM) Request(apdu readWriteModel.APDU) error {
 
 // Indication This function is called for each downstream packet related to
 //        the transaction
-func (s *ServerSSM) Indication(apdu readWriteModel.APDU) error { // TODO: maybe use another name for that
+func (s *ServerSSM) Indication(apdu spi.Message) error { // TODO: maybe use another name for that
 	log.Debug().Msgf("indication\n%s", apdu)
 	// make sure we're getting confirmed requests
 
@@ -969,7 +970,7 @@ func (s *ServerSSM) Indication(apdu readWriteModel.APDU) error { // TODO: maybe 
 }
 
 // Response This function is called by client transaction functions when they want to send a message to the application.
-func (s *ServerSSM) Response(apdu readWriteModel.APDU) error {
+func (s *ServerSSM) Response(apdu spi.Message) error {
 	log.Debug().Msgf("response\n%s", apdu)
 	// make sure it has a good source and destination
 	// TODO: check if source == none
@@ -981,7 +982,7 @@ func (s *ServerSSM) Response(apdu readWriteModel.APDU) error {
 
 // Confirmation This function is called when the application has provided a response and needs it to be sent to the
 //        client.
-func (s *ServerSSM) Confirmation(apdu readWriteModel.APDU) error {
+func (s *ServerSSM) Confirmation(apdu spi.Message) error {
 	log.Debug().Msgf("confirmation\n%s", apdu)
 
 	// check to see we are in the correct state
@@ -1143,7 +1144,7 @@ func (s *ServerSSM) abort(reason readWriteModel.BACnetAbortReason) (readWriteMod
 	return abortApdu, nil
 }
 
-func (s *ServerSSM) idle(apdu readWriteModel.APDU) error {
+func (s *ServerSSM) idle(apdu spi.Message) error {
 	log.Debug().Msgf("idle %s", apdu)
 
 	// make sure we're getting confirmed requests
@@ -1217,7 +1218,7 @@ func (s *ServerSSM) idle(apdu readWriteModel.APDU) error {
 	}
 
 	// save the response and set the segmentation context
-	if err := s.setSegmentationContext(apdu); err != nil {
+	if err := s.setSegmentationContext(apduConfirmedRequest); err != nil {
 		return errors.Wrap(err, "error settings segmentation context")
 	}
 
@@ -1239,7 +1240,7 @@ func (s *ServerSSM) idle(apdu readWriteModel.APDU) error {
 	return s.Response(segack)
 }
 
-func (s *ServerSSM) segmentedRequest(apdu readWriteModel.APDU) error {
+func (s *ServerSSM) segmentedRequest(apdu spi.Message) error {
 	log.Debug().Msgf("segmentedRequest\n%s", apdu)
 
 	// some kind of problem
@@ -1355,7 +1356,7 @@ func (s *ServerSSM) segmentedRequestTimeout() error {
 	return nil
 }
 
-func (s *ServerSSM) awaitResponse(apdu readWriteModel.APDU) error {
+func (s *ServerSSM) awaitResponse(apdu spi.Message) error {
 	log.Debug().Msgf("awaitResponse\n%s", apdu)
 
 	switch apdu.(type) {
@@ -1392,7 +1393,7 @@ func (s *ServerSSM) awaitResponseTimeout() error {
 	return nil
 }
 
-func (s *ServerSSM) segmentedResponse(apdu readWriteModel.APDU) error {
+func (s *ServerSSM) segmentedResponse(apdu spi.Message) error {
 	log.Debug().Msgf("segmentedResponse\n%s", apdu)
 
 	// client is ready for the next segment
@@ -1705,8 +1706,12 @@ func (s *StateMachineAccessPoint) ConfirmationFromSource(apdu readWriteModel.APD
 }
 
 // SapIndication This function is called when the application is requesting a new transaction as a client.
-func (s *StateMachineAccessPoint) SapIndication(apdu readWriteModel.APDU, pduDestination []byte) error {
+func (s *StateMachineAccessPoint) SapIndication(apdu spi.Message) error {
 	log.Debug().Msgf("sapIndication\n%s", apdu)
+
+	// TODO: extract from somewhere
+	var pduDestination []byte
+	panic("we need pduDestination")
 
 	// check device communication control
 	switch s.dccEnableDisable {
@@ -1717,7 +1722,8 @@ func (s *StateMachineAccessPoint) SapIndication(apdu readWriteModel.APDU, pduDes
 		return nil
 	case readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION:
 		log.Debug().Msg("initiation disabled")
-		if apdu.GetApduType() == readWriteModel.ApduType_UNCONFIRMED_REQUEST_PDU && apdu.(readWriteModel.APDUUnconfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetUnconfirmedServiceChoice_I_AM {
+		// TODO: this should be quarded
+		if apdu.(readWriteModel.APDU).GetApduType() == readWriteModel.ApduType_UNCONFIRMED_REQUEST_PDU && apdu.(readWriteModel.APDUUnconfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetUnconfirmedServiceChoice_I_AM {
 			log.Debug().Msg("continue with I-Am")
 		} else {
 			log.Debug().Msg("not an I-Am")
@@ -1766,8 +1772,11 @@ func (s *StateMachineAccessPoint) SapIndication(apdu readWriteModel.APDU, pduDes
 
 // SapConfirmation This function is called when the application is responding to a request, the apdu may be a simple
 //        ack, complex ack, error, reject or abort
-func (s *StateMachineAccessPoint) SapConfirmation(apdu readWriteModel.APDU, pduDestination []byte) error {
+func (s *StateMachineAccessPoint) SapConfirmation(apdu spi.Message) error {
 	log.Debug().Msgf("sapConfirmation\n%s", apdu)
+	// TODO: extract from somewhere
+	var pduDestination []byte
+	panic("we need pduDestination")
 	switch apdu.(type) {
 	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUComplexAckExactly, readWriteModel.APDUErrorExactly, readWriteModel.APDURejectExactly:
 		// find the client transaction this is acking
@@ -1837,7 +1846,7 @@ func NewApplicationServiceAccessPoint(aseID *int, sapID *int) (*ApplicationServi
 }
 
 // TODO: big WIP
-func (a *ApplicationServiceAccessPoint) Indication(apdu readWriteModel.APDU) error {
+func (a *ApplicationServiceAccessPoint) Indication(apdu spi.Message) error {
 	log.Debug().Msgf("Indication\n%s", apdu)
 
 	switch apdu := apdu.(type) {
@@ -1890,7 +1899,7 @@ func (a *ApplicationServiceAccessPoint) Indication(apdu readWriteModel.APDU) err
 }
 
 // TODO: big WIP
-func (a *ApplicationServiceAccessPoint) SapIndication(apdu readWriteModel.APDU, pduDestination []byte) error {
+func (a *ApplicationServiceAccessPoint) SapIndication(apdu spi.Message) error {
 	log.Debug().Msgf("SapIndication\n%s", apdu)
 
 	// TODO: check if we need to check apdu here
@@ -1899,7 +1908,7 @@ func (a *ApplicationServiceAccessPoint) SapIndication(apdu readWriteModel.APDU, 
 }
 
 // TODO: big WIP
-func (a *ApplicationServiceAccessPoint) Confirmation(apdu readWriteModel.APDU) error {
+func (a *ApplicationServiceAccessPoint) Confirmation(apdu spi.Message) error {
 	log.Debug().Msgf("Confirmation\n%s", apdu)
 
 	// TODO: check if we need to check apdu here
@@ -1908,7 +1917,7 @@ func (a *ApplicationServiceAccessPoint) Confirmation(apdu readWriteModel.APDU) e
 }
 
 // TODO: big WIP
-func (a *ApplicationServiceAccessPoint) SapConfirmation(apdu readWriteModel.APDU, pduDestination []byte) error {
+func (a *ApplicationServiceAccessPoint) SapConfirmation(apdu spi.Message) error {
 	log.Debug().Msgf("SapConfirmation\n%s", apdu)
 
 	// TODO: check if we need to check apdu here
