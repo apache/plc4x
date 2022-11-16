@@ -21,6 +21,7 @@ package testutils
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"math/rand"
 	"reflect"
 	"strings"
@@ -76,6 +77,14 @@ func WithUnwrappedValue(unwrap bool) WithTestCaseOption {
 func (m *ManualTestSuite) Run() plc4go.PlcConnection {
 	connectionResult := <-m.DriverManager.GetConnection(m.ConnectionString)
 	if err := connectionResult.GetErr(); err != nil {
+		tracer, ok := errors.Cause(err).(interface{ StackTrace() errors.StackTrace })
+		if ok {
+			stackTrace := tracer.StackTrace()
+			for _, f := range stackTrace {
+				fmt.Printf("%+s:%d\n", f, f)
+			}
+			fmt.Println()
+		}
 		m.t.Error(err)
 		m.t.FailNow()
 	}
