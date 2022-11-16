@@ -21,7 +21,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-
 from ctypes import c_byte
 from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
@@ -104,7 +103,7 @@ class ModbusPDUReadFileRecordResponseItem(PlcMessage):
             "referenceType", readUnsignedShort(readBuffer, 8)
         )
 
-        data: List[byte] = readBuffer.readByteArray("data", int((dataLength) - (1)))
+        data: List[c_byte] = readBuffer.readByteArray("data", int((dataLength) - (1)))
 
         readBuffer.closeContext("ModbusPDUReadFileRecordResponseItem")
         # Create the instance

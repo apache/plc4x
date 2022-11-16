@@ -86,6 +86,26 @@
       </plugin>
 
       <plugin>
+        <groupId>org.apache.plc4x.plugins</groupId>
+        <artifactId>plc4x-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-simulated-driver</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>simulated</protocolName>
+              <languageName>python</languageName>
+              <outputFlavor>read-write</outputFlavor>
+              <outputDir>${project.basedir}/plc4py/protocols</outputDir>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-remote-resources-plugin</artifactId>
         <configuration>

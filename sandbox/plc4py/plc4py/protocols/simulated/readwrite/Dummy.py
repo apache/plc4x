@@ -21,69 +21,82 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from ctypes import c_bool
-from ctypes import c_uint8
+from ctypes import c_uint16
 from plc4py.api.messages.PlcMessage import PlcMessage
 import math
 
 
 @dataclass
-class ModbusPDUGetComEventLogRequest(PlcMessage, ModbusPDU):
-
-    # Accessors for discriminator values.
-    def getErrorFlag(self) -> c_bool:
-        return c_bool(False)
-
-    def getFunctionFlag(self) -> c_uint8:
-        return c_uint8(0x0C)
-
-    def getResponse(self) -> c_bool:
-        return c_bool(False)
+class Dummy(PlcMessage):
+    dummy: c_uint16
 
     def __post_init__(self):
         super().__init__()
 
-    def serializeModbusPDUChild(self, writeBuffer: WriteBuffer):
+    def getDummy(self) -> c_uint16:
+        return self.dummy
+
+    def serialize(self, writeBuffer: WriteBuffer):
         positionAware: PositionAware = writeBuffer
         startPos: int = positionAware.getPos()
-        writeBuffer.pushContext("ModbusPDUGetComEventLogRequest")
+        writeBuffer.pushContext("Dummy")
 
-        writeBuffer.popContext("ModbusPDUGetComEventLogRequest")
+        # Simple Field (dummy)
+        writeSimpleField(
+            "dummy",
+            dummy,
+            writeUnsignedInt(writeBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+        )
+
+        writeBuffer.popContext("Dummy")
 
     def getLengthInBytes(self) -> int:
         return int(math.ceil(float(self.getLengthInBits() / 8.0)))
 
     def getLengthInBits(self) -> int:
-        lengthInBits: int = super().getLengthInBits()
-        _value: ModbusPDUGetComEventLogRequest = self
+        lengthInBits: int = 0
+        _value: Dummy = self
+
+        # Simple field (dummy)
+        lengthInBits += 16
 
         return lengthInBits
 
+    def staticParse(readBuffer: ReadBuffer, args) -> Dummy:
+        positionAware: PositionAware = readBuffer
+        return staticParse(readBuffer)
+
     @staticmethod
-    def staticParseBuilder(
-        readBuffer: ReadBuffer, response: c_bool
-    ) -> ModbusPDUGetComEventLogRequestBuilder:
-        readBuffer.pullContext("ModbusPDUGetComEventLogRequest")
+    def staticParseContext(readBuffer: ReadBuffer) -> Dummy:
+        readBuffer.pullContext("Dummy")
         positionAware: PositionAware = readBuffer
         startPos: int = positionAware.getPos()
         curPos: int = 0
 
-        readBuffer.closeContext("ModbusPDUGetComEventLogRequest")
+        dummy: c_uint16 = readSimpleField(
+            "dummy",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
+        )
+
+        readBuffer.closeContext("Dummy")
         # Create the instance
-        return ModbusPDUGetComEventLogRequestBuilder()
+        _dummy: Dummy = Dummy(dummy)
+        return _dummy
 
     def equals(self, o: object) -> bool:
         if self == o:
             return True
 
-        if not isinstance(o, ModbusPDUGetComEventLogRequest):
+        if not isinstance(o, Dummy):
             return False
 
-        that: ModbusPDUGetComEventLogRequest = ModbusPDUGetComEventLogRequest(o)
-        return super().equals(that) and True
+        that: Dummy = Dummy(o)
+        return (self.getDummy() == that.getDummy()) and True
 
     def hashCode(self) -> int:
-        return hash(super().hashCode())
+        return hash(self.getDummy())
 
     def __str__(self) -> str:
         writeBufferBoxBased: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
@@ -93,17 +106,3 @@ class ModbusPDUGetComEventLogRequest(PlcMessage, ModbusPDU):
             raise RuntimeException(e)
 
         return "\n" + str(writeBufferBoxBased.getBox()) + "\n"
-
-
-@dataclass
-class ModbusPDUGetComEventLogRequestBuilder(ModbusPDUModbusPDUBuilder):
-    def __post_init__(self):
-        pass
-
-    def build(
-        self,
-    ) -> ModbusPDUGetComEventLogRequest:
-        modbusPDUGetComEventLogRequest: ModbusPDUGetComEventLogRequest = (
-            ModbusPDUGetComEventLogRequest()
-        )
-        return modbusPDUGetComEventLogRequest

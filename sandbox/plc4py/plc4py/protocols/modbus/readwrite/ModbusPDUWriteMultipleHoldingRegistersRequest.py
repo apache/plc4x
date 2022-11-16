@@ -21,7 +21,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-
 from ctypes import c_bool
 from ctypes import c_byte
 from ctypes import c_uint16

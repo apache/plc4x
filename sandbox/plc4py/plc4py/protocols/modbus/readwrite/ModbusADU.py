@@ -21,7 +21,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-
 from ctypes import c_bool
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType

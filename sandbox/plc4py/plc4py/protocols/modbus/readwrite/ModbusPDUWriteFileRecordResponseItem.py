@@ -21,7 +21,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-
 from ctypes import c_byte
 from ctypes import c_uint16
 from ctypes import c_uint8
@@ -137,7 +136,7 @@ class ModbusPDUWriteFileRecordResponseItem(PlcMessage):
             "recordLength", readUnsignedInt(readBuffer, 16)
         )
 
-        recordData: List[byte] = readBuffer.readByteArray(
+        recordData: List[c_byte] = readBuffer.readByteArray(
             "recordData", int(recordLength)
         )
 

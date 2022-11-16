@@ -21,7 +21,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-
 from ctypes import c_byte
 from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
@@ -100,7 +99,7 @@ class ModbusDeviceInformationObject(PlcMessage):
             "objectLength", readUnsignedShort(readBuffer, 8)
         )
 
-        data: List[byte] = readBuffer.readByteArray("data", int(objectLength))
+        data: List[c_byte] = readBuffer.readByteArray("data", int(objectLength))
 
         readBuffer.closeContext("ModbusDeviceInformationObject")
         # Create the instance

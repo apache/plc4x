@@ -21,7 +21,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-
 from ctypes import c_bool
 from ctypes import c_byte
 from ctypes import c_uint8
@@ -93,7 +92,7 @@ class ModbusPDUReadWriteMultipleHoldingRegistersResponse(PlcMessage, ModbusPDU):
             "byteCount", readUnsignedShort(readBuffer, 8)
         )
 
-        value: List[byte] = readBuffer.readByteArray("value", int(byteCount))
+        value: List[c_byte] = readBuffer.readByteArray("value", int(byteCount))
 
         readBuffer.closeContext("ModbusPDUReadWriteMultipleHoldingRegistersResponse")
         # Create the instance

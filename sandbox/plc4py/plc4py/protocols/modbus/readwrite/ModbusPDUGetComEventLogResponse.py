@@ -21,7 +21,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-
 from ctypes import c_bool
 from ctypes import c_byte
 from ctypes import c_uint16
@@ -136,7 +135,9 @@ class ModbusPDUGetComEventLogResponse(PlcMessage, ModbusPDU):
             "messageCount", readUnsignedInt(readBuffer, 16)
         )
 
-        events: List[byte] = readBuffer.readByteArray("events", int((byteCount) - (6)))
+        events: List[c_byte] = readBuffer.readByteArray(
+            "events", int((byteCount) - (6))
+        )
 
         readBuffer.closeContext("ModbusPDUGetComEventLogResponse")
         # Create the instance
