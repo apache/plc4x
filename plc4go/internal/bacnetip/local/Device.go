@@ -20,6 +20,7 @@
 package local
 
 import (
+	"fmt"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
@@ -33,4 +34,8 @@ type LocalDeviceObject struct {
 	App                       interface{}
 	ObjectName                string
 	ObjectIdentifier          string
+}
+
+func (l *LocalDeviceObject) String() string {
+	return fmt.Sprintf("LocalDeviceObject{NumberOfAPDURetries: %v, APDUTimeout: %v, SegmentationSupported: %v, APDUSegmentTimeout: %v, MaxSegmentsAccepted: %v, MaximumApduLengthAccepted: %v, ObjectName: %v, ObjectIdentifier: %v}", l.NumberOfAPDURetries, l.APDUTimeout, l.SegmentationSupported, l.APDUSegmentTimeout, l.MaxSegmentsAccepted, l.MaximumApduLengthAccepted, l.ObjectName, l.ObjectIdentifier)
 }

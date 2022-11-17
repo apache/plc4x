@@ -20,13 +20,11 @@
 package bacnetip
 
 import (
-	"bytes"
 	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/local"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/service"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"hash/fnv"
@@ -35,7 +33,7 @@ import (
 
 type DeviceInfo struct {
 	DeviceIdentifier readWriteModel.BACnetTagPayloadObjectIdentifier
-	Address          []byte
+	Address          Address
 
 	MaximumApduLengthAccepted *readWriteModel.MaxApduLengthAccepted
 	SegmentationSupported     *readWriteModel.BACnetSegmentation
@@ -47,7 +45,7 @@ type DeviceInfo struct {
 	_cacheKey DeviceInfoCacheKey
 }
 
-func NewDeviceInfo(deviceIdentifier readWriteModel.BACnetTagPayloadObjectIdentifier, address []byte) *DeviceInfo {
+func NewDeviceInfo(deviceIdentifier readWriteModel.BACnetTagPayloadObjectIdentifier, address Address) *DeviceInfo {
 	return &DeviceInfo{
 		DeviceIdentifier: deviceIdentifier,
 		Address:          address,
@@ -66,7 +64,7 @@ func NewDeviceInfo(deviceIdentifier readWriteModel.BACnetTagPayloadObjectIdentif
 // DeviceInfoCacheKey caches by either Instance, PduSource of both
 type DeviceInfoCacheKey struct {
 	Instance  *uint32
-	PduSource []byte
+	PduSource *Address
 }
 
 func (k DeviceInfoCacheKey) HashKey() uint32 {
@@ -74,12 +72,12 @@ func (k DeviceInfoCacheKey) HashKey() uint32 {
 	if k.Instance != nil {
 		_ = binary.Write(h, binary.BigEndian, *k.Instance)
 	}
-	_, _ = h.Write(k.PduSource)
+	_ = binary.Write(h, binary.BigEndian, k.PduSource)
 	return h.Sum32()
 }
 
 func (k DeviceInfoCacheKey) String() string {
-	return fmt.Sprintf("key: %d/%x", k.Instance, k.PduSource)
+	return fmt.Sprintf("key: %d/%v", k.Instance, k.PduSource)
 }
 
 type DeviceInfoCache struct {
@@ -93,7 +91,7 @@ func NewDeviceInfoCache() *DeviceInfoCache {
 }
 
 func (d *DeviceInfoCache) String() string {
-	return fmt.Sprintf("%#q", d)
+	return fmt.Sprintf("DeviceInfoCache(%d)", len(d.cache))
 }
 
 // HasDeviceInfo Return true if cache has information about the device.
@@ -103,7 +101,7 @@ func (d *DeviceInfoCache) HasDeviceInfo(key DeviceInfoCacheKey) bool {
 }
 
 // IAmDeviceInfo Create a device information record based on the contents of an IAmRequest and put it in the cache.
-func (d *DeviceInfoCache) IAmDeviceInfo(iAm readWriteModel.BACnetUnconfirmedServiceRequestIAm, pduSource []byte) {
+func (d *DeviceInfoCache) IAmDeviceInfo(iAm readWriteModel.BACnetUnconfirmedServiceRequestIAm, pduSource Address) {
 	log.Debug().Msgf("IAmDeviceInfo\n%s", iAm)
 
 	deviceIdentifier := iAm.GetDeviceIdentifier()
@@ -115,7 +113,7 @@ func (d *DeviceInfoCache) IAmDeviceInfo(iAm readWriteModel.BACnetUnconfirmedServ
 
 	// maybe there is a record for this address
 	if !ok {
-		deviceInfo, ok = d.cache[DeviceInfoCacheKey{nil, pduSource}.HashKey()]
+		deviceInfo, ok = d.cache[DeviceInfoCacheKey{nil, &pduSource}.HashKey()]
 	}
 
 	// make a new one using the class provided
@@ -163,8 +161,8 @@ func (d *DeviceInfoCache) UpdateDeviceInfo(deviceInfo DeviceInfo) {
 		delete(d.cache, cacheKey.HashKey())
 		d.cache[DeviceInfoCacheKey{Instance: &instanceNumber}.HashKey()] = deviceInfo
 	}
-	if bytes.Compare(deviceInfo.Address, cacheKey.PduSource) != 0 {
-		cacheKey.PduSource = deviceInfo.Address
+	if !deviceInfo.Address.Equals(cacheKey.PduSource) {
+		cacheKey.PduSource = &deviceInfo.Address
 		delete(d.cache, cacheKey.HashKey())
 		d.cache[DeviceInfoCacheKey{PduSource: cacheKey.PduSource}.HashKey()] = deviceInfo
 	}
@@ -173,7 +171,7 @@ func (d *DeviceInfoCache) UpdateDeviceInfo(deviceInfo DeviceInfo) {
 	instanceNumber := deviceInfo.DeviceIdentifier.GetInstanceNumber()
 	deviceInfo._cacheKey = DeviceInfoCacheKey{
 		Instance:  &instanceNumber,
-		PduSource: deviceInfo.Address,
+		PduSource: &deviceInfo.Address,
 	}
 	d.cache[deviceInfo._cacheKey.HashKey()] = deviceInfo
 }
@@ -216,11 +214,11 @@ type Application struct {
 	localDevice      *local.LocalDeviceObject
 	deviceInfoCache  *DeviceInfoCache
 	controllers      map[string]interface{}
-	helpers          map[string]func(pdu spi.Message) error
+	helpers          map[string]func(pdu _PDU) error
 }
 
-func NewApplication(localDevice *local.LocalDeviceObject, localAddress net.Addr, deviceInfoCache *DeviceInfoCache, aseID *int) (*Application, error) {
-	log.Debug().Msgf("NewApplication %v %s deviceInfoCache=%s aseID=%d", localDevice, localAddress, deviceInfoCache, aseID)
+func NewApplication(localDevice *local.LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*Application, error) {
+	log.Debug().Msgf("NewApplication localDevice=%v localAddress=%v deviceInfoCache=%s aseID=%d", localDevice, &localAddress, deviceInfoCache, aseID)
 	a := &Application{}
 	var err error
 	a.ApplicationServiceElement, err = NewApplicationServiceElement(aseID, a)
@@ -261,7 +259,7 @@ func NewApplication(localDevice *local.LocalDeviceObject, localAddress net.Addr,
 	return a, nil
 }
 
-func (a *Application) Request(apdu spi.Message) error {
+func (a *Application) Request(apdu _PDU) error {
 	log.Debug().Msgf("Request\n%s", apdu)
 
 	// double-check the input is the right kind of APDU
@@ -273,7 +271,7 @@ func (a *Application) Request(apdu spi.Message) error {
 	return a.ApplicationServiceElement.Request(apdu)
 }
 
-func (a *Application) Indication(apdu spi.Message) error {
+func (a *Application) Indication(apdu _PDU) error {
 	log.Debug().Msgf("Indication\n%s", apdu)
 
 	// get a helper function
@@ -292,7 +290,7 @@ func (a *Application) Indication(apdu spi.Message) error {
 	if err := helperFn(apdu); err != nil {
 		log.Debug().Err(err).Msgf("err result")
 		// TODO: do proper mapping
-		a.Response(readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0))
+		a.Response(NewPDU(readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0)))
 	}
 
 	return nil
@@ -305,7 +303,7 @@ type ApplicationIOController struct {
 	queueByAddress map[string]SieveQueue
 }
 
-func NewApplicationIOController(localDevice *local.LocalDeviceObject, localAddress net.Addr, deviceInfoCache *DeviceInfoCache, aseID *int) (*ApplicationIOController, error) {
+func NewApplicationIOController(localDevice *local.LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*ApplicationIOController, error) {
 	a := &ApplicationIOController{
 		// queues for each address
 		queueByAddress: make(map[string]SieveQueue),
@@ -342,7 +340,7 @@ func (a *ApplicationIOController) ProcessIO(iocb _IOCB) error {
 	return queue.RequestIO(iocb)
 }
 
-func (a *ApplicationIOController) _AppComplete(address net.Addr, apdu spi.Message) error {
+func (a *ApplicationIOController) _AppComplete(address net.Addr, apdu _PDU) error {
 	log.Debug().Msgf("_AppComplete %s\n%s", address, apdu)
 
 	// look up the queue
@@ -377,7 +375,7 @@ func (a *ApplicationIOController) _AppComplete(address net.Addr, apdu spi.Messag
 	return nil
 }
 
-func (a *ApplicationIOController) _AppRequest(apdu spi.Message) {
+func (a *ApplicationIOController) _AppRequest(apdu _PDU) {
 	log.Debug().Msgf("_AppRequest\n%s", apdu)
 
 	if err := a.Request(apdu); err != nil {
@@ -398,7 +396,7 @@ func (a *ApplicationIOController) _AppRequest(apdu spi.Message) {
 	}
 }
 
-func (a *ApplicationIOController) Request(apdu spi.Message) error {
+func (a *ApplicationIOController) Request(apdu _PDU) error {
 	log.Debug().Msgf("Request\n%s", apdu)
 
 	// if this is not unconfirmed request, tell the application to use the IOCB interface
@@ -410,7 +408,7 @@ func (a *ApplicationIOController) Request(apdu spi.Message) error {
 	return a.Application.Request(apdu)
 }
 
-func (a *ApplicationIOController) Confirmation(apdu spi.Message) error {
+func (a *ApplicationIOController) Confirmation(apdu _PDU) error {
 	log.Debug().Msgf("Confirmation\n%s", apdu)
 
 	// this is an ack, error, reject or abort
@@ -423,7 +421,7 @@ type BIPSimpleApplication struct {
 	*ApplicationIOController
 	*service.WhoIsIAmServices
 	*service.ReadWritePropertyServices
-	localAddress net.Addr
+	localAddress Address
 	asap         *ApplicationServiceAccessPoint
 	smap         *StateMachineAccessPoint
 	nsap         *NetworkServiceAccessPoint
@@ -433,7 +431,7 @@ type BIPSimpleApplication struct {
 	mux          *UDPMultiplexer
 }
 
-func NewBIPSimpleApplication(localDevice *local.LocalDeviceObject, localAddress net.Addr, deviceInfoCache *DeviceInfoCache, aseID *int) (*BIPSimpleApplication, error) {
+func NewBIPSimpleApplication(localDevice *local.LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*BIPSimpleApplication, error) {
 	b := &BIPSimpleApplication{}
 	var err error
 	b.ApplicationIOController, err = NewApplicationIOController(localDevice, localAddress, deviceInfoCache, aseID)
@@ -498,7 +496,7 @@ func NewBIPSimpleApplication(localDevice *local.LocalDeviceObject, localAddress 
 	}
 
 	// bind the BIP stack to the network, no network number
-	if err := b.nsap.bind(b.bip, nil, b.localAddress); err != nil {
+	if err := b.nsap.bind(b.bip, nil, &b.localAddress); err != nil {
 		return nil, err
 	}
 

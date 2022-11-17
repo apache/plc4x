@@ -20,10 +20,9 @@
 package bacnetip
 
 import (
-	"github.com/apache/plc4x/plc4go/spi"
+	"fmt"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"net"
 )
 
 // TODO: implement me
@@ -31,11 +30,11 @@ type NetworkAdapter struct {
 	*Client
 	adapterSAP           *NetworkServiceAccessPoint
 	adapterNet           interface{}
-	adapterAddr          net.Addr
+	adapterAddr          *Address
 	adapterNetConfigured *int
 }
 
-func NewNetworkAdapter(sap *NetworkServiceAccessPoint, net interface{}, addr net.Addr, cid *int) (*NetworkAdapter, error) {
+func NewNetworkAdapter(sap *NetworkServiceAccessPoint, net interface{}, addr *Address, cid *int) (*NetworkAdapter, error) {
 	n := &NetworkAdapter{
 		adapterSAP:  sap,
 		adapterNet:  net,
@@ -55,7 +54,7 @@ func NewNetworkAdapter(sap *NetworkServiceAccessPoint, net interface{}, addr net
 }
 
 // Confirmation Decode upstream PDUs and pass them up to the service access point.
-func (n *NetworkAdapter) Confirmation(npdu spi.Message) error {
+func (n *NetworkAdapter) Confirmation(npdu _PDU) error {
 	log.Debug().Msgf("confirmation\n%s\n%s", npdu, n.adapterNet)
 
 	// TODO: we need generics otherwise this won't work at all here
@@ -63,7 +62,7 @@ func (n *NetworkAdapter) Confirmation(npdu spi.Message) error {
 }
 
 // ProcessNPDU Encode NPDUs from the service access point and send them downstream.
-func (n *NetworkAdapter) ProcessNPDU(npdu spi.Message) error {
+func (n *NetworkAdapter) ProcessNPDU(npdu _PDU) error {
 	log.Debug().Msgf("ProcessNPDU\n%s\n(net=%s)", npdu, n.adapterNet)
 	return n.Request(npdu)
 }
@@ -74,7 +73,7 @@ type NetworkServiceAccessPoint struct {
 	adapters        map[string]*NetworkAdapter
 	routerInfoCache interface{}
 	pendingNets     map[string]interface{}
-	localAdapter    interface{}
+	localAdapter    *NetworkAdapter
 }
 
 func NewNetworkServiceAccessPoint(routerInfoCache interface{}, sapID *int, sid *int) (*NetworkServiceAccessPoint, error) {
@@ -104,8 +103,57 @@ func NewNetworkServiceAccessPoint(routerInfoCache interface{}, sapID *int, sid *
 	return n, nil
 }
 
-func (n *NetworkServiceAccessPoint) bind(server _Server, net interface{}, address interface{}) error {
-	panic("not implemented yet")
+/* bind creates a network adapter object and bind.
+
+   bind(s, None, None)
+       Called for simple applications, local network unknown, no specific
+       address, APDUs sent upstream
+
+   bind(s, net, None)
+       Called for routers, bind to the network, (optionally?) drop APDUs
+
+   bind(s, None, address)
+       Called for applications or routers, bind to the network (to be
+       discovered), send up APDUs with a metching address
+
+   bind(s, net, address)
+       Called for applications or routers, bind to the network, send up
+       APDUs with a metching address.
+*/
+func (n *NetworkServiceAccessPoint) bind(server _Server, net interface{}, address *Address) error {
+	log.Debug().Msgf("bind %v net=%v address=%v", server, net, address)
+
+	netKey := fmt.Sprintf("%v", net)
+	// make sure this hasn't already been called with this network
+	if _, ok := n.adapters[netKey]; ok {
+		return errors.Errorf("Allready bound: %v", net)
+	}
+	// create an adapter object, add it to our map
+	adapter, err := NewNetworkAdapter(n, net, address, nil)
+	if err != nil {
+		return errors.Wrap(err, "error creating adapter")
+	}
+	n.adapters[netKey] = adapter
+	log.Debug().Msgf("adapter: %v, %v", netKey, adapter)
+
+	// if the address was given, make it the "local" one
+	if address != nil {
+		log.Debug().Msg("setting local adapter")
+		n.localAdapter = adapter
+	}
+
+	// if the local adapter isn't set yet, make it the first one, and can
+	// be overridden by a subsequent call if the address is specified
+	if n.localAdapter == nil {
+		log.Debug().Msg("default local adapter")
+		n.localAdapter = adapter
+	}
+
+	if n.localAdapter.adapterAddr == nil {
+		log.Debug().Msg("no local address")
+	}
+
+	return bind(adapter, server)
 }
 
 func (n *NetworkServiceAccessPoint) UpdateRouterReference() error {
@@ -116,27 +164,19 @@ func (n *NetworkServiceAccessPoint) DeleteRouterReference() error {
 	panic("not implemented yet")
 }
 
-func (n *NetworkServiceAccessPoint) Indication(npdu spi.Message) error {
+func (n *NetworkServiceAccessPoint) Indication(npdu _PDU) error {
 	panic("not implemented yet")
 }
 
-func (n *NetworkServiceAccessPoint) ProcessNPDU(npdu spi.Message) error {
+func (n *NetworkServiceAccessPoint) ProcessNPDU(npdu _PDU) error {
 	panic("not implemented yet")
 }
 
-func (n *NetworkServiceAccessPoint) SapIndication(npdu spi.Message) error {
-	// TODO: extract from somewhere
-	var pduDestination []byte
-	panic("we need pduDestination")
-	_ = pduDestination
+func (n *NetworkServiceAccessPoint) SapIndication(npdu _PDU) error {
 	panic("not implemented yet")
 }
 
-func (n *NetworkServiceAccessPoint) SapConfirmation(npdu spi.Message) error {
-	// TODO: extract from somewhere
-	var pduDestination []byte
-	panic("we need pduDestination")
-	_ = pduDestination
+func (n *NetworkServiceAccessPoint) SapConfirmation(npdu _PDU) error {
 	panic("not implemented yet")
 }
 

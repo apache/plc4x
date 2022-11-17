@@ -20,10 +20,8 @@
 package bacnetip
 
 import (
-	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"net"
 )
 
 type _MultiplexClient struct {
@@ -43,8 +41,8 @@ func _New_MultiplexClient(multiplexer *UDPMultiplexer) (*_MultiplexClient, error
 	return m, nil
 }
 
-func (m *_MultiplexClient) Confirmation(pdu spi.Message) error {
-	return m.multiplexer.Confirmation(pdu)
+func (m *_MultiplexClient) Confirmation(pdu _PDU) error {
+	return m.multiplexer.Confirmation(m, pdu)
 }
 
 type _MultiplexServer struct {
@@ -64,41 +62,66 @@ func _New_MultiplexServer(multiplexer *UDPMultiplexer) (*_MultiplexServer, error
 	return m, nil
 }
 
-func (m *_MultiplexServer) Indication(pdu spi.Message) error {
-	return m.multiplexer.Indication(pdu)
+func (m *_MultiplexServer) Indication(pdu _PDU) error {
+	return m.multiplexer.Indication(m, pdu)
 }
 
 type UDPMultiplexer struct {
-	address              *net.UDPAddr
-	selfBroadcastAddress *net.UDPAddr
-	direct               *_MultiplexClient
-	directPort           *UDPDirector
-	broadcast            *_MultiplexClient
-	broadcastPort        *UDPDirector
-	annexH               *_MultiplexServer
-	annexJ               *_MultiplexServer
+	address            Address
+	addrTuple          *AddressTuple[string, uint16]
+	addrBroadcastTuple *AddressTuple[string, uint16]
+	direct             *_MultiplexClient
+	directPort         *UDPDirector
+	broadcast          *_MultiplexClient
+	broadcastPort      *UDPDirector
+	annexH             *_MultiplexServer
+	annexJ             *_MultiplexServer
 }
 
-func NewUDPMultiplexer(address net.Addr, noBroadcast bool) (*UDPMultiplexer, error) {
+func NewUDPMultiplexer(address interface{}, noBroadcast bool) (*UDPMultiplexer, error) {
 	log.Debug().Msgf("NewUDPMultiplexer %v noBroadcast=%t", address, noBroadcast)
 	u := &UDPMultiplexer{}
 
 	// check for some options
 	specialBroadcast := false
 	if address == nil {
-		u.address = &net.UDPAddr{IP: nil, Port: 46808}
-		u.selfBroadcastAddress = &net.UDPAddr{IP: net.IPv4(255, 255, 255, 255), Port: 47808}
+		address, _ := NewAddress()
+		u.address = *address
+		u.addrTuple = &AddressTuple[string, uint16]{"", 47808}
+		u.addrBroadcastTuple = &AddressTuple[string, uint16]{"255.255.255.255", 47808}
 	} else {
-		udpAddr, err := net.ResolveUDPAddr("udp", address.String())
-		if err != nil {
-			return nil, errors.Wrap(err, "error resolving upd")
+		// allow the address to be cast
+		if caddress, ok := address.(*Address); ok {
+			u.address = *caddress
+		} else if caddress, ok := address.(Address); ok {
+			u.address = caddress
+		} else {
+			newAddress, err := NewAddress(address)
+			if err != nil {
+				return nil, errors.Wrap(err, "error parsing address")
+			}
+			u.address = *newAddress
 		}
-		u.address = udpAddr
-		// TODO: we need to find a way to resolved broadcast
-		u.selfBroadcastAddress = &net.UDPAddr{IP: net.IPv4(255, 255, 255, 255), Port: 47808}
+
+		// promote the normal and broadcast tuples
+		u.addrTuple = u.address.AddrTuple
+		u.addrBroadcastTuple = u.address.AddrBroadcastTuple
+
+		// check for no broadcasting (loopback interface)
+		if u.addrBroadcastTuple == nil {
+			noBroadcast = true
+		} else if u.addrTuple == u.addrBroadcastTuple {
+			// old school broadcast address
+			u.addrBroadcastTuple = &AddressTuple[string, uint16]{"255.255.255.255", u.addrTuple.Right}
+		} else {
+			specialBroadcast = true
+		}
 	}
 
-	log.Debug().Msgf("address %s, broadcast %s", u.address, u.selfBroadcastAddress)
+	log.Debug().Msgf("address: %v", u.address)
+	log.Debug().Msgf("addrTuple: %v", u.addrTuple)
+	log.Debug().Msgf("addrBroadcastTuple: %v", u.addrBroadcastTuple)
+	//log.Debug().Msgf("route_aware: %v", settings.RouteAware)
 
 	// create and bind direct address
 	var err error
@@ -106,7 +129,7 @@ func NewUDPMultiplexer(address net.Addr, noBroadcast bool) (*UDPMultiplexer, err
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating multiplex client")
 	}
-	u.directPort, err = NewUDPDirector(u.address, nil, nil, nil, nil)
+	u.directPort, err = NewUDPDirector(u.addrTuple, nil, nil, nil, nil)
 	if err := bind(u.direct, u.directPort); err != nil {
 		return nil, errors.Wrap(err, "error binding ports")
 	}
@@ -117,7 +140,8 @@ func NewUDPMultiplexer(address net.Addr, noBroadcast bool) (*UDPMultiplexer, err
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating broadcast multiplex client")
 		}
-		u.broadcastPort, err = NewUDPDirector(u.selfBroadcastAddress, nil, nil, nil, nil)
+		reuse := true
+		u.broadcastPort, err = NewUDPDirector(u.addrBroadcastTuple, nil, &reuse, nil, nil)
 		if err := bind(u.direct, u.directPort); err != nil {
 			return nil, errors.Wrap(err, "error binding ports")
 		}
@@ -136,15 +160,57 @@ func NewUDPMultiplexer(address net.Addr, noBroadcast bool) (*UDPMultiplexer, err
 }
 
 func (m *UDPMultiplexer) Close() error {
-	panic("implement me")
+	log.Debug().Msg("Close")
+
+	// pass along the close to the director(s)
+	m.directPort.Close()
+	if m.broadcastPort != nil {
+		m.broadcastPort.Close()
+	}
+	return nil
 }
 
-func (m *UDPMultiplexer) Confirmation(pdu spi.Message) error {
-	panic("implement me")
+func (m *UDPMultiplexer) Indication(server *_MultiplexServer, pdu _PDU) error {
+	log.Debug().Msgf("Indication %v\n%v", server, pdu)
+
+	pduDestination := pdu.GetPDUDestination()
+
+	// broadcast message
+	var dest Address
+	if pduDestination.AddrType == LOCAL_BROADCAST_ADDRESS {
+		// interface might not support broadcasts
+		if m.addrBroadcastTuple == nil {
+			return nil
+		}
+
+		address, err := NewAddress(*m.addrBroadcastTuple)
+		if err != nil {
+			return errors.Wrap(err, "error getting address from tuple")
+		}
+		dest = *address
+		log.Debug().Msgf("requesting local broadcast: %v", dest)
+	} else if pduDestination.AddrType == LOCAL_STATION_ADDRESS {
+		dest = pduDestination
+	} else {
+		return errors.New("invalid destination address type")
+	}
+
+	return m.directPort.Indication(NewPDUFromPDU(pdu, WithPDUDestination(dest)))
 }
 
-func (m *UDPMultiplexer) Indication(pdu spi.Message) error {
-	panic("implement me")
+func (m *UDPMultiplexer) Confirmation(client *_MultiplexClient, pdu _PDU) error {
+	log.Debug().Msgf("Confirmation %v\n%v", client, pdu)
+	log.Debug().Msgf("client address: %v", client.multiplexer.address)
+
+	// if this came from ourselves, dump it
+	pduSource := pdu.GetPDUSource()
+	if pduSource.Equals(m.address) {
+		log.Debug().Msg("from us")
+		return nil
+	}
+
+	// TODO: it is getting to messy, we need to solve the source destination topic
+	return nil
 }
 
 type AnnexJCodec struct {
@@ -168,12 +234,12 @@ func NewAnnexJCodec(cid *int, sid *int) (*AnnexJCodec, error) {
 	return a, nil
 }
 
-func (b *AnnexJCodec) Indication(apdu spi.Message) error {
-	panic("we need to implement this with  generics as we handle npdu not apdu here")
+func (b *AnnexJCodec) Indication(apdu _PDU) error {
+	panic("not implemented yet")
 }
 
-func (b *AnnexJCodec) Confirmation(apdu spi.Message) error {
-	panic("we need to implement this with  generics as we handle npdu not apdu here")
+func (b *AnnexJCodec) Confirmation(apdu _PDU) error {
+	panic("not implemented yet")
 }
 
 type _BIPSAP interface {
@@ -198,22 +264,14 @@ func NewBIPSAP(sapID *int, rootStruct _BIPSAP) (*BIPSAP, error) {
 	return b, nil
 }
 
-func (b *BIPSAP) SapIndication(pdu spi.Message) error {
-	// TODO: extract from somewhere
-	var pduDestination []byte
-	panic("we need pduDestination")
-	log.Debug().Msgf("SapIndication\n%s\n%s", pdu, pduDestination)
-	// TODO: what to do with the destination?
+func (b *BIPSAP) SapIndication(pdu _PDU) error {
+	log.Debug().Msgf("SapIndication\n%ss", pdu)
 	// this is a request initiated by the ASE, send this downstream
 	return b.rootStruct.Request(pdu)
 }
 
-func (b *BIPSAP) SapConfirmation(pdu spi.Message) error {
-	// TODO: extract from somewhere
-	var pduDestination []byte
-	panic("we need pduDestination")
-	log.Debug().Msgf("SapConfirmation\n%s\n%s", pdu, pduDestination)
-	// TODO: what to do with the destination?
+func (b *BIPSAP) SapConfirmation(pdu _PDU) error {
+	log.Debug().Msgf("SapConfirmation\n%s", pdu)
 	// this is a response from the ASE, send this downstream
 	return b.rootStruct.Request(pdu)
 }
@@ -245,10 +303,10 @@ func NewBIPSimple(sapID *int, cid *int, sid *int) (*BIPSimple, error) {
 	return b, nil
 }
 
-func (b *BIPSimple) Indication(apdu spi.Message) error {
-	panic("we need to implement this with  generics as we handle npdu not apdu here")
+func (b *BIPSimple) Indication(apdu _PDU) error {
+	panic("not implemented yet")
 }
 
-func (b *BIPSimple) Response(apdu spi.Message) error {
-	panic("we need to implement this with  generics as we handle npdu not apdu here")
+func (b *BIPSimple) Response(apdu _PDU) error {
+	panic("not implemented yet")
 }

@@ -22,7 +22,6 @@ package bacnetip
 import (
 	"container/heap"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/plcerrors"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -84,10 +83,10 @@ type _IOCB interface {
 	setIOController(ioController _IOController)
 	setIOState(newState IOCBState)
 	getIOState() IOCBState
-	setIOResponse(msg spi.Message)
+	setIOResponse(msg _PDU)
 	Trigger()
 	setIOError(err error)
-	getRequest() spi.Message
+	getRequest() _PDU
 	getDestination() net.Addr
 	getPriority() int
 	clearQueue()
@@ -99,10 +98,10 @@ var _identLock sync.Mutex
 
 type IOCB struct {
 	ioID           int
-	request        spi.Message
+	request        _PDU
 	destination    net.Addr
 	ioState        IOCBState
-	ioResponse     spi.Message
+	ioResponse     _PDU
 	ioError        error
 	ioController   _IOController
 	ioComplete     sync.Cond
@@ -114,7 +113,7 @@ type IOCB struct {
 	priority       int
 }
 
-func NewIOCB(request spi.Message, destination net.Addr) (*IOCB, error) {
+func NewIOCB(request _PDU, destination net.Addr) (*IOCB, error) {
 	// lock the identity sequence number
 	_identLock.Lock()
 
@@ -194,7 +193,7 @@ func (i *IOCB) Trigger() {
 
 // Complete Called to complete a transaction, usually when ProcessIO has shipped the IOCB off to some other thread or
 //        function.
-func (i *IOCB) Complete(apdu spi.Message) error {
+func (i *IOCB) Complete(apdu _PDU) error {
 	log.Debug().Msgf("Complete(%d)\n%s", i.ioID, apdu)
 
 	if i.ioController != nil {
@@ -257,7 +256,7 @@ func (i *IOCB) getIOState() IOCBState {
 	return i.ioState
 }
 
-func (i *IOCB) setIOResponse(msg spi.Message) {
+func (i *IOCB) setIOResponse(msg _PDU) {
 	i.ioResponse = msg
 }
 
@@ -265,7 +264,7 @@ func (i *IOCB) setIOError(err error) {
 	i.ioError = err
 }
 
-func (i *IOCB) getRequest() spi.Message {
+func (i *IOCB) getRequest() _PDU {
 	return i.request
 }
 
@@ -434,7 +433,7 @@ func (i *IOQueue) Abort(err error) {
 type _IOController interface {
 	Abort(err error) error
 	ProcessIO(iocb _IOCB) error
-	CompleteIO(iocb _IOCB, pdu spi.Message) error
+	CompleteIO(iocb _IOCB, pdu _PDU) error
 	AbortIO(iocb _IOCB, err error) error
 }
 
@@ -500,7 +499,7 @@ func (i *IOController) ActiveIO(iocb _IOCB) error {
 }
 
 // CompleteIO Called by a handler to return data to the client
-func (i *IOController) CompleteIO(iocb _IOCB, apdu spi.Message) error {
+func (i *IOController) CompleteIO(iocb _IOCB, apdu _PDU) error {
 	log.Debug().Msgf("CompleteIO %s\n%s", iocb, apdu)
 
 	// if it completed, leave it alone
@@ -579,11 +578,11 @@ func NewIOQController(name string) (*IOQController, error) {
 
 type SieveQueue struct {
 	*IOQController
-	requestFn func(apdu spi.Message)
+	requestFn func(apdu _PDU)
 	address   net.Addr
 }
 
-func NewSieveQueue(fn func(apdu spi.Message), address net.Addr) (*SieveQueue, error) {
+func NewSieveQueue(fn func(apdu _PDU), address net.Addr) (*SieveQueue, error) {
 	s := &SieveQueue{}
 	var err error
 	s.IOQController, err = NewIOQController(address.String())

@@ -20,7 +20,7 @@
 package bacnetip
 
 import (
-	"github.com/apache/plc4x/plc4go/spi"
+	"fmt"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -40,11 +40,23 @@ func init() {
 	elementMap = make(map[int]*ApplicationServiceElement)
 }
 
+// TODO: implement me
+type _PCI struct {
+	pduUserData    interface{}
+	pduSource      Address
+	pduDestination Address
+}
+
+func _New_PCI(pduUserData interface{}, pduSource Address, pduDestination Address) *_PCI {
+	return &_PCI{pduUserData, pduSource, pduDestination}
+}
+
 // _Client is an interface used for documentation
 type _Client interface {
-	Request(pdu spi.Message) error
-	Confirmation(pdu spi.Message) error
+	Request(pdu _PDU) error
+	Confirmation(pdu _PDU) error
 	_setClientPeer(server _Server)
+	getClientId() *int
 }
 
 // Client is an "abstract" struct which is used in another struct as delegate
@@ -78,7 +90,7 @@ func NewClient(cid *int, rootStruct _Client) (*Client, error) {
 	return c, nil
 }
 
-func (c *Client) Request(pdu spi.Message) error {
+func (c *Client) Request(pdu _PDU) error {
 	log.Debug().Msgf("request\n%s", pdu)
 
 	if c.clientPeer == nil {
@@ -87,7 +99,7 @@ func (c *Client) Request(pdu spi.Message) error {
 	return c.clientPeer.Indication(pdu)
 }
 
-func (c *Client) Confirmation(spi.Message) error {
+func (c *Client) Confirmation(_PDU) error {
 	panic("this should be implemented by outer struct")
 }
 
@@ -95,11 +107,24 @@ func (c *Client) _setClientPeer(server _Server) {
 	c.clientPeer = server
 }
 
+func (c *Client) getClientId() *int {
+	return c.clientID
+}
+
+func (c *Client) String() string {
+	clientPeer := ""
+	if c.clientPeer != nil {
+		clientPeer = fmt.Sprintf(" clientPeerId: %d", c.clientPeer.getServerId())
+	}
+	return fmt.Sprintf("Client(cid:%d)%s", c.clientID, clientPeer)
+}
+
 // _Server is an interface used for documentation
 type _Server interface {
-	Indication(pdu spi.Message) error
-	Response(pdu spi.Message) error
+	Indication(pdu _PDU) error
+	Response(pdu _PDU) error
 	_setServerPeer(serverPeer _Client)
+	getServerId() *int
 }
 
 // Server is an "abstract" struct which is used in another struct as delegate
@@ -133,11 +158,11 @@ func NewServer(sid *int, rootStruct _Server) (*Server, error) {
 	return s, nil
 }
 
-func (s *Server) Indication(spi.Message) error {
+func (s *Server) Indication(_PDU) error {
 	panic("this should be implemented by outer struct")
 }
 
-func (s *Server) Response(pdu spi.Message) error {
+func (s *Server) Response(pdu _PDU) error {
 	log.Debug().Msgf("response\n%s", pdu)
 
 	if s.serverPeer == nil {
@@ -150,12 +175,24 @@ func (s *Server) _setServerPeer(serverPeer _Client) {
 	s.serverPeer = serverPeer
 }
 
+func (s *Server) getServerId() *int {
+	return s.serverID
+}
+
+func (s *Server) String() string {
+	serverPeer := ""
+	if s.serverPeer != nil {
+		serverPeer = fmt.Sprintf(" serverPeerId: %d", s.serverPeer.getClientId())
+	}
+	return fmt.Sprintf("Server(cid:%d)%s", s.serverID, serverPeer)
+}
+
 // _ServiceAccessPoint is a interface used for documentation
 type _ServiceAccessPoint interface {
-	SapConfirmation(pdu spi.Message) error
-	SapRequest(pdu spi.Message) error
-	SapIndication(pdu spi.Message) error
-	SapResponse(pdu spi.Message) error
+	SapConfirmation(pdu _PDU) error
+	SapRequest(pdu _PDU) error
+	SapIndication(pdu _PDU) error
+	SapResponse(pdu _PDU) error
 	_setServiceElement(serviceElement _ApplicationServiceElement)
 }
 
@@ -189,7 +226,7 @@ func NewServiceAccessPoint(sapID *int, rootStruct _ServiceAccessPoint) (*Service
 	return s, nil
 }
 
-func (s *ServiceAccessPoint) SapRequest(pdu spi.Message) error {
+func (s *ServiceAccessPoint) SapRequest(pdu _PDU) error {
 	log.Debug().Msgf("SapRequest(%d)\n%s", s.serviceID, pdu)
 
 	if s.serviceElement == nil {
@@ -198,11 +235,11 @@ func (s *ServiceAccessPoint) SapRequest(pdu spi.Message) error {
 	return s.serviceElement.Indication(pdu)
 }
 
-func (s *ServiceAccessPoint) SapIndication(spi.Message) error {
+func (s *ServiceAccessPoint) SapIndication(_PDU) error {
 	panic("this should be implemented by outer struct")
 }
 
-func (s *ServiceAccessPoint) SapResponse(pdu spi.Message) error {
+func (s *ServiceAccessPoint) SapResponse(pdu _PDU) error {
 	log.Debug().Msgf("SapResponse(%d)\n%s", s.serviceID, pdu)
 
 	if s.serviceElement == nil {
@@ -211,7 +248,7 @@ func (s *ServiceAccessPoint) SapResponse(pdu spi.Message) error {
 	return s.serviceElement.Confirmation(pdu)
 }
 
-func (s *ServiceAccessPoint) SapConfirmation(spi.Message) error {
+func (s *ServiceAccessPoint) SapConfirmation(_PDU) error {
 	panic("this should be implemented by outer struct")
 }
 
@@ -221,10 +258,10 @@ func (s *ServiceAccessPoint) _setServiceElement(serviceElement _ApplicationServi
 
 // _ApplicationServiceElement is a interface used for documentation
 type _ApplicationServiceElement interface {
-	Request(pdu spi.Message) error
-	Indication(pdu spi.Message) error
-	Response(pdu spi.Message) error
-	Confirmation(pdu spi.Message) error
+	Request(pdu _PDU) error
+	Indication(pdu _PDU) error
+	Response(pdu _PDU) error
+	Confirmation(pdu _PDU) error
 	_setElementService(elementService _ServiceAccessPoint)
 }
 
@@ -259,7 +296,7 @@ func NewApplicationServiceElement(aseID *int, rootStruct _ApplicationServiceElem
 	return a, nil
 }
 
-func (a *ApplicationServiceElement) Request(pdu spi.Message) error {
+func (a *ApplicationServiceElement) Request(pdu _PDU) error {
 	log.Debug().Msgf("Request\n%s", pdu)
 
 	if a.elementService == nil {
@@ -269,11 +306,11 @@ func (a *ApplicationServiceElement) Request(pdu spi.Message) error {
 	return a.elementService.SapIndication(pdu)
 }
 
-func (a *ApplicationServiceElement) Indication(spi.Message) error {
+func (a *ApplicationServiceElement) Indication(_PDU) error {
 	panic("this should be implemented by outer struct")
 }
 
-func (a *ApplicationServiceElement) Response(pdu spi.Message) error {
+func (a *ApplicationServiceElement) Response(pdu _PDU) error {
 	log.Debug().Msgf("Response\n%s", pdu)
 
 	if a.elementService == nil {
@@ -283,7 +320,7 @@ func (a *ApplicationServiceElement) Response(pdu spi.Message) error {
 	return a.elementService.SapConfirmation(pdu)
 }
 
-func (a *ApplicationServiceElement) Confirmation(spi.Message) error {
+func (a *ApplicationServiceElement) Confirmation(_PDU) error {
 	panic("this should be implemented by outer struct")
 }
 
@@ -367,9 +404,9 @@ func bind(args ...interface{}) error {
 	// go through the argument pairs
 	for i := 0; i < len(args)-1; i++ {
 		client := args[i]
-		log.Debug().Msgf("client %v", client)
+		log.Debug().Msgf("client %s", client)
 		server := args[i+1]
-		log.Debug().Msgf("server %v", server)
+		log.Debug().Msgf("server %s", server)
 
 		// make sure we're binding clients and servers
 		clientCast, okClient := client.(_Client)

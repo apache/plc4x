@@ -21,7 +21,6 @@ package bacnetip
 
 import (
 	"github.com/pkg/errors"
-	"net"
 )
 
 type UDPActor struct {
@@ -37,7 +36,11 @@ type UDPDirector struct {
 	*ServiceAccessPoint
 }
 
-func NewUDPDirector(address net.Addr, timeout *int, reuse *bool, sid *int, sapID *int) (*UDPDirector, error) {
+func (d *UDPDirector) Close() {
+
+}
+
+func NewUDPDirector(address *AddressTuple[string, uint16], timeout *int, reuse *bool, sid *int, sapID *int) (*UDPDirector, error) {
 	u := &UDPDirector{}
 	var err error
 	u.Server, err = NewServer(sid, u)
