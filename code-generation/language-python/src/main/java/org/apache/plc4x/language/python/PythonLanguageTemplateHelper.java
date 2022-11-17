@@ -331,10 +331,10 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
                 String bitType = "Bit";
-                return "/*TODO: migrate me*/" + "readBuffer.read" + bitType + "(\"" + logicalName + "\")";
+                return "/*TODO: migrate me*/" + "read_buffer.read" + bitType + "(\"" + logicalName + "\")";
             case BYTE:
                 String byteType = "Byte";
-                return "/*TODO: migrate me*/" + "readBuffer.read" + byteType + "(\"" + logicalName + "\")";
+                return "/*TODO: migrate me*/" + "read_buffer.read" + byteType + "(\"" + logicalName + "\")";
             case UINT:
                 String unsignedIntegerType;
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
@@ -349,7 +349,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 } else {
                     unsignedIntegerType = "UnsignedBigInteger";
                 }
-                return "/*TODO: migrate me*/" + "readBuffer.read" + unsignedIntegerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                return "/*TODO: migrate me*/" + "read_buffer.read" + unsignedIntegerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
             case INT:
                 String integerType;
                 if (simpleTypeReference.getSizeInBits() <= 8) {
@@ -363,10 +363,10 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 } else {
                     integerType = "BigInteger";
                 }
-                return "/*TODO: migrate me*/" + "readBuffer.read" + integerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                return "/*TODO: migrate me*/" + "read_buffer.read" + integerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
             case FLOAT:
                 String floatType = (simpleTypeReference.getSizeInBits() <= 32) ? "Float" : "Double";
-                return "/*TODO: migrate me*/" + "readBuffer.read" + floatType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                return "/*TODO: migrate me*/" + "read_buffer.read" + floatType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
             case STRING:
             case VSTRING:
                 String stringType = "String";
@@ -380,7 +380,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                     length = toParseExpression(field, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null);
                 }
-                return "/*TODO: migrate me*/" + "readBuffer.read" + stringType + "(\"" + logicalName + "\", " + length + ", \"" +
+                return "/*TODO: migrate me*/" + "read_buffer.read" + stringType + "(\"" + logicalName + "\", " + length + ", \"" +
                     encoding + "\")";
         }
         return "/*TODO: migrate me*/" + "";
@@ -425,7 +425,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     .append(toParseExpression(null, argumentType, paramTerm, null))
                     .append(")");
             }
-            return "DataReaderComplexDefault(" + parserCallString + ".staticParse(readBuffer" + paramsString + "), readBuffer)";
+            return "DataReaderComplexDefault(" + parserCallString + ".static_parse(read_buffer" + paramsString + "), read_buffer)";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }
@@ -435,36 +435,36 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         final int sizeInBits = simpleTypeReference.getSizeInBits();
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "readBoolean(readBuffer)";
+                return "read_boolean(read_buffer)";
             case BYTE:
-                return "readByte(readBuffer, " + sizeInBits + ")";
+                return "read_byte(read_buffer, " + sizeInBits + ")";
             case UINT:
-                if (sizeInBits <= 4) return "readUnsignedByte(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 8) return "readUnsignedShort(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 16) return "readUnsignedInt(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 32) return "readUnsignedLong(readBuffer, " + sizeInBits + ")";
-                return "readUnsignedBigInteger(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 4) return "read_unsigned_byte(read_buffer, " + sizeInBits + ")";
+                if (sizeInBits <= 8) return "read_unsigned_short(read_buffer, " + sizeInBits + ")";
+                if (sizeInBits <= 16) return "read_unsigned_int(read_buffer, " + sizeInBits + ")";
+                if (sizeInBits <= 32) return "read_unsigned_long(read_buffer, " + sizeInBits + ")";
+                return "read_unsigned_big_integer(read_buffer, " + sizeInBits + ")";
             case INT:
-                if (sizeInBits <= 8) return "readSignedByte(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 16) return "readSignedShort(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 32) return "readSignedInt(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 64) return "readSignedLong(readBuffer, " + sizeInBits + ")";
-                return "readSignedBigInteger(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 8) return "read_signed_byte(read_buffer, " + sizeInBits + ")";
+                if (sizeInBits <= 16) return "read_signed_short(read_buffer, " + sizeInBits + ")";
+                if (sizeInBits <= 32) return "read_signed_int(read_buffer, " + sizeInBits + ")";
+                if (sizeInBits <= 64) return "read_signed_long(read_buffer, " + sizeInBits + ")";
+                return "read_signed_big_integer(read_buffer, " + sizeInBits + ")";
             case FLOAT:
-                if (sizeInBits <= 32) return "readFloat(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 64) return "readDouble(readBuffer, " + sizeInBits + ")";
-                return "readBigDecimal(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 32) return "read_float(read_buffer, " + sizeInBits + ")";
+                if (sizeInBits <= 64) return "read_double(read_buffer, " + sizeInBits + ")";
+                return "read_big_decimal(read_buffer, " + sizeInBits + ")";
             case STRING:
-                return "readString(readBuffer, " + sizeInBits + ")";
+                return "read_string(read_buffer, " + sizeInBits + ")";
             case VSTRING:
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
-                return "readString(readBuffer, " + toParseExpression(null, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null) + ")";
+                return "read_string(read_buffer, " + toParseExpression(null, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null) + ")";
             case TIME:
-                return "readTime(readBuffer)";
+                return "read_time(read_buffer)";
             case DATE:
-                return "readDate(readBuffer)";
+                return "read_date(read_buffer)";
             case DATETIME:
-                return "readDateTime(readBuffer)";
+                return "read_date_time(read_buffer)";
             default:
                 throw new UnsupportedOperationException("Unsupported type " + simpleTypeReference.getBaseType());
         }
@@ -478,7 +478,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
             return getDataWriterCall(arrayTypeReference.getElementTypeReference(), fieldName);
         } else if (typeReference.isComplexTypeReference()) {
-            return "DataWriterComplexDefault(writeBuffer)";
+            return "DataWriterComplexDefault(write_buffer)";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }
@@ -495,43 +495,43 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         } else {
             outputTypeReference = getEnumFieldSimpleTypeReference(typeReference.asNonSimpleTypeReference().orElseThrow(), attributeName);
         }
-        return "DataWriterEnumDefault(" + languageTypeName + ".get" + StringUtils.capitalize(attributeName) + ", " + languageTypeName + ".name, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
+        return "DataWriterEnumDefault(" + languageTypeName + "." + camelCaseToSnakeCase(attributeName) + ", " + languageTypeName + ".name, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
     }
 
     public String getDataWriterCall(SimpleTypeReference simpleTypeReference) {
         final int sizeInBits = simpleTypeReference.getSizeInBits();
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "writeBoolean(writeBuffer)";
+                return "write_boolean(write_buffer)";
             case BYTE:
-                return "writeByte(writeBuffer, " + sizeInBits + ")";
+                return "write_byte(write_buffer, " + sizeInBits + ")";
             case UINT:
-                if (sizeInBits <= 4) return "writeUnsignedByte(writeBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 8) return "writeUnsignedShort(writeBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 16) return "writeUnsignedInt(writeBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 32) return "writeUnsignedLong(writeBuffer, " + sizeInBits + ")";
-                return "writeUnsignedBigInteger(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 4) return "write_unsigned_byte(write_buffer, " + sizeInBits + ")";
+                if (sizeInBits <= 8) return "write_unsigned_short(write_buffer, " + sizeInBits + ")";
+                if (sizeInBits <= 16) return "write_unsigned_int(write_buffer, " + sizeInBits + ")";
+                if (sizeInBits <= 32) return "write_unsigned_long(write_buffer, " + sizeInBits + ")";
+                return "write_unsigned_big_integer(write_buffer, " + sizeInBits + ")";
             case INT:
-                if (sizeInBits <= 8) return "writeSignedByte(writeBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 16) return "writeSignedShort(writeBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 32) return "writeSignedInt(writeBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 64) return "writeSignedLong(writeBuffer, " + sizeInBits + ")";
-                return "writeSignedBigInteger(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 8) return "write_signed_byte(write_buffer, " + sizeInBits + ")";
+                if (sizeInBits <= 16) return "write_signed_short(write_buffer, " + sizeInBits + ")";
+                if (sizeInBits <= 32) return "write_signed_int(write_buffer, " + sizeInBits + ")";
+                if (sizeInBits <= 64) return "write_signed_long(write_buffer, " + sizeInBits + ")";
+                return "write_signed_big_integer(write_buffer, " + sizeInBits + ")";
             case FLOAT:
-                if (sizeInBits <= 32) return "writeFloat(writeBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 64) return "writeDouble(writeBuffer, " + sizeInBits + ")";
-                return "writeBigDecimal(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 32) return "write_float(write_buffer, " + sizeInBits + ")";
+                if (sizeInBits <= 64) return "write_double(write_buffer, " + sizeInBits + ")";
+                return "write_big_decimal(write_buffer, " + sizeInBits + ")";
             case STRING:
-                return "writeString(writeBuffer, " + sizeInBits + ")";
+                return "write_string(write_buffer, " + sizeInBits + ")";
             case VSTRING:
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
-                return "writeString(writeBuffer, " + toParseExpression(null, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null) + ")";
+                return "write_string(write_buffer, " + toParseExpression(null, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null) + ")";
             case TIME:
-                return "writeTime(writeBuffer)";
+                return "write_time(write_buffer)";
             case DATE:
-                return "writeDate(writeBuffer)";
+                return "write_date(write_buffer)";
             case DATETIME:
-                return "writeDateTime(writeBuffer)";
+                return "write_date_time(write_buffer)";
             default:
                 throw new UnsupportedOperationException("Unsupported type " + simpleTypeReference.getBaseType());
         }
@@ -858,7 +858,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             return toFunctionCallParseExpression(field, resultType, variableLiteral, parserArguments, tracer);
         }
         // The synthetic checksumRawData is a local field and should not be accessed as bean property.
-        boolean isParserArg = "readBuffer".equals(variableLiteral.getName());
+        boolean isParserArg = "read_buffer".equals(variableLiteral.getName());
         boolean isTypeArg = "_type".equals(variableLiteral.getName());
         if (!isParserArg && !isTypeArg && parserArguments != null) {
             for (Argument serializerArgument : parserArguments) {
@@ -1025,7 +1025,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             return tracer + toVariableExpressionRest(field, resultType, variableLiteral);
         }
         // The synthetic checksumRawData is a local field and should not be accessed as bean property.
-        boolean isSerializerArg = "writeBuffer".equals(variableLiteral.getName()) || "checksumRawData".equals(variableLiteral.getName()) || "_value".equals(variableLiteral.getName()) || "element".equals(variableLiteral.getName()) || "size".equals(variableLiteral.getName());
+        boolean isSerializerArg = "write_buffer".equals(variableLiteral.getName()) || "checksum_raw_data".equals(variableLiteral.getName()) || "_value".equals(variableLiteral.getName()) || "element".equals(variableLiteral.getName()) || "size".equals(variableLiteral.getName());
         boolean isTypeArg = "_type".equals(variableLiteral.getName());
         if (!isSerializerArg && !isTypeArg && serialzerArguments != null) {
             for (Argument serializerArgument : serialzerArguments) {
@@ -1182,7 +1182,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             return tracer + variableLiteralName + "()" + ((variableLiteral.getIndex().isPresent() ? ".get(" + variableLiteral.getIndex().orElseThrow() + ")" : "") +
                 variableLiteral.getChild().map(child -> "." + toVariableExpressionRest(field, resultType, child)).orElse(""));
         }
-        return tracer + "self.get" + WordUtils.capitalize(variableLiteralName) + "()" + ((variableLiteral.getIndex().isPresent() ? ".get(" + variableLiteral.getIndex().orElseThrow() + ")" : "") +
+        return tracer + "self." + camelCaseToSnakeCase(variableLiteralName) + "()" + ((variableLiteral.getIndex().isPresent() ? ".get(" + variableLiteral.getIndex().orElseThrow() + ")" : "") +
             variableLiteral.getChild().map(child -> "." + toVariableExpressionRest(field, resultType, child)).orElse(""));
     }
 
@@ -1305,6 +1305,40 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
 
     public Set<String> getRequiredImportsForDataIo() {
         return requiredImportsForDataIo;
+    }
+
+    /**
+     * Converts a camel-case string to snake-case.
+     *
+     * @param camelCase camel-case string
+     * @return snake-case string
+     */
+    public String camelCaseToSnakeCase(String camelCase) {
+        StringBuilder snakeCase = new StringBuilder();
+        final char[] chars = camelCase.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            String lowerCaseChar = String.valueOf(chars[i]).toLowerCase();
+            // If the previous letter is a lowercase letter and this one is uppercase, create a new snake-segment.
+            if ((i > 0) && !Character.isUpperCase(chars[i - 1]) && Character.isUpperCase(chars[i])) {
+                snakeCase.append('_').append(lowerCaseChar);
+            } else if ((i < (chars.length - 2)) && Character.isUpperCase(chars[i]) && !Character.isUpperCase(chars[i + 1])) {
+                snakeCase.append('_').append(lowerCaseChar);
+            }
+            // If this is uppercase and the previous one is too ... just make this letter lowercase.
+            else if ((i > 0) && Character.isUpperCase(chars[i - 1]) && Character.isUpperCase(chars[i])) {
+                snakeCase.append(lowerCaseChar);
+            } else if (chars[i] == '-') {
+                snakeCase.append("_");
+            } else {
+                snakeCase.append(lowerCaseChar);
+            }
+        }
+        // If the first letter was a capital letter, the string will start with a "_".
+        // In this case we cut that char off.
+        if (snakeCase.indexOf("_") == 0) {
+            return snakeCase.substring(1);
+        }
+        return snakeCase.toString();
     }
 
 }
