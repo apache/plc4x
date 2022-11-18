@@ -153,7 +153,7 @@
     <mockito.version>4.9.0</mockito.version>
     <netty.version>4.1.85.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
-    <slf4j.version>2.0.3</slf4j.version>
+    <slf4j.version>2.0.4</slf4j.version>
     <vavr.version>0.10.4</vavr.version>
     <xmlunit.version>2.9.0</xmlunit.version>
 
