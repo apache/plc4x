@@ -42,6 +42,7 @@ public class ProfinetDriverContext  implements DriverContext, HasConfiguration<P
         try {
             Map<String, ProfinetISO15745Profile> gsdfiles = configuration.readGsdFiles();
             configuration.setDevices(configuration.getDevices());
+            configuration.setSubModules();
         } catch (DecoderException e) {
             throw new RuntimeException(e);
         } catch (PlcConnectionException e) {

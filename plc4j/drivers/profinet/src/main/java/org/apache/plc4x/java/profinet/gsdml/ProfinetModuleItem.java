@@ -56,4 +56,41 @@ public class ProfinetModuleItem {
     public List<ProfinetVirtualSubmoduleItem> getVirtualSubmoduleList() {
         return virtualSubmoduleList;
     }
+
+    private static int getLengthSimpleType(String dataType) {
+        switch(dataType) {
+            case "Unsigned8":
+                return 1;
+            default:
+                throw new IllegalArgumentException("Unsupport data type found in GSD IO Data Item - " + dataType);
+        }
+    }
+
+    public int getInputDataLength() {
+        int length = 0;
+        for (ProfinetVirtualSubmoduleItem module : this.virtualSubmoduleList) {
+            if (module.getIoData() != null && module.getIoData().getInput() != null) {
+                for (ProfinetIoDataInput inputIoData : module.getIoData().getInput()) {
+                    for (ProfinetDataItem dataItem : inputIoData.getDataItemList()) {
+                        length += ProfinetModuleItem.getLengthSimpleType(dataItem.getDataType());
+                    }
+                }
+            }
+        }
+        return length;
+    }
+
+    public int getOutputDataLength() {
+        int length = 0;
+        for (ProfinetVirtualSubmoduleItem module : this.virtualSubmoduleList) {
+            if (module.getIoData() != null && module.getIoData().getOutput() != null) {
+                for (ProfinetIoDataOutput outputIoData : module.getIoData().getOutput()) {
+                    for (ProfinetDataItem dataItem : outputIoData.getDataItemList()) {
+                        length += ProfinetModuleItem.getLengthSimpleType(dataItem.getDataType());
+                    }
+                }
+            }
+        }
+        return length;
+    }
 }

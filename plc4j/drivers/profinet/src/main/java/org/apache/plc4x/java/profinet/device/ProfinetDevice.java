@@ -184,7 +184,7 @@ public class ProfinetDevice {
     }
 
     public void setSubModules(String subModules) {
-        this.subModules = subModules.substring(1, subModules.length() - 1).split("[ ,]");
+        this.subModules = subModules.substring(1, subModules.length() - 1).split("[, ]");
     }
 
     private void recordIdAndSend(ProfinetCallable<DceRpc_Packet> callable) {
@@ -431,21 +431,26 @@ public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
                 0xA000)
         );
 
-        List<PnIoCm_IoDataObject> inputApiBlocks = new ArrayList<>();
-        List<PnIoCm_IoCs> outputApiBlocks = new ArrayList<>();
+        List<PnIoCm_IoDataObject> inputIoDataApiBlocks = new ArrayList<>();
+        List<PnIoCm_IoCs> inputIoCsApiBlocks = new ArrayList<>();
+        List<PnIoCm_IoDataObject> outputIoDataApiBlocks = new ArrayList<>();
+        List<PnIoCm_IoCs> outputIoCsApiBlocks = new ArrayList<>();
         List<PnIoCm_Submodule> expectedSubModuleApiBlocks = new ArrayList<>();
+        List<PnIoCm_Block_ExpectedSubmoduleReq> expectedSubmoduleReq = new ArrayList<>();
 
-        int offsetCount = 0;
+        int inputIoDataOffsetCount = 0;
+        int outputIoCsOffsetCount = 0;
+
         for (ProfinetVirtualSubmoduleItem virtualItem : gsdFile.getProfileBody().getApplicationProcess().getDeviceAccessPointList().get(0).getVirtualSubmoduleList()) {
             Integer identNumber = Integer.decode(virtualItem.getSubmoduleIdentNumber());
-            inputApiBlocks.add(new PnIoCm_IoDataObject(
+            inputIoDataApiBlocks.add(new PnIoCm_IoDataObject(
                 0,
                 identNumber,
-                offsetCount));
-            outputApiBlocks.add(new PnIoCm_IoCs(
+                inputIoDataOffsetCount));
+            outputIoCsApiBlocks.add(new PnIoCm_IoCs(
                 0,
                 identNumber,
-                offsetCount));
+                outputIoCsOffsetCount));
             expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
                 identNumber,
                 identNumber,
@@ -453,19 +458,20 @@ public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
                 false,
                 false,
                 false));
-            offsetCount += 1;
+            inputIoDataOffsetCount += 1;
+            outputIoCsOffsetCount += 1;
         }
 
         for (ProfinetInterfaceSubmoduleItem interfaceItem : gsdFile.getProfileBody().getApplicationProcess().getDeviceAccessPointList().get(0).getSystemDefinedSubmoduleList().getInterfaceSubmodules()) {
             Integer identNumber = Integer.decode(interfaceItem.getSubmoduleIdentNumber());
-            inputApiBlocks.add(new PnIoCm_IoDataObject(
+            inputIoDataApiBlocks.add(new PnIoCm_IoDataObject(
                 0,
                 identNumber,
-                offsetCount));
-            outputApiBlocks.add(new PnIoCm_IoCs(
+                inputIoDataOffsetCount));
+            outputIoCsApiBlocks.add(new PnIoCm_IoCs(
                 0,
                 identNumber,
-                offsetCount));
+                outputIoCsOffsetCount));
             expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
                 identNumber,
                 identNumber,
@@ -473,19 +479,20 @@ public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
                 false,
                 false,
                 false));
-            offsetCount += 1;
+            inputIoDataOffsetCount += 1;
+            outputIoCsOffsetCount += 1;
         }
 
         for (ProfinetPortSubmoduleItem portItem : gsdFile.getProfileBody().getApplicationProcess().getDeviceAccessPointList().get(0).getSystemDefinedSubmoduleList().getPortSubmodules()) {
             Integer identNumber = Integer.decode(portItem.getSubmoduleIdentNumber());
-            inputApiBlocks.add(new PnIoCm_IoDataObject(
+            inputIoDataApiBlocks.add(new PnIoCm_IoDataObject(
                 0,
                 identNumber,
-                offsetCount));
-            outputApiBlocks.add(new PnIoCm_IoCs(
+                inputIoDataOffsetCount));
+            outputIoCsApiBlocks.add(new PnIoCm_IoCs(
                 0,
                 identNumber,
-                offsetCount));
+                outputIoCsOffsetCount));
             expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
                 identNumber,
                 identNumber,
@@ -493,19 +500,139 @@ public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
                 false,
                 false,
                 false));
-            offsetCount += 1;
+            inputIoDataOffsetCount += 1;
+            outputIoCsOffsetCount += 1;
+        }
+        int slot = 1;
+        for (String submodule : subModules) {
+            ProfinetModuleItem foundModule = null;
+            for (ProfinetModuleItem module : gsdFile.getProfileBody().getApplicationProcess().getModuleList()) {
+                if (module.getId().equals(submodule)){
+                    foundModule = module;
+                    break;
+                }
+            }
+            if (foundModule == null) {
+                throw new PlcException("Unable to find module id in configured devices");
+            }
+
+            Integer identNumber = Integer.decode(foundModule.getModuleIdentNumber());
+            if (foundModule.getInputDataLength() != 0) {
+                inputIoDataApiBlocks.add(new PnIoCm_IoDataObject(
+                    slot,
+                    0x01,
+                    inputIoDataOffsetCount));
+                inputIoDataOffsetCount += 1 + foundModule.getInputDataLength();
+            }
+            if (foundModule.getInputDataLength() != 0) {
+                outputIoCsApiBlocks.add(new PnIoCm_IoCs(
+                    slot,
+                    0x01,
+                    outputIoCsOffsetCount));
+                outputIoCsOffsetCount += 1;
+            }
+            slot += 1;
+        }
+        slot = 1;
+        for (String submodule : subModules) {
+            ProfinetModuleItem foundModule = null;
+            for (ProfinetModuleItem module : gsdFile.getProfileBody().getApplicationProcess().getModuleList()) {
+                if (module.getId().equals(submodule)){
+                    foundModule = module;
+                    break;
+                }
+            }
+
+            Integer identNumber = Integer.decode(foundModule.getModuleIdentNumber());
+            if (foundModule.getOutputDataLength() != 0) {
+                inputIoCsApiBlocks.add(new PnIoCm_IoCs(
+                    slot,
+                    0x01,
+                    inputIoDataOffsetCount));
+                inputIoDataOffsetCount += foundModule.getOutputDataLength();
+            }
+
+            if (foundModule.getOutputDataLength() != 0) {
+                outputIoDataApiBlocks.add(new PnIoCm_IoDataObject(
+                    slot,
+                    0x01,
+                    outputIoCsOffsetCount));
+                outputIoCsOffsetCount += 1 + foundModule.getOutputDataLength();
+            }
+            if (foundModule.getInputDataLength() != 0 && foundModule.getOutputDataLength() != 0) {
+                expectedSubmoduleReq.add(new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
+                    Collections.singletonList(
+                        new PnIoCm_ExpectedSubmoduleBlockReqApi(slot,
+                            identNumber,
+                            0x00000000,
+                            Collections.singletonList(new PnIoCm_Submodule_InputAndOutputData(
+                                0x01,
+                                (long) identNumber,
+                                false,
+                                false,
+                                false,
+                                false,
+                                foundModule.getInputDataLength(),
+                                (short) 0x01,
+                                (short) 0x01,
+                                foundModule.getOutputDataLength(),
+                                (short) 0x01,
+                                (short) 0x01))
+                        )
+                    )));
+            }
+            else if (foundModule.getInputDataLength() != 0) {
+                    expectedSubmoduleReq.add(new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
+                        Collections.singletonList(
+                            new PnIoCm_ExpectedSubmoduleBlockReqApi(slot,
+                                identNumber,
+                                0x00000000,
+                                Collections.singletonList(new PnIoCm_Submodule_InputData(
+                                    0x01,
+                                    (long) identNumber,
+                                    false,
+                                    false,
+                                    false,
+                                    false,
+                                    foundModule.getInputDataLength(),
+                                    (short) 0x01,
+                                    (short) 0x01))
+                            )
+                        )));
+                }
+            else if (foundModule.getOutputDataLength() != 0) {
+                expectedSubmoduleReq.add(new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
+                        Collections.singletonList(
+                            new PnIoCm_ExpectedSubmoduleBlockReqApi(slot,
+                                identNumber,
+                                0x00000000,
+                                Collections.singletonList(new PnIoCm_Submodule_OutputData(
+                                    0x01,
+                                    (long) identNumber,
+                                    false,
+                                    false,
+                                    false,
+                                    false,
+                                    foundModule.getOutputDataLength(),
+                                    (short) 0x01,
+                                    (short) 0x01))
+                            )
+                )));
+            }
+
+            slot += 1;
         }
 
         List<PnIoCm_IoCrBlockReqApi> inputApis = Collections.singletonList(
             new PnIoCm_IoCrBlockReqApi(
-                inputApiBlocks,
-                new ArrayList<>(0))
+                inputIoDataApiBlocks,
+                inputIoCsApiBlocks)
         );
 
         List<PnIoCm_IoCrBlockReqApi> outputApis = Collections.singletonList(
             new PnIoCm_IoCrBlockReqApi(
-                new ArrayList<>(0),
-                outputApiBlocks
+                outputIoDataApiBlocks,
+                outputIoCsApiBlocks
             )
         );
 
@@ -577,6 +704,10 @@ public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
                     )
                 )
             ));
+
+        for (PnIoCm_Block_ExpectedSubmoduleReq expectedSubModuleApiBlocksReq : expectedSubmoduleReq) {
+            blocks.add(expectedSubModuleApiBlocksReq);
+        }
 
         long arrayLength = 0;
         for (PnIoCm_Block block : blocks) {

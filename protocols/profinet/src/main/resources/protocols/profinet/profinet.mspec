@@ -1043,6 +1043,18 @@
             [const    uint 8              lengthIoCs            0x01  ]
             [const    uint 8              lengthIoPs            0x01  ]
         ]
+        ['INPUT_DATA' PnIoCm_Submodule_InputData
+            [const    uint 16             inputDataDescription  0x0001]
+            [simple   uint 16             inputSubmoduleDataLength      ]
+            [simple   uint 8              inputLengthIoCs               ]
+            [simple   uint 8              inputLengthIoPs               ]
+        ]
+        ['OUTPUT_DATA' PnIoCm_Submodule_OutputData
+            [const    uint 16             inputDataDescription  0x0002]
+            [simple   uint 16             inputSubmoduleDataLength      ]
+            [simple   uint 8              inputLengthIoCs               ]
+            [simple   uint 8              inputLengthIoPs               ]
+        ]
         ['INPUT_AND_OUTPUT_DATA' PnIoCm_Submodule_InputAndOutputData
             [const    uint 16             inputDataDescription  0x0001]
             [simple   uint 16             inputSubmoduleDataLength      ]
@@ -1120,6 +1132,8 @@
 
 [enum uint 2 PnIoCm_SubmoduleType
     ['0x0' NO_INPUT_NO_OUTPUT_DATA]
+    ['0x1' INPUT_DATA]
+    ['0x2' OUTPUT_DATA]
     ['0x3' INPUT_AND_OUTPUT_DATA]
 ]
 

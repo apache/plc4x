@@ -28,7 +28,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 public class ManualProfinetIoTest {
 
     public static void main(String[] args) throws Exception {
-        final PlcConnection connection = new PlcDriverManager().getConnection("profinet://192.168.90.1?gsddirectory=/home/missy/Documents/Profinet/gsd&devices=[00:0c:29:75:25:67]");
+        final PlcConnection connection = new PlcDriverManager().getConnection("profinet://192.168.90.1?gsddirectory=/home/missy/Documents/Profinet/gsd&devices=[00:0c:29:75:25:67]&submodules=[[IDM_30,IDM_32,IDM_31,]]");
         final PlcSubscriptionRequest request = connection.subscriptionRequestBuilder().addChangeOfStateField("Default Float", "I have no idea").build();
         final PlcSubscriptionResponse plcResponse = request.execute().get();
         System.out.println(plcResponse);
