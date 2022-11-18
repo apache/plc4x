@@ -138,28 +138,28 @@ func NewSSM(sap SSMSAPRequirements, pduAddress Address) (SSM, error) {
 	}, nil
 }
 
-func (s *SSM) startTimer(millis uint) {
+func (s *SSM) StartTimer(millis uint) {
 	log.Debug().Msgf("Start timer %d", millis)
-	s.restartTimer(millis)
+	s.RestartTimer(millis)
 }
 
-func (s *SSM) stopTimer() {
+func (s *SSM) StopTimer() {
 	log.Debug().Msg("Stop Timer")
 	if s.isScheduled {
 		log.Debug().Msg("is scheduled")
-		s.suspendTask()
+		s.SuspendTask()
 	}
 }
 
-func (s *SSM) restartTimer(millis uint) {
+func (s *SSM) RestartTimer(millis uint) {
 	log.Debug().Msgf("restartTimer %d", millis)
 	if s.isScheduled {
 		log.Debug().Msg("is scheduled")
-		s.suspendTask()
+		s.SuspendTask()
 	}
 
 	delta := time.Millisecond * time.Duration(millis)
-	s.installTask(nil, &delta)
+	s.InstallTask(nil, &delta)
 }
 
 // setState This function is called when the derived class wants to change state
@@ -169,12 +169,12 @@ func (s *SSM) setState(newState SSMState, timer *uint) error {
 		return errors.Errorf("Invalid state transition from %s to %s", s.state, newState)
 	}
 
-	s.stopTimer()
+	s.StopTimer()
 
 	s.state = newState
 
 	if timer != nil {
-		s.startTimer(*timer)
+		s.StartTimer(*timer)
 	}
 	return nil
 }
@@ -561,7 +561,7 @@ func (c *ClientSSM) segmentedRequest(apdu _PDU) error {
 		// duplicate ack received?
 		if !c.inWindow(_apdu.GetSequenceNumber(), c.initialSequenceNumber) {
 			log.Debug().Msg("not in window")
-			c.restartTimer(c.segmentTimeout)
+			c.RestartTimer(c.segmentTimeout)
 		} else if c.sentAllSegments {
 			log.Debug().Msg("all done sending request")
 
@@ -576,7 +576,7 @@ func (c *ClientSSM) segmentedRequest(apdu _PDU) error {
 			if err := c.fillWindow(c.initialSequenceNumber); err != nil {
 				return errors.Wrap(err, "error filling window")
 			}
-			c.restartTimer(c.segmentTimeout)
+			c.RestartTimer(c.segmentTimeout)
 		}
 	// simple ack
 	case readWriteModel.APDUSimpleAckExactly:
@@ -656,7 +656,7 @@ func (c *ClientSSM) segmentedRequestTimeout() error {
 	if c.segmentRetryCount < c.numberOfApduRetries {
 		log.Debug().Msg("retry segmented request")
 		c.segmentRetryCount++
-		c.startTimer(c.segmentTimeout)
+		c.StartTimer(c.segmentTimeout)
 
 		if c.initialSequenceNumber == 0 {
 			apdu, _, err := c.getSegment(0)
@@ -765,7 +765,7 @@ func (c *ClientSSM) awaitConfirmation(apdu _PDU) error {
 		}
 	case readWriteModel.APDUSegmentAckExactly:
 		log.Debug().Msg("segment ack(!?)")
-		c.restartTimer(c.segmentTimeout)
+		c.RestartTimer(c.segmentTimeout)
 	default:
 		return errors.Errorf("invalid apdu %T", apdu)
 	}
@@ -839,7 +839,7 @@ func (c *ClientSSM) segmentedConfirmation(apdu _PDU) error {
 		log.Debug().Msgf("segment %d received out of order, should be %d", apduComplexAck.GetSequenceNumber(), c.lastSequenceNumber+1)
 
 		// segment received out of order
-		c.restartTimer(c.segmentTimeout)
+		c.RestartTimer(c.segmentTimeout)
 		segmentAck := readWriteModel.NewAPDUSegmentAck(true, false, c.invokeId, c.initialSequenceNumber, *c.actualWindowSize, 0)
 		if err := c.Request(NewPDU(segmentAck)); err != nil {
 			log.Debug().Err(err).Msg("error sending request")
@@ -881,7 +881,7 @@ func (c *ClientSSM) segmentedConfirmation(apdu _PDU) error {
 		log.Debug().Msg("last segment in the group")
 
 		c.initialSequenceNumber = c.lastSequenceNumber
-		c.restartTimer(c.segmentTimeout)
+		c.RestartTimer(c.segmentTimeout)
 		segmentAck := readWriteModel.NewAPDUSegmentAck(false, false, c.invokeId, c.lastSequenceNumber, *c.actualWindowSize, 0)
 		if err := c.Request(NewPDU(segmentAck)); err != nil { // send it ot the device
 			log.Debug().Err(err).Msg("error sending request")
@@ -889,7 +889,7 @@ func (c *ClientSSM) segmentedConfirmation(apdu _PDU) error {
 	} else {
 		log.Debug().Msg("Wait for more segments")
 
-		c.restartTimer(c.segmentTimeout)
+		c.RestartTimer(c.segmentTimeout)
 	}
 
 	return nil
@@ -1292,7 +1292,7 @@ func (s *ServerSSM) segmentedRequest(apdu _PDU) error {
 		log.Debug().Msgf("segment %d received out of order, should be %d", *apduConfirmedRequest.GetSequenceNumber(), s.lastSequenceNumber+1)
 
 		// segment received out of order
-		s.restartTimer(s.segmentTimeout)
+		s.RestartTimer(s.segmentTimeout)
 
 		// send back a segment ack
 		segack := readWriteModel.NewAPDUSegmentAck(true, true, s.invokeId, s.initialSequenceNumber, *s.actualWindowSize, 0)
@@ -1336,7 +1336,7 @@ func (s *ServerSSM) segmentedRequest(apdu _PDU) error {
 		log.Debug().Msg("last segment in the group")
 
 		s.initialSequenceNumber = s.lastSequenceNumber
-		s.restartTimer(s.segmentTimeout)
+		s.RestartTimer(s.segmentTimeout)
 
 		// send back a segment ack
 		segack := readWriteModel.NewAPDUSegmentAck(false, true, s.invokeId, s.initialSequenceNumber, *s.actualWindowSize, 0)
@@ -1345,7 +1345,7 @@ func (s *ServerSSM) segmentedRequest(apdu _PDU) error {
 		}
 	} else {
 		// wait for more segments
-		s.restartTimer(s.segmentTimeout)
+		s.RestartTimer(s.segmentTimeout)
 	}
 
 	return nil
@@ -1413,7 +1413,7 @@ func (s *ServerSSM) segmentedResponse(apdu _PDU) error {
 		// duplicate ack received?
 		if !s.inWindow(_apdu.GetSequenceNumber(), s.initialSequenceNumber) {
 			log.Debug().Msg("not in window")
-			s.restartTimer(s.segmentTimeout)
+			s.RestartTimer(s.segmentTimeout)
 		} else if s.sentAllSegments {
 			// final ack received?
 			log.Debug().Msg("all done sending response")
@@ -1430,7 +1430,7 @@ func (s *ServerSSM) segmentedResponse(apdu _PDU) error {
 			if err := s.fillWindow(s.initialSequenceNumber); err != nil {
 				return errors.Wrap(err, "error filling window")
 			}
-			s.restartTimer(s.segmentRetryCount)
+			s.RestartTimer(s.segmentRetryCount)
 		}
 	// some kind of problem
 	case readWriteModel.APDUAbortExactly:
@@ -1452,7 +1452,7 @@ func (s *ServerSSM) segmentedResponseTimeout() error {
 	// try again
 	if s.segmentRetryCount < s.numberOfApduRetries {
 		s.segmentRetryCount++
-		s.startTimer(s.segmentTimeout)
+		s.StartTimer(s.segmentTimeout)
 		if err := s.fillWindow(s.initialSequenceNumber); err != nil {
 			return errors.Wrap(err, "error filling window")
 		}

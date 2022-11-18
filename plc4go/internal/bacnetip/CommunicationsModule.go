@@ -404,9 +404,9 @@ func bind(args ...interface{}) error {
 	// go through the argument pairs
 	for i := 0; i < len(args)-1; i++ {
 		client := args[i]
-		log.Debug().Msgf("client %s", client)
+		log.Debug().Msgf("client %v", client)
 		server := args[i+1]
-		log.Debug().Msgf("server %s", server)
+		log.Debug().Msgf("server %v", server)
 
 		// make sure we're binding clients and servers
 		clientCast, okClient := client.(_Client)

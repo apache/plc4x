@@ -31,6 +31,8 @@ import (
 	"time"
 )
 
+var stateLog = log.Logger
+
 type IOCBState int
 
 const (
@@ -135,6 +137,8 @@ func NewIOCB(request _PDU, destination net.Addr) (*IOCB, error) {
 		request:     request,
 		destination: destination,
 
+		ioComplete: *sync.NewCond(&sync.Mutex{}),
+
 		// start with an idle request
 		ioState: IOCBState_IDLE,
 	}, nil
@@ -155,11 +159,14 @@ func (i *IOCB) AddCallback(fn func()) {
 // Wait for the completion event to be set
 func (i *IOCB) Wait() {
 	log.Debug().Msgf("Wait(%d)", i.ioID)
+	i.ioComplete.L.Lock()
 	i.ioComplete.Wait()
+	i.ioComplete.L.Unlock()
 }
 
 // Trigger Set the completion event and make the callback(s)
 func (i *IOCB) Trigger() {
+	i.ioComplete.L.Lock()
 	log.Debug().Msgf("Trigger(%d)", i.ioID)
 
 	// if it's queued, remove it from its queue
@@ -183,6 +190,7 @@ func (i *IOCB) Trigger() {
 
 	// set the completion event
 	i.ioComplete.Broadcast()
+	i.ioComplete.L.Unlock()
 	log.Debug().Msg("complete event set")
 
 	// make callback(s)
@@ -481,7 +489,7 @@ func (i *IOController) RequestIO(iocb _IOCB) error {
 
 // ProcessIO Figure out how to respond to this request.  This must be provided by the derived class.
 func (i *IOController) ProcessIO(_IOCB) error {
-	return errors.New("IOController must implement process_io()")
+	panic("IOController must implement ProcessIO()")
 }
 
 // ActiveIO Called by a handler to notify the controller that a request is being processed
@@ -551,6 +559,7 @@ type IOQController struct {
 	state      IOQControllerStates
 	activeIOCB _IOCB
 	ioQueue    *IOQueue
+	waitTime   time.Duration
 }
 
 func NewIOQController(name string) (*IOQController, error) {
@@ -574,7 +583,210 @@ func NewIOQController(name string) (*IOQController, error) {
 	return i, nil
 }
 
-// TODO: implement functions of IOQController
+// Abort all pending requests
+func (i *IOQController) Abort(err error) error {
+	log.Debug().Err(err).Msg("Abort")
+
+	if i.state == IOQControllerStates_CTRL_IDLE {
+		log.Debug().Msg("idle")
+		return nil
+	}
+
+	for {
+		iocb, err := i.ioQueue.Get(false, nil)
+		if err != nil {
+			return errors.Wrap(err, "error getting something from queue")
+		}
+		if iocb == nil {
+			break
+		}
+		log.Debug().Msgf("iocb %v", iocb)
+
+		// change the state
+		iocb.setIOState(IOCBState_ABORTED)
+		iocb.setIOError(err)
+
+		// notify the client
+		iocb.Trigger()
+	}
+
+	if i.state != IOQControllerStates_CTRL_IDLE {
+		log.Debug().Msg("busy after aborts")
+	}
+
+	return nil
+}
+
+// RequestIO Called by a client to start processing a request
+func (i *IOQController) RequestIO(iocb _IOCB) error {
+	log.Debug().Msgf("RequestIO %v", iocb)
+
+	// bind the iocb to this controller
+	iocb.setIOController(i)
+
+	// if we're busy, queue it
+	if i.state != IOQControllerStates_CTRL_IDLE {
+		log.Debug().Msgf("busy, request queued, activeIOCB: %v", i.activeIOCB)
+
+		iocb.setIOState(IOCBState_PENDING)
+
+		if err := i.ioQueue.Put(iocb); err != nil {
+			return errors.Wrap(err, "error putting iocb in the queue")
+		}
+		return nil
+	}
+
+	if err := i.ProcessIO(iocb); err != nil {
+		log.Debug().Err(err).Msgf("ProcessIO error")
+		if err := i.Abort(err); err != nil {
+			return errors.Wrap(err, "error sending abort")
+		}
+	}
+
+	return nil
+}
+
+// ProcessIO Figure out how to respond to this request.  This must be provided by the derived class
+func (i *IOQController) ProcessIO(_IOCB) error {
+	panic("IOController must implement ProcessIO()")
+}
+
+//ActiveIO Called by a handler to notify the controller that a request is being processed
+func (i *IOQController) ActiveIO(iocb _IOCB) error {
+	log.Debug().Msgf("ActiveIO %v", iocb)
+
+	// base class work first, setting iocb state and timer data
+	if err := i.IOController.ActiveIO(iocb); err != nil {
+		return errors.Wrap(err, "error calling super active io")
+	}
+
+	// change our state
+	i.state = IOQControllerStates_CTRL_ACTIVE
+	stateLog.Debug().Msgf("%s %s %s", time.Now(), i.name, "active")
+
+	// keep track of the iocb
+	i.activeIOCB = iocb
+	return nil
+}
+
+// CompleteIO Called by a handler to return data to the client
+func (i *IOQController) CompleteIO(iocb _IOCB, msg _PDU) error {
+	log.Debug().Msgf("CompleteIO %v %v", iocb, msg)
+
+	// check to see if it is completing the active one
+	if iocb != i.activeIOCB {
+		return errors.New("not the current iocb")
+	}
+
+	// normal completion
+	if err := i.IOController.CompleteIO(iocb, msg); err != nil {
+		return errors.Wrap(err, "error completing io")
+	}
+
+	// no longer an active iocb
+	i.activeIOCB = nil
+
+	// check to see if we should wait a bit
+	if i.waitTime != 0 {
+		// change our state
+		i.state = IOQControllerStates_CTRL_WAITING
+		stateLog.Debug().Msgf("%s %s %s", time.Now(), i.name, "waiting")
+
+		task := FunctionTask(i._waitTrigger)
+		task.InstallTask(nil, &i.waitTime)
+	} else {
+		// change our state
+		i.state = IOQControllerStates_CTRL_IDLE
+		stateLog.Debug().Msgf("%s %s %s", time.Now(), i.name, "idle")
+
+		// look for more to do
+		Deferred(i._trigger)
+	}
+
+	return nil
+}
+
+// AbortIO Called by a handler or a client to abort a transaction
+func (i *IOQController) AbortIO(iocb _IOCB, err error) error {
+	log.Debug().Err(err).Msgf("AbortIO %v", iocb)
+
+	// Normal abort
+	if err := i.IOController.ActiveIO(iocb); err != nil {
+		return errors.Wrap(err, "ActiveIO failed")
+	}
+
+	// check to see if it is completing the active one
+	if iocb != i.activeIOCB {
+		log.Debug().Msg("not current iocb")
+		return nil
+	}
+
+	// no longer an active iocb
+	i.activeIOCB = nil
+
+	// change our state
+	i.state = IOQControllerStates_CTRL_IDLE
+	stateLog.Debug().Msgf("%s %s %s", time.Now(), i.name, "idle")
+
+	// look for more to do
+	Deferred(i._trigger)
+	return nil
+}
+
+// _trigger Called to launch the next request in the queue
+func (i *IOQController) _trigger() {
+	log.Debug().Msg("_trigger")
+
+	// if we are busy, do nothing
+	if i.state != IOQControllerStates_CTRL_IDLE {
+		log.Debug().Msg("not idle")
+		return
+	}
+
+	// if there is nothing to do, return
+	if len(i.ioQueue.queue) == 0 {
+		log.Debug().Msg("empty queue")
+		return
+	}
+
+	// get the next iocb
+	iocb, err := i.ioQueue.Get(false, nil)
+	if err != nil {
+		panic("this should never happen")
+	}
+
+	if err := i.ProcessIO(iocb); err != nil {
+		// if there was an error, abort the request
+		if err := i.Abort(err); err != nil {
+			log.Debug().Err(err).Msg("error aborting")
+			return
+		}
+		return
+	}
+
+	// if we're idle, call again
+	if i.state == IOQControllerStates_CTRL_IDLE {
+		Deferred(i._trigger)
+	}
+}
+
+// _waitTrigger is called to launch the next request in the queue
+func (i *IOQController) _waitTrigger() {
+	log.Debug().Msg("_waitTrigger")
+
+	// make sure we are waiting
+	if i.state != IOQControllerStates_CTRL_WAITING {
+		log.Debug().Msg("not waiting")
+		return
+	}
+
+	// change our state
+	i.state = IOQControllerStates_CTRL_IDLE
+	stateLog.Debug().Msgf("%s %s %s", time.Now(), i.name, "idle")
+
+	// look for more to do
+	i._trigger()
+}
 
 type SieveQueue struct {
 	*IOQController

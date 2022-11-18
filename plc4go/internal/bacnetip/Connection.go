@@ -81,7 +81,7 @@ func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 		connectionConnectResult := <-c.DefaultConnection.Connect()
 		go func() {
 			for c.IsConnected() {
-				log.Debug().Msg("Polling data")
+				log.Trace().Msg("Polling data")
 				incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
 				timeout := time.NewTimer(20 * time.Millisecond)
 				select {

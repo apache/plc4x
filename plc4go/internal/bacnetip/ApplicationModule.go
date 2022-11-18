@@ -91,7 +91,7 @@ func NewDeviceInfoCache() *DeviceInfoCache {
 }
 
 func (d *DeviceInfoCache) String() string {
-	return fmt.Sprintf("DeviceInfoCache(%d)", len(d.cache))
+	return fmt.Sprintf("%#q", d)
 }
 
 // HasDeviceInfo Return true if cache has information about the device.
@@ -215,6 +215,8 @@ type Application struct {
 	deviceInfoCache  *DeviceInfoCache
 	controllers      map[string]interface{}
 	helpers          map[string]func(pdu _PDU) error
+
+	_startup_disabled bool
 }
 
 func NewApplication(localDevice *local.LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*Application, error) {
@@ -255,7 +257,13 @@ func NewApplication(localDevice *local.LocalDeviceObject, localAddress Address, 
 	// now set up the rest of the capabilities
 	a.Collector = Collector{}
 
-	// TODO: no idea how to handle the capabilities
+	// if starting up is enabled, find all the startup functions
+	if !a._startup_disabled {
+		for _, fn := range a.CapabilityFunctions("startup") {
+			log.Debug().Msgf("startup fn %t", fn != nil)
+			fn()
+		}
+	}
 	return a, nil
 }
 

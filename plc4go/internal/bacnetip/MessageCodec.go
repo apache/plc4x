@@ -105,8 +105,10 @@ func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
 		iocb.Wait()
 		if iocb.ioError != nil {
 			// TODO: handle error
+			println(iocb.ioError)
 		} else if iocb.ioResponse != nil {
 			// TODO: response?
+			println(iocb.ioResponse)
 		} else {
 			// TODO: what now?
 		}
@@ -115,11 +117,16 @@ func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
 }
 
 func (m *ApplicationLayerMessageCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
-	panic("not yet mapped")
+	// TODO: implement me
+	return nil
 }
 
 func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
-	panic("not yet mapped")
+
+	// TODO: implement me
+	m.Send(message)
+
+	return nil
 }
 
 func (m *ApplicationLayerMessageCodec) GetDefaultIncomingMessageChannel() chan spi.Message {

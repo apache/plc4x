@@ -194,8 +194,7 @@ func NewNetworkServiceElement(eid *int) (*NetworkServiceElement, error) {
 		return nil, errors.Wrap(err, "error creating application service element")
 	}
 
-	// TODO: we need to use defer from package as this go routine is too early
-	go n.Startup()
+	Deferred(n.Startup)
 	return n, nil
 }
 

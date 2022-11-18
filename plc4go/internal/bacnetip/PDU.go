@@ -28,6 +28,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"net"
 	"reflect"
+	"regexp"
 )
 
 type AddressType int
@@ -64,6 +65,27 @@ type AddressTuple[L any, R any] struct {
 	Left  L
 	Right R
 }
+
+var _field_address = regexp.MustCompile(`((?:\d+)|(?:0x(?:[0-9A-Fa-f][0-9A-Fa-f])+))`)
+var _ip_address_port = regexp.MustCompile(`(\d+\.\d+\.\d+\.\d+)(?::(\d+))?`)
+var _ip_address_mask_port = regexp.MustCompile(`(\d+\.\d+\.\d+\.\d+)(?:/(\d+))?(?::(\d+))?`)
+var _net_ip_address_port = regexp.MustCompile(`(\d+):` + _ip_address_port.String())
+var _at_route = regexp.MustCompile(`(?:[@](?:` + _field_address.String() + `|` + _ip_address_port.String() + `))?`)
+
+var field_address_re = regexp.MustCompile(`^` + _field_address.String() + `$`)
+var ip_address_port_re = regexp.MustCompile(`^` + _ip_address_port.String() + `$`)
+var ip_address_mask_port_re = regexp.MustCompile(`^` + _ip_address_mask_port.String() + `$`)
+var net_ip_address_port_re = regexp.MustCompile(`^` + _net_ip_address_port.String() + `$`)
+var net_ip_address_mask_port_re = regexp.MustCompile(`^` + _net_ip_address_port.String() + `$`)
+
+var ethernet_re = regexp.MustCompile(`^([0-9A-Fa-f][0-9A-Fa-f][:]){5}([0-9A-Fa-f][0-9A-Fa-f])$`)
+var interface_re = regexp.MustCompile(`^(?:([\w]+))(?::(\d+))?$`)
+
+var net_broadcast_route_re = regexp.MustCompile(`^([0-9])+:[*]` + _at_route.String() + `$`)
+var net_station_route_re = regexp.MustCompile(`^([0-9])+:` + _field_address.String() + _at_route.String() + `$`)
+var net_ip_address_route_re = regexp.MustCompile(`^([0-9])+:` + _ip_address_port.String() + _at_route.String() + `$`)
+
+var combined_pattern = regexp.MustCompile(`^(?:(?:([0-9]+)|([*])):)?(?:([*])|` + _field_address.String() + `|` + _ip_address_mask_port.String() + `)` + _at_route.String() + `$`)
 
 type Address struct {
 	AddrType    AddressType
@@ -175,6 +197,26 @@ func (a *Address) decodeAddress(addr interface{}) error {
 		case string:
 			log.Debug().Msg("str")
 
+			m := combined_pattern.MatchString(addr)
+			if m {
+				log.Debug().Msg("combined pattern")
+				groups := combined_pattern.FindStringSubmatch(addr)
+				net := groups[0]
+				global_broadcast := groups[1]
+				local_broadcast := groups[2]
+				local_addr := groups[3]
+				local_ip_addr := groups[4]
+				local_ip_net := groups[5]
+				local_ip_port := groups[6]
+				route_addr := groups[7]
+				route_ip_addr := groups[8]
+				route_ip_port := groups[9]
+
+				a := func(...interface{}) {
+
+				}
+				a(net, global_broadcast, local_broadcast, local_addr, local_ip_addr, local_ip_net, local_ip_port, route_addr, route_ip_addr, route_ip_port)
+			}
 			panic("parsing not yet ported")
 		case AddressTuple[string, uint16]:
 			uaddr, port := addr.Left, addr.Right
