@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.*;
+import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -413,7 +414,9 @@ public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
             PnIoCm_State.ACTIVE,
             DEFAULT_ACTIVITY_TIMEOUT,
             UDP_RT_PORT,
-            DEFAULT_PLC4X_STATION_NAME));
+            DEFAULT_PLC4X_STATION_NAME
+                )
+            );
 
         blocks.add(
             new PnIoCm_Block_AlarmCrReq(
@@ -428,7 +431,8 @@ public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
                 0x0000,
                 200,
                 0xC000,
-                0xA000)
+                0xA000
+                )
         );
 
         List<PnIoCm_IoDataObject> inputIoDataApiBlocks = new ArrayList<>();
@@ -567,7 +571,7 @@ public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
                             0x00000000,
                             Collections.singletonList(new PnIoCm_Submodule_InputAndOutputData(
                                 0x01,
-                                (long) identNumber,
+                                Long.decode(foundModule.getVirtualSubmoduleList().get(0).getSubmoduleIdentNumber()),
                                 false,
                                 false,
                                 false,
@@ -577,7 +581,8 @@ public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
                                 (short) 0x01,
                                 foundModule.getOutputDataLength(),
                                 (short) 0x01,
-                                (short) 0x01))
+                                (short) 0x01
+                                ))
                         )
                     )));
             }
@@ -589,7 +594,7 @@ public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
                                 0x00000000,
                                 Collections.singletonList(new PnIoCm_Submodule_InputData(
                                     0x01,
-                                    (long) identNumber,
+                                    Long.decode(foundModule.getVirtualSubmoduleList().get(0).getSubmoduleIdentNumber()),
                                     false,
                                     false,
                                     false,
@@ -608,7 +613,7 @@ public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
                                 0x00000000,
                                 Collections.singletonList(new PnIoCm_Submodule_OutputData(
                                     0x01,
-                                    (long) identNumber,
+                                    Long.decode(foundModule.getVirtualSubmoduleList().get(0).getSubmoduleIdentNumber()),
                                     false,
                                     false,
                                     false,
@@ -661,6 +666,7 @@ public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
             0xC000,
             DEFAULT_EMPTY_MAC_ADDRESS,
             inputApis
+
         );
 
         blocks.add(inputReq);
@@ -690,6 +696,7 @@ public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
             0xC000,
             DEFAULT_EMPTY_MAC_ADDRESS,
             outputApis
+
         );
 
         blocks.add(outputReq);
@@ -728,7 +735,7 @@ public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
             0,
             id,
             DceRpc_Operation.CONNECT,
-            new PnIoCm_Packet_Req(DEFAULT_ARGS_MAXIMUM, DEFAULT_MAX_ARRAY_COUNT, 0, arrayLength, blocks)
+            new PnIoCm_Packet_Req(DEFAULT_ARGS_MAXIMUM, DEFAULT_MAX_ARRAY_COUNT, 0, blocks)
 
         );
 
@@ -777,6 +784,80 @@ public class WriteParameters implements ProfinetCallable<DceRpc_Packet> {
     }
 
     public DceRpc_Packet create() {
+
+        List<PnIoCm_Block> requests = new ArrayList<>();
+        requests.add(
+            new IODWriteRequestHeader(
+                (short) 1,
+                (short) 0,
+                0,
+                ARUUID,
+                0x00000000,
+                0x0000,
+                0x0000,
+                0xe040,
+                180,
+                null
+
+            ));
+        requests.add(
+            new IODWriteRequestHeader(
+                (short) 1,
+                (short) 0,
+                1,
+                ARUUID,
+                0x00000000,
+                0x0000,
+                0x8000,
+                0x8071,
+                12,
+                null
+
+            ));
+        requests.add(
+            new PDInterfaceAdjust(
+                (short) 1,
+                (short) 0,
+                MultipleInterfaceModeNameOfDevice.NAME_PROVIDED_BY_LLDP
+            )
+        );
+        int seqNumber = 2;
+        int index = 1;
+        int indexPacket = 0x007B;
+        for (String submodule : subModules) {
+            ProfinetModuleItem foundModule = null;
+            for (ProfinetModuleItem module : gsdFile.getProfileBody().getApplicationProcess().getModuleList()) {
+                if (module.getId().equals(submodule)){
+                    foundModule = module;
+                    break;
+                }
+            }
+
+            Integer identNumber = Integer.decode(foundModule.getModuleIdentNumber());
+            if (foundModule.getVirtualSubmoduleList().get(0).getRecordDataList() != null) {
+                for ( ProfinetParameterRecordDataItem record : foundModule.getVirtualSubmoduleList().get(0).getRecordDataList()) {
+
+
+                    requests.add(
+                        new IODWriteRequestHeader(
+                            (short) 1,
+                            (short) 0,
+                            seqNumber,
+                            ARUUID,
+                            0x00000000,
+                            index,
+                            0x0001,
+                            record.getIndex(),
+                            record.getLength(),
+                            new UserData(ByteBuffer.allocate(4).putInt(Integer.valueOf(record.getRef().getDefaultValue())).array(), (long) record.getLength())
+
+                        ));
+                    seqNumber += 1;
+                }
+            }
+            index += 1;
+        }
+
         return new DceRpc_Packet(
             DceRpc_PacketType.REQUEST, true, false, false,
             IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
@@ -786,36 +867,8 @@ public class WriteParameters implements ProfinetCallable<DceRpc_Packet> {
             0,
             id,
             DceRpc_Operation.WRITE,
-            new PnIoCm_Packet_Req(16696, 16696, 0, 244,
-                Arrays.asList(
-                    new IODWriteRequestHeader(
-                        (short) 1,
-                        (short) 0,
-                        0,
-                        ARUUID,
-                        0x00000000,
-                        0x0000,
-                        0x0000,
-                        0xe040,
-                        180
-                    ),
-                    new IODWriteRequestHeader(
-                        (short) 1,
-                        (short) 0,
-                        1,
-                        ARUUID,
-                        0x00000000,
-                        0x0000,
-                        0x8000,
-                        0x8071,
-                        12
-                    ),
-                    new PDInterfaceAdjust(
-                        (short) 1,
-                        (short) 0,
-                        MultipleInterfaceModeNameOfDevice.NAME_PROVIDED_BY_LLDP
-                    )
-                ))
+            new PnIoCm_Packet_Req(16696, 16696, 0,
+                requests)
         );
     }
 
@@ -853,7 +906,7 @@ public class WriteParametersEnd implements ProfinetCallable<DceRpc_Packet> {
             0,
             id,
             DceRpc_Operation.CONTROL,
-            new PnIoCm_Packet_Req(16696, 16696, 0, 244,
+            new PnIoCm_Packet_Req(16696, 16696, 0,
                 Arrays.asList(
                     new PnIoCm_Control_Request(
                         (short) 1,
@@ -861,6 +914,7 @@ public class WriteParametersEnd implements ProfinetCallable<DceRpc_Packet> {
                         ARUUID,
                         sessionKey,
                         0x0001
+
                     )
                 ))
         );
@@ -926,6 +980,7 @@ public class ApplicationReadyResponse implements ProfinetCallable<DceRpc_Packet>
                         sessionKey,
                         0x0008,
                         0x0000
+
                     )
                 ))
         );

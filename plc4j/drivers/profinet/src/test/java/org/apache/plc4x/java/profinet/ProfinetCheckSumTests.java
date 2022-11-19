@@ -61,7 +61,6 @@ public class ProfinetCheckSumTests {
                 16696,
                 16696,
                 0,
-                0,
                 new ArrayList<PnIoCm_Block>())
         );
         try {
