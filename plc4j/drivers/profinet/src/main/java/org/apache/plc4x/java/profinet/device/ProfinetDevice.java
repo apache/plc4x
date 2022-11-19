@@ -662,7 +662,7 @@ public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
             0,
             0xffffffff,
             configuration.getWatchdogFactor(),
-            50,
+            configuration.getDataHoldFactor(),
             0xC000,
             DEFAULT_EMPTY_MAC_ADDRESS,
             inputApis
@@ -692,7 +692,7 @@ public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
             0,
             0xffffffff,
             configuration.getWatchdogFactor(),
-            50,
+            configuration.getDataHoldFactor(),
             0xC000,
             DEFAULT_EMPTY_MAC_ADDRESS,
             outputApis

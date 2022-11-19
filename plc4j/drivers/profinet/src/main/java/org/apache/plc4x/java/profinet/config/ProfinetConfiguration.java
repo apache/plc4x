@@ -95,6 +95,10 @@ public class ProfinetConfiguration extends BaseConfiguration implements RawSocke
     @IntDefaultValue(50)
     private int watchdogFactor;
 
+    @ConfigurationParameter("dataholdfactor")
+    @IntDefaultValue(50)
+    private int dataHoldFactor;
+
     public LinkedHashMap<String, ProfinetDevice> configuredDevices = new LinkedHashMap<>();
 
     private final Map<String, ProfinetISO15745Profile> gsdFiles = new HashMap<>();
@@ -201,6 +205,10 @@ public class ProfinetConfiguration extends BaseConfiguration implements RawSocke
 
     public int getWatchdogFactor() {
         return watchdogFactor;
+    }
+
+    public int getDataHoldFactor() {
+        return dataHoldFactor;
     }
 
     @Override
