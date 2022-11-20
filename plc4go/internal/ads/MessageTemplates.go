@@ -25,14 +25,14 @@ func (m *Connection) NewAdsReadDeviceInfoRequest() adsModel.AmsTCPPacket {
 	return adsModel.NewAmsTCPPacket(
 		adsModel.NewAdsReadDeviceInfoRequest(m.configuration.targetAmsNetId, uint16(adsModel.DefaultAmsPorts_RUNTIME_SYSTEM_01),
 			// TODO: Replace 800 with constant.
-			m.configuration.sourceAmsNetId, 800, 0, m.getInvokeId()))
+			m.configuration.sourceAmsNetId, 800, 0, m.driverContext.getInvokeId()))
 }
 
 func (m *Connection) NewAdsReadRequest(indexGroup uint32, indexOffset uint32, length uint32) adsModel.AmsTCPPacket {
 	return adsModel.NewAmsTCPPacket(
 		adsModel.NewAdsReadRequest(indexGroup, indexOffset, length,
 			m.configuration.targetAmsNetId, m.configuration.targetAmsPort,
-			m.configuration.sourceAmsNetId, m.configuration.sourceAmsPort, 0, m.getInvokeId()))
+			m.configuration.sourceAmsNetId, m.configuration.sourceAmsPort, 0, m.driverContext.getInvokeId()))
 }
 
 func (m *Connection) NewAdsWriteRequest(indexGroup uint32, indexOffset uint32, data []byte) adsModel.AmsTCPPacket {
@@ -41,7 +41,7 @@ func (m *Connection) NewAdsWriteRequest(indexGroup uint32, indexOffset uint32, d
 			indexGroup, indexOffset, data,
 			m.configuration.targetAmsNetId, m.configuration.targetAmsPort,
 			m.configuration.sourceAmsNetId, m.configuration.sourceAmsPort,
-			0, m.getInvokeId()))
+			0, m.driverContext.getInvokeId()))
 }
 
 func (m *Connection) NewAdsReadWriteRequest(indexGroup uint32, indexOffset uint32, readLength uint32, items []adsModel.AdsMultiRequestItem, writeData []byte) adsModel.AmsTCPPacket {
@@ -50,7 +50,7 @@ func (m *Connection) NewAdsReadWriteRequest(indexGroup uint32, indexOffset uint3
 			indexGroup, indexOffset, readLength, items, writeData,
 			m.configuration.targetAmsNetId, m.configuration.targetAmsPort,
 			m.configuration.sourceAmsNetId, m.configuration.sourceAmsPort,
-			0, m.getInvokeId()))
+			0, m.driverContext.getInvokeId()))
 }
 
 func (m *Connection) NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, length uint32, transmissionMode adsModel.AdsTransMode, maxDelay uint32, cycleTime uint32) adsModel.AmsTCPPacket {
@@ -59,7 +59,7 @@ func (m *Connection) NewAdsAddDeviceNotificationRequest(indexGroup uint32, index
 			indexGroup, indexOffset, length, transmissionMode, maxDelay, cycleTime,
 			m.configuration.targetAmsNetId, m.configuration.targetAmsPort,
 			m.configuration.sourceAmsNetId, m.configuration.sourceAmsPort,
-			0, m.getInvokeId()))
+			0, m.driverContext.getInvokeId()))
 }
 
 func (m *Connection) NewAdsDeleteDeviceNotificationRequest(notificationHandle uint32) adsModel.AmsTCPPacket {
@@ -68,5 +68,5 @@ func (m *Connection) NewAdsDeleteDeviceNotificationRequest(notificationHandle ui
 			notificationHandle,
 			m.configuration.targetAmsNetId, m.configuration.targetAmsPort,
 			m.configuration.sourceAmsNetId, m.configuration.sourceAmsPort,
-			0, m.getInvokeId()))
+			0, m.driverContext.getInvokeId()))
 }

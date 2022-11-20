@@ -21,40 +21,19 @@ package ads
 
 import (
 	"context"
-	"math"
-	"sync/atomic"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
-	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
-type Writer struct {
-	transactionIdentifier uint32
-	targetAmsNetId        readWriteModel.AmsNetId
-	targetAmsPort         uint16
-	sourceAmsNetId        readWriteModel.AmsNetId
-	sourceAmsPort         uint16
-	messageCodec          spi.MessageCodec
-	reader                *Reader
+func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
+	return internalModel.NewDefaultPlcWriteRequestBuilder(m.GetPlcTagHandler(), m.GetPlcValueHandler(), m)
 }
 
-func NewWriter(messageCodec spi.MessageCodec, targetAmsNetId readWriteModel.AmsNetId, targetAmsPort uint16, sourceAmsNetId readWriteModel.AmsNetId, sourceAmsPort uint16, reader *Reader) *Writer {
-	return &Writer{
-		transactionIdentifier: 0,
-		targetAmsNetId:        targetAmsNetId,
-		targetAmsPort:         targetAmsPort,
-		sourceAmsNetId:        sourceAmsNetId,
-		sourceAmsPort:         sourceAmsPort,
-		messageCodec:          messageCodec,
-		reader:                reader,
-	}
-}
-
-func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+func (m *Connection) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
 	/*	// TODO: handle context
 		result := make(chan model.PlcWriteRequestResult)
 		go func() {
@@ -186,30 +165,20 @@ func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) 
 	return nil
 }
 
-func (m *Writer) ToPlc4xWriteResponse(requestTcpPaket readWriteModel.AmsTCPPacket, responseTcpPaket readWriteModel.AmsTCPPacket, writeRequest model.PlcWriteRequest) (model.PlcWriteResponse, error) {
-	responseCodes := map[string]model.PlcResponseCode{}
+func (m *Connection) ToPlc4xWriteResponse(requestTcpPaket driverModel.AmsTCPPacket, responseTcpPaket driverModel.AmsTCPPacket, writeRequest apiModel.PlcWriteRequest) (apiModel.PlcWriteResponse, error) {
+	responseCodes := map[string]apiModel.PlcResponseCode{}
 	tagName := writeRequest.GetTagNames()[0]
 
 	// we default to an error until its proven wrong
-	responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
+	responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 	switch writeResponse := responseTcpPaket.GetUserdata().(type) {
-	case readWriteModel.AdsWriteResponseExactly:
-		responseCodes[tagName] = model.PlcResponseCode(writeResponse.GetResult())
+	case driverModel.AdsWriteResponseExactly:
+		responseCodes[tagName] = apiModel.PlcResponseCode(writeResponse.GetResult())
 	default:
 		return nil, errors.Errorf("unsupported response type %T", responseTcpPaket.GetUserdata())
 	}
 
 	// Return the response
 	log.Trace().Msg("Returning the response")
-	return plc4goModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
-}
-
-func (m *Writer) getInvokeId() uint32 {
-	// Calculate a new transaction identifier
-	transactionIdentifier := atomic.AddUint32(&m.transactionIdentifier, 1)
-	if transactionIdentifier > math.MaxUint8 {
-		transactionIdentifier = 1
-		atomic.StoreUint32(&m.transactionIdentifier, 1)
-	}
-	return transactionIdentifier
+	return internalModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
 }

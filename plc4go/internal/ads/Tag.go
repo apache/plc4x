@@ -27,7 +27,7 @@ import (
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	adsModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -56,15 +56,16 @@ type DirectPlcTag struct {
 
 	IndexGroup   uint32
 	IndexOffset  uint32
-	AdsDatatype  adsModel.AdsDataType
+	ValueType    values.PlcValueType
 	StringLength int32
+	DataType     driverModel.AdsDataTypeTableEntry
 }
 
-func newDirectAdsPlcTag(indexGroup uint32, indexOffset uint32, adsDatatype adsModel.AdsDataType, stringLength int32, arrayInfo []model.ArrayInfo) (model.PlcTag, error) {
+func newDirectAdsPlcTag(indexGroup uint32, indexOffset uint32, valueType values.PlcValueType, stringLength int32, arrayInfo []model.ArrayInfo) (model.PlcTag, error) {
 	return DirectPlcTag{
 		IndexGroup:   indexGroup,
 		IndexOffset:  indexOffset,
-		AdsDatatype:  adsDatatype,
+		ValueType:    valueType,
 		StringLength: stringLength,
 		PlcTag: PlcTag{
 			arrayInfo: arrayInfo,
@@ -80,8 +81,8 @@ func castToDirectAdsTagFromPlcTag(plcTag model.PlcTag) (DirectPlcTag, error) {
 }
 
 func (m DirectPlcTag) GetAddressString() string {
-	address := fmt.Sprintf("0x%d/%d:%s", m.IndexGroup, m.IndexOffset, m.AdsDatatype.String())
-	if m.AdsDatatype == adsModel.AdsDataType_STRING || m.AdsDatatype == adsModel.AdsDataType_WSTRING {
+	address := fmt.Sprintf("0x%d/%d:%s", m.IndexGroup, m.IndexOffset, m.ValueType.String())
+	if m.ValueType == values.STRING || m.ValueType == values.WSTRING {
 		address = address + "(" + strconv.Itoa(int(m.StringLength)) + ")"
 	}
 	if len(m.arrayInfo) > 0 {
@@ -93,11 +94,7 @@ func (m DirectPlcTag) GetAddressString() string {
 }
 
 func (m DirectPlcTag) GetValueType() values.PlcValueType {
-	if plcValueType, ok := values.PlcValueByName(m.AdsDatatype.PlcValueType().String()); !ok {
-		return values.NULL
-	} else {
-		return plcValueType
-	}
+	return m.ValueType
 }
 
 func (m DirectPlcTag) GetArrayInfo() []model.ArrayInfo {
@@ -123,10 +120,10 @@ func (m DirectPlcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 	if err := writeBuffer.WriteUint32("indexOffset", 32, m.IndexOffset); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteString("adsDatatypeName", uint32(len([]rune(m.AdsDatatype.String()))*8), "UTF-8", m.AdsDatatype.String()); err != nil {
+	if err := writeBuffer.WriteString("adsDatatypeName", uint32(len([]rune(m.ValueType.String()))*8), "UTF-8", m.ValueType.String()); err != nil {
 		return err
 	}
-	if (m.AdsDatatype == adsModel.AdsDataType_STRING || m.AdsDatatype == adsModel.AdsDataType_WSTRING) && (m.StringLength != NONE) {
+	if (m.ValueType == values.STRING || m.ValueType == values.WSTRING) && (m.StringLength != NONE) {
 		if err := writeBuffer.WriteInt32("stringLength", 32, m.StringLength); err != nil {
 			return err
 		}

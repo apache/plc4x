@@ -54,7 +54,7 @@ func (m *Connection) ExecuteAdsReadDeviceInfoRequest(ctx context.Context) (model
 			time.Second); err != nil {
 			close(responseChannel)
 		} else {
-			close(responseChannel)
+			//			close(responseChannel)
 		}
 	}()
 	response, err := ReadWithTimeout(ctx, responseChannel)
@@ -126,7 +126,7 @@ func (m *Connection) ExecuteAdsWriteRequest(ctx context.Context, indexGroup uint
 			time.Second); err != nil {
 			close(responseChannel)
 		} else {
-			close(responseChannel)
+			//			close(responseChannel)
 		}
 	}()
 	response, err := ReadWithTimeout(ctx, responseChannel)
@@ -162,7 +162,7 @@ func (m *Connection) ExecuteAdsReadWriteRequest(ctx context.Context, indexGroup 
 			time.Second); err != nil {
 			close(responseChannel)
 		} else {
-			close(responseChannel)
+			//			close(responseChannel)
 		}
 	}()
 	response, err := ReadWithTimeout(ctx, responseChannel)
@@ -198,7 +198,7 @@ func (m *Connection) ExecuteAdsAddDeviceNotificationRequest(ctx context.Context,
 			time.Second); err != nil {
 			close(responseChannel)
 		} else {
-			close(responseChannel)
+			//			close(responseChannel)
 		}
 	}()
 	response, err := ReadWithTimeout(ctx, responseChannel)
@@ -234,7 +234,7 @@ func (m *Connection) ExecuteAdsDeleteDeviceNotificationRequest(ctx context.Conte
 			time.Second); err != nil {
 			close(responseChannel)
 		} else {
-			close(responseChannel)
+			//			close(responseChannel)
 		}
 	}()
 	response, err := ReadWithTimeout(ctx, responseChannel)

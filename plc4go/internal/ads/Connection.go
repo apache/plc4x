@@ -20,18 +20,24 @@
 package ads
 
 import (
+	"context"
+	"encoding/binary"
 	"fmt"
-	"math"
-	"sync/atomic"
+	"strconv"
+	"strings"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
 	internalModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
 type Connection struct {
@@ -39,72 +45,15 @@ type Connection struct {
 	messageCodec       spi.MessageCodec
 	requestInterceptor interceptors.RequestInterceptor
 	configuration      Configuration
-	reader             *Reader
-	writer             *Writer
-	connectionId       string
-	invokeId           uint32
-	dataTypeTable      map[string]model.AdsDataTypeTableEntry
-	symbolTable        map[string]model.AdsSymbolTableEntry
+	driverContext      DriverContext
 	tracer             *spi.Tracer
 }
 
-/*
-
-	// First read the device info
-	deviceInfoResponseChanel := make(chan model.AdsReadDeviceInfoResponse)
-	go func() {
-		deviceInfoRequest := model.NewAdsReadDeviceInfoRequest(
-			m.targetAmsNetId, uint16(model.DefaultAmsPorts_RUNTIME_SYSTEM_01), m.sourceAmsNetId,
-			800, 0, m.transactionIdentifier)
-		if err := m.messageCodec.SendRequest(
-			context.TODO(),
-			model.NewAmsTCPPacket(deviceInfoRequest),
-			func(message spi.Message) bool {
-				amsTcpPacket, ok := message.(model.AmsTCPPacket)
-				if !ok {
-					return false
-				}
-				return amsTcpPacket.GetUserdata().GetInvokeId() == deviceInfoRequest.GetInvokeId()
-			},
-			func(message spi.Message) error {
-				amsTcpPacket := message.(model.AmsTCPPacket)
-				deviceInfoResponse := amsTcpPacket.GetUserdata().(model.AdsReadDeviceInfoResponse)
-				deviceInfoResponseChanel <- deviceInfoResponse
-				close(deviceInfoResponseChanel)
-				return nil
-			},
-			func(err error) error {
-				return nil
-			},
-			time.Second); err != nil {
-			// TODO: Return an error
-		} else {
-			close(deviceInfoResponseChanel)
-		}
-	}()
-	deviceInfoResponse := ReadWithTimeout(deviceInfoResponseChanel)
-	if deviceInfoResponse == nil {
-		return apiModel.PlcResponseCode_NOT_FOUND, []apiModel.PlcBrowseFoundField{}
-	}
-
-*/
-
 func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, tagHandler spi.PlcTagHandler, options map[string][]string) (*Connection, error) {
-	reader := *NewReader(
-		messageCodec,
-		configuration.targetAmsNetId,
-		configuration.targetAmsPort,
-		configuration.sourceAmsNetId,
-		configuration.sourceAmsPort,
-	)
-	writer := *NewWriter(
-		messageCodec,
-		configuration.targetAmsNetId,
-		configuration.targetAmsPort,
-		configuration.sourceAmsNetId,
-		configuration.sourceAmsPort,
-		&reader,
-	)
+	driverContext, err := NewDriverContext(configuration)
+	if err != nil {
+		return nil, err
+	}
 	connection := &Connection{
 		messageCodec: messageCodec,
 		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(
@@ -114,13 +63,11 @@ func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, t
 			internalModel.NewDefaultPlcWriteResponse,
 		),
 		configuration: configuration,
-		reader:        &reader,
-		writer:        &writer,
-		invokeId:      0,
+		driverContext: driverContext,
 	}
 	if traceEnabledOption, ok := options["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
-			connection.tracer = spi.NewTracer(connection.connectionId)
+			connection.tracer = spi.NewTracer(driverContext.connectionId)
 		}
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
@@ -131,7 +78,7 @@ func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, t
 }
 
 func (m *Connection) GetConnectionId() string {
-	return m.connectionId
+	return m.driverContext.connectionId
 }
 
 func (m *Connection) IsTraceEnabled() bool {
@@ -144,6 +91,263 @@ func (m *Connection) GetTracer() *spi.Tracer {
 
 func (m *Connection) GetConnection() plc4go.PlcConnection {
 	return m
+}
+
+func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+	// TODO: use proper context
+	ctx := context.TODO()
+
+	log.Trace().Msg("Connecting")
+	ch := make(chan plc4go.PlcConnectionConnectResult)
+
+	var err error
+	m.driverContext, err = NewDriverContext(m.configuration)
+	if err != nil {
+		ch <- _default.NewDefaultPlcConnectionConnectResult(m, err)
+		return ch
+	}
+
+	go func() {
+		err := m.messageCodec.Connect()
+		if err != nil {
+			ch <- _default.NewDefaultPlcConnectionConnectResult(m, err)
+		}
+
+		m.setupConnection(ctx, ch)
+	}()
+	return ch
+}
+
+func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
+	// First read the device info (Including TwinCat version and PLC name)
+	deviceInfoResponse, err := m.ExecuteAdsReadDeviceInfoRequest(ctx)
+	if err != nil {
+		ch <- _default.NewDefaultPlcConnectionCloseResult(nil, err)
+		return
+	}
+	m.driverContext.adsVersion = fmt.Sprintf("%d.%d.%d", deviceInfoResponse.GetMajorVersion(), deviceInfoResponse.GetMinorVersion(), deviceInfoResponse.GetVersion())
+	m.driverContext.deviceName = GetZeroTerminatedString(deviceInfoResponse.GetDevice())
+
+	// Read the symbol-version (offline changes)
+	symbolVersionResponse, err := m.ExecuteAdsReadRequest(ctx, uint32(model.ReservedIndexGroups_ADSIGRP_SYM_VERSION), 0, 1)
+	if err != nil {
+		ch <- _default.NewDefaultPlcConnectionCloseResult(nil, err)
+		return
+	}
+	m.driverContext.symbolVersion = symbolVersionResponse.GetData()[0]
+
+	// Read the online-version
+	onlineVersionResponse, err := m.ExecuteAdsReadWriteRequest(ctx, uint32(model.ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME), 0, 4, nil, []byte("TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt"))
+	if err != nil {
+		ch <- _default.NewDefaultPlcConnectionCloseResult(nil, err)
+		return
+	}
+	rb := utils.NewReadBufferByteBased(onlineVersionResponse.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+	m.driverContext.onlineVersion, err = rb.ReadUint32("", 32)
+	if err != nil {
+		ch <- _default.NewDefaultPlcConnectionCloseResult(nil, err)
+		return
+	}
+
+	// Read the data type and symbol table
+	err = m.readSymbolTableAndDatatypeTable(ctx)
+	if err != nil {
+		ch <- _default.NewDefaultPlcConnectionCloseResult(nil, err)
+		return
+	}
+
+	// Subscribe for changes to the symbol or the offline-versions
+	/*versionChangeRequest, err := m.SubscriptionRequestBuilder().
+		AddChangeOfStateTagAddress("offlineVersion", "0xF008/0x0000:USINT").
+		AddPreRegisteredConsumer("offlineVersion", func(event apiModel.PlcSubscriptionEvent) {
+			err := m.readSymbolTableAndDatatypeTable(ctx)
+			if err != nil {
+				log.Error().Err(err).Msg("error updating data-type and symbol tables")
+			}
+		}).
+		AddChangeOfStateTagAddress("onlineVersion", "TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt").
+		AddPreRegisteredConsumer("onlineVersion", func(event apiModel.PlcSubscriptionEvent) {
+			err := m.readSymbolTableAndDatatypeTable(ctx)
+			if err != nil {
+				log.Error().Err(err).Msg("error updating data-type and symbol tables")
+			}
+		}).
+		Build()
+	subscriptionResultChan := versionChangeRequest.Execute()
+	subscriptionRequestResult := <-subscriptionResultChan
+	if subscriptionRequestResult.GetErr() != nil {
+		ch <- _default.NewDefaultPlcConnectionCloseResult(nil, subscriptionRequestResult.GetErr())
+		return
+	}*/
+
+	// Return the finished connection
+	ch <- _default.NewDefaultPlcConnectionConnectResult(m, nil)
+}
+
+func (m *Connection) readSymbolTableAndDatatypeTable(ctx context.Context) error {
+	// First read the sizes of the data type and symbol table, if needed.
+	tableSizes, err := m.readDataTypeTableAndSymbolTableSizes(ctx)
+	if err != nil {
+		return err
+	}
+
+	// Then read the data type table, if needed.
+	m.driverContext.dataTypeTable, err = m.readDataTypeTable(ctx, tableSizes.GetDataTypeLength(), tableSizes.GetDataTypeCount())
+	if err != nil {
+		return err
+	}
+
+	// Then read the symbol table, if needed.
+	m.driverContext.symbolTable, err = m.readSymbolTable(ctx, tableSizes.GetSymbolLength(), tableSizes.GetSymbolCount())
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *Connection) readDataTypeTableAndSymbolTableSizes(ctx context.Context) (model.AdsTableSizes, error) {
+	response, err := m.ExecuteAdsReadRequest(ctx, uint32(model.ReservedIndexGroups_ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES), 0x00000000, 24)
+	if err != nil {
+		return nil, fmt.Errorf("error reading table: %v", err)
+	}
+
+	// Parse and process the response
+	tableSizes, err := model.AdsTableSizesParse(response.GetData())
+	if err != nil {
+		return nil, fmt.Errorf("error parsing table: %v", err)
+	}
+	return tableSizes, nil
+}
+
+func (m *Connection) readDataTypeTable(ctx context.Context, dataTableSize uint32, numDataTypes uint32) (map[string]model.AdsDataTypeTableEntry, error) {
+	response, err := m.ExecuteAdsReadRequest(ctx, uint32(model.ReservedIndexGroups_ADSIGRP_DATA_TYPE_TABLE_UPLOAD), 0x00000000, dataTableSize)
+	if err != nil {
+		return nil, fmt.Errorf("error reading data-type table: %v", err)
+	}
+
+	// Parse and process the response
+	readBuffer := utils.NewReadBufferByteBased(response.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+	dataTypes := map[string]model.AdsDataTypeTableEntry{}
+	for i := uint32(0); i < numDataTypes; i++ {
+		dataType, err := model.AdsDataTypeTableEntryParseWithBuffer(readBuffer)
+		if err != nil {
+			return nil, fmt.Errorf("error parsing table: %v", err)
+		}
+		dataTypes[dataType.GetDataTypeName()] = dataType
+	}
+	return dataTypes, nil
+}
+
+func (m *Connection) readSymbolTable(ctx context.Context, symbolTableSize uint32, numSymbols uint32) (map[string]model.AdsSymbolTableEntry, error) {
+	response, err := m.ExecuteAdsReadRequest(ctx, uint32(model.ReservedIndexGroups_ADSIGRP_SYM_UPLOAD), 0x00000000, symbolTableSize)
+	if err != nil {
+		return nil, fmt.Errorf("error reading data-type table: %v", err)
+	}
+
+	// Parse and process the response
+	readBuffer := utils.NewReadBufferByteBased(response.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+	symbols := map[string]model.AdsSymbolTableEntry{}
+	for i := uint32(0); i < numSymbols; i++ {
+		symbol, err := model.AdsSymbolTableEntryParseWithBuffer(readBuffer)
+		if err != nil {
+			return nil, fmt.Errorf("error parsing table")
+		}
+		symbols[symbol.GetName()] = symbol
+	}
+	return symbols, nil
+}
+
+func (m *Connection) resolveSymbolicTag(ctx context.Context, symbolicTag SymbolicPlcTag) (*DirectPlcTag, error) {
+	// Find the initial datatype, based on the first to segments.
+	symbolicAddress := symbolicTag.SymbolicAddress
+	addressParts := strings.Split(symbolicAddress, ".")
+	symbolName := ""
+	if len(addressParts) == 1 {
+		symbolName = addressParts[0]
+		addressParts = addressParts[1:]
+	} else if len(addressParts) > 1 {
+		symbolName = addressParts[0] + "." + addressParts[1]
+		addressParts = addressParts[2:]
+	} else {
+		return nil, errors.New("invalid address")
+	}
+	symbol, ok := m.driverContext.symbolTable[symbolName]
+	if !ok {
+		return nil, fmt.Errorf("couldn't find tag with address %s", symbolName)
+	}
+	dataTypeName := symbol.GetDataTypeName()
+	dataType, ok := m.driverContext.dataTypeTable[dataTypeName]
+	if !ok {
+		return nil, fmt.Errorf("couldn't find data type with name %s for tag with address %s", dataTypeName, symbolName)
+	}
+	// Start resolving the address.
+	return m.resolveSymbolicAddress(ctx, addressParts, dataType, symbol.GetGroup(), symbol.GetOffset())
+}
+
+func (m *Connection) resolveSymbolicAddress(ctx context.Context, addressParts []string, curDataType model.AdsDataTypeTableEntry, indexGroup uint32, indexOffset uint32) (*DirectPlcTag, error) {
+	// If we've reached then end of the resolution, return the final entry.
+	if len(addressParts) == 0 {
+		var arrayInfo []apiModel.ArrayInfo
+		for _, adsArrayInfo := range curDataType.GetArrayInfo() {
+			arrayInfo = append(arrayInfo, internalModel.DefaultArrayInfo{
+				LowerBound: adsArrayInfo.GetLowerBound(),
+				UpperBound: adsArrayInfo.GetUpperBound(),
+			})
+		}
+		plcValueType, stringLength := m.getPlcValueForAdsDataTypeTableEntry(curDataType)
+		return &DirectPlcTag{
+			PlcTag: PlcTag{
+				arrayInfo: arrayInfo,
+			},
+			IndexGroup:   indexGroup,
+			IndexOffset:  indexOffset,
+			ValueType:    plcValueType,
+			StringLength: stringLength,
+			DataType:     curDataType,
+		}, nil
+	}
+
+	// Resolve the next level of the address.
+	curAddressPart := addressParts[0]
+	restAddressParts := addressParts[1:]
+	for _, child := range curDataType.GetChildren() {
+		if child.GetPropertyName() == curAddressPart {
+			childDataTypeName := child.GetDataTypeName()
+			childDataType, ok := m.driverContext.dataTypeTable[childDataTypeName]
+			if !ok {
+				return nil, fmt.Errorf("couldn't find data type %s for property %s of data type %s",
+					childDataTypeName, curAddressPart, curDataType.GetDataTypeName())
+			}
+			return m.resolveSymbolicAddress(ctx, restAddressParts, childDataType, indexGroup, indexOffset+child.GetOffset())
+		}
+	}
+	return nil, fmt.Errorf("couldn't find property named %s for data type %s",
+		curAddressPart, curDataType.GetDataTypeName())
+}
+
+func (m *Connection) getPlcValueForAdsDataTypeTableEntry(entry model.AdsDataTypeTableEntry) (values.PlcValueType, int32) {
+	stringLength := -1
+	dataTypeName := entry.GetDataTypeName()
+	if strings.HasPrefix(dataTypeName, "STRING(") {
+		var err error
+		stringLength, err = strconv.Atoi(dataTypeName[7 : len(dataTypeName)-1])
+		if err != nil {
+			return values.NULL, -1
+		}
+		dataTypeName = "STRING"
+	} else if strings.HasPrefix(dataTypeName, "WSTRING(") {
+		var err error
+		stringLength, err = strconv.Atoi(dataTypeName[8 : len(dataTypeName)-1])
+		if err != nil {
+			return values.NULL, -1
+		}
+		dataTypeName = "WSTRING"
+	}
+	plcValueType, ok := values.PlcValueByName(dataTypeName)
+	if !ok {
+		return values.NULL, -1
+	}
+	return plcValueType, int32(stringLength)
 }
 
 func (m *Connection) GetMessageCodec() spi.MessageCodec {
@@ -159,26 +363,6 @@ func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 	}
 }
 
-func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilder(m.GetPlcTagHandler(), m.reader)
-}
-
-func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
-	return internalModel.NewDefaultPlcWriteRequestBuilder(m.GetPlcTagHandler(), m.GetPlcValueHandler(), m.writer)
-}
-
-func (m *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
-	panic("implement me")
-}
-
-func (m *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
-	panic("implement me")
-}
-
-func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	return internalModel.NewDefaultPlcBrowseRequestBuilder(m.GetPlcTagHandler(), m)
-}
-
 func (m *Connection) GetTransportInstance() transports.TransportInstance {
 	if mc, ok := m.messageCodec.(spi.TransportInstanceExposer); ok {
 		return mc.GetTransportInstance()
@@ -190,12 +374,11 @@ func (m *Connection) String() string {
 	return fmt.Sprintf("ads.Connection{}")
 }
 
-func (m *Connection) getInvokeId() uint32 {
-	// Calculate a new transaction identifier
-	transactionIdentifier := atomic.AddUint32(&m.invokeId, 1)
-	if transactionIdentifier > math.MaxUint8 {
-		transactionIdentifier = 1
-		atomic.StoreUint32(&m.invokeId, 1)
+func GetZeroTerminatedString(data []byte) string {
+	for i := range data {
+		if data[i] == 0x00 {
+			return string(data[0:i])
+		}
 	}
-	return transactionIdentifier
+	return ""
 }

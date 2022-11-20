@@ -28,7 +28,7 @@ import (
 	"strings"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	model2 "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -92,7 +92,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 		if adsDataTypeName == "" {
 			return nil, errors.Errorf("Missing ads data type")
 		}
-		adsDataType, ok := model.AdsDataTypeByName(adsDataTypeName)
+		plcValueType, ok := values.PlcValueByName(adsDataTypeName)
 		if !ok {
 			return nil, fmt.Errorf("invalid ads data type")
 		}
@@ -157,7 +157,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 			}
 		}
 
-		return newDirectAdsPlcTag(indexGroup, indexOffset, adsDataType, stringLength, arrayInfo)
+		return newDirectAdsPlcTag(indexGroup, indexOffset, plcValueType, stringLength, arrayInfo)
 	} else if match := utils.GetSubgroupMatches(m.directAdsTag, query); match != nil {
 		var indexGroup uint32
 		if indexGroupHexString := match["indexGroupHex"]; indexGroupHexString != "" {
@@ -199,7 +199,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 		if adsDataTypeName == "" {
 			return nil, errors.Errorf("Missing ads data type")
 		}
-		adsDataType, ok := model.AdsDataTypeByName(adsDataTypeName)
+		plcValueType, ok := values.PlcValueByName(adsDataTypeName)
 		if !ok {
 			return nil, fmt.Errorf("invalid ads data type")
 		}
@@ -257,7 +257,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 			}
 		}
 
-		return newDirectAdsPlcTag(indexGroup, indexOffset, adsDataType, NONE, arrayInfo)
+		return newDirectAdsPlcTag(indexGroup, indexOffset, plcValueType, NONE, arrayInfo)
 	} else if match := utils.GetSubgroupMatches(m.symbolicAdsTag, query); match != nil {
 		var arrayInfo []apiModel.ArrayInfo
 
