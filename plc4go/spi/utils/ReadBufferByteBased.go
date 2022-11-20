@@ -317,18 +317,14 @@ func (rb *byteReadBuffer) ReadBigInt(_ string, bitLength uint64, _ ...WithReader
 }
 
 func (rb *byteReadBuffer) ReadFloat32(logicalName string, bitLength uint8, _ ...WithReaderArgs) (float32, error) {
-	if rb.byteOrder == binary.LittleEndian {
-		// TODO: indirection till we have a native LE implementation
-		bigInt, err := rb.ReadBigFloat(logicalName, bitLength)
-		if err != nil {
-			return 0, err
-		}
-		f, _ := bigInt.Float32()
-		return f, nil
-	}
 	if bitLength == 32 {
 		rb.pos += uint64(bitLength)
 		uintValue := uint32(rb.reader.TryReadBits(bitLength))
+		if rb.byteOrder == binary.LittleEndian {
+			array := make([]byte, 4)
+			binary.LittleEndian.PutUint32(array, uintValue)
+			uintValue = binary.BigEndian.Uint32(array)
+		}
 		res := math.Float32frombits(uintValue)
 		if rb.reader.TryError != nil {
 			return 0, rb.reader.TryError
