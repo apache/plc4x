@@ -192,18 +192,18 @@ class ${type.name}:
 
             reserved: ${helper.getLanguageTypeNameForField(field)} = ${helper.getReadBufferReadMethodCall(reservedField.type.asSimpleTypeReference().orElseThrow(), "", reservedField)};
             if reserved != ${helper.getReservedValue(reservedField)}:
-                LOGGER.info("Expected constant value " + ${reservedField.referenceValue} + " but got " + reserved + " for reserved field.");
+                log.info("Expected constant value " + ${reservedField.referenceValue} + " but got " + reserved + " for reserved field.");
 
                     <#break>
                     <#case "simple">
                         <#assign simpleField=field.asSimpleField().orElseThrow()>
 
                         <#if helper.isEnumField(simpleField)>
-            // Enum field (${simpleField.name})
-            ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)} ${simpleField.name} = ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(simpleField.type), "", simpleField)});
+            # Enum field (${simpleField.name})
+            ${helper.camelCaseToSnakeCase(simpleField.name)}: ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)}= ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)}(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(simpleField.type), "", simpleField)});
                         <#else>
-            // Simple Field (${simpleField.name})
-            ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)} ${simpleField.name} = <#if simpleField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(simpleField.type.asSimpleTypeReference().orElseThrow(), "", simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if simpleField.params.isPresent()>, <#list field.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}) (${helper.toParseExpression(simpleField, simpleField.type, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+            # Simple Field (${simpleField.name})
+            ${helper.camelCaseToSnakeCase(simpleField.name)}: ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)}= <#if simpleField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(simpleField.type.asSimpleTypeReference().orElseThrow(), "", simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if simpleField.params.isPresent()>, <#list field.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}) (${helper.toParseExpression(simpleField, simpleField.type, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
                         </#if>
                         <#if case.name == "Struct" ||
                             ((case.name == "DATE_AND_TIME") && ((simpleField.name == "year") || (simpleField.name == "month") || (simpleField.name == "day") || (simpleField.name == "hour") || (simpleField.name == "minutes") || (simpleField.name == "seconds"))) ||
@@ -219,52 +219,52 @@ class ${type.name}:
             <#if case.name == "Struct">
 
                 <#-- In this case we need to wrap each field in a PlcValue that matches it's natural type -->
-            Map<String, PlcValue> _map = new HashMap<>();
+            _map: Dict[str, PlcValue] = {};
                 <#list case.fields as field>
                     <#if field.isArrayField()>
                         <#assign field=field.asArrayField().orElseThrow()>
-            _map.put("${field.name}", new PlcList(${field.name}));
+            _map["${field.name}"] = PlcList(${field.name})
                     <#elseif field.isPropertyField()>
                         <#assign field=field.asPropertyField().orElseThrow()>
                         <#switch helper.getLanguageTypeNameForTypeReference(field.type)>
                             <#case "Boolean">
-            _map.put("${field.name}", new PlcBOOL(${field.name}));
+            _map["${field.name}"] = PlcBOOL(${field.name})
                                 <#break>
                             <#case "Byte">
-            _map.put("${field.name}", new PlcSINT(${field.name}));
+            _map["${field.name}"] = PlcSINT(${field.name})
                                 <#break>
                             <#case "Short">
-            _map.put("${field.name}", new PlcINT(${field.name}));
+            _map["${field.name}"] = PlcINT(${field.name})
                                 <#break>
                             <#case "Integer">
-            _map.put("${field.name}", new PlcDINT(${field.name}));
+            _map["${field.name}"] = PlcDINT(${field.name})
                                 <#break>
                             <#case "Long">
-            _map.put("${field.name}", new PlcLINT(${field.name}));
+            _map["${field.name}"] = PlcLINT(${field.name})
                                 <#break>
                             <#case "BigInteger">
-            _map.put("${field.name}", new PlcBigInteger(${field.name}));
+            _map["${field.name}"] = PlcBigInteger(${field.name})
                                 <#break>
                             <#case "Float">
-            _map.put("${field.name}", new PlcREAL(${field.name}));
+            _map["${field.name}"] = PlcREAL(${field.name})
                                 <#break>
                             <#case "Double">
-            _map.put("${field.name}", new PlcLREAL(${field.name}));
+            _map["${field.name}"] = PlcLREAL(${field.name})
                                 <#break>
                             <#case "BigDecimal">
-            _map.put("${field.name}", new PlcBigDecimal(${field.name}));
+            _map["${field.name}"] = PlcBigDecimal(${field.name})
                                 <#break>
                             <#case "String">
-            _map.put("${field.name}", new PlcSTRING(${field.name}));
+            _map["${field.name}"] = PlcSTRING(${field.name})
                                 <#break>
                             <#case "LocalTime">
-            _map.put("${field.name}", new PlcTIME_OF_DAY(${field.name}));
+            _map["${field.name}"] =  PlcTIME_OF_DAY(${field.name})
                                 <#break>
                             <#case "LocalDate">
-            _map.put("${field.name}", new PlcDATE(${field.name}));
+            _map["${field.name}"] =  PlcDATE(${field.name})
                                 <#break>
                             <#case "LocalDateTime">
-            _map.put("${field.name}", new PlcDATE_AND_TIME(${field.name}));
+            _map["${field.name}"] = PlcDATE_AND_TIME(${field.name})
                                 <#break>
                         </#switch>
                     </#if>
@@ -275,7 +275,7 @@ class ${type.name}:
             <#if valueDefined>
                 <#switch case.name>
                     <#case "TIME">
-            return new PlcTIME(value);
+            return PlcTIME(value);
                     <#break>
                     <#case "DATE">
                     <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day")>
