@@ -22,7 +22,6 @@ package bacnetip
 import (
 	"context"
 	"fmt"
-	"math"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -40,19 +39,8 @@ type Reader struct {
 	messageCodec      spi.MessageCodec
 	tm                *spi.RequestTransactionManager
 
-	// TODO make them configurable
-	protocolVersion       uint8
-	hopCount              uint8
 	maxSegmentsAccepted   readWriteModel.MaxSegmentsAccepted
 	maxApduLengthAccepted readWriteModel.MaxApduLengthAccepted
-	srcAddress            *struct {
-		NetworkAddress uint16
-		Address        []byte
-	}
-	dstAddress struct {
-		NetworkAddress uint16
-		Address        []byte
-	}
 }
 
 func NewReader(invokeIdGenerator *InvokeIdGenerator, messageCodec spi.MessageCodec, tm *spi.RequestTransactionManager) *Reader {
@@ -61,8 +49,6 @@ func NewReader(invokeIdGenerator *InvokeIdGenerator, messageCodec spi.MessageCod
 		messageCodec:      messageCodec,
 		tm:                tm,
 
-		protocolVersion:       1,
-		hopCount:              255,
 		maxSegmentsAccepted:   readWriteModel.MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS,
 		maxApduLengthAccepted: readWriteModel.MaxApduLengthAccepted_NUM_OCTETS_1476,
 	}
@@ -142,58 +128,13 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			serviceRequest.GetLengthInBytes(),
 		)
 
-		// build npdu
-		sourceSpecified := m.srcAddress != nil
-		var sourceNetworkAddress *uint16
-		var sourceLength *uint8
-		var sourceAddress []uint8
-		if sourceSpecified {
-			sourceSpecified = true
-			sourceNetworkAddress = &m.srcAddress.NetworkAddress
-			sourceLengthValue := len(m.srcAddress.Address)
-			if sourceLengthValue > math.MaxUint8 {
-				result <- &spiModel.DefaultPlcReadRequestResult{
-					Request:  readRequest,
-					Response: nil,
-					Err:      errors.New("source address length overflows"),
-				}
-				return
-			}
-			sourceLengthValueUint8 := uint8(sourceLengthValue)
-			sourceLength = &sourceLengthValueUint8
-			sourceAddress = m.srcAddress.Address
-			if sourceLengthValueUint8 == 0 {
-				// If we define the len 0 we must not send the array
-				sourceAddress = nil
-			}
-		}
-		control := readWriteModel.NewNPDUControl(false, true, sourceSpecified, true, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
-		destinationLengthValue := len(m.dstAddress.Address)
-		if destinationLengthValue > math.MaxUint8 {
-			result <- &spiModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: nil,
-				Err:      errors.New("destination address length overflows"),
-			}
-			return
-		}
-		destinationNetworkAddress := &m.dstAddress.NetworkAddress
-		destinationLengthValueUint8 := uint8(destinationLengthValue)
-		destinationtLength := &destinationLengthValueUint8
-		destinationAddress := m.dstAddress.Address
-		if len(m.dstAddress.Address) == 0 {
-			// If we define the len 0 we must not send the array
-			destinationAddress = nil
-		}
-		npdu := readWriteModel.NewNPDU(m.protocolVersion, control, destinationNetworkAddress, destinationtLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, &m.hopCount, nil, apdu, 0)
-		bvlc := readWriteModel.NewBVLCOriginalUnicastNPDU(npdu, 0)
 		// Start a new request-transaction (Is ended in the response-handler)
 		transaction := m.tm.StartTransaction()
 		transaction.Submit(func() {
 
 			// Send the  over the wire
 			log.Trace().Msg("Send ")
-			if err := m.messageCodec.SendRequest(ctx, bvlc, func(message spi.Message) bool {
+			if err := m.messageCodec.SendRequest(ctx, apdu, func(message spi.Message) bool {
 				bvlc, ok := message.(readWriteModel.BVLCExactly)
 				if !ok {
 					log.Debug().Msgf("Received strange type %T", bvlc)

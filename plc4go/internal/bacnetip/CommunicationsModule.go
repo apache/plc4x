@@ -51,6 +51,10 @@ func _New_PCI(pduUserData interface{}, pduSource Address, pduDestination Address
 	return &_PCI{pduUserData, pduSource, pduDestination}
 }
 
+func (p *_PCI) String() string {
+	return fmt.Sprintf("pduUserData:\n%s\n, pduSource: %s, pduDestination: %s", p.pduUserData, &p.pduSource, &p.pduDestination)
+}
+
 // _Client is an interface used for documentation
 type _Client interface {
 	Request(pdu _PDU) error

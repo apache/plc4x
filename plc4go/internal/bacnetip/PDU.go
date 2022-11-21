@@ -66,6 +66,10 @@ type AddressTuple[L any, R any] struct {
 	Right R
 }
 
+func (a *AddressTuple[L, R]) String() string {
+	return fmt.Sprintf("(%v, %v)", a.Left, a.Right)
+}
+
 var _field_address = regexp.MustCompile(`((?:\d+)|(?:0x(?:[0-9A-Fa-f][0-9A-Fa-f])+))`)
 var _ip_address_port = regexp.MustCompile(`(\d+\.\d+\.\d+\.\d+)(?::(\d+))?`)
 var _ip_address_mask_port = regexp.MustCompile(`(\d+\.\d+\.\d+\.\d+)(?:/(\d+))?(?::(\d+))?`)
@@ -123,12 +127,12 @@ func NewAddress(args ...interface{}) (*Address, error) {
 		switch a.AddrType {
 		case LOCAL_STATION_ADDRESS:
 			a.AddrType = REMOTE_STATION_ADDRESS
-			var net = (args[0]).(uint16)
-			a.AddrNet = &net
+			var addrNet = (args[0]).(uint16)
+			a.AddrNet = &addrNet
 		case LOCAL_BROADCAST_ADDRESS:
 			a.AddrType = REMOTE_BROADCAST_ADDRESS
-			var net = (args[0]).(uint16)
-			a.AddrNet = &net
+			var addrNet = (args[0]).(uint16)
+			a.AddrNet = &addrNet
 		default:
 			return nil, errors.New("unrecognized address ctor form")
 		}
@@ -296,10 +300,7 @@ func (a *Address) Equals(other interface{}) bool {
 }
 
 func (a *Address) String() string {
-	if a == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("Address{AddrType: %s, AddrNet: %d, AddrAddress: %x, AddrLen: %d, AddrRoute: %d, AddrIP: %d, AddrMask: %d, AddrHost: %d, AddrSubnet: %d, AddrPort: %d, AddrTuple: %v, AddrBroadcastTuple: %v}", a.AddrType, a.AddrNet, a.AddrAddress, a.AddrLen, a.AddrRoute, a.AddrIP, a.AddrMask, a.AddrHost, a.AddrSubnet, a.AddrPort, a.AddrTuple, a.AddrBroadcastTuple)
+	return fmt.Sprintf("%#v", a)
 }
 
 func portToUint16(port []byte) uint16 {
@@ -429,6 +430,10 @@ type PCI struct {
 	networkPriority readWriteModel.NPDUNetworkPriority
 }
 
+func (p *PCI) String() string {
+	return fmt.Sprintf("PCI{%s, expectingReply: %t, networkPriority: %s}", p._PCI, p.expectingReply, p.networkPriority)
+}
+
 func NewPCI(msg spi.Message, pduSource Address, pduDestination Address, expectingReply bool, networkPriority readWriteModel.NPDUNetworkPriority) *PCI {
 	return &PCI{
 		_New_PCI(msg, pduSource, pduDestination),
@@ -439,6 +444,7 @@ func NewPCI(msg spi.Message, pduSource Address, pduDestination Address, expectin
 
 type _PDU interface {
 	spi.Message
+	GetMessage() spi.Message
 	GetPDUSource() Address
 	GetPDUDestination() Address
 	GetExpectingReply() bool
@@ -507,6 +513,10 @@ func WithPDUNetworkPriority(networkPriority readWriteModel.NPDUNetworkPriority) 
 	}
 }
 
+func (p *PDU) GetMessage() spi.Message {
+	return p.Message
+}
+
 func (p *PDU) GetPDUSource() Address {
 	return p.pduSource
 }
@@ -521,4 +531,8 @@ func (p *PDU) GetExpectingReply() bool {
 
 func (p *PDU) GetNetworkPriority() readWriteModel.NPDUNetworkPriority {
 	return p.networkPriority
+}
+
+func (p *PDU) String() string {
+	return fmt.Sprintf("PDU{\n%s,\n%s}", p.Message, p._PCI)
 }

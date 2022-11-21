@@ -91,7 +91,7 @@ func NewDeviceInfoCache() *DeviceInfoCache {
 }
 
 func (d *DeviceInfoCache) String() string {
-	return fmt.Sprintf("%#q", d)
+	return fmt.Sprintf("DeviceInfoCache(%d)", len(d.cache))
 }
 
 // HasDeviceInfo Return true if cache has information about the device.
@@ -271,7 +271,7 @@ func (a *Application) Request(apdu _PDU) error {
 	log.Debug().Msgf("Request\n%s", apdu)
 
 	// double-check the input is the right kind of APDU
-	switch apdu.(type) {
+	switch apdu.GetMessage().(type) {
 	case readWriteModel.APDUUnconfirmedRequestExactly, readWriteModel.APDUConfirmedRequestExactly:
 	default:
 		return errors.New("APDU expected")
@@ -386,14 +386,9 @@ func (a *ApplicationIOController) _AppComplete(address net.Addr, apdu _PDU) erro
 func (a *ApplicationIOController) _AppRequest(apdu _PDU) {
 	log.Debug().Msgf("_AppRequest\n%s", apdu)
 
-	if err := a.Request(apdu); err != nil {
-		log.Error().Err(err).Msg("Uh oh")
-		return
-	}
-
 	// send it downstream, bypass the guard
 	if err := a.Application.Request(apdu); err != nil {
-		log.Error().Err(err).Msg("Uh oh")
+		log.Error().Stack().Err(err).Msg("Uh oh")
 		return
 	}
 

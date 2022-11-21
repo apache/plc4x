@@ -25,10 +25,10 @@ import (
 )
 
 type LocalDeviceObject struct {
-	NumberOfAPDURetries       uint
-	APDUTimeout               uint
-	SegmentationSupported     readWriteModel.BACnetSegmentation
-	APDUSegmentTimeout        uint
+	NumberOfAPDURetries       *uint
+	APDUTimeout               *uint
+	SegmentationSupported     *readWriteModel.BACnetSegmentation
+	APDUSegmentTimeout        *uint
 	MaxSegmentsAccepted       *readWriteModel.MaxSegmentsAccepted
 	MaximumApduLengthAccepted *readWriteModel.MaxApduLengthAccepted
 	App                       interface{}

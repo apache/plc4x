@@ -554,16 +554,23 @@ func (i *IOController) AbortIO(iocb _IOCB, err error) error {
 	return nil
 }
 
+type _IOQController interface {
+	ProcessIO(iocb _IOCB) error
+}
+
 type IOQController struct {
 	*IOController
 	state      IOQControllerStates
 	activeIOCB _IOCB
 	ioQueue    *IOQueue
 	waitTime   time.Duration
+	rootStruct _IOQController
 }
 
-func NewIOQController(name string) (*IOQController, error) {
-	i := &IOQController{}
+func NewIOQController(name string, rootStruct _IOQController) (*IOQController, error) {
+	i := &IOQController{
+		rootStruct: rootStruct,
+	}
 	var err error
 	i.IOController, err = NewIOController(name, i)
 	if err != nil {
@@ -636,7 +643,7 @@ func (i *IOQController) RequestIO(iocb _IOCB) error {
 		return nil
 	}
 
-	if err := i.ProcessIO(iocb); err != nil {
+	if err := i.rootStruct.ProcessIO(iocb); err != nil {
 		log.Debug().Err(err).Msgf("ProcessIO error")
 		if err := i.Abort(err); err != nil {
 			return errors.Wrap(err, "error sending abort")
@@ -797,7 +804,7 @@ type SieveQueue struct {
 func NewSieveQueue(fn func(apdu _PDU), address net.Addr) (*SieveQueue, error) {
 	s := &SieveQueue{}
 	var err error
-	s.IOQController, err = NewIOQController(address.String())
+	s.IOQController, err = NewIOQController(address.String(), s)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating a IOQController")
 	}
@@ -812,7 +819,9 @@ func (s *SieveQueue) ProcessIO(iocb _IOCB) error {
 	log.Debug().Msgf("ProcessIO %s", iocb)
 
 	// this is now an active request
-	s.ActiveIO(iocb)
+	if err := s.ActiveIO(iocb); err != nil {
+		return errors.Wrap(err, "error on active io")
+	}
 
 	// send the request
 	s.requestFn(iocb.getRequest())

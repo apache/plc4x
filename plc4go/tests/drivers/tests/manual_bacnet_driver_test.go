@@ -28,12 +28,14 @@ import (
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog/pkgerrors"
 	"os"
 	"testing"
 )
 
 func TestManualBacnetDriver(t *testing.T) {
 	t.Skip()
+	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 	log.Logger = log.
 		With().Caller().Logger().
 		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
