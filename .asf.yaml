@@ -47,7 +47,7 @@ github:
     - iot
 
   features:
-    wiki: false
+    wiki: true
     issues: true
     projects: true
 
