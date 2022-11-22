@@ -115,3 +115,7 @@ It seems that this manually needs to be installed on some systems.
 Apt-based systems:
 
  sudo apt-get install python3-venv
+
+=== Rust & Cargo
+
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh

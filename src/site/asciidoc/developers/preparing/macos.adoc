@@ -95,3 +95,11 @@ And add pyenv to the PATH:
 After opening a new terminal, `python` should be configured
 
  python --version
+
+=== rust & cargo
+
+  brew install rustup
+
+  rustup-init
+
+  rustc --version

@@ -80,6 +80,6 @@ mod test {
 
 #[test]
 fn test() {
-println!("Hello world! Hurz!");
+println!("Hello world!");
 }
 }

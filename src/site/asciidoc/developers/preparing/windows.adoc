@@ -119,3 +119,7 @@ Seem the versions available https://releases.llvm.org/download.html[here] to the
 Download and install the `LLVM` package.
 
 Select to add the LLVM to the path (doesn't matter if just for the current user or for all)
+
+=== Rust & Cargo
+
+https://forge.rust-lang.org/infra/other-installation-methods.html
