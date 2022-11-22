@@ -100,7 +100,7 @@ Then this shorter version can be used. Please inspect the `Protocol Documentatio
 
 === Individual Resource Addresses
 
-Addresses for individual fields on a PLC are extremely dependent on the used protocol.
+Addresses for individual tags on a PLC are extremely dependent on the used protocol.
 As we usually decided to stick to the address formats that are used in those particular environments.
 
 Please check the `Protocol Documentation` on details about these address formats.
