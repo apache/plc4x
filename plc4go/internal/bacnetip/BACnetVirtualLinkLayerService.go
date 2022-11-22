@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -234,11 +235,11 @@ func NewAnnexJCodec(cid *int, sid *int) (*AnnexJCodec, error) {
 	return a, nil
 }
 
-func (b *AnnexJCodec) Indication(apdu _PDU) error {
+func (b *AnnexJCodec) Indication(pdu _PDU) error {
 	panic("not implemented yet")
 }
 
-func (b *AnnexJCodec) Confirmation(apdu _PDU) error {
+func (b *AnnexJCodec) Confirmation(pdu _PDU) error {
 	panic("not implemented yet")
 }
 
@@ -303,10 +304,117 @@ func NewBIPSimple(sapID *int, cid *int, sid *int) (*BIPSimple, error) {
 	return b, nil
 }
 
-func (b *BIPSimple) Indication(apdu _PDU) error {
-	panic("not implemented yet")
+func (b *BIPSimple) Indication(pdu _PDU) error {
+	log.Debug().Msgf("Indication %s", pdu)
+
+	// check for local stations
+	switch pdu.GetPDUDestination().AddrType {
+	case LOCAL_STATION_ADDRESS:
+		// make an original unicast PDU
+		xpdu := readWriteModel.NewBVLCOriginalUnicastNPDU(pdu.GetMessage().(readWriteModel.NPDU), 0)
+		log.Debug().Msgf("xpdu:\n%s", xpdu)
+
+		// send it downstream
+		return b.Request(NewPDUFromPDUWithNewMessage(pdu, xpdu))
+	case LOCAL_BROADCAST_ADDRESS:
+		// make an original broadcast PDU
+		xpdu := readWriteModel.NewBVLCOriginalBroadcastNPDU(pdu.GetMessage().(readWriteModel.NPDU), 0)
+
+		log.Debug().Msgf("xpdu:\n%s", xpdu)
+
+		// send it downstream
+		return b.Request(NewPDUFromPDUWithNewMessage(pdu, xpdu))
+	default:
+		return errors.Errorf("invalid destination address: %s", pdu.GetPDUDestination())
+	}
 }
 
-func (b *BIPSimple) Response(apdu _PDU) error {
-	panic("not implemented yet")
+func (b *BIPSimple) Confirmation(pdu _PDU) error {
+	log.Debug().Msgf("Confirmation %s", pdu)
+
+	switch msg := pdu.GetMessage().(type) {
+	// some kind of response to a request
+	case readWriteModel.BVLCResultExactly:
+		// send this to the service access point
+		return b.SapRequest(pdu)
+	case readWriteModel.BVLCReadBroadcastDistributionTableAckExactly:
+		// send this to the service access point
+		return b.SapRequest(pdu)
+	case readWriteModel.BVLCReadForeignDeviceTableAckExactly:
+		// send this to the service access point
+		return b.SapRequest(pdu)
+	case readWriteModel.BVLCOriginalUnicastNPDUExactly:
+		// build a vanilla PDU
+		xpdu := NewPDU(msg, WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(pdu.GetPDUDestination()))
+		log.Debug().Msgf("xpdu: %s", xpdu)
+
+		// send it upstream
+		return b.Response(xpdu)
+	case readWriteModel.BVLCOriginalBroadcastNPDUExactly:
+		// build a PDU with a local broadcast address
+		xpdu := NewPDU(msg, WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(NewLocalBroadcast(nil)))
+		log.Debug().Msgf("xpdu: %s", xpdu)
+
+		// send it upstream
+		return b.Response(xpdu)
+	case readWriteModel.BVLCForwardedNPDUExactly:
+		// build a PDU with the source from the real source
+		ip := msg.GetIp()
+		port := msg.GetPort()
+		source, err := NewAddress(append(ip, uint16ToPort(port)...))
+		if err != nil {
+			return errors.Wrap(err, "error building a ip")
+		}
+		xpdu := NewPDU(msg, WithPDUSource(source), WithPDUDestination(NewLocalBroadcast(nil)))
+		log.Debug().Msgf("xpdu: %s", xpdu)
+
+		// send it upstream
+		return b.Response(xpdu)
+	case readWriteModel.BVLCWriteBroadcastDistributionTableExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+	case readWriteModel.BVLCReadBroadcastDistributionTableExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+		// build a response
+	case readWriteModel.BVLCRegisterForeignDeviceExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+	case readWriteModel.BVLCReadForeignDeviceTableExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+	case readWriteModel.BVLCDeleteForeignDeviceTableEntryExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+	case readWriteModel.BVLCDistributeBroadcastToNetworkExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+	default:
+		log.Warn().Msgf("invalid pdu type %T", msg)
+		return nil
+	}
 }
