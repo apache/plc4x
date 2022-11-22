@@ -136,10 +136,10 @@
     [virtual       bit      isVendorProprietaryMessage 'messageType >= 128']
     [typeSwitch messageType, isVendorProprietaryMessage
         ['0x00' *WhoIsRouterToNetwork
-            [array      uint 16     destinationNetworkAddress length 'apduLength - 1']
+            [optional   uint 16     destinationNetworkAddress]
         ]
         ['0x01' *IAmRouterToNetwork
-            [array      uint 16     destinationNetworkAddress length 'apduLength - 1']
+            [array      uint 16     destinationNetworkAddresses length 'apduLength - 1']
         ]
         ['0x02' *ICouldBeRouterToNetwork
             [simple   uint 16     destinationNetworkAddress   ]
@@ -151,10 +151,10 @@
             [simple   uint 16     destinationNetworkAddress   ]
         ]
         ['0x04' *RouterBusyToNetwork
-            [array    uint 16     destinationNetworkAddress length 'apduLength - 1']
+            [array    uint 16     destinationNetworkAddresses length 'apduLength - 1']
         ]
         ['0x05' *RouterAvailableToNetwork
-            [array    uint 16     destinationNetworkAddress length 'apduLength - 1']
+            [array    uint 16     destinationNetworkAddresses length 'apduLength - 1']
         ]
         ['0x06' *InitalizeRoutingTable
             [simple   uint 8      numberOfPorts               ]
