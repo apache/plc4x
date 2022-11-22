@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,19 +21,21 @@ package knxnetip
 
 import (
 	"bytes"
+	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/options"
-	"github.com/pkg/errors"
 	"net"
 	"net/url"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports/udp"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/pkg/errors"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 )
 
 type Discoverer struct {
@@ -44,7 +46,8 @@ func NewDiscoverer() *Discoverer {
 	return &Discoverer{}
 }
 
-func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
+func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
+	// TODO: handle ctx
 	udpTransport := udp.NewTransport()
 
 	// Create a connection string for the KNX broadcast discovery address.
@@ -76,7 +79,7 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 		interfaces = allInterfaces
 	}
 
-	var tranportInstances []transports.TransportInstance
+	var transportInstances []transports.TransportInstance
 	// Iterate over all network devices of this system.
 	for _, interf := range interfaces {
 		addrs, err := interf.Addrs()
@@ -109,82 +112,84 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 				if err != nil {
 					return err
 				}
-				err = transportInstance.Connect()
+				err = transportInstance.ConnectWithContext(ctx)
 				if err != nil {
 					continue
 				}
 
-				tranportInstances = append(tranportInstances, transportInstance)
+				transportInstances = append(transportInstances, transportInstance)
 			}
 		}
 	}
 
-	if len(tranportInstances) > 0 {
-		for _, transportInstance := range tranportInstances {
-			// Create a codec for sending and receiving messages.
-			codec := NewMessageCodec(transportInstance, nil)
-			// Explicitly start the worker
-			if err := codec.Connect(); err != nil {
-				return errors.Wrap(err, "Error connecting")
-			}
+	if len(transportInstances) <= 0 {
+		return nil
+	}
 
-			// Cast to the UDP transport instance so we can access information on the local port.
-			udpTransportInstance, ok := transportInstance.(*udp.TransportInstance)
-			if !ok {
-				return errors.New("couldn't cast transport instance to UDP transport instance")
-			}
-			localAddress := udpTransportInstance.LocalAddress
-			localAddr := driverModel.NewIPAddress(localAddress.IP)
+	for _, transportInstance := range transportInstances {
+		// Create a codec for sending and receiving messages.
+		codec := NewMessageCodec(transportInstance, nil)
+		// Explicitly start the worker
+		if err := codec.Connect(); err != nil {
+			return errors.Wrap(err, "Error connecting")
+		}
 
-			// Prepare the discovery packet data
-			discoveryEndpoint := driverModel.NewHPAIDiscoveryEndpoint(
-				driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port))
-			searchRequestMessage := driverModel.NewSearchRequest(discoveryEndpoint)
-			// Send the search request.
-			err = codec.Send(searchRequestMessage)
-			go func() {
-				// Keep on reading responses till the timeout is done.
-				// TODO: Make this configurable
-				timeout := time.NewTimer(time.Second * 1)
-				timeout.Stop()
-				for start := time.Now(); time.Since(start) < time.Second*5; {
-					timeout.Reset(time.Second * 1)
-					select {
-					case message := <-codec.GetDefaultIncomingMessageChannel():
-						{
-							if !timeout.Stop() {
-								<-timeout.C
-							}
-							searchResponse := driverModel.CastSearchResponse(message)
-							if searchResponse != nil {
-								addr := searchResponse.HpaiControlEndpoint.IpAddress.Addr
-								remoteUrl, err := url.Parse(fmt.Sprintf("udp://%d.%d.%d.%d:%d",
-									uint8(addr[0]), uint8(addr[1]), uint8(addr[2]), uint8(addr[3]), searchResponse.HpaiControlEndpoint.IpPort))
-								if err != nil {
-									continue
-								}
-								deviceName := string(bytes.Trim(searchResponse.DibDeviceInfo.DeviceFriendlyName, "\x00"))
-								discoveryEvent := &internalModel.DefaultPlcDiscoveryEvent{
-									ProtocolCode:  "knxnet-ip",
-									TransportCode: "udp",
-									TransportUrl:  *remoteUrl,
-									Options:       nil,
-									Name:          deviceName,
-								}
-								// Pass the event back to the callback
-								callback(discoveryEvent)
-							}
-							continue
+		// Cast to the UDP transport instance, so we can access information on the local port.
+		udpTransportInstance, ok := transportInstance.(*udp.TransportInstance)
+		if !ok {
+			return errors.New("couldn't cast transport instance to UDP transport instance")
+		}
+		localAddress := udpTransportInstance.LocalAddress
+		localAddr := driverModel.NewIPAddress(localAddress.IP)
+
+		// Prepare the discovery packet data
+		discoveryEndpoint := driverModel.NewHPAIDiscoveryEndpoint(
+			driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port))
+		searchRequestMessage := driverModel.NewSearchRequest(discoveryEndpoint)
+		// Send the search request.
+		err = codec.Send(searchRequestMessage)
+		go func() {
+			// Keep on reading responses till the timeout is done.
+			// TODO: Make this configurable
+			timeout := time.NewTimer(time.Second * 1)
+			timeout.Stop()
+			for start := time.Now(); time.Since(start) < time.Second*5; {
+				timeout.Reset(time.Second * 1)
+				select {
+				case message := <-codec.GetDefaultIncomingMessageChannel():
+					{
+						if !timeout.Stop() {
+							<-timeout.C
 						}
-					case <-timeout.C:
-						{
-							timeout.Stop()
-							continue
+						searchResponse := message.(driverModel.SearchResponse)
+						if searchResponse != nil {
+							addr := searchResponse.GetHpaiControlEndpoint().GetIpAddress().GetAddr()
+							remoteUrl, err := url.Parse(fmt.Sprintf("udp://%d.%d.%d.%d:%d",
+								addr[0], addr[1], addr[2], addr[3], searchResponse.GetHpaiControlEndpoint().GetIpPort()))
+							if err != nil {
+								continue
+							}
+							deviceName := string(bytes.Trim(searchResponse.GetDibDeviceInfo().GetDeviceFriendlyName(), "\x00"))
+							discoveryEvent := &internalModel.DefaultPlcDiscoveryItem{
+								ProtocolCode:  "knxnet-ip",
+								TransportCode: "udp",
+								TransportUrl:  *remoteUrl,
+								Options:       nil,
+								Name:          deviceName,
+							}
+							// Pass the event back to the callback
+							callback(discoveryEvent)
 						}
+						continue
+					}
+				case <-timeout.C:
+					{
+						timeout.Stop()
+						continue
 					}
 				}
-			}()
-		}
+			}
+		}()
 	}
 	return nil
 }

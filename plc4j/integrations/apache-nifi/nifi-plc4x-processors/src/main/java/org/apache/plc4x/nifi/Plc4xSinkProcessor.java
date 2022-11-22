@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -56,11 +56,11 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
 
             // Prepare the request.
             PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
-            flowFile.getAttributes().forEach((field, value) -> {
-                String address = getAddress(field);
+            flowFile.getAttributes().forEach((tag, value) -> {
+                String address = getAddress(tag);
                 if (address != null) {
                     // TODO: Convert the String into the right type ...
-                    builder.addItem(field, address, Boolean.valueOf(value));
+                    builder.addTagAddress(tag, address, Boolean.valueOf(value));
                 }
             });
             PlcWriteRequest writeRequest = builder.build();
@@ -69,10 +69,10 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
             try {
                 final PlcWriteResponse plcWriteResponse = writeRequest.execute().get();
                 // TODO: Evaluate the response and create flow files for successful and unsuccessful updates
-                session.transfer(flowFile, SUCCESS);
+                session.transfer(flowFile, REL_SUCCESS);
             } catch (Exception e) {
                 flowFile = session.putAttribute(flowFile, "exception", e.getLocalizedMessage());
-                session.transfer(flowFile, FAILURE);
+                session.transfer(flowFile, REL_FAILURE);
             }
         } catch (ProcessException e) {
             throw e;

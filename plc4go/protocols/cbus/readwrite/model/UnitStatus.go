@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type UnitStatus uint8
 
 type IUnitStatus interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -50,28 +50,28 @@ func init() {
 	}
 }
 
-func UnitStatusByValue(value uint8) UnitStatus {
+func UnitStatusByValue(value uint8) (enum UnitStatus, ok bool) {
 	switch value {
 	case 0:
-		return UnitStatus_OK
+		return UnitStatus_OK, true
 	case 1:
-		return UnitStatus_NACK
+		return UnitStatus_NACK, true
 	case 2:
-		return UnitStatus_NO_RESPONSE
+		return UnitStatus_NO_RESPONSE, true
 	}
-	return 0
+	return 0, false
 }
 
-func UnitStatusByName(value string) UnitStatus {
+func UnitStatusByName(value string) (enum UnitStatus, ok bool) {
 	switch value {
 	case "OK":
-		return UnitStatus_OK
+		return UnitStatus_OK, true
 	case "NACK":
-		return UnitStatus_NACK
+		return UnitStatus_NACK, true
 	case "NO_RESPONSE":
-		return UnitStatus_NO_RESPONSE
+		return UnitStatus_NO_RESPONSE, true
 	}
-	return 0
+	return 0, false
 }
 
 func UnitStatusKnows(value uint8) bool {
@@ -101,19 +101,37 @@ func (m UnitStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func UnitStatusParse(readBuffer utils.ReadBuffer) (UnitStatus, error) {
+func UnitStatusParse(theBytes []byte) (UnitStatus, error) {
+	return UnitStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func UnitStatusParseWithBuffer(readBuffer utils.ReadBuffer) (UnitStatus, error) {
 	val, err := readBuffer.ReadUint8("UnitStatus", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading UnitStatus")
 	}
-	return UnitStatusByValue(val), nil
+	if enum, ok := UnitStatusByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return UnitStatus(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e UnitStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("UnitStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e UnitStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e UnitStatus) name() string {
+func (e UnitStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("UnitStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e UnitStatus) PLC4XEnumName() string {
 	switch e {
 	case UnitStatus_OK:
 		return "OK"
@@ -126,5 +144,5 @@ func (e UnitStatus) name() string {
 }
 
 func (e UnitStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

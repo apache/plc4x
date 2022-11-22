@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetPolarity uint8
 
 type IBACnetPolarity interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -48,24 +48,24 @@ func init() {
 	}
 }
 
-func BACnetPolarityByValue(value uint8) BACnetPolarity {
+func BACnetPolarityByValue(value uint8) (enum BACnetPolarity, ok bool) {
 	switch value {
 	case 0:
-		return BACnetPolarity_NORMAL
+		return BACnetPolarity_NORMAL, true
 	case 1:
-		return BACnetPolarity_REVERSE
+		return BACnetPolarity_REVERSE, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetPolarityByName(value string) BACnetPolarity {
+func BACnetPolarityByName(value string) (enum BACnetPolarity, ok bool) {
 	switch value {
 	case "NORMAL":
-		return BACnetPolarity_NORMAL
+		return BACnetPolarity_NORMAL, true
 	case "REVERSE":
-		return BACnetPolarity_REVERSE
+		return BACnetPolarity_REVERSE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetPolarityKnows(value uint8) bool {
@@ -95,19 +95,37 @@ func (m BACnetPolarity) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPolarityParse(readBuffer utils.ReadBuffer) (BACnetPolarity, error) {
+func BACnetPolarityParse(theBytes []byte) (BACnetPolarity, error) {
+	return BACnetPolarityParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetPolarityParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPolarity, error) {
 	val, err := readBuffer.ReadUint8("BACnetPolarity", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetPolarity")
 	}
-	return BACnetPolarityByValue(val), nil
+	if enum, ok := BACnetPolarityByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetPolarity(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetPolarity) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetPolarity", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetPolarity) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetPolarity) name() string {
+func (e BACnetPolarity) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetPolarity", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetPolarity) PLC4XEnumName() string {
 	switch e {
 	case BACnetPolarity_NORMAL:
 		return "NORMAL"
@@ -118,5 +136,5 @@ func (e BACnetPolarity) name() string {
 }
 
 func (e BACnetPolarity) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

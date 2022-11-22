@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,7 +21,7 @@ package model
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,17 +30,10 @@ import (
 // Constant values.
 const AlarmMessageQueryType_DATALENGTH uint16 = 0xFFFF
 
-// AlarmMessageQueryType is the data-structure of this message
-type AlarmMessageQueryType struct {
-	FunctionId      uint8
-	NumberOfObjects uint8
-	ReturnCode      DataTransportErrorCode
-	TransportSize   DataTransportSize
-	MessageObjects  []*AlarmMessageObjectQueryType
-}
-
-// IAlarmMessageQueryType is the corresponding interface of AlarmMessageQueryType
-type IAlarmMessageQueryType interface {
+// AlarmMessageQueryType is the corresponding interface of AlarmMessageQueryType
+type AlarmMessageQueryType interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetFunctionId returns FunctionId (property field)
 	GetFunctionId() uint8
 	// GetNumberOfObjects returns NumberOfObjects (property field)
@@ -50,13 +43,23 @@ type IAlarmMessageQueryType interface {
 	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() DataTransportSize
 	// GetMessageObjects returns MessageObjects (property field)
-	GetMessageObjects() []*AlarmMessageObjectQueryType
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+	GetMessageObjects() []AlarmMessageObjectQueryType
+}
+
+// AlarmMessageQueryTypeExactly can be used when we want exactly this type and not a type which fulfills AlarmMessageQueryType.
+// This is useful for switch cases.
+type AlarmMessageQueryTypeExactly interface {
+	AlarmMessageQueryType
+	isAlarmMessageQueryType() bool
+}
+
+// _AlarmMessageQueryType is the data-structure of this message
+type _AlarmMessageQueryType struct {
+	FunctionId      uint8
+	NumberOfObjects uint8
+	ReturnCode      DataTransportErrorCode
+	TransportSize   DataTransportSize
+	MessageObjects  []AlarmMessageObjectQueryType
 }
 
 ///////////////////////////////////////////////////////////
@@ -64,23 +67,23 @@ type IAlarmMessageQueryType interface {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *AlarmMessageQueryType) GetFunctionId() uint8 {
+func (m *_AlarmMessageQueryType) GetFunctionId() uint8 {
 	return m.FunctionId
 }
 
-func (m *AlarmMessageQueryType) GetNumberOfObjects() uint8 {
+func (m *_AlarmMessageQueryType) GetNumberOfObjects() uint8 {
 	return m.NumberOfObjects
 }
 
-func (m *AlarmMessageQueryType) GetReturnCode() DataTransportErrorCode {
+func (m *_AlarmMessageQueryType) GetReturnCode() DataTransportErrorCode {
 	return m.ReturnCode
 }
 
-func (m *AlarmMessageQueryType) GetTransportSize() DataTransportSize {
+func (m *_AlarmMessageQueryType) GetTransportSize() DataTransportSize {
 	return m.TransportSize
 }
 
-func (m *AlarmMessageQueryType) GetMessageObjects() []*AlarmMessageObjectQueryType {
+func (m *_AlarmMessageQueryType) GetMessageObjects() []AlarmMessageObjectQueryType {
 	return m.MessageObjects
 }
 
@@ -93,7 +96,7 @@ func (m *AlarmMessageQueryType) GetMessageObjects() []*AlarmMessageObjectQueryTy
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *AlarmMessageQueryType) GetDataLength() uint16 {
+func (m *_AlarmMessageQueryType) GetDataLength() uint16 {
 	return AlarmMessageQueryType_DATALENGTH
 }
 
@@ -102,30 +105,31 @@ func (m *AlarmMessageQueryType) GetDataLength() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewAlarmMessageQueryType factory function for AlarmMessageQueryType
-func NewAlarmMessageQueryType(functionId uint8, numberOfObjects uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, messageObjects []*AlarmMessageObjectQueryType) *AlarmMessageQueryType {
-	return &AlarmMessageQueryType{FunctionId: functionId, NumberOfObjects: numberOfObjects, ReturnCode: returnCode, TransportSize: transportSize, MessageObjects: messageObjects}
+// NewAlarmMessageQueryType factory function for _AlarmMessageQueryType
+func NewAlarmMessageQueryType(functionId uint8, numberOfObjects uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, messageObjects []AlarmMessageObjectQueryType) *_AlarmMessageQueryType {
+	return &_AlarmMessageQueryType{FunctionId: functionId, NumberOfObjects: numberOfObjects, ReturnCode: returnCode, TransportSize: transportSize, MessageObjects: messageObjects}
 }
 
-func CastAlarmMessageQueryType(structType interface{}) *AlarmMessageQueryType {
+// Deprecated: use the interface for direct cast
+func CastAlarmMessageQueryType(structType interface{}) AlarmMessageQueryType {
 	if casted, ok := structType.(AlarmMessageQueryType); ok {
-		return &casted
+		return casted
 	}
 	if casted, ok := structType.(*AlarmMessageQueryType); ok {
-		return casted
+		return *casted
 	}
 	return nil
 }
 
-func (m *AlarmMessageQueryType) GetTypeName() string {
+func (m *_AlarmMessageQueryType) GetTypeName() string {
 	return "AlarmMessageQueryType"
 }
 
-func (m *AlarmMessageQueryType) GetLengthInBits() uint16 {
+func (m *_AlarmMessageQueryType) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *AlarmMessageQueryType) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_AlarmMessageQueryType) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (functionId)
@@ -147,22 +151,26 @@ func (m *AlarmMessageQueryType) GetLengthInBitsConditional(lastItem bool) uint16
 	if len(m.MessageObjects) > 0 {
 		for i, element := range m.MessageObjects {
 			last := i == len(m.MessageObjects)-1
-			lengthInBits += element.GetLengthInBitsConditional(last)
+			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *AlarmMessageQueryType) GetLengthInBytes() uint16 {
+func (m *_AlarmMessageQueryType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageQueryType, error) {
+func AlarmMessageQueryTypeParse(theBytes []byte) (AlarmMessageQueryType, error) {
+	return AlarmMessageQueryTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AlarmMessageQueryTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmMessageQueryType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageQueryType"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for AlarmMessageQueryType")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -170,47 +178,47 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageQuery
 	// Simple Field (functionId)
 	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
 	if _functionIdErr != nil {
-		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field")
+		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of AlarmMessageQueryType")
 	}
 	functionId := _functionId
 
 	// Simple Field (numberOfObjects)
 	_numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
 	if _numberOfObjectsErr != nil {
-		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field")
+		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field of AlarmMessageQueryType")
 	}
 	numberOfObjects := _numberOfObjects
 
 	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
 	}
-	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
+	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(readBuffer)
 	if _returnCodeErr != nil {
-		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
+		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of AlarmMessageQueryType")
 	}
 	returnCode := _returnCode
 	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for returnCode")
 	}
 
 	// Simple Field (transportSize)
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
 	}
-	_transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
+	_transportSize, _transportSizeErr := DataTransportSizeParseWithBuffer(readBuffer)
 	if _transportSizeErr != nil {
-		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
+		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field of AlarmMessageQueryType")
 	}
 	transportSize := _transportSize
 	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
 	}
 
 	// Const Field (DataLength)
 	DataLength, _DataLengthErr := readBuffer.ReadUint16("DataLength", 16)
 	if _DataLengthErr != nil {
-		return nil, errors.Wrap(_DataLengthErr, "Error parsing 'DataLength' field")
+		return nil, errors.Wrap(_DataLengthErr, "Error parsing 'DataLength' field of AlarmMessageQueryType")
 	}
 	if DataLength != AlarmMessageQueryType_DATALENGTH {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AlarmMessageQueryType_DATALENGTH) + " but got " + fmt.Sprintf("%d", DataLength))
@@ -218,47 +226,65 @@ func AlarmMessageQueryTypeParse(readBuffer utils.ReadBuffer) (*AlarmMessageQuery
 
 	// Array field (messageObjects)
 	if pullErr := readBuffer.PullContext("messageObjects", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for messageObjects")
 	}
 	// Count array
-	messageObjects := make([]*AlarmMessageObjectQueryType, numberOfObjects)
+	messageObjects := make([]AlarmMessageObjectQueryType, numberOfObjects)
+	// This happens when the size is set conditional to 0
+	if len(messageObjects) == 0 {
+		messageObjects = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
-			_item, _err := AlarmMessageObjectQueryTypeParse(readBuffer)
+			_item, _err := AlarmMessageObjectQueryTypeParseWithBuffer(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field")
+				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field of AlarmMessageQueryType")
 			}
-			messageObjects[curItem] = CastAlarmMessageObjectQueryType(_item)
+			messageObjects[curItem] = _item.(AlarmMessageObjectQueryType)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("messageObjects", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for messageObjects")
 	}
 
 	if closeErr := readBuffer.CloseContext("AlarmMessageQueryType"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for AlarmMessageQueryType")
 	}
 
 	// Create the instance
-	return NewAlarmMessageQueryType(functionId, numberOfObjects, returnCode, transportSize, messageObjects), nil
+	return &_AlarmMessageQueryType{
+		FunctionId:      functionId,
+		NumberOfObjects: numberOfObjects,
+		ReturnCode:      returnCode,
+		TransportSize:   transportSize,
+		MessageObjects:  messageObjects,
+	}, nil
 }
 
-func (m *AlarmMessageQueryType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AlarmMessageQueryType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AlarmMessageQueryType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessageQueryType"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for AlarmMessageQueryType")
 	}
 
 	// Simple Field (functionId)
-	functionId := uint8(m.FunctionId)
+	functionId := uint8(m.GetFunctionId())
 	_functionIdErr := writeBuffer.WriteUint8("functionId", 8, (functionId))
 	if _functionIdErr != nil {
 		return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
 	}
 
 	// Simple Field (numberOfObjects)
-	numberOfObjects := uint8(m.NumberOfObjects)
+	numberOfObjects := uint8(m.GetNumberOfObjects())
 	_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, (numberOfObjects))
 	if _numberOfObjectsErr != nil {
 		return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
@@ -266,11 +292,11 @@ func (m *AlarmMessageQueryType) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (returnCode)
 	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for returnCode")
 	}
-	_returnCodeErr := m.ReturnCode.Serialize(writeBuffer)
+	_returnCodeErr := writeBuffer.WriteSerializable(m.GetReturnCode())
 	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for returnCode")
 	}
 	if _returnCodeErr != nil {
 		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
@@ -278,11 +304,11 @@ func (m *AlarmMessageQueryType) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (transportSize)
 	if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for transportSize")
 	}
-	_transportSizeErr := m.TransportSize.Serialize(writeBuffer)
+	_transportSizeErr := writeBuffer.WriteSerializable(m.GetTransportSize())
 	if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for transportSize")
 	}
 	if _transportSizeErr != nil {
 		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
@@ -295,34 +321,36 @@ func (m *AlarmMessageQueryType) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// Array Field (messageObjects)
-	if m.MessageObjects != nil {
-		if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
+	if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for messageObjects")
+	}
+	for _, _element := range m.GetMessageObjects() {
+		_elementErr := writeBuffer.WriteSerializable(_element)
+		if _elementErr != nil {
+			return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
 		}
-		for _, _element := range m.MessageObjects {
-			_elementErr := _element.Serialize(writeBuffer)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
-		}
+	}
+	if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for messageObjects")
 	}
 
 	if popErr := writeBuffer.PopContext("AlarmMessageQueryType"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for AlarmMessageQueryType")
 	}
 	return nil
 }
 
-func (m *AlarmMessageQueryType) String() string {
+func (m *_AlarmMessageQueryType) isAlarmMessageQueryType() bool {
+	return true
+}
+
+func (m *_AlarmMessageQueryType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

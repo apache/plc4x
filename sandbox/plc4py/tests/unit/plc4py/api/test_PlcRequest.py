@@ -7,7 +7,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -90,12 +90,11 @@ async def test_read_request_builder_non_empty_request_not_connected(mocker) -> N
 @pytest.mark.asyncio
 async def test_read_request_builder_non_empty_request_connected_bool(mocker) -> None:
     """
-    Create a request with a field and then confirm an non empty response gets returned with a OK code
+    Create a request with a field and then confirm a non empty response gets returned with a OK code
     :param mocker:
     :return:
     """
-    connection: PlcConnection = MockConnection()
-    connection.connect()
+    connection: PlcConnection = await MockConnection.create("mock://localhost")
     field = "1:BOOL"
 
     # the connection function is supposed to support context manager
@@ -117,12 +116,11 @@ async def test_read_request_builder_non_empty_request_connected_bool(mocker) -> 
 @pytest.mark.asyncio
 async def test_read_request_builder_non_empty_request_connected_int(mocker) -> None:
     """
-    Create a request with a field and then confirm an non empty response gets returned with a OK code
+    Create a request with a field and then confirm a non empty response gets returned with a OK code
     :param mocker:
     :return:
     """
-    connection: PlcConnection = MockConnection()
-    connection.connect()
+    connection: PlcConnection = await MockConnection.create("mock://localhost")
     field = "1:INT"
 
     # the connection function is supposed to support context manager

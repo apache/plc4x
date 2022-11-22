@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -44,7 +44,7 @@ public class HelloPlc4xWrite {
                 return;
             }
 
-            if(options.getFieldValues().length != options.getFieldAddress().length) {
+            if(options.getTagValues().length != options.getTagAddress().length) {
                 LOGGER.error("The number of values doesn't match the number of addresses.");
                 return;
             }
@@ -52,13 +52,13 @@ public class HelloPlc4xWrite {
             // Create a new read request:
             // - Give the single item requested the alias name "value"
             final PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
-            for (int i = 0; i < options.getFieldAddress().length; i++) {
+            for (int i = 0; i < options.getTagAddress().length; i++) {
                 //If an array value is passed instead of a single value then convert to a String array
-                if ((options.getFieldValues()[i].charAt(0) == '[') && (options.getFieldValues()[i].charAt(options.getFieldValues()[i].length() - 1) == ']')) {
-                    String[] values = options.getFieldValues()[i].substring(1,options.getFieldValues()[i].length() - 1).split(",");
-                    builder.addItem("value-" + i, options.getFieldAddress()[i], values);
+                if ((options.getTagValues()[i].charAt(0) == '[') && (options.getTagValues()[i].charAt(options.getTagValues()[i].length() - 1) == ']')) {
+                    String[] values = options.getTagValues()[i].substring(1,options.getTagValues()[i].length() - 1).split(",");
+                    builder.addTagAddress("value-" + i, options.getTagAddress()[i], values);
                 } else {
-                    builder.addItem("value-" + i, options.getFieldAddress()[i], options.getFieldValues()[i]);
+                    builder.addTagAddress("value-" + i, options.getTagAddress()[i], options.getTagValues()[i]);
                 }
             }
             PlcWriteRequest writeRequest = builder.build();
@@ -67,9 +67,9 @@ public class HelloPlc4xWrite {
             final PlcWriteResponse writeResponse = writeRequest.execute().get();
 
             // Attach handlers for the incoming data.
-            for (String fieldName : writeResponse.getFieldNames()) {
+            for (String tagName : writeResponse.getTagNames()) {
                 LOGGER.info(String.format("Return code for %s was %s",
-                    fieldName, writeResponse.getResponseCode(fieldName)));
+                    tagName, writeResponse.getResponseCode(tagName)));
             }
         }
     }

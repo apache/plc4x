@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -24,7 +24,7 @@ import org.apache.camel.Message;
 import org.apache.camel.support.DefaultAsyncProducer;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.slf4j.Logger;
@@ -61,10 +61,10 @@ public class Plc4XProducer extends DefaultAsyncProducer {
                 String name = entry.getKey();
                 String query = entry.getValue().keySet().iterator().next();
                 Object value = entry.getValue().get(query);
-                builder.addItem(name,query,value);
+                builder.addTagAddress(name,query,value);
             }
         } else {
-            throw new PlcInvalidFieldException("The body must contain a Map<String,Map<String,Object>");
+            throw new PlcInvalidTagException("The body must contain a Map<String,Map<String,Object>");
         }
 
         CompletableFuture<? extends PlcWriteResponse> completableFuture = builder.build().execute();

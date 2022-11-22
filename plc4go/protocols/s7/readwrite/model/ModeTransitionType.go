@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type ModeTransitionType uint8
 
 type IModeTransitionType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -62,52 +62,52 @@ func init() {
 	}
 }
 
-func ModeTransitionTypeByValue(value uint8) ModeTransitionType {
+func ModeTransitionTypeByValue(value uint8) (enum ModeTransitionType, ok bool) {
 	switch value {
 	case 0x00:
-		return ModeTransitionType_STOP
+		return ModeTransitionType_STOP, true
 	case 0x01:
-		return ModeTransitionType_WARM_RESTART
+		return ModeTransitionType_WARM_RESTART, true
 	case 0x02:
-		return ModeTransitionType_RUN
+		return ModeTransitionType_RUN, true
 	case 0x03:
-		return ModeTransitionType_HOT_RESTART
+		return ModeTransitionType_HOT_RESTART, true
 	case 0x04:
-		return ModeTransitionType_HOLD
+		return ModeTransitionType_HOLD, true
 	case 0x06:
-		return ModeTransitionType_COLD_RESTART
+		return ModeTransitionType_COLD_RESTART, true
 	case 0x09:
-		return ModeTransitionType_RUN_R
+		return ModeTransitionType_RUN_R, true
 	case 0x11:
-		return ModeTransitionType_LINK_UP
+		return ModeTransitionType_LINK_UP, true
 	case 0x12:
-		return ModeTransitionType_UPDATE
+		return ModeTransitionType_UPDATE, true
 	}
-	return 0
+	return 0, false
 }
 
-func ModeTransitionTypeByName(value string) ModeTransitionType {
+func ModeTransitionTypeByName(value string) (enum ModeTransitionType, ok bool) {
 	switch value {
 	case "STOP":
-		return ModeTransitionType_STOP
+		return ModeTransitionType_STOP, true
 	case "WARM_RESTART":
-		return ModeTransitionType_WARM_RESTART
+		return ModeTransitionType_WARM_RESTART, true
 	case "RUN":
-		return ModeTransitionType_RUN
+		return ModeTransitionType_RUN, true
 	case "HOT_RESTART":
-		return ModeTransitionType_HOT_RESTART
+		return ModeTransitionType_HOT_RESTART, true
 	case "HOLD":
-		return ModeTransitionType_HOLD
+		return ModeTransitionType_HOLD, true
 	case "COLD_RESTART":
-		return ModeTransitionType_COLD_RESTART
+		return ModeTransitionType_COLD_RESTART, true
 	case "RUN_R":
-		return ModeTransitionType_RUN_R
+		return ModeTransitionType_RUN_R, true
 	case "LINK_UP":
-		return ModeTransitionType_LINK_UP
+		return ModeTransitionType_LINK_UP, true
 	case "UPDATE":
-		return ModeTransitionType_UPDATE
+		return ModeTransitionType_UPDATE, true
 	}
-	return 0
+	return 0, false
 }
 
 func ModeTransitionTypeKnows(value uint8) bool {
@@ -137,19 +137,37 @@ func (m ModeTransitionType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModeTransitionTypeParse(readBuffer utils.ReadBuffer) (ModeTransitionType, error) {
+func ModeTransitionTypeParse(theBytes []byte) (ModeTransitionType, error) {
+	return ModeTransitionTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ModeTransitionTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ModeTransitionType, error) {
 	val, err := readBuffer.ReadUint8("ModeTransitionType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ModeTransitionType")
 	}
-	return ModeTransitionTypeByValue(val), nil
+	if enum, ok := ModeTransitionTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return ModeTransitionType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e ModeTransitionType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("ModeTransitionType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e ModeTransitionType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e ModeTransitionType) name() string {
+func (e ModeTransitionType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("ModeTransitionType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ModeTransitionType) PLC4XEnumName() string {
 	switch e {
 	case ModeTransitionType_STOP:
 		return "STOP"
@@ -174,5 +192,5 @@ func (e ModeTransitionType) name() string {
 }
 
 func (e ModeTransitionType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

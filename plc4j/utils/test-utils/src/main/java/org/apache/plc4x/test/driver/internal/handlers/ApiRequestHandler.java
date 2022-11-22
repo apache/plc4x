@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -46,9 +46,9 @@ public class ApiRequestHandler {
         switch (typeName) {
             case "TestReadRequest": {
                 final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-                if (payload.element("fields") != null) {
-                    for (Element fieldElement : payload.element("fields").elements("field")) {
-                        builder.addItem(fieldElement.elementText("name"), fieldElement.elementText("address"));
+                if (payload.element("tags") != null) {
+                    for (Element tagElement : payload.element("tags").elements("tag")) {
+                        builder.addTagAddress(tagElement.elementText("name"), tagElement.elementText("address"));
                     }
                 }
                 final PlcReadRequest plc4xRequest = builder.build();
@@ -63,15 +63,15 @@ public class ApiRequestHandler {
             }
             case "TestWriteRequest": {
                 final PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
-                if (payload.element("fields") != null) {
-                    for (Element fieldElement : payload.element("fields").elements("field")) {
-                        List<Element> valueElements = fieldElement.elements("value");
+                if (payload.element("tags") != null) {
+                    for (Element tagElement : payload.element("tags").elements("tag")) {
+                        List<Element> valueElements = tagElement.elements("value");
                         List<String> valueStrings = new ArrayList<>(valueElements.size());
                         for (Element valueElement : valueElements) {
                             valueStrings.add(valueElement.getTextTrim());
                         }
-                        builder.addItem(fieldElement.elementText("name"),
-                            fieldElement.elementText("address"), valueStrings.toArray(new Object[0]));
+                        builder.addTagAddress(tagElement.elementText("name"),
+                            tagElement.elementText("address"), valueStrings.toArray(new Object[0]));
                     }
                 }
                 final PlcWriteRequest plc4xRequest = builder.build();

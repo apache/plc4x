@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,6 +30,7 @@ import (
 type TransportSize uint8
 
 type ITransportSize interface {
+	utils.Serializable
 	Supported_S7_300() bool
 	Supported_LOGO() bool
 	Code() uint8
@@ -41,7 +42,6 @@ type ITransportSize interface {
 	DataTransportSize() DataTransportSize
 	DataProtocolId() string
 	BaseType() TransportSize
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -1448,120 +1448,120 @@ func TransportSizeFirstEnumForFieldBaseType(value TransportSize) (TransportSize,
 	}
 	return 0, errors.Errorf("enum for %v describing BaseType not found", value)
 }
-func TransportSizeByValue(value uint8) TransportSize {
+func TransportSizeByValue(value uint8) (enum TransportSize, ok bool) {
 	switch value {
 	case 0x01:
-		return TransportSize_BOOL
+		return TransportSize_BOOL, true
 	case 0x02:
-		return TransportSize_BYTE
+		return TransportSize_BYTE, true
 	case 0x03:
-		return TransportSize_WORD
+		return TransportSize_WORD, true
 	case 0x04:
-		return TransportSize_DWORD
+		return TransportSize_DWORD, true
 	case 0x05:
-		return TransportSize_LWORD
+		return TransportSize_LWORD, true
 	case 0x06:
-		return TransportSize_INT
+		return TransportSize_INT, true
 	case 0x07:
-		return TransportSize_UINT
+		return TransportSize_UINT, true
 	case 0x08:
-		return TransportSize_SINT
+		return TransportSize_SINT, true
 	case 0x09:
-		return TransportSize_USINT
+		return TransportSize_USINT, true
 	case 0x0A:
-		return TransportSize_DINT
+		return TransportSize_DINT, true
 	case 0x0B:
-		return TransportSize_UDINT
+		return TransportSize_UDINT, true
 	case 0x0C:
-		return TransportSize_LINT
+		return TransportSize_LINT, true
 	case 0x0D:
-		return TransportSize_ULINT
+		return TransportSize_ULINT, true
 	case 0x0E:
-		return TransportSize_REAL
+		return TransportSize_REAL, true
 	case 0x0F:
-		return TransportSize_LREAL
+		return TransportSize_LREAL, true
 	case 0x10:
-		return TransportSize_CHAR
+		return TransportSize_CHAR, true
 	case 0x11:
-		return TransportSize_WCHAR
+		return TransportSize_WCHAR, true
 	case 0x12:
-		return TransportSize_STRING
+		return TransportSize_STRING, true
 	case 0x13:
-		return TransportSize_WSTRING
+		return TransportSize_WSTRING, true
 	case 0x14:
-		return TransportSize_TIME
+		return TransportSize_TIME, true
 	case 0x16:
-		return TransportSize_LTIME
+		return TransportSize_LTIME, true
 	case 0x17:
-		return TransportSize_DATE
+		return TransportSize_DATE, true
 	case 0x18:
-		return TransportSize_TIME_OF_DAY
+		return TransportSize_TIME_OF_DAY, true
 	case 0x19:
-		return TransportSize_TOD
+		return TransportSize_TOD, true
 	case 0x1A:
-		return TransportSize_DATE_AND_TIME
+		return TransportSize_DATE_AND_TIME, true
 	case 0x1B:
-		return TransportSize_DT
+		return TransportSize_DT, true
 	}
-	return 0
+	return 0, false
 }
 
-func TransportSizeByName(value string) TransportSize {
+func TransportSizeByName(value string) (enum TransportSize, ok bool) {
 	switch value {
 	case "BOOL":
-		return TransportSize_BOOL
+		return TransportSize_BOOL, true
 	case "BYTE":
-		return TransportSize_BYTE
+		return TransportSize_BYTE, true
 	case "WORD":
-		return TransportSize_WORD
+		return TransportSize_WORD, true
 	case "DWORD":
-		return TransportSize_DWORD
+		return TransportSize_DWORD, true
 	case "LWORD":
-		return TransportSize_LWORD
+		return TransportSize_LWORD, true
 	case "INT":
-		return TransportSize_INT
+		return TransportSize_INT, true
 	case "UINT":
-		return TransportSize_UINT
+		return TransportSize_UINT, true
 	case "SINT":
-		return TransportSize_SINT
+		return TransportSize_SINT, true
 	case "USINT":
-		return TransportSize_USINT
+		return TransportSize_USINT, true
 	case "DINT":
-		return TransportSize_DINT
+		return TransportSize_DINT, true
 	case "UDINT":
-		return TransportSize_UDINT
+		return TransportSize_UDINT, true
 	case "LINT":
-		return TransportSize_LINT
+		return TransportSize_LINT, true
 	case "ULINT":
-		return TransportSize_ULINT
+		return TransportSize_ULINT, true
 	case "REAL":
-		return TransportSize_REAL
+		return TransportSize_REAL, true
 	case "LREAL":
-		return TransportSize_LREAL
+		return TransportSize_LREAL, true
 	case "CHAR":
-		return TransportSize_CHAR
+		return TransportSize_CHAR, true
 	case "WCHAR":
-		return TransportSize_WCHAR
+		return TransportSize_WCHAR, true
 	case "STRING":
-		return TransportSize_STRING
+		return TransportSize_STRING, true
 	case "WSTRING":
-		return TransportSize_WSTRING
+		return TransportSize_WSTRING, true
 	case "TIME":
-		return TransportSize_TIME
+		return TransportSize_TIME, true
 	case "LTIME":
-		return TransportSize_LTIME
+		return TransportSize_LTIME, true
 	case "DATE":
-		return TransportSize_DATE
+		return TransportSize_DATE, true
 	case "TIME_OF_DAY":
-		return TransportSize_TIME_OF_DAY
+		return TransportSize_TIME_OF_DAY, true
 	case "TOD":
-		return TransportSize_TOD
+		return TransportSize_TOD, true
 	case "DATE_AND_TIME":
-		return TransportSize_DATE_AND_TIME
+		return TransportSize_DATE_AND_TIME, true
 	case "DT":
-		return TransportSize_DT
+		return TransportSize_DT, true
 	}
-	return 0
+	return 0, false
 }
 
 func TransportSizeKnows(value uint8) bool {
@@ -1591,19 +1591,37 @@ func (m TransportSize) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TransportSizeParse(readBuffer utils.ReadBuffer) (TransportSize, error) {
+func TransportSizeParse(theBytes []byte) (TransportSize, error) {
+	return TransportSizeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TransportSizeParseWithBuffer(readBuffer utils.ReadBuffer) (TransportSize, error) {
 	val, err := readBuffer.ReadUint8("TransportSize", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading TransportSize")
 	}
-	return TransportSizeByValue(val), nil
+	if enum, ok := TransportSizeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return TransportSize(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e TransportSize) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("TransportSize", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e TransportSize) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e TransportSize) name() string {
+func (e TransportSize) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("TransportSize", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e TransportSize) PLC4XEnumName() string {
 	switch e {
 	case TransportSize_BOOL:
 		return "BOOL"
@@ -1662,5 +1680,5 @@ func (e TransportSize) name() string {
 }
 
 func (e TransportSize) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

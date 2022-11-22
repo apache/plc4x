@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -27,16 +27,16 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.firmata.readwrite.*;
 import org.apache.plc4x.java.firmata.readwrite.context.FirmataDriverContext;
-import org.apache.plc4x.java.firmata.readwrite.field.FirmataField;
-import org.apache.plc4x.java.firmata.readwrite.field.FirmataFieldAnalog;
-import org.apache.plc4x.java.firmata.readwrite.field.FirmataFieldDigital;
+import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTagAnalog;
+import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTag;
+import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTagDigital;
 import org.apache.plc4x.java.firmata.readwrite.model.FirmataSubscriptionHandle;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.java.spi.values.PlcDINT;
 import org.apache.plc4x.java.spi.values.PlcList;
@@ -98,8 +98,8 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
             }
             // There's unfortunately no ack response :-(
             Map<String, PlcResponseCode> result = new HashMap<>();
-            for (String fieldName : writeRequest.getFieldNames()) {
-                result.put(fieldName, PlcResponseCode.OK);
+            for (String tagName : writeRequest.getTagNames()) {
+                result.put(tagName, PlcResponseCode.OK);
             }
             future.complete(new DefaultPlcWriteResponse(writeRequest, result));
         } catch (PlcRuntimeException e) {
@@ -118,12 +118,12 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
                 context.sendToWire(firmataMessage);
             }
             Map<String, ResponseItem<PlcSubscriptionHandle>> result = new HashMap<>();
-            for (String fieldName : subscriptionRequest.getFieldNames()) {
-                DefaultPlcSubscriptionField subscriptionField =
-                    (DefaultPlcSubscriptionField) subscriptionRequest.getField(fieldName);
-                FirmataField field = (FirmataField) subscriptionField.getPlcField();
-                result.put(fieldName, new ResponseItem<>(PlcResponseCode.OK,
-                    new FirmataSubscriptionHandle(this, fieldName, field)));
+            for (String tagName : subscriptionRequest.getTagNames()) {
+                DefaultPlcSubscriptionTag subscriptionTag =
+                    (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
+                FirmataTag tag = (FirmataTag) subscriptionTag.getTag();
+                result.put(tagName, new ResponseItem<>(PlcResponseCode.OK,
+                    new FirmataSubscriptionHandle(this, tagName, tag)));
             }
             future.complete(new DefaultPlcSubscriptionResponse(subscriptionRequest, result));
         } catch (PlcRuntimeException e) {
@@ -206,15 +206,15 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
                 if (handle instanceof FirmataSubscriptionHandle) {
                     FirmataSubscriptionHandle subscriptionHandle = (FirmataSubscriptionHandle) handle;
                     // Check if the subscription matches this current event
-                    // (The bit subscribed to in this field actually changed).
-                    if (subscriptionHandle.getField() instanceof FirmataFieldAnalog) {
-                        FirmataFieldAnalog analogField = (FirmataFieldAnalog) subscriptionHandle.getField();
-                        // Check if this field would include the current pin.
-                        if ((analogField.getAddress() <= pin) &&
-                            (analogField.getAddress() + analogField.getNumberOfElements() >= pin)) {
-                            // Build an update event containing the current values for all subscribed fields.
-                            List<PlcValue> values = new ArrayList<>(analogField.getNumberOfElements());
-                            for (int i = analogField.getAddress(); i < analogField.getAddress() + analogField.getNumberOfElements(); i++) {
+                    // (The bit subscribed to in this tag actually changed).
+                    if (subscriptionHandle.getTag() instanceof FirmataTagAnalog) {
+                        FirmataTagAnalog analogTag = (FirmataTagAnalog) subscriptionHandle.getTag();
+                        // Check if this tag would include the current pin.
+                        if ((analogTag.getAddress() <= pin) &&
+                            (analogTag.getAddress() + analogTag.getNumberOfElements() >= pin)) {
+                            // Build an update event containing the current values for all subscribed tags.
+                            List<PlcValue> values = new ArrayList<>(analogTag.getNumberOfElements());
+                            for (int i = analogTag.getAddress(); i < analogTag.getAddress() + analogTag.getNumberOfElements(); i++) {
                                 if (analogValues.containsKey(i)) {
                                     values.add(new PlcDINT(analogValues.get(i).intValue()));
                                 }
@@ -245,14 +245,14 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
                 if (handle instanceof FirmataSubscriptionHandle) {
                     FirmataSubscriptionHandle subscriptionHandle = (FirmataSubscriptionHandle) handle;
                     // Check if the subscription matches this current event
-                    // (The bit subscribed to in this field actually changed).
-                    if (subscriptionHandle.getField() instanceof FirmataFieldDigital) {
-                        FirmataFieldDigital digitalField = (FirmataFieldDigital) subscriptionHandle.getField();
+                    // (The bit subscribed to in this tag actually changed).
+                    if (subscriptionHandle.getTag() instanceof FirmataTagDigital) {
+                        FirmataTagDigital digitalTag = (FirmataTagDigital) subscriptionHandle.getTag();
                         // If at least one bit of the current subscription changed it's value,
                         // send out an update event with all of its current values.
-                        if (digitalField.getBitSet().intersects(changedBits)) {
-                            List<PlcValue> values = new ArrayList<>(digitalField.getBitSet().cardinality());
-                            for (int i = 0; i < digitalField.getBitSet().length(); i++) {
+                        if (digitalTag.getBitSet().intersects(changedBits)) {
+                            List<PlcValue> values = new ArrayList<>(digitalTag.getBitSet().cardinality());
+                            for (int i = 0; i < digitalTag.getBitSet().length(); i++) {
                                 values.add(new PlcBOOL(bitValues.get(i)));
                             }
                             sendUpdateEvents(consumer, subscriptionHandle.getName(), values);
@@ -263,17 +263,17 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
         }
     }
 
-    protected void sendUpdateEvents(Consumer<PlcSubscriptionEvent> consumer, String fieldName, List<PlcValue> values) {
+    protected void sendUpdateEvents(Consumer<PlcSubscriptionEvent> consumer, String tagName, List<PlcValue> values) {
         // If it's just one element, return this as a direct PlcValue
         if (values.size() == 1) {
             final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
-                Collections.singletonMap(fieldName, new ResponseItem<>(PlcResponseCode.OK, values.get(0))));
+                Collections.singletonMap(tagName, new ResponseItem<>(PlcResponseCode.OK, values.get(0))));
             consumer.accept(event);
         }
         // If it's more, return a PlcList instead.
         else {
             final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
-                Collections.singletonMap(fieldName, new ResponseItem<>(PlcResponseCode.OK, new PlcList(values))));
+                Collections.singletonMap(tagName, new ResponseItem<>(PlcResponseCode.OK, new PlcList(values))));
             consumer.accept(event);
         }
     }

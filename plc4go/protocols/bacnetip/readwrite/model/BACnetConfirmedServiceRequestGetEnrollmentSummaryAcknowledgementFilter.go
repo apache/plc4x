@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter uint8
 
 type IBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -50,28 +50,28 @@ func init() {
 	}
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByValue(value uint8) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByValue(value uint8) (enum BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, ok bool) {
 	switch value {
 	case 0:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL, true
 	case 1:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ACKED
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ACKED, true
 	case 2:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_NOT_ACKED
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_NOT_ACKED, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByName(value string) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByName(value string) (enum BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, ok bool) {
 	switch value {
 	case "ALL":
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL, true
 	case "ACKED":
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ACKED
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ACKED, true
 	case "NOT_ACKED":
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_NOT_ACKED
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_NOT_ACKED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterKnows(value uint8) bool {
@@ -101,19 +101,37 @@ func (m BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, error) {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParse(theBytes []byte) (BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, error) {
+	return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter")
 	}
-	return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByValue(val), nil
+	if enum, ok := BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) name() string {
+func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) PLC4XEnumName() string {
 	switch e {
 	case BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL:
 		return "ALL"
@@ -126,5 +144,5 @@ func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) 
 }
 
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

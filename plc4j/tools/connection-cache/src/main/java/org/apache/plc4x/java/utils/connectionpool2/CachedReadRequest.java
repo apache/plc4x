@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@ package org.apache.plc4x.java.utils.connectionpool2;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -43,22 +43,22 @@ public class CachedReadRequest implements PlcReadRequest {
     }
 
     @Override
-    public int getNumberOfFields() {
-        return innerRequest.getNumberOfFields();
+    public int getNumberOfTags() {
+        return innerRequest.getNumberOfTags();
     }
 
     @Override
-    public LinkedHashSet<String> getFieldNames() {
-        return innerRequest.getFieldNames();
+    public LinkedHashSet<String> getTagNames() {
+        return innerRequest.getTagNames();
     }
 
     @Override
-    public PlcField getField(String s) {
-        return innerRequest.getField(s);
+    public PlcTag getTag(String s) {
+        return innerRequest.getTag(s);
     }
 
     @Override
-    public List<PlcField> getFields() {
-        return innerRequest.getFields();
+    public List<PlcTag> getTags() {
+        return innerRequest.getTags();
     }
 }

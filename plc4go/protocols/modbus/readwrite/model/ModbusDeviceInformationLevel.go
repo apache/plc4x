@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type ModbusDeviceInformationLevel uint8
 
 type IModbusDeviceInformationLevel interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -52,32 +52,32 @@ func init() {
 	}
 }
 
-func ModbusDeviceInformationLevelByValue(value uint8) ModbusDeviceInformationLevel {
+func ModbusDeviceInformationLevelByValue(value uint8) (enum ModbusDeviceInformationLevel, ok bool) {
 	switch value {
 	case 0x01:
-		return ModbusDeviceInformationLevel_BASIC
+		return ModbusDeviceInformationLevel_BASIC, true
 	case 0x02:
-		return ModbusDeviceInformationLevel_REGULAR
+		return ModbusDeviceInformationLevel_REGULAR, true
 	case 0x03:
-		return ModbusDeviceInformationLevel_EXTENDED
+		return ModbusDeviceInformationLevel_EXTENDED, true
 	case 0x04:
-		return ModbusDeviceInformationLevel_INDIVIDUAL
+		return ModbusDeviceInformationLevel_INDIVIDUAL, true
 	}
-	return 0
+	return 0, false
 }
 
-func ModbusDeviceInformationLevelByName(value string) ModbusDeviceInformationLevel {
+func ModbusDeviceInformationLevelByName(value string) (enum ModbusDeviceInformationLevel, ok bool) {
 	switch value {
 	case "BASIC":
-		return ModbusDeviceInformationLevel_BASIC
+		return ModbusDeviceInformationLevel_BASIC, true
 	case "REGULAR":
-		return ModbusDeviceInformationLevel_REGULAR
+		return ModbusDeviceInformationLevel_REGULAR, true
 	case "EXTENDED":
-		return ModbusDeviceInformationLevel_EXTENDED
+		return ModbusDeviceInformationLevel_EXTENDED, true
 	case "INDIVIDUAL":
-		return ModbusDeviceInformationLevel_INDIVIDUAL
+		return ModbusDeviceInformationLevel_INDIVIDUAL, true
 	}
-	return 0
+	return 0, false
 }
 
 func ModbusDeviceInformationLevelKnows(value uint8) bool {
@@ -107,19 +107,37 @@ func (m ModbusDeviceInformationLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusDeviceInformationLevelParse(readBuffer utils.ReadBuffer) (ModbusDeviceInformationLevel, error) {
+func ModbusDeviceInformationLevelParse(theBytes []byte) (ModbusDeviceInformationLevel, error) {
+	return ModbusDeviceInformationLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ModbusDeviceInformationLevelParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusDeviceInformationLevel, error) {
 	val, err := readBuffer.ReadUint8("ModbusDeviceInformationLevel", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ModbusDeviceInformationLevel")
 	}
-	return ModbusDeviceInformationLevelByValue(val), nil
+	if enum, ok := ModbusDeviceInformationLevelByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return ModbusDeviceInformationLevel(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e ModbusDeviceInformationLevel) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("ModbusDeviceInformationLevel", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e ModbusDeviceInformationLevel) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e ModbusDeviceInformationLevel) name() string {
+func (e ModbusDeviceInformationLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("ModbusDeviceInformationLevel", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ModbusDeviceInformationLevel) PLC4XEnumName() string {
 	switch e {
 	case ModbusDeviceInformationLevel_BASIC:
 		return "BASIC"
@@ -134,5 +152,5 @@ func (e ModbusDeviceInformationLevel) name() string {
 }
 
 func (e ModbusDeviceInformationLevel) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

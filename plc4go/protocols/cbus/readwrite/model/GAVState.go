@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type GAVState uint8
 
 type IGAVState interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -52,32 +52,32 @@ func init() {
 	}
 }
 
-func GAVStateByValue(value uint8) GAVState {
+func GAVStateByValue(value uint8) (enum GAVState, ok bool) {
 	switch value {
 	case 0:
-		return GAVState_DOES_NOT_EXIST
+		return GAVState_DOES_NOT_EXIST, true
 	case 1:
-		return GAVState_ON
+		return GAVState_ON, true
 	case 2:
-		return GAVState_OFF
+		return GAVState_OFF, true
 	case 3:
-		return GAVState_ERROR
+		return GAVState_ERROR, true
 	}
-	return 0
+	return 0, false
 }
 
-func GAVStateByName(value string) GAVState {
+func GAVStateByName(value string) (enum GAVState, ok bool) {
 	switch value {
 	case "DOES_NOT_EXIST":
-		return GAVState_DOES_NOT_EXIST
+		return GAVState_DOES_NOT_EXIST, true
 	case "ON":
-		return GAVState_ON
+		return GAVState_ON, true
 	case "OFF":
-		return GAVState_OFF
+		return GAVState_OFF, true
 	case "ERROR":
-		return GAVState_ERROR
+		return GAVState_ERROR, true
 	}
-	return 0
+	return 0, false
 }
 
 func GAVStateKnows(value uint8) bool {
@@ -107,19 +107,37 @@ func (m GAVState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func GAVStateParse(readBuffer utils.ReadBuffer) (GAVState, error) {
+func GAVStateParse(theBytes []byte) (GAVState, error) {
+	return GAVStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func GAVStateParseWithBuffer(readBuffer utils.ReadBuffer) (GAVState, error) {
 	val, err := readBuffer.ReadUint8("GAVState", 2)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading GAVState")
 	}
-	return GAVStateByValue(val), nil
+	if enum, ok := GAVStateByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return GAVState(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e GAVState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("GAVState", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e GAVState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e GAVState) name() string {
+func (e GAVState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("GAVState", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e GAVState) PLC4XEnumName() string {
 	switch e {
 	case GAVState_DOES_NOT_EXIST:
 		return "DOES_NOT_EXIST"
@@ -134,5 +152,5 @@ func (e GAVState) name() string {
 }
 
 func (e GAVState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

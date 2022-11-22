@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetWriteStatus uint8
 
 type IBACnetWriteStatus interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -52,32 +52,32 @@ func init() {
 	}
 }
 
-func BACnetWriteStatusByValue(value uint8) BACnetWriteStatus {
+func BACnetWriteStatusByValue(value uint8) (enum BACnetWriteStatus, ok bool) {
 	switch value {
 	case 0:
-		return BACnetWriteStatus_IDLE
+		return BACnetWriteStatus_IDLE, true
 	case 1:
-		return BACnetWriteStatus_IN_PROGRESS
+		return BACnetWriteStatus_IN_PROGRESS, true
 	case 2:
-		return BACnetWriteStatus_SUCCESSFUL
+		return BACnetWriteStatus_SUCCESSFUL, true
 	case 3:
-		return BACnetWriteStatus_FAILED
+		return BACnetWriteStatus_FAILED, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetWriteStatusByName(value string) BACnetWriteStatus {
+func BACnetWriteStatusByName(value string) (enum BACnetWriteStatus, ok bool) {
 	switch value {
 	case "IDLE":
-		return BACnetWriteStatus_IDLE
+		return BACnetWriteStatus_IDLE, true
 	case "IN_PROGRESS":
-		return BACnetWriteStatus_IN_PROGRESS
+		return BACnetWriteStatus_IN_PROGRESS, true
 	case "SUCCESSFUL":
-		return BACnetWriteStatus_SUCCESSFUL
+		return BACnetWriteStatus_SUCCESSFUL, true
 	case "FAILED":
-		return BACnetWriteStatus_FAILED
+		return BACnetWriteStatus_FAILED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetWriteStatusKnows(value uint8) bool {
@@ -107,19 +107,37 @@ func (m BACnetWriteStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetWriteStatusParse(readBuffer utils.ReadBuffer) (BACnetWriteStatus, error) {
+func BACnetWriteStatusParse(theBytes []byte) (BACnetWriteStatus, error) {
+	return BACnetWriteStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetWriteStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetWriteStatus, error) {
 	val, err := readBuffer.ReadUint8("BACnetWriteStatus", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetWriteStatus")
 	}
-	return BACnetWriteStatusByValue(val), nil
+	if enum, ok := BACnetWriteStatusByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetWriteStatus(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetWriteStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetWriteStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetWriteStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetWriteStatus) name() string {
+func (e BACnetWriteStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetWriteStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetWriteStatus) PLC4XEnumName() string {
 	switch e {
 	case BACnetWriteStatus_IDLE:
 		return "IDLE"
@@ -134,5 +152,5 @@ func (e BACnetWriteStatus) name() string {
 }
 
 func (e BACnetWriteStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,8 +20,8 @@ package org.apache.plc4x.camel;
 
 public class Constants {
 
-    public static final String FIELD_NAME_HEADER = "fieldName";
-    public static final String FIELD_QUERY_HEADER = "fieldQuery";
+    public static final String TAG_NAME_HEADER = "tagName";
+    public static final String TAG_ADDRESS_HEADER = "tagAddress";
     public final static String TRIGGER = "TRIGGER_VAR";
     public final static String PLC_NAME = "PLC";
     private Constants() {

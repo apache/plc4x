@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type QueryType uint8
 
 type IQueryType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -50,28 +50,28 @@ func init() {
 	}
 }
 
-func QueryTypeByValue(value uint8) QueryType {
+func QueryTypeByValue(value uint8) (enum QueryType, ok bool) {
 	switch value {
 	case 0x01:
-		return QueryType_BYALARMTYPE
+		return QueryType_BYALARMTYPE, true
 	case 0x02:
-		return QueryType_ALARM_8
+		return QueryType_ALARM_8, true
 	case 0x04:
-		return QueryType_ALARM_S
+		return QueryType_ALARM_S, true
 	}
-	return 0
+	return 0, false
 }
 
-func QueryTypeByName(value string) QueryType {
+func QueryTypeByName(value string) (enum QueryType, ok bool) {
 	switch value {
 	case "BYALARMTYPE":
-		return QueryType_BYALARMTYPE
+		return QueryType_BYALARMTYPE, true
 	case "ALARM_8":
-		return QueryType_ALARM_8
+		return QueryType_ALARM_8, true
 	case "ALARM_S":
-		return QueryType_ALARM_S
+		return QueryType_ALARM_S, true
 	}
-	return 0
+	return 0, false
 }
 
 func QueryTypeKnows(value uint8) bool {
@@ -101,19 +101,37 @@ func (m QueryType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func QueryTypeParse(readBuffer utils.ReadBuffer) (QueryType, error) {
+func QueryTypeParse(theBytes []byte) (QueryType, error) {
+	return QueryTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func QueryTypeParseWithBuffer(readBuffer utils.ReadBuffer) (QueryType, error) {
 	val, err := readBuffer.ReadUint8("QueryType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading QueryType")
 	}
-	return QueryTypeByValue(val), nil
+	if enum, ok := QueryTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return QueryType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e QueryType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("QueryType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e QueryType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e QueryType) name() string {
+func (e QueryType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("QueryType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e QueryType) PLC4XEnumName() string {
 	switch e {
 	case QueryType_BYALARMTYPE:
 		return "BYALARMTYPE"
@@ -126,5 +144,5 @@ func (e QueryType) name() string {
 }
 
 func (e QueryType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

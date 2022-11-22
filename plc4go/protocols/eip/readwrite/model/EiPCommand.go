@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type EiPCommand uint16
 
 type IEiPCommand interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -50,28 +50,28 @@ func init() {
 	}
 }
 
-func EiPCommandByValue(value uint16) EiPCommand {
+func EiPCommandByValue(value uint16) (enum EiPCommand, ok bool) {
 	switch value {
 	case 0x0065:
-		return EiPCommand_RegisterSession
+		return EiPCommand_RegisterSession, true
 	case 0x0066:
-		return EiPCommand_UnregisterSession
+		return EiPCommand_UnregisterSession, true
 	case 0x006F:
-		return EiPCommand_SendRRData
+		return EiPCommand_SendRRData, true
 	}
-	return 0
+	return 0, false
 }
 
-func EiPCommandByName(value string) EiPCommand {
+func EiPCommandByName(value string) (enum EiPCommand, ok bool) {
 	switch value {
 	case "RegisterSession":
-		return EiPCommand_RegisterSession
+		return EiPCommand_RegisterSession, true
 	case "UnregisterSession":
-		return EiPCommand_UnregisterSession
+		return EiPCommand_UnregisterSession, true
 	case "SendRRData":
-		return EiPCommand_SendRRData
+		return EiPCommand_SendRRData, true
 	}
-	return 0
+	return 0, false
 }
 
 func EiPCommandKnows(value uint16) bool {
@@ -101,19 +101,37 @@ func (m EiPCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func EiPCommandParse(readBuffer utils.ReadBuffer) (EiPCommand, error) {
+func EiPCommandParse(theBytes []byte) (EiPCommand, error) {
+	return EiPCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func EiPCommandParseWithBuffer(readBuffer utils.ReadBuffer) (EiPCommand, error) {
 	val, err := readBuffer.ReadUint16("EiPCommand", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading EiPCommand")
 	}
-	return EiPCommandByValue(val), nil
+	if enum, ok := EiPCommandByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return EiPCommand(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e EiPCommand) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("EiPCommand", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e EiPCommand) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e EiPCommand) name() string {
+func (e EiPCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("EiPCommand", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e EiPCommand) PLC4XEnumName() string {
 	switch e {
 	case EiPCommand_RegisterSession:
 		return "RegisterSession"
@@ -126,5 +144,5 @@ func (e EiPCommand) name() string {
 }
 
 func (e EiPCommand) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

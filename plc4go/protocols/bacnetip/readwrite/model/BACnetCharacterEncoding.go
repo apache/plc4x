@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetCharacterEncoding byte
 
 type IBACnetCharacterEncoding interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -56,40 +56,40 @@ func init() {
 	}
 }
 
-func BACnetCharacterEncodingByValue(value byte) BACnetCharacterEncoding {
+func BACnetCharacterEncodingByValue(value byte) (enum BACnetCharacterEncoding, ok bool) {
 	switch value {
 	case 0x0:
-		return BACnetCharacterEncoding_ISO_10646
+		return BACnetCharacterEncoding_ISO_10646, true
 	case 0x1:
-		return BACnetCharacterEncoding_IBM_Microsoft_DBCS
+		return BACnetCharacterEncoding_IBM_Microsoft_DBCS, true
 	case 0x2:
-		return BACnetCharacterEncoding_JIS_X_0208
+		return BACnetCharacterEncoding_JIS_X_0208, true
 	case 0x3:
-		return BACnetCharacterEncoding_ISO_10646_4
+		return BACnetCharacterEncoding_ISO_10646_4, true
 	case 0x4:
-		return BACnetCharacterEncoding_ISO_10646_2
+		return BACnetCharacterEncoding_ISO_10646_2, true
 	case 0x5:
-		return BACnetCharacterEncoding_ISO_8859_1
+		return BACnetCharacterEncoding_ISO_8859_1, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetCharacterEncodingByName(value string) BACnetCharacterEncoding {
+func BACnetCharacterEncodingByName(value string) (enum BACnetCharacterEncoding, ok bool) {
 	switch value {
 	case "ISO_10646":
-		return BACnetCharacterEncoding_ISO_10646
+		return BACnetCharacterEncoding_ISO_10646, true
 	case "IBM_Microsoft_DBCS":
-		return BACnetCharacterEncoding_IBM_Microsoft_DBCS
+		return BACnetCharacterEncoding_IBM_Microsoft_DBCS, true
 	case "JIS_X_0208":
-		return BACnetCharacterEncoding_JIS_X_0208
+		return BACnetCharacterEncoding_JIS_X_0208, true
 	case "ISO_10646_4":
-		return BACnetCharacterEncoding_ISO_10646_4
+		return BACnetCharacterEncoding_ISO_10646_4, true
 	case "ISO_10646_2":
-		return BACnetCharacterEncoding_ISO_10646_2
+		return BACnetCharacterEncoding_ISO_10646_2, true
 	case "ISO_8859_1":
-		return BACnetCharacterEncoding_ISO_8859_1
+		return BACnetCharacterEncoding_ISO_8859_1, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetCharacterEncodingKnows(value byte) bool {
@@ -119,19 +119,37 @@ func (m BACnetCharacterEncoding) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetCharacterEncodingParse(readBuffer utils.ReadBuffer) (BACnetCharacterEncoding, error) {
+func BACnetCharacterEncodingParse(theBytes []byte) (BACnetCharacterEncoding, error) {
+	return BACnetCharacterEncodingParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetCharacterEncodingParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCharacterEncoding, error) {
 	val, err := readBuffer.ReadByte("BACnetCharacterEncoding")
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetCharacterEncoding")
 	}
-	return BACnetCharacterEncodingByValue(val), nil
+	if enum, ok := BACnetCharacterEncodingByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetCharacterEncoding(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetCharacterEncoding) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteByte("BACnetCharacterEncoding", byte(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetCharacterEncoding) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetCharacterEncoding) name() string {
+func (e BACnetCharacterEncoding) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteByte("BACnetCharacterEncoding", byte(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetCharacterEncoding) PLC4XEnumName() string {
 	switch e {
 	case BACnetCharacterEncoding_ISO_10646:
 		return "ISO_10646"
@@ -150,5 +168,5 @@ func (e BACnetCharacterEncoding) name() string {
 }
 
 func (e BACnetCharacterEncoding) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

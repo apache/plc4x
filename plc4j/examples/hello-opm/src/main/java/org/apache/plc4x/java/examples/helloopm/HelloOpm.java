@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,7 +21,7 @@ package org.apache.plc4x.java.examples.helloopm;
 import org.apache.plc4x.java.opm.OPMException;
 import org.apache.plc4x.java.opm.PlcEntity;
 import org.apache.plc4x.java.opm.PlcEntityManager;
-import org.apache.plc4x.java.opm.PlcField;
+import org.apache.plc4x.java.opm.PlcTag;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
 /**
@@ -39,7 +39,7 @@ import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 public class HelloOpm {
 
     private static final String ADDRESS = "s7://192.168.167.210/0/0";
-    private static final String PLC_FIELD_ADDRESS = "%DB225.DBW0:INT";
+    private static final String PLC_TAG_ADDRESS = "%DB225.DBW0:INT";
     private final PlcEntityManager entityManager;
 
     public static void main(String[] args) throws OPMException {
@@ -58,9 +58,9 @@ public class HelloOpm {
 
     /**
      * The {@link PlcEntityManager#connect(Class, String)} method returns a "connected" Entity, i.e., a proxy Object.
-     * Whenever a getter is called on the Proxy object (whose Field Variable is annotated with @{@link PlcEntity}
+     * Whenever a getter is called on the Proxy object (whose Tag Variable is annotated with @{@link PlcEntity}
      * a call to the PLC is made to fetch the value.
-     * If another method is called on the Entity all Fields are feched from the Plc first, and then the method is
+     * If another method is called on the Entity all Tags are fetched from the Plc first, and then the method is
      * invoked.
      *
      * @throws OPMException
@@ -76,7 +76,7 @@ public class HelloOpm {
     }
 
     /**
-     * The {@link PlcEntityManager#read(Class, String)} method fetches all fields annotated with @{@link PlcField}
+     * The {@link PlcEntityManager#read(Class, String)} method fetches all tags annotated with @{@link PlcTag}
      * <b>once</b> and injects them in the new instance. After the constructing this is a regular POJO with no fancy
      * functionality.
      *
@@ -89,12 +89,12 @@ public class HelloOpm {
     }
 
     /**
-     * Example entity which maps one field on a PLC where a Distance Sensor is connected.
+     * Example entity which maps one tag on a PLC where a Distance Sensor is connected.
      */
     @PlcEntity
     public static class DistanceSensor {
 
-        @PlcField(PLC_FIELD_ADDRESS)
+        @PlcTag(PLC_TAG_ADDRESS)
         private long distance;
 
         public long getDistance() {

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetAuthenticationStatus uint8
 
 type IBACnetAuthenticationStatus interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -58,44 +58,44 @@ func init() {
 	}
 }
 
-func BACnetAuthenticationStatusByValue(value uint8) BACnetAuthenticationStatus {
+func BACnetAuthenticationStatusByValue(value uint8) (enum BACnetAuthenticationStatus, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAuthenticationStatus_NOT_READY
+		return BACnetAuthenticationStatus_NOT_READY, true
 	case 1:
-		return BACnetAuthenticationStatus_READY
+		return BACnetAuthenticationStatus_READY, true
 	case 2:
-		return BACnetAuthenticationStatus_DISABLED
+		return BACnetAuthenticationStatus_DISABLED, true
 	case 3:
-		return BACnetAuthenticationStatus_WAITING_FOR_AUTHENTICATION_FACTOR
+		return BACnetAuthenticationStatus_WAITING_FOR_AUTHENTICATION_FACTOR, true
 	case 4:
-		return BACnetAuthenticationStatus_WAITING_FOR_ACCOMPANIMENT
+		return BACnetAuthenticationStatus_WAITING_FOR_ACCOMPANIMENT, true
 	case 5:
-		return BACnetAuthenticationStatus_WAITING_FOR_VERIFICATION
+		return BACnetAuthenticationStatus_WAITING_FOR_VERIFICATION, true
 	case 6:
-		return BACnetAuthenticationStatus_IN_PROGRESS
+		return BACnetAuthenticationStatus_IN_PROGRESS, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetAuthenticationStatusByName(value string) BACnetAuthenticationStatus {
+func BACnetAuthenticationStatusByName(value string) (enum BACnetAuthenticationStatus, ok bool) {
 	switch value {
 	case "NOT_READY":
-		return BACnetAuthenticationStatus_NOT_READY
+		return BACnetAuthenticationStatus_NOT_READY, true
 	case "READY":
-		return BACnetAuthenticationStatus_READY
+		return BACnetAuthenticationStatus_READY, true
 	case "DISABLED":
-		return BACnetAuthenticationStatus_DISABLED
+		return BACnetAuthenticationStatus_DISABLED, true
 	case "WAITING_FOR_AUTHENTICATION_FACTOR":
-		return BACnetAuthenticationStatus_WAITING_FOR_AUTHENTICATION_FACTOR
+		return BACnetAuthenticationStatus_WAITING_FOR_AUTHENTICATION_FACTOR, true
 	case "WAITING_FOR_ACCOMPANIMENT":
-		return BACnetAuthenticationStatus_WAITING_FOR_ACCOMPANIMENT
+		return BACnetAuthenticationStatus_WAITING_FOR_ACCOMPANIMENT, true
 	case "WAITING_FOR_VERIFICATION":
-		return BACnetAuthenticationStatus_WAITING_FOR_VERIFICATION
+		return BACnetAuthenticationStatus_WAITING_FOR_VERIFICATION, true
 	case "IN_PROGRESS":
-		return BACnetAuthenticationStatus_IN_PROGRESS
+		return BACnetAuthenticationStatus_IN_PROGRESS, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAuthenticationStatusKnows(value uint8) bool {
@@ -125,19 +125,37 @@ func (m BACnetAuthenticationStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAuthenticationStatusParse(readBuffer utils.ReadBuffer) (BACnetAuthenticationStatus, error) {
+func BACnetAuthenticationStatusParse(theBytes []byte) (BACnetAuthenticationStatus, error) {
+	return BACnetAuthenticationStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetAuthenticationStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthenticationStatus, error) {
 	val, err := readBuffer.ReadUint8("BACnetAuthenticationStatus", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAuthenticationStatus")
 	}
-	return BACnetAuthenticationStatusByValue(val), nil
+	if enum, ok := BACnetAuthenticationStatusByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetAuthenticationStatus(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetAuthenticationStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetAuthenticationStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetAuthenticationStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetAuthenticationStatus) name() string {
+func (e BACnetAuthenticationStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetAuthenticationStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAuthenticationStatus) PLC4XEnumName() string {
 	switch e {
 	case BACnetAuthenticationStatus_NOT_READY:
 		return "NOT_READY"
@@ -158,5 +176,5 @@ func (e BACnetAuthenticationStatus) name() string {
 }
 
 func (e BACnetAuthenticationStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

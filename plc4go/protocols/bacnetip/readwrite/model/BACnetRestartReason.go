@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetRestartReason uint8
 
 type IBACnetRestartReason interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -64,56 +64,56 @@ func init() {
 	}
 }
 
-func BACnetRestartReasonByValue(value uint8) BACnetRestartReason {
+func BACnetRestartReasonByValue(value uint8) (enum BACnetRestartReason, ok bool) {
 	switch value {
 	case 0:
-		return BACnetRestartReason_UNKNOWN
+		return BACnetRestartReason_UNKNOWN, true
 	case 0xFF:
-		return BACnetRestartReason_VENDOR_PROPRIETARY_VALUE
+		return BACnetRestartReason_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetRestartReason_COLDSTART
+		return BACnetRestartReason_COLDSTART, true
 	case 2:
-		return BACnetRestartReason_WARMSTART
+		return BACnetRestartReason_WARMSTART, true
 	case 3:
-		return BACnetRestartReason_DETECTED_POWER_LOST
+		return BACnetRestartReason_DETECTED_POWER_LOST, true
 	case 4:
-		return BACnetRestartReason_DETECTED_POWERED_OFF
+		return BACnetRestartReason_DETECTED_POWERED_OFF, true
 	case 5:
-		return BACnetRestartReason_HARDWARE_WATCHDOG
+		return BACnetRestartReason_HARDWARE_WATCHDOG, true
 	case 6:
-		return BACnetRestartReason_SOFTWARE_WATCHDOG
+		return BACnetRestartReason_SOFTWARE_WATCHDOG, true
 	case 7:
-		return BACnetRestartReason_SUSPENDED
+		return BACnetRestartReason_SUSPENDED, true
 	case 8:
-		return BACnetRestartReason_ACTIVATE_CHANGES
+		return BACnetRestartReason_ACTIVATE_CHANGES, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetRestartReasonByName(value string) BACnetRestartReason {
+func BACnetRestartReasonByName(value string) (enum BACnetRestartReason, ok bool) {
 	switch value {
 	case "UNKNOWN":
-		return BACnetRestartReason_UNKNOWN
+		return BACnetRestartReason_UNKNOWN, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetRestartReason_VENDOR_PROPRIETARY_VALUE
+		return BACnetRestartReason_VENDOR_PROPRIETARY_VALUE, true
 	case "COLDSTART":
-		return BACnetRestartReason_COLDSTART
+		return BACnetRestartReason_COLDSTART, true
 	case "WARMSTART":
-		return BACnetRestartReason_WARMSTART
+		return BACnetRestartReason_WARMSTART, true
 	case "DETECTED_POWER_LOST":
-		return BACnetRestartReason_DETECTED_POWER_LOST
+		return BACnetRestartReason_DETECTED_POWER_LOST, true
 	case "DETECTED_POWERED_OFF":
-		return BACnetRestartReason_DETECTED_POWERED_OFF
+		return BACnetRestartReason_DETECTED_POWERED_OFF, true
 	case "HARDWARE_WATCHDOG":
-		return BACnetRestartReason_HARDWARE_WATCHDOG
+		return BACnetRestartReason_HARDWARE_WATCHDOG, true
 	case "SOFTWARE_WATCHDOG":
-		return BACnetRestartReason_SOFTWARE_WATCHDOG
+		return BACnetRestartReason_SOFTWARE_WATCHDOG, true
 	case "SUSPENDED":
-		return BACnetRestartReason_SUSPENDED
+		return BACnetRestartReason_SUSPENDED, true
 	case "ACTIVATE_CHANGES":
-		return BACnetRestartReason_ACTIVATE_CHANGES
+		return BACnetRestartReason_ACTIVATE_CHANGES, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetRestartReasonKnows(value uint8) bool {
@@ -143,19 +143,37 @@ func (m BACnetRestartReason) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRestartReasonParse(readBuffer utils.ReadBuffer) (BACnetRestartReason, error) {
+func BACnetRestartReasonParse(theBytes []byte) (BACnetRestartReason, error) {
+	return BACnetRestartReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetRestartReasonParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRestartReason, error) {
 	val, err := readBuffer.ReadUint8("BACnetRestartReason", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetRestartReason")
 	}
-	return BACnetRestartReasonByValue(val), nil
+	if enum, ok := BACnetRestartReasonByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetRestartReason(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetRestartReason) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetRestartReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetRestartReason) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetRestartReason) name() string {
+func (e BACnetRestartReason) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetRestartReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetRestartReason) PLC4XEnumName() string {
 	switch e {
 	case BACnetRestartReason_UNKNOWN:
 		return "UNKNOWN"
@@ -182,5 +200,5 @@ func (e BACnetRestartReason) name() string {
 }
 
 func (e BACnetRestartReason) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

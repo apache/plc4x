@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable uint8
 
 type IBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -50,28 +50,28 @@ func init() {
 	}
 }
 
-func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableByValue(value uint8) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable {
+func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableByValue(value uint8) (enum BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, ok bool) {
 	switch value {
 	case 0:
-		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE
+		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE, true
 	case 1:
-		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE
+		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE, true
 	case 2:
-		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION
+		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableByName(value string) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable {
+func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableByName(value string) (enum BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, ok bool) {
 	switch value {
 	case "ENABLE":
-		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE
+		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE, true
 	case "DISABLE":
-		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE
+		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE, true
 	case "DISABLE_INITIATION":
-		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION
+		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableKnows(value uint8) bool {
@@ -101,19 +101,37 @@ func (m BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) Ge
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, error) {
+func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParse(theBytes []byte) (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, error) {
+	return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable")
 	}
-	return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableByValue(val), nil
+	if enum, ok := BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) name() string {
+func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) PLC4XEnumName() string {
 	switch e {
 	case BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE:
 		return "ENABLE"
@@ -126,5 +144,5 @@ func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) na
 }
 
 func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

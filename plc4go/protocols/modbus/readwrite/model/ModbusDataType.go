@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,8 +30,8 @@ import (
 type ModbusDataType uint8
 
 type IModbusDataType interface {
+	utils.Serializable
 	DataTypeSize() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -224,124 +224,124 @@ func ModbusDataTypeFirstEnumForFieldDataTypeSize(value uint8) (ModbusDataType, e
 	}
 	return 0, errors.Errorf("enum for %v describing DataTypeSize not found", value)
 }
-func ModbusDataTypeByValue(value uint8) ModbusDataType {
+func ModbusDataTypeByValue(value uint8) (enum ModbusDataType, ok bool) {
 	switch value {
 	case 1:
-		return ModbusDataType_BOOL
+		return ModbusDataType_BOOL, true
 	case 10:
-		return ModbusDataType_USINT
+		return ModbusDataType_USINT, true
 	case 11:
-		return ModbusDataType_UINT
+		return ModbusDataType_UINT, true
 	case 12:
-		return ModbusDataType_UDINT
+		return ModbusDataType_UDINT, true
 	case 13:
-		return ModbusDataType_ULINT
+		return ModbusDataType_ULINT, true
 	case 14:
-		return ModbusDataType_REAL
+		return ModbusDataType_REAL, true
 	case 15:
-		return ModbusDataType_LREAL
+		return ModbusDataType_LREAL, true
 	case 16:
-		return ModbusDataType_TIME
+		return ModbusDataType_TIME, true
 	case 17:
-		return ModbusDataType_LTIME
+		return ModbusDataType_LTIME, true
 	case 18:
-		return ModbusDataType_DATE
+		return ModbusDataType_DATE, true
 	case 19:
-		return ModbusDataType_LDATE
+		return ModbusDataType_LDATE, true
 	case 2:
-		return ModbusDataType_BYTE
+		return ModbusDataType_BYTE, true
 	case 20:
-		return ModbusDataType_TIME_OF_DAY
+		return ModbusDataType_TIME_OF_DAY, true
 	case 21:
-		return ModbusDataType_LTIME_OF_DAY
+		return ModbusDataType_LTIME_OF_DAY, true
 	case 22:
-		return ModbusDataType_DATE_AND_TIME
+		return ModbusDataType_DATE_AND_TIME, true
 	case 23:
-		return ModbusDataType_LDATE_AND_TIME
+		return ModbusDataType_LDATE_AND_TIME, true
 	case 24:
-		return ModbusDataType_CHAR
+		return ModbusDataType_CHAR, true
 	case 25:
-		return ModbusDataType_WCHAR
+		return ModbusDataType_WCHAR, true
 	case 26:
-		return ModbusDataType_STRING
+		return ModbusDataType_STRING, true
 	case 27:
-		return ModbusDataType_WSTRING
+		return ModbusDataType_WSTRING, true
 	case 3:
-		return ModbusDataType_WORD
+		return ModbusDataType_WORD, true
 	case 4:
-		return ModbusDataType_DWORD
+		return ModbusDataType_DWORD, true
 	case 5:
-		return ModbusDataType_LWORD
+		return ModbusDataType_LWORD, true
 	case 6:
-		return ModbusDataType_SINT
+		return ModbusDataType_SINT, true
 	case 7:
-		return ModbusDataType_INT
+		return ModbusDataType_INT, true
 	case 8:
-		return ModbusDataType_DINT
+		return ModbusDataType_DINT, true
 	case 9:
-		return ModbusDataType_LINT
+		return ModbusDataType_LINT, true
 	}
-	return 0
+	return 0, false
 }
 
-func ModbusDataTypeByName(value string) ModbusDataType {
+func ModbusDataTypeByName(value string) (enum ModbusDataType, ok bool) {
 	switch value {
 	case "BOOL":
-		return ModbusDataType_BOOL
+		return ModbusDataType_BOOL, true
 	case "USINT":
-		return ModbusDataType_USINT
+		return ModbusDataType_USINT, true
 	case "UINT":
-		return ModbusDataType_UINT
+		return ModbusDataType_UINT, true
 	case "UDINT":
-		return ModbusDataType_UDINT
+		return ModbusDataType_UDINT, true
 	case "ULINT":
-		return ModbusDataType_ULINT
+		return ModbusDataType_ULINT, true
 	case "REAL":
-		return ModbusDataType_REAL
+		return ModbusDataType_REAL, true
 	case "LREAL":
-		return ModbusDataType_LREAL
+		return ModbusDataType_LREAL, true
 	case "TIME":
-		return ModbusDataType_TIME
+		return ModbusDataType_TIME, true
 	case "LTIME":
-		return ModbusDataType_LTIME
+		return ModbusDataType_LTIME, true
 	case "DATE":
-		return ModbusDataType_DATE
+		return ModbusDataType_DATE, true
 	case "LDATE":
-		return ModbusDataType_LDATE
+		return ModbusDataType_LDATE, true
 	case "BYTE":
-		return ModbusDataType_BYTE
+		return ModbusDataType_BYTE, true
 	case "TIME_OF_DAY":
-		return ModbusDataType_TIME_OF_DAY
+		return ModbusDataType_TIME_OF_DAY, true
 	case "LTIME_OF_DAY":
-		return ModbusDataType_LTIME_OF_DAY
+		return ModbusDataType_LTIME_OF_DAY, true
 	case "DATE_AND_TIME":
-		return ModbusDataType_DATE_AND_TIME
+		return ModbusDataType_DATE_AND_TIME, true
 	case "LDATE_AND_TIME":
-		return ModbusDataType_LDATE_AND_TIME
+		return ModbusDataType_LDATE_AND_TIME, true
 	case "CHAR":
-		return ModbusDataType_CHAR
+		return ModbusDataType_CHAR, true
 	case "WCHAR":
-		return ModbusDataType_WCHAR
+		return ModbusDataType_WCHAR, true
 	case "STRING":
-		return ModbusDataType_STRING
+		return ModbusDataType_STRING, true
 	case "WSTRING":
-		return ModbusDataType_WSTRING
+		return ModbusDataType_WSTRING, true
 	case "WORD":
-		return ModbusDataType_WORD
+		return ModbusDataType_WORD, true
 	case "DWORD":
-		return ModbusDataType_DWORD
+		return ModbusDataType_DWORD, true
 	case "LWORD":
-		return ModbusDataType_LWORD
+		return ModbusDataType_LWORD, true
 	case "SINT":
-		return ModbusDataType_SINT
+		return ModbusDataType_SINT, true
 	case "INT":
-		return ModbusDataType_INT
+		return ModbusDataType_INT, true
 	case "DINT":
-		return ModbusDataType_DINT
+		return ModbusDataType_DINT, true
 	case "LINT":
-		return ModbusDataType_LINT
+		return ModbusDataType_LINT, true
 	}
-	return 0
+	return 0, false
 }
 
 func ModbusDataTypeKnows(value uint8) bool {
@@ -371,19 +371,37 @@ func (m ModbusDataType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusDataTypeParse(readBuffer utils.ReadBuffer) (ModbusDataType, error) {
+func ModbusDataTypeParse(theBytes []byte) (ModbusDataType, error) {
+	return ModbusDataTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ModbusDataTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusDataType, error) {
 	val, err := readBuffer.ReadUint8("ModbusDataType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ModbusDataType")
 	}
-	return ModbusDataTypeByValue(val), nil
+	if enum, ok := ModbusDataTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return ModbusDataType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e ModbusDataType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("ModbusDataType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e ModbusDataType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e ModbusDataType) name() string {
+func (e ModbusDataType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("ModbusDataType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ModbusDataType) PLC4XEnumName() string {
 	switch e {
 	case ModbusDataType_BOOL:
 		return "BOOL"
@@ -444,5 +462,5 @@ func (e ModbusDataType) name() string {
 }
 
 func (e ModbusDataType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

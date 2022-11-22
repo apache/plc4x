@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type ModbusDeviceInformationConformityLevel uint8
 
 type IModbusDeviceInformationConformityLevel interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -50,28 +50,28 @@ func init() {
 	}
 }
 
-func ModbusDeviceInformationConformityLevelByValue(value uint8) ModbusDeviceInformationConformityLevel {
+func ModbusDeviceInformationConformityLevelByValue(value uint8) (enum ModbusDeviceInformationConformityLevel, ok bool) {
 	switch value {
 	case 0x01:
-		return ModbusDeviceInformationConformityLevel_BASIC_STREAM_ONLY
+		return ModbusDeviceInformationConformityLevel_BASIC_STREAM_ONLY, true
 	case 0x02:
-		return ModbusDeviceInformationConformityLevel_REGULAR_STREAM_ONLY
+		return ModbusDeviceInformationConformityLevel_REGULAR_STREAM_ONLY, true
 	case 0x03:
-		return ModbusDeviceInformationConformityLevel_EXTENDED_STREAM_ONLY
+		return ModbusDeviceInformationConformityLevel_EXTENDED_STREAM_ONLY, true
 	}
-	return 0
+	return 0, false
 }
 
-func ModbusDeviceInformationConformityLevelByName(value string) ModbusDeviceInformationConformityLevel {
+func ModbusDeviceInformationConformityLevelByName(value string) (enum ModbusDeviceInformationConformityLevel, ok bool) {
 	switch value {
 	case "BASIC_STREAM_ONLY":
-		return ModbusDeviceInformationConformityLevel_BASIC_STREAM_ONLY
+		return ModbusDeviceInformationConformityLevel_BASIC_STREAM_ONLY, true
 	case "REGULAR_STREAM_ONLY":
-		return ModbusDeviceInformationConformityLevel_REGULAR_STREAM_ONLY
+		return ModbusDeviceInformationConformityLevel_REGULAR_STREAM_ONLY, true
 	case "EXTENDED_STREAM_ONLY":
-		return ModbusDeviceInformationConformityLevel_EXTENDED_STREAM_ONLY
+		return ModbusDeviceInformationConformityLevel_EXTENDED_STREAM_ONLY, true
 	}
-	return 0
+	return 0, false
 }
 
 func ModbusDeviceInformationConformityLevelKnows(value uint8) bool {
@@ -101,19 +101,37 @@ func (m ModbusDeviceInformationConformityLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusDeviceInformationConformityLevelParse(readBuffer utils.ReadBuffer) (ModbusDeviceInformationConformityLevel, error) {
+func ModbusDeviceInformationConformityLevelParse(theBytes []byte) (ModbusDeviceInformationConformityLevel, error) {
+	return ModbusDeviceInformationConformityLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ModbusDeviceInformationConformityLevelParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusDeviceInformationConformityLevel, error) {
 	val, err := readBuffer.ReadUint8("ModbusDeviceInformationConformityLevel", 7)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ModbusDeviceInformationConformityLevel")
 	}
-	return ModbusDeviceInformationConformityLevelByValue(val), nil
+	if enum, ok := ModbusDeviceInformationConformityLevelByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return ModbusDeviceInformationConformityLevel(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e ModbusDeviceInformationConformityLevel) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("ModbusDeviceInformationConformityLevel", 7, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e ModbusDeviceInformationConformityLevel) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e ModbusDeviceInformationConformityLevel) name() string {
+func (e ModbusDeviceInformationConformityLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("ModbusDeviceInformationConformityLevel", 7, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ModbusDeviceInformationConformityLevel) PLC4XEnumName() string {
 	switch e {
 	case ModbusDeviceInformationConformityLevel_BASIC_STREAM_ONLY:
 		return "BASIC_STREAM_ONLY"
@@ -126,5 +144,5 @@ func (e ModbusDeviceInformationConformityLevel) name() string {
 }
 
 func (e ModbusDeviceInformationConformityLevel) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type TagClass uint8
 
 type ITagClass interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -48,24 +48,24 @@ func init() {
 	}
 }
 
-func TagClassByValue(value uint8) TagClass {
+func TagClassByValue(value uint8) (enum TagClass, ok bool) {
 	switch value {
 	case 0x0:
-		return TagClass_APPLICATION_TAGS
+		return TagClass_APPLICATION_TAGS, true
 	case 0x1:
-		return TagClass_CONTEXT_SPECIFIC_TAGS
+		return TagClass_CONTEXT_SPECIFIC_TAGS, true
 	}
-	return 0
+	return 0, false
 }
 
-func TagClassByName(value string) TagClass {
+func TagClassByName(value string) (enum TagClass, ok bool) {
 	switch value {
 	case "APPLICATION_TAGS":
-		return TagClass_APPLICATION_TAGS
+		return TagClass_APPLICATION_TAGS, true
 	case "CONTEXT_SPECIFIC_TAGS":
-		return TagClass_CONTEXT_SPECIFIC_TAGS
+		return TagClass_CONTEXT_SPECIFIC_TAGS, true
 	}
-	return 0
+	return 0, false
 }
 
 func TagClassKnows(value uint8) bool {
@@ -95,19 +95,37 @@ func (m TagClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TagClassParse(readBuffer utils.ReadBuffer) (TagClass, error) {
+func TagClassParse(theBytes []byte) (TagClass, error) {
+	return TagClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TagClassParseWithBuffer(readBuffer utils.ReadBuffer) (TagClass, error) {
 	val, err := readBuffer.ReadUint8("TagClass", 1)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading TagClass")
 	}
-	return TagClassByValue(val), nil
+	if enum, ok := TagClassByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return TagClass(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e TagClass) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("TagClass", 1, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e TagClass) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e TagClass) name() string {
+func (e TagClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("TagClass", 1, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e TagClass) PLC4XEnumName() string {
 	switch e {
 	case TagClass_APPLICATION_TAGS:
 		return "APPLICATION_TAGS"
@@ -118,5 +136,5 @@ func (e TagClass) name() string {
 }
 
 func (e TagClass) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetAuthorizationExemption uint8
 
 type IBACnetAuthorizationExemption interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -60,48 +60,48 @@ func init() {
 	}
 }
 
-func BACnetAuthorizationExemptionByValue(value uint8) BACnetAuthorizationExemption {
+func BACnetAuthorizationExemptionByValue(value uint8) (enum BACnetAuthorizationExemption, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAuthorizationExemption_PASSBACK
+		return BACnetAuthorizationExemption_PASSBACK, true
 	case 0xFF:
-		return BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE
+		return BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetAuthorizationExemption_OCCUPANCY_CHECK
+		return BACnetAuthorizationExemption_OCCUPANCY_CHECK, true
 	case 2:
-		return BACnetAuthorizationExemption_ACCESS_RIGHTS
+		return BACnetAuthorizationExemption_ACCESS_RIGHTS, true
 	case 3:
-		return BACnetAuthorizationExemption_LOCKOUT
+		return BACnetAuthorizationExemption_LOCKOUT, true
 	case 4:
-		return BACnetAuthorizationExemption_DENY
+		return BACnetAuthorizationExemption_DENY, true
 	case 5:
-		return BACnetAuthorizationExemption_VERIFICATION
+		return BACnetAuthorizationExemption_VERIFICATION, true
 	case 6:
-		return BACnetAuthorizationExemption_AUTHORIZATION_DELAY
+		return BACnetAuthorizationExemption_AUTHORIZATION_DELAY, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetAuthorizationExemptionByName(value string) BACnetAuthorizationExemption {
+func BACnetAuthorizationExemptionByName(value string) (enum BACnetAuthorizationExemption, ok bool) {
 	switch value {
 	case "PASSBACK":
-		return BACnetAuthorizationExemption_PASSBACK
+		return BACnetAuthorizationExemption_PASSBACK, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE
+		return BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE, true
 	case "OCCUPANCY_CHECK":
-		return BACnetAuthorizationExemption_OCCUPANCY_CHECK
+		return BACnetAuthorizationExemption_OCCUPANCY_CHECK, true
 	case "ACCESS_RIGHTS":
-		return BACnetAuthorizationExemption_ACCESS_RIGHTS
+		return BACnetAuthorizationExemption_ACCESS_RIGHTS, true
 	case "LOCKOUT":
-		return BACnetAuthorizationExemption_LOCKOUT
+		return BACnetAuthorizationExemption_LOCKOUT, true
 	case "DENY":
-		return BACnetAuthorizationExemption_DENY
+		return BACnetAuthorizationExemption_DENY, true
 	case "VERIFICATION":
-		return BACnetAuthorizationExemption_VERIFICATION
+		return BACnetAuthorizationExemption_VERIFICATION, true
 	case "AUTHORIZATION_DELAY":
-		return BACnetAuthorizationExemption_AUTHORIZATION_DELAY
+		return BACnetAuthorizationExemption_AUTHORIZATION_DELAY, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAuthorizationExemptionKnows(value uint8) bool {
@@ -131,19 +131,37 @@ func (m BACnetAuthorizationExemption) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAuthorizationExemptionParse(readBuffer utils.ReadBuffer) (BACnetAuthorizationExemption, error) {
+func BACnetAuthorizationExemptionParse(theBytes []byte) (BACnetAuthorizationExemption, error) {
+	return BACnetAuthorizationExemptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetAuthorizationExemptionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthorizationExemption, error) {
 	val, err := readBuffer.ReadUint8("BACnetAuthorizationExemption", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAuthorizationExemption")
 	}
-	return BACnetAuthorizationExemptionByValue(val), nil
+	if enum, ok := BACnetAuthorizationExemptionByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetAuthorizationExemption(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetAuthorizationExemption) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetAuthorizationExemption", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetAuthorizationExemption) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetAuthorizationExemption) name() string {
+func (e BACnetAuthorizationExemption) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetAuthorizationExemption", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAuthorizationExemption) PLC4XEnumName() string {
 	switch e {
 	case BACnetAuthorizationExemption_PASSBACK:
 		return "PASSBACK"
@@ -166,5 +184,5 @@ func (e BACnetAuthorizationExemption) name() string {
 }
 
 func (e BACnetAuthorizationExemption) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

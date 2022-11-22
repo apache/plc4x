@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,10 +30,10 @@ import (
 type KnxDatapointMainType uint16
 
 type IKnxDatapointMainType interface {
+	utils.Serializable
 	Number() uint16
 	Name() string
 	SizeInBits() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -954,260 +954,260 @@ func KnxDatapointMainTypeFirstEnumForFieldSizeInBits(value uint8) (KnxDatapointM
 	}
 	return 0, errors.Errorf("enum for %v describing SizeInBits not found", value)
 }
-func KnxDatapointMainTypeByValue(value uint16) KnxDatapointMainType {
+func KnxDatapointMainTypeByValue(value uint16) (enum KnxDatapointMainType, ok bool) {
 	switch value {
 	case 0:
-		return KnxDatapointMainType_DPT_UNKNOWN
+		return KnxDatapointMainType_DPT_UNKNOWN, true
 	case 1:
-		return KnxDatapointMainType_DPT_64_BIT_SET
+		return KnxDatapointMainType_DPT_64_BIT_SET, true
 	case 10:
-		return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE
+		return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE, true
 	case 11:
-		return KnxDatapointMainType_DPT_8_BIT_SIGNED_VALUE
+		return KnxDatapointMainType_DPT_8_BIT_SIGNED_VALUE, true
 	case 12:
-		return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE
+		return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE, true
 	case 13:
-		return KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE
+		return KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE, true
 	case 14:
-		return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+		return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE, true
 	case 15:
-		return KnxDatapointMainType_DPT_TIME
+		return KnxDatapointMainType_DPT_TIME, true
 	case 16:
-		return KnxDatapointMainType_DPT_DATE
+		return KnxDatapointMainType_DPT_DATE, true
 	case 17:
-		return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE
+		return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE, true
 	case 18:
-		return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE
+		return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE, true
 	case 19:
-		return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+		return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE, true
 	case 2:
-		return KnxDatapointMainType_DPT_8_BYTE_UNSIGNED_VALUE
+		return KnxDatapointMainType_DPT_8_BYTE_UNSIGNED_VALUE, true
 	case 20:
-		return KnxDatapointMainType_DPT_ENTRANCE_ACCESS
+		return KnxDatapointMainType_DPT_ENTRANCE_ACCESS, true
 	case 21:
-		return KnxDatapointMainType_DPT_CHARACTER_STRING
+		return KnxDatapointMainType_DPT_CHARACTER_STRING, true
 	case 22:
-		return KnxDatapointMainType_DPT_SCENE_NUMBER
+		return KnxDatapointMainType_DPT_SCENE_NUMBER, true
 	case 23:
-		return KnxDatapointMainType_DPT_SCENE_CONTROL
+		return KnxDatapointMainType_DPT_SCENE_CONTROL, true
 	case 24:
-		return KnxDatapointMainType_DPT_DATE_TIME
+		return KnxDatapointMainType_DPT_DATE_TIME, true
 	case 25:
-		return KnxDatapointMainType_DPT_1_BYTE
+		return KnxDatapointMainType_DPT_1_BYTE, true
 	case 26:
-		return KnxDatapointMainType_DPT_8_BIT_SET
+		return KnxDatapointMainType_DPT_8_BIT_SET, true
 	case 27:
-		return KnxDatapointMainType_DPT_16_BIT_SET
+		return KnxDatapointMainType_DPT_16_BIT_SET, true
 	case 28:
-		return KnxDatapointMainType_DPT_2_BIT_SET
+		return KnxDatapointMainType_DPT_2_BIT_SET, true
 	case 29:
-		return KnxDatapointMainType_DPT_2_NIBBLE_SET
+		return KnxDatapointMainType_DPT_2_NIBBLE_SET, true
 	case 3:
-		return KnxDatapointMainType_DPT_8_BYTE_SIGNED_VALUE
+		return KnxDatapointMainType_DPT_8_BYTE_SIGNED_VALUE, true
 	case 30:
-		return KnxDatapointMainType_DPT_8_BIT_SET_2
+		return KnxDatapointMainType_DPT_8_BIT_SET_2, true
 	case 31:
-		return KnxDatapointMainType_DPT_32_BIT_SET
+		return KnxDatapointMainType_DPT_32_BIT_SET, true
 	case 32:
-		return KnxDatapointMainType_DPT_ELECTRICAL_ENERGY
+		return KnxDatapointMainType_DPT_ELECTRICAL_ENERGY, true
 	case 33:
-		return KnxDatapointMainType_DPT_24_TIMES_CHANNEL_ACTIVATION
+		return KnxDatapointMainType_DPT_24_TIMES_CHANNEL_ACTIVATION, true
 	case 34:
-		return KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
+		return KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM, true
 	case 35:
-		return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
+		return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM, true
 	case 36:
-		return KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION
+		return KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION, true
 	case 37:
-		return KnxDatapointMainType_DPT_ALARM_INFO
+		return KnxDatapointMainType_DPT_ALARM_INFO, true
 	case 38:
-		return KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE
+		return KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE, true
 	case 39:
-		return KnxDatapointMainType_DPT_SCALING_SPEED
+		return KnxDatapointMainType_DPT_SCALING_SPEED, true
 	case 4:
-		return KnxDatapointMainType_DPT_12_BYTE_SIGNED_VALUE
+		return KnxDatapointMainType_DPT_12_BYTE_SIGNED_VALUE, true
 	case 40:
-		return KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION
+		return KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION, true
 	case 41:
-		return KnxDatapointMainType_DPT_MBUS_ADDRESS
+		return KnxDatapointMainType_DPT_MBUS_ADDRESS, true
 	case 42:
-		return KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB
+		return KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB, true
 	case 43:
-		return KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1
+		return KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1, true
 	case 44:
-		return KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY
+		return KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY, true
 	case 45:
-		return KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL
+		return KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL, true
 	case 46:
-		return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT
+		return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT, true
 	case 47:
-		return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT
+		return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT, true
 	case 48:
-		return KnxDatapointMainType_DPT_POSITIONS
+		return KnxDatapointMainType_DPT_POSITIONS, true
 	case 49:
-		return KnxDatapointMainType_DPT_STATUS_32_BIT
+		return KnxDatapointMainType_DPT_STATUS_32_BIT, true
 	case 5:
-		return KnxDatapointMainType_DPT_8_BYTE_FLOAT_VALUE
+		return KnxDatapointMainType_DPT_8_BYTE_FLOAT_VALUE, true
 	case 50:
-		return KnxDatapointMainType_DPT_STATUS_48_BIT
+		return KnxDatapointMainType_DPT_STATUS_48_BIT, true
 	case 51:
-		return KnxDatapointMainType_DPT_CONVERTER_STATUS
+		return KnxDatapointMainType_DPT_CONVERTER_STATUS, true
 	case 52:
-		return KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT
+		return KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT, true
 	case 53:
-		return KnxDatapointMainType_DPT_BATTERY_INFORMATION
+		return KnxDatapointMainType_DPT_BATTERY_INFORMATION, true
 	case 54:
-		return KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION
+		return KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION, true
 	case 55:
-		return KnxDatapointMainType_DPT_STATUS_24_BIT
+		return KnxDatapointMainType_DPT_STATUS_24_BIT, true
 	case 56:
-		return KnxDatapointMainType_DPT_COLOUR_RGBW
+		return KnxDatapointMainType_DPT_COLOUR_RGBW, true
 	case 57:
-		return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW
+		return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW, true
 	case 58:
-		return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB
+		return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB, true
 	case 59:
-		return KnxDatapointMainType_DPT_F32F32
+		return KnxDatapointMainType_DPT_F32F32, true
 	case 6:
-		return KnxDatapointMainType_DPT_1_BIT
+		return KnxDatapointMainType_DPT_1_BIT, true
 	case 60:
-		return KnxDatapointMainType_DPT_F16F16F16F16
+		return KnxDatapointMainType_DPT_F16F16F16F16, true
 	case 7:
-		return KnxDatapointMainType_DPT_1_BIT_CONTROLLED
+		return KnxDatapointMainType_DPT_1_BIT_CONTROLLED, true
 	case 8:
-		return KnxDatapointMainType_DPT_3_BIT_CONTROLLED
+		return KnxDatapointMainType_DPT_3_BIT_CONTROLLED, true
 	case 9:
-		return KnxDatapointMainType_DPT_CHARACTER
+		return KnxDatapointMainType_DPT_CHARACTER, true
 	}
-	return 0
+	return 0, false
 }
 
-func KnxDatapointMainTypeByName(value string) KnxDatapointMainType {
+func KnxDatapointMainTypeByName(value string) (enum KnxDatapointMainType, ok bool) {
 	switch value {
 	case "DPT_UNKNOWN":
-		return KnxDatapointMainType_DPT_UNKNOWN
+		return KnxDatapointMainType_DPT_UNKNOWN, true
 	case "DPT_64_BIT_SET":
-		return KnxDatapointMainType_DPT_64_BIT_SET
+		return KnxDatapointMainType_DPT_64_BIT_SET, true
 	case "DPT_8_BIT_UNSIGNED_VALUE":
-		return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE
+		return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE, true
 	case "DPT_8_BIT_SIGNED_VALUE":
-		return KnxDatapointMainType_DPT_8_BIT_SIGNED_VALUE
+		return KnxDatapointMainType_DPT_8_BIT_SIGNED_VALUE, true
 	case "DPT_2_BYTE_UNSIGNED_VALUE":
-		return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE
+		return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE, true
 	case "DPT_2_BYTE_SIGNED_VALUE":
-		return KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE
+		return KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE, true
 	case "DPT_2_BYTE_FLOAT_VALUE":
-		return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+		return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE, true
 	case "DPT_TIME":
-		return KnxDatapointMainType_DPT_TIME
+		return KnxDatapointMainType_DPT_TIME, true
 	case "DPT_DATE":
-		return KnxDatapointMainType_DPT_DATE
+		return KnxDatapointMainType_DPT_DATE, true
 	case "DPT_4_BYTE_UNSIGNED_VALUE":
-		return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE
+		return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE, true
 	case "DPT_4_BYTE_SIGNED_VALUE":
-		return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE
+		return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE, true
 	case "DPT_4_BYTE_FLOAT_VALUE":
-		return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+		return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE, true
 	case "DPT_8_BYTE_UNSIGNED_VALUE":
-		return KnxDatapointMainType_DPT_8_BYTE_UNSIGNED_VALUE
+		return KnxDatapointMainType_DPT_8_BYTE_UNSIGNED_VALUE, true
 	case "DPT_ENTRANCE_ACCESS":
-		return KnxDatapointMainType_DPT_ENTRANCE_ACCESS
+		return KnxDatapointMainType_DPT_ENTRANCE_ACCESS, true
 	case "DPT_CHARACTER_STRING":
-		return KnxDatapointMainType_DPT_CHARACTER_STRING
+		return KnxDatapointMainType_DPT_CHARACTER_STRING, true
 	case "DPT_SCENE_NUMBER":
-		return KnxDatapointMainType_DPT_SCENE_NUMBER
+		return KnxDatapointMainType_DPT_SCENE_NUMBER, true
 	case "DPT_SCENE_CONTROL":
-		return KnxDatapointMainType_DPT_SCENE_CONTROL
+		return KnxDatapointMainType_DPT_SCENE_CONTROL, true
 	case "DPT_DATE_TIME":
-		return KnxDatapointMainType_DPT_DATE_TIME
+		return KnxDatapointMainType_DPT_DATE_TIME, true
 	case "DPT_1_BYTE":
-		return KnxDatapointMainType_DPT_1_BYTE
+		return KnxDatapointMainType_DPT_1_BYTE, true
 	case "DPT_8_BIT_SET":
-		return KnxDatapointMainType_DPT_8_BIT_SET
+		return KnxDatapointMainType_DPT_8_BIT_SET, true
 	case "DPT_16_BIT_SET":
-		return KnxDatapointMainType_DPT_16_BIT_SET
+		return KnxDatapointMainType_DPT_16_BIT_SET, true
 	case "DPT_2_BIT_SET":
-		return KnxDatapointMainType_DPT_2_BIT_SET
+		return KnxDatapointMainType_DPT_2_BIT_SET, true
 	case "DPT_2_NIBBLE_SET":
-		return KnxDatapointMainType_DPT_2_NIBBLE_SET
+		return KnxDatapointMainType_DPT_2_NIBBLE_SET, true
 	case "DPT_8_BYTE_SIGNED_VALUE":
-		return KnxDatapointMainType_DPT_8_BYTE_SIGNED_VALUE
+		return KnxDatapointMainType_DPT_8_BYTE_SIGNED_VALUE, true
 	case "DPT_8_BIT_SET_2":
-		return KnxDatapointMainType_DPT_8_BIT_SET_2
+		return KnxDatapointMainType_DPT_8_BIT_SET_2, true
 	case "DPT_32_BIT_SET":
-		return KnxDatapointMainType_DPT_32_BIT_SET
+		return KnxDatapointMainType_DPT_32_BIT_SET, true
 	case "DPT_ELECTRICAL_ENERGY":
-		return KnxDatapointMainType_DPT_ELECTRICAL_ENERGY
+		return KnxDatapointMainType_DPT_ELECTRICAL_ENERGY, true
 	case "DPT_24_TIMES_CHANNEL_ACTIVATION":
-		return KnxDatapointMainType_DPT_24_TIMES_CHANNEL_ACTIVATION
+		return KnxDatapointMainType_DPT_24_TIMES_CHANNEL_ACTIVATION, true
 	case "DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM":
-		return KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
+		return KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM, true
 	case "DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM":
-		return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
+		return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM, true
 	case "DPT_DATAPOINT_TYPE_VERSION":
-		return KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION
+		return KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION, true
 	case "DPT_ALARM_INFO":
-		return KnxDatapointMainType_DPT_ALARM_INFO
+		return KnxDatapointMainType_DPT_ALARM_INFO, true
 	case "DPT_3X_2_BYTE_FLOAT_VALUE":
-		return KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE
+		return KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE, true
 	case "DPT_SCALING_SPEED":
-		return KnxDatapointMainType_DPT_SCALING_SPEED
+		return KnxDatapointMainType_DPT_SCALING_SPEED, true
 	case "DPT_12_BYTE_SIGNED_VALUE":
-		return KnxDatapointMainType_DPT_12_BYTE_SIGNED_VALUE
+		return KnxDatapointMainType_DPT_12_BYTE_SIGNED_VALUE, true
 	case "DPT_4_1_1_BYTE_COMBINED_INFORMATION":
-		return KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION
+		return KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION, true
 	case "DPT_MBUS_ADDRESS":
-		return KnxDatapointMainType_DPT_MBUS_ADDRESS
+		return KnxDatapointMainType_DPT_MBUS_ADDRESS, true
 	case "DPT_3_BYTE_COLOUR_RGB":
-		return KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB
+		return KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB, true
 	case "DPT_LANGUAGE_CODE_ISO_639_1":
-		return KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1
+		return KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1, true
 	case "DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY":
-		return KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY
+		return KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY, true
 	case "DPT_PRIORITISED_MODE_CONTROL":
-		return KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL
+		return KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL, true
 	case "DPT_CONFIGURATION_DIAGNOSTICS_16_BIT":
-		return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT
+		return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT, true
 	case "DPT_CONFIGURATION_DIAGNOSTICS_8_BIT":
-		return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT
+		return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT, true
 	case "DPT_POSITIONS":
-		return KnxDatapointMainType_DPT_POSITIONS
+		return KnxDatapointMainType_DPT_POSITIONS, true
 	case "DPT_STATUS_32_BIT":
-		return KnxDatapointMainType_DPT_STATUS_32_BIT
+		return KnxDatapointMainType_DPT_STATUS_32_BIT, true
 	case "DPT_8_BYTE_FLOAT_VALUE":
-		return KnxDatapointMainType_DPT_8_BYTE_FLOAT_VALUE
+		return KnxDatapointMainType_DPT_8_BYTE_FLOAT_VALUE, true
 	case "DPT_STATUS_48_BIT":
-		return KnxDatapointMainType_DPT_STATUS_48_BIT
+		return KnxDatapointMainType_DPT_STATUS_48_BIT, true
 	case "DPT_CONVERTER_STATUS":
-		return KnxDatapointMainType_DPT_CONVERTER_STATUS
+		return KnxDatapointMainType_DPT_CONVERTER_STATUS, true
 	case "DPT_CONVERTER_TEST_RESULT":
-		return KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT
+		return KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT, true
 	case "DPT_BATTERY_INFORMATION":
-		return KnxDatapointMainType_DPT_BATTERY_INFORMATION
+		return KnxDatapointMainType_DPT_BATTERY_INFORMATION, true
 	case "DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION":
-		return KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION
+		return KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION, true
 	case "DPT_STATUS_24_BIT":
-		return KnxDatapointMainType_DPT_STATUS_24_BIT
+		return KnxDatapointMainType_DPT_STATUS_24_BIT, true
 	case "DPT_COLOUR_RGBW":
-		return KnxDatapointMainType_DPT_COLOUR_RGBW
+		return KnxDatapointMainType_DPT_COLOUR_RGBW, true
 	case "DPT_RELATIVE_CONTROL_RGBW":
-		return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW
+		return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW, true
 	case "DPT_RELATIVE_CONTROL_RGB":
-		return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB
+		return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB, true
 	case "DPT_F32F32":
-		return KnxDatapointMainType_DPT_F32F32
+		return KnxDatapointMainType_DPT_F32F32, true
 	case "DPT_1_BIT":
-		return KnxDatapointMainType_DPT_1_BIT
+		return KnxDatapointMainType_DPT_1_BIT, true
 	case "DPT_F16F16F16F16":
-		return KnxDatapointMainType_DPT_F16F16F16F16
+		return KnxDatapointMainType_DPT_F16F16F16F16, true
 	case "DPT_1_BIT_CONTROLLED":
-		return KnxDatapointMainType_DPT_1_BIT_CONTROLLED
+		return KnxDatapointMainType_DPT_1_BIT_CONTROLLED, true
 	case "DPT_3_BIT_CONTROLLED":
-		return KnxDatapointMainType_DPT_3_BIT_CONTROLLED
+		return KnxDatapointMainType_DPT_3_BIT_CONTROLLED, true
 	case "DPT_CHARACTER":
-		return KnxDatapointMainType_DPT_CHARACTER
+		return KnxDatapointMainType_DPT_CHARACTER, true
 	}
-	return 0
+	return 0, false
 }
 
 func KnxDatapointMainTypeKnows(value uint16) bool {
@@ -1237,19 +1237,37 @@ func (m KnxDatapointMainType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxDatapointMainTypeParse(readBuffer utils.ReadBuffer) (KnxDatapointMainType, error) {
+func KnxDatapointMainTypeParse(theBytes []byte) (KnxDatapointMainType, error) {
+	return KnxDatapointMainTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func KnxDatapointMainTypeParseWithBuffer(readBuffer utils.ReadBuffer) (KnxDatapointMainType, error) {
 	val, err := readBuffer.ReadUint16("KnxDatapointMainType", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading KnxDatapointMainType")
 	}
-	return KnxDatapointMainTypeByValue(val), nil
+	if enum, ok := KnxDatapointMainTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return KnxDatapointMainType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e KnxDatapointMainType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("KnxDatapointMainType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e KnxDatapointMainType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e KnxDatapointMainType) name() string {
+func (e KnxDatapointMainType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("KnxDatapointMainType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e KnxDatapointMainType) PLC4XEnumName() string {
 	switch e {
 	case KnxDatapointMainType_DPT_UNKNOWN:
 		return "DPT_UNKNOWN"
@@ -1378,5 +1396,5 @@ func (e KnxDatapointMainType) name() string {
 }
 
 func (e KnxDatapointMainType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

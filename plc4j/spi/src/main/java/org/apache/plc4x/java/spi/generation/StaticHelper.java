@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -28,15 +28,14 @@ public class StaticHelper {
 
     public static int ARRAY_SIZE_IN_BYTES(Object obj) {
         if (obj instanceof List) {
-            List list = (List) obj;
+            List<?> list = (List<?>) obj;
             int numBytes = 0;
             for (Object element : list) {
-                if (element instanceof Message) {
-                    numBytes += ((Message) element).getLengthInBytes();
-                } else {
+                if (!(element instanceof Message)) {
                     throw new RuntimeException(
                         "Array elements for array size in bytes must implement Message interface");
                 }
+                numBytes += ((Message) element).getLengthInBytes();
             }
             return numBytes;
         }
@@ -44,12 +43,11 @@ public class StaticHelper {
             Object[] arr = (Object[]) obj;
             int numBytes = 0;
             for (Object element : arr) {
-                if (element instanceof Message) {
-                    numBytes += ((Message) element).getLengthInBytes();
-                } else {
+                if (!(element instanceof Message)) {
                     throw new RuntimeException(
                         "Array elements for array size in bytes must implement Message interface");
                 }
+                numBytes += ((Message) element).getLengthInBytes();
             }
             return numBytes;
         }

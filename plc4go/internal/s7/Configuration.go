@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,9 +20,10 @@
 package s7
 
 import (
+	"strconv"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"strconv"
 )
 
 type Configuration struct {
@@ -54,7 +55,7 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 		}
 		configuration.localRack = int32(parsedInt)
 	}
-	if localSlotString := getFromOptions(options, "local-rack"); localSlotString != "" {
+	if localSlotString := getFromOptions(options, "local-slot"); localSlotString != "" {
 		parsedInt, err := strconv.ParseInt(localSlotString, 10, 32)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing local-slot")
@@ -68,7 +69,7 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 		}
 		configuration.remoteRack = int32(parsedInt)
 	}
-	if remoteSlotString := getFromOptions(options, "remote-rack"); remoteSlotString != "" {
+	if remoteSlotString := getFromOptions(options, "remote-slot"); remoteSlotString != "" {
 		parsedInt, err := strconv.ParseInt(remoteSlotString, 10, 32)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing remote-slot")

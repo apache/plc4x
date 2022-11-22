@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -58,6 +58,10 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         return false;
     }
 
+    protected boolean canBrowse() {
+        return false;
+    }
+
     protected boolean awaitSetupComplete() {
         return true;
     }
@@ -74,7 +78,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         return null;
     }
 
-    protected abstract PlcFieldHandler getFieldHandler();
+    protected abstract PlcTagHandler getTagHandler();
 
     protected abstract PlcValueHandler getValueHandler();
 
@@ -92,6 +96,11 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
     @Override
     public PlcConnection getConnection(String connectionString) throws PlcConnectionException {
+        return getConnection(connectionString, null);
+    }
+
+    @Override
+    public PlcConnection getConnection(String connectionString, PlcAuthentication authentication) throws PlcConnectionException {
         // Split up the connection string into its individual segments.
         Matcher matcher = URI_PATTERN.matcher(connectionString);
         if (!matcher.matches()) {
@@ -118,7 +127,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
             throw new PlcConnectionException("Unsupported configuration");
         }
 
-        // Try to find a transport in order to create a communication channel.
+        // Try to find a suitable transport-type for creating the communication channel.
         Transport transport = null;
         ServiceLoader<Transport> transportLoader = ServiceLoader.load(
             Transport.class, Thread.currentThread().getContextClassLoader());
@@ -164,8 +173,8 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         }
 
         return new DefaultNettyPlcConnection(
-            canRead(), canWrite(), canSubscribe(),
-            getFieldHandler(),
+            canRead(), canWrite(), canSubscribe(), canBrowse(),
+            getTagHandler(),
             getValueHandler(),
             configuration,
             channelFactory,
@@ -173,12 +182,8 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
             awaitDisconnectComplete,
             awaitDiscoverComplete,
             getStackConfigurer(transport),
-            getOptimizer());
-    }
-
-    @Override
-    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("Authentication not supported.");
+            getOptimizer(),
+            authentication);
     }
 
 

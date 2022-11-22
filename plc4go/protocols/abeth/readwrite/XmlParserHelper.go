@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,8 +20,8 @@
 package readwrite
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/abeth/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"strconv"
 	"strings"
@@ -43,18 +43,18 @@ func init() {
 func (m AbethXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "DF1RequestCommand":
-		return model.DF1RequestCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.DF1RequestCommandParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DF1RequestMessage":
-		return model.DF1RequestMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.DF1RequestMessageParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DF1ResponseMessage":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
 		payloadLength := uint16(parsedUint0)
-		return model.DF1ResponseMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), payloadLength)
+		return model.DF1ResponseMessageParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), payloadLength)
 	case "CIPEncapsulationPacket":
-		return model.CIPEncapsulationPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.CIPEncapsulationPacketParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

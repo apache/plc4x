@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,8 @@ import (
 type MaxSegmentsAccepted uint8
 
 type IMaxSegmentsAccepted interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
+	MaxSegments() uint8
 }
 
 const (
@@ -60,48 +61,97 @@ func init() {
 	}
 }
 
-func MaxSegmentsAcceptedByValue(value uint8) MaxSegmentsAccepted {
-	switch value {
+func (e MaxSegmentsAccepted) MaxSegments() uint8 {
+	switch e {
 	case 0x0:
-		return MaxSegmentsAccepted_UNSPECIFIED
+		{ /* '0x0' */
+			return 255
+		}
 	case 0x1:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_02
+		{ /* '0x1' */
+			return 2
+		}
 	case 0x2:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_04
+		{ /* '0x2' */
+			return 4
+		}
 	case 0x3:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_08
+		{ /* '0x3' */
+			return 8
+		}
 	case 0x4:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_16
+		{ /* '0x4' */
+			return 16
+		}
 	case 0x5:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_32
+		{ /* '0x5' */
+			return 32
+		}
 	case 0x6:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_64
+		{ /* '0x6' */
+			return 64
+		}
 	case 0x7:
-		return MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS
+		{ /* '0x7' */
+			return 255
+		}
+	default:
+		{
+			return 0
+		}
 	}
-	return 0
 }
 
-func MaxSegmentsAcceptedByName(value string) MaxSegmentsAccepted {
+func MaxSegmentsAcceptedFirstEnumForFieldMaxSegments(value uint8) (MaxSegmentsAccepted, error) {
+	for _, sizeValue := range MaxSegmentsAcceptedValues {
+		if sizeValue.MaxSegments() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing MaxSegments not found", value)
+}
+func MaxSegmentsAcceptedByValue(value uint8) (enum MaxSegmentsAccepted, ok bool) {
+	switch value {
+	case 0x0:
+		return MaxSegmentsAccepted_UNSPECIFIED, true
+	case 0x1:
+		return MaxSegmentsAccepted_NUM_SEGMENTS_02, true
+	case 0x2:
+		return MaxSegmentsAccepted_NUM_SEGMENTS_04, true
+	case 0x3:
+		return MaxSegmentsAccepted_NUM_SEGMENTS_08, true
+	case 0x4:
+		return MaxSegmentsAccepted_NUM_SEGMENTS_16, true
+	case 0x5:
+		return MaxSegmentsAccepted_NUM_SEGMENTS_32, true
+	case 0x6:
+		return MaxSegmentsAccepted_NUM_SEGMENTS_64, true
+	case 0x7:
+		return MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS, true
+	}
+	return 0, false
+}
+
+func MaxSegmentsAcceptedByName(value string) (enum MaxSegmentsAccepted, ok bool) {
 	switch value {
 	case "UNSPECIFIED":
-		return MaxSegmentsAccepted_UNSPECIFIED
+		return MaxSegmentsAccepted_UNSPECIFIED, true
 	case "NUM_SEGMENTS_02":
-		return MaxSegmentsAccepted_NUM_SEGMENTS_02
+		return MaxSegmentsAccepted_NUM_SEGMENTS_02, true
 	case "NUM_SEGMENTS_04":
-		return MaxSegmentsAccepted_NUM_SEGMENTS_04
+		return MaxSegmentsAccepted_NUM_SEGMENTS_04, true
 	case "NUM_SEGMENTS_08":
-		return MaxSegmentsAccepted_NUM_SEGMENTS_08
+		return MaxSegmentsAccepted_NUM_SEGMENTS_08, true
 	case "NUM_SEGMENTS_16":
-		return MaxSegmentsAccepted_NUM_SEGMENTS_16
+		return MaxSegmentsAccepted_NUM_SEGMENTS_16, true
 	case "NUM_SEGMENTS_32":
-		return MaxSegmentsAccepted_NUM_SEGMENTS_32
+		return MaxSegmentsAccepted_NUM_SEGMENTS_32, true
 	case "NUM_SEGMENTS_64":
-		return MaxSegmentsAccepted_NUM_SEGMENTS_64
+		return MaxSegmentsAccepted_NUM_SEGMENTS_64, true
 	case "MORE_THAN_64_SEGMENTS":
-		return MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS
+		return MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS, true
 	}
-	return 0
+	return 0, false
 }
 
 func MaxSegmentsAcceptedKnows(value uint8) bool {
@@ -131,19 +181,37 @@ func (m MaxSegmentsAccepted) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MaxSegmentsAcceptedParse(readBuffer utils.ReadBuffer) (MaxSegmentsAccepted, error) {
+func MaxSegmentsAcceptedParse(theBytes []byte) (MaxSegmentsAccepted, error) {
+	return MaxSegmentsAcceptedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func MaxSegmentsAcceptedParseWithBuffer(readBuffer utils.ReadBuffer) (MaxSegmentsAccepted, error) {
 	val, err := readBuffer.ReadUint8("MaxSegmentsAccepted", 3)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading MaxSegmentsAccepted")
 	}
-	return MaxSegmentsAcceptedByValue(val), nil
+	if enum, ok := MaxSegmentsAcceptedByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return MaxSegmentsAccepted(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e MaxSegmentsAccepted) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("MaxSegmentsAccepted", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e MaxSegmentsAccepted) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e MaxSegmentsAccepted) name() string {
+func (e MaxSegmentsAccepted) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("MaxSegmentsAccepted", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e MaxSegmentsAccepted) PLC4XEnumName() string {
 	switch e {
 	case MaxSegmentsAccepted_UNSPECIFIED:
 		return "UNSPECIFIED"
@@ -166,5 +234,5 @@ func (e MaxSegmentsAccepted) name() string {
 }
 
 func (e MaxSegmentsAccepted) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

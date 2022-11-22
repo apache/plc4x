@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetEscalatorFault uint16
 
 type IBACnetEscalatorFault interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -64,56 +64,56 @@ func init() {
 	}
 }
 
-func BACnetEscalatorFaultByValue(value uint16) BACnetEscalatorFault {
+func BACnetEscalatorFaultByValue(value uint16) (enum BACnetEscalatorFault, ok bool) {
 	switch value {
 	case 0:
-		return BACnetEscalatorFault_CONTROLLER_FAULT
+		return BACnetEscalatorFault_CONTROLLER_FAULT, true
 	case 0xFFFF:
-		return BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE
+		return BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT
+		return BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT, true
 	case 2:
-		return BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT
+		return BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT, true
 	case 3:
-		return BACnetEscalatorFault_OVERSPEED_FAULT
+		return BACnetEscalatorFault_OVERSPEED_FAULT, true
 	case 4:
-		return BACnetEscalatorFault_POWER_SUPPLY_FAULT
+		return BACnetEscalatorFault_POWER_SUPPLY_FAULT, true
 	case 5:
-		return BACnetEscalatorFault_SAFETY_DEVICE_FAULT
+		return BACnetEscalatorFault_SAFETY_DEVICE_FAULT, true
 	case 6:
-		return BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT
+		return BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT, true
 	case 7:
-		return BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED
+		return BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED, true
 	case 8:
-		return BACnetEscalatorFault_COMB_PLATE_FAULT
+		return BACnetEscalatorFault_COMB_PLATE_FAULT, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetEscalatorFaultByName(value string) BACnetEscalatorFault {
+func BACnetEscalatorFaultByName(value string) (enum BACnetEscalatorFault, ok bool) {
 	switch value {
 	case "CONTROLLER_FAULT":
-		return BACnetEscalatorFault_CONTROLLER_FAULT
+		return BACnetEscalatorFault_CONTROLLER_FAULT, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE
+		return BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE, true
 	case "DRIVE_AND_MOTOR_FAULT":
-		return BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT
+		return BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT, true
 	case "MECHANICAL_COMPONENT_FAULT":
-		return BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT
+		return BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT, true
 	case "OVERSPEED_FAULT":
-		return BACnetEscalatorFault_OVERSPEED_FAULT
+		return BACnetEscalatorFault_OVERSPEED_FAULT, true
 	case "POWER_SUPPLY_FAULT":
-		return BACnetEscalatorFault_POWER_SUPPLY_FAULT
+		return BACnetEscalatorFault_POWER_SUPPLY_FAULT, true
 	case "SAFETY_DEVICE_FAULT":
-		return BACnetEscalatorFault_SAFETY_DEVICE_FAULT
+		return BACnetEscalatorFault_SAFETY_DEVICE_FAULT, true
 	case "CONTROLLER_SUPPLY_FAULT":
-		return BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT
+		return BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT, true
 	case "DRIVE_TEMPERATURE_EXCEEDED":
-		return BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED
+		return BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED, true
 	case "COMB_PLATE_FAULT":
-		return BACnetEscalatorFault_COMB_PLATE_FAULT
+		return BACnetEscalatorFault_COMB_PLATE_FAULT, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetEscalatorFaultKnows(value uint16) bool {
@@ -143,19 +143,37 @@ func (m BACnetEscalatorFault) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEscalatorFaultParse(readBuffer utils.ReadBuffer) (BACnetEscalatorFault, error) {
+func BACnetEscalatorFaultParse(theBytes []byte) (BACnetEscalatorFault, error) {
+	return BACnetEscalatorFaultParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetEscalatorFaultParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEscalatorFault, error) {
 	val, err := readBuffer.ReadUint16("BACnetEscalatorFault", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetEscalatorFault")
 	}
-	return BACnetEscalatorFaultByValue(val), nil
+	if enum, ok := BACnetEscalatorFaultByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetEscalatorFault(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetEscalatorFault) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetEscalatorFault", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetEscalatorFault) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetEscalatorFault) name() string {
+func (e BACnetEscalatorFault) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetEscalatorFault", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetEscalatorFault) PLC4XEnumName() string {
 	switch e {
 	case BACnetEscalatorFault_CONTROLLER_FAULT:
 		return "CONTROLLER_FAULT"
@@ -182,5 +200,5 @@ func (e BACnetEscalatorFault) name() string {
 }
 
 func (e BACnetEscalatorFault) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

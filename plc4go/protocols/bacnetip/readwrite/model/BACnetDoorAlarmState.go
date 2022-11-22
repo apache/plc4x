@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetDoorAlarmState uint8
 
 type IBACnetDoorAlarmState interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -64,56 +64,56 @@ func init() {
 	}
 }
 
-func BACnetDoorAlarmStateByValue(value uint8) BACnetDoorAlarmState {
+func BACnetDoorAlarmStateByValue(value uint8) (enum BACnetDoorAlarmState, ok bool) {
 	switch value {
 	case 0:
-		return BACnetDoorAlarmState_NORMAL
+		return BACnetDoorAlarmState_NORMAL, true
 	case 0xFF:
-		return BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE
+		return BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetDoorAlarmState_ALARM
+		return BACnetDoorAlarmState_ALARM, true
 	case 2:
-		return BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG
+		return BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG, true
 	case 3:
-		return BACnetDoorAlarmState_FORCED_OPEN
+		return BACnetDoorAlarmState_FORCED_OPEN, true
 	case 4:
-		return BACnetDoorAlarmState_TAMPER
+		return BACnetDoorAlarmState_TAMPER, true
 	case 5:
-		return BACnetDoorAlarmState_DOOR_FAULT
+		return BACnetDoorAlarmState_DOOR_FAULT, true
 	case 6:
-		return BACnetDoorAlarmState_LOCK_DOWN
+		return BACnetDoorAlarmState_LOCK_DOWN, true
 	case 7:
-		return BACnetDoorAlarmState_FREE_ACCESS
+		return BACnetDoorAlarmState_FREE_ACCESS, true
 	case 8:
-		return BACnetDoorAlarmState_EGRESS_OPEN
+		return BACnetDoorAlarmState_EGRESS_OPEN, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetDoorAlarmStateByName(value string) BACnetDoorAlarmState {
+func BACnetDoorAlarmStateByName(value string) (enum BACnetDoorAlarmState, ok bool) {
 	switch value {
 	case "NORMAL":
-		return BACnetDoorAlarmState_NORMAL
+		return BACnetDoorAlarmState_NORMAL, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE
+		return BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE, true
 	case "ALARM":
-		return BACnetDoorAlarmState_ALARM
+		return BACnetDoorAlarmState_ALARM, true
 	case "DOOR_OPEN_TOO_LONG":
-		return BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG
+		return BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG, true
 	case "FORCED_OPEN":
-		return BACnetDoorAlarmState_FORCED_OPEN
+		return BACnetDoorAlarmState_FORCED_OPEN, true
 	case "TAMPER":
-		return BACnetDoorAlarmState_TAMPER
+		return BACnetDoorAlarmState_TAMPER, true
 	case "DOOR_FAULT":
-		return BACnetDoorAlarmState_DOOR_FAULT
+		return BACnetDoorAlarmState_DOOR_FAULT, true
 	case "LOCK_DOWN":
-		return BACnetDoorAlarmState_LOCK_DOWN
+		return BACnetDoorAlarmState_LOCK_DOWN, true
 	case "FREE_ACCESS":
-		return BACnetDoorAlarmState_FREE_ACCESS
+		return BACnetDoorAlarmState_FREE_ACCESS, true
 	case "EGRESS_OPEN":
-		return BACnetDoorAlarmState_EGRESS_OPEN
+		return BACnetDoorAlarmState_EGRESS_OPEN, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetDoorAlarmStateKnows(value uint8) bool {
@@ -143,19 +143,37 @@ func (m BACnetDoorAlarmState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDoorAlarmStateParse(readBuffer utils.ReadBuffer) (BACnetDoorAlarmState, error) {
+func BACnetDoorAlarmStateParse(theBytes []byte) (BACnetDoorAlarmState, error) {
+	return BACnetDoorAlarmStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetDoorAlarmStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDoorAlarmState, error) {
 	val, err := readBuffer.ReadUint8("BACnetDoorAlarmState", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetDoorAlarmState")
 	}
-	return BACnetDoorAlarmStateByValue(val), nil
+	if enum, ok := BACnetDoorAlarmStateByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetDoorAlarmState(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetDoorAlarmState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetDoorAlarmState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetDoorAlarmState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetDoorAlarmState) name() string {
+func (e BACnetDoorAlarmState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetDoorAlarmState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetDoorAlarmState) PLC4XEnumName() string {
 	switch e {
 	case BACnetDoorAlarmState_NORMAL:
 		return "NORMAL"
@@ -182,5 +200,5 @@ func (e BACnetDoorAlarmState) name() string {
 }
 
 func (e BACnetDoorAlarmState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

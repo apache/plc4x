@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -22,7 +22,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
@@ -67,7 +68,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Byte value) {
         if ((value == null) || (value < minValue || value > maxValue)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
         this.isNullable = true;
@@ -75,7 +76,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Short value) {
         if ((value == null) || (value < minValue || value > maxValue)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
         this.isNullable = true;
@@ -83,7 +84,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Integer value) {
         if ((value == null) || (value < minValue || value > maxValue)) {
-            throw new PlcInvalidFieldException(String.format("Value of type %d is out of range %d - %d for a %s Value", value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format("Value of type %d is out of range %d - %d for a %s Value", value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
         this.isNullable = true;
@@ -91,7 +92,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Long value) {
         if ((value == null) || (value < minValue || value > maxValue)) {
-            throw new PlcInvalidFieldException(String.format("Value of type %d is out of range %d - %d for a %s Value", value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format("Value of type %d is out of range %d - %d for a %s Value", value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
         this.isNullable = true;
@@ -99,7 +100,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Float value) {
         if ((value == null) || (value < minValue) || (value > maxValue) || (value % 1 != 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
         this.isNullable = true;
@@ -107,7 +108,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Double value) {
         if ((value == null) || (value < minValue) || (value > maxValue) || (value % 1 != 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
         this.isNullable = true;
@@ -115,7 +116,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(BigInteger value) {
         if ((value == null) || (value.compareTo(BigInteger.valueOf(minValue)) < 0) || (value.compareTo(BigInteger.valueOf(maxValue)) > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.compareTo(BigInteger.valueOf(maxValue)) >= 0;
         this.isNullable = true;
@@ -123,7 +124,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(BigDecimal value) {
         if ((value == null) || (value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.compareTo(BigDecimal.valueOf(maxValue)) >= 0;
         this.isNullable = true;
@@ -134,7 +135,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
             this.value = parseValue(value);
             this.isNullable = false;
         } catch (RuntimeException e) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
         }
     }
 
@@ -151,6 +152,11 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     public PlcBOOL(@JsonProperty("value") boolean value) {
         this.value = value;
         this.isNullable = true;
+    }
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.BOOL;
     }
 
     @Override

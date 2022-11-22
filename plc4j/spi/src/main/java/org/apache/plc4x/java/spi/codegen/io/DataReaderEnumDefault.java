@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,10 +21,14 @@ package org.apache.plc4x.java.spi.codegen.io;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.function.Function;
 
 public class DataReaderEnumDefault<T, I> implements DataReaderEnum<T> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataReaderEnumDefault.class);
 
     private final Function<I, T> enumResolver;
     private final DataReader<I> dataReader;
@@ -61,7 +65,11 @@ public class DataReaderEnumDefault<T, I> implements DataReaderEnum<T> {
 
     public T read(String logicalName, Function<I, T> enumResolver, WithReaderArgs... readerArgs) throws ParseException {
         I rawValue = dataReader.read(logicalName, readerArgs);
-        return enumResolver.apply(rawValue);
+        T enumValue = enumResolver.apply(rawValue);
+        if (enumValue == null) {
+            LOGGER.debug("No {} enum found for value {}", logicalName, rawValue);
+        }
+        return enumValue;
     }
 
     @Override

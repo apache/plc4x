@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -67,7 +67,7 @@ plc4c_return_code plc4c_driver_plc4x_sm_write_finished(
   if (result != OK) 
     return result;
 
-  if (plc4c_utils_list_size(packet->plc4x_write_response_fields) !=
+  if (plc4c_utils_list_size(packet->plc4x_write_response_tags) !=
       plc4c_utils_list_size(execution->write_request->items))
     return INTERNAL_ERROR;
   
@@ -150,7 +150,7 @@ void plc4c_driver_plc4x_free_write_request_item(plc4c_list_element *element) {
   plc4c_request_value_item *item;
   item = element->value;
 
-  plc4c_plc4x_read_write_plc4x_field_value_request *addr_item;
+  plc4c_plc4x_read_write_plc4x_tag_value_request *addr_item;
   addr_item = item->item->address;
   // TODO: finish this ...
   //free(addr_item->);
@@ -172,10 +172,10 @@ void plc4c_driver_plc4x_free_write_request(plc4c_write_request *request) {
 void plc4c_driver_plc4x_free_write_response_item(
     plc4c_list_element* write_item_element) {
   
-  plc4c_response_item* responce_item;
-  responce_item = write_item_element->value;
-  // dont free responce_item-item->item its managed by the request not responce
-  free(responce_item); 
+  plc4c_response_item* response_item;
+  response_item = write_item_element->value;
+  // dont free response_item-item->item its managed by the request not response
+  free(response_item);
 }
 
 void plc4c_driver_plc4x_free_write_response(plc4c_write_response* response) {
@@ -194,7 +194,7 @@ plc4c_return_code plc4c_driver_plc4x_parse_write_response(
   plc4c_list_element* request_elements;
   plc4c_request_value_item* request_item;
   plc4c_list_element* plc4x_payload_elements;
-  plc4c_plc4x_read_write_plc4x_field_response* plc4x_payload_item;
+  plc4c_plc4x_read_write_plc4x_tag_response* plc4x_payload_item;
   plc4c_response_item* response_item;
 
   // Make the unfilled response a list
@@ -202,7 +202,7 @@ plc4c_return_code plc4c_driver_plc4x_parse_write_response(
 
   // Iterate over the request items setting return codes as needed.
   request_elements = plc4c_utils_list_tail(execution->write_request->items);
-  plc4x_payload_elements = plc4c_utils_list_tail(packet->plc4x_write_response_fields);
+  plc4x_payload_elements = plc4c_utils_list_tail(packet->plc4x_write_response_tags);
 
   while ((request_elements != NULL) && (plc4x_payload_elements != NULL)) {
     request_item = request_elements->value;

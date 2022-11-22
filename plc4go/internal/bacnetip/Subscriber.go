@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,52 +20,67 @@
 package bacnetip
 
 import (
-	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	plc4goModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"context"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type Subscriber struct {
-	connection           *Connection
-	subscriptionRequests []internalModel.DefaultPlcSubscriptionRequest
+	connection *Connection
+	consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
 }
 
 func NewSubscriber(connection *Connection) *Subscriber {
 	return &Subscriber{
-		connection:           connection,
-		subscriptionRequests: []internalModel.DefaultPlcSubscriptionRequest{},
+		connection: connection,
+		consumers:  make(map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer),
 	}
 }
 
-func (m *Subscriber) Subscribe(subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
+func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
+	// TODO: handle ctx
 	result := make(chan apiModel.PlcSubscriptionRequestResult)
 	go func() {
+		internalPlcSubscriptionRequest := subscriptionRequest.(*spiModel.DefaultPlcSubscriptionRequest)
+
 		// Add this subscriber to the connection.
 		m.connection.addSubscriber(m)
 
-		// Save the subscription request
-		m.subscriptionRequests = append(m.subscriptionRequests, subscriptionRequest.(internalModel.DefaultPlcSubscriptionRequest))
-
 		// Just populate all requests with an OK
 		responseCodes := map[string]apiModel.PlcResponseCode{}
-		for _, fieldName := range subscriptionRequest.GetFieldNames() {
-			responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+		subscriptionValues := make(map[string]apiModel.PlcSubscriptionHandle)
+		for _, tagName := range internalPlcSubscriptionRequest.GetTagNames() {
+			responseCodes[tagName] = apiModel.PlcResponseCode_OK
+			subscriptionValues[tagName] = spiModel.NewDefaultPlcSubscriptionHandle(m)
 		}
 
 		result <- &plc4goModel.DefaultPlcSubscriptionRequestResult{
 			Request:  subscriptionRequest,
-			Response: internalModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes),
+			Response: spiModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes, subscriptionValues),
 			Err:      nil,
 		}
 	}()
 	return result
 }
 
-func (m *Subscriber) Unsubscribe(unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
+func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
+	// TODO: handle ctx
 	result := make(chan apiModel.PlcUnsubscriptionRequestResult)
 
 	// TODO: As soon as we establish a connection, we start getting data...
 	// subscriptions are more an internal handling of which values to pass where.
 
 	return result
+}
+
+func (m *Subscriber) Register(consumer apiModel.PlcSubscriptionEventConsumer, handles []apiModel.PlcSubscriptionHandle) apiModel.PlcConsumerRegistration {
+	consumerRegistration := spiModel.NewDefaultPlcConsumerRegistration(m, consumer, handles...)
+	m.consumers[consumerRegistration] = consumer
+	return consumerRegistration
+}
+
+func (m *Subscriber) Unregister(registration apiModel.PlcConsumerRegistration) {
+	delete(m.consumers, registration.(*spiModel.DefaultPlcConsumerRegistration))
 }

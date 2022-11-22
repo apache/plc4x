@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,15 +19,16 @@
 package org.apache.plc4x.java.can.generic.protocol;
 
 import java.util.Map.Entry;
+
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.can.adapter.Plc4xCANProtocolBase;
-import org.apache.plc4x.java.can.generic.field.GenericCANField;
+import org.apache.plc4x.java.can.generic.tag.GenericCANTag;
 import org.apache.plc4x.java.can.generic.transport.GenericFrame;
 import org.apache.plc4x.java.genericcan.readwrite.DataItem;
 import org.apache.plc4x.java.spi.ConversationContext;
@@ -36,7 +37,7 @@ import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.slf4j.Logger;
@@ -88,46 +89,46 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
             Consumer<PlcSubscriptionEvent> consumer = entry.getValue();
             for (PlcSubscriptionHandle handle : registration.getSubscriptionHandles()) {
                 GenericCANSubscriptionHandle subscription = (GenericCANSubscriptionHandle) handle;
-                Map<String, ResponseItem<PlcValue>> fields = new LinkedHashMap<>();
+                Map<String, ResponseItem<PlcValue>> tags = new LinkedHashMap<>();
                 ReadBuffer buffer = new ReadBufferByteBased(msg.getData(), ByteOrder.LITTLE_ENDIAN);
-                buffer.pullContext("readFields");
+                buffer.pullContext("readTags");
                 if (subscription.matches(msg.getNodeId())) {
-                    for (Entry<String, GenericCANField> field : subscription.getFields().entrySet()) {
+                    for (Entry<String, GenericCANTag> tag : subscription.getTags().entrySet()) {
                         try {
-                            PlcValue value = read(buffer, field.getValue());
+                            PlcValue value = read(buffer, tag.getValue());
                             if (value == null) {
-                                fields.put(field.getKey(), new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+                                tags.put(tag.getKey(), new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                             } else {
-                                fields.put(field.getKey(), new ResponseItem<>(PlcResponseCode.OK, value));
+                                tags.put(tag.getKey(), new ResponseItem<>(PlcResponseCode.OK, value));
                             }
                         } catch (ParseException e) {
-                            fields.put(field.getKey(), new ResponseItem<>(PlcResponseCode.INVALID_DATA, null));
+                            tags.put(tag.getKey(), new ResponseItem<>(PlcResponseCode.INVALID_DATA, null));
                         }
                     }
-                    consumer.accept(new DefaultPlcSubscriptionEvent(Instant.now(), fields));
+                    consumer.accept(new DefaultPlcSubscriptionEvent(Instant.now(), tags));
                 }
-                buffer.closeContext("readFields");
+                buffer.closeContext("readTags");
             }
         }
     }
 
-    private PlcValue read(ReadBuffer buffer, GenericCANField field) throws ParseException {
+    private PlcValue read(ReadBuffer buffer, GenericCANTag tag) throws ParseException {
         try {
-            buffer.pullContext("read-" + field);
-            return DataItem.staticParse(buffer, field.getDataType());
+            buffer.pullContext("read-" + tag);
+            return DataItem.staticParse(buffer, tag.getDataType());
         } finally {
-            buffer.closeContext("read-" + field);
+            buffer.closeContext("read-" + tag);
         }
     }
 
-    private void write(WriteBuffer buffer, GenericCANField field, PlcValue value) throws SerializationException {
-        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(value, field.getDataType()));
-        DataItem.staticSerialize(writeBuffer, value, field.getDataType());
+    private void write(WriteBuffer buffer, GenericCANTag tag, PlcValue value) throws SerializationException {
+        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(value, tag.getDataType()));
+        DataItem.staticSerialize(writeBuffer, value, tag.getDataType());
         try {
-            buffer.pushContext("write-" + field);
+            buffer.pushContext("write-" + tag);
             buffer.writeByteArray(writeBuffer.getData());
         } finally {
-            buffer.popContext("write-" + field);
+            buffer.popContext("write-" + tag);
         }
     }
 
@@ -140,24 +141,24 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
             Map<Integer, WriteBufferByteBased> messages = new LinkedHashMap<>();
             Map<Integer, Map<String, PlcResponseCode>> responses = new HashMap<>();
 
-            for (String field : writeRequest.getFieldNames()) {
-                PlcField plcField = writeRequest.getField(field);
-                if (!(plcField instanceof GenericCANField)) {
+            for (String tagName : writeRequest.getTagNames()) {
+                PlcTag plcTag = writeRequest.getTag(tagName);
+                if (!(plcTag instanceof GenericCANTag)) {
                     responses.computeIfAbsent(-1, (node) -> new HashMap<>())
-                        .put(field, PlcResponseCode.UNSUPPORTED);
+                        .put(tagName, PlcResponseCode.UNSUPPORTED);
                     continue;
                 }
-                GenericCANField canField = (GenericCANField) plcField;
-                WriteBuffer buffer = messages.computeIfAbsent(canField.getNodeId(), (node) -> new WriteBufferByteBased(8, ByteOrder.LITTLE_ENDIAN));
+                GenericCANTag canTag = (GenericCANTag) plcTag;
+                WriteBuffer buffer = messages.computeIfAbsent(canTag.getNodeId(), (node) -> new WriteBufferByteBased(8, ByteOrder.LITTLE_ENDIAN));
 
-                Map<String, PlcResponseCode> statusMap = responses.computeIfAbsent(canField.getNodeId(), (node) -> new HashMap<>());
+                Map<String, PlcResponseCode> statusMap = responses.computeIfAbsent(canTag.getNodeId(), (node) -> new HashMap<>());
 
-                PlcValue value = writeRequest.getPlcValue(field);
+                PlcValue value = writeRequest.getPlcValue(tagName);
                 try {
-                    write(buffer, canField, value);
-                    statusMap.put(field, PlcResponseCode.OK);
+                    write(buffer, canTag, value);
+                    statusMap.put(tagName, PlcResponseCode.OK);
                 } catch (SerializationException e) {
-                    statusMap.put(field, PlcResponseCode.INVALID_DATA);
+                    statusMap.put(tagName, PlcResponseCode.INVALID_DATA);
                 }
             }
 
@@ -167,7 +168,7 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
                 for (Map.Entry<String, PlcResponseCode> entry : responses.get(message.getKey()).entrySet()) {
                     codes.put(entry.getKey(), entry.getValue());
                     if (!discarded && entry.getValue() != PlcResponseCode.OK) {
-                        logger.info("Discarding writing of frame with field {}. Node {} will not be communicated.", entry.getKey(), message.getKey());
+                        logger.info("Discarding writing of frame with tag {}. Node {} will not be communicated.", entry.getKey(), message.getKey());
                         discarded = true;
                     }
                 }
@@ -193,17 +194,17 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
         DefaultPlcSubscriptionResponse response = new DefaultPlcSubscriptionResponse(rq, answers);
 
         Map<Integer, GenericCANSubscriptionHandle> handles = new HashMap<>();
-        for (String key : rq.getFieldNames()) {
-            DefaultPlcSubscriptionField subscription = (DefaultPlcSubscriptionField) rq.getField(key);
+        for (String key : rq.getTagNames()) {
+            DefaultPlcSubscriptionTag subscription = (DefaultPlcSubscriptionTag) rq.getTag(key);
             if (subscription.getPlcSubscriptionType() != PlcSubscriptionType.EVENT) {
                 answers.put(key, new ResponseItem<>(PlcResponseCode.UNSUPPORTED, null));
-            } else if (subscription.getPlcField() instanceof GenericCANField) {
-                GenericCANField canField = (GenericCANField) subscription.getPlcField();
-                GenericCANSubscriptionHandle subscriptionHandle = handles.computeIfAbsent(canField.getNodeId(),
+            } else if (subscription.getTag() instanceof GenericCANTag) {
+                GenericCANTag canTag = (GenericCANTag) subscription.getTag();
+                GenericCANSubscriptionHandle subscriptionHandle = handles.computeIfAbsent(canTag.getNodeId(),
                     node -> new GenericCANSubscriptionHandle(this, node)
                 );
                 answers.put(key, new ResponseItem<>(PlcResponseCode.OK, subscriptionHandle));
-                subscriptionHandle.add(key, canField);
+                subscriptionHandle.add(key, canTag);
             } else {
                 answers.put(key, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
             }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,9 +30,9 @@ import (
 type AdsDataType int8
 
 type IAdsDataType interface {
+	utils.Serializable
 	NumBytes() uint16
-	DataFormatName() string
-	Serialize(writeBuffer utils.WriteBuffer) error
+	PlcValueType() PlcValueType
 }
 
 const (
@@ -304,353 +304,353 @@ func AdsDataTypeFirstEnumForFieldNumBytes(value uint16) (AdsDataType, error) {
 	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
 }
 
-func (e AdsDataType) DataFormatName() string {
+func (e AdsDataType) PlcValueType() PlcValueType {
 	switch e {
 	case 0x01:
 		{ /* '0x01' */
-			return "IEC61131_BOOL"
+			return PlcValueType_BOOL
 		}
 	case 0x02:
 		{ /* '0x02' */
-			return "IEC61131_BOOL"
+			return PlcValueType_BOOL
 		}
 	case 0x03:
 		{ /* '0x03' */
-			return "IEC61131_BYTE"
+			return PlcValueType_BYTE
 		}
 	case 0x04:
 		{ /* '0x04' */
-			return "IEC61131_BYTE"
+			return PlcValueType_BYTE
 		}
 	case 0x05:
 		{ /* '0x05' */
-			return "IEC61131_BYTE"
+			return PlcValueType_BYTE
 		}
 	case 0x06:
 		{ /* '0x06' */
-			return "IEC61131_WORD"
+			return PlcValueType_WORD
 		}
 	case 0x07:
 		{ /* '0x07' */
-			return "IEC61131_WORD"
+			return PlcValueType_WORD
 		}
 	case 0x08:
 		{ /* '0x08' */
-			return "IEC61131_DWORD"
+			return PlcValueType_DWORD
 		}
 	case 0x09:
 		{ /* '0x09' */
-			return "IEC61131_DWORD"
+			return PlcValueType_DWORD
 		}
 	case 0x0A:
 		{ /* '0x0A' */
-			return "IEC61131_SINT"
+			return PlcValueType_SINT
 		}
 	case 0x0B:
 		{ /* '0x0B' */
-			return "IEC61131_SINT"
+			return PlcValueType_SINT
 		}
 	case 0x0C:
 		{ /* '0x0C' */
-			return "IEC61131_USINT"
+			return PlcValueType_USINT
 		}
 	case 0x0D:
 		{ /* '0x0D' */
-			return "IEC61131_USINT"
+			return PlcValueType_USINT
 		}
 	case 0x0E:
 		{ /* '0x0E' */
-			return "IEC61131_INT"
+			return PlcValueType_INT
 		}
 	case 0x0F:
 		{ /* '0x0F' */
-			return "IEC61131_INT"
+			return PlcValueType_INT
 		}
 	case 0x10:
 		{ /* '0x10' */
-			return "IEC61131_UINT"
+			return PlcValueType_UINT
 		}
 	case 0x11:
 		{ /* '0x11' */
-			return "IEC61131_UINT"
+			return PlcValueType_UINT
 		}
 	case 0x12:
 		{ /* '0x12' */
-			return "IEC61131_DINT"
+			return PlcValueType_DINT
 		}
 	case 0x13:
 		{ /* '0x13' */
-			return "IEC61131_DINT"
+			return PlcValueType_DINT
 		}
 	case 0x14:
 		{ /* '0x14' */
-			return "IEC61131_UDINT"
+			return PlcValueType_UDINT
 		}
 	case 0x15:
 		{ /* '0x15' */
-			return "IEC61131_UDINT"
+			return PlcValueType_UDINT
 		}
 	case 0x16:
 		{ /* '0x16' */
-			return "IEC61131_LINT"
+			return PlcValueType_LINT
 		}
 	case 0x17:
 		{ /* '0x17' */
-			return "IEC61131_LINT"
+			return PlcValueType_LINT
 		}
 	case 0x18:
 		{ /* '0x18' */
-			return "IEC61131_ULINT"
+			return PlcValueType_ULINT
 		}
 	case 0x19:
 		{ /* '0x19' */
-			return "IEC61131_ULINT"
+			return PlcValueType_ULINT
 		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return "IEC61131_REAL"
+			return PlcValueType_REAL
 		}
 	case 0x1B:
 		{ /* '0x1B' */
-			return "IEC61131_REAL"
+			return PlcValueType_REAL
 		}
 	case 0x1C:
 		{ /* '0x1C' */
-			return "IEC61131_LREAL"
+			return PlcValueType_LREAL
 		}
 	case 0x1D:
 		{ /* '0x1D' */
-			return "IEC61131_LREAL"
+			return PlcValueType_LREAL
 		}
 	case 0x1E:
 		{ /* '0x1E' */
-			return "IEC61131_CHAR"
+			return PlcValueType_CHAR
 		}
 	case 0x1F:
 		{ /* '0x1F' */
-			return "IEC61131_WCHAR"
+			return PlcValueType_WCHAR
 		}
 	case 0x20:
 		{ /* '0x20' */
-			return "IEC61131_STRING"
+			return PlcValueType_STRING
 		}
 	case 0x21:
 		{ /* '0x21' */
-			return "IEC61131_WSTRING"
+			return PlcValueType_WSTRING
 		}
 	case 0x22:
 		{ /* '0x22' */
-			return "IEC61131_TIME"
+			return PlcValueType_TIME
 		}
 	case 0x23:
 		{ /* '0x23' */
-			return "IEC61131_LTIME"
+			return PlcValueType_LTIME
 		}
 	case 0x24:
 		{ /* '0x24' */
-			return "IEC61131_DATE"
+			return PlcValueType_DATE
 		}
 	case 0x25:
 		{ /* '0x25' */
-			return "IEC61131_TIME_OF_DAY"
+			return PlcValueType_TIME_OF_DAY
 		}
 	case 0x26:
 		{ /* '0x26' */
-			return "IEC61131_TIME_OF_DAY"
+			return PlcValueType_TIME_OF_DAY
 		}
 	case 0x27:
 		{ /* '0x27' */
-			return "IEC61131_DATE_AND_TIME"
+			return PlcValueType_DATE_AND_TIME
 		}
 	case 0x28:
 		{ /* '0x28' */
-			return "IEC61131_DATE_AND_TIME"
+			return PlcValueType_DATE_AND_TIME
 		}
 	default:
 		{
-			return ""
+			return 0
 		}
 	}
 }
 
-func AdsDataTypeFirstEnumForFieldDataFormatName(value string) (AdsDataType, error) {
+func AdsDataTypeFirstEnumForFieldPlcValueType(value PlcValueType) (AdsDataType, error) {
 	for _, sizeValue := range AdsDataTypeValues {
-		if sizeValue.DataFormatName() == value {
+		if sizeValue.PlcValueType() == value {
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing DataFormatName not found", value)
+	return 0, errors.Errorf("enum for %v describing PlcValueType not found", value)
 }
-func AdsDataTypeByValue(value int8) AdsDataType {
+func AdsDataTypeByValue(value int8) (enum AdsDataType, ok bool) {
 	switch value {
 	case 0x01:
-		return AdsDataType_BOOL
+		return AdsDataType_BOOL, true
 	case 0x02:
-		return AdsDataType_BIT
+		return AdsDataType_BIT, true
 	case 0x03:
-		return AdsDataType_BIT8
+		return AdsDataType_BIT8, true
 	case 0x04:
-		return AdsDataType_BYTE
+		return AdsDataType_BYTE, true
 	case 0x05:
-		return AdsDataType_BITARR8
+		return AdsDataType_BITARR8, true
 	case 0x06:
-		return AdsDataType_WORD
+		return AdsDataType_WORD, true
 	case 0x07:
-		return AdsDataType_BITARR16
+		return AdsDataType_BITARR16, true
 	case 0x08:
-		return AdsDataType_DWORD
+		return AdsDataType_DWORD, true
 	case 0x09:
-		return AdsDataType_BITARR32
+		return AdsDataType_BITARR32, true
 	case 0x0A:
-		return AdsDataType_SINT
+		return AdsDataType_SINT, true
 	case 0x0B:
-		return AdsDataType_INT8
+		return AdsDataType_INT8, true
 	case 0x0C:
-		return AdsDataType_USINT
+		return AdsDataType_USINT, true
 	case 0x0D:
-		return AdsDataType_UINT8
+		return AdsDataType_UINT8, true
 	case 0x0E:
-		return AdsDataType_INT
+		return AdsDataType_INT, true
 	case 0x0F:
-		return AdsDataType_INT16
+		return AdsDataType_INT16, true
 	case 0x10:
-		return AdsDataType_UINT
+		return AdsDataType_UINT, true
 	case 0x11:
-		return AdsDataType_UINT16
+		return AdsDataType_UINT16, true
 	case 0x12:
-		return AdsDataType_DINT
+		return AdsDataType_DINT, true
 	case 0x13:
-		return AdsDataType_INT32
+		return AdsDataType_INT32, true
 	case 0x14:
-		return AdsDataType_UDINT
+		return AdsDataType_UDINT, true
 	case 0x15:
-		return AdsDataType_UINT32
+		return AdsDataType_UINT32, true
 	case 0x16:
-		return AdsDataType_LINT
+		return AdsDataType_LINT, true
 	case 0x17:
-		return AdsDataType_INT64
+		return AdsDataType_INT64, true
 	case 0x18:
-		return AdsDataType_ULINT
+		return AdsDataType_ULINT, true
 	case 0x19:
-		return AdsDataType_UINT64
+		return AdsDataType_UINT64, true
 	case 0x1A:
-		return AdsDataType_REAL
+		return AdsDataType_REAL, true
 	case 0x1B:
-		return AdsDataType_FLOAT
+		return AdsDataType_FLOAT, true
 	case 0x1C:
-		return AdsDataType_LREAL
+		return AdsDataType_LREAL, true
 	case 0x1D:
-		return AdsDataType_DOUBLE
+		return AdsDataType_DOUBLE, true
 	case 0x1E:
-		return AdsDataType_CHAR
+		return AdsDataType_CHAR, true
 	case 0x1F:
-		return AdsDataType_WCHAR
+		return AdsDataType_WCHAR, true
 	case 0x20:
-		return AdsDataType_STRING
+		return AdsDataType_STRING, true
 	case 0x21:
-		return AdsDataType_WSTRING
+		return AdsDataType_WSTRING, true
 	case 0x22:
-		return AdsDataType_TIME
+		return AdsDataType_TIME, true
 	case 0x23:
-		return AdsDataType_LTIME
+		return AdsDataType_LTIME, true
 	case 0x24:
-		return AdsDataType_DATE
+		return AdsDataType_DATE, true
 	case 0x25:
-		return AdsDataType_TIME_OF_DAY
+		return AdsDataType_TIME_OF_DAY, true
 	case 0x26:
-		return AdsDataType_TOD
+		return AdsDataType_TOD, true
 	case 0x27:
-		return AdsDataType_DATE_AND_TIME
+		return AdsDataType_DATE_AND_TIME, true
 	case 0x28:
-		return AdsDataType_DT
+		return AdsDataType_DT, true
 	}
-	return 0
+	return 0, false
 }
 
-func AdsDataTypeByName(value string) AdsDataType {
+func AdsDataTypeByName(value string) (enum AdsDataType, ok bool) {
 	switch value {
 	case "BOOL":
-		return AdsDataType_BOOL
+		return AdsDataType_BOOL, true
 	case "BIT":
-		return AdsDataType_BIT
+		return AdsDataType_BIT, true
 	case "BIT8":
-		return AdsDataType_BIT8
+		return AdsDataType_BIT8, true
 	case "BYTE":
-		return AdsDataType_BYTE
+		return AdsDataType_BYTE, true
 	case "BITARR8":
-		return AdsDataType_BITARR8
+		return AdsDataType_BITARR8, true
 	case "WORD":
-		return AdsDataType_WORD
+		return AdsDataType_WORD, true
 	case "BITARR16":
-		return AdsDataType_BITARR16
+		return AdsDataType_BITARR16, true
 	case "DWORD":
-		return AdsDataType_DWORD
+		return AdsDataType_DWORD, true
 	case "BITARR32":
-		return AdsDataType_BITARR32
+		return AdsDataType_BITARR32, true
 	case "SINT":
-		return AdsDataType_SINT
+		return AdsDataType_SINT, true
 	case "INT8":
-		return AdsDataType_INT8
+		return AdsDataType_INT8, true
 	case "USINT":
-		return AdsDataType_USINT
+		return AdsDataType_USINT, true
 	case "UINT8":
-		return AdsDataType_UINT8
+		return AdsDataType_UINT8, true
 	case "INT":
-		return AdsDataType_INT
+		return AdsDataType_INT, true
 	case "INT16":
-		return AdsDataType_INT16
+		return AdsDataType_INT16, true
 	case "UINT":
-		return AdsDataType_UINT
+		return AdsDataType_UINT, true
 	case "UINT16":
-		return AdsDataType_UINT16
+		return AdsDataType_UINT16, true
 	case "DINT":
-		return AdsDataType_DINT
+		return AdsDataType_DINT, true
 	case "INT32":
-		return AdsDataType_INT32
+		return AdsDataType_INT32, true
 	case "UDINT":
-		return AdsDataType_UDINT
+		return AdsDataType_UDINT, true
 	case "UINT32":
-		return AdsDataType_UINT32
+		return AdsDataType_UINT32, true
 	case "LINT":
-		return AdsDataType_LINT
+		return AdsDataType_LINT, true
 	case "INT64":
-		return AdsDataType_INT64
+		return AdsDataType_INT64, true
 	case "ULINT":
-		return AdsDataType_ULINT
+		return AdsDataType_ULINT, true
 	case "UINT64":
-		return AdsDataType_UINT64
+		return AdsDataType_UINT64, true
 	case "REAL":
-		return AdsDataType_REAL
+		return AdsDataType_REAL, true
 	case "FLOAT":
-		return AdsDataType_FLOAT
+		return AdsDataType_FLOAT, true
 	case "LREAL":
-		return AdsDataType_LREAL
+		return AdsDataType_LREAL, true
 	case "DOUBLE":
-		return AdsDataType_DOUBLE
+		return AdsDataType_DOUBLE, true
 	case "CHAR":
-		return AdsDataType_CHAR
+		return AdsDataType_CHAR, true
 	case "WCHAR":
-		return AdsDataType_WCHAR
+		return AdsDataType_WCHAR, true
 	case "STRING":
-		return AdsDataType_STRING
+		return AdsDataType_STRING, true
 	case "WSTRING":
-		return AdsDataType_WSTRING
+		return AdsDataType_WSTRING, true
 	case "TIME":
-		return AdsDataType_TIME
+		return AdsDataType_TIME, true
 	case "LTIME":
-		return AdsDataType_LTIME
+		return AdsDataType_LTIME, true
 	case "DATE":
-		return AdsDataType_DATE
+		return AdsDataType_DATE, true
 	case "TIME_OF_DAY":
-		return AdsDataType_TIME_OF_DAY
+		return AdsDataType_TIME_OF_DAY, true
 	case "TOD":
-		return AdsDataType_TOD
+		return AdsDataType_TOD, true
 	case "DATE_AND_TIME":
-		return AdsDataType_DATE_AND_TIME
+		return AdsDataType_DATE_AND_TIME, true
 	case "DT":
-		return AdsDataType_DT
+		return AdsDataType_DT, true
 	}
-	return 0
+	return 0, false
 }
 
 func AdsDataTypeKnows(value int8) bool {
@@ -680,19 +680,37 @@ func (m AdsDataType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDataTypeParse(readBuffer utils.ReadBuffer) (AdsDataType, error) {
+func AdsDataTypeParse(theBytes []byte) (AdsDataType, error) {
+	return AdsDataTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsDataTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDataType, error) {
 	val, err := readBuffer.ReadInt8("AdsDataType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading AdsDataType")
 	}
-	return AdsDataTypeByValue(val), nil
+	if enum, ok := AdsDataTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return AdsDataType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e AdsDataType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteInt8("AdsDataType", 8, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e AdsDataType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e AdsDataType) name() string {
+func (e AdsDataType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteInt8("AdsDataType", 8, int8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e AdsDataType) PLC4XEnumName() string {
 	switch e {
 	case AdsDataType_BOOL:
 		return "BOOL"
@@ -779,5 +797,5 @@ func (e AdsDataType) name() string {
 }
 
 func (e AdsDataType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

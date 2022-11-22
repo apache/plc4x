@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,25 +21,34 @@ package bacnetip
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	"github.com/apache/plc4x/plc4go/internal/spi/default"
-	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"sync"
+	"time"
+
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/default"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/rs/zerolog/log"
 )
 
 type Connection struct {
 	_default.DefaultConnection
-	messageCodec spi.MessageCodec
-	subscribers  []*Subscriber
+	invokeIdGenerator InvokeIdGenerator
+	messageCodec      spi.MessageCodec
+	subscribers       []*Subscriber
+	tm                *spi.RequestTransactionManager
+
 	connectionId string
 	tracer       *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, fieldHandler spi.PlcFieldHandler, options map[string][]string) *Connection {
+func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
 	connection := &Connection{
-		messageCodec: messageCodec,
+		invokeIdGenerator: InvokeIdGenerator{currentInvokeId: 0},
+		messageCodec:      messageCodec,
+		tm:                tm,
 	}
 	if traceEnabledOption, ok := options["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
@@ -47,7 +56,7 @@ func NewConnection(messageCodec spi.MessageCodec, fieldHandler spi.PlcFieldHandl
 		}
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
-		_default.WithPlcFieldHandler(fieldHandler),
+		_default.WithPlcTagHandler(tagHandler),
 		_default.WithPlcValueHandler(NewValueHandler()),
 	)
 	return connection
@@ -72,12 +81,15 @@ func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 		connectionConnectResult := <-c.DefaultConnection.Connect()
 		go func() {
 			for c.IsConnected() {
-				log.Debug().Msg("Polling data")
+				log.Trace().Msg("Polling data")
 				incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
+				timeout := time.NewTimer(20 * time.Millisecond)
 				select {
 				case message := <-incomingMessageChannel:
 					// TODO: implement mapping to subscribers
 					log.Info().Msgf("Received \n%v", message)
+					utils.CleanupTimer(timeout)
+				case <-timeout.C:
 				}
 			}
 			log.Info().Msg("Ending incoming message transfer")
@@ -95,12 +107,12 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 	return c.messageCodec
 }
 
-func (c *Connection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
-	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(c.GetPlcFieldHandler(), c.GetPlcValueHandler(), NewSubscriber(c))
+func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
+	return internalModel.NewDefaultPlcReadRequestBuilder(c.GetPlcTagHandler(), NewReader(&c.invokeIdGenerator, c.messageCodec, c.tm))
 }
 
-func (c *Connection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {
-	panic("Not implemented yet. (at least as a default)")
+func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
+	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(c.GetPlcTagHandler(), c.GetPlcValueHandler(), NewSubscriber(c))
 }
 
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
@@ -115,4 +127,17 @@ func (c *Connection) addSubscriber(subscriber *Subscriber) {
 
 func (c *Connection) String() string {
 	return fmt.Sprintf("bacnetip.Connection")
+}
+
+type InvokeIdGenerator struct {
+	currentInvokeId uint8
+	lock            sync.Mutex
+}
+
+func (t *InvokeIdGenerator) getAndIncrement() uint8 {
+	t.lock.Lock()
+	defer t.lock.Unlock()
+	result := t.currentInvokeId
+	t.currentInvokeId += 1
+	return result
 }

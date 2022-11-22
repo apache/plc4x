@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,8 @@ import (
 type MaxApduLengthAccepted uint8
 
 type IMaxApduLengthAccepted interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
+	NumberOfOctets() uint16
 }
 
 const (
@@ -76,80 +77,161 @@ func init() {
 	}
 }
 
-func MaxApduLengthAcceptedByValue(value uint8) MaxApduLengthAccepted {
-	switch value {
+func (e MaxApduLengthAccepted) NumberOfOctets() uint16 {
+	switch e {
 	case 0x0:
-		return MaxApduLengthAccepted_MINIMUM_MESSAGE_SIZE
+		{ /* '0x0' */
+			return 50
+		}
 	case 0x1:
-		return MaxApduLengthAccepted_NUM_OCTETS_128
+		{ /* '0x1' */
+			return 128
+		}
 	case 0x2:
-		return MaxApduLengthAccepted_NUM_OCTETS_206
+		{ /* '0x2' */
+			return 206
+		}
 	case 0x3:
-		return MaxApduLengthAccepted_NUM_OCTETS_480
+		{ /* '0x3' */
+			return 480
+		}
 	case 0x4:
-		return MaxApduLengthAccepted_NUM_OCTETS_1024
+		{ /* '0x4' */
+			return 1024
+		}
 	case 0x5:
-		return MaxApduLengthAccepted_NUM_OCTETS_1476
+		{ /* '0x5' */
+			return 1476
+		}
 	case 0x6:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_01
+		{ /* '0x6' */
+			return 0
+		}
 	case 0x7:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_02
+		{ /* '0x7' */
+			return 0
+		}
 	case 0x8:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_03
+		{ /* '0x8' */
+			return 0
+		}
 	case 0x9:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_04
+		{ /* '0x9' */
+			return 0
+		}
 	case 0xA:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_05
+		{ /* '0xA' */
+			return 0
+		}
 	case 0xB:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_06
+		{ /* '0xB' */
+			return 0
+		}
 	case 0xC:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_07
+		{ /* '0xC' */
+			return 0
+		}
 	case 0xD:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_08
+		{ /* '0xD' */
+			return 0
+		}
 	case 0xE:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_09
+		{ /* '0xE' */
+			return 0
+		}
 	case 0xF:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_10
+		{ /* '0xF' */
+			return 0
+		}
+	default:
+		{
+			return 0
+		}
 	}
-	return 0
 }
 
-func MaxApduLengthAcceptedByName(value string) MaxApduLengthAccepted {
+func MaxApduLengthAcceptedFirstEnumForFieldNumberOfOctets(value uint16) (MaxApduLengthAccepted, error) {
+	for _, sizeValue := range MaxApduLengthAcceptedValues {
+		if sizeValue.NumberOfOctets() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing NumberOfOctets not found", value)
+}
+func MaxApduLengthAcceptedByValue(value uint8) (enum MaxApduLengthAccepted, ok bool) {
+	switch value {
+	case 0x0:
+		return MaxApduLengthAccepted_MINIMUM_MESSAGE_SIZE, true
+	case 0x1:
+		return MaxApduLengthAccepted_NUM_OCTETS_128, true
+	case 0x2:
+		return MaxApduLengthAccepted_NUM_OCTETS_206, true
+	case 0x3:
+		return MaxApduLengthAccepted_NUM_OCTETS_480, true
+	case 0x4:
+		return MaxApduLengthAccepted_NUM_OCTETS_1024, true
+	case 0x5:
+		return MaxApduLengthAccepted_NUM_OCTETS_1476, true
+	case 0x6:
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_01, true
+	case 0x7:
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_02, true
+	case 0x8:
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_03, true
+	case 0x9:
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_04, true
+	case 0xA:
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_05, true
+	case 0xB:
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_06, true
+	case 0xC:
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_07, true
+	case 0xD:
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_08, true
+	case 0xE:
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_09, true
+	case 0xF:
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_10, true
+	}
+	return 0, false
+}
+
+func MaxApduLengthAcceptedByName(value string) (enum MaxApduLengthAccepted, ok bool) {
 	switch value {
 	case "MINIMUM_MESSAGE_SIZE":
-		return MaxApduLengthAccepted_MINIMUM_MESSAGE_SIZE
+		return MaxApduLengthAccepted_MINIMUM_MESSAGE_SIZE, true
 	case "NUM_OCTETS_128":
-		return MaxApduLengthAccepted_NUM_OCTETS_128
+		return MaxApduLengthAccepted_NUM_OCTETS_128, true
 	case "NUM_OCTETS_206":
-		return MaxApduLengthAccepted_NUM_OCTETS_206
+		return MaxApduLengthAccepted_NUM_OCTETS_206, true
 	case "NUM_OCTETS_480":
-		return MaxApduLengthAccepted_NUM_OCTETS_480
+		return MaxApduLengthAccepted_NUM_OCTETS_480, true
 	case "NUM_OCTETS_1024":
-		return MaxApduLengthAccepted_NUM_OCTETS_1024
+		return MaxApduLengthAccepted_NUM_OCTETS_1024, true
 	case "NUM_OCTETS_1476":
-		return MaxApduLengthAccepted_NUM_OCTETS_1476
+		return MaxApduLengthAccepted_NUM_OCTETS_1476, true
 	case "RESERVED_BY_ASHRAE_01":
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_01
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_01, true
 	case "RESERVED_BY_ASHRAE_02":
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_02
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_02, true
 	case "RESERVED_BY_ASHRAE_03":
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_03
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_03, true
 	case "RESERVED_BY_ASHRAE_04":
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_04
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_04, true
 	case "RESERVED_BY_ASHRAE_05":
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_05
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_05, true
 	case "RESERVED_BY_ASHRAE_06":
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_06
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_06, true
 	case "RESERVED_BY_ASHRAE_07":
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_07
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_07, true
 	case "RESERVED_BY_ASHRAE_08":
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_08
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_08, true
 	case "RESERVED_BY_ASHRAE_09":
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_09
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_09, true
 	case "RESERVED_BY_ASHRAE_10":
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_10
+		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_10, true
 	}
-	return 0
+	return 0, false
 }
 
 func MaxApduLengthAcceptedKnows(value uint8) bool {
@@ -179,19 +261,37 @@ func (m MaxApduLengthAccepted) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MaxApduLengthAcceptedParse(readBuffer utils.ReadBuffer) (MaxApduLengthAccepted, error) {
+func MaxApduLengthAcceptedParse(theBytes []byte) (MaxApduLengthAccepted, error) {
+	return MaxApduLengthAcceptedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func MaxApduLengthAcceptedParseWithBuffer(readBuffer utils.ReadBuffer) (MaxApduLengthAccepted, error) {
 	val, err := readBuffer.ReadUint8("MaxApduLengthAccepted", 4)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading MaxApduLengthAccepted")
 	}
-	return MaxApduLengthAcceptedByValue(val), nil
+	if enum, ok := MaxApduLengthAcceptedByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return MaxApduLengthAccepted(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e MaxApduLengthAccepted) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("MaxApduLengthAccepted", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e MaxApduLengthAccepted) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e MaxApduLengthAccepted) name() string {
+func (e MaxApduLengthAccepted) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("MaxApduLengthAccepted", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e MaxApduLengthAccepted) PLC4XEnumName() string {
 	switch e {
 	case MaxApduLengthAccepted_MINIMUM_MESSAGE_SIZE:
 		return "MINIMUM_MESSAGE_SIZE"
@@ -230,5 +330,5 @@ func (e MaxApduLengthAccepted) name() string {
 }
 
 func (e MaxApduLengthAccepted) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

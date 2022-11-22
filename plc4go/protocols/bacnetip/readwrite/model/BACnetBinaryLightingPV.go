@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetBinaryLightingPV uint8
 
 type IBACnetBinaryLightingPV interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -58,44 +58,44 @@ func init() {
 	}
 }
 
-func BACnetBinaryLightingPVByValue(value uint8) BACnetBinaryLightingPV {
+func BACnetBinaryLightingPVByValue(value uint8) (enum BACnetBinaryLightingPV, ok bool) {
 	switch value {
 	case 0:
-		return BACnetBinaryLightingPV_OFF
+		return BACnetBinaryLightingPV_OFF, true
 	case 0xFF:
-		return BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE
+		return BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetBinaryLightingPV_ON
+		return BACnetBinaryLightingPV_ON, true
 	case 2:
-		return BACnetBinaryLightingPV_WARN
+		return BACnetBinaryLightingPV_WARN, true
 	case 3:
-		return BACnetBinaryLightingPV_WARN_OFF
+		return BACnetBinaryLightingPV_WARN_OFF, true
 	case 4:
-		return BACnetBinaryLightingPV_WARN_RELINQUISH
+		return BACnetBinaryLightingPV_WARN_RELINQUISH, true
 	case 5:
-		return BACnetBinaryLightingPV_STOP
+		return BACnetBinaryLightingPV_STOP, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetBinaryLightingPVByName(value string) BACnetBinaryLightingPV {
+func BACnetBinaryLightingPVByName(value string) (enum BACnetBinaryLightingPV, ok bool) {
 	switch value {
 	case "OFF":
-		return BACnetBinaryLightingPV_OFF
+		return BACnetBinaryLightingPV_OFF, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE
+		return BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE, true
 	case "ON":
-		return BACnetBinaryLightingPV_ON
+		return BACnetBinaryLightingPV_ON, true
 	case "WARN":
-		return BACnetBinaryLightingPV_WARN
+		return BACnetBinaryLightingPV_WARN, true
 	case "WARN_OFF":
-		return BACnetBinaryLightingPV_WARN_OFF
+		return BACnetBinaryLightingPV_WARN_OFF, true
 	case "WARN_RELINQUISH":
-		return BACnetBinaryLightingPV_WARN_RELINQUISH
+		return BACnetBinaryLightingPV_WARN_RELINQUISH, true
 	case "STOP":
-		return BACnetBinaryLightingPV_STOP
+		return BACnetBinaryLightingPV_STOP, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetBinaryLightingPVKnows(value uint8) bool {
@@ -125,19 +125,37 @@ func (m BACnetBinaryLightingPV) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetBinaryLightingPVParse(readBuffer utils.ReadBuffer) (BACnetBinaryLightingPV, error) {
+func BACnetBinaryLightingPVParse(theBytes []byte) (BACnetBinaryLightingPV, error) {
+	return BACnetBinaryLightingPVParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetBinaryLightingPVParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetBinaryLightingPV, error) {
 	val, err := readBuffer.ReadUint8("BACnetBinaryLightingPV", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetBinaryLightingPV")
 	}
-	return BACnetBinaryLightingPVByValue(val), nil
+	if enum, ok := BACnetBinaryLightingPVByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetBinaryLightingPV(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetBinaryLightingPV) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetBinaryLightingPV", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetBinaryLightingPV) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetBinaryLightingPV) name() string {
+func (e BACnetBinaryLightingPV) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetBinaryLightingPV", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetBinaryLightingPV) PLC4XEnumName() string {
 	switch e {
 	case BACnetBinaryLightingPV_OFF:
 		return "OFF"
@@ -158,5 +176,5 @@ func (e BACnetBinaryLightingPV) name() string {
 }
 
 func (e BACnetBinaryLightingPV) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

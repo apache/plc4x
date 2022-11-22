@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -46,7 +46,7 @@ public class TriggerHandlerImpl implements TriggerHandler {
         //transmit needed trigger to triggerCollection
         for(TriggerConfiguration.TriggerElement triggerElement:triggerConfiguration.getTriggerElementList()){
             triggerElement.setPlcConnectionString(parentScraperTask.getConnectionString());
-            triggerElement.setUuid(triggerCollector.submitTrigger(triggerElement.getPlcFieldString(),parentScraperTask.getConnectionString(),this.triggerConfiguration.getScrapeInterval()));
+            triggerElement.setUuid(triggerCollector.submitTrigger(triggerElement.getPlcTagAddress(),parentScraperTask.getConnectionString(),this.triggerConfiguration.getScrapeInterval()));
         }
 
         this.lastTriggerState = false;
@@ -74,7 +74,7 @@ public class TriggerHandlerImpl implements TriggerHandler {
     }
 
     /**
-     * acquires the given S7Field from S7 and evaluates if trigger is released
+     * acquires the given S7Tag from S7 and evaluates if trigger is released
      * @return true if rising-edge of trigger is detected, false otherwise
      */
     private boolean checkS7TriggerVariable(){

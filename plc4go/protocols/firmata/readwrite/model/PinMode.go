@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type PinMode uint8
 
 type IPinMode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -68,64 +68,64 @@ func init() {
 	}
 }
 
-func PinModeByValue(value uint8) PinMode {
+func PinModeByValue(value uint8) (enum PinMode, ok bool) {
 	switch value {
 	case 0x0:
-		return PinMode_PinModeInput
+		return PinMode_PinModeInput, true
 	case 0x1:
-		return PinMode_PinModeOutput
+		return PinMode_PinModeOutput, true
 	case 0x2:
-		return PinMode_PinModeAnalog
+		return PinMode_PinModeAnalog, true
 	case 0x3:
-		return PinMode_PinModePwm
+		return PinMode_PinModePwm, true
 	case 0x4:
-		return PinMode_PinModeServo
+		return PinMode_PinModeServo, true
 	case 0x5:
-		return PinMode_PinModeShift
+		return PinMode_PinModeShift, true
 	case 0x6:
-		return PinMode_PinModeI2C
+		return PinMode_PinModeI2C, true
 	case 0x7:
-		return PinMode_PinModeOneWire
+		return PinMode_PinModeOneWire, true
 	case 0x8:
-		return PinMode_PinModeStepper
+		return PinMode_PinModeStepper, true
 	case 0x9:
-		return PinMode_PinModeEncoder
+		return PinMode_PinModeEncoder, true
 	case 0xA:
-		return PinMode_PinModeSerial
+		return PinMode_PinModeSerial, true
 	case 0xB:
-		return PinMode_PinModePullup
+		return PinMode_PinModePullup, true
 	}
-	return 0
+	return 0, false
 }
 
-func PinModeByName(value string) PinMode {
+func PinModeByName(value string) (enum PinMode, ok bool) {
 	switch value {
 	case "PinModeInput":
-		return PinMode_PinModeInput
+		return PinMode_PinModeInput, true
 	case "PinModeOutput":
-		return PinMode_PinModeOutput
+		return PinMode_PinModeOutput, true
 	case "PinModeAnalog":
-		return PinMode_PinModeAnalog
+		return PinMode_PinModeAnalog, true
 	case "PinModePwm":
-		return PinMode_PinModePwm
+		return PinMode_PinModePwm, true
 	case "PinModeServo":
-		return PinMode_PinModeServo
+		return PinMode_PinModeServo, true
 	case "PinModeShift":
-		return PinMode_PinModeShift
+		return PinMode_PinModeShift, true
 	case "PinModeI2C":
-		return PinMode_PinModeI2C
+		return PinMode_PinModeI2C, true
 	case "PinModeOneWire":
-		return PinMode_PinModeOneWire
+		return PinMode_PinModeOneWire, true
 	case "PinModeStepper":
-		return PinMode_PinModeStepper
+		return PinMode_PinModeStepper, true
 	case "PinModeEncoder":
-		return PinMode_PinModeEncoder
+		return PinMode_PinModeEncoder, true
 	case "PinModeSerial":
-		return PinMode_PinModeSerial
+		return PinMode_PinModeSerial, true
 	case "PinModePullup":
-		return PinMode_PinModePullup
+		return PinMode_PinModePullup, true
 	}
-	return 0
+	return 0, false
 }
 
 func PinModeKnows(value uint8) bool {
@@ -155,19 +155,37 @@ func (m PinMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func PinModeParse(readBuffer utils.ReadBuffer) (PinMode, error) {
+func PinModeParse(theBytes []byte) (PinMode, error) {
+	return PinModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func PinModeParseWithBuffer(readBuffer utils.ReadBuffer) (PinMode, error) {
 	val, err := readBuffer.ReadUint8("PinMode", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading PinMode")
 	}
-	return PinModeByValue(val), nil
+	if enum, ok := PinModeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return PinMode(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e PinMode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("PinMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e PinMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e PinMode) name() string {
+func (e PinMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("PinMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e PinMode) PLC4XEnumName() string {
 	switch e {
 	case PinMode_PinModeInput:
 		return "PinModeInput"
@@ -198,5 +216,5 @@ func (e PinMode) name() string {
 }
 
 func (e PinMode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

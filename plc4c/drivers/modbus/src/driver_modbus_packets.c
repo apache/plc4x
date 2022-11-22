@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -43,7 +43,7 @@ int16_t plc4c_driver_modbus_select_message_function(uint8_t* buffer_data,
     uint16_t packet_length =
         ((uint16_t)*(buffer_data + 4) << 8) | ((uint16_t)*(buffer_data + 5));
     packet_length += 6;
-    return packet_length;
+    return (int16_t) packet_length;
   }
   // In all other cases, we'll just have to wait for the next time.
   return 0;

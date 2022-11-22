@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetResultFlags uint8
 
 type IBACnetResultFlags interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -50,28 +50,28 @@ func init() {
 	}
 }
 
-func BACnetResultFlagsByValue(value uint8) BACnetResultFlags {
+func BACnetResultFlagsByValue(value uint8) (enum BACnetResultFlags, ok bool) {
 	switch value {
 	case 0:
-		return BACnetResultFlags_FIRST_ITEM
+		return BACnetResultFlags_FIRST_ITEM, true
 	case 1:
-		return BACnetResultFlags_LAST_ITEM
+		return BACnetResultFlags_LAST_ITEM, true
 	case 2:
-		return BACnetResultFlags_MORE_ITEMS
+		return BACnetResultFlags_MORE_ITEMS, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetResultFlagsByName(value string) BACnetResultFlags {
+func BACnetResultFlagsByName(value string) (enum BACnetResultFlags, ok bool) {
 	switch value {
 	case "FIRST_ITEM":
-		return BACnetResultFlags_FIRST_ITEM
+		return BACnetResultFlags_FIRST_ITEM, true
 	case "LAST_ITEM":
-		return BACnetResultFlags_LAST_ITEM
+		return BACnetResultFlags_LAST_ITEM, true
 	case "MORE_ITEMS":
-		return BACnetResultFlags_MORE_ITEMS
+		return BACnetResultFlags_MORE_ITEMS, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetResultFlagsKnows(value uint8) bool {
@@ -101,19 +101,37 @@ func (m BACnetResultFlags) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetResultFlagsParse(readBuffer utils.ReadBuffer) (BACnetResultFlags, error) {
+func BACnetResultFlagsParse(theBytes []byte) (BACnetResultFlags, error) {
+	return BACnetResultFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetResultFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetResultFlags, error) {
 	val, err := readBuffer.ReadUint8("BACnetResultFlags", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetResultFlags")
 	}
-	return BACnetResultFlagsByValue(val), nil
+	if enum, ok := BACnetResultFlagsByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetResultFlags(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetResultFlags) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetResultFlags", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetResultFlags) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetResultFlags) name() string {
+func (e BACnetResultFlags) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetResultFlags", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetResultFlags) PLC4XEnumName() string {
 	switch e {
 	case BACnetResultFlags_FIRST_ITEM:
 		return "FIRST_ITEM"
@@ -126,5 +144,5 @@ func (e BACnetResultFlags) name() string {
 }
 
 func (e BACnetResultFlags) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

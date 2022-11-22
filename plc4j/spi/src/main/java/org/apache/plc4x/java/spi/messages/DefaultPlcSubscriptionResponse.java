@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -27,15 +27,13 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
-import org.apache.plc4x.java.api.model.PlcSubscriptionField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.utils.Serializable;
-import org.w3c.dom.Element;
 
 import java.util.Collection;
 import java.util.Map;
@@ -53,6 +51,13 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
                                           @JsonProperty("values") Map<String, ResponseItem<PlcSubscriptionHandle>> values) {
         this.request = request;
         this.values = values;
+        request.getPreRegisteredConsumers().forEach((subscriptionTagName, consumers) -> {
+            PlcSubscriptionHandle subscriptionHandle = getSubscriptionHandle(subscriptionTagName);
+            if (subscriptionHandle == null) {
+                throw new PlcRuntimeException("PlcSubscriptionHandle for " + subscriptionTagName + " not found");
+            }
+            consumers.forEach(subscriptionHandle::register);
+        });
     }
 
     @Override
@@ -70,14 +75,14 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
 
     @Override
     @JsonIgnore
-    public Collection<String> getFieldNames() {
+    public Collection<String> getTagNames() {
         return values.keySet();
     }
 
     @Override
     @JsonIgnore
-    public PlcSubscriptionField getField(String name) {
-        throw new PlcNotImplementedException("field access not possible as these come async");
+    public PlcSubscriptionTag getTag(String name) {
+        throw new PlcNotImplementedException("tag access not possible as these come async");
     }
 
     @Override
@@ -98,7 +103,7 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
     @Override
     @JsonIgnore
     public Collection<PlcSubscriptionHandle> getSubscriptionHandles() {
-        return values.values().stream().map(ResponseItem<PlcSubscriptionHandle>::getValue).collect(Collectors.toList());
+        return values.values().stream().map(ResponseItem::getValue).collect(Collectors.toList());
     }
 
     public Map<String, ResponseItem<PlcSubscriptionHandle>> getValues() {
@@ -109,16 +114,16 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcSubscriptionResponse");
 
-        if(request instanceof Serializable) {
+        if (request instanceof Serializable) {
             ((Serializable) request).serialize(writeBuffer);
         }
         writeBuffer.pushContext("values");
         for (Map.Entry<String, ResponseItem<PlcSubscriptionHandle>> valueEntry : values.entrySet()) {
-            String fieldName = valueEntry.getKey();
-            writeBuffer.pushContext(fieldName);
+            String tagName = valueEntry.getKey();
+            writeBuffer.pushContext(tagName);
             ResponseItem<PlcSubscriptionHandle> valueResponse = valueEntry.getValue();
             valueResponse.serialize(writeBuffer);
-            writeBuffer.pushContext(fieldName);
+            writeBuffer.pushContext(tagName);
         }
         writeBuffer.popContext("values");
 

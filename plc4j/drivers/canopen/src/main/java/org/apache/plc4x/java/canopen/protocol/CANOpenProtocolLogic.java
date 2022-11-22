@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -29,12 +29,13 @@ import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.can.adapter.Plc4xCANProtocolBase;
+import org.apache.plc4x.java.canopen.tag.*;
 import org.apache.plc4x.java.canopen.transport.CANOpenAbortException;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.canopen.api.conversation.canopen.CANConversation;
@@ -42,11 +43,6 @@ import org.apache.plc4x.java.canopen.api.conversation.canopen.SDODownloadConvers
 import org.apache.plc4x.java.canopen.api.conversation.canopen.SDOUploadConversation;
 import org.apache.plc4x.java.canopen.configuration.CANOpenConfiguration;
 import org.apache.plc4x.java.canopen.context.CANOpenDriverContext;
-import org.apache.plc4x.java.canopen.field.CANOpenField;
-import org.apache.plc4x.java.canopen.field.CANOpenHeartbeatField;
-import org.apache.plc4x.java.canopen.field.CANOpenNMTField;
-import org.apache.plc4x.java.canopen.field.CANOpenPDOField;
-import org.apache.plc4x.java.canopen.field.CANOpenSDOField;
 import org.apache.plc4x.java.canopen.conversation.CANTransportConversation;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenHeartbeatPayload;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenNetworkPayload;
@@ -72,7 +68,7 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.plc4x.java.spi.values.PlcLINT;
@@ -164,67 +160,67 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
 
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> response = new CompletableFuture<>();
-        if (writeRequest.getFieldNames().size() != 1) {
-            response.completeExceptionally(new IllegalArgumentException("You can write only one field at the time"));
+        if (writeRequest.getTagNames().size() != 1) {
+            response.completeExceptionally(new IllegalArgumentException("You can write only one tag at the time"));
             return response;
         }
 
-        PlcField field = writeRequest.getFields().get(0);
-        if (!(field instanceof CANOpenField)) {
-            response.completeExceptionally(new IllegalArgumentException("Only CANOpenField instances are supported"));
+        PlcTag tag = writeRequest.getTags().get(0);
+        if (!(tag instanceof CANOpenTag)) {
+            response.completeExceptionally(new IllegalArgumentException("Only CANOpenTag instances are supported"));
             return response;
         }
 
-        if (field instanceof CANOpenSDOField) {
-            writeInternally((DefaultPlcWriteRequest) writeRequest, (CANOpenSDOField) field, response);
+        if (tag instanceof CANOpenSDOTag) {
+            writeInternally((DefaultPlcWriteRequest) writeRequest, (CANOpenSDOTag) tag, response);
             return response;
         }
-        if (field instanceof CANOpenPDOField) {
-            writeInternally((DefaultPlcWriteRequest) writeRequest, (CANOpenPDOField) field, response);
+        if (tag instanceof CANOpenPDOTag) {
+            writeInternally((DefaultPlcWriteRequest) writeRequest, (CANOpenPDOTag) tag, response);
             return response;
         }
 
-        response.completeExceptionally(new IllegalArgumentException("Only CANOpenSDOField instances are supported"));
+        response.completeExceptionally(new IllegalArgumentException("Only CANOpenSDOTag instances are supported"));
         return response;
     }
 
-    private void writeInternally(DefaultPlcWriteRequest writeRequest, CANOpenSDOField field, CompletableFuture<PlcWriteResponse> response) {
+    private void writeInternally(DefaultPlcWriteRequest writeRequest, CANOpenSDOTag tag, CompletableFuture<PlcWriteResponse> response) {
         final RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
 
-        String fieldName = writeRequest.getFieldNames().iterator().next();
+        String tagName = writeRequest.getTagNames().iterator().next();
 
         CompletableFuture<PlcResponseCode> callback = new CompletableFuture<>();
         callback.whenComplete((code, error) -> {
             if (error != null) {
                 if (error instanceof CANOpenAbortException) {
-                    response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(fieldName, PlcResponseCode.REMOTE_ERROR)));
+                    response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(tagName, PlcResponseCode.REMOTE_ERROR)));
                 } else {
-                    response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(fieldName, PlcResponseCode.INTERNAL_ERROR)));
+                    response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(tagName, PlcResponseCode.INTERNAL_ERROR)));
                 }
                 transaction.endRequest();
                 return;
             }
-            response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(fieldName, code)));
+            response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(tagName, code)));
             transaction.endRequest();
         });
 
         PlcValue writeValue = writeRequest.getPlcValues().get(0);
-        SDODownloadConversation download = new SDODownloadConversation(conversation, field.getNodeId(), field.getAnswerNodeId(),
-            new IndexAddress(field.getIndex(), field.getSubIndex()), writeValue, field.getCanOpenDataType());
+        SDODownloadConversation download = new SDODownloadConversation(conversation, tag.getNodeId(), tag.getAnswerNodeId(),
+            new IndexAddress(tag.getIndex(), tag.getSubIndex()), writeValue, tag.getCanOpenDataType());
         transaction.submit(() -> download.execute(callback));
     }
 
-    private void writeInternally(DefaultPlcWriteRequest writeRequest, CANOpenPDOField field, CompletableFuture<PlcWriteResponse> response) {
+    private void writeInternally(DefaultPlcWriteRequest writeRequest, CANOpenPDOTag tag, CompletableFuture<PlcWriteResponse> response) {
         PlcValue writeValue = writeRequest.getPlcValues().get(0);
 
         try {
-            String fieldName = writeRequest.getFieldNames().iterator().next();
+            String tagName = writeRequest.getTagNames().iterator().next();
 
-            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(writeValue, field.getCanOpenDataType(), writeValue.getLength()), ByteOrder.LITTLE_ENDIAN);
-            DataItem.staticSerialize(writeBuffer, writeValue, field.getCanOpenDataType(), writeValue.getLength(), ByteOrder.LITTLE_ENDIAN);
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(writeValue, tag.getCanOpenDataType(), writeValue.getLength()), ByteOrder.LITTLE_ENDIAN);
+            DataItem.staticSerialize(writeBuffer, writeValue, tag.getCanOpenDataType(), writeValue.getLength(), ByteOrder.LITTLE_ENDIAN);
             final CANOpenPDOPayload payload = new CANOpenPDOPayload(new CANOpenPDO(writeBuffer.getData()));
-            context.sendToWire(new CANOpenFrame((short) field.getNodeId(), field.getService(), payload));
-            response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(fieldName, PlcResponseCode.OK)));
+            context.sendToWire(new CANOpenFrame((short) tag.getNodeId(), tag.getService(), payload));
+            response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(tagName, PlcResponseCode.OK)));
         } catch (Exception e) {
             response.completeExceptionally(e);
         }
@@ -232,23 +228,23 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
 
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         CompletableFuture<PlcReadResponse> response = new CompletableFuture<>();
-        if (readRequest.getFieldNames().size() != 1) {
-            response.completeExceptionally(new IllegalArgumentException("SDO requires single field to be read"));
+        if (readRequest.getTagNames().size() != 1) {
+            response.completeExceptionally(new IllegalArgumentException("SDO requires single tag to be read"));
             return response;
         }
 
-        PlcField field = readRequest.getFields().get(0);
-        if (!(field instanceof CANOpenField)) {
-            response.completeExceptionally(new IllegalArgumentException("Only CANOpenField instances are supported"));
+        PlcTag tag = readRequest.getTags().get(0);
+        if (!(tag instanceof CANOpenTag)) {
+            response.completeExceptionally(new IllegalArgumentException("Only CANOpenTag instances are supported"));
             return response;
         }
 
-        if (!(field instanceof CANOpenSDOField)) {
-            response.completeExceptionally(new IllegalArgumentException("Only CANOpenSDOField instances are supported"));
+        if (!(tag instanceof CANOpenSDOTag)) {
+            response.completeExceptionally(new IllegalArgumentException("Only CANOpenSDOTag instances are supported"));
             return response;
-        };
+        }
 
-        readInternally(readRequest, (CANOpenSDOField) field, response);
+        readInternally(readRequest, (CANOpenSDOTag) tag, response);
         return response;
     }
 
@@ -259,21 +255,21 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
         Map<String, ResponseItem<PlcSubscriptionHandle>> answers = new LinkedHashMap<>();
         DefaultPlcSubscriptionResponse response = new DefaultPlcSubscriptionResponse(rq, answers);
 
-        for (String key : rq.getFieldNames()) {
-            DefaultPlcSubscriptionField subscription = (DefaultPlcSubscriptionField) rq.getField(key);
+        for (String key : rq.getTagNames()) {
+            DefaultPlcSubscriptionTag subscription = (DefaultPlcSubscriptionTag) rq.getTag(key);
             if (subscription.getPlcSubscriptionType() != PlcSubscriptionType.EVENT) {
                 answers.put(key, new ResponseItem<>(PlcResponseCode.UNSUPPORTED, null));
-            } else if ((subscription.getPlcField() instanceof CANOpenPDOField)) {
+            } else if ((subscription.getTag() instanceof CANOpenPDOTag)) {
                 answers.put(key, new ResponseItem<>(PlcResponseCode.OK,
-                    new CANOpenSubscriptionHandle(this, key, (CANOpenPDOField) subscription.getPlcField())
+                    new CANOpenSubscriptionHandle(this, key, (CANOpenPDOTag) subscription.getTag())
                 ));
-            } else if ((subscription.getPlcField() instanceof CANOpenNMTField)) {
+            } else if ((subscription.getTag() instanceof CANOpenNMTTag)) {
                 answers.put(key, new ResponseItem<>(PlcResponseCode.OK,
-                    new CANOpenSubscriptionHandle(this, key, (CANOpenNMTField) subscription.getPlcField())
+                    new CANOpenSubscriptionHandle(this, key, (CANOpenNMTTag) subscription.getTag())
                 ));
-            } else if ((subscription.getPlcField() instanceof CANOpenHeartbeatField)) {
+            } else if ((subscription.getTag() instanceof CANOpenHeartbeatTag)) {
                 answers.put(key, new ResponseItem<>(PlcResponseCode.OK,
-                    new CANOpenSubscriptionHandle(this, key, (CANOpenHeartbeatField) subscription.getPlcField())
+                    new CANOpenSubscriptionHandle(this, key, (CANOpenHeartbeatTag) subscription.getTag())
                 ));
             } else {
                 answers.put(key, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
@@ -294,32 +290,32 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
         return CompletableFuture.completedFuture(new DefaultPlcUnsubscriptionResponse(request));
     }
 
-    private void readInternally(PlcReadRequest readRequest, CANOpenSDOField field, CompletableFuture<PlcReadResponse> response) {
-        String fieldName = readRequest.getFieldNames().iterator().next();
+    private void readInternally(PlcReadRequest readRequest, CANOpenSDOTag tag, CompletableFuture<PlcReadResponse> response) {
+        String tagName = readRequest.getTagNames().iterator().next();
 
         final RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         CompletableFuture<PlcValue> callback = new CompletableFuture<>();
         callback.whenComplete((value, error) -> {
             if (error != null) {
-                Map<String, ResponseItem<PlcValue>> fields = new HashMap<>();
+                Map<String, ResponseItem<PlcValue>> tags = new HashMap<>();
                 if (error instanceof CANOpenAbortException) {
-                    fields.put(fieldName, new ResponseItem<>(PlcResponseCode.REMOTE_ERROR, new PlcLINT(((CANOpenAbortException) error).getAbortCode())));
+                    tags.put(tagName, new ResponseItem<>(PlcResponseCode.REMOTE_ERROR, new PlcLINT(((CANOpenAbortException) error).getAbortCode())));
                 } else {
-                    fields.put(fieldName, new ResponseItem<>(PlcResponseCode.REMOTE_ERROR, null));
+                    tags.put(tagName, new ResponseItem<>(PlcResponseCode.REMOTE_ERROR, null));
                 }
-                response.complete(new DefaultPlcReadResponse(readRequest, fields));
+                response.complete(new DefaultPlcReadResponse(readRequest, tags));
                 transaction.endRequest();
 
                 return;
             }
 
-            Map<String, ResponseItem<PlcValue>> fields = new HashMap<>();
-            fields.put(fieldName, new ResponseItem<>(PlcResponseCode.OK, value));
-            response.complete(new DefaultPlcReadResponse(readRequest, fields));
+            Map<String, ResponseItem<PlcValue>> tags = new HashMap<>();
+            tags.put(tagName, new ResponseItem<>(PlcResponseCode.OK, value));
+            response.complete(new DefaultPlcReadResponse(readRequest, tags));
             transaction.endRequest();
         });
 
-        SDOUploadConversation upload = new SDOUploadConversation(conversation, field.getNodeId(), field.getAnswerNodeId(), new IndexAddress(field.getIndex(), field.getSubIndex()), field.getCanOpenDataType());
+        SDOUploadConversation upload = new SDOUploadConversation(conversation, tag.getNodeId(), tag.getAnswerNodeId(), new IndexAddress(tag.getIndex(), tag.getSubIndex()), tag.getCanOpenDataType());
         transaction.submit(() -> upload.execute(callback));
     }
 
@@ -363,10 +359,10 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
                         logger.trace("Dispatching notification {} for node {} to {}", service, nodeId, handle);
                         dispatchedHandle = handle;
 
-                        CANOpenPDOField field = (CANOpenPDOField) handle.getField();
+                        CANOpenPDOTag tag = (CANOpenPDOTag) handle.getTag();
                         byte[] data = ((CANOpenPDOPayload) payload).getPdo().getData();
                         try {
-                            PlcValue value = DataItem.staticParse(new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN), field.getCanOpenDataType(), data.length);
+                            PlcValue value = DataItem.staticParse(new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN), tag.getCanOpenDataType(), data.length);
                             DefaultPlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(
                                 Instant.now(),
                                 Collections.singletonMap(
@@ -376,7 +372,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
                             );
                             consumer.accept(event);
                         } catch (ParseException e) {
-                            logger.warn("Could not parse data to desired type: {}", field.getCanOpenDataType(), e);
+                            logger.warn("Could not parse data to desired type: {}", tag.getCanOpenDataType(), e);
                             DefaultPlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(
                                 Instant.now(),
                                 Collections.singletonMap(
@@ -393,10 +389,10 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
                         dispatchedHandle = handle;
 
                         final NMTState state = ((CANOpenHeartbeatPayload) payload).getState();
-                        Map<String, PlcValue> fields = new HashMap<>();
-                        fields.put("state", new PlcUSINT(state.getValue()));
-                        fields.put("node", new PlcUSINT(nodeId));
-                        PlcStruct struct = new PlcStruct(fields);
+                        Map<String, PlcValue> tags = new HashMap<>();
+                        tags.put("state", new PlcUSINT(state.getValue()));
+                        tags.put("node", new PlcUSINT(nodeId));
+                        PlcStruct struct = new PlcStruct(tags);
                         DefaultPlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(
                             Instant.now(),
                             Collections.singletonMap(
@@ -412,10 +408,10 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
                         dispatchedHandle = handle;
 
                         final NMTStateRequest state = ((CANOpenNetworkPayload) payload).getRequest();
-                        Map<String, PlcValue> fields = new HashMap<>();
-                        fields.put("state", new PlcUSINT(state.getValue()));
-                        fields.put("node", new PlcUSINT(nodeId));
-                        PlcStruct struct = new PlcStruct(fields);
+                        Map<String, PlcValue> tags = new HashMap<>();
+                        tags.put("state", new PlcUSINT(state.getValue()));
+                        tags.put("node", new PlcUSINT(nodeId));
+                        PlcStruct struct = new PlcStruct(tags);
                         DefaultPlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(
                             Instant.now(),
                             Collections.singletonMap(
@@ -436,7 +432,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
 
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
-        final DefaultPlcConsumerRegistration consumerRegistration =new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new DefaultPlcSubscriptionHandle[0]));
+        final DefaultPlcConsumerRegistration consumerRegistration = new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new DefaultPlcSubscriptionHandle[0]));
         consumers.put(consumerRegistration, consumer);
         return consumerRegistration;
     }

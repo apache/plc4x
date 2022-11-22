@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type PriorityClass uint8
 
 type IPriorityClass interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -52,32 +52,32 @@ func init() {
 	}
 }
 
-func PriorityClassByValue(value uint8) PriorityClass {
+func PriorityClassByValue(value uint8) (enum PriorityClass, ok bool) {
 	switch value {
 	case 0x00:
-		return PriorityClass_Class4
+		return PriorityClass_Class4, true
 	case 0x01:
-		return PriorityClass_Class3
+		return PriorityClass_Class3, true
 	case 0x02:
-		return PriorityClass_Class2
+		return PriorityClass_Class2, true
 	case 0x03:
-		return PriorityClass_Class1
+		return PriorityClass_Class1, true
 	}
-	return 0
+	return 0, false
 }
 
-func PriorityClassByName(value string) PriorityClass {
+func PriorityClassByName(value string) (enum PriorityClass, ok bool) {
 	switch value {
 	case "Class4":
-		return PriorityClass_Class4
+		return PriorityClass_Class4, true
 	case "Class3":
-		return PriorityClass_Class3
+		return PriorityClass_Class3, true
 	case "Class2":
-		return PriorityClass_Class2
+		return PriorityClass_Class2, true
 	case "Class1":
-		return PriorityClass_Class1
+		return PriorityClass_Class1, true
 	}
-	return 0
+	return 0, false
 }
 
 func PriorityClassKnows(value uint8) bool {
@@ -107,19 +107,37 @@ func (m PriorityClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func PriorityClassParse(readBuffer utils.ReadBuffer) (PriorityClass, error) {
+func PriorityClassParse(theBytes []byte) (PriorityClass, error) {
+	return PriorityClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func PriorityClassParseWithBuffer(readBuffer utils.ReadBuffer) (PriorityClass, error) {
 	val, err := readBuffer.ReadUint8("PriorityClass", 2)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading PriorityClass")
 	}
-	return PriorityClassByValue(val), nil
+	if enum, ok := PriorityClassByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return PriorityClass(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e PriorityClass) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("PriorityClass", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e PriorityClass) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e PriorityClass) name() string {
+func (e PriorityClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("PriorityClass", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e PriorityClass) PLC4XEnumName() string {
 	switch e {
 	case PriorityClass_Class4:
 		return "Class4"
@@ -134,5 +152,5 @@ func (e PriorityClass) name() string {
 }
 
 func (e PriorityClass) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

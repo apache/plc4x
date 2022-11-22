@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type AlarmType uint8
 
 type IAlarmType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -50,28 +50,28 @@ func init() {
 	}
 }
 
-func AlarmTypeByValue(value uint8) AlarmType {
+func AlarmTypeByValue(value uint8) (enum AlarmType, ok bool) {
 	switch value {
 	case 0x01:
-		return AlarmType_SCAN
+		return AlarmType_SCAN, true
 	case 0x02:
-		return AlarmType_ALARM_8
+		return AlarmType_ALARM_8, true
 	case 0x04:
-		return AlarmType_ALARM_S
+		return AlarmType_ALARM_S, true
 	}
-	return 0
+	return 0, false
 }
 
-func AlarmTypeByName(value string) AlarmType {
+func AlarmTypeByName(value string) (enum AlarmType, ok bool) {
 	switch value {
 	case "SCAN":
-		return AlarmType_SCAN
+		return AlarmType_SCAN, true
 	case "ALARM_8":
-		return AlarmType_ALARM_8
+		return AlarmType_ALARM_8, true
 	case "ALARM_S":
-		return AlarmType_ALARM_S
+		return AlarmType_ALARM_S, true
 	}
-	return 0
+	return 0, false
 }
 
 func AlarmTypeKnows(value uint8) bool {
@@ -101,19 +101,37 @@ func (m AlarmType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmTypeParse(readBuffer utils.ReadBuffer) (AlarmType, error) {
+func AlarmTypeParse(theBytes []byte) (AlarmType, error) {
+	return AlarmTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AlarmTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmType, error) {
 	val, err := readBuffer.ReadUint8("AlarmType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading AlarmType")
 	}
-	return AlarmTypeByValue(val), nil
+	if enum, ok := AlarmTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return AlarmType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e AlarmType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("AlarmType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e AlarmType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e AlarmType) name() string {
+func (e AlarmType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("AlarmType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e AlarmType) PLC4XEnumName() string {
 	switch e {
 	case AlarmType_SCAN:
 		return "SCAN"
@@ -126,5 +144,5 @@ func (e AlarmType) name() string {
 }
 
 func (e AlarmType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

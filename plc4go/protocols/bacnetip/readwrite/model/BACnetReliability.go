@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetReliability uint16
 
 type IBACnetReliability interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -94,116 +94,116 @@ func init() {
 	}
 }
 
-func BACnetReliabilityByValue(value uint16) BACnetReliability {
+func BACnetReliabilityByValue(value uint16) (enum BACnetReliability, ok bool) {
 	switch value {
 	case 0:
-		return BACnetReliability_NO_FAULT_DETECTED
+		return BACnetReliability_NO_FAULT_DETECTED, true
 	case 0xFFFF:
-		return BACnetReliability_VENDOR_PROPRIETARY_VALUE
+		return BACnetReliability_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetReliability_NO_SENSOR
+		return BACnetReliability_NO_SENSOR, true
 	case 10:
-		return BACnetReliability_CONFIGURATION_ERROR
+		return BACnetReliability_CONFIGURATION_ERROR, true
 	case 12:
-		return BACnetReliability_COMMUNICATION_FAILURE
+		return BACnetReliability_COMMUNICATION_FAILURE, true
 	case 13:
-		return BACnetReliability_MEMBER_FAULT
+		return BACnetReliability_MEMBER_FAULT, true
 	case 14:
-		return BACnetReliability_MONITORED_OBJECT_FAULT
+		return BACnetReliability_MONITORED_OBJECT_FAULT, true
 	case 15:
-		return BACnetReliability_TRIPPED
+		return BACnetReliability_TRIPPED, true
 	case 16:
-		return BACnetReliability_LAMP_FAILURE
+		return BACnetReliability_LAMP_FAILURE, true
 	case 17:
-		return BACnetReliability_ACTIVATION_FAILURE
+		return BACnetReliability_ACTIVATION_FAILURE, true
 	case 18:
-		return BACnetReliability_RENEW_DHCP_FAILURE
+		return BACnetReliability_RENEW_DHCP_FAILURE, true
 	case 19:
-		return BACnetReliability_RENEW_FD_REGISTRATION_FAILURE
+		return BACnetReliability_RENEW_FD_REGISTRATION_FAILURE, true
 	case 2:
-		return BACnetReliability_OVER_RANGE
+		return BACnetReliability_OVER_RANGE, true
 	case 20:
-		return BACnetReliability_RESTART_AUTO_NEGOTIATION_FAILURE
+		return BACnetReliability_RESTART_AUTO_NEGOTIATION_FAILURE, true
 	case 21:
-		return BACnetReliability_RESTART_FAILURE
+		return BACnetReliability_RESTART_FAILURE, true
 	case 22:
-		return BACnetReliability_PROPRIETARY_COMMAND_FAILURE
+		return BACnetReliability_PROPRIETARY_COMMAND_FAILURE, true
 	case 23:
-		return BACnetReliability_FAULTS_LISTED
+		return BACnetReliability_FAULTS_LISTED, true
 	case 24:
-		return BACnetReliability_REFERENCED_OBJECT_FAULT
+		return BACnetReliability_REFERENCED_OBJECT_FAULT, true
 	case 3:
-		return BACnetReliability_UNDER_RANGE
+		return BACnetReliability_UNDER_RANGE, true
 	case 4:
-		return BACnetReliability_OPEN_LOOP
+		return BACnetReliability_OPEN_LOOP, true
 	case 5:
-		return BACnetReliability_SHORTED_LOOP
+		return BACnetReliability_SHORTED_LOOP, true
 	case 6:
-		return BACnetReliability_NO_OUTPUT
+		return BACnetReliability_NO_OUTPUT, true
 	case 7:
-		return BACnetReliability_UNRELIABLE_OTHER
+		return BACnetReliability_UNRELIABLE_OTHER, true
 	case 8:
-		return BACnetReliability_PROCESS_ERROR
+		return BACnetReliability_PROCESS_ERROR, true
 	case 9:
-		return BACnetReliability_MULTI_STATE_FAULT
+		return BACnetReliability_MULTI_STATE_FAULT, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetReliabilityByName(value string) BACnetReliability {
+func BACnetReliabilityByName(value string) (enum BACnetReliability, ok bool) {
 	switch value {
 	case "NO_FAULT_DETECTED":
-		return BACnetReliability_NO_FAULT_DETECTED
+		return BACnetReliability_NO_FAULT_DETECTED, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetReliability_VENDOR_PROPRIETARY_VALUE
+		return BACnetReliability_VENDOR_PROPRIETARY_VALUE, true
 	case "NO_SENSOR":
-		return BACnetReliability_NO_SENSOR
+		return BACnetReliability_NO_SENSOR, true
 	case "CONFIGURATION_ERROR":
-		return BACnetReliability_CONFIGURATION_ERROR
+		return BACnetReliability_CONFIGURATION_ERROR, true
 	case "COMMUNICATION_FAILURE":
-		return BACnetReliability_COMMUNICATION_FAILURE
+		return BACnetReliability_COMMUNICATION_FAILURE, true
 	case "MEMBER_FAULT":
-		return BACnetReliability_MEMBER_FAULT
+		return BACnetReliability_MEMBER_FAULT, true
 	case "MONITORED_OBJECT_FAULT":
-		return BACnetReliability_MONITORED_OBJECT_FAULT
+		return BACnetReliability_MONITORED_OBJECT_FAULT, true
 	case "TRIPPED":
-		return BACnetReliability_TRIPPED
+		return BACnetReliability_TRIPPED, true
 	case "LAMP_FAILURE":
-		return BACnetReliability_LAMP_FAILURE
+		return BACnetReliability_LAMP_FAILURE, true
 	case "ACTIVATION_FAILURE":
-		return BACnetReliability_ACTIVATION_FAILURE
+		return BACnetReliability_ACTIVATION_FAILURE, true
 	case "RENEW_DHCP_FAILURE":
-		return BACnetReliability_RENEW_DHCP_FAILURE
+		return BACnetReliability_RENEW_DHCP_FAILURE, true
 	case "RENEW_FD_REGISTRATION_FAILURE":
-		return BACnetReliability_RENEW_FD_REGISTRATION_FAILURE
+		return BACnetReliability_RENEW_FD_REGISTRATION_FAILURE, true
 	case "OVER_RANGE":
-		return BACnetReliability_OVER_RANGE
+		return BACnetReliability_OVER_RANGE, true
 	case "RESTART_AUTO_NEGOTIATION_FAILURE":
-		return BACnetReliability_RESTART_AUTO_NEGOTIATION_FAILURE
+		return BACnetReliability_RESTART_AUTO_NEGOTIATION_FAILURE, true
 	case "RESTART_FAILURE":
-		return BACnetReliability_RESTART_FAILURE
+		return BACnetReliability_RESTART_FAILURE, true
 	case "PROPRIETARY_COMMAND_FAILURE":
-		return BACnetReliability_PROPRIETARY_COMMAND_FAILURE
+		return BACnetReliability_PROPRIETARY_COMMAND_FAILURE, true
 	case "FAULTS_LISTED":
-		return BACnetReliability_FAULTS_LISTED
+		return BACnetReliability_FAULTS_LISTED, true
 	case "REFERENCED_OBJECT_FAULT":
-		return BACnetReliability_REFERENCED_OBJECT_FAULT
+		return BACnetReliability_REFERENCED_OBJECT_FAULT, true
 	case "UNDER_RANGE":
-		return BACnetReliability_UNDER_RANGE
+		return BACnetReliability_UNDER_RANGE, true
 	case "OPEN_LOOP":
-		return BACnetReliability_OPEN_LOOP
+		return BACnetReliability_OPEN_LOOP, true
 	case "SHORTED_LOOP":
-		return BACnetReliability_SHORTED_LOOP
+		return BACnetReliability_SHORTED_LOOP, true
 	case "NO_OUTPUT":
-		return BACnetReliability_NO_OUTPUT
+		return BACnetReliability_NO_OUTPUT, true
 	case "UNRELIABLE_OTHER":
-		return BACnetReliability_UNRELIABLE_OTHER
+		return BACnetReliability_UNRELIABLE_OTHER, true
 	case "PROCESS_ERROR":
-		return BACnetReliability_PROCESS_ERROR
+		return BACnetReliability_PROCESS_ERROR, true
 	case "MULTI_STATE_FAULT":
-		return BACnetReliability_MULTI_STATE_FAULT
+		return BACnetReliability_MULTI_STATE_FAULT, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetReliabilityKnows(value uint16) bool {
@@ -233,19 +233,37 @@ func (m BACnetReliability) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetReliabilityParse(readBuffer utils.ReadBuffer) (BACnetReliability, error) {
+func BACnetReliabilityParse(theBytes []byte) (BACnetReliability, error) {
+	return BACnetReliabilityParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetReliabilityParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetReliability, error) {
 	val, err := readBuffer.ReadUint16("BACnetReliability", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetReliability")
 	}
-	return BACnetReliabilityByValue(val), nil
+	if enum, ok := BACnetReliabilityByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetReliability(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetReliability) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetReliability", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetReliability) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetReliability) name() string {
+func (e BACnetReliability) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetReliability", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetReliability) PLC4XEnumName() string {
 	switch e {
 	case BACnetReliability_NO_FAULT_DETECTED:
 		return "NO_FAULT_DETECTED"
@@ -302,5 +320,5 @@ func (e BACnetReliability) name() string {
 }
 
 func (e BACnetReliability) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

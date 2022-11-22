@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,22 +20,16 @@ package org.apache.plc4x.java.spi.connection;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
-import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
-import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
-import org.apache.plc4x.java.spi.messages.DefaultPlcUnsubscriptionRequest;
-import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
-import org.apache.plc4x.java.spi.messages.PlcReader;
-import org.apache.plc4x.java.spi.messages.PlcSubscriber;
-import org.apache.plc4x.java.spi.messages.PlcWriter;
+import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
-
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
@@ -47,15 +41,17 @@ import java.util.function.Consumer;
  * Concrete implementations should override the methods indicating connection capabilities
  * and for obtaining respective request builders.
  */
-public abstract class AbstractPlcConnection implements PlcConnection, PlcConnectionMetadata, PlcReader, PlcWriter , PlcSubscriber {
+public abstract class AbstractPlcConnection implements PlcConnection, PlcConnectionMetadata, PlcReader, PlcWriter, PlcSubscriber, PlcBrowser {
 
     private boolean canRead = false;
     private boolean canWrite = false;
     private boolean canSubscribe = false;
-    private PlcFieldHandler fieldHandler;
+    private boolean canBrowse = false;
+    private PlcTagHandler tagHandler;
     private PlcValueHandler valueHandler;
     private Plc4xProtocolBase<?> protocol;
     private BaseOptimizer optimizer;
+    private PlcAuthentication authentication;
 
     /**
      * @deprecated only for compatibility reasons.
@@ -64,14 +60,17 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     protected AbstractPlcConnection() {
     }
 
-    protected AbstractPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe, PlcFieldHandler fieldHandler, PlcValueHandler valueHandler,
-                                 BaseOptimizer optimizer) {
+    protected AbstractPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe, boolean canBrowse,
+                                    PlcTagHandler tagHandler, PlcValueHandler valueHandler,
+                                    BaseOptimizer optimizer, PlcAuthentication authentication) {
         this.canRead = canRead;
         this.canWrite = canWrite;
         this.canSubscribe = canSubscribe;
-        this.fieldHandler = fieldHandler;
+        this.canBrowse = canBrowse;
+        this.tagHandler = tagHandler;
         this.valueHandler = valueHandler;
         this.optimizer = optimizer;
+        this.authentication = authentication;
     }
 
     public void setProtocol(Plc4xProtocolBase<?> protocol) {
@@ -105,12 +104,21 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         return canSubscribe;
     }
 
-    public PlcFieldHandler getPlcFieldHandler() {
-        return this.fieldHandler;
+    @Override
+    public boolean canBrowse() {
+        return canBrowse;
+    }
+
+    public PlcTagHandler getPlcTagHandler() {
+        return this.tagHandler;
     }
 
     public PlcValueHandler getPlcValueHandler() {
         return this.valueHandler;
+    }
+
+    protected PlcAuthentication getAuthentication() {
+        return authentication;
     }
 
     @Override
@@ -118,7 +126,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         if (!canRead()) {
             throw new PlcUnsupportedOperationException("The connection does not support reading");
         }
-        return new DefaultPlcReadRequest.Builder(this, getPlcFieldHandler());
+        return new DefaultPlcReadRequest.Builder(this, getPlcTagHandler());
     }
 
     @Override
@@ -126,7 +134,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         if (!canWrite()) {
             throw new PlcUnsupportedOperationException("The connection does not support writing");
         }
-        return new DefaultPlcWriteRequest.Builder(this, getPlcFieldHandler(), getPlcValueHandler());
+        return new DefaultPlcWriteRequest.Builder(this, getPlcTagHandler(), getPlcValueHandler());
     }
 
     @Override
@@ -134,7 +142,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         if (!canSubscribe()) {
             throw new PlcUnsupportedOperationException("The connection does not support subscription");
         }
-        return new DefaultPlcSubscriptionRequest.Builder(this, getPlcFieldHandler());
+        return new DefaultPlcSubscriptionRequest.Builder(this, getPlcTagHandler());
     }
 
     @Override
@@ -143,6 +151,14 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
             throw new PlcUnsupportedOperationException("The connection does not support subscription");
         }
         return new DefaultPlcUnsubscriptionRequest.Builder(this);
+    }
+
+    @Override
+    public PlcBrowseRequest.Builder browseRequestBuilder() {
+        if (!canBrowse) {
+            throw new PlcUnsupportedOperationException("The connection does not support browsing");
+        }
+        return new DefaultPlcBrowseRequest.Builder(this, getPlcTagHandler());
     }
 
     @Override
@@ -185,6 +201,16 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     @Override
     public void unregister(PlcConsumerRegistration registration) {
         throw new NotImplementedException("");
+    }
+
+    @Override
+    public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
+        return protocol.browse(browseRequest);
+    }
+
+    @Override
+    public CompletableFuture<PlcBrowseResponse> browseWithInterceptor(PlcBrowseRequest browseRequest, PlcBrowseRequestInterceptor interceptor) {
+        return protocol.browseWithInterceptor(browseRequest, interceptor);
     }
 
 }

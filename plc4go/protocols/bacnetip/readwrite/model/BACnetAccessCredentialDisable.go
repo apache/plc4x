@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetAccessCredentialDisable uint16
 
 type IBACnetAccessCredentialDisable interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -54,36 +54,36 @@ func init() {
 	}
 }
 
-func BACnetAccessCredentialDisableByValue(value uint16) BACnetAccessCredentialDisable {
+func BACnetAccessCredentialDisableByValue(value uint16) (enum BACnetAccessCredentialDisable, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAccessCredentialDisable_NONE
+		return BACnetAccessCredentialDisable_NONE, true
 	case 0xFFFF:
-		return BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetAccessCredentialDisable_DISABLE
+		return BACnetAccessCredentialDisable_DISABLE, true
 	case 2:
-		return BACnetAccessCredentialDisable_DISABLE_MANUAL
+		return BACnetAccessCredentialDisable_DISABLE_MANUAL, true
 	case 3:
-		return BACnetAccessCredentialDisable_DISABLE_LOCKOUT
+		return BACnetAccessCredentialDisable_DISABLE_LOCKOUT, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetAccessCredentialDisableByName(value string) BACnetAccessCredentialDisable {
+func BACnetAccessCredentialDisableByName(value string) (enum BACnetAccessCredentialDisable, ok bool) {
 	switch value {
 	case "NONE":
-		return BACnetAccessCredentialDisable_NONE
+		return BACnetAccessCredentialDisable_NONE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE, true
 	case "DISABLE":
-		return BACnetAccessCredentialDisable_DISABLE
+		return BACnetAccessCredentialDisable_DISABLE, true
 	case "DISABLE_MANUAL":
-		return BACnetAccessCredentialDisable_DISABLE_MANUAL
+		return BACnetAccessCredentialDisable_DISABLE_MANUAL, true
 	case "DISABLE_LOCKOUT":
-		return BACnetAccessCredentialDisable_DISABLE_LOCKOUT
+		return BACnetAccessCredentialDisable_DISABLE_LOCKOUT, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAccessCredentialDisableKnows(value uint16) bool {
@@ -113,19 +113,37 @@ func (m BACnetAccessCredentialDisable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessCredentialDisableParse(readBuffer utils.ReadBuffer) (BACnetAccessCredentialDisable, error) {
+func BACnetAccessCredentialDisableParse(theBytes []byte) (BACnetAccessCredentialDisable, error) {
+	return BACnetAccessCredentialDisableParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetAccessCredentialDisableParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessCredentialDisable, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessCredentialDisable", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAccessCredentialDisable")
 	}
-	return BACnetAccessCredentialDisableByValue(val), nil
+	if enum, ok := BACnetAccessCredentialDisableByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetAccessCredentialDisable(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetAccessCredentialDisable) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetAccessCredentialDisable", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetAccessCredentialDisable) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetAccessCredentialDisable) name() string {
+func (e BACnetAccessCredentialDisable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetAccessCredentialDisable", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAccessCredentialDisable) PLC4XEnumName() string {
 	switch e {
 	case BACnetAccessCredentialDisable_NONE:
 		return "NONE"
@@ -142,5 +160,5 @@ func (e BACnetAccessCredentialDisable) name() string {
 }
 
 func (e BACnetAccessCredentialDisable) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

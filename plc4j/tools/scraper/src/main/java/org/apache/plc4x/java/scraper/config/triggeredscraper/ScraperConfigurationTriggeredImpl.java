@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -94,7 +94,7 @@ public class ScraperConfigurationTriggeredImpl implements ScraperConfiguration {
                 scrapeJobs.add(new TriggeredScrapeJobImpl(jobConfiguration.getName(),
                     jobConfiguration.getTriggerConfig(),
                     getSourcesForAliases(jobConfiguration.getSources(),sources),
-                    jobConfiguration.getFields()));
+                    jobConfiguration.getTags()));
             }
             else {
                 if(jobConfiguration.getScrapeRate()!=null){
@@ -103,12 +103,12 @@ public class ScraperConfigurationTriggeredImpl implements ScraperConfiguration {
                         jobConfiguration.getName(),
                         jobConfiguration.getScrapeRate(),
                         getSourcesForAliases(jobConfiguration.getSources(),sources),
-                        jobConfiguration.getFields()));
+                        jobConfiguration.getTags()));
                 }
                 else {
                     logger.info("Job has lack of trigger/scheduled config");
                     throw new ScraperConfigurationException(
-                        String.format("Job %s was intended to be o triggered annotation, but no triggerConfig-Field could be found. Canceling!",jobConfiguration.getName()));
+                        String.format("Job %s was intended to be o triggered annotation, but no triggerConfig-tag could be found. Canceling!",jobConfiguration.getName()));
                 }
             }
         }

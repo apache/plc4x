@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,8 +20,8 @@
 package knxnetip
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
 type ValueHandler struct {
@@ -31,6 +31,6 @@ func NewValueHandler() ValueHandler {
 	return ValueHandler{}
 }
 
-func (m ValueHandler) NewPlcValue(field model.PlcField, value interface{}) (values.PlcValue, error) {
+func (m ValueHandler) NewPlcValue(tag model.PlcTag, value interface{}) (values.PlcValue, error) {
 	return nil, nil
 }

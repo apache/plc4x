@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetDoorValue uint8
 
 type IBACnetDoorValue interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -52,32 +52,32 @@ func init() {
 	}
 }
 
-func BACnetDoorValueByValue(value uint8) BACnetDoorValue {
+func BACnetDoorValueByValue(value uint8) (enum BACnetDoorValue, ok bool) {
 	switch value {
 	case 0:
-		return BACnetDoorValue_LOCK
+		return BACnetDoorValue_LOCK, true
 	case 1:
-		return BACnetDoorValue_UNLOCK
+		return BACnetDoorValue_UNLOCK, true
 	case 2:
-		return BACnetDoorValue_PULSE_UNLOCK
+		return BACnetDoorValue_PULSE_UNLOCK, true
 	case 3:
-		return BACnetDoorValue_EXTENDED_PULSE_UNLOCK
+		return BACnetDoorValue_EXTENDED_PULSE_UNLOCK, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetDoorValueByName(value string) BACnetDoorValue {
+func BACnetDoorValueByName(value string) (enum BACnetDoorValue, ok bool) {
 	switch value {
 	case "LOCK":
-		return BACnetDoorValue_LOCK
+		return BACnetDoorValue_LOCK, true
 	case "UNLOCK":
-		return BACnetDoorValue_UNLOCK
+		return BACnetDoorValue_UNLOCK, true
 	case "PULSE_UNLOCK":
-		return BACnetDoorValue_PULSE_UNLOCK
+		return BACnetDoorValue_PULSE_UNLOCK, true
 	case "EXTENDED_PULSE_UNLOCK":
-		return BACnetDoorValue_EXTENDED_PULSE_UNLOCK
+		return BACnetDoorValue_EXTENDED_PULSE_UNLOCK, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetDoorValueKnows(value uint8) bool {
@@ -107,19 +107,37 @@ func (m BACnetDoorValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDoorValueParse(readBuffer utils.ReadBuffer) (BACnetDoorValue, error) {
+func BACnetDoorValueParse(theBytes []byte) (BACnetDoorValue, error) {
+	return BACnetDoorValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetDoorValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDoorValue, error) {
 	val, err := readBuffer.ReadUint8("BACnetDoorValue", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetDoorValue")
 	}
-	return BACnetDoorValueByValue(val), nil
+	if enum, ok := BACnetDoorValueByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetDoorValue(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetDoorValue) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetDoorValue", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetDoorValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetDoorValue) name() string {
+func (e BACnetDoorValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetDoorValue", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetDoorValue) PLC4XEnumName() string {
 	switch e {
 	case BACnetDoorValue_LOCK:
 		return "LOCK"
@@ -134,5 +152,5 @@ func (e BACnetDoorValue) name() string {
 }
 
 func (e BACnetDoorValue) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

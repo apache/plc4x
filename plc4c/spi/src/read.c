@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -32,8 +32,8 @@ void plc4c_read_request_set_connection(plc4c_read_request *read_request,
   read_request->connection = connection;
 }
 
-plc4c_return_code plc4c_read_request_add_item(plc4c_read_request *read_request,
-    char* field_name, char *address) {
+plc4c_return_code plc4c_read_request_add_tag_address(plc4c_read_request *read_request,
+    char*tag_name, char *address) {
   
   // Parse an address string and get a driver-dependent data-structure
   // representing the address back.
@@ -51,7 +51,7 @@ plc4c_return_code plc4c_read_request_add_item(plc4c_read_request *read_request,
     return result;
   
   // Bind name to the plc_item
-  item->name = field_name;
+  item->name = tag_name;
 
   plc4c_utils_list_insert_head_value(read_request->items, item);
   return OK;

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetSilencedState uint16
 
 type IBACnetSilencedState interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -54,36 +54,36 @@ func init() {
 	}
 }
 
-func BACnetSilencedStateByValue(value uint16) BACnetSilencedState {
+func BACnetSilencedStateByValue(value uint16) (enum BACnetSilencedState, ok bool) {
 	switch value {
 	case 0:
-		return BACnetSilencedState_UNSILENCED
+		return BACnetSilencedState_UNSILENCED, true
 	case 0xFFFF:
-		return BACnetSilencedState_VENDOR_PROPRIETARY_VALUE
+		return BACnetSilencedState_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetSilencedState_AUDIBLE_SILENCED
+		return BACnetSilencedState_AUDIBLE_SILENCED, true
 	case 2:
-		return BACnetSilencedState_VISIBLE_SILENCED
+		return BACnetSilencedState_VISIBLE_SILENCED, true
 	case 3:
-		return BACnetSilencedState_ALL_SILENCED
+		return BACnetSilencedState_ALL_SILENCED, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetSilencedStateByName(value string) BACnetSilencedState {
+func BACnetSilencedStateByName(value string) (enum BACnetSilencedState, ok bool) {
 	switch value {
 	case "UNSILENCED":
-		return BACnetSilencedState_UNSILENCED
+		return BACnetSilencedState_UNSILENCED, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetSilencedState_VENDOR_PROPRIETARY_VALUE
+		return BACnetSilencedState_VENDOR_PROPRIETARY_VALUE, true
 	case "AUDIBLE_SILENCED":
-		return BACnetSilencedState_AUDIBLE_SILENCED
+		return BACnetSilencedState_AUDIBLE_SILENCED, true
 	case "VISIBLE_SILENCED":
-		return BACnetSilencedState_VISIBLE_SILENCED
+		return BACnetSilencedState_VISIBLE_SILENCED, true
 	case "ALL_SILENCED":
-		return BACnetSilencedState_ALL_SILENCED
+		return BACnetSilencedState_ALL_SILENCED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetSilencedStateKnows(value uint16) bool {
@@ -113,19 +113,37 @@ func (m BACnetSilencedState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSilencedStateParse(readBuffer utils.ReadBuffer) (BACnetSilencedState, error) {
+func BACnetSilencedStateParse(theBytes []byte) (BACnetSilencedState, error) {
+	return BACnetSilencedStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetSilencedStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSilencedState, error) {
 	val, err := readBuffer.ReadUint16("BACnetSilencedState", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetSilencedState")
 	}
-	return BACnetSilencedStateByValue(val), nil
+	if enum, ok := BACnetSilencedStateByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetSilencedState(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetSilencedState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetSilencedState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetSilencedState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetSilencedState) name() string {
+func (e BACnetSilencedState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetSilencedState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetSilencedState) PLC4XEnumName() string {
 	switch e {
 	case BACnetSilencedState_UNSILENCED:
 		return "UNSILENCED"
@@ -142,5 +160,5 @@ func (e BACnetSilencedState) name() string {
 }
 
 func (e BACnetSilencedState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

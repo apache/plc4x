@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -70,6 +70,46 @@ public class StaticHelper {
             if (!BACnetBinaryPV.isDefined((short) rawValue))
                 throw new ParseException("Invalid value " + rawValue + " for " + BACnetBinaryPV.class.getSimpleName());
             return BACnetBinaryPV.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetLockStatus.class) {
+            if (!BACnetLockStatus.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetLockStatus.class.getSimpleName());
+            return BACnetLockStatus.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetDoorSecuredStatus.class) {
+            if (!BACnetDoorSecuredStatus.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetDoorSecuredStatus.class.getSimpleName());
+            return BACnetDoorSecuredStatus.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetNodeType.class) {
+            if (!BACnetNodeType.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetNodeType.class.getSimpleName());
+            return BACnetNodeType.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetProgramState.class) {
+            if (!BACnetProgramState.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetProgramState.class.getSimpleName());
+            return BACnetProgramState.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetProgramRequest.class) {
+            if (!BACnetProgramRequest.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetProgramRequest.class.getSimpleName());
+            return BACnetProgramRequest.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetFileAccessMethod.class) {
+            if (!BACnetFileAccessMethod.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetFileAccessMethod.class.getSimpleName());
+            return BACnetFileAccessMethod.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetAccumulatorRecordAccumulatorStatus.class) {
+            if (!BACnetAccumulatorRecordAccumulatorStatus.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetAccumulatorRecordAccumulatorStatus.class.getSimpleName());
+            return BACnetAccumulatorRecordAccumulatorStatus.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetPolarity.class) {
+            if (!BACnetPolarity.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetPolarity.class.getSimpleName());
+            return BACnetPolarity.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetShedState.class) {
+            if (!BACnetShedState.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetShedState.class.getSimpleName());
+            return BACnetShedState.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetDoorValue.class) {
+            if (!BACnetDoorValue.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetDoorValue.class.getSimpleName());
+            return BACnetDoorValue.enumForValue((short) rawValue);
         }
         throw new ParseException("Unmapped type " + declaringClass);
     }
@@ -121,6 +161,14 @@ public class StaticHelper {
             if (!BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.isDefined((short) rawValue))
                 return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.VENDOR_PROPRIETARY_VALUE;
             return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetSegmentation.class) {
+            if (!BACnetSegmentation.isDefined((short) rawValue))
+                LOGGER.error("{} not defined for segmentation falling back to no segmentation", rawValue);
+            return BACnetSegmentation.NO_SEGMENTATION;
+        } else if (declaringClass == BACnetVendorId.class) {
+            if (!BACnetVendorId.isDefined((short) rawValue))
+                return BACnetVendorId.UNKNOWN_VENDOR;
+            return BACnetVendorId.enumForValue((short) rawValue);
         } else {
             LOGGER.warn("using reflection for {}", declaringClass);
             Optional<Method> enumForValue = Arrays.stream(declaringClass.getDeclaredMethods()).filter(method -> method.getName().equals("enumForValue")).findAny();
@@ -202,6 +250,10 @@ public class StaticHelper {
             valueValue = ((BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) value).getValue();
         } else if (value.getDeclaringClass() == BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable.class) {
             valueValue = ((BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetSegmentation.class) {
+            valueValue = ((BACnetSegmentation) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetVendorId.class) {
+            valueValue = ((BACnetVendorId) value).getValue();
         } else {
             LOGGER.warn("using reflection for {}", value.getDeclaringClass());
             try {
@@ -250,14 +302,6 @@ public class StaticHelper {
     }
 
     @Deprecated
-    public static void writeObjectType(WriteBuffer writeBuffer, BACnetObjectType value) throws SerializationException {
-        if (value == null || value == BACnetObjectType.VENDOR_PROPRIETARY_VALUE) {
-            return;
-        }
-        writeBuffer.writeUnsignedLong("objectType", 10, value.getValue(), WithAdditionalStringRepresentation(value.name()));
-    }
-
-    @Deprecated
     public static Integer readProprietaryObjectType(ReadBuffer readBuffer, BACnetObjectType value) throws ParseException {
         if (value != null && value != BACnetObjectType.VENDOR_PROPRIETARY_VALUE) {
             return 0;
@@ -268,6 +312,14 @@ public class StaticHelper {
         readBuffer.readUnsignedInt(6);
         readBuffer.reset(readBuffer.getPos() - 2);
         return readBuffer.readUnsignedInt("proprietaryObjectType", 10);
+    }
+
+    @Deprecated
+    public static void writeObjectType(WriteBuffer writeBuffer, BACnetObjectType value) throws SerializationException {
+        if (value == null || value == BACnetObjectType.VENDOR_PROPRIETARY_VALUE) {
+            return;
+        }
+        writeBuffer.writeUnsignedLong("objectType", 10, value.getValue(), WithAdditionalStringRepresentation(value.name()));
     }
 
     @Deprecated
@@ -397,7 +449,7 @@ public class StaticHelper {
     }
 
     public static BACnetApplicationTagObjectIdentifier createBACnetApplicationTagObjectIdentifier(int objectType, long instance) {
-        BACnetTagHeader header = new BACnetTagHeader((byte) BACnetDataType.SIGNED_INTEGER.getValue(), TagClass.APPLICATION_TAGS, (byte) 4, null, null, null, null);
+        BACnetTagHeader header = new BACnetTagHeader((byte) BACnetDataType.BACNET_OBJECT_IDENTIFIER.getValue(), TagClass.APPLICATION_TAGS, (byte) 4, null, null, null, null);
         BACnetObjectType objectTypeEnum = BACnetObjectType.enumForValue(objectType);
         int proprietaryValue = 0;
         if (objectType >= 128 || !BACnetObjectType.isDefined(objectType)) {
@@ -454,8 +506,8 @@ public class StaticHelper {
     }
 
     public static BACnetSegmentationTagged creatBACnetSegmentationTagged(BACnetSegmentation value) {
-        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, (byte) 0, 1);
-        return new BACnetSegmentationTagged(header, value, (short) 0, TagClass.APPLICATION_TAGS);
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, (byte) 9, 1);
+        return new BACnetSegmentationTagged(header, value, (short) 9, TagClass.APPLICATION_TAGS);
     }
 
     public static BACnetApplicationTagBoolean createBACnetApplicationTagBoolean(boolean value) {

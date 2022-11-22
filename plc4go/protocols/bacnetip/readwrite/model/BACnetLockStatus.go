@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetLockStatus uint8
 
 type IBACnetLockStatus interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -54,36 +54,36 @@ func init() {
 	}
 }
 
-func BACnetLockStatusByValue(value uint8) BACnetLockStatus {
+func BACnetLockStatusByValue(value uint8) (enum BACnetLockStatus, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLockStatus_LOCKED
+		return BACnetLockStatus_LOCKED, true
 	case 1:
-		return BACnetLockStatus_UNLOCKED
+		return BACnetLockStatus_UNLOCKED, true
 	case 2:
-		return BACnetLockStatus_LOCK_FAULT
+		return BACnetLockStatus_LOCK_FAULT, true
 	case 3:
-		return BACnetLockStatus_UNUSED
+		return BACnetLockStatus_UNUSED, true
 	case 4:
-		return BACnetLockStatus_UNKNOWN
+		return BACnetLockStatus_UNKNOWN, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetLockStatusByName(value string) BACnetLockStatus {
+func BACnetLockStatusByName(value string) (enum BACnetLockStatus, ok bool) {
 	switch value {
 	case "LOCKED":
-		return BACnetLockStatus_LOCKED
+		return BACnetLockStatus_LOCKED, true
 	case "UNLOCKED":
-		return BACnetLockStatus_UNLOCKED
+		return BACnetLockStatus_UNLOCKED, true
 	case "LOCK_FAULT":
-		return BACnetLockStatus_LOCK_FAULT
+		return BACnetLockStatus_LOCK_FAULT, true
 	case "UNUSED":
-		return BACnetLockStatus_UNUSED
+		return BACnetLockStatus_UNUSED, true
 	case "UNKNOWN":
-		return BACnetLockStatus_UNKNOWN
+		return BACnetLockStatus_UNKNOWN, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLockStatusKnows(value uint8) bool {
@@ -113,19 +113,37 @@ func (m BACnetLockStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLockStatusParse(readBuffer utils.ReadBuffer) (BACnetLockStatus, error) {
+func BACnetLockStatusParse(theBytes []byte) (BACnetLockStatus, error) {
+	return BACnetLockStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLockStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLockStatus, error) {
 	val, err := readBuffer.ReadUint8("BACnetLockStatus", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetLockStatus")
 	}
-	return BACnetLockStatusByValue(val), nil
+	if enum, ok := BACnetLockStatusByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetLockStatus(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetLockStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetLockStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetLockStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetLockStatus) name() string {
+func (e BACnetLockStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetLockStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLockStatus) PLC4XEnumName() string {
 	switch e {
 	case BACnetLockStatus_LOCKED:
 		return "LOCKED"
@@ -142,5 +160,5 @@ func (e BACnetLockStatus) name() string {
 }
 
 func (e BACnetLockStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

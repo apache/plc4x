@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -59,7 +59,7 @@ class Plc4xNettyWrapperTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        wrapper = new Plc4xNettyWrapper<>(channelPipeline, false, protocol, Date.class);
+        wrapper = new Plc4xNettyWrapper<>(channelPipeline, false, protocol, null, Date.class);
 
         ArgumentCaptor<ConversationContext<Date>> captor = ArgumentCaptor.forClass(ConversationContext.class);
         doNothing().when(protocol).onConnect(captor.capture());

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetAccessUserType uint16
 
 type IBACnetAccessUserType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -52,32 +52,32 @@ func init() {
 	}
 }
 
-func BACnetAccessUserTypeByValue(value uint16) BACnetAccessUserType {
+func BACnetAccessUserTypeByValue(value uint16) (enum BACnetAccessUserType, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAccessUserType_ASSET
+		return BACnetAccessUserType_ASSET, true
 	case 0xFFFF:
-		return BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetAccessUserType_GROUP
+		return BACnetAccessUserType_GROUP, true
 	case 2:
-		return BACnetAccessUserType_PERSON
+		return BACnetAccessUserType_PERSON, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetAccessUserTypeByName(value string) BACnetAccessUserType {
+func BACnetAccessUserTypeByName(value string) (enum BACnetAccessUserType, ok bool) {
 	switch value {
 	case "ASSET":
-		return BACnetAccessUserType_ASSET
+		return BACnetAccessUserType_ASSET, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE, true
 	case "GROUP":
-		return BACnetAccessUserType_GROUP
+		return BACnetAccessUserType_GROUP, true
 	case "PERSON":
-		return BACnetAccessUserType_PERSON
+		return BACnetAccessUserType_PERSON, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAccessUserTypeKnows(value uint16) bool {
@@ -107,19 +107,37 @@ func (m BACnetAccessUserType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessUserTypeParse(readBuffer utils.ReadBuffer) (BACnetAccessUserType, error) {
+func BACnetAccessUserTypeParse(theBytes []byte) (BACnetAccessUserType, error) {
+	return BACnetAccessUserTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetAccessUserTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessUserType, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessUserType", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAccessUserType")
 	}
-	return BACnetAccessUserTypeByValue(val), nil
+	if enum, ok := BACnetAccessUserTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetAccessUserType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetAccessUserType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetAccessUserType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetAccessUserType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetAccessUserType) name() string {
+func (e BACnetAccessUserType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetAccessUserType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAccessUserType) PLC4XEnumName() string {
 	switch e {
 	case BACnetAccessUserType_ASSET:
 		return "ASSET"
@@ -134,5 +152,5 @@ func (e BACnetAccessUserType) name() string {
 }
 
 func (e BACnetAccessUserType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

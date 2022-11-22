@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type EventType uint8
 
 type IEventType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -52,32 +52,32 @@ func init() {
 	}
 }
 
-func EventTypeByValue(value uint8) EventType {
+func EventTypeByValue(value uint8) (enum EventType, ok bool) {
 	switch value {
 	case 0x01:
-		return EventType_MODE
+		return EventType_MODE, true
 	case 0x02:
-		return EventType_SYS
+		return EventType_SYS, true
 	case 0x04:
-		return EventType_USR
+		return EventType_USR, true
 	case 0x80:
-		return EventType_ALM
+		return EventType_ALM, true
 	}
-	return 0
+	return 0, false
 }
 
-func EventTypeByName(value string) EventType {
+func EventTypeByName(value string) (enum EventType, ok bool) {
 	switch value {
 	case "MODE":
-		return EventType_MODE
+		return EventType_MODE, true
 	case "SYS":
-		return EventType_SYS
+		return EventType_SYS, true
 	case "USR":
-		return EventType_USR
+		return EventType_USR, true
 	case "ALM":
-		return EventType_ALM
+		return EventType_ALM, true
 	}
-	return 0
+	return 0, false
 }
 
 func EventTypeKnows(value uint8) bool {
@@ -107,19 +107,37 @@ func (m EventType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func EventTypeParse(readBuffer utils.ReadBuffer) (EventType, error) {
+func EventTypeParse(theBytes []byte) (EventType, error) {
+	return EventTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func EventTypeParseWithBuffer(readBuffer utils.ReadBuffer) (EventType, error) {
 	val, err := readBuffer.ReadUint8("EventType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading EventType")
 	}
-	return EventTypeByValue(val), nil
+	if enum, ok := EventTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return EventType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e EventType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("EventType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e EventType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e EventType) name() string {
+func (e EventType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("EventType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e EventType) PLC4XEnumName() string {
 	switch e {
 	case EventType_MODE:
 		return "MODE"
@@ -134,5 +152,5 @@ func (e EventType) name() string {
 }
 
 func (e EventType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

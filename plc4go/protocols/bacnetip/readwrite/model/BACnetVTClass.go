@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetVTClass uint16
 
 type IBACnetVTClass interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -60,48 +60,48 @@ func init() {
 	}
 }
 
-func BACnetVTClassByValue(value uint16) BACnetVTClass {
+func BACnetVTClassByValue(value uint16) (enum BACnetVTClass, ok bool) {
 	switch value {
 	case 0:
-		return BACnetVTClass_DEFAULT_TERMINAL
+		return BACnetVTClass_DEFAULT_TERMINAL, true
 	case 0xFFFF:
-		return BACnetVTClass_VENDOR_PROPRIETARY_VALUE
+		return BACnetVTClass_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetVTClass_ANSI_X3_64
+		return BACnetVTClass_ANSI_X3_64, true
 	case 2:
-		return BACnetVTClass_DEC_VT52
+		return BACnetVTClass_DEC_VT52, true
 	case 3:
-		return BACnetVTClass_DEC_VT100
+		return BACnetVTClass_DEC_VT100, true
 	case 4:
-		return BACnetVTClass_DEC_VT220
+		return BACnetVTClass_DEC_VT220, true
 	case 5:
-		return BACnetVTClass_HP_700_94
+		return BACnetVTClass_HP_700_94, true
 	case 6:
-		return BACnetVTClass_IBM_3130
+		return BACnetVTClass_IBM_3130, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetVTClassByName(value string) BACnetVTClass {
+func BACnetVTClassByName(value string) (enum BACnetVTClass, ok bool) {
 	switch value {
 	case "DEFAULT_TERMINAL":
-		return BACnetVTClass_DEFAULT_TERMINAL
+		return BACnetVTClass_DEFAULT_TERMINAL, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetVTClass_VENDOR_PROPRIETARY_VALUE
+		return BACnetVTClass_VENDOR_PROPRIETARY_VALUE, true
 	case "ANSI_X3_64":
-		return BACnetVTClass_ANSI_X3_64
+		return BACnetVTClass_ANSI_X3_64, true
 	case "DEC_VT52":
-		return BACnetVTClass_DEC_VT52
+		return BACnetVTClass_DEC_VT52, true
 	case "DEC_VT100":
-		return BACnetVTClass_DEC_VT100
+		return BACnetVTClass_DEC_VT100, true
 	case "DEC_VT220":
-		return BACnetVTClass_DEC_VT220
+		return BACnetVTClass_DEC_VT220, true
 	case "HP_700_94":
-		return BACnetVTClass_HP_700_94
+		return BACnetVTClass_HP_700_94, true
 	case "IBM_3130":
-		return BACnetVTClass_IBM_3130
+		return BACnetVTClass_IBM_3130, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetVTClassKnows(value uint16) bool {
@@ -131,19 +131,37 @@ func (m BACnetVTClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetVTClassParse(readBuffer utils.ReadBuffer) (BACnetVTClass, error) {
+func BACnetVTClassParse(theBytes []byte) (BACnetVTClass, error) {
+	return BACnetVTClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetVTClassParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVTClass, error) {
 	val, err := readBuffer.ReadUint16("BACnetVTClass", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetVTClass")
 	}
-	return BACnetVTClassByValue(val), nil
+	if enum, ok := BACnetVTClassByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetVTClass(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetVTClass) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetVTClass", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetVTClass) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetVTClass) name() string {
+func (e BACnetVTClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetVTClass", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetVTClass) PLC4XEnumName() string {
 	switch e {
 	case BACnetVTClass_DEFAULT_TERMINAL:
 		return "DEFAULT_TERMINAL"
@@ -166,5 +184,5 @@ func (e BACnetVTClass) name() string {
 }
 
 func (e BACnetVTClass) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

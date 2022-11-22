@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -66,7 +66,7 @@ class CachedDriverManagerMT {
         for (int i = 1; i <= 100_000; i++) {
             pool.submit(() -> {
                 try (PlcConnection conn = driverManager.getConnection(PLC_IP)) {
-                    PlcReadResponse response = conn.readRequestBuilder().addItem("asdf", "%DB444:14.0:BOOL").build().execute().get(500, TimeUnit.MILLISECONDS);
+                    PlcReadResponse response = conn.readRequestBuilder().addTagAddress("asdf", "%DB444:14.0:BOOL").build().execute().get(500, TimeUnit.MILLISECONDS);
                 } catch (Exception e) {
                     // Intentionally do nothing...
                 }
@@ -87,7 +87,7 @@ class CachedDriverManagerMT {
         for (int i = 1; i <= 100_000; i++) {
             pool.submit(() -> {
                 try (PlcConnection conn = driverManager.getConnection(PLC_IP)) {
-                    PlcReadResponse response = conn.readRequestBuilder().addItem("asdf", "%DB444:14.0:BOOL").build().execute().get(500, TimeUnit.MILLISECONDS);
+                    PlcReadResponse response = conn.readRequestBuilder().addTagAddress("asdf", "%DB444:14.0:BOOL").build().execute().get(500, TimeUnit.MILLISECONDS);
                 } catch (Exception e) {
                     // Intentionally do nothing...
                 }
@@ -110,7 +110,7 @@ class CachedDriverManagerMT {
                 try {
                     PlcConnection conn = driverManager.getConnection(PLC_IP);
                     System.out.println("Successfully got a Connection...");
-                    PlcReadResponse response = conn.readRequestBuilder().addItem("asdf", "%DB444:14.0:BOOL").build().execute().get(500, TimeUnit.MILLISECONDS);
+                    PlcReadResponse response = conn.readRequestBuilder().addTagAddress("asdf", "%DB444:14.0:BOOL").build().execute().get(500, TimeUnit.MILLISECONDS);
                     System.out.println("Response: " + response.getBoolean("asdf"));
                 } catch (PlcConnectionException | InterruptedException | ExecutionException | TimeoutException e) {
                     // Intentionally do Nothing...

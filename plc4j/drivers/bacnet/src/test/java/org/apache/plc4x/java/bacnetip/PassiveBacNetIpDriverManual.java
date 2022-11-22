@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -30,7 +30,7 @@ public class PassiveBacNetIpDriverManual {
         final PlcConnection connection = driver.getConnection(
             "bacnet-ip:pcap:///Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Merck/Captures/BACnet.pcapng?ede-directory-path=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Merck/EDE-Files");
         connection.connect();
-        final PlcSubscriptionResponse subscriptionResponse = connection.subscriptionRequestBuilder().addEventField(
+        final PlcSubscriptionResponse subscriptionResponse = connection.subscriptionRequestBuilder().addEventTagAddress(
             "Hurz", "*/*/*").build().execute().get();
         subscriptionResponse.getSubscriptionHandle("Hurz").register(plcSubscriptionEvent -> {
             PlcStruct plcStruct = (PlcStruct)

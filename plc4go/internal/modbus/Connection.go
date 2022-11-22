@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,17 +20,19 @@
 package modbus
 
 import (
+	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	"github.com/apache/plc4x/plc4go/internal/spi/default"
-	"github.com/apache/plc4x/plc4go/internal/spi/interceptors"
-	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"time"
+
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/interceptors"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"time"
 )
 
 type Connection struct {
@@ -44,7 +46,7 @@ type Connection struct {
 	tracer       *spi.Tracer
 }
 
-func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options map[string][]string, fieldHandler spi.PlcFieldHandler) *Connection {
+func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options map[string][]string, tagHandler spi.PlcTagHandler) *Connection {
 	connection := &Connection{
 		unitIdentifier: unitIdentifier,
 		messageCodec:   messageCodec,
@@ -63,7 +65,7 @@ func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options 
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
 		_default.WithDefaultTtl(time.Second*5),
-		_default.WithPlcFieldHandler(fieldHandler),
+		_default.WithPlcTagHandler(tagHandler),
 		_default.WithPlcValueHandler(NewValueHandler()),
 	)
 	return connection
@@ -90,18 +92,22 @@ func (m *Connection) GetMessageCodec() spi.MessageCodec {
 }
 
 func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
+	// TODO: use proper context
+	ctx := context.TODO()
 	log.Trace().Msg("Pinging")
 	result := make(chan plc4go.PlcConnectionPingResult)
 	go func() {
-		diagnosticRequestPdu := readWriteModel.NewModbusPDUDiagnosticRequest(0, 0x42).GetParent()
+		diagnosticRequestPdu := readWriteModel.NewModbusPDUDiagnosticRequest(0, 0x42)
 		pingRequest := readWriteModel.NewModbusTcpADU(1, m.unitIdentifier, diagnosticRequestPdu, false)
-		if err := m.messageCodec.SendRequest(
-			pingRequest,
-			func(message interface{}) bool {
-				responseAdu := readWriteModel.CastModbusTcpADU(message)
-				return responseAdu.TransactionIdentifier == 1 && responseAdu.UnitIdentifier == m.unitIdentifier
+		if err := m.messageCodec.SendRequest(ctx, pingRequest,
+			func(message spi.Message) bool {
+				responseAdu, ok := message.(readWriteModel.ModbusTcpADUExactly)
+				if !ok {
+					return false
+				}
+				return responseAdu.GetTransactionIdentifier() == 1 && responseAdu.GetUnitIdentifier() == m.unitIdentifier
 			},
-			func(message interface{}) error {
+			func(message spi.Message) error {
 				log.Trace().Msgf("Received Message")
 				if message != nil {
 					// If we got a valid response (even if it will probably contain an error, we know the remote is available)
@@ -118,7 +124,8 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 				result <- _default.NewDefaultPlcConnectionPingResult(errors.Wrap(err, "got error processing request"))
 				return nil
 			},
-			time.Second*1); err != nil {
+			time.Second*1,
+		); err != nil {
 			result <- _default.NewDefaultPlcConnectionPingResult(err)
 		}
 	}()
@@ -134,7 +141,7 @@ func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 
 func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 	return internalModel.NewDefaultPlcReadRequestBuilderWithInterceptor(
-		m.GetPlcFieldHandler(),
+		m.GetPlcTagHandler(),
 		NewReader(m.unitIdentifier, m.messageCodec),
 		m.requestInterceptor,
 	)
@@ -142,7 +149,7 @@ func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 
 func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 	return internalModel.NewDefaultPlcWriteRequestBuilderWithInterceptor(
-		m.GetPlcFieldHandler(),
+		m.GetPlcTagHandler(),
 		m.GetPlcValueHandler(),
 		NewWriter(m.unitIdentifier, m.messageCodec),
 		m.requestInterceptor,

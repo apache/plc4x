@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -27,7 +27,7 @@ func TestDF1UtilsCrcCheck(t *testing.T) {
 	type args struct {
 		destinationAddress uint8
 		sourceAddress      uint8
-		command            *DF1Command
+		command            DF1Command
 	}
 	tests := []struct {
 		name    string
@@ -40,21 +40,16 @@ func TestDF1UtilsCrcCheck(t *testing.T) {
 			args: args{
 				0x05,
 				0x07,
-				func() *DF1Command {
-					response := &DF1UnprotectedReadResponse{
-						Data: []uint8{
+				func() DF1Command {
+					return NewDF1UnprotectedReadResponse(
+						[]uint8{
 							0x00, 0x00, 0x00, 0x00,
 							0x00, 0x00, 0x00, 0x00,
 							0x00, 0x00, 0x00, 0x00,
 						},
-					}
-					command := &DF1Command{
-						0x00,
+						0,
 						0xAFFE,
-						response,
-					}
-					response.DF1Command = command
-					return command
+					)
 				}(),
 			},
 			want:    0xBE4D,

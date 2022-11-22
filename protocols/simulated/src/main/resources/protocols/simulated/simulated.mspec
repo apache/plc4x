@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -116,22 +116,22 @@
             [array float 64 value count 'numberOfValues']
         ]
         ['"CHAR"','1' CHAR
-            [simple uint 8 value]
+            [simple string 8 value encoding='"UTF-8"']
         ]
         ['"CHAR"' List
-            [array uint 8 value count 'numberOfValues']
+            [array string 8 value count 'numberOfValues' encoding='"UTF-8"']
         ]
         ['"WCHAR"','1' WCHAR
-            [simple uint 16 value]
+            [simple string 16 value encoding='"UTF-16"']
         ]
         ['"WCHAR"' List
-            [array uint 16 value count 'numberOfValues']
+            [array string 16 value count 'numberOfValues' encoding='"UTF-16"']
         ]
         ['"STRING"' STRING
-            [simple string 255 value]
+            [simple string 255 value encoding='"UTF-8"']
         ]
         ['"WSTRING"' STRING
-            [simple string 255 value]
+            [simple string 255 value encoding='"UTF-16"']
         ]
     ]
 ]

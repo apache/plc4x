@@ -8,7 +8,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
- http://www.apache.org/licenses/LICENSE-2.0
+ https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -72,6 +72,7 @@
         <item name="KNXnet/IP" href="users/protocols/knxnetip.html"/>
         <item name="Modbus" href="users/protocols/modbus.html"/>
         <item name="OPC UA" href="users/protocols/opc-ua.html"/>
+        <item name="PLC4X (Proxy)" href="users/protocols/plc4x.html"/>
         <item name="S7 (Step7)" href="users/protocols/s7.html"/>
         <item name="Simulated" href="users/protocols/simulated.html"/>
       </item>
@@ -123,6 +124,9 @@
         <item name="Language: Apache Freemarker" href="developers/code-gen/language/freemarker.html"/>
         <item name="Example: DF1 MSpec" href="developers/code-gen/protocol/df1.html"/>
       </item>
+      <item name="Protocols" href="developers/protocols/index.html">
+        <item name="ADS/AMS" href="developers/protocols/ads/protocol.html"/>
+      </item>
       <item name="Infrastructure" href="developers/infrastructure/index.html">
         <item name="Continuous Integration" href="developers/infrastructure/ci.html"/>
         <item name="Bug &amp; Issue Tracker" href="developers/infrastructure/issues.html"/>
@@ -137,6 +141,7 @@
         <item name="Validating" href="developers/release/validation.html"/>
         <item name="Releasing Build-Tools" href="developers/release/build-tools.html"/>
       </item>
+      <item name="Tools" href="developers/tools.html"/>
       <item name="Team" href="developers/team.html"/>
       <item name="Decision Making" href="developers/decisions.html"/>
       <item name="Maturity" href="developers/maturity.html"/>

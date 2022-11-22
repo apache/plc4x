@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -37,9 +37,9 @@ public class Constants {
 
     public static final String INTERVAL_CONFIG = "interval";
 
-    public static final String FIELDS_CONFIG = "fields";
-    public static final String FIELDS_DOC = "PLC4X fields";
-    public static final String FIELDS_DEFAULT = "";
+    public static final String TAGS_CONFIG = "tags";
+    public static final String TAGS_DOC = "PLC4X tags";
+    public static final String TAGS_DEFAULT = "";
 
     public static final String CONNECTION_STRING_CONFIG = "connectionString";
     public static final String CONNECTION_STRING_DOC = "PLC4X Connection String";
@@ -60,9 +60,9 @@ public class Constants {
     public static final String CONNECTION_NAME_CONFIG = "connection-name";
     public static final String CONNECTION_NAME_STRING_DOC = "Connection Name";
 
-    // Syntax for the queries: {job-name}:{topic}:{rate}:{field-alias}#{field-address}:{field-alias}#{field-address}...,{topic}:{rate}:....
+    // Syntax for the queries: {job-name}:{topic}:{rate}:{tag-alias}#{tag-address}:{tag-alias}#{tag-address}...,{topic}:{rate}:....
     public static final String QUERIES_CONFIG = "queries";
-    public static final String QUERIES_DOC = "Field queries to be sent to the PLC";
+    public static final String QUERIES_DOC = "Tag queries to be sent to the PLC";
 
     /*
      * Configuration of the output.

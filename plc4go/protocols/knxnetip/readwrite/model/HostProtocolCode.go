@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type HostProtocolCode uint8
 
 type IHostProtocolCode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -48,24 +48,24 @@ func init() {
 	}
 }
 
-func HostProtocolCodeByValue(value uint8) HostProtocolCode {
+func HostProtocolCodeByValue(value uint8) (enum HostProtocolCode, ok bool) {
 	switch value {
 	case 0x01:
-		return HostProtocolCode_IPV4_UDP
+		return HostProtocolCode_IPV4_UDP, true
 	case 0x02:
-		return HostProtocolCode_IPV4_TCP
+		return HostProtocolCode_IPV4_TCP, true
 	}
-	return 0
+	return 0, false
 }
 
-func HostProtocolCodeByName(value string) HostProtocolCode {
+func HostProtocolCodeByName(value string) (enum HostProtocolCode, ok bool) {
 	switch value {
 	case "IPV4_UDP":
-		return HostProtocolCode_IPV4_UDP
+		return HostProtocolCode_IPV4_UDP, true
 	case "IPV4_TCP":
-		return HostProtocolCode_IPV4_TCP
+		return HostProtocolCode_IPV4_TCP, true
 	}
-	return 0
+	return 0, false
 }
 
 func HostProtocolCodeKnows(value uint8) bool {
@@ -95,19 +95,37 @@ func (m HostProtocolCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HostProtocolCodeParse(readBuffer utils.ReadBuffer) (HostProtocolCode, error) {
+func HostProtocolCodeParse(theBytes []byte) (HostProtocolCode, error) {
+	return HostProtocolCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func HostProtocolCodeParseWithBuffer(readBuffer utils.ReadBuffer) (HostProtocolCode, error) {
 	val, err := readBuffer.ReadUint8("HostProtocolCode", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading HostProtocolCode")
 	}
-	return HostProtocolCodeByValue(val), nil
+	if enum, ok := HostProtocolCodeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return HostProtocolCode(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e HostProtocolCode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("HostProtocolCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e HostProtocolCode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e HostProtocolCode) name() string {
+func (e HostProtocolCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("HostProtocolCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e HostProtocolCode) PLC4XEnumName() string {
 	switch e {
 	case HostProtocolCode_IPV4_UDP:
 		return "IPV4_UDP"
@@ -118,5 +136,5 @@ func (e HostProtocolCode) name() string {
 }
 
 func (e HostProtocolCode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

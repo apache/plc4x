@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,9 +21,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 func main() {
@@ -46,7 +47,7 @@ func main() {
 
 	// Prepare a write-request
 	writeRequest, err := connection.WriteRequestBuilder().
-		AddQuery("field", "holding-register:26:REAL", 2.7182818284).
+		AddTagAddress("tag", "holding-register:26:REAL", 2.7182818284).
 		Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.GetErr().Error())
@@ -63,8 +64,8 @@ func main() {
 		return
 	}
 
-	if wrr.GetResponse().GetResponseCode("field") != model.PlcResponseCode_OK {
-		fmt.Printf("error an non-ok return code: %s", wrr.GetResponse().GetResponseCode("field").GetName())
+	if wrr.GetResponse().GetResponseCode("tag") != model.PlcResponseCode_OK {
+		fmt.Printf("error an non-ok return code: %s", wrr.GetResponse().GetResponseCode("tag").GetName())
 		return
 	}
 	fmt.Print("Result: SUCCESS\n")

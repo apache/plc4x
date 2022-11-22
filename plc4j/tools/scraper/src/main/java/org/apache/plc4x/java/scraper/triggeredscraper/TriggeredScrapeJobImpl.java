@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,6 @@ package org.apache.plc4x.java.scraper.triggeredscraper;
 
 import org.apache.plc4x.java.scraper.ScrapeJob;
 import org.apache.plc4x.java.scraper.exception.ScraperConfigurationException;
-import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.TriggerConfiguration;
 
 import java.util.Map;
@@ -28,16 +27,16 @@ import java.util.Map;
 public class TriggeredScrapeJobImpl implements ScrapeJob {
     private final String jobName;
     private final Map<String, String> sourceConnections;
-    private final Map<String, String> fields;
+    private final Map<String, String> tags;
     private final String triggerConfig;
     private final TriggerConfiguration triggerConfiguration;
 
 
-    public TriggeredScrapeJobImpl(String jobName, String triggerConfig, Map<String, String> connections, Map<String, String> fields) throws ScraperConfigurationException {
+    public TriggeredScrapeJobImpl(String jobName, String triggerConfig, Map<String, String> connections, Map<String, String> tags) throws ScraperConfigurationException {
         this.jobName = jobName;
         this.triggerConfig = triggerConfig;
         this.sourceConnections = connections;
-        this.fields = fields;
+        this.tags = tags;
         this.triggerConfiguration = TriggerConfiguration.createConfiguration(triggerConfig,this);
     }
 
@@ -60,11 +59,11 @@ public class TriggeredScrapeJobImpl implements ScrapeJob {
     }
 
     /**
-     * alias -&gt; field-query
+     * alias -&gt; tag-query
      */
     @Override
-    public Map<String, String> getFields() {
-        return fields;
+    public Map<String, String> getTags() {
+        return tags;
     }
 
     public String getTriggerConfig() {

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetDataType uint8
 
 type IBACnetDataType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -72,72 +72,72 @@ func init() {
 	}
 }
 
-func BACnetDataTypeByValue(value uint8) BACnetDataType {
+func BACnetDataTypeByValue(value uint8) (enum BACnetDataType, ok bool) {
 	switch value {
 	case 0:
-		return BACnetDataType_NULL
+		return BACnetDataType_NULL, true
 	case 1:
-		return BACnetDataType_BOOLEAN
+		return BACnetDataType_BOOLEAN, true
 	case 10:
-		return BACnetDataType_DATE
+		return BACnetDataType_DATE, true
 	case 11:
-		return BACnetDataType_TIME
+		return BACnetDataType_TIME, true
 	case 12:
-		return BACnetDataType_BACNET_OBJECT_IDENTIFIER
+		return BACnetDataType_BACNET_OBJECT_IDENTIFIER, true
 	case 2:
-		return BACnetDataType_UNSIGNED_INTEGER
+		return BACnetDataType_UNSIGNED_INTEGER, true
 	case 3:
-		return BACnetDataType_SIGNED_INTEGER
+		return BACnetDataType_SIGNED_INTEGER, true
 	case 33:
-		return BACnetDataType_UNKNOWN
+		return BACnetDataType_UNKNOWN, true
 	case 4:
-		return BACnetDataType_REAL
+		return BACnetDataType_REAL, true
 	case 5:
-		return BACnetDataType_DOUBLE
+		return BACnetDataType_DOUBLE, true
 	case 6:
-		return BACnetDataType_OCTET_STRING
+		return BACnetDataType_OCTET_STRING, true
 	case 7:
-		return BACnetDataType_CHARACTER_STRING
+		return BACnetDataType_CHARACTER_STRING, true
 	case 8:
-		return BACnetDataType_BIT_STRING
+		return BACnetDataType_BIT_STRING, true
 	case 9:
-		return BACnetDataType_ENUMERATED
+		return BACnetDataType_ENUMERATED, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetDataTypeByName(value string) BACnetDataType {
+func BACnetDataTypeByName(value string) (enum BACnetDataType, ok bool) {
 	switch value {
 	case "NULL":
-		return BACnetDataType_NULL
+		return BACnetDataType_NULL, true
 	case "BOOLEAN":
-		return BACnetDataType_BOOLEAN
+		return BACnetDataType_BOOLEAN, true
 	case "DATE":
-		return BACnetDataType_DATE
+		return BACnetDataType_DATE, true
 	case "TIME":
-		return BACnetDataType_TIME
+		return BACnetDataType_TIME, true
 	case "BACNET_OBJECT_IDENTIFIER":
-		return BACnetDataType_BACNET_OBJECT_IDENTIFIER
+		return BACnetDataType_BACNET_OBJECT_IDENTIFIER, true
 	case "UNSIGNED_INTEGER":
-		return BACnetDataType_UNSIGNED_INTEGER
+		return BACnetDataType_UNSIGNED_INTEGER, true
 	case "SIGNED_INTEGER":
-		return BACnetDataType_SIGNED_INTEGER
+		return BACnetDataType_SIGNED_INTEGER, true
 	case "UNKNOWN":
-		return BACnetDataType_UNKNOWN
+		return BACnetDataType_UNKNOWN, true
 	case "REAL":
-		return BACnetDataType_REAL
+		return BACnetDataType_REAL, true
 	case "DOUBLE":
-		return BACnetDataType_DOUBLE
+		return BACnetDataType_DOUBLE, true
 	case "OCTET_STRING":
-		return BACnetDataType_OCTET_STRING
+		return BACnetDataType_OCTET_STRING, true
 	case "CHARACTER_STRING":
-		return BACnetDataType_CHARACTER_STRING
+		return BACnetDataType_CHARACTER_STRING, true
 	case "BIT_STRING":
-		return BACnetDataType_BIT_STRING
+		return BACnetDataType_BIT_STRING, true
 	case "ENUMERATED":
-		return BACnetDataType_ENUMERATED
+		return BACnetDataType_ENUMERATED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetDataTypeKnows(value uint8) bool {
@@ -167,19 +167,37 @@ func (m BACnetDataType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDataTypeParse(readBuffer utils.ReadBuffer) (BACnetDataType, error) {
+func BACnetDataTypeParse(theBytes []byte) (BACnetDataType, error) {
+	return BACnetDataTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetDataTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDataType, error) {
 	val, err := readBuffer.ReadUint8("BACnetDataType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetDataType")
 	}
-	return BACnetDataTypeByValue(val), nil
+	if enum, ok := BACnetDataTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetDataType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetDataType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetDataType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetDataType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetDataType) name() string {
+func (e BACnetDataType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetDataType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetDataType) PLC4XEnumName() string {
 	switch e {
 	case BACnetDataType_NULL:
 		return "NULL"
@@ -214,5 +232,5 @@ func (e BACnetDataType) name() string {
 }
 
 func (e BACnetDataType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

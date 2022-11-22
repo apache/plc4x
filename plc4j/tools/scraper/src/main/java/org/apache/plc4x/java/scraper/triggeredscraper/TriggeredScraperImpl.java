@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -23,8 +23,6 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
-import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -206,7 +204,7 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
                         job.getJobName(),
                         sourceEntry.getKey(),
                         sourceEntry.getValue(),
-                        job.getFields(),
+                        job.getTags(),
                         futureTimeOut,
                         executorService,
                         resultHandler,
@@ -346,7 +344,7 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
      * @return the converted map
      */
     public static Map<String, Object> convertPlcResponseToMap(PlcReadResponse plcReadResponse) {
-        return plcReadResponse.getFieldNames().stream()
+        return plcReadResponse.getTagNames().stream()
             .collect(Collectors.toMap(
                 name -> name,
                 plcReadResponse::getObject

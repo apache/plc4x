@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,6 +21,7 @@ package org.apache.plc4x.java.opcuaserver.backend;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.eclipse.milo.opcua.sdk.server.AbstractLifecycle;
 import org.eclipse.milo.opcua.sdk.server.api.DataItem;
 import org.eclipse.milo.opcua.sdk.server.nodes.filters.AttributeFilterContext;
@@ -45,7 +46,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.utils.connectionpool.*;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -92,76 +93,52 @@ public class Plc4xCommunication extends AbstractLifecycle {
         this.driverManager =  driverManager;
     }
 
-    public PlcField getField(String tag, String connectionString) throws PlcConnectionException {
-        return driverManager.getDriverForUrl(connectionString).prepareField(tag);
+    public PlcTag getTag(String tag, String connectionString) throws PlcConnectionException {
+        return driverManager.getDriverForUrl(connectionString).prepareTag(tag);
     }
 
-    public void addField(DataItem item) {
+    public void addTag(DataItem item) {
         logger.info("Adding item to OPC UA monitored list " + item.getReadValueId());
         monitoredList.put(item.getReadValueId().getNodeId(), item);
     }
 
-    public void removeField(DataItem item) {
+    public void removeTag(DataItem item) {
         logger.info("Removing item from OPC UA monitored list " + item.getReadValueId());
         monitoredList.remove(item.getReadValueId().getNodeId());
     }
 
-    public static NodeId getNodeId(String plcValue) {
-        switch (plcValue) {
-            case "BOOL":
-            case "BIT":
+    public static NodeId getNodeId(PlcValueType plcValueType) {
+        switch (plcValueType) {
+            case BOOL:
                 return Identifiers.Boolean;
-            case "BYTE":
-            case "BITARR8":
+            case BYTE:
+            case USINT:
                 return Identifiers.Byte;
-            case "SINT":
-            case "INT8":
+            case SINT:
                 return Identifiers.SByte;
-            case "USINT":
-            case "UINT8":
-            case "BIT8":
-                return Identifiers.Byte;
-            case "INT":
-            case "INT16":
+            case INT:
                 return Identifiers.Int16;
-            case "UINT":
-            case "UINT16":
+            case WORD:
+            case UINT:
                 return Identifiers.UInt16;
-            case "WORD":
-            case "BITARR16":
-                return Identifiers.UInt16;
-            case "DINT":
-            case "INT32":
+            case DINT:
                 return Identifiers.Int32;
-            case "UDINT":
-            case "UINT32":
+            case DWORD:
+            case UDINT:
                 return Identifiers.UInt32;
-            case "DWORD":
-            case "BITARR32":
-                return Identifiers.UInt32;
-            case "LINT":
-            case "INT64":
+            case LINT:
                 return Identifiers.Int64;
-            case "ULINT":
-            case "UINT64":
+            case ULINT:
+            case LWORD:
                 return Identifiers.UInt64;
-            case "LWORD":
-            case "BITARR64":
-                return Identifiers.UInt64;
-            case "REAL":
-            case "FLOAT":
+            case REAL:
                 return Identifiers.Float;
-            case "LREAL":
-            case "DOUBLE":
+            case LREAL:
                 return Identifiers.Double;
-            case "CHAR":
-                return Identifiers.String;
-            case "WCHAR":
-                return Identifiers.String;
-            case "STRING":
-                return Identifiers.String;
-            case "WSTRING":
-            case "STRING16":
+            case CHAR:
+            case WCHAR:
+            case STRING:
+            case WSTRING:
                 return Identifiers.String;
             default:
                 return Identifiers.BaseDataType;
@@ -210,7 +187,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
             // Create a new read request:
             // - Give the single item requested an alias name
             PlcReadRequest.Builder builder = connection.readRequestBuilder();
-            builder.addItem("value-1", tag);
+            builder.addTagAddress("value-1", tag);
             PlcReadRequest readRequest = builder.build();
 
             PlcReadResponse response = null;
@@ -226,27 +203,27 @@ public class Plc4xCommunication extends AbstractLifecycle {
                 return BAD_RESPONSE;
             }
             DataValue resp = BAD_RESPONSE;
-            for (String fieldName : response.getFieldNames()) {
-                if (response.getResponseCode(fieldName) == PlcResponseCode.OK) {
-                    int numValues = response.getNumberOfValues(fieldName);
+            for (String tagName : response.getTagNames()) {
+                if (response.getResponseCode(tagName) == PlcResponseCode.OK) {
+                    int numValues = response.getNumberOfValues(tagName);
                     if (numValues == 1) {
-                        if (response.getObject(fieldName) instanceof BigInteger) {
-                            resp = new DataValue(new Variant(ulong((BigInteger) response.getObject(fieldName))), StatusCode.GOOD);
+                        if (response.getObject(tagName) instanceof BigInteger) {
+                            resp = new DataValue(new Variant(ulong((BigInteger) response.getObject(tagName))), StatusCode.GOOD);
                         } else {
-                            resp = new DataValue(new Variant(response.getObject(fieldName)), StatusCode.GOOD);
+                            resp = new DataValue(new Variant(response.getObject(tagName)), StatusCode.GOOD);
                         }
                     } else {
                         Object array = null;
-                        if (response.getObject(fieldName, 0) instanceof BigInteger) {
+                        if (response.getObject(tagName, 0) instanceof BigInteger) {
                             array = Array.newInstance(ULong.class, numValues);
                         } else {
-                            array = Array.newInstance(response.getObject(fieldName, 0).getClass(), numValues);
+                            array = Array.newInstance(response.getObject(tagName, 0).getClass(), numValues);
                         }
                         for (int i = 0; i < numValues; i++) {
-                            if (response.getObject(fieldName, i) instanceof BigInteger) {
-                                Array.set(array, i, ulong((BigInteger) response.getObject(fieldName, i)));
+                            if (response.getObject(tagName, i) instanceof BigInteger) {
+                                Array.set(array, i, ulong((BigInteger) response.getObject(tagName, i)));
                             } else {
-                                Array.set(array, i, response.getObject(fieldName, i));
+                                Array.set(array, i, response.getObject(tagName, i));
                             }
                         }
                         resp = new DataValue(new Variant(array), StatusCode.GOOD);
@@ -305,9 +282,9 @@ public class Plc4xCommunication extends AbstractLifecycle {
         if ((value.charAt(0) == '[') && (value.charAt(value.length() - 1) == ']')) {
             String[] values = value.substring(1,value.length() - 1).split(",");
             logger.info("Adding Tag " + Arrays.toString(values));
-            builder.addItem(tag, tag, values);
+            builder.addTagAddress(tag, tag, values);
         } else {
-            builder.addItem(tag, tag, value);
+            builder.addTagAddress(tag, tag, value);
         }
 
         PlcWriteRequest writeRequest = builder.build();

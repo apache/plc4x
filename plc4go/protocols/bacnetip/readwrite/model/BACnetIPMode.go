@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetIPMode uint8
 
 type IBACnetIPMode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -50,28 +50,28 @@ func init() {
 	}
 }
 
-func BACnetIPModeByValue(value uint8) BACnetIPMode {
+func BACnetIPModeByValue(value uint8) (enum BACnetIPMode, ok bool) {
 	switch value {
 	case 0:
-		return BACnetIPMode_NORMAL
+		return BACnetIPMode_NORMAL, true
 	case 1:
-		return BACnetIPMode_FOREIGN
+		return BACnetIPMode_FOREIGN, true
 	case 2:
-		return BACnetIPMode_BBMD
+		return BACnetIPMode_BBMD, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetIPModeByName(value string) BACnetIPMode {
+func BACnetIPModeByName(value string) (enum BACnetIPMode, ok bool) {
 	switch value {
 	case "NORMAL":
-		return BACnetIPMode_NORMAL
+		return BACnetIPMode_NORMAL, true
 	case "FOREIGN":
-		return BACnetIPMode_FOREIGN
+		return BACnetIPMode_FOREIGN, true
 	case "BBMD":
-		return BACnetIPMode_BBMD
+		return BACnetIPMode_BBMD, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetIPModeKnows(value uint8) bool {
@@ -101,19 +101,37 @@ func (m BACnetIPMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetIPModeParse(readBuffer utils.ReadBuffer) (BACnetIPMode, error) {
+func BACnetIPModeParse(theBytes []byte) (BACnetIPMode, error) {
+	return BACnetIPModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetIPModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetIPMode, error) {
 	val, err := readBuffer.ReadUint8("BACnetIPMode", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetIPMode")
 	}
-	return BACnetIPModeByValue(val), nil
+	if enum, ok := BACnetIPModeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetIPMode(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetIPMode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetIPMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetIPMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetIPMode) name() string {
+func (e BACnetIPMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetIPMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetIPMode) PLC4XEnumName() string {
 	switch e {
 	case BACnetIPMode_NORMAL:
 		return "NORMAL"
@@ -126,5 +144,5 @@ func (e BACnetIPMode) name() string {
 }
 
 func (e BACnetIPMode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetLogStatus uint8
 
 type IBACnetLogStatus interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -50,28 +50,28 @@ func init() {
 	}
 }
 
-func BACnetLogStatusByValue(value uint8) BACnetLogStatus {
+func BACnetLogStatusByValue(value uint8) (enum BACnetLogStatus, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLogStatus_LOG_DISABLED
+		return BACnetLogStatus_LOG_DISABLED, true
 	case 1:
-		return BACnetLogStatus_BUFFER_PURGED
+		return BACnetLogStatus_BUFFER_PURGED, true
 	case 2:
-		return BACnetLogStatus_LOG_INTERRUPTED
+		return BACnetLogStatus_LOG_INTERRUPTED, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetLogStatusByName(value string) BACnetLogStatus {
+func BACnetLogStatusByName(value string) (enum BACnetLogStatus, ok bool) {
 	switch value {
 	case "LOG_DISABLED":
-		return BACnetLogStatus_LOG_DISABLED
+		return BACnetLogStatus_LOG_DISABLED, true
 	case "BUFFER_PURGED":
-		return BACnetLogStatus_BUFFER_PURGED
+		return BACnetLogStatus_BUFFER_PURGED, true
 	case "LOG_INTERRUPTED":
-		return BACnetLogStatus_LOG_INTERRUPTED
+		return BACnetLogStatus_LOG_INTERRUPTED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLogStatusKnows(value uint8) bool {
@@ -101,19 +101,37 @@ func (m BACnetLogStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogStatusParse(readBuffer utils.ReadBuffer) (BACnetLogStatus, error) {
+func BACnetLogStatusParse(theBytes []byte) (BACnetLogStatus, error) {
+	return BACnetLogStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLogStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLogStatus, error) {
 	val, err := readBuffer.ReadUint8("BACnetLogStatus", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetLogStatus")
 	}
-	return BACnetLogStatusByValue(val), nil
+	if enum, ok := BACnetLogStatusByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetLogStatus(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetLogStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetLogStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetLogStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetLogStatus) name() string {
+func (e BACnetLogStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetLogStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLogStatus) PLC4XEnumName() string {
 	switch e {
 	case BACnetLogStatus_LOG_DISABLED:
 		return "LOG_DISABLED"
@@ -126,5 +144,5 @@ func (e BACnetLogStatus) name() string {
 }
 
 func (e BACnetLogStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

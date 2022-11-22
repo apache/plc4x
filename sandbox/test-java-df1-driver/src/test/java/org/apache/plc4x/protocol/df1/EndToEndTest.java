@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -34,7 +34,7 @@ public class EndToEndTest {
     public void helloDf1() {
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection("df1:serial:///COM4")) {
             PlcReadRequest request = plcConnection.readRequestBuilder()
-                .addItem("hurz", "5:INTEGER")
+                .addTagAddress("hurz", "5:INTEGER")
                 .build();
 
             PlcReadResponse response = request.execute().get(100, TimeUnit.SECONDS);

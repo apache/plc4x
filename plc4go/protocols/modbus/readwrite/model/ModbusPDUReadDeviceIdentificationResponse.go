@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,7 +21,7 @@ package model
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,20 +30,11 @@ import (
 // Constant values.
 const ModbusPDUReadDeviceIdentificationResponse_MEITYPE uint8 = 0x0E
 
-// ModbusPDUReadDeviceIdentificationResponse is the data-structure of this message
-type ModbusPDUReadDeviceIdentificationResponse struct {
-	*ModbusPDU
-	Level            ModbusDeviceInformationLevel
-	IndividualAccess bool
-	ConformityLevel  ModbusDeviceInformationConformityLevel
-	MoreFollows      ModbusDeviceInformationMoreFollows
-	NextObjectId     uint8
-	Objects          []*ModbusDeviceInformationObject
-}
-
-// IModbusPDUReadDeviceIdentificationResponse is the corresponding interface of ModbusPDUReadDeviceIdentificationResponse
-type IModbusPDUReadDeviceIdentificationResponse interface {
-	IModbusPDU
+// ModbusPDUReadDeviceIdentificationResponse is the corresponding interface of ModbusPDUReadDeviceIdentificationResponse
+type ModbusPDUReadDeviceIdentificationResponse interface {
+	utils.LengthAware
+	utils.Serializable
+	ModbusPDU
 	// GetLevel returns Level (property field)
 	GetLevel() ModbusDeviceInformationLevel
 	// GetIndividualAccess returns IndividualAccess (property field)
@@ -55,13 +46,25 @@ type IModbusPDUReadDeviceIdentificationResponse interface {
 	// GetNextObjectId returns NextObjectId (property field)
 	GetNextObjectId() uint8
 	// GetObjects returns Objects (property field)
-	GetObjects() []*ModbusDeviceInformationObject
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+	GetObjects() []ModbusDeviceInformationObject
+}
+
+// ModbusPDUReadDeviceIdentificationResponseExactly can be used when we want exactly this type and not a type which fulfills ModbusPDUReadDeviceIdentificationResponse.
+// This is useful for switch cases.
+type ModbusPDUReadDeviceIdentificationResponseExactly interface {
+	ModbusPDUReadDeviceIdentificationResponse
+	isModbusPDUReadDeviceIdentificationResponse() bool
+}
+
+// _ModbusPDUReadDeviceIdentificationResponse is the data-structure of this message
+type _ModbusPDUReadDeviceIdentificationResponse struct {
+	*_ModbusPDU
+	Level            ModbusDeviceInformationLevel
+	IndividualAccess bool
+	ConformityLevel  ModbusDeviceInformationConformityLevel
+	MoreFollows      ModbusDeviceInformationMoreFollows
+	NextObjectId     uint8
+	Objects          []ModbusDeviceInformationObject
 }
 
 ///////////////////////////////////////////////////////////
@@ -69,15 +72,15 @@ type IModbusPDUReadDeviceIdentificationResponse interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) GetErrorFlag() bool {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) GetErrorFlag() bool {
 	return bool(false)
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) GetFunctionFlag() uint8 {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) GetFunctionFlag() uint8 {
 	return 0x2B
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) GetResponse() bool {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) GetResponse() bool {
 	return bool(true)
 }
 
@@ -86,10 +89,10 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) InitializeParent(parent *ModbusPDU) {}
+func (m *_ModbusPDUReadDeviceIdentificationResponse) InitializeParent(parent ModbusPDU) {}
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) GetParent() *ModbusPDU {
-	return m.ModbusPDU
+func (m *_ModbusPDUReadDeviceIdentificationResponse) GetParent() ModbusPDU {
+	return m._ModbusPDU
 }
 
 ///////////////////////////////////////////////////////////
@@ -97,27 +100,27 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) GetParent() *ModbusPDU {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) GetLevel() ModbusDeviceInformationLevel {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) GetLevel() ModbusDeviceInformationLevel {
 	return m.Level
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) GetIndividualAccess() bool {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) GetIndividualAccess() bool {
 	return m.IndividualAccess
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) GetConformityLevel() ModbusDeviceInformationConformityLevel {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) GetConformityLevel() ModbusDeviceInformationConformityLevel {
 	return m.ConformityLevel
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) GetMoreFollows() ModbusDeviceInformationMoreFollows {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) GetMoreFollows() ModbusDeviceInformationMoreFollows {
 	return m.MoreFollows
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) GetNextObjectId() uint8 {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) GetNextObjectId() uint8 {
 	return m.NextObjectId
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) GetObjects() []*ModbusDeviceInformationObject {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) GetObjects() []ModbusDeviceInformationObject {
 	return m.Objects
 }
 
@@ -130,7 +133,7 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) GetObjects() []*ModbusDevice
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) GetMeiType() uint8 {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) GetMeiType() uint8 {
 	return ModbusPDUReadDeviceIdentificationResponse_MEITYPE
 }
 
@@ -139,46 +142,41 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) GetMeiType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewModbusPDUReadDeviceIdentificationResponse factory function for ModbusPDUReadDeviceIdentificationResponse
-func NewModbusPDUReadDeviceIdentificationResponse(level ModbusDeviceInformationLevel, individualAccess bool, conformityLevel ModbusDeviceInformationConformityLevel, moreFollows ModbusDeviceInformationMoreFollows, nextObjectId uint8, objects []*ModbusDeviceInformationObject) *ModbusPDUReadDeviceIdentificationResponse {
-	_result := &ModbusPDUReadDeviceIdentificationResponse{
+// NewModbusPDUReadDeviceIdentificationResponse factory function for _ModbusPDUReadDeviceIdentificationResponse
+func NewModbusPDUReadDeviceIdentificationResponse(level ModbusDeviceInformationLevel, individualAccess bool, conformityLevel ModbusDeviceInformationConformityLevel, moreFollows ModbusDeviceInformationMoreFollows, nextObjectId uint8, objects []ModbusDeviceInformationObject) *_ModbusPDUReadDeviceIdentificationResponse {
+	_result := &_ModbusPDUReadDeviceIdentificationResponse{
 		Level:            level,
 		IndividualAccess: individualAccess,
 		ConformityLevel:  conformityLevel,
 		MoreFollows:      moreFollows,
 		NextObjectId:     nextObjectId,
 		Objects:          objects,
-		ModbusPDU:        NewModbusPDU(),
+		_ModbusPDU:       NewModbusPDU(),
 	}
-	_result.Child = _result
+	_result._ModbusPDU._ModbusPDUChildRequirements = _result
 	return _result
 }
 
-func CastModbusPDUReadDeviceIdentificationResponse(structType interface{}) *ModbusPDUReadDeviceIdentificationResponse {
+// Deprecated: use the interface for direct cast
+func CastModbusPDUReadDeviceIdentificationResponse(structType interface{}) ModbusPDUReadDeviceIdentificationResponse {
 	if casted, ok := structType.(ModbusPDUReadDeviceIdentificationResponse); ok {
-		return &casted
-	}
-	if casted, ok := structType.(*ModbusPDUReadDeviceIdentificationResponse); ok {
 		return casted
 	}
-	if casted, ok := structType.(ModbusPDU); ok {
-		return CastModbusPDUReadDeviceIdentificationResponse(casted.Child)
-	}
-	if casted, ok := structType.(*ModbusPDU); ok {
-		return CastModbusPDUReadDeviceIdentificationResponse(casted.Child)
+	if casted, ok := structType.(*ModbusPDUReadDeviceIdentificationResponse); ok {
+		return *casted
 	}
 	return nil
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) GetTypeName() string {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) GetTypeName() string {
 	return "ModbusPDUReadDeviceIdentificationResponse"
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) GetLengthInBits() uint16 {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Const Field (meiType)
@@ -206,22 +204,26 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) GetLengthInBitsConditional(l
 	if len(m.Objects) > 0 {
 		for i, element := range m.Objects {
 			last := i == len(m.Objects)-1
-			lengthInBits += element.GetLengthInBitsConditional(last)
+			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) GetLengthInBytes() uint16 {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDUReadDeviceIdentificationResponse, error) {
+func ModbusPDUReadDeviceIdentificationResponseParse(theBytes []byte, response bool) (ModbusPDUReadDeviceIdentificationResponse, error) {
+	return ModbusPDUReadDeviceIdentificationResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+}
+
+func ModbusPDUReadDeviceIdentificationResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadDeviceIdentificationResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadDeviceIdentificationResponse"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReadDeviceIdentificationResponse")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -229,7 +231,7 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	// Const Field (meiType)
 	meiType, _meiTypeErr := readBuffer.ReadUint8("meiType", 8)
 	if _meiTypeErr != nil {
-		return nil, errors.Wrap(_meiTypeErr, "Error parsing 'meiType' field")
+		return nil, errors.Wrap(_meiTypeErr, "Error parsing 'meiType' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
 	if meiType != ModbusPDUReadDeviceIdentificationResponse_MEITYPE {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ModbusPDUReadDeviceIdentificationResponse_MEITYPE) + " but got " + fmt.Sprintf("%d", meiType))
@@ -237,54 +239,54 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 
 	// Simple Field (level)
 	if pullErr := readBuffer.PullContext("level"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for level")
 	}
-	_level, _levelErr := ModbusDeviceInformationLevelParse(readBuffer)
+	_level, _levelErr := ModbusDeviceInformationLevelParseWithBuffer(readBuffer)
 	if _levelErr != nil {
-		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field")
+		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
 	level := _level
 	if closeErr := readBuffer.CloseContext("level"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for level")
 	}
 
 	// Simple Field (individualAccess)
 	_individualAccess, _individualAccessErr := readBuffer.ReadBit("individualAccess")
 	if _individualAccessErr != nil {
-		return nil, errors.Wrap(_individualAccessErr, "Error parsing 'individualAccess' field")
+		return nil, errors.Wrap(_individualAccessErr, "Error parsing 'individualAccess' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
 	individualAccess := _individualAccess
 
 	// Simple Field (conformityLevel)
 	if pullErr := readBuffer.PullContext("conformityLevel"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for conformityLevel")
 	}
-	_conformityLevel, _conformityLevelErr := ModbusDeviceInformationConformityLevelParse(readBuffer)
+	_conformityLevel, _conformityLevelErr := ModbusDeviceInformationConformityLevelParseWithBuffer(readBuffer)
 	if _conformityLevelErr != nil {
-		return nil, errors.Wrap(_conformityLevelErr, "Error parsing 'conformityLevel' field")
+		return nil, errors.Wrap(_conformityLevelErr, "Error parsing 'conformityLevel' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
 	conformityLevel := _conformityLevel
 	if closeErr := readBuffer.CloseContext("conformityLevel"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for conformityLevel")
 	}
 
 	// Simple Field (moreFollows)
 	if pullErr := readBuffer.PullContext("moreFollows"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for moreFollows")
 	}
-	_moreFollows, _moreFollowsErr := ModbusDeviceInformationMoreFollowsParse(readBuffer)
+	_moreFollows, _moreFollowsErr := ModbusDeviceInformationMoreFollowsParseWithBuffer(readBuffer)
 	if _moreFollowsErr != nil {
-		return nil, errors.Wrap(_moreFollowsErr, "Error parsing 'moreFollows' field")
+		return nil, errors.Wrap(_moreFollowsErr, "Error parsing 'moreFollows' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
 	moreFollows := _moreFollows
 	if closeErr := readBuffer.CloseContext("moreFollows"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for moreFollows")
 	}
 
 	// Simple Field (nextObjectId)
 	_nextObjectId, _nextObjectIdErr := readBuffer.ReadUint8("nextObjectId", 8)
 	if _nextObjectIdErr != nil {
-		return nil, errors.Wrap(_nextObjectIdErr, "Error parsing 'nextObjectId' field")
+		return nil, errors.Wrap(_nextObjectIdErr, "Error parsing 'nextObjectId' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
 	nextObjectId := _nextObjectId
 
@@ -292,52 +294,64 @@ func ModbusPDUReadDeviceIdentificationResponseParse(readBuffer utils.ReadBuffer,
 	numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
 	_ = numberOfObjects
 	if _numberOfObjectsErr != nil {
-		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field")
+		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
 
 	// Array field (objects)
 	if pullErr := readBuffer.PullContext("objects", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for objects")
 	}
 	// Count array
-	objects := make([]*ModbusDeviceInformationObject, numberOfObjects)
+	objects := make([]ModbusDeviceInformationObject, numberOfObjects)
+	// This happens when the size is set conditional to 0
+	if len(objects) == 0 {
+		objects = nil
+	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
-			_item, _err := ModbusDeviceInformationObjectParse(readBuffer)
+			_item, _err := ModbusDeviceInformationObjectParseWithBuffer(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'objects' field")
+				return nil, errors.Wrap(_err, "Error parsing 'objects' field of ModbusPDUReadDeviceIdentificationResponse")
 			}
-			objects[curItem] = CastModbusDeviceInformationObject(_item)
+			objects[curItem] = _item.(ModbusDeviceInformationObject)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("objects", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for objects")
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadDeviceIdentificationResponse"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReadDeviceIdentificationResponse")
 	}
 
 	// Create a partially initialized instance
-	_child := &ModbusPDUReadDeviceIdentificationResponse{
+	_child := &_ModbusPDUReadDeviceIdentificationResponse{
+		_ModbusPDU:       &_ModbusPDU{},
 		Level:            level,
 		IndividualAccess: individualAccess,
 		ConformityLevel:  conformityLevel,
 		MoreFollows:      moreFollows,
 		NextObjectId:     nextObjectId,
 		Objects:          objects,
-		ModbusPDU:        &ModbusPDU{},
 	}
-	_child.ModbusPDU.Child = _child
+	_child._ModbusPDU._ModbusPDUChildRequirements = _child
 	return _child, nil
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ModbusPDUReadDeviceIdentificationResponse"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for ModbusPDUReadDeviceIdentificationResponse")
 		}
 
 		// Const Field (meiType)
@@ -348,18 +362,18 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.
 
 		// Simple Field (level)
 		if pushErr := writeBuffer.PushContext("level"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for level")
 		}
-		_levelErr := m.Level.Serialize(writeBuffer)
+		_levelErr := writeBuffer.WriteSerializable(m.GetLevel())
 		if popErr := writeBuffer.PopContext("level"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for level")
 		}
 		if _levelErr != nil {
 			return errors.Wrap(_levelErr, "Error serializing 'level' field")
 		}
 
 		// Simple Field (individualAccess)
-		individualAccess := bool(m.IndividualAccess)
+		individualAccess := bool(m.GetIndividualAccess())
 		_individualAccessErr := writeBuffer.WriteBit("individualAccess", (individualAccess))
 		if _individualAccessErr != nil {
 			return errors.Wrap(_individualAccessErr, "Error serializing 'individualAccess' field")
@@ -367,11 +381,11 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.
 
 		// Simple Field (conformityLevel)
 		if pushErr := writeBuffer.PushContext("conformityLevel"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for conformityLevel")
 		}
-		_conformityLevelErr := m.ConformityLevel.Serialize(writeBuffer)
+		_conformityLevelErr := writeBuffer.WriteSerializable(m.GetConformityLevel())
 		if popErr := writeBuffer.PopContext("conformityLevel"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for conformityLevel")
 		}
 		if _conformityLevelErr != nil {
 			return errors.Wrap(_conformityLevelErr, "Error serializing 'conformityLevel' field")
@@ -379,18 +393,18 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.
 
 		// Simple Field (moreFollows)
 		if pushErr := writeBuffer.PushContext("moreFollows"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for moreFollows")
 		}
-		_moreFollowsErr := m.MoreFollows.Serialize(writeBuffer)
+		_moreFollowsErr := writeBuffer.WriteSerializable(m.GetMoreFollows())
 		if popErr := writeBuffer.PopContext("moreFollows"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for moreFollows")
 		}
 		if _moreFollowsErr != nil {
 			return errors.Wrap(_moreFollowsErr, "Error serializing 'moreFollows' field")
 		}
 
 		// Simple Field (nextObjectId)
-		nextObjectId := uint8(m.NextObjectId)
+		nextObjectId := uint8(m.GetNextObjectId())
 		_nextObjectIdErr := writeBuffer.WriteUint8("nextObjectId", 8, (nextObjectId))
 		if _nextObjectIdErr != nil {
 			return errors.Wrap(_nextObjectIdErr, "Error serializing 'nextObjectId' field")
@@ -404,36 +418,38 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.
 		}
 
 		// Array Field (objects)
-		if m.Objects != nil {
-			if pushErr := writeBuffer.PushContext("objects", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+		if pushErr := writeBuffer.PushContext("objects", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for objects")
+		}
+		for _, _element := range m.GetObjects() {
+			_elementErr := writeBuffer.WriteSerializable(_element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'objects' field")
 			}
-			for _, _element := range m.Objects {
-				_elementErr := _element.Serialize(writeBuffer)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'objects' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("objects", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
-			}
+		}
+		if popErr := writeBuffer.PopContext("objects", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for objects")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadDeviceIdentificationResponse"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for ModbusPDUReadDeviceIdentificationResponse")
 		}
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
-func (m *ModbusPDUReadDeviceIdentificationResponse) String() string {
+func (m *_ModbusPDUReadDeviceIdentificationResponse) isModbusPDUReadDeviceIdentificationResponse() bool {
+	return true
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

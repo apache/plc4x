@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -84,7 +84,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
      * otherwise a Runtime Exception will be produced by Netty
      * <p>
      * By Default Nettys {@link NioEventLoopGroup} is used.
-     * Transports which have to use a different EventLoopGroup have to override {@link #getEventLoopGroup()}.
+     * Transports which have to use a different EventLoopGroup have to override {#getEventLoopGroup()}.
      */
     public EventLoopGroup getEventLoopGroup() {
         return new NioEventLoopGroup();
@@ -117,12 +117,11 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             });
 
             final Channel channel = f.channel();
-            
-            // Shutdowm the workerGroup when channel closing to avoid open too many files
-            channel.closeFuture().addListener(future -> workerGroup.shutdownGracefully());
 
-            // Add to event-loop group
             if (workerGroup != null) {
+                // Shut down the workerGroup when channel closing to avoid open too many files
+                channel.closeFuture().addListener(future -> workerGroup.shutdownGracefully());
+                // Add to event-loop group
                 eventLoops.put(channel, workerGroup);
             }
 

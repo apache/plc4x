@@ -7,7 +7,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -22,21 +22,14 @@ from typing import Awaitable
 
 from plc4py.api.messages.PlcResponse import PlcResponse, PlcReadResponse
 from plc4py.api.messages.PlcRequest import ReadRequestBuilder, PlcRequest
-from plc4py.api.exceptions.exceptions import PlcConnectionException
 from plc4py.api.value.PlcValue import PlcResponseCode
+from plc4py.spi.configuration.PlcConfiguration import PlcConfiguration
 from plc4py.utils.GenericTypes import GenericGenerator
 
 
 class PlcConnection(GenericGenerator):
-    def __init__(self, url: str):
-        self.url = url
-
-    @abstractmethod
-    def connect(self) -> None:
-        """
-        Establishes the connection to the remote PLC.
-        """
-        raise PlcConnectionException
+    def __init__(self, config: PlcConfiguration):
+        self._configuration = config
 
     @abstractmethod
     def is_connected(self) -> bool:

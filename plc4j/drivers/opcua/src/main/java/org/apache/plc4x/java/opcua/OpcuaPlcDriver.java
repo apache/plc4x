@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,10 +19,9 @@
 package org.apache.plc4x.java.opcua;
 
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.opcua.field.OpcuaField;
-import org.apache.plc4x.java.opcua.field.OpcuaPlcFieldHandler;
+import org.apache.plc4x.java.opcua.tag.OpcuaTag;
+import org.apache.plc4x.java.opcua.tag.OpcuaPlcTagHandler;
 import org.apache.plc4x.java.opcua.optimizer.OpcuaOptimizer;
 import org.apache.plc4x.java.opcua.protocol.*;
 import org.apache.plc4x.java.opcua.config.*;
@@ -30,8 +29,7 @@ import org.apache.plc4x.java.opcua.readwrite.*;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.*;
 import org.apache.plc4x.java.spi.transport.Transport;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import io.netty.buffer.ByteBuf;
@@ -104,18 +102,23 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     }
 
     @Override
+    protected boolean canBrowse() {
+        return false;
+    }
+
+    @Override
     protected OpcuaOptimizer getOptimizer() {
         return new OpcuaOptimizer();
     }
 
     @Override
-    protected OpcuaPlcFieldHandler getFieldHandler() {
-        return new OpcuaPlcFieldHandler();
+    protected OpcuaPlcTagHandler getTagHandler() {
+        return new OpcuaPlcTagHandler();
     }
 
     @Override
-    protected PlcValueHandler getValueHandler() {
-        return new IEC61131ValueHandler();
+    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
+        return new PlcValueHandler();
     }
 
     protected boolean awaitDisconnectComplete() {
@@ -223,8 +226,8 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
         }
 
         return new DefaultNettyPlcConnection(
-            canRead(), canWrite(), canSubscribe(),
-            getFieldHandler(),
+            canRead(), canWrite(), canSubscribe(), canBrowse(),
+            getTagHandler(),
             getValueHandler(),
             configuration,
             channelFactory,
@@ -232,12 +235,8 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
             awaitDisconnectComplete,
             awaitDiscoverComplete,
             getStackConfigurer(),
-            getOptimizer());
-    }
-
-    @Override
-    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("Authentication not supported.");
+            getOptimizer(),
+            null);
     }
 
     /** Estimate the Length of a Packet */
@@ -252,8 +251,8 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     }
 
     @Override
-    public OpcuaField prepareField(String query){
-        return OpcuaField.of(query);
+    public OpcuaTag prepareTag(String tagAddress){
+        return OpcuaTag.of(tagAddress);
     }
 
 }

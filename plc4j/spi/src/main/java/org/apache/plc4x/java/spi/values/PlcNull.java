@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.values;
 
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.math.BigDecimal;
@@ -31,6 +32,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class PlcNull implements PlcValue {
+
+    @Override
+    public PlcValueType getPlcValueType() {
+        return PlcValueType.NULL;
+    }
 
     @Override
     public Object getObject() {

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,8 +20,9 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -31,20 +32,23 @@ import (
 const EipConnectionRequest_PROTOCOLVERSION uint16 = 0x01
 const EipConnectionRequest_FLAGS uint16 = 0x00
 
-// EipConnectionRequest is the data-structure of this message
-type EipConnectionRequest struct {
-	*EipPacket
+// EipConnectionRequest is the corresponding interface of EipConnectionRequest
+type EipConnectionRequest interface {
+	utils.LengthAware
+	utils.Serializable
+	EipPacket
 }
 
-// IEipConnectionRequest is the corresponding interface of EipConnectionRequest
-type IEipConnectionRequest interface {
-	IEipPacket
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+// EipConnectionRequestExactly can be used when we want exactly this type and not a type which fulfills EipConnectionRequest.
+// This is useful for switch cases.
+type EipConnectionRequestExactly interface {
+	EipConnectionRequest
+	isEipConnectionRequest() bool
+}
+
+// _EipConnectionRequest is the data-structure of this message
+type _EipConnectionRequest struct {
+	*_EipPacket
 }
 
 ///////////////////////////////////////////////////////////
@@ -52,7 +56,7 @@ type IEipConnectionRequest interface {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *EipConnectionRequest) GetCommand() uint16 {
+func (m *_EipConnectionRequest) GetCommand() uint16 {
 	return 0x0065
 }
 
@@ -61,15 +65,15 @@ func (m *EipConnectionRequest) GetCommand() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *EipConnectionRequest) InitializeParent(parent *EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
-	m.EipPacket.SessionHandle = sessionHandle
-	m.EipPacket.Status = status
-	m.EipPacket.SenderContext = senderContext
-	m.EipPacket.Options = options
+func (m *_EipConnectionRequest) InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
+	m.SessionHandle = sessionHandle
+	m.Status = status
+	m.SenderContext = senderContext
+	m.Options = options
 }
 
-func (m *EipConnectionRequest) GetParent() *EipPacket {
-	return m.EipPacket
+func (m *_EipConnectionRequest) GetParent() EipPacket {
+	return m._EipPacket
 }
 
 ///////////////////////////////////////////////////////////
@@ -77,11 +81,11 @@ func (m *EipConnectionRequest) GetParent() *EipPacket {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *EipConnectionRequest) GetProtocolVersion() uint16 {
+func (m *_EipConnectionRequest) GetProtocolVersion() uint16 {
 	return EipConnectionRequest_PROTOCOLVERSION
 }
 
-func (m *EipConnectionRequest) GetFlags() uint16 {
+func (m *_EipConnectionRequest) GetFlags() uint16 {
 	return EipConnectionRequest_FLAGS
 }
 
@@ -90,40 +94,35 @@ func (m *EipConnectionRequest) GetFlags() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewEipConnectionRequest factory function for EipConnectionRequest
-func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *EipConnectionRequest {
-	_result := &EipConnectionRequest{
-		EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
+// NewEipConnectionRequest factory function for _EipConnectionRequest
+func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_EipConnectionRequest {
+	_result := &_EipConnectionRequest{
+		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
-	_result.Child = _result
+	_result._EipPacket._EipPacketChildRequirements = _result
 	return _result
 }
 
-func CastEipConnectionRequest(structType interface{}) *EipConnectionRequest {
+// Deprecated: use the interface for direct cast
+func CastEipConnectionRequest(structType interface{}) EipConnectionRequest {
 	if casted, ok := structType.(EipConnectionRequest); ok {
-		return &casted
-	}
-	if casted, ok := structType.(*EipConnectionRequest); ok {
 		return casted
 	}
-	if casted, ok := structType.(EipPacket); ok {
-		return CastEipConnectionRequest(casted.Child)
-	}
-	if casted, ok := structType.(*EipPacket); ok {
-		return CastEipConnectionRequest(casted.Child)
+	if casted, ok := structType.(*EipConnectionRequest); ok {
+		return *casted
 	}
 	return nil
 }
 
-func (m *EipConnectionRequest) GetTypeName() string {
+func (m *_EipConnectionRequest) GetTypeName() string {
 	return "EipConnectionRequest"
 }
 
-func (m *EipConnectionRequest) GetLengthInBits() uint16 {
+func (m *_EipConnectionRequest) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *EipConnectionRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_EipConnectionRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Const Field (protocolVersion)
@@ -135,15 +134,19 @@ func (m *EipConnectionRequest) GetLengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *EipConnectionRequest) GetLengthInBytes() uint16 {
+func (m *_EipConnectionRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (*EipConnectionRequest, error) {
+func EipConnectionRequestParse(theBytes []byte) (EipConnectionRequest, error) {
+	return EipConnectionRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+}
+
+func EipConnectionRequestParseWithBuffer(readBuffer utils.ReadBuffer) (EipConnectionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EipConnectionRequest"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for EipConnectionRequest")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -151,7 +154,7 @@ func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (*EipConnectionReque
 	// Const Field (protocolVersion)
 	protocolVersion, _protocolVersionErr := readBuffer.ReadUint16("protocolVersion", 16)
 	if _protocolVersionErr != nil {
-		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field")
+		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field of EipConnectionRequest")
 	}
 	if protocolVersion != EipConnectionRequest_PROTOCOLVERSION {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", EipConnectionRequest_PROTOCOLVERSION) + " but got " + fmt.Sprintf("%d", protocolVersion))
@@ -160,30 +163,38 @@ func EipConnectionRequestParse(readBuffer utils.ReadBuffer) (*EipConnectionReque
 	// Const Field (flags)
 	flags, _flagsErr := readBuffer.ReadUint16("flags", 16)
 	if _flagsErr != nil {
-		return nil, errors.Wrap(_flagsErr, "Error parsing 'flags' field")
+		return nil, errors.Wrap(_flagsErr, "Error parsing 'flags' field of EipConnectionRequest")
 	}
 	if flags != EipConnectionRequest_FLAGS {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", EipConnectionRequest_FLAGS) + " but got " + fmt.Sprintf("%d", flags))
 	}
 
 	if closeErr := readBuffer.CloseContext("EipConnectionRequest"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for EipConnectionRequest")
 	}
 
 	// Create a partially initialized instance
-	_child := &EipConnectionRequest{
-		EipPacket: &EipPacket{},
+	_child := &_EipConnectionRequest{
+		_EipPacket: &_EipPacket{},
 	}
-	_child.EipPacket.Child = _child
+	_child._EipPacket._EipPacketChildRequirements = _child
 	return _child, nil
 }
 
-func (m *EipConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_EipConnectionRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_EipConnectionRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("EipConnectionRequest"); pushErr != nil {
-			return pushErr
+			return errors.Wrap(pushErr, "Error pushing for EipConnectionRequest")
 		}
 
 		// Const Field (protocolVersion)
@@ -199,20 +210,24 @@ func (m *EipConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		if popErr := writeBuffer.PopContext("EipConnectionRequest"); popErr != nil {
-			return popErr
+			return errors.Wrap(popErr, "Error popping for EipConnectionRequest")
 		}
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
 }
 
-func (m *EipConnectionRequest) String() string {
+func (m *_EipConnectionRequest) isEipConnectionRequest() bool {
+	return true
+}
+
+func (m *_EipConnectionRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

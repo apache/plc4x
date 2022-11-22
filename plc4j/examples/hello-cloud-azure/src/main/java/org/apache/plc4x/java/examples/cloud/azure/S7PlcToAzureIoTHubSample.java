@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -34,12 +34,12 @@ public class S7PlcToAzureIoTHubSample {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(S7PlcToAzureIoTHubSample.class);
 
-    private static final String FIELD_NAME = "value";
+    private static final String TAG_NAME = "value";
 
     /**
      * Example code do demonstrate sending events from an S7 device to Microsoft Azure IoT Hub
      *
-     * @param args Expected: [plc4x connection string, plc4x field address, IoT-Hub connection string].
+     * @param args Expected: [plc4x connection string, plc4x tag address, IoT-Hub connection string].
      */
     public static void main(String[] args) throws Exception {
         CliOptions options = CliOptions.fromArgs(args);
@@ -49,7 +49,7 @@ public class S7PlcToAzureIoTHubSample {
             System.exit(1);
         }
 
-        LOGGER.info("Connecting {}, {}, {}", options.getPlc4xConnectionString(), options.getPlc4xFieldAddress(),
+        LOGGER.info("Connecting {}, {}, {}", options.getPlc4xConnectionString(), options.getPlc4xTagAddress(),
             options.getIotHubConnectionString());
 
         // Open both a connection to the remote PLC and the cloud service.
@@ -62,12 +62,12 @@ public class S7PlcToAzureIoTHubSample {
 
             // Prepare a read request.
             PlcReadRequest request = plcConnection.readRequestBuilder()
-                .addItem(FIELD_NAME, options.getPlc4xFieldAddress()).build();
+                .addTagAddress(TAG_NAME, options.getPlc4xTagAddress()).build();
 
             while (!Thread.currentThread().isInterrupted()) {
                 // Simulate telemetry.
                 PlcReadResponse response = request.execute().get();
-                response.getAllLongs(FIELD_NAME)
+                response.getAllLongs(TAG_NAME)
                     .forEach(longValue -> {
                             String result = Long.toBinaryString(longValue);
                             LOGGER.info("Outputs {}", result);

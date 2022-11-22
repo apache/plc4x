@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -17,7 +17,6 @@
  * under the License.
  */
 
-#include <ctype.h>
 #include <plc4c/spi/types_private.h>
 #include <stdlib.h>
 #include "plc4c/driver_plc4x.h"
@@ -76,7 +75,7 @@ plc4c_return_code plc4c_driver_plc4x_sm_read_finished(
   // TODO: Check the connection id and the request id both match
   //if (packet->plc4x_read_response_connection_id == connection.)
   
-  if (plc4c_utils_list_size(packet->plc4x_read_request_fields) !=
+  if (plc4c_utils_list_size(packet->plc4x_read_request_tags) !=
       plc4c_utils_list_size(execution->read_request->items))
     return INTERNAL_ERROR;
   
@@ -151,11 +150,11 @@ plc4c_return_code plc4c_driver_plc4x_read_function(
 void plc4c_driver_plc4x_free_read_request_item(plc4c_list_element *element){
   plc4c_item *item;
   item = element->value;
-  plc4c_plc4x_read_write_plc4x_field_request *addr_item;
+  plc4c_plc4x_read_write_plc4x_tag_request *addr_item;
   addr_item = item->address;
-  free(addr_item->field->name);
-  free(addr_item->field->field_query);
-  free(addr_item->field);
+  free(addr_item->tag->name);
+  free(addr_item->tag->tag_query);
+  free(addr_item->tag);
   free(item);
 }
 
@@ -191,25 +190,12 @@ plc4c_return_code plc4c_driver_plc4x_parse_read_response(
                                 plc4c_read_request_execution* execution,
                                 plc4c_plc4x_read_write_plc4x_message* packet) {
 
-  // TODO this function is too big and complex: modularise
-
   // Locals :(
-  plc4c_plc4x_read_write_plc4x_message* plc4x_packet;
   plc4c_list_element* request_elements;
   plc4c_list_element* payload_elements;
   plc4c_item* request_item;
-  plc4c_plc4x_read_write_plc4x_field_request * request_address;
-  plc4c_plc4x_read_write_plc4x_field_value_response * payload_item;
-  plc4c_spi_read_buffer* read_buffer;
-  plc4c_data* data_item;
+  plc4c_plc4x_read_write_plc4x_tag_value_response * payload_item;
   plc4c_response_value_item* response_value_item;
-  char* data_protocol_id;
-  uint16_t num_elements;
-  int32_t string_length;
-  uint8_t* byte_array;
-  size_t list_size;
-  size_t idx;
-  enum plc4c_return_code result;
 
   // Make a new list for holding the response value items
   plc4c_utils_list_create(&execution->read_response->items);
@@ -217,7 +203,7 @@ plc4c_return_code plc4c_driver_plc4x_parse_read_response(
   // Iterate over the request items and use the types to decode the
   // response items.
   request_elements = plc4c_utils_list_tail(execution->read_request->items);
-  payload_elements = plc4c_utils_list_tail(packet->plc4x_read_response_fields);
+  payload_elements = plc4c_utils_list_tail(packet->plc4x_read_response_tags);
   
   while ((request_elements != NULL) && (payload_elements != NULL)) {
     request_item = request_elements->value;

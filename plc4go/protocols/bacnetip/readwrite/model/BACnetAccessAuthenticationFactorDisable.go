@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetAccessAuthenticationFactorDisable uint16
 
 type IBACnetAccessAuthenticationFactorDisable interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -58,44 +58,44 @@ func init() {
 	}
 }
 
-func BACnetAccessAuthenticationFactorDisableByValue(value uint16) BACnetAccessAuthenticationFactorDisable {
+func BACnetAccessAuthenticationFactorDisableByValue(value uint16) (enum BACnetAccessAuthenticationFactorDisable, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAccessAuthenticationFactorDisable_NONE
+		return BACnetAccessAuthenticationFactorDisable_NONE, true
 	case 0xFFFF:
-		return BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetAccessAuthenticationFactorDisable_DISABLED
+		return BACnetAccessAuthenticationFactorDisable_DISABLED, true
 	case 2:
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_LOST
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_LOST, true
 	case 3:
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN, true
 	case 4:
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED, true
 	case 5:
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetAccessAuthenticationFactorDisableByName(value string) BACnetAccessAuthenticationFactorDisable {
+func BACnetAccessAuthenticationFactorDisableByName(value string) (enum BACnetAccessAuthenticationFactorDisable, ok bool) {
 	switch value {
 	case "NONE":
-		return BACnetAccessAuthenticationFactorDisable_NONE
+		return BACnetAccessAuthenticationFactorDisable_NONE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE, true
 	case "DISABLED":
-		return BACnetAccessAuthenticationFactorDisable_DISABLED
+		return BACnetAccessAuthenticationFactorDisable_DISABLED, true
 	case "DISABLED_LOST":
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_LOST
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_LOST, true
 	case "DISABLED_STOLEN":
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN, true
 	case "DISABLED_DAMAGED":
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED, true
 	case "DISABLED_DESTROYED":
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED
+		return BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAccessAuthenticationFactorDisableKnows(value uint16) bool {
@@ -125,19 +125,37 @@ func (m BACnetAccessAuthenticationFactorDisable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessAuthenticationFactorDisableParse(readBuffer utils.ReadBuffer) (BACnetAccessAuthenticationFactorDisable, error) {
+func BACnetAccessAuthenticationFactorDisableParse(theBytes []byte) (BACnetAccessAuthenticationFactorDisable, error) {
+	return BACnetAccessAuthenticationFactorDisableParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetAccessAuthenticationFactorDisableParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessAuthenticationFactorDisable, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessAuthenticationFactorDisable", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAccessAuthenticationFactorDisable")
 	}
-	return BACnetAccessAuthenticationFactorDisableByValue(val), nil
+	if enum, ok := BACnetAccessAuthenticationFactorDisableByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetAccessAuthenticationFactorDisable(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetAccessAuthenticationFactorDisable) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetAccessAuthenticationFactorDisable", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetAccessAuthenticationFactorDisable) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetAccessAuthenticationFactorDisable) name() string {
+func (e BACnetAccessAuthenticationFactorDisable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetAccessAuthenticationFactorDisable", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAccessAuthenticationFactorDisable) PLC4XEnumName() string {
 	switch e {
 	case BACnetAccessAuthenticationFactorDisable_NONE:
 		return "NONE"
@@ -158,5 +176,5 @@ func (e BACnetAccessAuthenticationFactorDisable) name() string {
 }
 
 func (e BACnetAccessAuthenticationFactorDisable) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

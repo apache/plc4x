@@ -7,7 +7,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -16,6 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+import asyncio
 from typing import Type, Awaitable
 
 import plc4py
@@ -25,33 +26,49 @@ from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
 from plc4py.api.messages.PlcResponse import PlcResponse
 from plc4py.api.messages.PlcRequest import ReadRequestBuilder
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
+from plc4py.drivers.modbus.ModbusConfiguration import ModbusConfiguration
+from plc4py.drivers.modbus.ModbusProtocol import ModbusProtocol
+from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
+from plc4py.spi.transport.TCPTransport import TCPTransport
 
 
 class ModbusConnection(PlcConnection):
     """A hook implementation namespace."""
 
-    def __init__(self, url: str):
-        super().__init__(url)
+    def __init__(self, config: ModbusConfiguration, transport: Plc4xBaseTransport):
+        super().__init__(config)
+        self._transport: Plc4xBaseTransport = transport
 
-    def connect(self):
-        """
-        Establishes the connection to the remote PLC.
-        """
-        pass
+    @staticmethod
+    async def create(url):
+        config = ModbusConfiguration(url)
+        loop = asyncio.get_running_loop()
+        connection_future = loop.create_future()
+        # TODO:- Look at removing this future.
+        transport = await TCPTransport.create(
+            protocol_factory=lambda: ModbusProtocol(connection_future),
+            host=config.host,
+            port=config.port,
+        )
+        return ModbusConnection(config, transport)
 
     def is_connected(self) -> bool:
         """
         Indicates if the connection is established to a remote PLC.
         :return: True if connection, False otherwise
         """
-        pass
+        if self._transport is not None:
+            return not self._transport.is_closing()
+        else:
+            return False
 
     def close(self) -> None:
         """
         Closes the connection to the remote PLC.
         :return:
         """
-        pass
+        if self._transport is not None:
+            self._transport.close()
 
     def read_request_builder(self) -> ReadRequestBuilder:
         """
@@ -70,10 +87,10 @@ class ModbusConnection(PlcConnection):
 
 class ModbusDriver(PlcDriver):
     def __init__(self):
-        self.protocol_code = "modbus"
-        self.protocol_name = "Modbus"
+        self.protocol_code = "modbus-tcp"
+        self.protocol_name = "Modbus TCP"
 
-    def get_connection(
+    async def get_connection(
         self, url: str, authentication: PlcAuthentication = PlcAuthentication()
     ) -> PlcConnection:
         """
@@ -82,7 +99,7 @@ class ModbusDriver(PlcDriver):
         :param authentication: authentication credentials.
         :return PlcConnection: PLC Connection object
         """
-        return ModbusConnection(url)
+        return await ModbusConnection.create(url)
 
 
 class ModbusDriverLoader(PlcDriverLoader):

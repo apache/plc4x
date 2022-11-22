@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,12 +21,12 @@ package org.apache.plc4x.test.parserserializer;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.spi.generation.*;
-import org.apache.plc4x.java.spi.utils.ascii.AsciiBox;
 import org.apache.plc4x.java.spi.utils.ascii.AsciiBoxWriter;
 import org.apache.plc4x.test.XmlTestsuiteLoader;
 import org.apache.plc4x.test.dom4j.LocationAwareDocumentFactory;
 import org.apache.plc4x.test.dom4j.LocationAwareElement;
 import org.apache.plc4x.test.dom4j.LocationAwareSAXReader;
+import org.apache.plc4x.test.hex.HexDiff;
 import org.apache.plc4x.test.migration.MessageResolver;
 import org.apache.plc4x.test.migration.MessageValidatorAndMigrator;
 import org.apache.plc4x.test.parserserializer.exceptions.ParserSerializerTestsuiteException;
@@ -165,7 +165,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
 
             // In this case no reference xml has been provided
             // (This is usually during development)
-            if(testcase.getXml().elements().size() == 0) {
+            if (testcase.getXml().elements().size() == 0) {
                 WriteBufferXmlBased writeBufferXmlBased = new WriteBufferXmlBased();
                 parsedOutput.serialize(writeBufferXmlBased);
                 String xmlString = writeBufferXmlBased.getXmlString();
@@ -199,7 +199,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(parsedOutput.getLengthInBytes(), testSuite.getByteOrder());
             parsedOutput.serialize(writeBuffer);
             LOGGER.info("Serializing passed for testcase {}", testcase);
-            byte[] data = writeBuffer.getData();
+            byte[] data = writeBuffer.getBytes();
             if (testcaseRaw.length != data.length) {
                 LOGGER.info("Expected a byte array with a length of {} but got one with {}", testcaseRaw.length, data.length);
             }
@@ -209,24 +209,10 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             if (!Arrays.equals(testcaseRaw, data)) {
-                int numBytes = Math.min(data.length, testcaseRaw.length);
-                int brokenAt = -1;
-                List<Integer> diffIndexes = new LinkedList<>();
-                for (int i = 0; i < numBytes; i++) {
-                    if (data[i] != testcaseRaw[i]) {
-                        if (brokenAt < 0) {
-                            brokenAt = i;
-                        }
-                        diffIndexes.add(i);
-                    }
-                }
-                String rawHex = org.apache.plc4x.java.spi.utils.hex.Hex.dump(testcaseRaw, 46, diffIndexes.stream().mapToInt(integer -> integer).toArray());
-                String dataHex = org.apache.plc4x.java.spi.utils.hex.Hex.dump(data, 46, diffIndexes.stream().mapToInt(integer -> integer).toArray());
-                AsciiBox compareBox = AsciiBoxWriter.DEFAULT.boxSideBySide(AsciiBoxWriter.DEFAULT.boxString("expected", rawHex, 0), AsciiBoxWriter.DEFAULT.boxString("actual", dataHex, 0));
-                LOGGER.error("Diff\n{}", compareBox);
+                // This goes to std out on purpose to preserve coloring
+                System.out.println(HexDiff.diffHex(testcaseRaw, data));
                 throw new ParserSerializerTestsuiteException("Differences were found after serializing.\nExpected: " +
-                    Hex.encodeHexString(testcaseRaw) + "\nBut Got:  " + Hex.encodeHexString(data) +
-                    "\n          " + String.join("", Collections.nCopies(brokenAt, "--")) + "^");
+                    Hex.encodeHexString(testcaseRaw) + "\nBut Got:  " + Hex.encodeHexString(data) + "");
             }
         } catch (SerializationException | ParseException e) {
             throw new ParserSerializerTestsuiteException("Unable to parse message", e);

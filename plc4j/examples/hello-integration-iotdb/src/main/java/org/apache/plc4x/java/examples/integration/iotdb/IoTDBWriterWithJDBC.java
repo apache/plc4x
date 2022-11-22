@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -49,11 +49,11 @@ public class IoTDBWriterWithJDBC implements IIoTDBWriter {
     }
 
     @Override
-    public void writeData(String deviceId, String field, long timestamp, Integer value) {
-        //please modify this method if you want to write multiple fields once.
+    public void writeData(String deviceId, String tag, long timestamp, Integer value) {
+        //please modify this method if you want to write multiple tags once.
         try (PreparedStatement statement = connection.prepareStatement("INSERT INTO ? (TIMESTAMP, ?) VALUES (?, ?)")) {
             statement.setString(1, deviceId);
-            statement.setString(2, field);
+            statement.setString(2, tag);
             statement.setLong(3, timestamp);
             statement.setInt(4, value);
             statement.execute();

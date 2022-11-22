@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -38,13 +38,13 @@ import java.util.Map;
 public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
 
     private final PlcWriteRequest request;
-    private final Map<String, PlcResponseCode> responses;
+    private final Map<String, PlcResponseCode> responseCodes;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public DefaultPlcWriteResponse(@JsonProperty("request") PlcWriteRequest request,
-                                   @JsonProperty("values") Map<String, PlcResponseCode> responses) {
+                                   @JsonProperty("responseCodes") Map<String, PlcResponseCode> responseCodes) {
         this.request = request;
-        this.responses = responses;
+        this.responseCodes = responseCodes;
     }
 
     @Override
@@ -54,20 +54,20 @@ public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
 
     @Override
     @JsonIgnore
-    public Collection<String> getFieldNames() {
-        return request.getFieldNames();
+    public Collection<String> getTagNames() {
+        return request.getTagNames();
     }
 
     @Override
     @JsonIgnore
-    public PlcField getField(String name) {
-        return request.getField(name);
+    public PlcTag getTag(String name) {
+        return request.getTag(name);
     }
 
     @Override
     @JsonIgnore
     public PlcResponseCode getResponseCode(String name) {
-        return responses.get(name);
+        return responseCodes.get(name);
     }
 
     @Override
@@ -77,14 +77,14 @@ public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
         if (request instanceof Serializable) {
             ((Serializable) request).serialize(writeBuffer);
         }
-        writeBuffer.pushContext("fields");
-        for (Map.Entry<String, PlcResponseCode> fieldEntry : responses.entrySet()) {
-            String fieldName = fieldEntry.getKey();
-            final PlcResponseCode fieldResponseCode = fieldEntry.getValue();
-            String result = fieldResponseCode.name();
-            writeBuffer.writeString(fieldName, result.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), result);
+        writeBuffer.pushContext("tags");
+        for (Map.Entry<String, PlcResponseCode> tagEntry : responseCodes.entrySet()) {
+            String tagName = tagEntry.getKey();
+            final PlcResponseCode tagResponseCode = tagEntry.getValue();
+            String result = tagResponseCode.name();
+            writeBuffer.writeString(tagName, result.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), result);
         }
-        writeBuffer.popContext("fields");
+        writeBuffer.popContext("tags");
 
         writeBuffer.popContext("PlcWriteResponse");
     }

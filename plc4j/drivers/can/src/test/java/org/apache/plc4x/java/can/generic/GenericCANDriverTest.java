@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -52,22 +52,22 @@ public class GenericCANDriverTest {
         PlcConnection connection2 = connection1;
 
         CountDownLatch latch = new CountDownLatch(1);
-        Byte field1 = 0x55;
-        short field2 = 10;
-        short field3 = 50;
+        Byte tag1 = 0x55;
+        short tag2 = 10;
+        short tag3 = 50;
 
         final AtomicReference<PlcSubscriptionEvent> plcEvent = new AtomicReference<>();
         connection1.subscriptionRequestBuilder()
-            .addEventField("field1", "200:BYTE")
-            .addEventField("field2", "200:UNSIGNED8")
-            .addEventField("field3", "200:UNSIGNED8")
+            .addEventTagAddress("tag1", "200:BYTE")
+            .addEventTagAddress("tag2", "200:UNSIGNED8")
+            .addEventTagAddress("tag3", "200:UNSIGNED8")
             .build().execute().whenComplete((reply, error) -> {
                 if (error != null) {
                     fail(error);
                     return;
                 }
 
-                reply.getSubscriptionHandle("field1").register(new Consumer<PlcSubscriptionEvent>() {
+                reply.getSubscriptionHandle("tag1").register(new Consumer<PlcSubscriptionEvent>() {
                     @Override
                     public void accept(PlcSubscriptionEvent event) {
                         plcEvent.set(event);
@@ -77,9 +77,9 @@ public class GenericCANDriverTest {
             });
 
         connection2.writeRequestBuilder()
-            .addItem("f1", "200:BYTE", field1)
-            .addItem("f2", "200:UNSIGNED8", field2)
-            .addItem("f3", "200:UNSIGNED8", field3)
+            .addTagAddress("f1", "200:BYTE", tag1)
+            .addTagAddress("f2", "200:UNSIGNED8", tag2)
+            .addTagAddress("f3", "200:UNSIGNED8", tag3)
             .build().execute().whenComplete((reply, error) -> {
                 if (error != null) {
                     fail(error);
@@ -89,9 +89,9 @@ public class GenericCANDriverTest {
         latch.await();
 
         PlcSubscriptionEvent event = plcEvent.get();
-        assertEquals(field1, event.getByte("field1"));
-        assertEquals(field2, event.getShort("field2"));
-        assertEquals(field3, event.getShort("field3"));
+        assertEquals(tag1, event.getByte("tag1"));
+        assertEquals(tag2, event.getShort("tag2"));
+        assertEquals(tag3, event.getShort("tag3"));
 
     }
 }

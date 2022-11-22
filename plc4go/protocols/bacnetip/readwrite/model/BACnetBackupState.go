@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetBackupState uint8
 
 type IBACnetBackupState interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -58,44 +58,44 @@ func init() {
 	}
 }
 
-func BACnetBackupStateByValue(value uint8) BACnetBackupState {
+func BACnetBackupStateByValue(value uint8) (enum BACnetBackupState, ok bool) {
 	switch value {
 	case 0:
-		return BACnetBackupState_IDLE
+		return BACnetBackupState_IDLE, true
 	case 1:
-		return BACnetBackupState_PREPARING_FOR_BACKUP
+		return BACnetBackupState_PREPARING_FOR_BACKUP, true
 	case 2:
-		return BACnetBackupState_PREPARING_FOR_RESTORE
+		return BACnetBackupState_PREPARING_FOR_RESTORE, true
 	case 3:
-		return BACnetBackupState_PERFORMING_A_BACKUP
+		return BACnetBackupState_PERFORMING_A_BACKUP, true
 	case 4:
-		return BACnetBackupState_PERFORMING_A_RESTORE
+		return BACnetBackupState_PERFORMING_A_RESTORE, true
 	case 5:
-		return BACnetBackupState_BACKUP_FAILURE
+		return BACnetBackupState_BACKUP_FAILURE, true
 	case 6:
-		return BACnetBackupState_RESTORE_FAILURE
+		return BACnetBackupState_RESTORE_FAILURE, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetBackupStateByName(value string) BACnetBackupState {
+func BACnetBackupStateByName(value string) (enum BACnetBackupState, ok bool) {
 	switch value {
 	case "IDLE":
-		return BACnetBackupState_IDLE
+		return BACnetBackupState_IDLE, true
 	case "PREPARING_FOR_BACKUP":
-		return BACnetBackupState_PREPARING_FOR_BACKUP
+		return BACnetBackupState_PREPARING_FOR_BACKUP, true
 	case "PREPARING_FOR_RESTORE":
-		return BACnetBackupState_PREPARING_FOR_RESTORE
+		return BACnetBackupState_PREPARING_FOR_RESTORE, true
 	case "PERFORMING_A_BACKUP":
-		return BACnetBackupState_PERFORMING_A_BACKUP
+		return BACnetBackupState_PERFORMING_A_BACKUP, true
 	case "PERFORMING_A_RESTORE":
-		return BACnetBackupState_PERFORMING_A_RESTORE
+		return BACnetBackupState_PERFORMING_A_RESTORE, true
 	case "BACKUP_FAILURE":
-		return BACnetBackupState_BACKUP_FAILURE
+		return BACnetBackupState_BACKUP_FAILURE, true
 	case "RESTORE_FAILURE":
-		return BACnetBackupState_RESTORE_FAILURE
+		return BACnetBackupState_RESTORE_FAILURE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetBackupStateKnows(value uint8) bool {
@@ -125,19 +125,37 @@ func (m BACnetBackupState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetBackupStateParse(readBuffer utils.ReadBuffer) (BACnetBackupState, error) {
+func BACnetBackupStateParse(theBytes []byte) (BACnetBackupState, error) {
+	return BACnetBackupStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetBackupStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetBackupState, error) {
 	val, err := readBuffer.ReadUint8("BACnetBackupState", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetBackupState")
 	}
-	return BACnetBackupStateByValue(val), nil
+	if enum, ok := BACnetBackupStateByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetBackupState(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetBackupState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetBackupState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetBackupState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetBackupState) name() string {
+func (e BACnetBackupState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetBackupState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetBackupState) PLC4XEnumName() string {
 	switch e {
 	case BACnetBackupState_IDLE:
 		return "IDLE"
@@ -158,5 +176,5 @@ func (e BACnetBackupState) name() string {
 }
 
 func (e BACnetBackupState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

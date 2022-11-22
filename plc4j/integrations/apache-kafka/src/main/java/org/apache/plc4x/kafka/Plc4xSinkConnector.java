@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -61,10 +61,10 @@ public class Plc4xSinkConnector extends SinkConnector {
 
             StringBuilder query = new StringBuilder();
 
-            for (Field field : sink.getFields()) {
-                String fieldName = field.getName();
-                String fieldAddress = field.getAddress();
-                query.append("|").append(fieldName).append("#").append(fieldAddress);
+            for (Tag tag : sink.getTags()) {
+                String tagName = tag.getName();
+                String tagAddress = tag.getAddress();
+                query.append("|").append(tagName).append("#").append(tagAddress);
             }
 
             // Create a new task configuration.

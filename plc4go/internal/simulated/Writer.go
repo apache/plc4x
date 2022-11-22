@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,11 +20,13 @@
 package simulated
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	model2 "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"context"
 	"strconv"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	model2 "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type Writer struct {
@@ -41,7 +43,8 @@ func NewWriter(device *Device, options map[string][]string, tracer *spi.Tracer) 
 	}
 }
 
-func (w Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+func (w Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+	// TODO: handle context
 	ch := make(chan model.PlcWriteRequestResult)
 	go func() {
 		var txId string
@@ -60,15 +63,15 @@ func (w Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 
 		// Process the request
 		responseCodes := map[string]model.PlcResponseCode{}
-		for _, fieldName := range writeRequest.GetFieldNames() {
-			field := writeRequest.GetField(fieldName)
-			simulatedField, ok := field.(SimulatedField)
+		for _, tagName := range writeRequest.GetTagNames() {
+			tag := writeRequest.GetTag(tagName)
+			simulatedTagVar, ok := tag.(simulatedTag)
 			if !ok {
-				responseCodes[fieldName] = model.PlcResponseCode_INVALID_ADDRESS
+				responseCodes[tagName] = model.PlcResponseCode_INVALID_ADDRESS
 			} else {
-				plcValue := writeRequest.GetValue(fieldName)
-				w.device.Set(simulatedField, &plcValue)
-				responseCodes[fieldName] = model.PlcResponseCode_OK
+				plcValue := writeRequest.GetValue(tagName)
+				w.device.Set(simulatedTagVar, &plcValue)
+				responseCodes[tagName] = model.PlcResponseCode_OK
 			}
 		}
 

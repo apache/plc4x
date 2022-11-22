@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type ModbusErrorCode uint8
 
 type IModbusErrorCode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -64,56 +64,56 @@ func init() {
 	}
 }
 
-func ModbusErrorCodeByValue(value uint8) ModbusErrorCode {
+func ModbusErrorCodeByValue(value uint8) (enum ModbusErrorCode, ok bool) {
 	switch value {
 	case 1:
-		return ModbusErrorCode_ILLEGAL_FUNCTION
+		return ModbusErrorCode_ILLEGAL_FUNCTION, true
 	case 10:
-		return ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE
+		return ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE, true
 	case 11:
-		return ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND
+		return ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND, true
 	case 2:
-		return ModbusErrorCode_ILLEGAL_DATA_ADDRESS
+		return ModbusErrorCode_ILLEGAL_DATA_ADDRESS, true
 	case 3:
-		return ModbusErrorCode_ILLEGAL_DATA_VALUE
+		return ModbusErrorCode_ILLEGAL_DATA_VALUE, true
 	case 4:
-		return ModbusErrorCode_SLAVE_DEVICE_FAILURE
+		return ModbusErrorCode_SLAVE_DEVICE_FAILURE, true
 	case 5:
-		return ModbusErrorCode_ACKNOWLEDGE
+		return ModbusErrorCode_ACKNOWLEDGE, true
 	case 6:
-		return ModbusErrorCode_SLAVE_DEVICE_BUSY
+		return ModbusErrorCode_SLAVE_DEVICE_BUSY, true
 	case 7:
-		return ModbusErrorCode_NEGATIVE_ACKNOWLEDGE
+		return ModbusErrorCode_NEGATIVE_ACKNOWLEDGE, true
 	case 8:
-		return ModbusErrorCode_MEMORY_PARITY_ERROR
+		return ModbusErrorCode_MEMORY_PARITY_ERROR, true
 	}
-	return 0
+	return 0, false
 }
 
-func ModbusErrorCodeByName(value string) ModbusErrorCode {
+func ModbusErrorCodeByName(value string) (enum ModbusErrorCode, ok bool) {
 	switch value {
 	case "ILLEGAL_FUNCTION":
-		return ModbusErrorCode_ILLEGAL_FUNCTION
+		return ModbusErrorCode_ILLEGAL_FUNCTION, true
 	case "GATEWAY_PATH_UNAVAILABLE":
-		return ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE
+		return ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE, true
 	case "GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND":
-		return ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND
+		return ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND, true
 	case "ILLEGAL_DATA_ADDRESS":
-		return ModbusErrorCode_ILLEGAL_DATA_ADDRESS
+		return ModbusErrorCode_ILLEGAL_DATA_ADDRESS, true
 	case "ILLEGAL_DATA_VALUE":
-		return ModbusErrorCode_ILLEGAL_DATA_VALUE
+		return ModbusErrorCode_ILLEGAL_DATA_VALUE, true
 	case "SLAVE_DEVICE_FAILURE":
-		return ModbusErrorCode_SLAVE_DEVICE_FAILURE
+		return ModbusErrorCode_SLAVE_DEVICE_FAILURE, true
 	case "ACKNOWLEDGE":
-		return ModbusErrorCode_ACKNOWLEDGE
+		return ModbusErrorCode_ACKNOWLEDGE, true
 	case "SLAVE_DEVICE_BUSY":
-		return ModbusErrorCode_SLAVE_DEVICE_BUSY
+		return ModbusErrorCode_SLAVE_DEVICE_BUSY, true
 	case "NEGATIVE_ACKNOWLEDGE":
-		return ModbusErrorCode_NEGATIVE_ACKNOWLEDGE
+		return ModbusErrorCode_NEGATIVE_ACKNOWLEDGE, true
 	case "MEMORY_PARITY_ERROR":
-		return ModbusErrorCode_MEMORY_PARITY_ERROR
+		return ModbusErrorCode_MEMORY_PARITY_ERROR, true
 	}
-	return 0
+	return 0, false
 }
 
 func ModbusErrorCodeKnows(value uint8) bool {
@@ -143,19 +143,37 @@ func (m ModbusErrorCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusErrorCodeParse(readBuffer utils.ReadBuffer) (ModbusErrorCode, error) {
+func ModbusErrorCodeParse(theBytes []byte) (ModbusErrorCode, error) {
+	return ModbusErrorCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ModbusErrorCodeParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusErrorCode, error) {
 	val, err := readBuffer.ReadUint8("ModbusErrorCode", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ModbusErrorCode")
 	}
-	return ModbusErrorCodeByValue(val), nil
+	if enum, ok := ModbusErrorCodeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return ModbusErrorCode(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e ModbusErrorCode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("ModbusErrorCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e ModbusErrorCode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e ModbusErrorCode) name() string {
+func (e ModbusErrorCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("ModbusErrorCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ModbusErrorCode) PLC4XEnumName() string {
 	switch e {
 	case ModbusErrorCode_ILLEGAL_FUNCTION:
 		return "ILLEGAL_FUNCTION"
@@ -182,5 +200,5 @@ func (e ModbusErrorCode) name() string {
 }
 
 func (e ModbusErrorCode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

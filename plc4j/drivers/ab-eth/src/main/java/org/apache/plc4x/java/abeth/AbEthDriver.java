@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,13 +20,12 @@ package org.apache.plc4x.java.abeth;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.abeth.configuration.AbEthConfiguration;
-import org.apache.plc4x.java.abeth.field.AbEthField;
-import org.apache.plc4x.java.abeth.field.AbEthFieldHandler;
+import org.apache.plc4x.java.abeth.tag.AbEthTag;
+import org.apache.plc4x.java.abeth.tag.AbEthTagHandler;
 import org.apache.plc4x.java.abeth.protocol.AbEthProtocolLogic;
 import org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationPacket;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
@@ -60,13 +59,13 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
     }
 
     @Override
-    protected AbEthFieldHandler getFieldHandler() {
-        return new AbEthFieldHandler();
+    protected AbEthTagHandler getTagHandler() {
+        return new AbEthTagHandler();
     }
 
     @Override
-    protected PlcValueHandler getValueHandler() {
-        return new IEC61131ValueHandler();
+    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
+        return new PlcValueHandler();
     }
 
     /**
@@ -101,8 +100,8 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
     }
 
     @Override
-    public PlcField prepareField(String query) {
-        return AbEthField.of(query);
+    public PlcTag prepareTag(String tagAddress) {
+        return AbEthTag.of(tagAddress);
     }
 
 }

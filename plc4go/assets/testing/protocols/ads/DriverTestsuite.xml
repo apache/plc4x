@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -54,12 +54,12 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+          ®<tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz</name>
               <address>00004040/00000008:BOOL</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send Ads Read Request">
@@ -93,32 +93,24 @@
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
-              <state>
-                <State>
-                  <initCommand dataType="bit" bitLength="1">false</initCommand>
-                  <updCommand dataType="bit" bitLength="1">false</updCommand>
-                  <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-                  <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-                  <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-                  <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-                  <noReturn dataType="bit" bitLength="1">false</noReturn>
-                  <response dataType="bit" bitLength="1">false</response>
-                  <broadcast dataType="bit" bitLength="1">false</broadcast>
-                  <reserved dataType="int" bitLength="7">0</reserved>
-                </State>
-              </state>
+              <initCommand dataType="bit" bitLength="1">false</initCommand>
+              <updCommand dataType="bit" bitLength="1">false</updCommand>
+              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+              <noReturn dataType="bit" bitLength="1">false</noReturn>
+              <response dataType="bit" bitLength="1">false</response>
+              <broadcast dataType="bit" bitLength="1">false</broadcast>
+              <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">12</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
-              <data>
-                <AdsData>
-                  <AdsReadRequest>
-                    <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
-                    <indexOffset dataType="uint" bitLength="32">8</indexOffset>
-                    <length dataType="uint" bitLength="32">1</length>
-                  </AdsReadRequest>
-                </AdsData>
-              </data>
+              <AdsReadRequest>
+                <indexGroup dataType="uint" bitLength="32">61455</indexGroup>
+                <indexOffset dataType="uint" bitLength="32">0</indexOffset>
+                <length dataType="uint" bitLength="32">24</length>
+              </AdsReadRequest>
             </AmsPacket>
           </userdata>
         </AmsTCPPacket>
@@ -154,20 +146,16 @@
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
-              <state>
-                <State>
-                  <initCommand dataType="bit" bitLength="1">false</initCommand>
-                  <updCommand dataType="bit" bitLength="1">false</updCommand>
-                  <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-                  <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-                  <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-                  <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-                  <noReturn dataType="bit" bitLength="1">false</noReturn>
-                  <response dataType="bit" bitLength="1">true</response>
-                  <broadcast dataType="bit" bitLength="1">false</broadcast>
-                  <reserved dataType="int" bitLength="7">0</reserved>
-                </State>
-              </state>
+              <initCommand dataType="bit" bitLength="1">false</initCommand>
+              <updCommand dataType="bit" bitLength="1">false</updCommand>
+              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+              <noReturn dataType="bit" bitLength="1">false</noReturn>
+              <response dataType="bit" bitLength="1">true</response>
+              <broadcast dataType="bit" bitLength="1">false</broadcast>
+              <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">9</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
@@ -189,7 +177,7 @@
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <hurz>
                 <DirectAdsField>
                   <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
@@ -198,7 +186,7 @@
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </DirectAdsField>
               </hurz>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <hurz>
@@ -223,22 +211,22 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>00004040/00000008:BOOL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz2</name>
               <address>00004040/00000012:BOOL</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send Ads Read Request">
         <AmsTCPPacket>
           <reserved dataType="uint" bitLength="16">0</reserved>
-          <length dataType="uint" bitLength="32">72</length>
+          <length dataType="uint" bitLength="32">44</length>
           <userdata>
             <AmsPacket>
               <targetAmsNetId>
@@ -264,52 +252,26 @@
               </sourceAmsNetId>
               <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
               <commandId>
-                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
+                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
-              <state>
-                <State>
-                  <initCommand dataType="bit" bitLength="1">false</initCommand>
-                  <updCommand dataType="bit" bitLength="1">false</updCommand>
-                  <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-                  <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-                  <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-                  <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-                  <noReturn dataType="bit" bitLength="1">false</noReturn>
-                  <response dataType="bit" bitLength="1">false</response>
-                  <broadcast dataType="bit" bitLength="1">false</broadcast>
-                  <reserved dataType="int" bitLength="7">0</reserved>
-                </State>
-              </state>
-              <length dataType="uint" bitLength="32">40</length>
+              <initCommand dataType="bit" bitLength="1">false</initCommand>
+              <updCommand dataType="bit" bitLength="1">false</updCommand>
+              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+              <noReturn dataType="bit" bitLength="1">false</noReturn>
+              <response dataType="bit" bitLength="1">false</response>
+              <broadcast dataType="bit" bitLength="1">false</broadcast>
+              <reserved dataType="int" bitLength="7">0</reserved>
+              <length dataType="uint" bitLength="32">12</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
-              <data>
-                <AdsData>
-                  <AdsReadWriteRequest>
-                    <indexGroup dataType="uint" bitLength="32">61568</indexGroup>
-                    <indexOffset dataType="uint" bitLength="32">2</indexOffset>
-                    <readLength dataType="uint" bitLength="32">10</readLength>
-                    <writeLength dataType="uint" bitLength="32">24</writeLength>
-                    <items isList="true">
-                      <AdsMultiRequestItem>
-                        <AdsMultiRequestItemRead>
-                          <itemIndexGroup dataType="uint" bitLength="32">4040</itemIndexGroup>
-                          <itemIndexOffset dataType="uint" bitLength="32">8</itemIndexOffset>
-                          <itemReadLength dataType="uint" bitLength="32">1</itemReadLength>
-                        </AdsMultiRequestItemRead>
-                      </AdsMultiRequestItem>
-                      <AdsMultiRequestItem>
-                        <AdsMultiRequestItemRead>
-                          <itemIndexGroup dataType="uint" bitLength="32">4040</itemIndexGroup>
-                          <itemIndexOffset dataType="uint" bitLength="32">12</itemIndexOffset>
-                          <itemReadLength dataType="uint" bitLength="32">1</itemReadLength>
-                        </AdsMultiRequestItemRead>
-                      </AdsMultiRequestItem>
-                    </items>
-                    <data dataType="byte" bitLength="0">0x</data>
-                  </AdsReadWriteRequest>
-                </AdsData>
-              </data>
+              <AdsReadRequest>
+                <indexGroup dataType="uint" bitLength="32">61455</indexGroup>
+                <indexOffset dataType="uint" bitLength="32">0</indexOffset>
+                <length dataType="uint" bitLength="32">24</length>
+              </AdsReadRequest>
             </AmsPacket>
           </userdata>
         </AmsTCPPacket>
@@ -346,20 +308,16 @@
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
               </commandId>
-              <state>
-                <State>
-                  <initCommand dataType="bit" bitLength="1">false</initCommand>
-                  <updCommand dataType="bit" bitLength="1">false</updCommand>
-                  <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-                  <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-                  <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-                  <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-                  <noReturn dataType="bit" bitLength="1">false</noReturn>
-                  <response dataType="bit" bitLength="1">true</response>
-                  <broadcast dataType="bit" bitLength="1">false</broadcast>
-                  <reserved dataType="int" bitLength="7">0</reserved>
-                </State>
-              </state>
+              <initCommand dataType="bit" bitLength="1">false</initCommand>
+              <updCommand dataType="bit" bitLength="1">false</updCommand>
+              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+              <noReturn dataType="bit" bitLength="1">false</noReturn>
+              <response dataType="bit" bitLength="1">true</response>
+              <broadcast dataType="bit" bitLength="1">false</broadcast>
+              <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">18</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
@@ -381,7 +339,7 @@
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <hurz1>
                 <DirectAdsField>
                   <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
@@ -398,7 +356,7 @@
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </DirectAdsField>
               </hurz2>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <hurz1>
@@ -430,18 +388,18 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>main.f_trigDateiGelesen.M:BOOL</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send Resolve Symbolic Address Request">
         <AmsTCPPacket>
           <reserved dataType="uint" bitLength="16">0</reserved>
-          <length dataType="uint" bitLength="32">74</length>
+          <length dataType="uint" bitLength="32">44</length>
           <userdata>
             <AmsPacket>
               <targetAmsNetId>
@@ -467,38 +425,26 @@
               </sourceAmsNetId>
               <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
               <commandId>
-                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
+                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
-              <state>
-                <State>
-                  <initCommand dataType="bit" bitLength="1">false</initCommand>
-                  <updCommand dataType="bit" bitLength="1">false</updCommand>
-                  <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-                  <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-                  <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-                  <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-                  <noReturn dataType="bit" bitLength="1">false</noReturn>
-                  <response dataType="bit" bitLength="1">false</response>
-                  <broadcast dataType="bit" bitLength="1">false</broadcast>
-                  <reserved dataType="int" bitLength="7">0</reserved>
-                </State>
-              </state>
-              <length dataType="uint" bitLength="32">42</length>
+              <initCommand dataType="bit" bitLength="1">false</initCommand>
+              <updCommand dataType="bit" bitLength="1">false</updCommand>
+              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+              <noReturn dataType="bit" bitLength="1">false</noReturn>
+              <response dataType="bit" bitLength="1">false</response>
+              <broadcast dataType="bit" bitLength="1">false</broadcast>
+              <reserved dataType="int" bitLength="7">0</reserved>
+              <length dataType="uint" bitLength="32">12</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
-              <data>
-                <AdsData>
-                  <AdsReadWriteRequest>
-                    <indexGroup dataType="uint" bitLength="32">61443</indexGroup>
-                    <indexOffset dataType="uint" bitLength="32">0</indexOffset>
-                    <readLength dataType="uint" bitLength="32">4</readLength>
-                    <writeLength dataType="uint" bitLength="32">26</writeLength>
-                    <items isList="true">
-                    </items>
-                    <data dataType="byte" bitLength="208">0x6d61696e2e665f74726967446174656947656c6573656e2e4d00</data>
-                  </AdsReadWriteRequest>
-                </AdsData>
-              </data>
+              <AdsReadRequest>
+                <indexGroup dataType="uint" bitLength="32">61455</indexGroup>
+                <indexOffset dataType="uint" bitLength="32">0</indexOffset>
+                <length dataType="uint" bitLength="32">24</length>
+              </AdsReadRequest>
             </AmsPacket>
           </userdata>
         </AmsTCPPacket>
@@ -534,20 +480,16 @@
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
               </commandId>
-              <state>
-                <State>
-                  <initCommand dataType="bit" bitLength="1">false</initCommand>
-                  <updCommand dataType="bit" bitLength="1">false</updCommand>
-                  <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-                  <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-                  <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-                  <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-                  <noReturn dataType="bit" bitLength="1">false</noReturn>
-                  <response dataType="bit" bitLength="1">true</response>
-                  <broadcast dataType="bit" bitLength="1">false</broadcast>
-                  <reserved dataType="int" bitLength="7">0</reserved>
-                </State>
-              </state>
+              <initCommand dataType="bit" bitLength="1">false</initCommand>
+              <updCommand dataType="bit" bitLength="1">false</updCommand>
+              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+              <noReturn dataType="bit" bitLength="1">false</noReturn>
+              <response dataType="bit" bitLength="1">true</response>
+              <broadcast dataType="bit" bitLength="1">false</broadcast>
+              <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">12</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
@@ -597,20 +539,16 @@
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
-              <state>
-                <State>
-                  <initCommand dataType="bit" bitLength="1">false</initCommand>
-                  <updCommand dataType="bit" bitLength="1">false</updCommand>
-                  <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-                  <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-                  <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-                  <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-                  <noReturn dataType="bit" bitLength="1">false</noReturn>
-                  <response dataType="bit" bitLength="1">false</response>
-                  <broadcast dataType="bit" bitLength="1">false</broadcast>
-                  <reserved dataType="int" bitLength="7">0</reserved>
-                </State>
-              </state>
+              <initCommand dataType="bit" bitLength="1">false</initCommand>
+              <updCommand dataType="bit" bitLength="1">false</updCommand>
+              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+              <noReturn dataType="bit" bitLength="1">false</noReturn>
+              <response dataType="bit" bitLength="1">false</response>
+              <broadcast dataType="bit" bitLength="1">false</broadcast>
+              <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">12</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">2</invokeId>
@@ -658,20 +596,16 @@
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
-              <state>
-                <State>
-                  <initCommand dataType="bit" bitLength="1">false</initCommand>
-                  <updCommand dataType="bit" bitLength="1">false</updCommand>
-                  <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-                  <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-                  <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-                  <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-                  <noReturn dataType="bit" bitLength="1">false</noReturn>
-                  <response dataType="bit" bitLength="1">true</response>
-                  <broadcast dataType="bit" bitLength="1">false</broadcast>
-                  <reserved dataType="int" bitLength="7">0</reserved>
-                </State>
-              </state>
+              <initCommand dataType="bit" bitLength="1">false</initCommand>
+              <updCommand dataType="bit" bitLength="1">false</updCommand>
+              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+              <noReturn dataType="bit" bitLength="1">false</noReturn>
+              <response dataType="bit" bitLength="1">true</response>
+              <broadcast dataType="bit" bitLength="1">false</broadcast>
+              <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">18</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">2</invokeId>
@@ -693,7 +627,7 @@
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <hurz1>
                 <SymbolicAdsField>
                   <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
@@ -701,7 +635,7 @@
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </SymbolicAdsField>
               </hurz1>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <hurz1>
@@ -726,18 +660,18 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>main.f_trigDateiGelesen.M:BOOL</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send Resolve Symbolic Address Request">
         <AmsTCPPacket>
           <reserved dataType="uint" bitLength="16">0</reserved>
-          <length dataType="uint" bitLength="32">74</length>
+          <length dataType="uint" bitLength="32">44</length>
           <userdata>
             <AmsPacket>
               <targetAmsNetId>
@@ -763,38 +697,26 @@
               </sourceAmsNetId>
               <sourceAmsPort dataType="uint" bitLength="16">48898</sourceAmsPort>
               <commandId>
-                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
+                <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
-              <state>
-                <State>
-                  <initCommand dataType="bit" bitLength="1">false</initCommand>
-                  <updCommand dataType="bit" bitLength="1">false</updCommand>
-                  <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-                  <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-                  <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-                  <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-                  <noReturn dataType="bit" bitLength="1">false</noReturn>
-                  <response dataType="bit" bitLength="1">false</response>
-                  <broadcast dataType="bit" bitLength="1">false</broadcast>
-                  <reserved dataType="int" bitLength="7">0</reserved>
-                </State>
-              </state>
-              <length dataType="uint" bitLength="32">42</length>
+              <initCommand dataType="bit" bitLength="1">false</initCommand>
+              <updCommand dataType="bit" bitLength="1">false</updCommand>
+              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+              <noReturn dataType="bit" bitLength="1">false</noReturn>
+              <response dataType="bit" bitLength="1">false</response>
+              <broadcast dataType="bit" bitLength="1">false</broadcast>
+              <reserved dataType="int" bitLength="7">0</reserved>
+              <length dataType="uint" bitLength="32">12</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
-              <data>
-                <AdsData>
-                  <AdsReadWriteRequest>
-                    <indexGroup dataType="uint" bitLength="32">61443</indexGroup>
-                    <indexOffset dataType="uint" bitLength="32">0</indexOffset>
-                    <readLength dataType="uint" bitLength="32">4</readLength>
-                    <writeLength dataType="uint" bitLength="32">26</writeLength>
-                    <items isList="true">
-                    </items>
-                    <data dataType="byte" bitLength="208">0x6d61696e2e665f74726967446174656947656c6573656e2e4d00</data>
-                  </AdsReadWriteRequest>
-                </AdsData>
-              </data>
+              <AdsReadRequest>
+                <indexGroup dataType="uint" bitLength="32">61455</indexGroup>
+                <indexOffset dataType="uint" bitLength="32">0</indexOffset>
+                <length dataType="uint" bitLength="32">24</length>
+              </AdsReadRequest>
             </AmsPacket>
           </userdata>
         </AmsTCPPacket>
@@ -830,20 +752,16 @@
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
               </commandId>
-              <state>
-                <State>
-                  <initCommand dataType="bit" bitLength="1">false</initCommand>
-                  <updCommand dataType="bit" bitLength="1">false</updCommand>
-                  <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-                  <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-                  <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-                  <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-                  <noReturn dataType="bit" bitLength="1">false</noReturn>
-                  <response dataType="bit" bitLength="1">true</response>
-                  <broadcast dataType="bit" bitLength="1">false</broadcast>
-                  <reserved dataType="int" bitLength="7">0</reserved>
-                </State>
-              </state>
+              <initCommand dataType="bit" bitLength="1">false</initCommand>
+              <updCommand dataType="bit" bitLength="1">false</updCommand>
+              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+              <noReturn dataType="bit" bitLength="1">false</noReturn>
+              <response dataType="bit" bitLength="1">true</response>
+              <broadcast dataType="bit" bitLength="1">false</broadcast>
+              <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">12</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">1</invokeId>
@@ -893,20 +811,16 @@
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
-              <state>
-                <State>
-                  <initCommand dataType="bit" bitLength="1">false</initCommand>
-                  <updCommand dataType="bit" bitLength="1">false</updCommand>
-                  <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-                  <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-                  <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-                  <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-                  <noReturn dataType="bit" bitLength="1">false</noReturn>
-                  <response dataType="bit" bitLength="1">false</response>
-                  <broadcast dataType="bit" bitLength="1">false</broadcast>
-                  <reserved dataType="int" bitLength="7">0</reserved>
-                </State>
-              </state>
+              <initCommand dataType="bit" bitLength="1">false</initCommand>
+              <updCommand dataType="bit" bitLength="1">false</updCommand>
+              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+              <noReturn dataType="bit" bitLength="1">false</noReturn>
+              <response dataType="bit" bitLength="1">false</response>
+              <broadcast dataType="bit" bitLength="1">false</broadcast>
+              <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">12</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">2</invokeId>
@@ -955,20 +869,16 @@
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
-              <state>
-                <State>
-                  <initCommand dataType="bit" bitLength="1">false</initCommand>
-                  <updCommand dataType="bit" bitLength="1">false</updCommand>
-                  <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-                  <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-                  <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-                  <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-                  <noReturn dataType="bit" bitLength="1">false</noReturn>
-                  <response dataType="bit" bitLength="1">true</response>
-                  <broadcast dataType="bit" bitLength="1">false</broadcast>
-                  <reserved dataType="int" bitLength="7">0</reserved>
-                </State>
-              </state>
+              <initCommand dataType="bit" bitLength="1">false</initCommand>
+              <updCommand dataType="bit" bitLength="1">false</updCommand>
+              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+              <noReturn dataType="bit" bitLength="1">false</noReturn>
+              <response dataType="bit" bitLength="1">true</response>
+              <broadcast dataType="bit" bitLength="1">false</broadcast>
+              <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">18</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">2</invokeId>
@@ -991,7 +901,7 @@
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <hurz1>
                 <SymbolicAdsField>
                   <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
@@ -999,7 +909,7 @@
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </SymbolicAdsField>
               </hurz1>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <hurz1>
@@ -1014,12 +924,12 @@
       <delay>500</delay>
       <api-request name="Receive a second Read Request for the same resource from application">
         <TestReadRequest>
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>main.f_trigDateiGelesen.M:BOOL</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send Ads Read Request directly using the preciously resolved address">
@@ -1053,20 +963,16 @@
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
-              <state>
-                <State>
-                  <initCommand dataType="bit" bitLength="1">false</initCommand>
-                  <updCommand dataType="bit" bitLength="1">false</updCommand>
-                  <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-                  <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-                  <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-                  <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-                  <noReturn dataType="bit" bitLength="1">false</noReturn>
-                  <response dataType="bit" bitLength="1">false</response>
-                  <broadcast dataType="bit" bitLength="1">false</broadcast>
-                  <reserved dataType="int" bitLength="7">0</reserved>
-                </State>
-              </state>
+              <initCommand dataType="bit" bitLength="1">false</initCommand>
+              <updCommand dataType="bit" bitLength="1">false</updCommand>
+              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+              <noReturn dataType="bit" bitLength="1">false</noReturn>
+              <response dataType="bit" bitLength="1">false</response>
+              <broadcast dataType="bit" bitLength="1">false</broadcast>
+              <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">12</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">3</invokeId>
@@ -1114,20 +1020,16 @@
               <commandId>
                 <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
               </commandId>
-              <state>
-                <State>
-                  <initCommand dataType="bit" bitLength="1">false</initCommand>
-                  <updCommand dataType="bit" bitLength="1">false</updCommand>
-                  <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
-                  <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
-                  <systemCommand dataType="bit" bitLength="1">false</systemCommand>
-                  <adsCommand dataType="bit" bitLength="1">true</adsCommand>
-                  <noReturn dataType="bit" bitLength="1">false</noReturn>
-                  <response dataType="bit" bitLength="1">true</response>
-                  <broadcast dataType="bit" bitLength="1">false</broadcast>
-                  <reserved dataType="int" bitLength="7">0</reserved>
-                </State>
-              </state>
+              <initCommand dataType="bit" bitLength="1">false</initCommand>
+              <updCommand dataType="bit" bitLength="1">false</updCommand>
+              <timestampAdded dataType="bit" bitLength="1">false</timestampAdded>
+              <highPriorityCommand dataType="bit" bitLength="1">false</highPriorityCommand>
+              <systemCommand dataType="bit" bitLength="1">false</systemCommand>
+              <adsCommand dataType="bit" bitLength="1">true</adsCommand>
+              <noReturn dataType="bit" bitLength="1">false</noReturn>
+              <response dataType="bit" bitLength="1">true</response>
+              <broadcast dataType="bit" bitLength="1">false</broadcast>
+              <reserved dataType="int" bitLength="7">0</reserved>
               <length dataType="uint" bitLength="32">18</length>
               <errorCode dataType="uint" bitLength="32">0</errorCode>
               <invokeId dataType="uint" bitLength="32">3</invokeId>
@@ -1149,7 +1051,7 @@
       <api-response name="Report Read Response to application again">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <hurz1>
                 <SymbolicAdsField>
                   <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
@@ -1157,7 +1059,7 @@
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </SymbolicAdsField>
               </hurz1>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <hurz1>

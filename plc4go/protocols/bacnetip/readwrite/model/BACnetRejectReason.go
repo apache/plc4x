@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetRejectReason uint8
 
 type IBACnetRejectReason interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -66,60 +66,60 @@ func init() {
 	}
 }
 
-func BACnetRejectReasonByValue(value uint8) BACnetRejectReason {
+func BACnetRejectReasonByValue(value uint8) (enum BACnetRejectReason, ok bool) {
 	switch value {
 	case 0x0:
-		return BACnetRejectReason_OTHER
+		return BACnetRejectReason_OTHER, true
 	case 0x1:
-		return BACnetRejectReason_BUFFER_OVERFLOW
+		return BACnetRejectReason_BUFFER_OVERFLOW, true
 	case 0x2:
-		return BACnetRejectReason_INCONSISTENT_PARAMETERS
+		return BACnetRejectReason_INCONSISTENT_PARAMETERS, true
 	case 0x3:
-		return BACnetRejectReason_INVALID_PARAMETER_DATA_TYPE
+		return BACnetRejectReason_INVALID_PARAMETER_DATA_TYPE, true
 	case 0x4:
-		return BACnetRejectReason_INVALID_TAG
+		return BACnetRejectReason_INVALID_TAG, true
 	case 0x5:
-		return BACnetRejectReason_MISSING_REQUIRED_PARAMETER
+		return BACnetRejectReason_MISSING_REQUIRED_PARAMETER, true
 	case 0x6:
-		return BACnetRejectReason_PARAMETER_OUT_OF_RANGE
+		return BACnetRejectReason_PARAMETER_OUT_OF_RANGE, true
 	case 0x7:
-		return BACnetRejectReason_TOO_MANY_ARGUMENTS
+		return BACnetRejectReason_TOO_MANY_ARGUMENTS, true
 	case 0x8:
-		return BACnetRejectReason_UNDEFINED_ENUMERATION
+		return BACnetRejectReason_UNDEFINED_ENUMERATION, true
 	case 0x9:
-		return BACnetRejectReason_UNRECOGNIZED_SERVICE
+		return BACnetRejectReason_UNRECOGNIZED_SERVICE, true
 	case 0xFF:
-		return BACnetRejectReason_VENDOR_PROPRIETARY_VALUE
+		return BACnetRejectReason_VENDOR_PROPRIETARY_VALUE, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetRejectReasonByName(value string) BACnetRejectReason {
+func BACnetRejectReasonByName(value string) (enum BACnetRejectReason, ok bool) {
 	switch value {
 	case "OTHER":
-		return BACnetRejectReason_OTHER
+		return BACnetRejectReason_OTHER, true
 	case "BUFFER_OVERFLOW":
-		return BACnetRejectReason_BUFFER_OVERFLOW
+		return BACnetRejectReason_BUFFER_OVERFLOW, true
 	case "INCONSISTENT_PARAMETERS":
-		return BACnetRejectReason_INCONSISTENT_PARAMETERS
+		return BACnetRejectReason_INCONSISTENT_PARAMETERS, true
 	case "INVALID_PARAMETER_DATA_TYPE":
-		return BACnetRejectReason_INVALID_PARAMETER_DATA_TYPE
+		return BACnetRejectReason_INVALID_PARAMETER_DATA_TYPE, true
 	case "INVALID_TAG":
-		return BACnetRejectReason_INVALID_TAG
+		return BACnetRejectReason_INVALID_TAG, true
 	case "MISSING_REQUIRED_PARAMETER":
-		return BACnetRejectReason_MISSING_REQUIRED_PARAMETER
+		return BACnetRejectReason_MISSING_REQUIRED_PARAMETER, true
 	case "PARAMETER_OUT_OF_RANGE":
-		return BACnetRejectReason_PARAMETER_OUT_OF_RANGE
+		return BACnetRejectReason_PARAMETER_OUT_OF_RANGE, true
 	case "TOO_MANY_ARGUMENTS":
-		return BACnetRejectReason_TOO_MANY_ARGUMENTS
+		return BACnetRejectReason_TOO_MANY_ARGUMENTS, true
 	case "UNDEFINED_ENUMERATION":
-		return BACnetRejectReason_UNDEFINED_ENUMERATION
+		return BACnetRejectReason_UNDEFINED_ENUMERATION, true
 	case "UNRECOGNIZED_SERVICE":
-		return BACnetRejectReason_UNRECOGNIZED_SERVICE
+		return BACnetRejectReason_UNRECOGNIZED_SERVICE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetRejectReason_VENDOR_PROPRIETARY_VALUE
+		return BACnetRejectReason_VENDOR_PROPRIETARY_VALUE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetRejectReasonKnows(value uint8) bool {
@@ -149,19 +149,37 @@ func (m BACnetRejectReason) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRejectReasonParse(readBuffer utils.ReadBuffer) (BACnetRejectReason, error) {
+func BACnetRejectReasonParse(theBytes []byte) (BACnetRejectReason, error) {
+	return BACnetRejectReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetRejectReasonParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRejectReason, error) {
 	val, err := readBuffer.ReadUint8("BACnetRejectReason", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetRejectReason")
 	}
-	return BACnetRejectReasonByValue(val), nil
+	if enum, ok := BACnetRejectReasonByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetRejectReason(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetRejectReason) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetRejectReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetRejectReason) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetRejectReason) name() string {
+func (e BACnetRejectReason) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetRejectReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetRejectReason) PLC4XEnumName() string {
 	switch e {
 	case BACnetRejectReason_OTHER:
 		return "OTHER"
@@ -190,5 +208,5 @@ func (e BACnetRejectReason) name() string {
 }
 
 func (e BACnetRejectReason) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

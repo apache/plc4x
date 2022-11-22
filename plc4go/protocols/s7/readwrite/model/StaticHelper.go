@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,8 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"time"
 )
 
@@ -130,7 +130,7 @@ func ParseS7String(io utils.ReadBuffer, stringLength int32, encoding string) (st
 	case "UTF-16":
 		multiplier = 16
 	}
-	return io.ReadString("", uint32(stringLength*multiplier))
+	return io.ReadString("", uint32(stringLength*multiplier), encoding)
 }
 
 func SerializeS7String(io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {

@@ -7,7 +7,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#    http://www.apache.org/licenses/LICENSE-2.0
+#    https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -46,17 +46,17 @@ jobs:
         run: brew install libpcap
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
           java-package: jdk
           java-version: ${{ matrix.java }}
 
       - name: Cache local Maven repository
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -65,7 +65,7 @@ jobs:
 
       - name: Set Platform options
         id: platform_opts
-        uses: actions/github-script@v5.0.0
+        uses: actions/github-script@v6.3.3
         env:
           OS: ${{ matrix.os }}
         with:
@@ -83,7 +83,7 @@ jobs:
 
       - name: Calculate platform suffix
         id: platform_suffix
-        uses: actions/github-script@v5.0.0
+        uses: actions/github-script@v6.3.3
         env:
           OS: ${{ matrix.os }}
         with:
@@ -97,7 +97,7 @@ jobs:
 
       - name: Set extra options
         id: extra_options
-        uses: actions/github-script@v5.0.0
+        uses: actions/github-script@v6.3.3
         env:
           FORCE_UPDATE: ${{ github.event.inputs.forceUpdates }}
         with:
@@ -109,5 +109,11 @@ jobs:
               core.setOutput('extra_options', ``)
             }
 
+      # Note: due to github has no concept of recovering from a fail even if we have our fallback below we append a second un-parallel run behind this to be sure that it works with all checks. Only if that fails too we are ok with a "red" (which should be yellow) cross indicating a problem
       - name: Run mvnw
-        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -T 1C -B -P'with-sandbox,with-c,with-go' ${{ steps.platform_opts.outputs.platform_opts }} install
+        run: |
+          ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -T 1C -B -P'with-sandbox,with-c,with-go,enable-all-checks' ${{ steps.platform_opts.outputs.platform_opts }} install || ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-sandbox,with-c,with-go,enable-all-checks' ${{ steps.platform_opts.outputs.platform_opts }} install
+
+      - name: Run mvnv unparallel
+        if: ${{ failure() }}
+        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-sandbox,with-c,with-go,skip-bacnet-regression-test' ${{ steps.platform_opts.outputs.platform_opts }} install

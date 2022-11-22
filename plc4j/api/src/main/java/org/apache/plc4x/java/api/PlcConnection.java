@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,14 +21,14 @@ package org.apache.plc4x.java.api;
 import org.apache.plc4x.java.api.exceptions.*;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 
 import java.util.concurrent.CompletableFuture;
 
 /**
  * Interface defining the most basic methods a PLC4X connection should support.
  * This generally handles the connection establishment itself and the parsing of
- * field address strings to the platform dependent PlcField instances.
+ * tag address strings to the platform dependent PlcTag instances.
  */
 public interface PlcConnection extends AutoCloseable {
 
@@ -52,12 +52,12 @@ public interface PlcConnection extends AutoCloseable {
     void close() throws Exception;
 
     /**
-     * Parse a fieldQuery for the given connection type.
+     * Parse a tagAddress for the given connection type.
      *
      * @throws PlcRuntimeException If the string cannot be parsed
      */
     @Deprecated
-    default PlcField prepareField(String fieldQuery) throws PlcInvalidFieldException {
+    default PlcTag parseTagAddress(String tagAddress) throws PlcInvalidTagException {
         throw new PlcRuntimeException("Parse method is not implemented for this connection / driver");
     }
 
@@ -101,8 +101,6 @@ public interface PlcConnection extends AutoCloseable {
      * @return browse request builder.
      * @throws PlcUnsupportedOperationException if the connection does not support browsing
      */
-    default PlcBrowseRequest.Builder browseRequestBuilder() {
-        throw new PlcNotImplementedException("Not implemented for this connection / driver");
-    }
+    PlcBrowseRequest.Builder browseRequestBuilder();
 
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,8 +30,8 @@ import (
 type MemoryArea uint8
 
 type IMemoryArea interface {
+	utils.Serializable
 	ShortName() string
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -116,52 +116,52 @@ func MemoryAreaFirstEnumForFieldShortName(value string) (MemoryArea, error) {
 	}
 	return 0, errors.Errorf("enum for %v describing ShortName not found", value)
 }
-func MemoryAreaByValue(value uint8) MemoryArea {
+func MemoryAreaByValue(value uint8) (enum MemoryArea, ok bool) {
 	switch value {
 	case 0x1C:
-		return MemoryArea_COUNTERS
+		return MemoryArea_COUNTERS, true
 	case 0x1D:
-		return MemoryArea_TIMERS
+		return MemoryArea_TIMERS, true
 	case 0x80:
-		return MemoryArea_DIRECT_PERIPHERAL_ACCESS
+		return MemoryArea_DIRECT_PERIPHERAL_ACCESS, true
 	case 0x81:
-		return MemoryArea_INPUTS
+		return MemoryArea_INPUTS, true
 	case 0x82:
-		return MemoryArea_OUTPUTS
+		return MemoryArea_OUTPUTS, true
 	case 0x83:
-		return MemoryArea_FLAGS_MARKERS
+		return MemoryArea_FLAGS_MARKERS, true
 	case 0x84:
-		return MemoryArea_DATA_BLOCKS
+		return MemoryArea_DATA_BLOCKS, true
 	case 0x85:
-		return MemoryArea_INSTANCE_DATA_BLOCKS
+		return MemoryArea_INSTANCE_DATA_BLOCKS, true
 	case 0x86:
-		return MemoryArea_LOCAL_DATA
+		return MemoryArea_LOCAL_DATA, true
 	}
-	return 0
+	return 0, false
 }
 
-func MemoryAreaByName(value string) MemoryArea {
+func MemoryAreaByName(value string) (enum MemoryArea, ok bool) {
 	switch value {
 	case "COUNTERS":
-		return MemoryArea_COUNTERS
+		return MemoryArea_COUNTERS, true
 	case "TIMERS":
-		return MemoryArea_TIMERS
+		return MemoryArea_TIMERS, true
 	case "DIRECT_PERIPHERAL_ACCESS":
-		return MemoryArea_DIRECT_PERIPHERAL_ACCESS
+		return MemoryArea_DIRECT_PERIPHERAL_ACCESS, true
 	case "INPUTS":
-		return MemoryArea_INPUTS
+		return MemoryArea_INPUTS, true
 	case "OUTPUTS":
-		return MemoryArea_OUTPUTS
+		return MemoryArea_OUTPUTS, true
 	case "FLAGS_MARKERS":
-		return MemoryArea_FLAGS_MARKERS
+		return MemoryArea_FLAGS_MARKERS, true
 	case "DATA_BLOCKS":
-		return MemoryArea_DATA_BLOCKS
+		return MemoryArea_DATA_BLOCKS, true
 	case "INSTANCE_DATA_BLOCKS":
-		return MemoryArea_INSTANCE_DATA_BLOCKS
+		return MemoryArea_INSTANCE_DATA_BLOCKS, true
 	case "LOCAL_DATA":
-		return MemoryArea_LOCAL_DATA
+		return MemoryArea_LOCAL_DATA, true
 	}
-	return 0
+	return 0, false
 }
 
 func MemoryAreaKnows(value uint8) bool {
@@ -191,19 +191,37 @@ func (m MemoryArea) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MemoryAreaParse(readBuffer utils.ReadBuffer) (MemoryArea, error) {
+func MemoryAreaParse(theBytes []byte) (MemoryArea, error) {
+	return MemoryAreaParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func MemoryAreaParseWithBuffer(readBuffer utils.ReadBuffer) (MemoryArea, error) {
 	val, err := readBuffer.ReadUint8("MemoryArea", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading MemoryArea")
 	}
-	return MemoryAreaByValue(val), nil
+	if enum, ok := MemoryAreaByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return MemoryArea(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e MemoryArea) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("MemoryArea", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e MemoryArea) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e MemoryArea) name() string {
+func (e MemoryArea) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("MemoryArea", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e MemoryArea) PLC4XEnumName() string {
 	switch e {
 	case MemoryArea_COUNTERS:
 		return "COUNTERS"
@@ -228,5 +246,5 @@ func (e MemoryArea) name() string {
 }
 
 func (e MemoryArea) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

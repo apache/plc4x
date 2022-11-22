@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority uint8
 
 type IBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -48,24 +48,24 @@ func init() {
 	}
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityByValue(value uint8) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority {
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityByValue(value uint8) (enum BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, ok bool) {
 	switch value {
 	case 0:
-		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL
+		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL, true
 	case 1:
-		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_URGENT
+		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_URGENT, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityByName(value string) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority {
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityByName(value string) (enum BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, ok bool) {
 	switch value {
 	case "NORMAL":
-		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL
+		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL, true
 	case "URGENT":
-		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_URGENT
+		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_URGENT, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityKnows(value uint8) bool {
@@ -95,19 +95,37 @@ func (m BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) GetLen
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, error) {
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityParse(theBytes []byte) (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, error) {
+	return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority")
 	}
-	return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityByValue(val), nil
+	if enum, ok := BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) name() string {
+func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) PLC4XEnumName() string {
 	switch e {
 	case BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL:
 		return "NORMAL"
@@ -118,5 +136,5 @@ func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) name()
 }
 
 func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/snksoft/crc"
 )
 
@@ -31,15 +31,13 @@ func init() {
 	table = crc.NewTable(&crc.Parameters{Width: 16, Polynomial: 0x8005, Init: 0x0000, ReflectIn: true, ReflectOut: true, FinalXor: 0x0000})
 }
 
-func CrcCheck(destinationAddress uint8, sourceAddress uint8, command *DF1Command) (uint16, error) {
+func CrcCheck(destinationAddress uint8, sourceAddress uint8, command DF1Command) (uint16, error) {
 	df1Crc := table.InitCrc()
 	df1Crc = table.UpdateCrc(df1Crc, []byte{destinationAddress, sourceAddress})
-	bufferByteBased := utils.NewWriteBufferByteBased()
-	err := command.Serialize(bufferByteBased)
+	bytes, err := command.Serialize()
 	if err != nil {
 		return 0, err
 	}
-	bytes := bufferByteBased.GetBytes()
 	df1Crc = table.UpdateCrc(df1Crc, bytes)
 	df1Crc = table.UpdateCrc(df1Crc, []byte{0x03})
 	return table.CRC16(df1Crc), nil

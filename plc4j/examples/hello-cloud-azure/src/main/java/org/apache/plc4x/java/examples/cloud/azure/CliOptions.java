@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -25,7 +25,7 @@ public class CliOptions {
     private static Options options;
 
     private final String plc4xConnectionString;
-    private final String plc4xFieldAddress;
+    private final String plc4xTagAddress;
     private final String iotHubConnectionString;
 
     public static CliOptions fromArgs(String[] args) {
@@ -42,9 +42,9 @@ public class CliOptions {
         options.addOption(
             Option.builder()
                 .type(String.class)
-                .longOpt("plc4x-field-address")
+                .longOpt("plc4x-tag-address")
                 .hasArg()
-                .desc("Field Address.")
+                .desc("Tag Address.")
                 .required()
                 .build());
         options.addOption(
@@ -62,10 +62,10 @@ public class CliOptions {
             commandLine = parser.parse(options, args);
 
             String plc4xConnectionString = commandLine.getOptionValue("plc4x-connection-string");
-            String plc4xFieldAddress = commandLine.getOptionValue("plc4x-field-address");
+            String plc4xTagAddress = commandLine.getOptionValue("plc4x-tag-address");
             String iotHubConnectionString = commandLine.getOptionValue("iot-hub-connection-string");
 
-            return new CliOptions(plc4xConnectionString, plc4xFieldAddress, iotHubConnectionString);
+            return new CliOptions(plc4xConnectionString, plc4xTagAddress, iotHubConnectionString);
         } catch (ParseException e) {
             System.err.println(e.getMessage());
             return null;
@@ -77,9 +77,9 @@ public class CliOptions {
         formatter.printHelp("S7PlcToAzureIoTHubSample", options);
     }
 
-    public CliOptions(String plc4xConnectionString, String plc4xFieldAddress, String iotHubConnectionString) {
+    public CliOptions(String plc4xConnectionString, String plc4xTagAddress, String iotHubConnectionString) {
         this.plc4xConnectionString = plc4xConnectionString;
-        this.plc4xFieldAddress = plc4xFieldAddress;
+        this.plc4xTagAddress = plc4xTagAddress;
         this.iotHubConnectionString = iotHubConnectionString;
     }
 
@@ -87,8 +87,8 @@ public class CliOptions {
         return plc4xConnectionString;
     }
 
-    public String getPlc4xFieldAddress() {
-        return plc4xFieldAddress;
+    public String getPlc4xTagAddress() {
+        return plc4xTagAddress;
     }
 
     protected String getIotHubConnectionString() {

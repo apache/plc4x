@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,20 +20,21 @@
 package simulated
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	_default "github.com/apache/plc4x/plc4go/internal/spi/default"
-	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"github.com/pkg/errors"
 	"strconv"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/pkg/errors"
 )
 
 type Connection struct {
 	device       *Device
-	fieldHandler spi.PlcFieldHandler
+	tagHandler   spi.PlcTagHandler
 	valueHandler spi.PlcValueHandler
 	options      map[string][]string
 	connected    bool
@@ -41,10 +42,10 @@ type Connection struct {
 	tracer       *spi.Tracer
 }
 
-func NewConnection(device *Device, fieldHandler spi.PlcFieldHandler, valueHandler spi.PlcValueHandler, options map[string][]string) *Connection {
+func NewConnection(device *Device, tagHandler spi.PlcTagHandler, valueHandler spi.PlcValueHandler, options map[string][]string) *Connection {
 	connection := &Connection{
 		device:       device,
-		fieldHandler: fieldHandler,
+		tagHandler:   tagHandler,
 		valueHandler: valueHandler,
 		options:      options,
 		connected:    false,
@@ -223,11 +224,11 @@ func (c *Connection) GetMetadata() model.PlcConnectionMetadata {
 }
 
 func (c *Connection) ReadRequestBuilder() model.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilder(c.fieldHandler, NewReader(c.device, c.options, c.tracer))
+	return internalModel.NewDefaultPlcReadRequestBuilder(c.tagHandler, NewReader(c.device, c.options, c.tracer))
 }
 
 func (c *Connection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
-	return internalModel.NewDefaultPlcWriteRequestBuilder(c.fieldHandler, c.valueHandler, NewWriter(c.device, c.options, c.tracer))
+	return internalModel.NewDefaultPlcWriteRequestBuilder(c.tagHandler, c.valueHandler, NewWriter(c.device, c.options, c.tracer))
 }
 
 func (c *Connection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {

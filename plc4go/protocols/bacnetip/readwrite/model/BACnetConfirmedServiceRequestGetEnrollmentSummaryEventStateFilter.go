@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter uint8
 
 type IBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -54,36 +54,36 @@ func init() {
 	}
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByValue(value uint8) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByValue(value uint8) (enum BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, ok bool) {
 	switch value {
 	case 0:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_OFFNORMAL
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_OFFNORMAL, true
 	case 1:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_FAULT
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_FAULT, true
 	case 2:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_NORMAL
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_NORMAL, true
 	case 3:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ALL
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ALL, true
 	case 4:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ACTIVE
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ACTIVE, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByName(value string) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByName(value string) (enum BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, ok bool) {
 	switch value {
 	case "OFFNORMAL":
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_OFFNORMAL
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_OFFNORMAL, true
 	case "FAULT":
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_FAULT
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_FAULT, true
 	case "NORMAL":
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_NORMAL
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_NORMAL, true
 	case "ALL":
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ALL
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ALL, true
 	case "ACTIVE":
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ACTIVE
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ACTIVE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterKnows(value uint8) bool {
@@ -113,19 +113,37 @@ func (m BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) GetLe
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, error) {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParse(theBytes []byte) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, error) {
+	return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter")
 	}
-	return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByValue(val), nil
+	if enum, ok := BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) name() string {
+func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) PLC4XEnumName() string {
 	switch e {
 	case BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_OFFNORMAL:
 		return "OFFNORMAL"
@@ -142,5 +160,5 @@ func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) name(
 }
 
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

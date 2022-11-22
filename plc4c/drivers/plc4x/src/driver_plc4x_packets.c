@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -61,7 +61,7 @@ int16_t plc4c_driver_plc4x_select_message_function(uint8_t* buffer_data,
                                                    uint16_t buffer_length) {
   if (buffer_length >= 3) {
     uint16_t length = ((uint16_t) *(buffer_data + 1)) << 8 | ((uint16_t) *(buffer_data + 2));
-    return length;
+    return (int16_t) length;
   }
 
   // In all other cases, we'll just have to wait for the next time.
@@ -99,37 +99,37 @@ plc4c_return_code plc4c_driver_plc4x_receive_packet(plc4c_connection* connection
   return OK;
 }
 
-void destroy_plc4x_read_request_fields(plc4c_list_element *element) {
-  plc4c_plc4x_read_write_plc4x_field_request *item;
+void destroy_plc4x_read_request_tags(plc4c_list_element *element) {
+  plc4c_plc4x_read_write_plc4x_tag_request *item;
   item = element->value;
 
-  free(item->field->name);
-  free(item->field->field_query);
-  free(item->field);
+  free(item->tag->name);
+  free(item->tag->tag_query);
+  free(item->tag);
 }
 
-void destroy_plc4x_read_response_fields(plc4c_list_element *element) {
-  plc4c_plc4x_read_write_plc4x_field_value_response *item;
+void destroy_plc4x_read_response_tags(plc4c_list_element *element) {
+  plc4c_plc4x_read_write_plc4x_tag_value_response *item;
   item = element->value;
 
-  free(item->field->name);
-  free(item->field->field_query);
-  free(item->field);
+  free(item->tag->name);
+  free(item->tag->tag_query);
+  free(item->tag);
   // TODO: Free PlcValue
 }
 
-void destroy_plc4x_write_request_fields(plc4c_list_element *element) {
-  plc4c_plc4x_read_write_plc4x_field_value_request *item;
+void destroy_plc4x_write_request_tags(plc4c_list_element *element) {
+  plc4c_plc4x_read_write_plc4x_tag_value_request *item;
   item = element->value;
 
-  free(item->field->name);
-  free(item->field->field_query);
-  free(item->field);
+  free(item->tag->name);
+  free(item->tag->tag_query);
+  free(item->tag);
   // TODO: Free PlcValue
 }
 
-void destroy_plc4x_write_response_fields(plc4c_list_element *element) {
-  plc4c_plc4x_read_write_plc4x_field_response *item;
+void destroy_plc4x_write_response_tags(plc4c_list_element *element) {
+  plc4c_plc4x_read_write_plc4x_tag_response *item;
   item = element->value;
   // Nothing to do here.
 }
@@ -145,27 +145,27 @@ void plc4c_driver_plc4x_destroy_packet(plc4c_plc4x_read_write_plc4x_message* pac
         break;
 
       case plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_read_request:
-        plc4c_utils_list_delete_elements(packet->plc4x_read_request_fields,
-                                         destroy_plc4x_read_request_fields);
-        free(packet->plc4x_read_request_fields);
+        plc4c_utils_list_delete_elements(packet->plc4x_read_request_tags,
+                                         destroy_plc4x_read_request_tags);
+        free(packet->plc4x_read_request_tags);
         break;
 
       case plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_read_response:
-        plc4c_utils_list_delete_elements(packet->plc4x_read_response_fields,
-                                         destroy_plc4x_read_response_fields);
-        free(packet->plc4x_read_request_fields);
+        plc4c_utils_list_delete_elements(packet->plc4x_read_response_tags,
+                                         destroy_plc4x_read_response_tags);
+        free(packet->plc4x_read_request_tags);
         break;
 
       case plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_write_request:
-        plc4c_utils_list_delete_elements(packet->plc4x_write_request_fields,
-                                         destroy_plc4x_write_request_fields);
-        free(packet->plc4x_read_request_fields);
+        plc4c_utils_list_delete_elements(packet->plc4x_write_request_tags,
+                                         destroy_plc4x_write_request_tags);
+        free(packet->plc4x_read_request_tags);
         break;
 
       case plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_write_response:
-        plc4c_utils_list_delete_elements(packet->plc4x_write_response_fields,
-                                         destroy_plc4x_write_response_fields);
-        free(packet->plc4x_read_request_fields);
+        plc4c_utils_list_delete_elements(packet->plc4x_write_response_tags,
+                                         destroy_plc4x_write_response_tags);
+        free(packet->plc4x_read_request_tags);
         break;
     }
     free(packet);
@@ -210,39 +210,39 @@ plc4c_return_code plc4c_driver_plc4x_create_plc4x_read_request(plc4c_read_reques
   (*plc4x_read_request_packet)->_type = plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_connect_request;
   (*plc4x_read_request_packet)->request_id = configuration->request_id++;
   (*plc4x_read_request_packet)->plc4x_read_request_connection_id = configuration->connection_id;
-  plc4c_utils_list_create(&((*plc4x_read_request_packet)->plc4x_read_request_fields));
+  plc4c_utils_list_create(&((*plc4x_read_request_packet)->plc4x_read_request_tags));
 
   plc4c_list_element* cur_item = read_request->items->tail;
   while (cur_item != NULL) {
     plc4c_item* item;
     item = cur_item->value;
 
-    // Create a new field item.
-    plc4c_plc4x_read_write_plc4x_field* field;
-    field = malloc(sizeof(plc4c_plc4x_read_write_plc4x_field));
-    if (field == NULL) {
+    // Create a new tag item.
+    plc4c_plc4x_read_write_plc4x_tag* tag;
+    tag = malloc(sizeof(plc4c_plc4x_read_write_plc4x_tag));
+    if (tag == NULL) {
       return NO_MEMORY;
     }
 
     // Copy the name.
     size_t size = sizeof(char) * (strlen(item->name) + 1);
-    field->name = malloc(size);
-    if(field->name == NULL) {
+    tag->name = malloc(size);
+    if(tag->name == NULL) {
       return NO_MEMORY;
     }
-    strncpy(field->name,item->name, size);
+    strncpy(tag->name,item->name, size);
 
     // Copy the query.
     size = sizeof(char) * (strlen(item->address) + 1);
-    field->field_query = malloc(size);
-    if(field->field_query == NULL) {
+    tag->tag_query = malloc(size);
+    if(tag->tag_query == NULL) {
       return NO_MEMORY;
     }
-    strncpy(field->field_query,item->address, size);
+    strncpy(tag->tag_query,item->address, size);
 
     // Add the item to the list.
     plc4c_utils_list_insert_tail_value(
-        (*plc4x_read_request_packet)->plc4x_read_request_fields, field);
+        (*plc4x_read_request_packet)->plc4x_read_request_tags, tag);
 
     cur_item = cur_item->next;
   }
@@ -266,48 +266,48 @@ plc4c_return_code plc4c_driver_plc4x_create_plc4x_write_request(plc4c_write_requ
   (*plc4x_write_request_packet)->_type = plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_connect_request;
   (*plc4x_write_request_packet)->request_id = configuration->request_id++;
   (*plc4x_write_request_packet)->plc4x_write_request_connection_id = configuration->connection_id;
-  plc4c_utils_list_create(&((*plc4x_write_request_packet)->plc4x_write_request_fields));
+  plc4c_utils_list_create(&((*plc4x_write_request_packet)->plc4x_write_request_tags));
 
   plc4c_list_element* cur_item = write_request->items->tail;
   while (cur_item != NULL) {
     plc4c_item* item;
     item = cur_item->value;
 
-    // Create a new field item.
-    plc4c_plc4x_read_write_plc4x_field* field;
-    field = malloc(sizeof(plc4c_plc4x_read_write_plc4x_field));
-    if (field == NULL) {
+    // Create a new tag item.
+    plc4c_plc4x_read_write_plc4x_tag* tag;
+    tag = malloc(sizeof(plc4c_plc4x_read_write_plc4x_tag));
+    if (tag == NULL) {
       return NO_MEMORY;
     }
 
     // Copy the name.
     size_t size = sizeof(char) * (strlen(item->name) + 1);
-    field->name = malloc(size);
-    if(field->name == NULL) {
+    tag->name = malloc(size);
+    if(tag->name == NULL) {
       return NO_MEMORY;
     }
-    strncpy(field->name,item->name, size);
+    strncpy(tag->name,item->name, size);
 
     // Copy the query.
     size = sizeof(char) * (strlen(item->address) + 1);
-    field->field_query = malloc(size);
-    if(field->field_query == NULL) {
+    tag->tag_query = malloc(size);
+    if(tag->tag_query == NULL) {
       return NO_MEMORY;
     }
-    strncpy(field->field_query,item->address, size);
+    strncpy(tag->tag_query,item->address, size);
 
-    plc4c_plc4x_read_write_plc4x_field_value_request* value_request;
-    value_request = malloc(sizeof(plc4c_plc4x_read_write_plc4x_field_value_request));
+    plc4c_plc4x_read_write_plc4x_tag_value_request* value_request;
+    value_request = malloc(sizeof(plc4c_plc4x_read_write_plc4x_tag_value_request));
     if(value_request == NULL) {
       return NO_MEMORY;
     }
-    value_request->field = field;
+    value_request->tag = tag;
     // TODO: Set the plc-value
     //value_request->
 
     // Add the item to the list.
     plc4c_utils_list_insert_tail_value(
-        (*plc4x_write_request_packet)->plc4x_write_request_fields, value_request);
+        (*plc4x_write_request_packet)->plc4x_write_request_tags, value_request);
 
     cur_item = cur_item->next;
   }

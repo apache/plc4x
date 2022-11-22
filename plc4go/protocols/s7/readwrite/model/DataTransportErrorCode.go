@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type DataTransportErrorCode uint8
 
 type IDataTransportErrorCode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -56,40 +56,40 @@ func init() {
 	}
 }
 
-func DataTransportErrorCodeByValue(value uint8) DataTransportErrorCode {
+func DataTransportErrorCodeByValue(value uint8) (enum DataTransportErrorCode, ok bool) {
 	switch value {
 	case 0x00:
-		return DataTransportErrorCode_RESERVED
+		return DataTransportErrorCode_RESERVED, true
 	case 0x03:
-		return DataTransportErrorCode_ACCESS_DENIED
+		return DataTransportErrorCode_ACCESS_DENIED, true
 	case 0x05:
-		return DataTransportErrorCode_INVALID_ADDRESS
+		return DataTransportErrorCode_INVALID_ADDRESS, true
 	case 0x06:
-		return DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED
+		return DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED, true
 	case 0x0A:
-		return DataTransportErrorCode_NOT_FOUND
+		return DataTransportErrorCode_NOT_FOUND, true
 	case 0xFF:
-		return DataTransportErrorCode_OK
+		return DataTransportErrorCode_OK, true
 	}
-	return 0
+	return 0, false
 }
 
-func DataTransportErrorCodeByName(value string) DataTransportErrorCode {
+func DataTransportErrorCodeByName(value string) (enum DataTransportErrorCode, ok bool) {
 	switch value {
 	case "RESERVED":
-		return DataTransportErrorCode_RESERVED
+		return DataTransportErrorCode_RESERVED, true
 	case "ACCESS_DENIED":
-		return DataTransportErrorCode_ACCESS_DENIED
+		return DataTransportErrorCode_ACCESS_DENIED, true
 	case "INVALID_ADDRESS":
-		return DataTransportErrorCode_INVALID_ADDRESS
+		return DataTransportErrorCode_INVALID_ADDRESS, true
 	case "DATA_TYPE_NOT_SUPPORTED":
-		return DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED
+		return DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED, true
 	case "NOT_FOUND":
-		return DataTransportErrorCode_NOT_FOUND
+		return DataTransportErrorCode_NOT_FOUND, true
 	case "OK":
-		return DataTransportErrorCode_OK
+		return DataTransportErrorCode_OK, true
 	}
-	return 0
+	return 0, false
 }
 
 func DataTransportErrorCodeKnows(value uint8) bool {
@@ -119,19 +119,37 @@ func (m DataTransportErrorCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DataTransportErrorCodeParse(readBuffer utils.ReadBuffer) (DataTransportErrorCode, error) {
+func DataTransportErrorCodeParse(theBytes []byte) (DataTransportErrorCode, error) {
+	return DataTransportErrorCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func DataTransportErrorCodeParseWithBuffer(readBuffer utils.ReadBuffer) (DataTransportErrorCode, error) {
 	val, err := readBuffer.ReadUint8("DataTransportErrorCode", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading DataTransportErrorCode")
 	}
-	return DataTransportErrorCodeByValue(val), nil
+	if enum, ok := DataTransportErrorCodeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return DataTransportErrorCode(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e DataTransportErrorCode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("DataTransportErrorCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e DataTransportErrorCode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e DataTransportErrorCode) name() string {
+func (e DataTransportErrorCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("DataTransportErrorCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e DataTransportErrorCode) PLC4XEnumName() string {
 	switch e {
 	case DataTransportErrorCode_RESERVED:
 		return "RESERVED"
@@ -150,5 +168,5 @@ func (e DataTransportErrorCode) name() string {
 }
 
 func (e DataTransportErrorCode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

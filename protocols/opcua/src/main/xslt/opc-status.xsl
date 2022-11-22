@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -53,7 +53,7 @@
 [enum uint 32 OpcuaStatusCode<xsl:text>
     </xsl:text>
         <xsl:for-each select="$tokenizedLine">
-            <xsl:variable select="tokenize(., ',')" name="values" />    ['<xsl:value-of select="$values[2]"/>L'  <xsl:value-of select="$values[1]"/>]<xsl:text>
+            <xsl:variable select="tokenize(., ',')" name="values" />    ['<xsl:value-of select="$values[2]"/>'  <xsl:value-of select="$values[1]"/>]<xsl:text>
     </xsl:text>
         </xsl:for-each>
 ]

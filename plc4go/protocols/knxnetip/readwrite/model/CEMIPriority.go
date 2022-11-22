@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type CEMIPriority uint8
 
 type ICEMIPriority interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -52,32 +52,32 @@ func init() {
 	}
 }
 
-func CEMIPriorityByValue(value uint8) CEMIPriority {
+func CEMIPriorityByValue(value uint8) (enum CEMIPriority, ok bool) {
 	switch value {
 	case 0x0:
-		return CEMIPriority_SYSTEM
+		return CEMIPriority_SYSTEM, true
 	case 0x1:
-		return CEMIPriority_NORMAL
+		return CEMIPriority_NORMAL, true
 	case 0x2:
-		return CEMIPriority_URGENT
+		return CEMIPriority_URGENT, true
 	case 0x3:
-		return CEMIPriority_LOW
+		return CEMIPriority_LOW, true
 	}
-	return 0
+	return 0, false
 }
 
-func CEMIPriorityByName(value string) CEMIPriority {
+func CEMIPriorityByName(value string) (enum CEMIPriority, ok bool) {
 	switch value {
 	case "SYSTEM":
-		return CEMIPriority_SYSTEM
+		return CEMIPriority_SYSTEM, true
 	case "NORMAL":
-		return CEMIPriority_NORMAL
+		return CEMIPriority_NORMAL, true
 	case "URGENT":
-		return CEMIPriority_URGENT
+		return CEMIPriority_URGENT, true
 	case "LOW":
-		return CEMIPriority_LOW
+		return CEMIPriority_LOW, true
 	}
-	return 0
+	return 0, false
 }
 
 func CEMIPriorityKnows(value uint8) bool {
@@ -107,19 +107,37 @@ func (m CEMIPriority) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CEMIPriorityParse(readBuffer utils.ReadBuffer) (CEMIPriority, error) {
+func CEMIPriorityParse(theBytes []byte) (CEMIPriority, error) {
+	return CEMIPriorityParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func CEMIPriorityParseWithBuffer(readBuffer utils.ReadBuffer) (CEMIPriority, error) {
 	val, err := readBuffer.ReadUint8("CEMIPriority", 2)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading CEMIPriority")
 	}
-	return CEMIPriorityByValue(val), nil
+	if enum, ok := CEMIPriorityByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return CEMIPriority(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e CEMIPriority) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("CEMIPriority", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e CEMIPriority) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e CEMIPriority) name() string {
+func (e CEMIPriority) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("CEMIPriority", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e CEMIPriority) PLC4XEnumName() string {
 	switch e {
 	case CEMIPriority_SYSTEM:
 		return "SYSTEM"
@@ -134,5 +152,5 @@ func (e CEMIPriority) name() string {
 }
 
 func (e CEMIPriority) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

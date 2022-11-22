@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,12 +20,13 @@
 package knxnetip
 
 import (
+	"context"
 	"errors"
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	plc4goModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type Writer struct {
@@ -38,29 +39,30 @@ func NewWriter(messageCodec spi.MessageCodec) Writer {
 	}
 }
 
-func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+	// TODO: handle context
 	result := make(chan model.PlcWriteRequestResult)
-	// If we are requesting only one field, use a
-	if len(writeRequest.GetFieldNames()) == 1 {
-		fieldName := writeRequest.GetFieldNames()[0]
+	// If we are requesting only one tag, use a
+	if len(writeRequest.GetTagNames()) == 1 {
+		tagName := writeRequest.GetTagNames()[0]
 
-		// Get the KnxNetIp field instance from the request
-		field := writeRequest.GetField(fieldName)
-		knxNetIpField, err := CastToFieldFromPlcField(field)
+		// Get the KnxNetIp tag instance from the request
+		tag := writeRequest.GetTag(tagName)
+		groupAddressTag, err := CastToGroupAddressTagFromPlcTag(tag)
 		if err != nil {
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
-				Err:      errors.New("invalid field item type"),
+				Err:      errors.New("invalid tag item type"),
 			}
 			return result
 		}
 
 		// Get the value from the request and serialize it to a byte array
-		value := writeRequest.GetValue(fieldName)
-		io := utils.NewWriteBufferByteBased()
-		fieldType := readWriteModel.KnxDatapointTypeByName(knxNetIpField.GetTypeName())
-		if err := readWriteModel.KnxDatapointSerialize(io, value, fieldType); err != nil {
+		value := writeRequest.GetValue(tagName)
+		tagType := groupAddressTag.GetTagType()
+		// TODO: why do we ignore the bytes here?
+		if _, err := readWriteModel.KnxDatapointSerialize(value, *tagType); err != nil {
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,

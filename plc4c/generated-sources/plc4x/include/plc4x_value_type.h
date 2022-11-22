@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -34,6 +34,7 @@ enum plc4c_plc4x_read_write_plc4x_value_type {
   plc4c_plc4x_read_write_plc4x_value_type_BYTE = 0x02,
   plc4c_plc4x_read_write_plc4x_value_type_WORD = 0x03,
   plc4c_plc4x_read_write_plc4x_value_type_DWORD = 0x04,
+  plc4c_plc4x_read_write_plc4x_value_type_LWORD = 0x05,
   plc4c_plc4x_read_write_plc4x_value_type_USINT = 0x11,
   plc4c_plc4x_read_write_plc4x_value_type_UINT = 0x12,
   plc4c_plc4x_read_write_plc4x_value_type_UDINT = 0x13,
@@ -49,11 +50,16 @@ enum plc4c_plc4x_read_write_plc4x_value_type {
   plc4c_plc4x_read_write_plc4x_value_type_STRING = 0x43,
   plc4c_plc4x_read_write_plc4x_value_type_WSTRING = 0x44,
   plc4c_plc4x_read_write_plc4x_value_type_TIME = 0x51,
-  plc4c_plc4x_read_write_plc4x_value_type_TIME_OF_DAY = 0x52,
+  plc4c_plc4x_read_write_plc4x_value_type_LTIME = 0x52,
   plc4c_plc4x_read_write_plc4x_value_type_DATE = 0x53,
-  plc4c_plc4x_read_write_plc4x_value_type_DATE_AND_TIME = 0x54,
+  plc4c_plc4x_read_write_plc4x_value_type_LDATE = 0x54,
+  plc4c_plc4x_read_write_plc4x_value_type_TIME_OF_DAY = 0x55,
+  plc4c_plc4x_read_write_plc4x_value_type_LTIME_OF_DAY = 0x56,
+  plc4c_plc4x_read_write_plc4x_value_type_DATE_AND_TIME = 0x57,
+  plc4c_plc4x_read_write_plc4x_value_type_LDATE_AND_TIME = 0x58,
   plc4c_plc4x_read_write_plc4x_value_type_Struct = 0x61,
-  plc4c_plc4x_read_write_plc4x_value_type_List = 0x62
+  plc4c_plc4x_read_write_plc4x_value_type_List = 0x62,
+  plc4c_plc4x_read_write_plc4x_value_type_RAW_BYTE_ARRAY = 0x71
 };
 typedef enum plc4c_plc4x_read_write_plc4x_value_type plc4c_plc4x_read_write_plc4x_value_type;
 

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetAccessZoneOccupancyState uint16
 
 type IBACnetAccessZoneOccupancyState interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -60,48 +60,48 @@ func init() {
 	}
 }
 
-func BACnetAccessZoneOccupancyStateByValue(value uint16) BACnetAccessZoneOccupancyState {
+func BACnetAccessZoneOccupancyStateByValue(value uint16) (enum BACnetAccessZoneOccupancyState, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAccessZoneOccupancyState_NORMAL
+		return BACnetAccessZoneOccupancyState_NORMAL, true
 	case 0xFFFF:
-		return BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetAccessZoneOccupancyState_BELOW_LOWER_LIMIT
+		return BACnetAccessZoneOccupancyState_BELOW_LOWER_LIMIT, true
 	case 2:
-		return BACnetAccessZoneOccupancyState_AT_LOWER_LIMIT
+		return BACnetAccessZoneOccupancyState_AT_LOWER_LIMIT, true
 	case 3:
-		return BACnetAccessZoneOccupancyState_AT_UPPER_LIMIT
+		return BACnetAccessZoneOccupancyState_AT_UPPER_LIMIT, true
 	case 4:
-		return BACnetAccessZoneOccupancyState_ABOVE_UPPER_LIMIT
+		return BACnetAccessZoneOccupancyState_ABOVE_UPPER_LIMIT, true
 	case 5:
-		return BACnetAccessZoneOccupancyState_DISABLED
+		return BACnetAccessZoneOccupancyState_DISABLED, true
 	case 6:
-		return BACnetAccessZoneOccupancyState_NOT_SUPPORTED
+		return BACnetAccessZoneOccupancyState_NOT_SUPPORTED, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetAccessZoneOccupancyStateByName(value string) BACnetAccessZoneOccupancyState {
+func BACnetAccessZoneOccupancyStateByName(value string) (enum BACnetAccessZoneOccupancyState, ok bool) {
 	switch value {
 	case "NORMAL":
-		return BACnetAccessZoneOccupancyState_NORMAL
+		return BACnetAccessZoneOccupancyState_NORMAL, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE
+		return BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE, true
 	case "BELOW_LOWER_LIMIT":
-		return BACnetAccessZoneOccupancyState_BELOW_LOWER_LIMIT
+		return BACnetAccessZoneOccupancyState_BELOW_LOWER_LIMIT, true
 	case "AT_LOWER_LIMIT":
-		return BACnetAccessZoneOccupancyState_AT_LOWER_LIMIT
+		return BACnetAccessZoneOccupancyState_AT_LOWER_LIMIT, true
 	case "AT_UPPER_LIMIT":
-		return BACnetAccessZoneOccupancyState_AT_UPPER_LIMIT
+		return BACnetAccessZoneOccupancyState_AT_UPPER_LIMIT, true
 	case "ABOVE_UPPER_LIMIT":
-		return BACnetAccessZoneOccupancyState_ABOVE_UPPER_LIMIT
+		return BACnetAccessZoneOccupancyState_ABOVE_UPPER_LIMIT, true
 	case "DISABLED":
-		return BACnetAccessZoneOccupancyState_DISABLED
+		return BACnetAccessZoneOccupancyState_DISABLED, true
 	case "NOT_SUPPORTED":
-		return BACnetAccessZoneOccupancyState_NOT_SUPPORTED
+		return BACnetAccessZoneOccupancyState_NOT_SUPPORTED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAccessZoneOccupancyStateKnows(value uint16) bool {
@@ -131,19 +131,37 @@ func (m BACnetAccessZoneOccupancyState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessZoneOccupancyStateParse(readBuffer utils.ReadBuffer) (BACnetAccessZoneOccupancyState, error) {
+func BACnetAccessZoneOccupancyStateParse(theBytes []byte) (BACnetAccessZoneOccupancyState, error) {
+	return BACnetAccessZoneOccupancyStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetAccessZoneOccupancyStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessZoneOccupancyState, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessZoneOccupancyState", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAccessZoneOccupancyState")
 	}
-	return BACnetAccessZoneOccupancyStateByValue(val), nil
+	if enum, ok := BACnetAccessZoneOccupancyStateByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetAccessZoneOccupancyState(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetAccessZoneOccupancyState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetAccessZoneOccupancyState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetAccessZoneOccupancyState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetAccessZoneOccupancyState) name() string {
+func (e BACnetAccessZoneOccupancyState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetAccessZoneOccupancyState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAccessZoneOccupancyState) PLC4XEnumName() string {
 	switch e {
 	case BACnetAccessZoneOccupancyState_NORMAL:
 		return "NORMAL"
@@ -166,5 +184,5 @@ func (e BACnetAccessZoneOccupancyState) name() string {
 }
 
 func (e BACnetAccessZoneOccupancyState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

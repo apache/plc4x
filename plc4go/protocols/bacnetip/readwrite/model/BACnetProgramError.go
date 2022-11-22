@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetProgramError uint16
 
 type IBACnetProgramError interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -56,40 +56,40 @@ func init() {
 	}
 }
 
-func BACnetProgramErrorByValue(value uint16) BACnetProgramError {
+func BACnetProgramErrorByValue(value uint16) (enum BACnetProgramError, ok bool) {
 	switch value {
 	case 0:
-		return BACnetProgramError_NORMAL
+		return BACnetProgramError_NORMAL, true
 	case 0xFFFF:
-		return BACnetProgramError_VENDOR_PROPRIETARY_VALUE
+		return BACnetProgramError_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetProgramError_LOAD_FAILED
+		return BACnetProgramError_LOAD_FAILED, true
 	case 2:
-		return BACnetProgramError_INTERNAL
+		return BACnetProgramError_INTERNAL, true
 	case 3:
-		return BACnetProgramError_PROGRAM
+		return BACnetProgramError_PROGRAM, true
 	case 4:
-		return BACnetProgramError_OTHER
+		return BACnetProgramError_OTHER, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetProgramErrorByName(value string) BACnetProgramError {
+func BACnetProgramErrorByName(value string) (enum BACnetProgramError, ok bool) {
 	switch value {
 	case "NORMAL":
-		return BACnetProgramError_NORMAL
+		return BACnetProgramError_NORMAL, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetProgramError_VENDOR_PROPRIETARY_VALUE
+		return BACnetProgramError_VENDOR_PROPRIETARY_VALUE, true
 	case "LOAD_FAILED":
-		return BACnetProgramError_LOAD_FAILED
+		return BACnetProgramError_LOAD_FAILED, true
 	case "INTERNAL":
-		return BACnetProgramError_INTERNAL
+		return BACnetProgramError_INTERNAL, true
 	case "PROGRAM":
-		return BACnetProgramError_PROGRAM
+		return BACnetProgramError_PROGRAM, true
 	case "OTHER":
-		return BACnetProgramError_OTHER
+		return BACnetProgramError_OTHER, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetProgramErrorKnows(value uint16) bool {
@@ -119,19 +119,37 @@ func (m BACnetProgramError) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetProgramErrorParse(readBuffer utils.ReadBuffer) (BACnetProgramError, error) {
+func BACnetProgramErrorParse(theBytes []byte) (BACnetProgramError, error) {
+	return BACnetProgramErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetProgramErrorParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetProgramError, error) {
 	val, err := readBuffer.ReadUint16("BACnetProgramError", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetProgramError")
 	}
-	return BACnetProgramErrorByValue(val), nil
+	if enum, ok := BACnetProgramErrorByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetProgramError(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetProgramError) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetProgramError", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetProgramError) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetProgramError) name() string {
+func (e BACnetProgramError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetProgramError", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetProgramError) PLC4XEnumName() string {
 	switch e {
 	case BACnetProgramError_NORMAL:
 		return "NORMAL"
@@ -150,5 +168,5 @@ func (e BACnetProgramError) name() string {
 }
 
 func (e BACnetProgramError) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

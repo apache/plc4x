@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.opm;
 
 /**
- * This interface can be used to give "aliases" for field names in {@link PlcEntity}s {@link PlcField} strings.
+ * This interface can be used to give "aliases" for tag names in {@link PlcEntity}s {@link PlcTag} strings.
  * These are then resolved.
  */
 public interface AliasRegistry {
@@ -35,7 +35,7 @@ public interface AliasRegistry {
     boolean canResolve(String connection, String alias);
 
     /**
-     * Resolves an alias to a valid PLC Field Address
+     * Resolves an alias to a valid PLC Tag Address
      */
     String resolve(String alias);
 

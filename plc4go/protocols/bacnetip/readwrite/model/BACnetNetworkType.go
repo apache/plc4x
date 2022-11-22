@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetNetworkType uint8
 
 type IBACnetNetworkType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -68,64 +68,64 @@ func init() {
 	}
 }
 
-func BACnetNetworkTypeByValue(value uint8) BACnetNetworkType {
+func BACnetNetworkTypeByValue(value uint8) (enum BACnetNetworkType, ok bool) {
 	switch value {
 	case 0xFF:
-		return BACnetNetworkType_VENDOR_PROPRIETARY_VALUE
+		return BACnetNetworkType_VENDOR_PROPRIETARY_VALUE, true
 	case 0x0:
-		return BACnetNetworkType_ETHERNET
+		return BACnetNetworkType_ETHERNET, true
 	case 0x1:
-		return BACnetNetworkType_ARCNET
+		return BACnetNetworkType_ARCNET, true
 	case 0x2:
-		return BACnetNetworkType_MSTP
+		return BACnetNetworkType_MSTP, true
 	case 0x3:
-		return BACnetNetworkType_PTP
+		return BACnetNetworkType_PTP, true
 	case 0x4:
-		return BACnetNetworkType_LONTALK
+		return BACnetNetworkType_LONTALK, true
 	case 0x5:
-		return BACnetNetworkType_IPV4
+		return BACnetNetworkType_IPV4, true
 	case 0x6:
-		return BACnetNetworkType_ZIGBEE
+		return BACnetNetworkType_ZIGBEE, true
 	case 0x7:
-		return BACnetNetworkType_VIRTUAL
+		return BACnetNetworkType_VIRTUAL, true
 	case 0x8:
-		return BACnetNetworkType_REMOVED_NON_BACNET
+		return BACnetNetworkType_REMOVED_NON_BACNET, true
 	case 0x9:
-		return BACnetNetworkType_IPV6
+		return BACnetNetworkType_IPV6, true
 	case 0xA:
-		return BACnetNetworkType_SERIAL
+		return BACnetNetworkType_SERIAL, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetNetworkTypeByName(value string) BACnetNetworkType {
+func BACnetNetworkTypeByName(value string) (enum BACnetNetworkType, ok bool) {
 	switch value {
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetNetworkType_VENDOR_PROPRIETARY_VALUE
+		return BACnetNetworkType_VENDOR_PROPRIETARY_VALUE, true
 	case "ETHERNET":
-		return BACnetNetworkType_ETHERNET
+		return BACnetNetworkType_ETHERNET, true
 	case "ARCNET":
-		return BACnetNetworkType_ARCNET
+		return BACnetNetworkType_ARCNET, true
 	case "MSTP":
-		return BACnetNetworkType_MSTP
+		return BACnetNetworkType_MSTP, true
 	case "PTP":
-		return BACnetNetworkType_PTP
+		return BACnetNetworkType_PTP, true
 	case "LONTALK":
-		return BACnetNetworkType_LONTALK
+		return BACnetNetworkType_LONTALK, true
 	case "IPV4":
-		return BACnetNetworkType_IPV4
+		return BACnetNetworkType_IPV4, true
 	case "ZIGBEE":
-		return BACnetNetworkType_ZIGBEE
+		return BACnetNetworkType_ZIGBEE, true
 	case "VIRTUAL":
-		return BACnetNetworkType_VIRTUAL
+		return BACnetNetworkType_VIRTUAL, true
 	case "REMOVED_NON_BACNET":
-		return BACnetNetworkType_REMOVED_NON_BACNET
+		return BACnetNetworkType_REMOVED_NON_BACNET, true
 	case "IPV6":
-		return BACnetNetworkType_IPV6
+		return BACnetNetworkType_IPV6, true
 	case "SERIAL":
-		return BACnetNetworkType_SERIAL
+		return BACnetNetworkType_SERIAL, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetNetworkTypeKnows(value uint8) bool {
@@ -155,19 +155,37 @@ func (m BACnetNetworkType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNetworkTypeParse(readBuffer utils.ReadBuffer) (BACnetNetworkType, error) {
+func BACnetNetworkTypeParse(theBytes []byte) (BACnetNetworkType, error) {
+	return BACnetNetworkTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetNetworkTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNetworkType, error) {
 	val, err := readBuffer.ReadUint8("BACnetNetworkType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetNetworkType")
 	}
-	return BACnetNetworkTypeByValue(val), nil
+	if enum, ok := BACnetNetworkTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetNetworkType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetNetworkType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetNetworkType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetNetworkType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetNetworkType) name() string {
+func (e BACnetNetworkType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetNetworkType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetNetworkType) PLC4XEnumName() string {
 	switch e {
 	case BACnetNetworkType_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
@@ -198,5 +216,5 @@ func (e BACnetNetworkType) name() string {
 }
 
 func (e BACnetNetworkType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

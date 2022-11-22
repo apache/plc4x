@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,10 +21,10 @@ package modbus
 
 import (
 	"encoding/json"
-	_default "github.com/apache/plc4x/plc4go/internal/spi/default"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net/url"
@@ -37,7 +37,7 @@ type ModbusTcpDriver struct {
 
 func NewModbusTcpDriver() *ModbusTcpDriver {
 	return &ModbusTcpDriver{
-		DefaultDriver: _default.NewDefaultDriver("modbus-tcp", "Modbus TCP", "tcp", NewFieldHandler()),
+		DefaultDriver: _default.NewDefaultDriver("modbus-tcp", "Modbus TCP", "tcp", NewTagHandler()),
 	}
 }
 
@@ -96,7 +96,7 @@ func (m ModbusTcpDriver) GetConnection(transportUrl url.URL, transports map[stri
 	log.Debug().Uint8("unitIdentifier", unitIdentifier).Msgf("using unit identifier %d", unitIdentifier)
 
 	// Create the new connection
-	connection := NewConnection(unitIdentifier, codec, options, m.GetPlcFieldHandler())
+	connection := NewConnection(unitIdentifier, codec, options, m.GetPlcTagHandler())
 	log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
 	return connection.Connect()
 }

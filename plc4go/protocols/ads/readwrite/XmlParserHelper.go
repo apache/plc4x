@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,8 +20,8 @@
 package readwrite
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"strconv"
 	"strings"
@@ -43,43 +43,48 @@ func init() {
 func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "AmsSerialFrame":
-		return model.AmsSerialFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AmsSerialFrameParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DataItem":
-		// TODO: find a way to parse the sub types
-		var dataFormatName string
+		plcValueType, _ := model.PlcValueTypeByName(parserArguments[0])
 		parsedInt1, err := strconv.ParseInt(parserArguments[1], 10, 32)
 		if err != nil {
 			return nil, err
 		}
 		stringLength := int32(parsedInt1)
-		return model.DataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataFormatName, stringLength)
+		return model.DataItemParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), plcValueType, stringLength)
+	case "AdsTableSizes":
+		return model.AdsTableSizesParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsMultiRequestItem":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 32)
 		if err != nil {
 			return nil, err
 		}
 		indexGroup := uint32(parsedUint0)
-		return model.AdsMultiRequestItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), indexGroup)
+		return model.AdsMultiRequestItemParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), indexGroup)
 	case "AmsSerialAcknowledgeFrame":
-		return model.AmsSerialAcknowledgeFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "AdsData":
-		commandId := model.CommandIdByName(parserArguments[0])
-		response := parserArguments[1] == "true"
-		return model.AdsDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), commandId, response)
+		return model.AmsSerialAcknowledgeFrameParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsDataTypeArrayInfo":
+		return model.AdsDataTypeArrayInfoParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsDataTypeTableEntry":
+		return model.AdsDataTypeTableEntryParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsNetId":
-		return model.AmsNetIdParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AmsNetIdParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsStampHeader":
-		return model.AdsStampHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AdsStampHeaderParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsSerialResetFrame":
-		return model.AmsSerialResetFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AmsSerialResetFrameParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsDataTypeTableChildEntry":
+		return model.AdsDataTypeTableChildEntryParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsConstants":
+		return model.AdsConstantsParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsNotificationSample":
-		return model.AdsNotificationSampleParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AdsNotificationSampleParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsSymbolTableEntry":
+		return model.AdsSymbolTableEntryParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsTCPPacket":
-		return model.AmsTCPPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "State":
-		return model.StateParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AmsTCPPacketParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsPacket":
-		return model.AmsPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AmsPacketParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

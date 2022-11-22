@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -69,8 +69,8 @@ public class MockDriver implements PlcDriver {
             // TODO: Translate this so it actually does something ...
             /*PlcSubscriptionRequest subscriptionRequest = invocation.getArgument(0);
             List<PlcSubscriptionResponse> responseItems =
-                subscriptionRequest.getFieldNames().stream().map(
-                    fieldName -> subscriptionRequest.getField(fieldName)).map(field -> {
+                subscriptionRequest.getTagNames().stream().map(
+                    tagName -> subscriptionRequest.getTag(tagName)).map(tag -> {
                     Consumer consumer = subscriptionRequestItem.getConsumer();
                     executorService.submit(() -> {
                         while (!Thread.currentThread().isInterrupted()) {
@@ -88,9 +88,7 @@ public class MockDriver implements PlcDriver {
                 }).collect(Collectors.toList());
             PlcSubscriptionResponse response = new PlcSubscriptionResponse(subscriptionRequest, responseItems);*/
             PlcSubscriptionResponse response = new DefaultPlcSubscriptionResponse(mock(PlcSubscriptionRequest.class), new HashMap<>());
-            CompletableFuture<PlcSubscriptionResponse> responseFuture = new CompletableFuture<>();
-            responseFuture.complete(response);
-            return responseFuture;
+            return CompletableFuture.completedFuture(response);
         });
         return plcConnectionMock;
     }

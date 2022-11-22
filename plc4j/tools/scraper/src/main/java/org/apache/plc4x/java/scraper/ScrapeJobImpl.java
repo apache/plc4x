@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -36,13 +36,13 @@ public class ScrapeJobImpl implements ScrapeJob {
     private final String name;
     private final long scrapeRate;
     private final Map<String, String> connections;
-    private final Map<String, String> fields;
+    private final Map<String, String> tags;
 
-    public ScrapeJobImpl(String name, long scrapeRate, Map<String, String> connections, Map<String, String> fields) {
+    public ScrapeJobImpl(String name, long scrapeRate, Map<String, String> connections, Map<String, String> tags) {
         this.name = name;
         this.scrapeRate = scrapeRate;
         this.connections = connections;
-        this.fields = fields;
+        this.tags = tags;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ScrapeJobImpl implements ScrapeJob {
     }
 
     @Override
-    public Map<String, String> getFields() {
-        return fields;
+    public Map<String, String> getTags() {
+        return tags;
     }
 }

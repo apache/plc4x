@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,8 +20,8 @@
 package readwrite
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/firmata/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"strconv"
 	"strings"
@@ -44,13 +44,13 @@ func (m FirmataXmlParserHelper) Parse(typeName string, xmlString string, parserA
 	switch typeName {
 	case "SysexCommand":
 		response := parserArguments[0] == "true"
-		return model.SysexCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
+		return model.SysexCommandParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	case "FirmataMessage":
 		response := parserArguments[0] == "true"
-		return model.FirmataMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
+		return model.FirmataMessageParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	case "FirmataCommand":
 		response := parserArguments[0] == "true"
-		return model.FirmataCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
+		return model.FirmataCommandParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

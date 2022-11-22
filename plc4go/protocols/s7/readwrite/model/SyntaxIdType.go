@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type SyntaxIdType uint8
 
 type ISyntaxIdType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -70,68 +70,68 @@ func init() {
 	}
 }
 
-func SyntaxIdTypeByValue(value uint8) SyntaxIdType {
+func SyntaxIdTypeByValue(value uint8) (enum SyntaxIdType, ok bool) {
 	switch value {
 	case 0x01:
-		return SyntaxIdType_S7ANY
+		return SyntaxIdType_S7ANY, true
 	case 0x13:
-		return SyntaxIdType_PBC_ID
+		return SyntaxIdType_PBC_ID, true
 	case 0x15:
-		return SyntaxIdType_ALARM_LOCKFREESET
+		return SyntaxIdType_ALARM_LOCKFREESET, true
 	case 0x16:
-		return SyntaxIdType_ALARM_INDSET
+		return SyntaxIdType_ALARM_INDSET, true
 	case 0x19:
-		return SyntaxIdType_ALARM_ACKSET
+		return SyntaxIdType_ALARM_ACKSET, true
 	case 0x1A:
-		return SyntaxIdType_ALARM_QUERYREQSET
+		return SyntaxIdType_ALARM_QUERYREQSET, true
 	case 0x1C:
-		return SyntaxIdType_NOTIFY_INDSET
+		return SyntaxIdType_NOTIFY_INDSET, true
 	case 0x82:
-		return SyntaxIdType_NCK
+		return SyntaxIdType_NCK, true
 	case 0x83:
-		return SyntaxIdType_NCK_METRIC
+		return SyntaxIdType_NCK_METRIC, true
 	case 0x84:
-		return SyntaxIdType_NCK_INCH
+		return SyntaxIdType_NCK_INCH, true
 	case 0xA2:
-		return SyntaxIdType_DRIVEESANY
+		return SyntaxIdType_DRIVEESANY, true
 	case 0xB0:
-		return SyntaxIdType_DBREAD
+		return SyntaxIdType_DBREAD, true
 	case 0xB2:
-		return SyntaxIdType_SYM1200
+		return SyntaxIdType_SYM1200, true
 	}
-	return 0
+	return 0, false
 }
 
-func SyntaxIdTypeByName(value string) SyntaxIdType {
+func SyntaxIdTypeByName(value string) (enum SyntaxIdType, ok bool) {
 	switch value {
 	case "S7ANY":
-		return SyntaxIdType_S7ANY
+		return SyntaxIdType_S7ANY, true
 	case "PBC_ID":
-		return SyntaxIdType_PBC_ID
+		return SyntaxIdType_PBC_ID, true
 	case "ALARM_LOCKFREESET":
-		return SyntaxIdType_ALARM_LOCKFREESET
+		return SyntaxIdType_ALARM_LOCKFREESET, true
 	case "ALARM_INDSET":
-		return SyntaxIdType_ALARM_INDSET
+		return SyntaxIdType_ALARM_INDSET, true
 	case "ALARM_ACKSET":
-		return SyntaxIdType_ALARM_ACKSET
+		return SyntaxIdType_ALARM_ACKSET, true
 	case "ALARM_QUERYREQSET":
-		return SyntaxIdType_ALARM_QUERYREQSET
+		return SyntaxIdType_ALARM_QUERYREQSET, true
 	case "NOTIFY_INDSET":
-		return SyntaxIdType_NOTIFY_INDSET
+		return SyntaxIdType_NOTIFY_INDSET, true
 	case "NCK":
-		return SyntaxIdType_NCK
+		return SyntaxIdType_NCK, true
 	case "NCK_METRIC":
-		return SyntaxIdType_NCK_METRIC
+		return SyntaxIdType_NCK_METRIC, true
 	case "NCK_INCH":
-		return SyntaxIdType_NCK_INCH
+		return SyntaxIdType_NCK_INCH, true
 	case "DRIVEESANY":
-		return SyntaxIdType_DRIVEESANY
+		return SyntaxIdType_DRIVEESANY, true
 	case "DBREAD":
-		return SyntaxIdType_DBREAD
+		return SyntaxIdType_DBREAD, true
 	case "SYM1200":
-		return SyntaxIdType_SYM1200
+		return SyntaxIdType_SYM1200, true
 	}
-	return 0
+	return 0, false
 }
 
 func SyntaxIdTypeKnows(value uint8) bool {
@@ -161,19 +161,37 @@ func (m SyntaxIdType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SyntaxIdTypeParse(readBuffer utils.ReadBuffer) (SyntaxIdType, error) {
+func SyntaxIdTypeParse(theBytes []byte) (SyntaxIdType, error) {
+	return SyntaxIdTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SyntaxIdTypeParseWithBuffer(readBuffer utils.ReadBuffer) (SyntaxIdType, error) {
 	val, err := readBuffer.ReadUint8("SyntaxIdType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading SyntaxIdType")
 	}
-	return SyntaxIdTypeByValue(val), nil
+	if enum, ok := SyntaxIdTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return SyntaxIdType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e SyntaxIdType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("SyntaxIdType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e SyntaxIdType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e SyntaxIdType) name() string {
+func (e SyntaxIdType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("SyntaxIdType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e SyntaxIdType) PLC4XEnumName() string {
 	switch e {
 	case SyntaxIdType_S7ANY:
 		return "S7ANY"
@@ -206,5 +224,5 @@ func (e SyntaxIdType) name() string {
 }
 
 func (e SyntaxIdType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.scraper.config.JobConfiguration;
-import org.apache.plc4x.java.scraper.config.JobConfigurationClassicImpl;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
 import org.apache.plc4x.java.scraper.config.ScraperConfigurationClassicImpl;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
@@ -54,7 +53,7 @@ class ScraperConfigurationTest implements WithAssertions {
                         "        - a1\n" +
                         "        - a2\n" +
                         "        - a3\n" +
-                        "      fields:\n" +
+                        "      tags:\n" +
                         "        a: DBasdf\n" +
                         "        b: DBbsdf\n";
 
@@ -75,7 +74,7 @@ class ScraperConfigurationTest implements WithAssertions {
         assertThat(conf.getSources())
             .hasSize(3);
 
-        assertThat(conf.getFields())
+        assertThat(conf.getTags())
             .hasSize(2)
             .containsEntry("a", "DBasdf")
             .containsEntry("b", "DBbsdf");
@@ -108,7 +107,7 @@ class ScraperConfigurationTest implements WithAssertions {
                         "      - a1\n" +
                         "      - a2\n" +
                         "      - a3\n" +
-                        "    fields:\n" +
+                        "    tags:\n" +
                         "      a: DBasdf\n" +
                         "      b: DBbsdf\n";
 
@@ -133,7 +132,7 @@ class ScraperConfigurationTest implements WithAssertions {
                         "                \"a2\",\n" +
                         "                \"a3\"\n" +
                         "            ],\n" +
-                        "            \"fields\": {\n" +
+                        "            \"tags\": {\n" +
                         "                \"a\": \"DBasdf\",\n" +
                         "                \"b\": \"DBbsdf\"\n" +
                         "            }\n" +
@@ -154,7 +153,7 @@ class ScraperConfigurationTest implements WithAssertions {
                         "    scrapeRate: 10\n" +
                         "    sources:\n" +
                         "      - s1\n" +
-                        "    fields:\n";
+                        "    tags:\n";
 
         assertThatThrownBy(() -> ScraperConfiguration.fromYaml(yaml, ScraperConfigurationClassicImpl.class))
             .isInstanceOf(PlcRuntimeException.class)
@@ -170,8 +169,8 @@ class ScraperConfigurationTest implements WithAssertions {
                         "    scrapeRate: 10\n" +
                         "    sources:\n" +
                         "      - source1\n" +
-                        "    fields:\n" +
-                        "      field1: 'DB1 Field 1'\n";
+                        "    tags:\n" +
+                        "      tag1: 'DB1 Tag 1'\n";
 
         List<ScrapeJob> jobs = ScraperConfiguration.fromYaml(yaml, ScraperConfigurationClassicImpl.class).getJobs();
         assertThat(jobs).hasSize(1);
@@ -183,9 +182,9 @@ class ScraperConfigurationTest implements WithAssertions {
         assertThat(job.getSourceConnections())
             .hasSize(1)
             .containsEntry("source1", "connection string");
-        assertThat(job.getFields())
+        assertThat(job.getTags())
             .hasSize(1)
-            .containsEntry("field1", "DB1 Field 1");
+            .containsEntry("tag1", "DB1 Tag 1");
     }
 
     @Nested

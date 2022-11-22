@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -45,7 +45,7 @@ if (bacnetVendorHtm.exists()) {
 // If we need to update the vendor ids
 if (update) {
     try {
-        InputStream inputStream = new URL("http://www.bacnet.org/VendorID/BACnet%20Vendor%20IDs.htm").openStream()
+        InputStream inputStream = new URL("https://bacnet.org/assigned-vendor-ids/").openStream()
         Files.copy(inputStream, bacnetVendorHtm.toPath(), StandardCopyOption.REPLACE_EXISTING)
         println "Successfully updated BACnet Vendor IDs.htm"
     } catch (Exception e) {
@@ -113,7 +113,7 @@ mspecTemplate = """
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,8 +20,8 @@
 package readwrite
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -33,37 +33,37 @@ type ModbusParserHelper struct {
 func (m ModbusParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
 	case "ModbusPDUWriteFileRecordRequestItem":
-		return model.ModbusPDUWriteFileRecordRequestItemParse(io)
+		return model.ModbusPDUWriteFileRecordRequestItemParseWithBuffer(io)
 	case "DataItem":
-		dataType := model.ModbusDataTypeByName(arguments[0])
+		dataType, _ := model.ModbusDataTypeByName(arguments[0])
 		numberOfValues, err := utils.StrToUint16(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.DataItemParse(io, dataType, numberOfValues)
+		return model.DataItemParseWithBuffer(io, dataType, numberOfValues)
 	case "ModbusPDUReadFileRecordResponseItem":
-		return model.ModbusPDUReadFileRecordResponseItemParse(io)
+		return model.ModbusPDUReadFileRecordResponseItemParseWithBuffer(io)
 	case "ModbusDeviceInformationObject":
-		return model.ModbusDeviceInformationObjectParse(io)
+		return model.ModbusDeviceInformationObjectParseWithBuffer(io)
 	case "ModbusConstants":
-		return model.ModbusConstantsParse(io)
+		return model.ModbusConstantsParseWithBuffer(io)
 	case "ModbusPDUWriteFileRecordResponseItem":
-		return model.ModbusPDUWriteFileRecordResponseItemParse(io)
+		return model.ModbusPDUWriteFileRecordResponseItemParseWithBuffer(io)
 	case "ModbusPDU":
 		response, err := utils.StrToBool(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.ModbusPDUParse(io, response)
+		return model.ModbusPDUParseWithBuffer(io, response)
 	case "ModbusPDUReadFileRecordRequestItem":
-		return model.ModbusPDUReadFileRecordRequestItemParse(io)
+		return model.ModbusPDUReadFileRecordRequestItemParseWithBuffer(io)
 	case "ModbusADU":
-		driverType := model.DriverTypeByName(arguments[0])
+		driverType, _ := model.DriverTypeByName(arguments[0])
 		response, err := utils.StrToBool(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.ModbusADUParse(io, driverType, response)
+		return model.ModbusADUParseWithBuffer(io, driverType, response)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

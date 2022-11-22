@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,8 +30,8 @@ import (
 type COTPTpduSize uint8
 
 type ICOTPTpduSize interface {
+	utils.Serializable
 	SizeInBytes() uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -104,44 +104,44 @@ func COTPTpduSizeFirstEnumForFieldSizeInBytes(value uint16) (COTPTpduSize, error
 	}
 	return 0, errors.Errorf("enum for %v describing SizeInBytes not found", value)
 }
-func COTPTpduSizeByValue(value uint8) COTPTpduSize {
+func COTPTpduSizeByValue(value uint8) (enum COTPTpduSize, ok bool) {
 	switch value {
 	case 0x07:
-		return COTPTpduSize_SIZE_128
+		return COTPTpduSize_SIZE_128, true
 	case 0x08:
-		return COTPTpduSize_SIZE_256
+		return COTPTpduSize_SIZE_256, true
 	case 0x09:
-		return COTPTpduSize_SIZE_512
+		return COTPTpduSize_SIZE_512, true
 	case 0x0a:
-		return COTPTpduSize_SIZE_1024
+		return COTPTpduSize_SIZE_1024, true
 	case 0x0b:
-		return COTPTpduSize_SIZE_2048
+		return COTPTpduSize_SIZE_2048, true
 	case 0x0c:
-		return COTPTpduSize_SIZE_4096
+		return COTPTpduSize_SIZE_4096, true
 	case 0x0d:
-		return COTPTpduSize_SIZE_8192
+		return COTPTpduSize_SIZE_8192, true
 	}
-	return 0
+	return 0, false
 }
 
-func COTPTpduSizeByName(value string) COTPTpduSize {
+func COTPTpduSizeByName(value string) (enum COTPTpduSize, ok bool) {
 	switch value {
 	case "SIZE_128":
-		return COTPTpduSize_SIZE_128
+		return COTPTpduSize_SIZE_128, true
 	case "SIZE_256":
-		return COTPTpduSize_SIZE_256
+		return COTPTpduSize_SIZE_256, true
 	case "SIZE_512":
-		return COTPTpduSize_SIZE_512
+		return COTPTpduSize_SIZE_512, true
 	case "SIZE_1024":
-		return COTPTpduSize_SIZE_1024
+		return COTPTpduSize_SIZE_1024, true
 	case "SIZE_2048":
-		return COTPTpduSize_SIZE_2048
+		return COTPTpduSize_SIZE_2048, true
 	case "SIZE_4096":
-		return COTPTpduSize_SIZE_4096
+		return COTPTpduSize_SIZE_4096, true
 	case "SIZE_8192":
-		return COTPTpduSize_SIZE_8192
+		return COTPTpduSize_SIZE_8192, true
 	}
-	return 0
+	return 0, false
 }
 
 func COTPTpduSizeKnows(value uint8) bool {
@@ -171,19 +171,37 @@ func (m COTPTpduSize) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPTpduSizeParse(readBuffer utils.ReadBuffer) (COTPTpduSize, error) {
+func COTPTpduSizeParse(theBytes []byte) (COTPTpduSize, error) {
+	return COTPTpduSizeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func COTPTpduSizeParseWithBuffer(readBuffer utils.ReadBuffer) (COTPTpduSize, error) {
 	val, err := readBuffer.ReadUint8("COTPTpduSize", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading COTPTpduSize")
 	}
-	return COTPTpduSizeByValue(val), nil
+	if enum, ok := COTPTpduSizeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return COTPTpduSize(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e COTPTpduSize) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("COTPTpduSize", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e COTPTpduSize) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e COTPTpduSize) name() string {
+func (e COTPTpduSize) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("COTPTpduSize", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e COTPTpduSize) PLC4XEnumName() string {
 	switch e {
 	case COTPTpduSize_SIZE_128:
 		return "SIZE_128"
@@ -204,5 +222,5 @@ func (e COTPTpduSize) name() string {
 }
 
 func (e COTPTpduSize) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

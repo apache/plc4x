@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -57,7 +57,7 @@ public class ScraperTaskImpl implements ScraperTask {
     private final String jobName;
     private final String connectionAlias;
     private final String connectionString;
-    private final Map<String, String> fields;
+    private final Map<String, String> tags;
     private final long requestTimeoutMs;
     private final ExecutorService handlerService;
     private final ResultHandler resultHandler;
@@ -71,7 +71,7 @@ public class ScraperTaskImpl implements ScraperTask {
                            String jobName,
                            String connectionAlias,
                            String connectionString,
-                           Map<String, String> fields,
+                           Map<String, String> tags,
                            long requestTimeoutMs,
                            ExecutorService handlerService,
                            ResultHandler resultHandler) {
@@ -79,14 +79,14 @@ public class ScraperTaskImpl implements ScraperTask {
         Validate.notBlank(jobName);
         Validate.notBlank(connectionAlias);
         Validate.notBlank(connectionString);
-        Validate.notEmpty(fields);
+        Validate.notEmpty(tags);
         Validate.isTrue(requestTimeoutMs > 0);
         Validate.notNull(resultHandler);
         this.driverManager = driverManager;
         this.jobName = jobName;
         this.connectionAlias = connectionAlias;
         this.connectionString = connectionString;
-        this.fields = fields;
+        this.tags = tags;
         this.requestTimeoutMs = requestTimeoutMs;
         this.handlerService = handlerService;
         this.resultHandler = resultHandler;
@@ -118,10 +118,10 @@ public class ScraperTaskImpl implements ScraperTask {
             try {
                 //build read request
                 PlcReadRequest.Builder readRequestBuilder = connection.readRequestBuilder();
-                //add fields to be acquired to builder
-                fields.forEach((alias, qry) -> {
+                //add tags to be acquired to builder
+                tags.forEach((alias, qry) -> {
                     LOGGER.trace("Requesting: {} -> {}", alias, qry);
-                    readRequestBuilder.addItem(alias, qry);
+                    readRequestBuilder.addTagAddress(alias, qry);
                 });
                 plcReadResponse = readRequestBuilder
                     .build()
@@ -159,18 +159,18 @@ public class ScraperTaskImpl implements ScraperTask {
     }
 
     /**
-     * validate read response due to failed fields
+     * validate read response due to failed tags
      * @param response acquired response
      */
     private void validateResponse(PlcReadResponse response) {
-        Map<String, PlcResponseCode> failedFields = response.getFieldNames().stream()
+        Map<String, PlcResponseCode> failedTags = response.getTagNames().stream()
             .filter(name -> !PlcResponseCode.OK.equals(response.getResponseCode(name)))
             .collect(Collectors.toMap(
                 Function.identity(),
                 response::getResponseCode
             ));
-        if (failedFields.size() > 0) {
-            handleErrorResponse(failedFields);
+        if (failedTags.size() > 0) {
+            handleErrorResponse(failedTags);
         }
     }
 
@@ -180,7 +180,7 @@ public class ScraperTaskImpl implements ScraperTask {
      * @return transformed Map
      */
     private Map<String, Object> transformResponseToMap(PlcReadResponse response) {
-        return response.getFieldNames().stream()
+        return response.getTagNames().stream()
             .collect(Collectors.toMap(
                 name -> name,
                 response::getObject

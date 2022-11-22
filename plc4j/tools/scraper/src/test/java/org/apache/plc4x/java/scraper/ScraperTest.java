@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -53,10 +53,10 @@ class ScraperTest implements WithAssertions {
     MockDevice mockDevice;
 
     public static final String CONN_STRING_TIM = "s7://10.10.64.22/0/1";
-    public static final String FIELD_STRING_TIM = "%DB225:DBW0:INT";
+    public static final String TAG_STRING_TIM = "%DB225:DBW0:INT";
 
     public static final String CONN_STRING_CH = "s7://10.10.64.20/0/1";
-    public static final String FIELD_STRING_CH = "%DB3:DBD32:DINT";
+    public static final String TAG_STRING_CH = "%DB3:DBD32:DINT";
 
     @Test
     @Disabled
@@ -77,12 +77,12 @@ class ScraperTest implements WithAssertions {
             new ScrapeJobImpl("job1",
                 10,
                 Collections.singletonMap("tim", CONN_STRING_TIM),
-                Collections.singletonMap("distance", FIELD_STRING_TIM)
+                Collections.singletonMap("distance", TAG_STRING_TIM)
             ),
             new ScrapeJobImpl("job2",
                 10,
                 Collections.singletonMap("chris", CONN_STRING_CH),
-                Collections.singletonMap("counter", FIELD_STRING_CH)
+                Collections.singletonMap("counter", TAG_STRING_CH)
             )
         ));
 
@@ -101,7 +101,7 @@ class ScraperTest implements WithAssertions {
             new ScrapeJobImpl("job1",
                 10,
                 Collections.singletonMap("m1", "mock:m1"),
-                Collections.singletonMap("field1", "qry1")
+                Collections.singletonMap("tag1", "qry1")
             )
         ));
 
@@ -125,7 +125,7 @@ class ScraperTest implements WithAssertions {
             new ScrapeJobImpl("job1",
                 1,
                 Collections.singletonMap("m1", "mock:m1"),
-                Collections.singletonMap("field1", "qry1")
+                Collections.singletonMap("tag1", "qry1")
             )
         ));
 
@@ -152,7 +152,7 @@ class ScraperTest implements WithAssertions {
             new ScrapeJobImpl("job1",
                 1,
                 Collections.singletonMap("m1", "mock:m1"),
-                Collections.singletonMap("field1", "qry1")
+                Collections.singletonMap("tag1", "qry1")
             )
         ));
 

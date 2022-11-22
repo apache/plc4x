@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -117,7 +117,7 @@ class CachedDriverManagerTest implements WithAssertions {
         PlcConnection connection = driverManager.getConnection("");
         // Close the Connection
         PlcReadRequest.Builder builder = connection.readRequestBuilder();
-        PlcReadRequest request = builder.addItem("", "").build();
+        PlcReadRequest request = builder.addTagAddress("", "").build();
         connection.close();
         assertThrows(IllegalStateException.class, () -> request.execute());
     }

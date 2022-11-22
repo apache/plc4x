@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.bacnetip.ede.model;
 
 import org.apache.plc4x.java.api.value.*;
-import org.apache.plc4x.java.bacnetip.field.BacNetIpField;
+import org.apache.plc4x.java.bacnetip.tag.BacNetIpTag;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.java.spi.values.PlcDINT;
 import org.apache.plc4x.java.spi.values.PlcLREAL;
@@ -30,7 +30,7 @@ import java.util.Map;
 
 public class Datapoint {
 
-    private final BacNetIpField address;
+    private final BacNetIpTag address;
     private final String keyName;
     private final String objectName;
     private final String description;
@@ -46,7 +46,7 @@ public class Datapoint {
     private final Integer vendorSpecificAddress;
     private final Integer notificationClass;
 
-    public Datapoint(BacNetIpField address, String keyName, String objectName, String description, Double defaultValue, Double minValue, Double maxValue, Boolean commandable, Boolean supportsCov, Double hiLimit, Double lowLimit, String stateTextReference, Integer unitCode, Integer vendorSpecificAddress, Integer notificationClass) {
+    public Datapoint(BacNetIpTag address, String keyName, String objectName, String description, Double defaultValue, Double minValue, Double maxValue, Boolean commandable, Boolean supportsCov, Double hiLimit, Double lowLimit, String stateTextReference, Integer unitCode, Integer vendorSpecificAddress, Integer notificationClass) {
         this.address = address;
         this.keyName = keyName;
         this.objectName = objectName;
@@ -64,7 +64,7 @@ public class Datapoint {
         this.notificationClass = notificationClass;
     }
 
-    public BacNetIpField getAddress() {
+    public BacNetIpTag getAddress() {
         return address;
     }
 

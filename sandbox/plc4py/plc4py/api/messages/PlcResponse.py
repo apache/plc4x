@@ -7,7 +7,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -17,7 +17,7 @@
 # under the License.
 #
 from dataclasses import dataclass
-from typing import cast
+from typing import cast, List, Dict
 
 from plc4py.api.messages.PlcField import PlcField
 from plc4py.api.messages.PlcMessage import PlcMessage
@@ -37,7 +37,7 @@ class PlcResponse(PlcMessage):
 
 @dataclass
 class PlcFieldResponse(PlcResponse):
-    fields: list[PlcField]
+    fields: List[PlcField]
 
     @property
     def field_names(self):
@@ -53,7 +53,7 @@ class PlcReadResponse(PlcFieldResponse):
     Response to a {@link PlcReadRequest}.
     """
 
-    values: dict[str, list[ResponseItem[PlcValue]]]
+    values: Dict[str, List[ResponseItem[PlcValue]]]
 
     def get_plc_value(self, name: str, index: int = 0) -> PlcValue:
         return self.values[name][index].value

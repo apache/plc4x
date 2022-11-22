@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -29,10 +29,10 @@
 
 plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* readBuffer, char* dataProtocolId, int32_t stringLength, plc4c_data** data_item);
 
-plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_data** data_item);
+plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4c_spi_write_buffer* writeBuffer, char* dataProtocolId, int32_t stringLength, plc4c_data** data_item);
 
-uint16_t plc4c_s7_read_write_data_item_length_in_bytes(plc4c_data* data_item);
+uint16_t plc4c_s7_read_write_data_item_length_in_bytes(plc4c_data* data_item, char* dataProtocolId, int32_t stringLength);
 
-uint16_t plc4c_s7_read_write_data_item_length_in_bits(plc4c_data* data_item);
+uint16_t plc4c_s7_read_write_data_item_length_in_bits(plc4c_data* data_item, char* dataProtocolId, int32_t stringLength);
 
 #endif  // PLC4C_S7_READ_WRITE_DATA_ITEM_H_

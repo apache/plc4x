@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type CommandId uint16
 
 type ICommandId interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -64,56 +64,56 @@ func init() {
 	}
 }
 
-func CommandIdByValue(value uint16) CommandId {
+func CommandIdByValue(value uint16) (enum CommandId, ok bool) {
 	switch value {
 	case 0x0000:
-		return CommandId_INVALID
+		return CommandId_INVALID, true
 	case 0x0001:
-		return CommandId_ADS_READ_DEVICE_INFO
+		return CommandId_ADS_READ_DEVICE_INFO, true
 	case 0x0002:
-		return CommandId_ADS_READ
+		return CommandId_ADS_READ, true
 	case 0x0003:
-		return CommandId_ADS_WRITE
+		return CommandId_ADS_WRITE, true
 	case 0x0004:
-		return CommandId_ADS_READ_STATE
+		return CommandId_ADS_READ_STATE, true
 	case 0x0005:
-		return CommandId_ADS_WRITE_CONTROL
+		return CommandId_ADS_WRITE_CONTROL, true
 	case 0x0006:
-		return CommandId_ADS_ADD_DEVICE_NOTIFICATION
+		return CommandId_ADS_ADD_DEVICE_NOTIFICATION, true
 	case 0x0007:
-		return CommandId_ADS_DELETE_DEVICE_NOTIFICATION
+		return CommandId_ADS_DELETE_DEVICE_NOTIFICATION, true
 	case 0x0008:
-		return CommandId_ADS_DEVICE_NOTIFICATION
+		return CommandId_ADS_DEVICE_NOTIFICATION, true
 	case 0x0009:
-		return CommandId_ADS_READ_WRITE
+		return CommandId_ADS_READ_WRITE, true
 	}
-	return 0
+	return 0, false
 }
 
-func CommandIdByName(value string) CommandId {
+func CommandIdByName(value string) (enum CommandId, ok bool) {
 	switch value {
 	case "INVALID":
-		return CommandId_INVALID
+		return CommandId_INVALID, true
 	case "ADS_READ_DEVICE_INFO":
-		return CommandId_ADS_READ_DEVICE_INFO
+		return CommandId_ADS_READ_DEVICE_INFO, true
 	case "ADS_READ":
-		return CommandId_ADS_READ
+		return CommandId_ADS_READ, true
 	case "ADS_WRITE":
-		return CommandId_ADS_WRITE
+		return CommandId_ADS_WRITE, true
 	case "ADS_READ_STATE":
-		return CommandId_ADS_READ_STATE
+		return CommandId_ADS_READ_STATE, true
 	case "ADS_WRITE_CONTROL":
-		return CommandId_ADS_WRITE_CONTROL
+		return CommandId_ADS_WRITE_CONTROL, true
 	case "ADS_ADD_DEVICE_NOTIFICATION":
-		return CommandId_ADS_ADD_DEVICE_NOTIFICATION
+		return CommandId_ADS_ADD_DEVICE_NOTIFICATION, true
 	case "ADS_DELETE_DEVICE_NOTIFICATION":
-		return CommandId_ADS_DELETE_DEVICE_NOTIFICATION
+		return CommandId_ADS_DELETE_DEVICE_NOTIFICATION, true
 	case "ADS_DEVICE_NOTIFICATION":
-		return CommandId_ADS_DEVICE_NOTIFICATION
+		return CommandId_ADS_DEVICE_NOTIFICATION, true
 	case "ADS_READ_WRITE":
-		return CommandId_ADS_READ_WRITE
+		return CommandId_ADS_READ_WRITE, true
 	}
-	return 0
+	return 0, false
 }
 
 func CommandIdKnows(value uint16) bool {
@@ -143,19 +143,37 @@ func (m CommandId) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CommandIdParse(readBuffer utils.ReadBuffer) (CommandId, error) {
+func CommandIdParse(theBytes []byte) (CommandId, error) {
+	return CommandIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func CommandIdParseWithBuffer(readBuffer utils.ReadBuffer) (CommandId, error) {
 	val, err := readBuffer.ReadUint16("CommandId", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading CommandId")
 	}
-	return CommandIdByValue(val), nil
+	if enum, ok := CommandIdByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return CommandId(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e CommandId) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("CommandId", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e CommandId) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e CommandId) name() string {
+func (e CommandId) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("CommandId", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e CommandId) PLC4XEnumName() string {
 	switch e {
 	case CommandId_INVALID:
 		return "INVALID"
@@ -182,5 +200,5 @@ func (e CommandId) name() string {
 }
 
 func (e CommandId) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

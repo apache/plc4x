@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetSegmentation uint8
 
 type IBACnetSegmentation interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -52,32 +52,32 @@ func init() {
 	}
 }
 
-func BACnetSegmentationByValue(value uint8) BACnetSegmentation {
+func BACnetSegmentationByValue(value uint8) (enum BACnetSegmentation, ok bool) {
 	switch value {
 	case 0:
-		return BACnetSegmentation_SEGMENTED_BOTH
+		return BACnetSegmentation_SEGMENTED_BOTH, true
 	case 1:
-		return BACnetSegmentation_SEGMENTED_TRANSMIT
+		return BACnetSegmentation_SEGMENTED_TRANSMIT, true
 	case 2:
-		return BACnetSegmentation_SEGMENTED_RECEIVE
+		return BACnetSegmentation_SEGMENTED_RECEIVE, true
 	case 3:
-		return BACnetSegmentation_NO_SEGMENTATION
+		return BACnetSegmentation_NO_SEGMENTATION, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetSegmentationByName(value string) BACnetSegmentation {
+func BACnetSegmentationByName(value string) (enum BACnetSegmentation, ok bool) {
 	switch value {
 	case "SEGMENTED_BOTH":
-		return BACnetSegmentation_SEGMENTED_BOTH
+		return BACnetSegmentation_SEGMENTED_BOTH, true
 	case "SEGMENTED_TRANSMIT":
-		return BACnetSegmentation_SEGMENTED_TRANSMIT
+		return BACnetSegmentation_SEGMENTED_TRANSMIT, true
 	case "SEGMENTED_RECEIVE":
-		return BACnetSegmentation_SEGMENTED_RECEIVE
+		return BACnetSegmentation_SEGMENTED_RECEIVE, true
 	case "NO_SEGMENTATION":
-		return BACnetSegmentation_NO_SEGMENTATION
+		return BACnetSegmentation_NO_SEGMENTATION, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetSegmentationKnows(value uint8) bool {
@@ -107,19 +107,37 @@ func (m BACnetSegmentation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSegmentationParse(readBuffer utils.ReadBuffer) (BACnetSegmentation, error) {
+func BACnetSegmentationParse(theBytes []byte) (BACnetSegmentation, error) {
+	return BACnetSegmentationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetSegmentationParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSegmentation, error) {
 	val, err := readBuffer.ReadUint8("BACnetSegmentation", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetSegmentation")
 	}
-	return BACnetSegmentationByValue(val), nil
+	if enum, ok := BACnetSegmentationByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetSegmentation(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetSegmentation) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetSegmentation", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetSegmentation) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetSegmentation) name() string {
+func (e BACnetSegmentation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetSegmentation", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetSegmentation) PLC4XEnumName() string {
 	switch e {
 	case BACnetSegmentation_SEGMENTED_BOTH:
 		return "SEGMENTED_BOTH"
@@ -134,5 +152,5 @@ func (e BACnetSegmentation) name() string {
 }
 
 func (e BACnetSegmentation) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

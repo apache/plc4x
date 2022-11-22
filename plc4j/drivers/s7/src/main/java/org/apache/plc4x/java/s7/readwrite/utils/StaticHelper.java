@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -1930,7 +1930,7 @@ public class StaticHelper {
         throw new NotImplementedException("Serializing DATE_AND_TIME not implemented");
     }
 
-    public static String parseS7Char(ReadBuffer io, String encoding) {
+    public static String parseS7Char(ReadBuffer io, String encoding) throws ParseException {
         if ("UTF-8".equalsIgnoreCase(encoding)) {
             return io.readString(8, encoding);
         } else if ("UTF-16".equalsIgnoreCase(encoding)) {

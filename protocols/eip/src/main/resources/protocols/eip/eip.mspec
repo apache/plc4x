@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -23,7 +23,8 @@
 
 [discriminatedType EipPacket byteOrder='BIG_ENDIAN'
     [discriminator uint 16 command]
-    [implicit      uint 16 len 'lengthInBytes - 24']
+    // TODO: was len before but that is a reserved keyword in golang and as long as we don't have a language agnostic neutralizer this clashes
+    [implicit      uint 16 packetLength 'lengthInBytes - 24']
     [simple        uint 32 sessionHandle]
     [simple        uint 32 status]
     [array         uint 8  senderContext count '8']
@@ -35,10 +36,10 @@
             ]
             ['0x0066' EipDisconnectRequest
             ]
-            ['0x006F' CipRRData(uint 16 len)
+            ['0x006F' CipRRData(uint 16 packetLength)
                 [reserved  uint    32    '0x00000000']
                 [reserved  uint    16    '0x0000']
-                [simple    CipExchange('len - 6')   exchange]
+                [simple    CipExchange('packetLength - 6')   exchange]
             ]
         ]
 ]
@@ -121,11 +122,15 @@
     ['0X00C5'   LINT            ['8']]
     ['0X00CA'   REAL            ['4']]
     ['0X00D3'   DWORD           ['4']]
-    ['0X02A0'   STRUCTURED      ['88']]
+    ['0X02A0'   Struct          ['88']]
     ['0X02A0'   STRING          ['88']]
-    ['0X02A0'   STRING36        ['40']]
+    //['0X02A0'   STRING36        ['40']]
     //TODO: -1 is not a valid value for uint
     //['-1'       UNKNOWN         ['-1']]
+]
+
+[enum uint 16 CIPStructTypeCode
+    ['0x0FCE'   STRING]
 ]
 
 [enum   uint    16  EiPCommand

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,21 +30,20 @@ import (
 type CIPDataTypeCode uint16
 
 type ICIPDataTypeCode interface {
+	utils.Serializable
 	Size() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
-	CIPDataTypeCode_BOOL       CIPDataTypeCode = 0x00C1
-	CIPDataTypeCode_SINT       CIPDataTypeCode = 0x00C2
-	CIPDataTypeCode_INT        CIPDataTypeCode = 0x00C3
-	CIPDataTypeCode_DINT       CIPDataTypeCode = 0x00C4
-	CIPDataTypeCode_LINT       CIPDataTypeCode = 0x00C5
-	CIPDataTypeCode_REAL       CIPDataTypeCode = 0x00CA
-	CIPDataTypeCode_DWORD      CIPDataTypeCode = 0x00D3
-	CIPDataTypeCode_STRUCTURED CIPDataTypeCode = 0x02A0
-	CIPDataTypeCode_STRING     CIPDataTypeCode = 0x02A0
-	CIPDataTypeCode_STRING36   CIPDataTypeCode = 0x02A0
+	CIPDataTypeCode_BOOL   CIPDataTypeCode = 0x00C1
+	CIPDataTypeCode_SINT   CIPDataTypeCode = 0x00C2
+	CIPDataTypeCode_INT    CIPDataTypeCode = 0x00C3
+	CIPDataTypeCode_DINT   CIPDataTypeCode = 0x00C4
+	CIPDataTypeCode_LINT   CIPDataTypeCode = 0x00C5
+	CIPDataTypeCode_REAL   CIPDataTypeCode = 0x00CA
+	CIPDataTypeCode_DWORD  CIPDataTypeCode = 0x00D3
+	CIPDataTypeCode_Struct CIPDataTypeCode = 0x02A0
+	CIPDataTypeCode_STRING CIPDataTypeCode = 0x02A0
 )
 
 var CIPDataTypeCodeValues []CIPDataTypeCode
@@ -59,9 +58,8 @@ func init() {
 		CIPDataTypeCode_LINT,
 		CIPDataTypeCode_REAL,
 		CIPDataTypeCode_DWORD,
-		CIPDataTypeCode_STRUCTURED,
+		CIPDataTypeCode_Struct,
 		CIPDataTypeCode_STRING,
-		CIPDataTypeCode_STRING36,
 	}
 }
 
@@ -114,48 +112,48 @@ func CIPDataTypeCodeFirstEnumForFieldSize(value uint8) (CIPDataTypeCode, error) 
 	}
 	return 0, errors.Errorf("enum for %v describing Size not found", value)
 }
-func CIPDataTypeCodeByValue(value uint16) CIPDataTypeCode {
+func CIPDataTypeCodeByValue(value uint16) (enum CIPDataTypeCode, ok bool) {
 	switch value {
 	case 0x00C1:
-		return CIPDataTypeCode_BOOL
+		return CIPDataTypeCode_BOOL, true
 	case 0x00C2:
-		return CIPDataTypeCode_SINT
+		return CIPDataTypeCode_SINT, true
 	case 0x00C3:
-		return CIPDataTypeCode_INT
+		return CIPDataTypeCode_INT, true
 	case 0x00C4:
-		return CIPDataTypeCode_DINT
+		return CIPDataTypeCode_DINT, true
 	case 0x00C5:
-		return CIPDataTypeCode_LINT
+		return CIPDataTypeCode_LINT, true
 	case 0x00CA:
-		return CIPDataTypeCode_REAL
+		return CIPDataTypeCode_REAL, true
 	case 0x00D3:
-		return CIPDataTypeCode_DWORD
+		return CIPDataTypeCode_DWORD, true
 	case 0x02A0:
-		return CIPDataTypeCode_STRUCTURED
+		return CIPDataTypeCode_Struct, true
 	}
-	return 0
+	return 0, false
 }
 
-func CIPDataTypeCodeByName(value string) CIPDataTypeCode {
+func CIPDataTypeCodeByName(value string) (enum CIPDataTypeCode, ok bool) {
 	switch value {
 	case "BOOL":
-		return CIPDataTypeCode_BOOL
+		return CIPDataTypeCode_BOOL, true
 	case "SINT":
-		return CIPDataTypeCode_SINT
+		return CIPDataTypeCode_SINT, true
 	case "INT":
-		return CIPDataTypeCode_INT
+		return CIPDataTypeCode_INT, true
 	case "DINT":
-		return CIPDataTypeCode_DINT
+		return CIPDataTypeCode_DINT, true
 	case "LINT":
-		return CIPDataTypeCode_LINT
+		return CIPDataTypeCode_LINT, true
 	case "REAL":
-		return CIPDataTypeCode_REAL
+		return CIPDataTypeCode_REAL, true
 	case "DWORD":
-		return CIPDataTypeCode_DWORD
-	case "STRUCTURED":
-		return CIPDataTypeCode_STRUCTURED
+		return CIPDataTypeCode_DWORD, true
+	case "Struct":
+		return CIPDataTypeCode_Struct, true
 	}
-	return 0
+	return 0, false
 }
 
 func CIPDataTypeCodeKnows(value uint16) bool {
@@ -185,19 +183,37 @@ func (m CIPDataTypeCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CIPDataTypeCodeParse(readBuffer utils.ReadBuffer) (CIPDataTypeCode, error) {
+func CIPDataTypeCodeParse(theBytes []byte) (CIPDataTypeCode, error) {
+	return CIPDataTypeCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func CIPDataTypeCodeParseWithBuffer(readBuffer utils.ReadBuffer) (CIPDataTypeCode, error) {
 	val, err := readBuffer.ReadUint16("CIPDataTypeCode", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading CIPDataTypeCode")
 	}
-	return CIPDataTypeCodeByValue(val), nil
+	if enum, ok := CIPDataTypeCodeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return CIPDataTypeCode(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e CIPDataTypeCode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("CIPDataTypeCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e CIPDataTypeCode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e CIPDataTypeCode) name() string {
+func (e CIPDataTypeCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("CIPDataTypeCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e CIPDataTypeCode) PLC4XEnumName() string {
 	switch e {
 	case CIPDataTypeCode_BOOL:
 		return "BOOL"
@@ -213,12 +229,12 @@ func (e CIPDataTypeCode) name() string {
 		return "REAL"
 	case CIPDataTypeCode_DWORD:
 		return "DWORD"
-	case CIPDataTypeCode_STRUCTURED:
-		return "STRUCTURED"
+	case CIPDataTypeCode_Struct:
+		return "Struct"
 	}
 	return ""
 }
 
 func (e CIPDataTypeCode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

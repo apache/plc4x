@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetRelationship uint16
 
 type IBACnetRelationship interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -106,140 +106,140 @@ func init() {
 	}
 }
 
-func BACnetRelationshipByValue(value uint16) BACnetRelationship {
+func BACnetRelationshipByValue(value uint16) (enum BACnetRelationship, ok bool) {
 	switch value {
 	case 0:
-		return BACnetRelationship_UNKNOWN
+		return BACnetRelationship_UNKNOWN, true
 	case 0xFFFF:
-		return BACnetRelationship_VENDOR_PROPRIETARY_VALUE
+		return BACnetRelationship_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetRelationship_DEFAULT
+		return BACnetRelationship_DEFAULT, true
 	case 10:
-		return BACnetRelationship_INGRESS
+		return BACnetRelationship_INGRESS, true
 	case 11:
-		return BACnetRelationship_EGRESS
+		return BACnetRelationship_EGRESS, true
 	case 12:
-		return BACnetRelationship_SUPPLIES_AIR
+		return BACnetRelationship_SUPPLIES_AIR, true
 	case 13:
-		return BACnetRelationship_RECEIVES_AIR
+		return BACnetRelationship_RECEIVES_AIR, true
 	case 14:
-		return BACnetRelationship_SUPPLIES_HOT_AIR
+		return BACnetRelationship_SUPPLIES_HOT_AIR, true
 	case 15:
-		return BACnetRelationship_RECEIVES_HOT_AIR
+		return BACnetRelationship_RECEIVES_HOT_AIR, true
 	case 16:
-		return BACnetRelationship_SUPPLIES_COOL_AIR
+		return BACnetRelationship_SUPPLIES_COOL_AIR, true
 	case 17:
-		return BACnetRelationship_RECEIVES_COOL_AIR
+		return BACnetRelationship_RECEIVES_COOL_AIR, true
 	case 18:
-		return BACnetRelationship_SUPPLIES_POWER
+		return BACnetRelationship_SUPPLIES_POWER, true
 	case 19:
-		return BACnetRelationship_RECEIVES_POWER
+		return BACnetRelationship_RECEIVES_POWER, true
 	case 2:
-		return BACnetRelationship_CONTAINS
+		return BACnetRelationship_CONTAINS, true
 	case 20:
-		return BACnetRelationship_SUPPLIES_GAS
+		return BACnetRelationship_SUPPLIES_GAS, true
 	case 21:
-		return BACnetRelationship_RECEIVES_GAS
+		return BACnetRelationship_RECEIVES_GAS, true
 	case 22:
-		return BACnetRelationship_SUPPLIES_WATER
+		return BACnetRelationship_SUPPLIES_WATER, true
 	case 23:
-		return BACnetRelationship_RECEIVES_WATER
+		return BACnetRelationship_RECEIVES_WATER, true
 	case 24:
-		return BACnetRelationship_SUPPLIES_HOT_WATER
+		return BACnetRelationship_SUPPLIES_HOT_WATER, true
 	case 25:
-		return BACnetRelationship_RECEIVES_HOT_WATER
+		return BACnetRelationship_RECEIVES_HOT_WATER, true
 	case 26:
-		return BACnetRelationship_SUPPLIES_COOL_WATER
+		return BACnetRelationship_SUPPLIES_COOL_WATER, true
 	case 27:
-		return BACnetRelationship_RECEIVES_COOL_WATER
+		return BACnetRelationship_RECEIVES_COOL_WATER, true
 	case 28:
-		return BACnetRelationship_SUPPLIES_STEAM
+		return BACnetRelationship_SUPPLIES_STEAM, true
 	case 29:
-		return BACnetRelationship_RECEIVES_STEAM
+		return BACnetRelationship_RECEIVES_STEAM, true
 	case 3:
-		return BACnetRelationship_CONTAINED_BY
+		return BACnetRelationship_CONTAINED_BY, true
 	case 4:
-		return BACnetRelationship_USES
+		return BACnetRelationship_USES, true
 	case 5:
-		return BACnetRelationship_USED_BY
+		return BACnetRelationship_USED_BY, true
 	case 6:
-		return BACnetRelationship_COMMANDS
+		return BACnetRelationship_COMMANDS, true
 	case 7:
-		return BACnetRelationship_COMMANDED_BY
+		return BACnetRelationship_COMMANDED_BY, true
 	case 8:
-		return BACnetRelationship_ADJUSTS
+		return BACnetRelationship_ADJUSTS, true
 	case 9:
-		return BACnetRelationship_ADJUSTED_BY
+		return BACnetRelationship_ADJUSTED_BY, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetRelationshipByName(value string) BACnetRelationship {
+func BACnetRelationshipByName(value string) (enum BACnetRelationship, ok bool) {
 	switch value {
 	case "UNKNOWN":
-		return BACnetRelationship_UNKNOWN
+		return BACnetRelationship_UNKNOWN, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetRelationship_VENDOR_PROPRIETARY_VALUE
+		return BACnetRelationship_VENDOR_PROPRIETARY_VALUE, true
 	case "DEFAULT":
-		return BACnetRelationship_DEFAULT
+		return BACnetRelationship_DEFAULT, true
 	case "INGRESS":
-		return BACnetRelationship_INGRESS
+		return BACnetRelationship_INGRESS, true
 	case "EGRESS":
-		return BACnetRelationship_EGRESS
+		return BACnetRelationship_EGRESS, true
 	case "SUPPLIES_AIR":
-		return BACnetRelationship_SUPPLIES_AIR
+		return BACnetRelationship_SUPPLIES_AIR, true
 	case "RECEIVES_AIR":
-		return BACnetRelationship_RECEIVES_AIR
+		return BACnetRelationship_RECEIVES_AIR, true
 	case "SUPPLIES_HOT_AIR":
-		return BACnetRelationship_SUPPLIES_HOT_AIR
+		return BACnetRelationship_SUPPLIES_HOT_AIR, true
 	case "RECEIVES_HOT_AIR":
-		return BACnetRelationship_RECEIVES_HOT_AIR
+		return BACnetRelationship_RECEIVES_HOT_AIR, true
 	case "SUPPLIES_COOL_AIR":
-		return BACnetRelationship_SUPPLIES_COOL_AIR
+		return BACnetRelationship_SUPPLIES_COOL_AIR, true
 	case "RECEIVES_COOL_AIR":
-		return BACnetRelationship_RECEIVES_COOL_AIR
+		return BACnetRelationship_RECEIVES_COOL_AIR, true
 	case "SUPPLIES_POWER":
-		return BACnetRelationship_SUPPLIES_POWER
+		return BACnetRelationship_SUPPLIES_POWER, true
 	case "RECEIVES_POWER":
-		return BACnetRelationship_RECEIVES_POWER
+		return BACnetRelationship_RECEIVES_POWER, true
 	case "CONTAINS":
-		return BACnetRelationship_CONTAINS
+		return BACnetRelationship_CONTAINS, true
 	case "SUPPLIES_GAS":
-		return BACnetRelationship_SUPPLIES_GAS
+		return BACnetRelationship_SUPPLIES_GAS, true
 	case "RECEIVES_GAS":
-		return BACnetRelationship_RECEIVES_GAS
+		return BACnetRelationship_RECEIVES_GAS, true
 	case "SUPPLIES_WATER":
-		return BACnetRelationship_SUPPLIES_WATER
+		return BACnetRelationship_SUPPLIES_WATER, true
 	case "RECEIVES_WATER":
-		return BACnetRelationship_RECEIVES_WATER
+		return BACnetRelationship_RECEIVES_WATER, true
 	case "SUPPLIES_HOT_WATER":
-		return BACnetRelationship_SUPPLIES_HOT_WATER
+		return BACnetRelationship_SUPPLIES_HOT_WATER, true
 	case "RECEIVES_HOT_WATER":
-		return BACnetRelationship_RECEIVES_HOT_WATER
+		return BACnetRelationship_RECEIVES_HOT_WATER, true
 	case "SUPPLIES_COOL_WATER":
-		return BACnetRelationship_SUPPLIES_COOL_WATER
+		return BACnetRelationship_SUPPLIES_COOL_WATER, true
 	case "RECEIVES_COOL_WATER":
-		return BACnetRelationship_RECEIVES_COOL_WATER
+		return BACnetRelationship_RECEIVES_COOL_WATER, true
 	case "SUPPLIES_STEAM":
-		return BACnetRelationship_SUPPLIES_STEAM
+		return BACnetRelationship_SUPPLIES_STEAM, true
 	case "RECEIVES_STEAM":
-		return BACnetRelationship_RECEIVES_STEAM
+		return BACnetRelationship_RECEIVES_STEAM, true
 	case "CONTAINED_BY":
-		return BACnetRelationship_CONTAINED_BY
+		return BACnetRelationship_CONTAINED_BY, true
 	case "USES":
-		return BACnetRelationship_USES
+		return BACnetRelationship_USES, true
 	case "USED_BY":
-		return BACnetRelationship_USED_BY
+		return BACnetRelationship_USED_BY, true
 	case "COMMANDS":
-		return BACnetRelationship_COMMANDS
+		return BACnetRelationship_COMMANDS, true
 	case "COMMANDED_BY":
-		return BACnetRelationship_COMMANDED_BY
+		return BACnetRelationship_COMMANDED_BY, true
 	case "ADJUSTS":
-		return BACnetRelationship_ADJUSTS
+		return BACnetRelationship_ADJUSTS, true
 	case "ADJUSTED_BY":
-		return BACnetRelationship_ADJUSTED_BY
+		return BACnetRelationship_ADJUSTED_BY, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetRelationshipKnows(value uint16) bool {
@@ -269,19 +269,37 @@ func (m BACnetRelationship) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRelationshipParse(readBuffer utils.ReadBuffer) (BACnetRelationship, error) {
+func BACnetRelationshipParse(theBytes []byte) (BACnetRelationship, error) {
+	return BACnetRelationshipParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetRelationshipParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRelationship, error) {
 	val, err := readBuffer.ReadUint16("BACnetRelationship", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetRelationship")
 	}
-	return BACnetRelationshipByValue(val), nil
+	if enum, ok := BACnetRelationshipByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetRelationship(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetRelationship) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetRelationship", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetRelationship) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetRelationship) name() string {
+func (e BACnetRelationship) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetRelationship", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetRelationship) PLC4XEnumName() string {
 	switch e {
 	case BACnetRelationship_UNKNOWN:
 		return "UNKNOWN"
@@ -350,5 +368,5 @@ func (e BACnetRelationship) name() string {
 }
 
 func (e BACnetRelationship) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

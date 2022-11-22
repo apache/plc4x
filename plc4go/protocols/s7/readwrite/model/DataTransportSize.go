@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,8 +30,8 @@ import (
 type DataTransportSize uint8
 
 type IDataTransportSize interface {
+	utils.Serializable
 	SizeInBits() bool
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -104,44 +104,44 @@ func DataTransportSizeFirstEnumForFieldSizeInBits(value bool) (DataTransportSize
 	}
 	return 0, errors.Errorf("enum for %v describing SizeInBits not found", value)
 }
-func DataTransportSizeByValue(value uint8) DataTransportSize {
+func DataTransportSizeByValue(value uint8) (enum DataTransportSize, ok bool) {
 	switch value {
 	case 0x00:
-		return DataTransportSize_NULL
+		return DataTransportSize_NULL, true
 	case 0x03:
-		return DataTransportSize_BIT
+		return DataTransportSize_BIT, true
 	case 0x04:
-		return DataTransportSize_BYTE_WORD_DWORD
+		return DataTransportSize_BYTE_WORD_DWORD, true
 	case 0x05:
-		return DataTransportSize_INTEGER
+		return DataTransportSize_INTEGER, true
 	case 0x06:
-		return DataTransportSize_DINTEGER
+		return DataTransportSize_DINTEGER, true
 	case 0x07:
-		return DataTransportSize_REAL
+		return DataTransportSize_REAL, true
 	case 0x09:
-		return DataTransportSize_OCTET_STRING
+		return DataTransportSize_OCTET_STRING, true
 	}
-	return 0
+	return 0, false
 }
 
-func DataTransportSizeByName(value string) DataTransportSize {
+func DataTransportSizeByName(value string) (enum DataTransportSize, ok bool) {
 	switch value {
 	case "NULL":
-		return DataTransportSize_NULL
+		return DataTransportSize_NULL, true
 	case "BIT":
-		return DataTransportSize_BIT
+		return DataTransportSize_BIT, true
 	case "BYTE_WORD_DWORD":
-		return DataTransportSize_BYTE_WORD_DWORD
+		return DataTransportSize_BYTE_WORD_DWORD, true
 	case "INTEGER":
-		return DataTransportSize_INTEGER
+		return DataTransportSize_INTEGER, true
 	case "DINTEGER":
-		return DataTransportSize_DINTEGER
+		return DataTransportSize_DINTEGER, true
 	case "REAL":
-		return DataTransportSize_REAL
+		return DataTransportSize_REAL, true
 	case "OCTET_STRING":
-		return DataTransportSize_OCTET_STRING
+		return DataTransportSize_OCTET_STRING, true
 	}
-	return 0
+	return 0, false
 }
 
 func DataTransportSizeKnows(value uint8) bool {
@@ -171,19 +171,37 @@ func (m DataTransportSize) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DataTransportSizeParse(readBuffer utils.ReadBuffer) (DataTransportSize, error) {
+func DataTransportSizeParse(theBytes []byte) (DataTransportSize, error) {
+	return DataTransportSizeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func DataTransportSizeParseWithBuffer(readBuffer utils.ReadBuffer) (DataTransportSize, error) {
 	val, err := readBuffer.ReadUint8("DataTransportSize", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading DataTransportSize")
 	}
-	return DataTransportSizeByValue(val), nil
+	if enum, ok := DataTransportSizeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return DataTransportSize(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e DataTransportSize) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("DataTransportSize", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e DataTransportSize) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e DataTransportSize) name() string {
+func (e DataTransportSize) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("DataTransportSize", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e DataTransportSize) PLC4XEnumName() string {
 	switch e {
 	case DataTransportSize_NULL:
 		return "NULL"
@@ -204,5 +222,5 @@ func (e DataTransportSize) name() string {
 }
 
 func (e DataTransportSize) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

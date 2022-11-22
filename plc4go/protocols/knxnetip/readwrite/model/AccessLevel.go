@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,9 +30,9 @@ import (
 type AccessLevel uint8
 
 type IAccessLevel interface {
+	utils.Serializable
 	Purpose() string
 	NeedsAuthentication() bool
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -131,36 +131,36 @@ func AccessLevelFirstEnumForFieldNeedsAuthentication(value bool) (AccessLevel, e
 	}
 	return 0, errors.Errorf("enum for %v describing NeedsAuthentication not found", value)
 }
-func AccessLevelByValue(value uint8) AccessLevel {
+func AccessLevelByValue(value uint8) (enum AccessLevel, ok bool) {
 	switch value {
 	case 0x0:
-		return AccessLevel_Level0
+		return AccessLevel_Level0, true
 	case 0x1:
-		return AccessLevel_Level1
+		return AccessLevel_Level1, true
 	case 0x2:
-		return AccessLevel_Level2
+		return AccessLevel_Level2, true
 	case 0x3:
-		return AccessLevel_Level3
+		return AccessLevel_Level3, true
 	case 0xF:
-		return AccessLevel_Level15
+		return AccessLevel_Level15, true
 	}
-	return 0
+	return 0, false
 }
 
-func AccessLevelByName(value string) AccessLevel {
+func AccessLevelByName(value string) (enum AccessLevel, ok bool) {
 	switch value {
 	case "Level0":
-		return AccessLevel_Level0
+		return AccessLevel_Level0, true
 	case "Level1":
-		return AccessLevel_Level1
+		return AccessLevel_Level1, true
 	case "Level2":
-		return AccessLevel_Level2
+		return AccessLevel_Level2, true
 	case "Level3":
-		return AccessLevel_Level3
+		return AccessLevel_Level3, true
 	case "Level15":
-		return AccessLevel_Level15
+		return AccessLevel_Level15, true
 	}
-	return 0
+	return 0, false
 }
 
 func AccessLevelKnows(value uint8) bool {
@@ -190,19 +190,37 @@ func (m AccessLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AccessLevelParse(readBuffer utils.ReadBuffer) (AccessLevel, error) {
+func AccessLevelParse(theBytes []byte) (AccessLevel, error) {
+	return AccessLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AccessLevelParseWithBuffer(readBuffer utils.ReadBuffer) (AccessLevel, error) {
 	val, err := readBuffer.ReadUint8("AccessLevel", 4)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading AccessLevel")
 	}
-	return AccessLevelByValue(val), nil
+	if enum, ok := AccessLevelByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return AccessLevel(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e AccessLevel) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("AccessLevel", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e AccessLevel) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e AccessLevel) name() string {
+func (e AccessLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("AccessLevel", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e AccessLevel) PLC4XEnumName() string {
 	switch e {
 	case AccessLevel_Level0:
 		return "Level0"
@@ -219,5 +237,5 @@ func (e AccessLevel) name() string {
 }
 
 func (e AccessLevel) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

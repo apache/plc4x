@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,8 +20,8 @@
 package readwrite
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"strconv"
 	"strings"
@@ -50,9 +50,9 @@ func (m SimulatedXmlParserHelper) Parse(typeName string, xmlString string, parse
 			return nil, err
 		}
 		numberOfValues := uint16(parsedUint1)
-		return model.DataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataType, numberOfValues)
+		return model.DataItemParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataType, numberOfValues)
 	case "Dummy":
-		return model.DummyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.DummyParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

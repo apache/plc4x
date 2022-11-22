@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetDeviceStatus uint16
 
 type IBACnetDeviceStatus interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -58,44 +58,44 @@ func init() {
 	}
 }
 
-func BACnetDeviceStatusByValue(value uint16) BACnetDeviceStatus {
+func BACnetDeviceStatusByValue(value uint16) (enum BACnetDeviceStatus, ok bool) {
 	switch value {
 	case 0:
-		return BACnetDeviceStatus_OPERATIONAL
+		return BACnetDeviceStatus_OPERATIONAL, true
 	case 0xFFFF:
-		return BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE
+		return BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetDeviceStatus_OPERATIONAL_READ_ONLY
+		return BACnetDeviceStatus_OPERATIONAL_READ_ONLY, true
 	case 2:
-		return BACnetDeviceStatus_DOWNLOAD_REQUIRED
+		return BACnetDeviceStatus_DOWNLOAD_REQUIRED, true
 	case 3:
-		return BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS
+		return BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS, true
 	case 4:
-		return BACnetDeviceStatus_NON_OPERATIONAL
+		return BACnetDeviceStatus_NON_OPERATIONAL, true
 	case 5:
-		return BACnetDeviceStatus_BACKUP_IN_PROGRESS
+		return BACnetDeviceStatus_BACKUP_IN_PROGRESS, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetDeviceStatusByName(value string) BACnetDeviceStatus {
+func BACnetDeviceStatusByName(value string) (enum BACnetDeviceStatus, ok bool) {
 	switch value {
 	case "OPERATIONAL":
-		return BACnetDeviceStatus_OPERATIONAL
+		return BACnetDeviceStatus_OPERATIONAL, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE
+		return BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE, true
 	case "OPERATIONAL_READ_ONLY":
-		return BACnetDeviceStatus_OPERATIONAL_READ_ONLY
+		return BACnetDeviceStatus_OPERATIONAL_READ_ONLY, true
 	case "DOWNLOAD_REQUIRED":
-		return BACnetDeviceStatus_DOWNLOAD_REQUIRED
+		return BACnetDeviceStatus_DOWNLOAD_REQUIRED, true
 	case "DOWNLOAD_IN_PROGRESS":
-		return BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS
+		return BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS, true
 	case "NON_OPERATIONAL":
-		return BACnetDeviceStatus_NON_OPERATIONAL
+		return BACnetDeviceStatus_NON_OPERATIONAL, true
 	case "BACKUP_IN_PROGRESS":
-		return BACnetDeviceStatus_BACKUP_IN_PROGRESS
+		return BACnetDeviceStatus_BACKUP_IN_PROGRESS, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetDeviceStatusKnows(value uint16) bool {
@@ -125,19 +125,37 @@ func (m BACnetDeviceStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDeviceStatusParse(readBuffer utils.ReadBuffer) (BACnetDeviceStatus, error) {
+func BACnetDeviceStatusParse(theBytes []byte) (BACnetDeviceStatus, error) {
+	return BACnetDeviceStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetDeviceStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDeviceStatus, error) {
 	val, err := readBuffer.ReadUint16("BACnetDeviceStatus", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetDeviceStatus")
 	}
-	return BACnetDeviceStatusByValue(val), nil
+	if enum, ok := BACnetDeviceStatusByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetDeviceStatus(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetDeviceStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetDeviceStatus", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetDeviceStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetDeviceStatus) name() string {
+func (e BACnetDeviceStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetDeviceStatus", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetDeviceStatus) PLC4XEnumName() string {
 	switch e {
 	case BACnetDeviceStatus_OPERATIONAL:
 		return "OPERATIONAL"
@@ -158,5 +176,5 @@ func (e BACnetDeviceStatus) name() string {
 }
 
 func (e BACnetDeviceStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

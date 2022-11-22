@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,15 +19,16 @@
 package org.apache.plc4x.java.simulated.connection;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.model.PlcSubscriptionField;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.value.*;
-import org.apache.plc4x.java.simulated.field.SimulatedField;
+import org.apache.plc4x.java.simulated.tag.SimulatedTag;
 import org.apache.plc4x.java.simulated.readwrite.DataItem;
+import org.apache.plc4x.java.simulated.readwrite.SimulatedDataTypeSizes;
 import org.apache.plc4x.java.spi.generation.*;
 
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,13 +51,13 @@ public class SimulatedDevice {
 
     private final String name;
 
-    private final Map<SimulatedField, PlcValue> state = new HashMap<>();
+    private final Map<SimulatedTag, PlcValue> state = new HashMap<>();
 
     private final Map<PlcSubscriptionHandle, ScheduledFuture<?>> cyclicSubscriptions = new HashMap<>();
 
     private final Map<PlcSubscriptionHandle, Future<?>> eventSubscriptions = new HashMap<>();
 
-    private final IdentityHashMap<PlcSubscriptionHandle, Pair<SimulatedField, Consumer<PlcValue>>> changeOfStateSubscriptions = new IdentityHashMap<>();
+    private final IdentityHashMap<PlcSubscriptionHandle, Pair<SimulatedTag, Consumer<PlcValue>>> changeOfStateSubscriptions = new IdentityHashMap<>();
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -66,64 +67,65 @@ public class SimulatedDevice {
         this.name = name;
     }
 
-    public Optional<PlcValue> get(SimulatedField field) {
-        LOGGER.debug("getting field {}", field);
-        Objects.requireNonNull(field);
-        switch (field.getType()) {
+    public Optional<PlcValue> get(SimulatedTag tag) {
+        LOGGER.debug("getting tag {}", tag);
+        Objects.requireNonNull(tag);
+        switch (tag.getType()) {
             case STATE:
-                return Optional.ofNullable(state.get(field));
+                return Optional.ofNullable(state.get(tag));
             case RANDOM:
-                return Optional.ofNullable(randomValue(field));
+                return Optional.ofNullable(randomValue(tag));
             case STDOUT:
                 return Optional.empty();
         }
-        throw new IllegalArgumentException("Unsupported field type: " + field.getType().name());
+        throw new IllegalArgumentException("Unsupported tag type: " + tag.getType().name());
     }
 
-    public void set(SimulatedField field, PlcValue value) {
-        LOGGER.debug("setting field {} to {}", field, value);
-        Objects.requireNonNull(field);
-        switch (field.getType()) {
+    public void set(SimulatedTag tag, PlcValue value) {
+        LOGGER.debug("setting tag {} to {}", tag, value);
+        Objects.requireNonNull(tag);
+        switch (tag.getType()) {
             case STATE:
                 changeOfStateSubscriptions.values().stream()
-                    .filter(pair -> pair.getKey().equals(field))
+                    .filter(pair -> pair.getKey().equals(tag))
                     .map(Pair::getValue)
                     .peek(plcValueConsumer -> LOGGER.debug("{} is getting notified with {}", plcValueConsumer, value))
                     .forEach(baseDefaultPlcValueConsumer -> baseDefaultPlcValueConsumer.accept(value));
-                state.put(field, value);
+                state.put(tag, value);
                 return;
             case STDOUT:
-                LOGGER.info("TEST PLC STDOUT [{}]: {}", field.getName(), value.toString());
+                LOGGER.info("TEST PLC STDOUT [{}]: {}", tag.getName(), value.toString());
                 return;
             case RANDOM:
-                switch (field.getPlcDataType()) {
-                    case "STRING":
-                    case "WSTRING":
+                switch (tag.getPlcValueType()) {
+                    case STRING:
+                    case WSTRING:
                         break;
                     default:
                         try {
-                            final int lengthInBits = DataItem.getLengthInBits(value, field.getPlcDataType(), field.getNumberOfElements());
+                            final int lengthInBits = DataItem.getLengthInBits(value, tag.getPlcValueType().name(), tag.getArrayInfo().get(0).getSize());
                             final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
-                            DataItem.staticSerialize(writeBuffer, value, field.getPlcDataType(), field.getNumberOfElements(), ByteOrder.BIG_ENDIAN);
+                            DataItem.staticSerialize(writeBuffer, value, tag.getPlcValueType().name(), tag.getArrayInfo().get(0).getSize(), ByteOrder.BIG_ENDIAN);
                         } catch (SerializationException e) {
                             LOGGER.info("Write failed");
                         }
                 }
-                LOGGER.info("TEST PLC RANDOM [{}]: {}", field.getName(), value);
+                LOGGER.info("TEST PLC RANDOM [{}]: {}", tag.getName(), value);
                 return;
         }
-        throw new IllegalArgumentException("Unsupported field type: " + field.getType().name());
+        throw new IllegalArgumentException("Unsupported tag type: " + tag.getType().name());
     }
 
-    private PlcValue randomValue(SimulatedField field) {
-        short fieldDataTypeSize = field.getDataType().getDataTypeSize();
+    private PlcValue randomValue(SimulatedTag tag) {
 
-        byte[] b = new byte[fieldDataTypeSize * field.getNumberOfElements()];
+        short tagDataTypeSize = SimulatedDataTypeSizes.valueOf(tag.getPlcValueType().name()).getDataTypeSize();
+
+        byte[] b = new byte[tagDataTypeSize * tag.getArrayInfo().get(0).getSize()];
         random.nextBytes(b);
 
         ReadBuffer io = new ReadBufferByteBased(b);
         try {
-            return DataItem.staticParse(io, field.getPlcDataType(), field.getNumberOfElements());
+            return DataItem.staticParse(io, tag.getPlcValueType().name(), tag.getArrayInfo().get(0).getSize());
         } catch (ParseException e) {
             return null;
         }
@@ -134,13 +136,13 @@ public class SimulatedDevice {
         return name;
     }
 
-    public void addCyclicSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, PlcSubscriptionField plcField, Duration duration) {
-        LOGGER.debug("Adding cyclic subscription: {}, {}, {}, {}", consumer, handle, plcField, duration);
-        assert plcField instanceof DefaultPlcSubscriptionField;
+    public void addCyclicSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, PlcSubscriptionTag subscriptionTag, Duration duration) {
+        LOGGER.debug("Adding cyclic subscription: {}, {}, {}, {}", consumer, handle, subscriptionTag, duration);
+        assert subscriptionTag instanceof DefaultPlcSubscriptionTag;
         ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
-            PlcField innerPlcField = ((DefaultPlcSubscriptionField) plcField).getPlcField();
-            assert innerPlcField instanceof SimulatedField;
-            PlcValue baseDefaultPlcValue = state.get(innerPlcField);
+            PlcTag innerPlcTag = ((DefaultPlcSubscriptionTag) subscriptionTag).getTag();
+            assert innerPlcTag instanceof SimulatedTag;
+            PlcValue baseDefaultPlcValue = state.get(innerPlcTag);
             if (baseDefaultPlcValue == null) {
                 return;
             }
@@ -149,34 +151,34 @@ public class SimulatedDevice {
         cyclicSubscriptions.put(handle, scheduledFuture);
     }
 
-    public void addChangeOfStateSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, PlcSubscriptionField plcField) {
-        LOGGER.debug("Adding change of state subscription: {}, {}, {}", consumer, handle, plcField);
-        changeOfStateSubscriptions.put(handle, Pair.of((SimulatedField) ((DefaultPlcSubscriptionField) plcField).getPlcField(), consumer));
+    public void addChangeOfStateSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, PlcSubscriptionTag subscriptionTag) {
+        LOGGER.debug("Adding change of state subscription: {}, {}, {}", consumer, handle, subscriptionTag);
+        changeOfStateSubscriptions.put(handle, Pair.of((SimulatedTag) ((DefaultPlcSubscriptionTag) subscriptionTag).getTag(), consumer));
     }
 
-    public void addEventSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, PlcSubscriptionField plcField) {
-        LOGGER.debug("Adding event subscription: {}, {}, {}", consumer, handle, plcField);
-        assert plcField instanceof DefaultPlcSubscriptionField;
+    public void addEventSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, PlcSubscriptionTag subscriptionTag) {
+        LOGGER.debug("Adding event subscription: {}, {}, {}", consumer, handle, subscriptionTag);
+        assert subscriptionTag instanceof DefaultPlcSubscriptionTag;
         Future<?> submit = pool.submit(() -> {
-            LOGGER.debug("WORKER: starting for {}, {}, {}", consumer, handle, plcField);
+            LOGGER.debug("WORKER: starting for {}, {}, {}", consumer, handle, subscriptionTag);
             while (!Thread.currentThread().isInterrupted()) {
-                LOGGER.debug("WORKER: running for {}, {}, {}", consumer, handle, plcField);
-                PlcField innerPlcField = ((DefaultPlcSubscriptionField) plcField).getPlcField();
-                assert innerPlcField instanceof SimulatedField;
-                PlcValue baseDefaultPlcValue = state.get(innerPlcField);
+                LOGGER.debug("WORKER: running for {}, {}, {}", consumer, handle, subscriptionTag);
+                PlcTag innerPlcTag = ((DefaultPlcSubscriptionTag) subscriptionTag).getTag();
+                assert innerPlcTag instanceof SimulatedTag;
+                PlcValue baseDefaultPlcValue = state.get(innerPlcTag);
                 if (baseDefaultPlcValue == null) {
-                    LOGGER.debug("WORKER: no value for {}, {}, {}", consumer, handle, plcField);
+                    LOGGER.debug("WORKER: no value for {}, {}, {}", consumer, handle, subscriptionTag);
                     continue;
                 }
-                LOGGER.debug("WORKER: accepting {} for {}, {}, {}", baseDefaultPlcValue, consumer, handle, plcField);
+                LOGGER.debug("WORKER: accepting {} for {}, {}, {}", baseDefaultPlcValue, consumer, handle, subscriptionTag);
                 consumer.accept(baseDefaultPlcValue);
                 try {
                     long sleepTime = Math.min(random.nextInt((int) TimeUnit.SECONDS.toNanos(5)), TimeUnit.MILLISECONDS.toNanos(500));
-                    LOGGER.debug("WORKER: sleeping {} milliseconds for {}, {}, {}", TimeUnit.NANOSECONDS.toMillis(sleepTime), consumer, handle, plcField);
+                    LOGGER.debug("WORKER: sleeping {} milliseconds for {}, {}, {}", TimeUnit.NANOSECONDS.toMillis(sleepTime), consumer, handle, subscriptionTag);
                     TimeUnit.NANOSECONDS.sleep(sleepTime);
                 } catch (InterruptedException ignore) {
                     Thread.currentThread().interrupt();
-                    LOGGER.debug("WORKER: got interrupted for {}, {}, {}", consumer, handle, plcField);
+                    LOGGER.debug("WORKER: got interrupted for {}, {}, {}", consumer, handle, subscriptionTag);
                     return;
                 }
             }

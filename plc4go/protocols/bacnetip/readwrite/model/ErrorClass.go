@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type ErrorClass uint16
 
 type IErrorClass interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -62,52 +62,52 @@ func init() {
 	}
 }
 
-func ErrorClassByValue(value uint16) ErrorClass {
+func ErrorClassByValue(value uint16) (enum ErrorClass, ok bool) {
 	switch value {
 	case 0xFFFF:
-		return ErrorClass_VENDOR_PROPRIETARY_VALUE
+		return ErrorClass_VENDOR_PROPRIETARY_VALUE, true
 	case 0x0000:
-		return ErrorClass_DEVICE
+		return ErrorClass_DEVICE, true
 	case 0x0001:
-		return ErrorClass_OBJECT
+		return ErrorClass_OBJECT, true
 	case 0x0002:
-		return ErrorClass_PROPERTY
+		return ErrorClass_PROPERTY, true
 	case 0x0003:
-		return ErrorClass_RESOURCES
+		return ErrorClass_RESOURCES, true
 	case 0x0004:
-		return ErrorClass_SECURITY
+		return ErrorClass_SECURITY, true
 	case 0x0005:
-		return ErrorClass_SERVICES
+		return ErrorClass_SERVICES, true
 	case 0x0006:
-		return ErrorClass_VT
+		return ErrorClass_VT, true
 	case 0x0007:
-		return ErrorClass_COMMUNICATION
+		return ErrorClass_COMMUNICATION, true
 	}
-	return 0
+	return 0, false
 }
 
-func ErrorClassByName(value string) ErrorClass {
+func ErrorClassByName(value string) (enum ErrorClass, ok bool) {
 	switch value {
 	case "VENDOR_PROPRIETARY_VALUE":
-		return ErrorClass_VENDOR_PROPRIETARY_VALUE
+		return ErrorClass_VENDOR_PROPRIETARY_VALUE, true
 	case "DEVICE":
-		return ErrorClass_DEVICE
+		return ErrorClass_DEVICE, true
 	case "OBJECT":
-		return ErrorClass_OBJECT
+		return ErrorClass_OBJECT, true
 	case "PROPERTY":
-		return ErrorClass_PROPERTY
+		return ErrorClass_PROPERTY, true
 	case "RESOURCES":
-		return ErrorClass_RESOURCES
+		return ErrorClass_RESOURCES, true
 	case "SECURITY":
-		return ErrorClass_SECURITY
+		return ErrorClass_SECURITY, true
 	case "SERVICES":
-		return ErrorClass_SERVICES
+		return ErrorClass_SERVICES, true
 	case "VT":
-		return ErrorClass_VT
+		return ErrorClass_VT, true
 	case "COMMUNICATION":
-		return ErrorClass_COMMUNICATION
+		return ErrorClass_COMMUNICATION, true
 	}
-	return 0
+	return 0, false
 }
 
 func ErrorClassKnows(value uint16) bool {
@@ -137,19 +137,37 @@ func (m ErrorClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorClassParse(readBuffer utils.ReadBuffer) (ErrorClass, error) {
+func ErrorClassParse(theBytes []byte) (ErrorClass, error) {
+	return ErrorClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ErrorClassParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorClass, error) {
 	val, err := readBuffer.ReadUint16("ErrorClass", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ErrorClass")
 	}
-	return ErrorClassByValue(val), nil
+	if enum, ok := ErrorClassByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return ErrorClass(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e ErrorClass) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("ErrorClass", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e ErrorClass) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e ErrorClass) name() string {
+func (e ErrorClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("ErrorClass", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ErrorClass) PLC4XEnumName() string {
 	switch e {
 	case ErrorClass_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
@@ -174,5 +192,5 @@ func (e ErrorClass) name() string {
 }
 
 func (e ErrorClass) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

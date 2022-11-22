@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,11 +19,11 @@
 package org.apache.plc4x.java.spi.messages;
 
 import com.fasterxml.jackson.annotation.*;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -62,9 +62,9 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @JsonIgnore
     public PlcValue getAsPlcValue() {
         Map<String, PlcValue> structMap = new HashMap<>();
-        for (String fieldName : request.getFieldNames()) {
-            PlcValue plcValue = getPlcValue(fieldName);
-            structMap.put(fieldName, plcValue);
+        for (String tagName : request.getTagNames()) {
+            PlcValue plcValue = getPlcValue(tagName);
+            structMap.put(tagName, plcValue);
         }
         return new PlcStruct(structMap);
     }
@@ -78,9 +78,9 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public int getNumberOfValues(String name) {
-        PlcValue fieldInternal = getFieldInternal(name);
-        if(fieldInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldInternal;
+        PlcValue tagInternal = getTagInternal(name);
+        if(tagInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) tagInternal;
             return plcList.getLength();
         } else {
             return 1;
@@ -89,21 +89,21 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
 
     @Override
     @JsonIgnore
-    public Collection<String> getFieldNames() {
-        return request.getFieldNames();
+    public Collection<String> getTagNames() {
+        return request.getTagNames();
     }
 
     @Override
     @JsonIgnore
-    public PlcField getField(String name) {
-        return request.getField(name);
+    public PlcTag getTag(String name) {
+        return request.getTag(name);
     }
 
     @Override
     @JsonIgnore
     public PlcResponseCode getResponseCode(String name) {
         if (values.get(name) == null) {
-            throw new PlcInvalidFieldException(name);
+            throw new PlcInvalidTagException(name);
         }
         return values.get(name).getCode();
     }
@@ -116,8 +116,8 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public Object getObject(String name) {
-        if(getFieldInternal(name) != null) {
-            return getFieldInternal(name).getObject();
+        if(getTagInternal(name) != null) {
+            return getTagInternal(name).getObject();
         }
         return null;
     }
@@ -125,9 +125,9 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public Object getObject(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        if(fieldInternal != null) {
-            return fieldInternal.getObject();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        if(tagInternal != null) {
+            return tagInternal.getObject();
         }
         return null;
     }
@@ -135,16 +135,16 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public Collection<Object> getAllObjects(String name) {
-        PlcValue fieldInternal = getFieldInternal(name);
-        if(fieldInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldInternal;
+        PlcValue tagInternal = getTagInternal(name);
+        if(tagInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) tagInternal;
             List<Object> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getObject());
             }
             return items;
         }
-        return Collections.singletonList(fieldInternal.getObject());
+        return Collections.singletonList(tagInternal.getObject());
     }
 
     @Override
@@ -156,8 +156,8 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public boolean isValidBoolean(String name, int index) {
-        PlcValue fieldInternal = getFieldInternal(name);
-        return fieldInternal.isBoolean();
+        PlcValue tagInternal = getTagInternal(name);
+        return tagInternal.isBoolean();
     }
 
     @Override
@@ -169,23 +169,23 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public Boolean getBoolean(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.getBoolean();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.getBoolean();
     }
 
     @Override
     @JsonIgnore
     public Collection<Boolean> getAllBooleans(String name) {
-        PlcValue fieldInternal = getFieldInternal(name);
-        if(fieldInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldInternal;
+        PlcValue tagInternal = getTagInternal(name);
+        if(tagInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) tagInternal;
             List<Boolean> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getBoolean());
             }
             return items;
         }
-        return Collections.singletonList(fieldInternal.getBoolean());
+        return Collections.singletonList(tagInternal.getBoolean());
     }
 
     @Override
@@ -197,8 +197,8 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public boolean isValidByte(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.isByte();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.isByte();
     }
 
     @Override
@@ -210,23 +210,23 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public Byte getByte(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.getByte();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.getByte();
     }
 
     @Override
     @JsonIgnore
     public Collection<Byte> getAllBytes(String name) {
-        PlcValue fieldInternal = getFieldInternal(name);
-        if(fieldInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldInternal;
+        PlcValue tagInternal = getTagInternal(name);
+        if(tagInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) tagInternal;
             List<Byte> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getByte());
             }
             return items;
         }
-        return Collections.singletonList(fieldInternal.getByte());
+        return Collections.singletonList(tagInternal.getByte());
     }
 
     @Override
@@ -238,8 +238,8 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public boolean isValidShort(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.isShort();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.isShort();
     }
 
     @Override
@@ -251,23 +251,23 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public Short getShort(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.getShort();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.getShort();
     }
 
     @Override
     @JsonIgnore
     public Collection<Short> getAllShorts(String name) {
-        PlcValue fieldInternal = getFieldInternal(name);
-        if(fieldInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldInternal;
+        PlcValue tagInternal = getTagInternal(name);
+        if(tagInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) tagInternal;
             List<Short> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getShort());
             }
             return items;
         }
-        return Collections.singletonList(fieldInternal.getShort());
+        return Collections.singletonList(tagInternal.getShort());
     }
 
     @Override
@@ -279,8 +279,8 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public boolean isValidInteger(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.isInteger();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.isInteger();
     }
 
     @Override
@@ -292,23 +292,23 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public Integer getInteger(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.getInteger();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.getInteger();
     }
 
     @Override
     @JsonIgnore
     public Collection<Integer> getAllIntegers(String name) {
-        PlcValue fieldInternal = getFieldInternal(name);
-        if(fieldInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldInternal;
+        PlcValue tagInternal = getTagInternal(name);
+        if(tagInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) tagInternal;
             List<Integer> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getInteger());
             }
             return items;
         }
-        return Collections.singletonList(fieldInternal.getInteger());
+        return Collections.singletonList(tagInternal.getInteger());
     }
 
     @Override
@@ -320,8 +320,8 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public boolean isValidBigInteger(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.isBigInteger();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.isBigInteger();
     }
 
     @Override
@@ -333,23 +333,23 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public BigInteger getBigInteger(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.getBigInteger();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.getBigInteger();
     }
 
     @Override
     @JsonIgnore
     public Collection<BigInteger> getAllBigIntegers(String name) {
-        PlcValue fieldInternal = getFieldInternal(name);
-        if(fieldInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldInternal;
+        PlcValue tagInternal = getTagInternal(name);
+        if(tagInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) tagInternal;
             List<BigInteger> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getBigInteger());
             }
             return items;
         }
-        return Collections.singletonList(fieldInternal.getBigInteger());
+        return Collections.singletonList(tagInternal.getBigInteger());
     }
 
     @Override
@@ -361,8 +361,8 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public boolean isValidLong(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.isLong();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.isLong();
     }
 
     @Override
@@ -374,23 +374,23 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public Long getLong(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.getLong();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.getLong();
     }
 
     @Override
     @JsonIgnore
     public Collection<Long> getAllLongs(String name) {
-        PlcValue fieldInternal = getFieldInternal(name);
-        if(fieldInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldInternal;
+        PlcValue tagInternal = getTagInternal(name);
+        if(tagInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) tagInternal;
             List<Long> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getLong());
             }
             return items;
         }
-        return Collections.singletonList(fieldInternal.getLong());
+        return Collections.singletonList(tagInternal.getLong());
     }
 
     @Override
@@ -402,8 +402,8 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public boolean isValidFloat(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.isFloat();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.isFloat();
     }
 
     @Override
@@ -415,23 +415,23 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public Float getFloat(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.getFloat();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.getFloat();
     }
 
     @Override
     @JsonIgnore
     public Collection<Float> getAllFloats(String name) {
-        PlcValue fieldInternal = getFieldInternal(name);
-        if(fieldInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldInternal;
+        PlcValue tagInternal = getTagInternal(name);
+        if(tagInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) tagInternal;
             List<Float> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getFloat());
             }
             return items;
         }
-        return Collections.singletonList(fieldInternal.getFloat());
+        return Collections.singletonList(tagInternal.getFloat());
     }
 
     @Override
@@ -443,8 +443,8 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public boolean isValidDouble(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.isDouble();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.isDouble();
     }
 
     @Override
@@ -456,23 +456,23 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public Double getDouble(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.getDouble();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.getDouble();
     }
 
     @Override
     @JsonIgnore
     public Collection<Double> getAllDoubles(String name) {
-        PlcValue fieldInternal = getFieldInternal(name);
-        if(fieldInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldInternal;
+        PlcValue tagInternal = getTagInternal(name);
+        if(tagInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) tagInternal;
             List<Double> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getDouble());
             }
             return items;
         }
-        return Collections.singletonList(fieldInternal.getDouble());
+        return Collections.singletonList(tagInternal.getDouble());
     }
 
     @Override
@@ -484,8 +484,8 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public boolean isValidBigDecimal(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.isBigDecimal();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.isBigDecimal();
     }
 
     @Override
@@ -497,23 +497,23 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public BigDecimal getBigDecimal(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.getBigDecimal();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.getBigDecimal();
     }
 
     @Override
     @JsonIgnore
     public Collection<BigDecimal> getAllBigDecimals(String name) {
-        PlcValue fieldInternal = getFieldInternal(name);
-        if(fieldInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldInternal;
+        PlcValue tagInternal = getTagInternal(name);
+        if(tagInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) tagInternal;
             List<BigDecimal> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getBigDecimal());
             }
             return items;
         }
-        return Collections.singletonList(fieldInternal.getBigDecimal());
+        return Collections.singletonList(tagInternal.getBigDecimal());
     }
 
     @Override
@@ -525,8 +525,8 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public boolean isValidString(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.isString();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.isString();
     }
 
     @Override
@@ -538,23 +538,23 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public String getString(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.getString();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.getString();
     }
 
     @Override
     @JsonIgnore
     public Collection<String> getAllStrings(String name) {
-        PlcValue fieldInternal = getFieldInternal(name);
-        if(fieldInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldInternal;
+        PlcValue tagInternal = getTagInternal(name);
+        if(tagInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) tagInternal;
             List<String> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getString());
             }
             return items;
         }
-        return Collections.singletonList(fieldInternal.getString());
+        return Collections.singletonList(tagInternal.getString());
     }
 
     @Override
@@ -566,8 +566,8 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public boolean isValidTime(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.isTime();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.isTime();
     }
 
     @Override
@@ -579,23 +579,23 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public LocalTime getTime(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.getTime();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.getTime();
     }
 
     @Override
     @JsonIgnore
     public Collection<LocalTime> getAllTimes(String name) {
-        PlcValue fieldInternal = getFieldInternal(name);
-        if(fieldInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldInternal;
+        PlcValue tagInternal = getTagInternal(name);
+        if(tagInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) tagInternal;
             List<LocalTime> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getTime());
             }
             return items;
         }
-        return Collections.singletonList(fieldInternal.getTime());
+        return Collections.singletonList(tagInternal.getTime());
     }
 
     @Override
@@ -607,8 +607,8 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public boolean isValidDate(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.isDate();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.isDate();
     }
 
     @Override
@@ -620,23 +620,23 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public LocalDate getDate(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.getDate();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.getDate();
     }
 
     @Override
     @JsonIgnore
     public Collection<LocalDate> getAllDates(String name) {
-        PlcValue fieldInternal = getFieldInternal(name);
-        if(fieldInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldInternal;
+        PlcValue tagInternal = getTagInternal(name);
+        if(tagInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) tagInternal;
             List<LocalDate> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getDate());
             }
             return items;
         }
-        return Collections.singletonList(fieldInternal.getDate());
+        return Collections.singletonList(tagInternal.getDate());
     }
 
     @Override
@@ -648,8 +648,8 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public boolean isValidDateTime(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.isDateTime();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.isDateTime();
     }
 
     @Override
@@ -661,23 +661,23 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     @Override
     @JsonIgnore
     public LocalDateTime getDateTime(String name, int index) {
-        PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.getDateTime();
+        PlcValue tagInternal = getTagIndexInternal(name, index);
+        return tagInternal.getDateTime();
     }
 
     @Override
     @JsonIgnore
     public Collection<LocalDateTime> getAllDateTimes(String name) {
-        PlcValue fieldInternal = getFieldInternal(name);
-        if(fieldInternal instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldInternal;
+        PlcValue tagInternal = getTagInternal(name);
+        if(tagInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) tagInternal;
             List<LocalDateTime> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getDateTime());
             }
             return items;
         }
-        return Collections.singletonList(fieldInternal.getDateTime());
+        return Collections.singletonList(tagInternal.getDateTime());
     }
 
     @JsonAnySetter
@@ -690,24 +690,24 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
         return values;
     }
 
-    protected PlcValue getFieldInternal(String name) {
+    protected PlcValue getTagInternal(String name) {
         Objects.requireNonNull(name, "Name argument required");
-        // If this field doesn't exist, ignore it.
+        // If this tag doesn't exist, ignore it.
         if (values.get(name) == null) {
-            throw new PlcInvalidFieldException(name);
+            throw new PlcInvalidTagException(name);
         }
         if (values.get(name).getCode() != PlcResponseCode.OK) {
             throw new PlcRuntimeException(
-                "Field '" + name + "' could not be fetched, response was " + values.get(name).getCode());
+                "Tag '" + name + "' could not be fetched, response was " + values.get(name).getCode());
         }
         // No need to check for "null" as this is already captured by the constructors.
         return values.get(name).getValue();
     }
 
-    protected PlcValue getFieldIndexInternal(String name, int index) {
-        final PlcValue field = getFieldInternal(name);
-        if(field instanceof PlcList) {
-            PlcList plcList = (PlcList) field;
+    protected PlcValue getTagIndexInternal(String name, int index) {
+        final PlcValue values = getTagInternal(name);
+        if(values instanceof PlcList) {
+            PlcList plcList = (PlcList) values;
             if(index > (plcList.getLength() - 1)) {
                 return null;
             }
@@ -716,7 +716,7 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
         if(index != 0) {
             return null;
         }
-        return field;
+        return values;
     }
 
     @Override
@@ -728,11 +728,11 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
         }
         writeBuffer.pushContext("values");
         for (Map.Entry<String, ResponseItem<PlcValue>> valueEntry : values.entrySet()) {
-            String fieldName = valueEntry.getKey();
-            writeBuffer.pushContext(fieldName);
+            String tagName = valueEntry.getKey();
+            writeBuffer.pushContext(tagName);
             ResponseItem<PlcValue> valueResponse = valueEntry.getValue();
             valueResponse.serialize(writeBuffer);
-            writeBuffer.popContext(fieldName);
+            writeBuffer.popContext(tagName);
         }
         writeBuffer.popContext("values");
 

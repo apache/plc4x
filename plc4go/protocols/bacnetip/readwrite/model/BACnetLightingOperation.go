@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetLightingOperation uint16
 
 type IBACnetLightingOperation interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -68,64 +68,64 @@ func init() {
 	}
 }
 
-func BACnetLightingOperationByValue(value uint16) BACnetLightingOperation {
+func BACnetLightingOperationByValue(value uint16) (enum BACnetLightingOperation, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLightingOperation_NONE
+		return BACnetLightingOperation_NONE, true
 	case 0xFFFF:
-		return BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE
+		return BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetLightingOperation_FADE_TO
+		return BACnetLightingOperation_FADE_TO, true
 	case 10:
-		return BACnetLightingOperation_STOP
+		return BACnetLightingOperation_STOP, true
 	case 2:
-		return BACnetLightingOperation_RAMP_TO
+		return BACnetLightingOperation_RAMP_TO, true
 	case 3:
-		return BACnetLightingOperation_STEP_UP
+		return BACnetLightingOperation_STEP_UP, true
 	case 4:
-		return BACnetLightingOperation_STEP_DOWN
+		return BACnetLightingOperation_STEP_DOWN, true
 	case 5:
-		return BACnetLightingOperation_STEP_ON
+		return BACnetLightingOperation_STEP_ON, true
 	case 6:
-		return BACnetLightingOperation_STEP_OFF
+		return BACnetLightingOperation_STEP_OFF, true
 	case 7:
-		return BACnetLightingOperation_WARN
+		return BACnetLightingOperation_WARN, true
 	case 8:
-		return BACnetLightingOperation_WARN_OFF
+		return BACnetLightingOperation_WARN_OFF, true
 	case 9:
-		return BACnetLightingOperation_WARN_RELINQUISH
+		return BACnetLightingOperation_WARN_RELINQUISH, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetLightingOperationByName(value string) BACnetLightingOperation {
+func BACnetLightingOperationByName(value string) (enum BACnetLightingOperation, ok bool) {
 	switch value {
 	case "NONE":
-		return BACnetLightingOperation_NONE
+		return BACnetLightingOperation_NONE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE
+		return BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE, true
 	case "FADE_TO":
-		return BACnetLightingOperation_FADE_TO
+		return BACnetLightingOperation_FADE_TO, true
 	case "STOP":
-		return BACnetLightingOperation_STOP
+		return BACnetLightingOperation_STOP, true
 	case "RAMP_TO":
-		return BACnetLightingOperation_RAMP_TO
+		return BACnetLightingOperation_RAMP_TO, true
 	case "STEP_UP":
-		return BACnetLightingOperation_STEP_UP
+		return BACnetLightingOperation_STEP_UP, true
 	case "STEP_DOWN":
-		return BACnetLightingOperation_STEP_DOWN
+		return BACnetLightingOperation_STEP_DOWN, true
 	case "STEP_ON":
-		return BACnetLightingOperation_STEP_ON
+		return BACnetLightingOperation_STEP_ON, true
 	case "STEP_OFF":
-		return BACnetLightingOperation_STEP_OFF
+		return BACnetLightingOperation_STEP_OFF, true
 	case "WARN":
-		return BACnetLightingOperation_WARN
+		return BACnetLightingOperation_WARN, true
 	case "WARN_OFF":
-		return BACnetLightingOperation_WARN_OFF
+		return BACnetLightingOperation_WARN_OFF, true
 	case "WARN_RELINQUISH":
-		return BACnetLightingOperation_WARN_RELINQUISH
+		return BACnetLightingOperation_WARN_RELINQUISH, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLightingOperationKnows(value uint16) bool {
@@ -155,19 +155,37 @@ func (m BACnetLightingOperation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLightingOperationParse(readBuffer utils.ReadBuffer) (BACnetLightingOperation, error) {
+func BACnetLightingOperationParse(theBytes []byte) (BACnetLightingOperation, error) {
+	return BACnetLightingOperationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLightingOperationParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLightingOperation, error) {
 	val, err := readBuffer.ReadUint16("BACnetLightingOperation", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetLightingOperation")
 	}
-	return BACnetLightingOperationByValue(val), nil
+	if enum, ok := BACnetLightingOperationByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetLightingOperation(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetLightingOperation) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetLightingOperation", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetLightingOperation) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetLightingOperation) name() string {
+func (e BACnetLightingOperation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetLightingOperation", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLightingOperation) PLC4XEnumName() string {
 	switch e {
 	case BACnetLightingOperation_NONE:
 		return "NONE"
@@ -198,5 +216,5 @@ func (e BACnetLightingOperation) name() string {
 }
 
 func (e BACnetLightingOperation) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

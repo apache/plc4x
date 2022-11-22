@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -23,7 +23,7 @@ import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigValue;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.source.SourceConnector;
-import org.apache.plc4x.kafka.config.Field;
+import org.apache.plc4x.kafka.config.Tag;
 import org.apache.plc4x.kafka.config.*;
 import org.apache.plc4x.kafka.util.VersionUtil;
 import org.slf4j.Logger;
@@ -80,10 +80,10 @@ public class Plc4xSourceConnector extends SourceConnector {
                 } else {
                     query.append(",").append(jobReference.getName()).append("|").append(jobReference.getTopic());
                     query.append("|").append(job.getInterval());
-                    for (Field field : job.getFields()) {
-                        String fieldName = field.getName();
-                        String fieldAddress = field.getAddress();
-                        query.append("|").append(fieldName).append("#").append(fieldAddress);
+                    for (Tag tag : job.getTags()) {
+                        String tagName = tag.getName();
+                        String tagAddress = tag.getAddress();
+                        query.append("|").append(tagName).append("#").append(tagAddress);
                     }
                 }
             }

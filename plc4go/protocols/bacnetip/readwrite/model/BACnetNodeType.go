@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetNodeType uint8
 
 type IBACnetNodeType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -88,104 +88,104 @@ func init() {
 	}
 }
 
-func BACnetNodeTypeByValue(value uint8) BACnetNodeType {
+func BACnetNodeTypeByValue(value uint8) (enum BACnetNodeType, ok bool) {
 	switch value {
 	case 0x00:
-		return BACnetNodeType_UNKNOWN
+		return BACnetNodeType_UNKNOWN, true
 	case 0x01:
-		return BACnetNodeType_SYSTEM
+		return BACnetNodeType_SYSTEM, true
 	case 0x02:
-		return BACnetNodeType_NETWORK
+		return BACnetNodeType_NETWORK, true
 	case 0x03:
-		return BACnetNodeType_DEVICE
+		return BACnetNodeType_DEVICE, true
 	case 0x04:
-		return BACnetNodeType_ORGANIZATIONAL
+		return BACnetNodeType_ORGANIZATIONAL, true
 	case 0x05:
-		return BACnetNodeType_AREA
+		return BACnetNodeType_AREA, true
 	case 0x06:
-		return BACnetNodeType_EQUIPMENT
+		return BACnetNodeType_EQUIPMENT, true
 	case 0x07:
-		return BACnetNodeType_POINT
+		return BACnetNodeType_POINT, true
 	case 0x08:
-		return BACnetNodeType_COLLECTION
+		return BACnetNodeType_COLLECTION, true
 	case 0x09:
-		return BACnetNodeType_PROPERTY
+		return BACnetNodeType_PROPERTY, true
 	case 0x0A:
-		return BACnetNodeType_FUNCTIONAL
+		return BACnetNodeType_FUNCTIONAL, true
 	case 0x0B:
-		return BACnetNodeType_OTHER
+		return BACnetNodeType_OTHER, true
 	case 0x0C:
-		return BACnetNodeType_SUBSYSTEM
+		return BACnetNodeType_SUBSYSTEM, true
 	case 0x0D:
-		return BACnetNodeType_BUILDING
+		return BACnetNodeType_BUILDING, true
 	case 0x0E:
-		return BACnetNodeType_FLOOR
+		return BACnetNodeType_FLOOR, true
 	case 0x0F:
-		return BACnetNodeType_SECTION
+		return BACnetNodeType_SECTION, true
 	case 0x10:
-		return BACnetNodeType_MODULE
+		return BACnetNodeType_MODULE, true
 	case 0x11:
-		return BACnetNodeType_TREE
+		return BACnetNodeType_TREE, true
 	case 0x12:
-		return BACnetNodeType_MEMBER
+		return BACnetNodeType_MEMBER, true
 	case 0x13:
-		return BACnetNodeType_PROTOCOL
+		return BACnetNodeType_PROTOCOL, true
 	case 0x14:
-		return BACnetNodeType_ROOM
+		return BACnetNodeType_ROOM, true
 	case 0x15:
-		return BACnetNodeType_ZONE
+		return BACnetNodeType_ZONE, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetNodeTypeByName(value string) BACnetNodeType {
+func BACnetNodeTypeByName(value string) (enum BACnetNodeType, ok bool) {
 	switch value {
 	case "UNKNOWN":
-		return BACnetNodeType_UNKNOWN
+		return BACnetNodeType_UNKNOWN, true
 	case "SYSTEM":
-		return BACnetNodeType_SYSTEM
+		return BACnetNodeType_SYSTEM, true
 	case "NETWORK":
-		return BACnetNodeType_NETWORK
+		return BACnetNodeType_NETWORK, true
 	case "DEVICE":
-		return BACnetNodeType_DEVICE
+		return BACnetNodeType_DEVICE, true
 	case "ORGANIZATIONAL":
-		return BACnetNodeType_ORGANIZATIONAL
+		return BACnetNodeType_ORGANIZATIONAL, true
 	case "AREA":
-		return BACnetNodeType_AREA
+		return BACnetNodeType_AREA, true
 	case "EQUIPMENT":
-		return BACnetNodeType_EQUIPMENT
+		return BACnetNodeType_EQUIPMENT, true
 	case "POINT":
-		return BACnetNodeType_POINT
+		return BACnetNodeType_POINT, true
 	case "COLLECTION":
-		return BACnetNodeType_COLLECTION
+		return BACnetNodeType_COLLECTION, true
 	case "PROPERTY":
-		return BACnetNodeType_PROPERTY
+		return BACnetNodeType_PROPERTY, true
 	case "FUNCTIONAL":
-		return BACnetNodeType_FUNCTIONAL
+		return BACnetNodeType_FUNCTIONAL, true
 	case "OTHER":
-		return BACnetNodeType_OTHER
+		return BACnetNodeType_OTHER, true
 	case "SUBSYSTEM":
-		return BACnetNodeType_SUBSYSTEM
+		return BACnetNodeType_SUBSYSTEM, true
 	case "BUILDING":
-		return BACnetNodeType_BUILDING
+		return BACnetNodeType_BUILDING, true
 	case "FLOOR":
-		return BACnetNodeType_FLOOR
+		return BACnetNodeType_FLOOR, true
 	case "SECTION":
-		return BACnetNodeType_SECTION
+		return BACnetNodeType_SECTION, true
 	case "MODULE":
-		return BACnetNodeType_MODULE
+		return BACnetNodeType_MODULE, true
 	case "TREE":
-		return BACnetNodeType_TREE
+		return BACnetNodeType_TREE, true
 	case "MEMBER":
-		return BACnetNodeType_MEMBER
+		return BACnetNodeType_MEMBER, true
 	case "PROTOCOL":
-		return BACnetNodeType_PROTOCOL
+		return BACnetNodeType_PROTOCOL, true
 	case "ROOM":
-		return BACnetNodeType_ROOM
+		return BACnetNodeType_ROOM, true
 	case "ZONE":
-		return BACnetNodeType_ZONE
+		return BACnetNodeType_ZONE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetNodeTypeKnows(value uint8) bool {
@@ -215,19 +215,37 @@ func (m BACnetNodeType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNodeTypeParse(readBuffer utils.ReadBuffer) (BACnetNodeType, error) {
+func BACnetNodeTypeParse(theBytes []byte) (BACnetNodeType, error) {
+	return BACnetNodeTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetNodeTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNodeType, error) {
 	val, err := readBuffer.ReadUint8("BACnetNodeType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetNodeType")
 	}
-	return BACnetNodeTypeByValue(val), nil
+	if enum, ok := BACnetNodeTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetNodeType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetNodeType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetNodeType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetNodeType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetNodeType) name() string {
+func (e BACnetNodeType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetNodeType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetNodeType) PLC4XEnumName() string {
 	switch e {
 	case BACnetNodeType_UNKNOWN:
 		return "UNKNOWN"
@@ -278,5 +296,5 @@ func (e BACnetNodeType) name() string {
 }
 
 func (e BACnetNodeType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

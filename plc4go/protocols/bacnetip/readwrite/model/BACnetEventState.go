@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetEventState uint16
 
 type IBACnetEventState interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -58,44 +58,44 @@ func init() {
 	}
 }
 
-func BACnetEventStateByValue(value uint16) BACnetEventState {
+func BACnetEventStateByValue(value uint16) (enum BACnetEventState, ok bool) {
 	switch value {
 	case 0:
-		return BACnetEventState_NORMAL
+		return BACnetEventState_NORMAL, true
 	case 0xFFFF:
-		return BACnetEventState_VENDOR_PROPRIETARY_VALUE
+		return BACnetEventState_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetEventState_FAULT
+		return BACnetEventState_FAULT, true
 	case 2:
-		return BACnetEventState_OFFNORMAL
+		return BACnetEventState_OFFNORMAL, true
 	case 3:
-		return BACnetEventState_HIGH_LIMIT
+		return BACnetEventState_HIGH_LIMIT, true
 	case 4:
-		return BACnetEventState_LOW_LIMIT
+		return BACnetEventState_LOW_LIMIT, true
 	case 5:
-		return BACnetEventState_LIFE_SAVETY_ALARM
+		return BACnetEventState_LIFE_SAVETY_ALARM, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetEventStateByName(value string) BACnetEventState {
+func BACnetEventStateByName(value string) (enum BACnetEventState, ok bool) {
 	switch value {
 	case "NORMAL":
-		return BACnetEventState_NORMAL
+		return BACnetEventState_NORMAL, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetEventState_VENDOR_PROPRIETARY_VALUE
+		return BACnetEventState_VENDOR_PROPRIETARY_VALUE, true
 	case "FAULT":
-		return BACnetEventState_FAULT
+		return BACnetEventState_FAULT, true
 	case "OFFNORMAL":
-		return BACnetEventState_OFFNORMAL
+		return BACnetEventState_OFFNORMAL, true
 	case "HIGH_LIMIT":
-		return BACnetEventState_HIGH_LIMIT
+		return BACnetEventState_HIGH_LIMIT, true
 	case "LOW_LIMIT":
-		return BACnetEventState_LOW_LIMIT
+		return BACnetEventState_LOW_LIMIT, true
 	case "LIFE_SAVETY_ALARM":
-		return BACnetEventState_LIFE_SAVETY_ALARM
+		return BACnetEventState_LIFE_SAVETY_ALARM, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetEventStateKnows(value uint16) bool {
@@ -125,19 +125,37 @@ func (m BACnetEventState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventStateParse(readBuffer utils.ReadBuffer) (BACnetEventState, error) {
+func BACnetEventStateParse(theBytes []byte) (BACnetEventState, error) {
+	return BACnetEventStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetEventStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventState, error) {
 	val, err := readBuffer.ReadUint16("BACnetEventState", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetEventState")
 	}
-	return BACnetEventStateByValue(val), nil
+	if enum, ok := BACnetEventStateByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetEventState(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetEventState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetEventState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetEventState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetEventState) name() string {
+func (e BACnetEventState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetEventState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetEventState) PLC4XEnumName() string {
 	switch e {
 	case BACnetEventState_NORMAL:
 		return "NORMAL"
@@ -158,5 +176,5 @@ func (e BACnetEventState) name() string {
 }
 
 func (e BACnetEventState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

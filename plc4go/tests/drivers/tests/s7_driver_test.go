@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,17 +21,17 @@ package tests
 
 import (
 	"github.com/apache/plc4x/plc4go/internal/s7"
-	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	s7IO "github.com/apache/plc4x/plc4go/protocols/s7/readwrite"
 	s7Model "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"testing"
 )
 
 func TestS7Driver(t *testing.T) {
 	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
-		return s7Model.TPKTPacketParse(readBufferByteBased)
+		return s7Model.TPKTPacketParseWithBuffer(readBufferByteBased)
 	})}
 	testutils.RunDriverTestsuiteWithOptions(t, s7.NewDriver(), "assets/testing/protocols/s7/DriverTestsuite.xml", s7IO.S7XmlParserHelper{}, options)
 }

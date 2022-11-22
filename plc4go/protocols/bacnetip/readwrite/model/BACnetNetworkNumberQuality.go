@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetNetworkNumberQuality uint8
 
 type IBACnetNetworkNumberQuality interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -52,32 +52,32 @@ func init() {
 	}
 }
 
-func BACnetNetworkNumberQualityByValue(value uint8) BACnetNetworkNumberQuality {
+func BACnetNetworkNumberQualityByValue(value uint8) (enum BACnetNetworkNumberQuality, ok bool) {
 	switch value {
 	case 0:
-		return BACnetNetworkNumberQuality_UNKNOWN
+		return BACnetNetworkNumberQuality_UNKNOWN, true
 	case 1:
-		return BACnetNetworkNumberQuality_LEARNED
+		return BACnetNetworkNumberQuality_LEARNED, true
 	case 2:
-		return BACnetNetworkNumberQuality_LEARNED_CONFIGURED
+		return BACnetNetworkNumberQuality_LEARNED_CONFIGURED, true
 	case 3:
-		return BACnetNetworkNumberQuality_CONFIGURED
+		return BACnetNetworkNumberQuality_CONFIGURED, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetNetworkNumberQualityByName(value string) BACnetNetworkNumberQuality {
+func BACnetNetworkNumberQualityByName(value string) (enum BACnetNetworkNumberQuality, ok bool) {
 	switch value {
 	case "UNKNOWN":
-		return BACnetNetworkNumberQuality_UNKNOWN
+		return BACnetNetworkNumberQuality_UNKNOWN, true
 	case "LEARNED":
-		return BACnetNetworkNumberQuality_LEARNED
+		return BACnetNetworkNumberQuality_LEARNED, true
 	case "LEARNED_CONFIGURED":
-		return BACnetNetworkNumberQuality_LEARNED_CONFIGURED
+		return BACnetNetworkNumberQuality_LEARNED_CONFIGURED, true
 	case "CONFIGURED":
-		return BACnetNetworkNumberQuality_CONFIGURED
+		return BACnetNetworkNumberQuality_CONFIGURED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetNetworkNumberQualityKnows(value uint8) bool {
@@ -107,19 +107,37 @@ func (m BACnetNetworkNumberQuality) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNetworkNumberQualityParse(readBuffer utils.ReadBuffer) (BACnetNetworkNumberQuality, error) {
+func BACnetNetworkNumberQualityParse(theBytes []byte) (BACnetNetworkNumberQuality, error) {
+	return BACnetNetworkNumberQualityParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetNetworkNumberQualityParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNetworkNumberQuality, error) {
 	val, err := readBuffer.ReadUint8("BACnetNetworkNumberQuality", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetNetworkNumberQuality")
 	}
-	return BACnetNetworkNumberQualityByValue(val), nil
+	if enum, ok := BACnetNetworkNumberQualityByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetNetworkNumberQuality(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetNetworkNumberQuality) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetNetworkNumberQuality", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetNetworkNumberQuality) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetNetworkNumberQuality) name() string {
+func (e BACnetNetworkNumberQuality) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetNetworkNumberQuality", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetNetworkNumberQuality) PLC4XEnumName() string {
 	switch e {
 	case BACnetNetworkNumberQuality_UNKNOWN:
 		return "UNKNOWN"
@@ -134,5 +152,5 @@ func (e BACnetNetworkNumberQuality) name() string {
 }
 
 func (e BACnetNetworkNumberQuality) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

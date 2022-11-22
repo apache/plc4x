@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetEscalatorMode uint16
 
 type IBACnetEscalatorMode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -58,44 +58,44 @@ func init() {
 	}
 }
 
-func BACnetEscalatorModeByValue(value uint16) BACnetEscalatorMode {
+func BACnetEscalatorModeByValue(value uint16) (enum BACnetEscalatorMode, ok bool) {
 	switch value {
 	case 0:
-		return BACnetEscalatorMode_UNKNOWN
+		return BACnetEscalatorMode_UNKNOWN, true
 	case 0xFFFF:
-		return BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE
+		return BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetEscalatorMode_STOP
+		return BACnetEscalatorMode_STOP, true
 	case 2:
-		return BACnetEscalatorMode_UP
+		return BACnetEscalatorMode_UP, true
 	case 3:
-		return BACnetEscalatorMode_DOWN
+		return BACnetEscalatorMode_DOWN, true
 	case 4:
-		return BACnetEscalatorMode_INSPECTION
+		return BACnetEscalatorMode_INSPECTION, true
 	case 5:
-		return BACnetEscalatorMode_OUT_OF_SERVICE
+		return BACnetEscalatorMode_OUT_OF_SERVICE, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetEscalatorModeByName(value string) BACnetEscalatorMode {
+func BACnetEscalatorModeByName(value string) (enum BACnetEscalatorMode, ok bool) {
 	switch value {
 	case "UNKNOWN":
-		return BACnetEscalatorMode_UNKNOWN
+		return BACnetEscalatorMode_UNKNOWN, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE
+		return BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE, true
 	case "STOP":
-		return BACnetEscalatorMode_STOP
+		return BACnetEscalatorMode_STOP, true
 	case "UP":
-		return BACnetEscalatorMode_UP
+		return BACnetEscalatorMode_UP, true
 	case "DOWN":
-		return BACnetEscalatorMode_DOWN
+		return BACnetEscalatorMode_DOWN, true
 	case "INSPECTION":
-		return BACnetEscalatorMode_INSPECTION
+		return BACnetEscalatorMode_INSPECTION, true
 	case "OUT_OF_SERVICE":
-		return BACnetEscalatorMode_OUT_OF_SERVICE
+		return BACnetEscalatorMode_OUT_OF_SERVICE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetEscalatorModeKnows(value uint16) bool {
@@ -125,19 +125,37 @@ func (m BACnetEscalatorMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEscalatorModeParse(readBuffer utils.ReadBuffer) (BACnetEscalatorMode, error) {
+func BACnetEscalatorModeParse(theBytes []byte) (BACnetEscalatorMode, error) {
+	return BACnetEscalatorModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetEscalatorModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEscalatorMode, error) {
 	val, err := readBuffer.ReadUint16("BACnetEscalatorMode", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetEscalatorMode")
 	}
-	return BACnetEscalatorModeByValue(val), nil
+	if enum, ok := BACnetEscalatorModeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetEscalatorMode(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetEscalatorMode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetEscalatorMode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetEscalatorMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetEscalatorMode) name() string {
+func (e BACnetEscalatorMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetEscalatorMode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetEscalatorMode) PLC4XEnumName() string {
 	switch e {
 	case BACnetEscalatorMode_UNKNOWN:
 		return "UNKNOWN"
@@ -158,5 +176,5 @@ func (e BACnetEscalatorMode) name() string {
 }
 
 func (e BACnetEscalatorMode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -267,6 +267,75 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
     }
 
+    public String getDataIoTypeNameForTypeReference(TypeReference typeReference) {
+        Objects.requireNonNull(typeReference);
+        if (typeReference instanceof SimpleTypeReference) {
+            SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+            switch (simpleTypeReference.getBaseType()) {
+                case BIT:
+                    return "bool";
+                case BYTE:
+                    return "byte";
+                case UINT: {
+                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                    if (integerTypeReference.getSizeInBits() <= 8) {
+                        return "usint";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 16) {
+                        return "uint";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 32) {
+                        return "udint";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 64) {
+                        return "ulint";
+                    }
+                    throw new RuntimeException("Unsupported simple type");
+                }
+                case INT: {
+                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                    if (integerTypeReference.getSizeInBits() <= 8) {
+                        return "sint";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 16) {
+                        return "int";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 32) {
+                        return "dint";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 64) {
+                        return "lint";
+                    }
+                    throw new RuntimeException("Unsupported simple type");
+                }
+                case FLOAT:
+                    FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
+                    int sizeInBits = floatTypeReference.getSizeInBits();
+                    if (sizeInBits <= 32) {
+                        return "real";
+                    }
+                    if (sizeInBits <= 64) {
+                        return "lreal";
+                    }
+                    throw new FreemarkerException("Unsupported real type with " + sizeInBits + " bits.");
+                case UFLOAT:
+                    throw new FreemarkerException("Unsupported unsigned real type.");
+                case STRING:
+                case VSTRING:
+                    return "char";
+                case TIME:
+                    return "time";//throw new FreemarkerException("Unsupported time type.");
+                case DATE:
+                    return "date";//throw new FreemarkerException("Unsupported date type.");
+                case DATETIME:
+                    return "date_and_time";//throw new FreemarkerException("Unsupported date-time type.");
+            }
+            throw new FreemarkerException("Unsupported simple type. " + simpleTypeReference.getBaseType());
+        } else {
+            return getCTypeName(((NonSimpleTypeReference) typeReference).getName());
+        }
+    }
+
     public String getLoopExpressionSuffix(TypedField field) {
         if (!(field instanceof ArrayField)) {
             return "";
@@ -490,8 +559,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     return "plc4c_spi_write_double(writeBuffer, " + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
-            case STRING:
-            case VSTRING:
+            case STRING: {
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new RuntimeException("Encoding must be a quoted string value");
@@ -500,6 +568,18 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "plc4c_spi_write_string(writeBuffer, " + length + ", \"" +
                     encoding + "\", " + fieldName + ")";
+            }
+            case VSTRING: {
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                if (!(encodingTerm instanceof StringLiteral)) {
+                    throw new RuntimeException("Encoding must be a quoted string value");
+                }
+                String encoding = ((StringLiteral) encodingTerm).getValue();
+                // Here we need to use the serialized expression of the length instead.
+                String lengthExpression = toSerializationExpression(thisType, field, simpleTypeReference.asVstringTypeReference().orElseThrow().getLengthExpression(), null);
+                return "plc4c_spi_write_string(writeBuffer, " + lengthExpression + ", \"" +
+                    encoding + "\", " + fieldName + ")";
+            }
             default:
                 throw new FreemarkerException("Unsupported type " + simpleTypeReference.getBaseType().name());
         }
@@ -720,7 +800,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         // If the literal is referencing a constant field, we need to reference the constant variable instead.
         final Optional<NamedField> namedField = ((ComplexTypeDefinition) baseType).getNamedFieldByName(name);
         if(namedField.isPresent() && namedField.get() instanceof ConstField) {
-            return getCTypeName(baseType.getName()).toUpperCase() + "_" + name.toUpperCase() + "()";
+            return getCTypeName(baseType.getName()).toUpperCase() + "_" + camelCaseToSnakeCase(name).toUpperCase() + "()";
         }
 
         // Try to find the type of the addressed property.

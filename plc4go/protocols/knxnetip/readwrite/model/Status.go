@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type Status uint8
 
 type IStatus interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -68,64 +68,64 @@ func init() {
 	}
 }
 
-func StatusByValue(value uint8) Status {
+func StatusByValue(value uint8) (enum Status, ok bool) {
 	switch value {
 	case 0x00:
-		return Status_NO_ERROR
+		return Status_NO_ERROR, true
 	case 0x01:
-		return Status_PROTOCOL_TYPE_NOT_SUPPORTED
+		return Status_PROTOCOL_TYPE_NOT_SUPPORTED, true
 	case 0x02:
-		return Status_UNSUPPORTED_PROTOCOL_VERSION
+		return Status_UNSUPPORTED_PROTOCOL_VERSION, true
 	case 0x04:
-		return Status_OUT_OF_ORDER_SEQUENCE_NUMBER
+		return Status_OUT_OF_ORDER_SEQUENCE_NUMBER, true
 	case 0x21:
-		return Status_INVALID_CONNECTION_ID
+		return Status_INVALID_CONNECTION_ID, true
 	case 0x22:
-		return Status_CONNECTION_TYPE_NOT_SUPPORTED
+		return Status_CONNECTION_TYPE_NOT_SUPPORTED, true
 	case 0x23:
-		return Status_CONNECTION_OPTION_NOT_SUPPORTED
+		return Status_CONNECTION_OPTION_NOT_SUPPORTED, true
 	case 0x24:
-		return Status_NO_MORE_CONNECTIONS
+		return Status_NO_MORE_CONNECTIONS, true
 	case 0x25:
-		return Status_NO_MORE_UNIQUE_CONNECTIONS
+		return Status_NO_MORE_UNIQUE_CONNECTIONS, true
 	case 0x26:
-		return Status_DATA_CONNECTION
+		return Status_DATA_CONNECTION, true
 	case 0x27:
-		return Status_KNX_CONNECTION
+		return Status_KNX_CONNECTION, true
 	case 0x29:
-		return Status_TUNNELLING_LAYER_NOT_SUPPORTED
+		return Status_TUNNELLING_LAYER_NOT_SUPPORTED, true
 	}
-	return 0
+	return 0, false
 }
 
-func StatusByName(value string) Status {
+func StatusByName(value string) (enum Status, ok bool) {
 	switch value {
 	case "NO_ERROR":
-		return Status_NO_ERROR
+		return Status_NO_ERROR, true
 	case "PROTOCOL_TYPE_NOT_SUPPORTED":
-		return Status_PROTOCOL_TYPE_NOT_SUPPORTED
+		return Status_PROTOCOL_TYPE_NOT_SUPPORTED, true
 	case "UNSUPPORTED_PROTOCOL_VERSION":
-		return Status_UNSUPPORTED_PROTOCOL_VERSION
+		return Status_UNSUPPORTED_PROTOCOL_VERSION, true
 	case "OUT_OF_ORDER_SEQUENCE_NUMBER":
-		return Status_OUT_OF_ORDER_SEQUENCE_NUMBER
+		return Status_OUT_OF_ORDER_SEQUENCE_NUMBER, true
 	case "INVALID_CONNECTION_ID":
-		return Status_INVALID_CONNECTION_ID
+		return Status_INVALID_CONNECTION_ID, true
 	case "CONNECTION_TYPE_NOT_SUPPORTED":
-		return Status_CONNECTION_TYPE_NOT_SUPPORTED
+		return Status_CONNECTION_TYPE_NOT_SUPPORTED, true
 	case "CONNECTION_OPTION_NOT_SUPPORTED":
-		return Status_CONNECTION_OPTION_NOT_SUPPORTED
+		return Status_CONNECTION_OPTION_NOT_SUPPORTED, true
 	case "NO_MORE_CONNECTIONS":
-		return Status_NO_MORE_CONNECTIONS
+		return Status_NO_MORE_CONNECTIONS, true
 	case "NO_MORE_UNIQUE_CONNECTIONS":
-		return Status_NO_MORE_UNIQUE_CONNECTIONS
+		return Status_NO_MORE_UNIQUE_CONNECTIONS, true
 	case "DATA_CONNECTION":
-		return Status_DATA_CONNECTION
+		return Status_DATA_CONNECTION, true
 	case "KNX_CONNECTION":
-		return Status_KNX_CONNECTION
+		return Status_KNX_CONNECTION, true
 	case "TUNNELLING_LAYER_NOT_SUPPORTED":
-		return Status_TUNNELLING_LAYER_NOT_SUPPORTED
+		return Status_TUNNELLING_LAYER_NOT_SUPPORTED, true
 	}
-	return 0
+	return 0, false
 }
 
 func StatusKnows(value uint8) bool {
@@ -155,19 +155,37 @@ func (m Status) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func StatusParse(readBuffer utils.ReadBuffer) (Status, error) {
+func StatusParse(theBytes []byte) (Status, error) {
+	return StatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func StatusParseWithBuffer(readBuffer utils.ReadBuffer) (Status, error) {
 	val, err := readBuffer.ReadUint8("Status", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading Status")
 	}
-	return StatusByValue(val), nil
+	if enum, ok := StatusByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return Status(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e Status) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("Status", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e Status) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e Status) name() string {
+func (e Status) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("Status", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e Status) PLC4XEnumName() string {
 	switch e {
 	case Status_NO_ERROR:
 		return "NO_ERROR"
@@ -198,5 +216,5 @@ func (e Status) name() string {
 }
 
 func (e Status) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

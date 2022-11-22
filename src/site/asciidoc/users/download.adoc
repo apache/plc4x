@@ -6,7 +6,7 @@
 //  (the "License"); you may not use this file except in compliance with
 //  the License.  You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 //  Unless required by applicable law or agreed to in writing, software
 //  distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,7 +21,49 @@ Be sure to verify your downloads by these https://www.apache.org/info/verificati
 
 === Current Releases
 
-==== 0.9.1 Official https://www.apache.org/dyn/closer.lua/plc4x/0.9.1/apache-plc4x-0.9.1-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.9.1/apache-plc4x-0.9.1-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.9.1/apache-plc4x-0.9.1-source-release.zip.asc[ASC] ]
+==== 0.10.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.10.0/apache-plc4x-0.10.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.10.0/apache-plc4x-0.10.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.10.0/apache-plc4x-0.10.0-source-release.zip.asc[ASC] ]
+
+A lot of the work in this version went into refactoring and
+cleaning up our code generation. The code generation itself is
+now a lot cleaner and simpler as well as the code generated
+for Java. We also added a number of new field-types to allow
+implementing more sophisticated protocols. PLC4C now should
+also support all of the constructs mspec has to offer.
+
+===== New Features
+
+- Implemented a `PLC4X-Server` and `PLC4X-Driver` that allows
+using the server as a proxy for communicating with PLCs.
+
+- The Modbus driver is now also available in the variants:
+"modbus-rtu" and "modbus-ascii" (Both using Serial
+communication, which however can be tunneled through a
+"tcp" and "udp" transport)
+
+- The KNX driver in Java now supports reading "knxproj" files
+exported from the new ETS version 6.
+
+===== Bug Fixes
+
+- The name of the Modbus TCP driver was changed from "modbus"
+to "modbus-tcp".
+
+- Removed the Apache Edgent (incubating) integration and
+examples related, as Edgent is abandoned and there were
+CVEs reported, which will not be fixed.
+
+- We have replaced the BitString types with BYTE, WORD, DWORD,
+and LWORD which generally match their unsigned integer
+counterparts. So we are no longer returning lists of boolean
+values for any of these types.
+
+=== Previous Releases
+
+- Fixed a big bug in the KNX Datapoint decoding, which caused
+byte-aligned data types to parse with an offset of 8 bit.
+(This bug affected both the Java and the Go driver)
+
+==== 0.9.1 Official https://archive.apache.org/dist/plc4x/0.9.1/apache-plc4x-0.9.1-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.9.1/apache-plc4x-0.9.1-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.9.1/apache-plc4x-0.9.1-source-release.zip.asc[ASC] ]
 
 This is a bugfix release aiming at directly fixing CVE-2021-43083 as well as updating the dependency to Log4J 2.14.0 which was affected by CVE-2021-44228
 

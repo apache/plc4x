@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -44,82 +44,91 @@ typedef void (*plc4c_data_custom_printf)(plc4c_data *data);
 plc4c_data *plc4c_data_create_bool_data(bool b);
 plc4c_data *plc4c_data_create_bool_array(bool *b, int nItem);
 /**
- * Creates a plc4c_data with char
- * @param c the char value
+ * Creates a plc4c_data with unsigned 8 bit integer
+ * @param ui the unsigned 8 bit integer value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_int8_t_data(int8_t c);
-plc4c_data *plc4c_data_create_int8_t_array(int8_t *c, int nItem);
+plc4c_data *plc4c_data_create_usint_data(uint8_t ui);
+plc4c_data *plc4c_data_create_usint_array(uint8_t *ui, int nItem);
 /**
- * Creates a plc4c_data with unsigned char
- * @param uc the unsigned char value
+ * Creates a plc4c_data with a signed 8 bit integer
+ * @param i signed 8 bit integer
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_uint8_t_data(uint8_t uc);
-plc4c_data *plc4c_data_create_uint8_t_array(uint8_t *uc, int nItem);
+plc4c_data *plc4c_data_create_sint_data(int8_t i);
+plc4c_data *plc4c_data_create_sint_array(int8_t *i, int nItem);
 /**
- * Creates a plc4c_data with short
- * @param s the short value
+ * Creates a plc4c_data with unsigned 16 bit integer
+ * @param ui the unsigned short value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_int16_t_data(int16_t s);
-plc4c_data *plc4c_data_create_int16_t_array(int16_t *s, int nItem);
+plc4c_data *plc4c_data_create_uint_data(uint16_t ui);
+plc4c_data *plc4c_data_create_uint_array(uint16_t *ui, int nItem);
 /**
- * Creates a plc4c_data with unsigned short
- * @param us the unsigned short value
+ * Creates a plc4c_data with signed 16 bit integer
+ * @param i the short value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_uint16_t_data(uint16_t us);
-plc4c_data *plc4c_data_create_uint16_t_array(uint16_t *us, int nItem);
+plc4c_data *plc4c_data_create_int_data(int16_t i);
+plc4c_data *plc4c_data_create_int_array(int16_t *i, int nItem);
 /**
- * Creates a plc4c_data with int
- * @param i the int value
+ * Creates a plc4c_data with unsigned 32 bit integer
+ * @param ui the unsigned 32 bit integer value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_int32_t_data(int32_t i);
-plc4c_data *plc4c_data_create_int32_t_array(int32_t *i, int nItem);
+plc4c_data *plc4c_data_create_udint_data(uint32_t ui);
+plc4c_data *plc4c_data_create_udint_array(uint32_t *ui, int nItem);
 /**
- * Creates a plc4c_data with unsigned int
- * @param ui the unsigned int value
+ * Creates a plc4c_data with signed 32 bit integer
+ * @param i the signed 32 bit integer value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_uint32_t_data(uint32_t ui);
-plc4c_data *plc4c_data_create_uint32_t_array(uint32_t *ui, int nItem);
+plc4c_data *plc4c_data_create_dint_data(int32_t i);
+plc4c_data *plc4c_data_create_dint_array(int32_t *i, int nItem);
 /**
- * Creates a plc4c_data with int
- * @param i the int value
+ * Creates a plc4c_data with unsigned 64 bit integer
+ * @param ui the 64 bit integer value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_int64_t_data(int64_t i);
-plc4c_data *plc4c_data_create_int64_t_array(int64_t *i, int nItem);
+plc4c_data *plc4c_data_create_ulint_data(uint64_t ui);
+plc4c_data *plc4c_data_create_ulint_array(uint64_t *ui, int nItem);
 /**
- * Creates a plc4c_data with unsigned int
- * @param ui the unsigned int value
+ * Creates a plc4c_data with signed 64 bit integer
+ * @param i the signed 64 bit integer value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_uint64_t_data(uint64_t ui);
-plc4c_data *plc4c_data_create_uint64_t_array(uint64_t *ui, int nItem);
-/**
- * Creates a plc4c_data with void*
- * @param v the void* value
- * @return pointer to plc4c_data
- */
-plc4c_data *plc4c_data_create_void_pointer_data(void *v);
+plc4c_data *plc4c_data_create_lint_data(int64_t i);
+plc4c_data *plc4c_data_create_lint_array(int64_t *i, int nItem);
 
 /**
  * Creates a plc4c_data with float
  * @param f the float value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_float_data(float f);
-plc4c_data *plc4c_data_create_float_array(float *f, int nItem);
+plc4c_data *plc4c_data_create_real_data(float f);
+plc4c_data *plc4c_data_create_real_array(float *f, int nItem);
 /**
  * Creates a plc4c_data with float
  * @param f the float value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_double_data(double d);
-plc4c_data *plc4c_data_create_double_array(double *d, int nItems);
+plc4c_data *plc4c_data_create_lreal_data(double d);
+plc4c_data *plc4c_data_create_lreal_array(double *d, int nItems);
+
+plc4c_data *plc4c_data_create_date_data(uint16_t d);
+plc4c_data *plc4c_data_create_date_array(uint16_t *d, int nItems);
+
+plc4c_data *plc4c_data_create_time_data(uint32_t t);
+plc4c_data *plc4c_data_create_time_array(uint32_t *t, int nItems);
+
+plc4c_data *plc4c_data_create_ltime_data(uint64_t lt);
+plc4c_data *plc4c_data_create_ltime_array(uint64_t *lt, int nItems);
+
+ plc4c_data *plc4c_data_create_time_of_day_data(uint32_t tod);
+plc4c_data *plc4c_data_create_time_of_day_array(uint32_t *tod, int nItems);
+
+plc4c_data *plc4c_data_create_date_and_time_data(uint32_t tad);
+plc4c_data *plc4c_data_create_date_and_time_array(uint32_t *tad, int nItems);
 
 /**
  * Creates a plc4c_data with char*
@@ -130,31 +139,54 @@ plc4c_data *plc4c_data_create_double_array(double *d, int nItems);
 plc4c_data *plc4c_data_create_string_data(unsigned int size, char *s);
 
 /**
- * Creates a plc4c_data with a constant char*
- * @param size the size of the string
- * @param s the char *value
- * @return pointer to plc4c_data
- */
-plc4c_data *plc4c_data_create_constant_string_data(unsigned int size, char *s);
-
-/**
  * Creates a plc4c_data with a constant char
  * @param s the char value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_char_data(char* s);
+plc4c_data *plc4c_data_create_char_data(char s);
+
+/**
+ * Creates a plc4c_data with a constant 16bit wchar
+ * @param s the wchar value
+ * @return pointer to plc4c_data
+ */
+plc4c_data *plc4c_data_create_wchar_data(wchar_t s);
 
 /**
  * Creates a plc4c_data which contains a list of values
  * @param list the list value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_list_data(plc4c_list list);
+plc4c_data *plc4c_data_create_list_data(plc4c_list* list);
 
-plc4c_data *plc4c_data_create_uint8_t_bit_string_data(uint8_t uc);
-plc4c_data *plc4c_data_create_uint16_t_bit_string_data(uint16_t us);
-plc4c_data *plc4c_data_create_uint32_t_bit_string_data(uint32_t ui);
-plc4c_data *plc4c_data_create_uint64_t_bit_string_data(uint64_t ui);
+/**
+ * Create a plc4c_data which contains a bit-string of 8 boolean values
+ * @param ui unsigned 8 bit integer value.
+ * @return pointer to plc4c_data
+ */
+plc4c_data *plc4c_data_create_byte_data(uint8_t ui);
+
+/**
+ * Create a plc4c_data which contains a bit-string of 16 boolean values
+ * @param ui unsigned 16 bit integer value.
+ * @return pointer to plc4c_data
+ */
+plc4c_data *plc4c_data_create_word_data(uint16_t ui);
+
+/**
+ * Create a plc4c_data which contains a bit-string of 32 boolean values
+ * @param ui unsigned 32 bit integer value.
+ * @return pointer to plc4c_data
+ */
+plc4c_data *plc4c_data_create_dword_data(uint32_t ui);
+
+/**
+ * Create a plc4c_data which contains a bit-string of 64 boolean values
+ * @param ui unsigned 64 bit integer value.
+ * @return pointer to plc4c_data
+ */
+plc4c_data *plc4c_data_create_lword_data(uint64_t ui);
+
 /**
  * Set a custom function to call when destroying this data.  Typically when the
  * type is a PLC4C_VOID_POINTER

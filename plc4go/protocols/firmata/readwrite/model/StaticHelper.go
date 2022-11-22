@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,7 +19,7 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/internal/spi/utils"
+import "github.com/apache/plc4x/plc4go/spi/utils"
 
 func IsSysexEnd(io utils.ReadBuffer) bool {
 	return io.(utils.ReadBufferByteBased).PeekByte(0) == 0xF7

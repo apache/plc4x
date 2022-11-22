@@ -7,7 +7,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -17,11 +17,16 @@
   under the License.
 ]]
 
-include_directories("include" "../../api/include" "../../spi/include")
-
 # Add the sources
 file(GLOB sources "src/*.c")
 
 add_library(plc4c-driver-simulated ${sources})
+
+target_include_directories(
+        plc4c-driver-simulated
+        PUBLIC
+        "include"
+        "../../api/include"
+        "../../spi/include")
 
 target_link_libraries(plc4c-driver-simulated plc4c-spi ${CMAKE_DL_LIBS})

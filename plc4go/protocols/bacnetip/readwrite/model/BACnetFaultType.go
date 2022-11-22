@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetFaultType uint8
 
 type IBACnetFaultType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -60,48 +60,48 @@ func init() {
 	}
 }
 
-func BACnetFaultTypeByValue(value uint8) BACnetFaultType {
+func BACnetFaultTypeByValue(value uint8) (enum BACnetFaultType, ok bool) {
 	switch value {
 	case 0:
-		return BACnetFaultType_NONE
+		return BACnetFaultType_NONE, true
 	case 1:
-		return BACnetFaultType_FAULT_CHARACTERSTRING
+		return BACnetFaultType_FAULT_CHARACTERSTRING, true
 	case 2:
-		return BACnetFaultType_FAULT_EXTENDED
+		return BACnetFaultType_FAULT_EXTENDED, true
 	case 3:
-		return BACnetFaultType_FAULT_LIFE_SAFETY
+		return BACnetFaultType_FAULT_LIFE_SAFETY, true
 	case 4:
-		return BACnetFaultType_FAULT_STATE
+		return BACnetFaultType_FAULT_STATE, true
 	case 5:
-		return BACnetFaultType_FAULT_STATUS_FLAGS
+		return BACnetFaultType_FAULT_STATUS_FLAGS, true
 	case 6:
-		return BACnetFaultType_FAULT_OUT_OF_RANGE
+		return BACnetFaultType_FAULT_OUT_OF_RANGE, true
 	case 7:
-		return BACnetFaultType_FAULT_LISTED
+		return BACnetFaultType_FAULT_LISTED, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetFaultTypeByName(value string) BACnetFaultType {
+func BACnetFaultTypeByName(value string) (enum BACnetFaultType, ok bool) {
 	switch value {
 	case "NONE":
-		return BACnetFaultType_NONE
+		return BACnetFaultType_NONE, true
 	case "FAULT_CHARACTERSTRING":
-		return BACnetFaultType_FAULT_CHARACTERSTRING
+		return BACnetFaultType_FAULT_CHARACTERSTRING, true
 	case "FAULT_EXTENDED":
-		return BACnetFaultType_FAULT_EXTENDED
+		return BACnetFaultType_FAULT_EXTENDED, true
 	case "FAULT_LIFE_SAFETY":
-		return BACnetFaultType_FAULT_LIFE_SAFETY
+		return BACnetFaultType_FAULT_LIFE_SAFETY, true
 	case "FAULT_STATE":
-		return BACnetFaultType_FAULT_STATE
+		return BACnetFaultType_FAULT_STATE, true
 	case "FAULT_STATUS_FLAGS":
-		return BACnetFaultType_FAULT_STATUS_FLAGS
+		return BACnetFaultType_FAULT_STATUS_FLAGS, true
 	case "FAULT_OUT_OF_RANGE":
-		return BACnetFaultType_FAULT_OUT_OF_RANGE
+		return BACnetFaultType_FAULT_OUT_OF_RANGE, true
 	case "FAULT_LISTED":
-		return BACnetFaultType_FAULT_LISTED
+		return BACnetFaultType_FAULT_LISTED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetFaultTypeKnows(value uint8) bool {
@@ -131,19 +131,37 @@ func (m BACnetFaultType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultTypeParse(readBuffer utils.ReadBuffer) (BACnetFaultType, error) {
+func BACnetFaultTypeParse(theBytes []byte) (BACnetFaultType, error) {
+	return BACnetFaultTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetFaultTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultType, error) {
 	val, err := readBuffer.ReadUint8("BACnetFaultType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetFaultType")
 	}
-	return BACnetFaultTypeByValue(val), nil
+	if enum, ok := BACnetFaultTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetFaultType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetFaultType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetFaultType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetFaultType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetFaultType) name() string {
+func (e BACnetFaultType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetFaultType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetFaultType) PLC4XEnumName() string {
 	switch e {
 	case BACnetFaultType_NONE:
 		return "NONE"
@@ -166,5 +184,5 @@ func (e BACnetFaultType) name() string {
 }
 
 func (e BACnetFaultType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type COTPProtocolClass uint8
 
 type ICOTPProtocolClass interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -54,36 +54,36 @@ func init() {
 	}
 }
 
-func COTPProtocolClassByValue(value uint8) COTPProtocolClass {
+func COTPProtocolClassByValue(value uint8) (enum COTPProtocolClass, ok bool) {
 	switch value {
 	case 0x00:
-		return COTPProtocolClass_CLASS_0
+		return COTPProtocolClass_CLASS_0, true
 	case 0x10:
-		return COTPProtocolClass_CLASS_1
+		return COTPProtocolClass_CLASS_1, true
 	case 0x20:
-		return COTPProtocolClass_CLASS_2
+		return COTPProtocolClass_CLASS_2, true
 	case 0x30:
-		return COTPProtocolClass_CLASS_3
+		return COTPProtocolClass_CLASS_3, true
 	case 0x40:
-		return COTPProtocolClass_CLASS_4
+		return COTPProtocolClass_CLASS_4, true
 	}
-	return 0
+	return 0, false
 }
 
-func COTPProtocolClassByName(value string) COTPProtocolClass {
+func COTPProtocolClassByName(value string) (enum COTPProtocolClass, ok bool) {
 	switch value {
 	case "CLASS_0":
-		return COTPProtocolClass_CLASS_0
+		return COTPProtocolClass_CLASS_0, true
 	case "CLASS_1":
-		return COTPProtocolClass_CLASS_1
+		return COTPProtocolClass_CLASS_1, true
 	case "CLASS_2":
-		return COTPProtocolClass_CLASS_2
+		return COTPProtocolClass_CLASS_2, true
 	case "CLASS_3":
-		return COTPProtocolClass_CLASS_3
+		return COTPProtocolClass_CLASS_3, true
 	case "CLASS_4":
-		return COTPProtocolClass_CLASS_4
+		return COTPProtocolClass_CLASS_4, true
 	}
-	return 0
+	return 0, false
 }
 
 func COTPProtocolClassKnows(value uint8) bool {
@@ -113,19 +113,37 @@ func (m COTPProtocolClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPProtocolClassParse(readBuffer utils.ReadBuffer) (COTPProtocolClass, error) {
+func COTPProtocolClassParse(theBytes []byte) (COTPProtocolClass, error) {
+	return COTPProtocolClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func COTPProtocolClassParseWithBuffer(readBuffer utils.ReadBuffer) (COTPProtocolClass, error) {
 	val, err := readBuffer.ReadUint8("COTPProtocolClass", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading COTPProtocolClass")
 	}
-	return COTPProtocolClassByValue(val), nil
+	if enum, ok := COTPProtocolClassByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return COTPProtocolClass(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e COTPProtocolClass) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("COTPProtocolClass", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e COTPProtocolClass) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e COTPProtocolClass) name() string {
+func (e COTPProtocolClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("COTPProtocolClass", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e COTPProtocolClass) PLC4XEnumName() string {
 	switch e {
 	case COTPProtocolClass_CLASS_0:
 		return "CLASS_0"
@@ -142,5 +160,5 @@ func (e COTPProtocolClass) name() string {
 }
 
 func (e COTPProtocolClass) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

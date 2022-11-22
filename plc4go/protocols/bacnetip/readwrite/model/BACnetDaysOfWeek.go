@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetDaysOfWeek uint8
 
 type IBACnetDaysOfWeek interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -58,44 +58,44 @@ func init() {
 	}
 }
 
-func BACnetDaysOfWeekByValue(value uint8) BACnetDaysOfWeek {
+func BACnetDaysOfWeekByValue(value uint8) (enum BACnetDaysOfWeek, ok bool) {
 	switch value {
 	case 0:
-		return BACnetDaysOfWeek_MONDAY
+		return BACnetDaysOfWeek_MONDAY, true
 	case 1:
-		return BACnetDaysOfWeek_TUESDAY
+		return BACnetDaysOfWeek_TUESDAY, true
 	case 2:
-		return BACnetDaysOfWeek_WEDNESDAY
+		return BACnetDaysOfWeek_WEDNESDAY, true
 	case 3:
-		return BACnetDaysOfWeek_THURSDAY
+		return BACnetDaysOfWeek_THURSDAY, true
 	case 4:
-		return BACnetDaysOfWeek_FRIDAY
+		return BACnetDaysOfWeek_FRIDAY, true
 	case 5:
-		return BACnetDaysOfWeek_SATURDAY
+		return BACnetDaysOfWeek_SATURDAY, true
 	case 6:
-		return BACnetDaysOfWeek_SUNDAY
+		return BACnetDaysOfWeek_SUNDAY, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetDaysOfWeekByName(value string) BACnetDaysOfWeek {
+func BACnetDaysOfWeekByName(value string) (enum BACnetDaysOfWeek, ok bool) {
 	switch value {
 	case "MONDAY":
-		return BACnetDaysOfWeek_MONDAY
+		return BACnetDaysOfWeek_MONDAY, true
 	case "TUESDAY":
-		return BACnetDaysOfWeek_TUESDAY
+		return BACnetDaysOfWeek_TUESDAY, true
 	case "WEDNESDAY":
-		return BACnetDaysOfWeek_WEDNESDAY
+		return BACnetDaysOfWeek_WEDNESDAY, true
 	case "THURSDAY":
-		return BACnetDaysOfWeek_THURSDAY
+		return BACnetDaysOfWeek_THURSDAY, true
 	case "FRIDAY":
-		return BACnetDaysOfWeek_FRIDAY
+		return BACnetDaysOfWeek_FRIDAY, true
 	case "SATURDAY":
-		return BACnetDaysOfWeek_SATURDAY
+		return BACnetDaysOfWeek_SATURDAY, true
 	case "SUNDAY":
-		return BACnetDaysOfWeek_SUNDAY
+		return BACnetDaysOfWeek_SUNDAY, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetDaysOfWeekKnows(value uint8) bool {
@@ -125,19 +125,37 @@ func (m BACnetDaysOfWeek) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDaysOfWeekParse(readBuffer utils.ReadBuffer) (BACnetDaysOfWeek, error) {
+func BACnetDaysOfWeekParse(theBytes []byte) (BACnetDaysOfWeek, error) {
+	return BACnetDaysOfWeekParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetDaysOfWeekParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDaysOfWeek, error) {
 	val, err := readBuffer.ReadUint8("BACnetDaysOfWeek", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetDaysOfWeek")
 	}
-	return BACnetDaysOfWeekByValue(val), nil
+	if enum, ok := BACnetDaysOfWeekByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetDaysOfWeek(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetDaysOfWeek) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetDaysOfWeek", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetDaysOfWeek) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetDaysOfWeek) name() string {
+func (e BACnetDaysOfWeek) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetDaysOfWeek", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetDaysOfWeek) PLC4XEnumName() string {
 	switch e {
 	case BACnetDaysOfWeek_MONDAY:
 		return "MONDAY"
@@ -158,5 +176,5 @@ func (e BACnetDaysOfWeek) name() string {
 }
 
 func (e BACnetDaysOfWeek) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

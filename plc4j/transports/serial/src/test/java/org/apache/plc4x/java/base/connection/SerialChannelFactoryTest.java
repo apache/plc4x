@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -25,6 +25,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.codec.ByteToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.transport.serial.DummyHandler;
 import org.apache.plc4x.java.transport.serial.SerialChannel;
 import org.apache.plc4x.java.transport.serial.SerialChannelFactory;
 import org.apache.plc4x.java.transport.serial.SerialChannelHandler;
@@ -53,7 +54,7 @@ public class SerialChannelFactoryTest {
 
     @Test
     public void createChannel() throws PlcConnectionException, InterruptedException, UnknownHostException {
-        SerialChannelFactory asdf = new SerialChannelFactory(new SerialSocketAddress("TEST-port1"));
+        SerialChannelFactory asdf = new SerialChannelFactory(new SerialSocketAddress("TEST-port1", DummyHandler.INSTANCE));
         // final TcpSocketChannelFactory factory = new TcpSocketChannelFactory(InetAddress.getLocalHost(), 5432);
         final Channel channel = asdf.createChannel(new ChannelInitializer<SerialChannel>() {
             @Override
@@ -64,7 +65,7 @@ public class SerialChannelFactoryTest {
         Thread.sleep(100);
         for (int i = 1; i <= 10; i++) {
             Thread.sleep(10);
-            SerialChannelHandler.DummyHandler.INSTANCE.fireEvent(1);
+            DummyHandler.INSTANCE.fireEvent(1);
         }
         Thread.sleep(100);
         channel.close().sync();

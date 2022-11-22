@@ -7,7 +7,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -18,7 +18,7 @@
 #
 from abc import abstractmethod
 from dataclasses import dataclass, field
-from typing import Union
+from typing import Union, List
 
 from plc4py.api.messages.PlcField import PlcField
 from plc4py.api.messages.PlcMessage import PlcMessage
@@ -33,7 +33,7 @@ class PlcRequest(PlcMessage):
 
 @dataclass
 class PlcFieldRequest(PlcRequest):
-    fields: list[PlcField] = field(default_factory=lambda: [])
+    fields: List[PlcField] = field(default_factory=lambda: [])
 
     @property
     def field_names(self):

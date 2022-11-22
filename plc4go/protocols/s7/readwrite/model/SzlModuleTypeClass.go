@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type SzlModuleTypeClass uint8
 
 type ISzlModuleTypeClass interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -52,32 +52,32 @@ func init() {
 	}
 }
 
-func SzlModuleTypeClassByValue(value uint8) SzlModuleTypeClass {
+func SzlModuleTypeClassByValue(value uint8) (enum SzlModuleTypeClass, ok bool) {
 	switch value {
 	case 0x0:
-		return SzlModuleTypeClass_CPU
+		return SzlModuleTypeClass_CPU, true
 	case 0x4:
-		return SzlModuleTypeClass_IM
+		return SzlModuleTypeClass_IM, true
 	case 0x8:
-		return SzlModuleTypeClass_FM
+		return SzlModuleTypeClass_FM, true
 	case 0xC:
-		return SzlModuleTypeClass_CP
+		return SzlModuleTypeClass_CP, true
 	}
-	return 0
+	return 0, false
 }
 
-func SzlModuleTypeClassByName(value string) SzlModuleTypeClass {
+func SzlModuleTypeClassByName(value string) (enum SzlModuleTypeClass, ok bool) {
 	switch value {
 	case "CPU":
-		return SzlModuleTypeClass_CPU
+		return SzlModuleTypeClass_CPU, true
 	case "IM":
-		return SzlModuleTypeClass_IM
+		return SzlModuleTypeClass_IM, true
 	case "FM":
-		return SzlModuleTypeClass_FM
+		return SzlModuleTypeClass_FM, true
 	case "CP":
-		return SzlModuleTypeClass_CP
+		return SzlModuleTypeClass_CP, true
 	}
-	return 0
+	return 0, false
 }
 
 func SzlModuleTypeClassKnows(value uint8) bool {
@@ -107,19 +107,37 @@ func (m SzlModuleTypeClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SzlModuleTypeClassParse(readBuffer utils.ReadBuffer) (SzlModuleTypeClass, error) {
+func SzlModuleTypeClassParse(theBytes []byte) (SzlModuleTypeClass, error) {
+	return SzlModuleTypeClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SzlModuleTypeClassParseWithBuffer(readBuffer utils.ReadBuffer) (SzlModuleTypeClass, error) {
 	val, err := readBuffer.ReadUint8("SzlModuleTypeClass", 4)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading SzlModuleTypeClass")
 	}
-	return SzlModuleTypeClassByValue(val), nil
+	if enum, ok := SzlModuleTypeClassByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return SzlModuleTypeClass(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e SzlModuleTypeClass) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("SzlModuleTypeClass", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e SzlModuleTypeClass) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e SzlModuleTypeClass) name() string {
+func (e SzlModuleTypeClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("SzlModuleTypeClass", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e SzlModuleTypeClass) PLC4XEnumName() string {
 	switch e {
 	case SzlModuleTypeClass_CPU:
 		return "CPU"
@@ -134,5 +152,5 @@ func (e SzlModuleTypeClass) name() string {
 }
 
 func (e SzlModuleTypeClass) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

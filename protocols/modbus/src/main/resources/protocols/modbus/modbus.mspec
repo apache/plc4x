@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -310,41 +310,35 @@
 
 [dataIo DataItem(ModbusDataType dataType, uint 16 numberOfValues)
     [typeSwitch dataType,numberOfValues
-        ['BOOL','1' BOOL
-            [reserved uint 15 '0x0000']
-            [simple   bit     value   ]
+        ['BOOL','1'  BOOL
+            // TODO: Possibly change the order of the bit and the reserved part.
+            [reserved uint 15 '0x0000'                         ]
+            [simple   bit     value                            ]
         ]
-        ['BOOL' List
-            [array bit value count 'numberOfValues']
+        ['BOOL'      List
+            // TODO: Handle adding some reserved bits at the end to fill up the last word.
+            [array    bit     value count 'numberOfValues'     ]
         ]
-        ['BYTE','1' BitString
+        ['BYTE','1'  BYTE
             [reserved uint 8 '0x00']
-            [simple   uint 8 value ]
+            [simple uint 8 value]
         ]
         ['BYTE' List
-            [array bit value count 'numberOfValues * 8']
+            // TODO: If the number of values is odd, add a reserved byte
+            [array    bit     value count 'numberOfValues * 8' ]
         ]
-        ['WORD','1' BitString
-            [simple uint 16 value]
+        ['WORD'      WORD
+            [simple   uint 16 value]
         ]
-        ['WORD' List
-            [array bit value count 'numberOfValues * 16']
+        ['DWORD'     DWORD
+            [simple   uint 32 value]
         ]
-        ['DWORD','1' BitString
-            [simple uint 32 value]
-        ]
-        ['DWORD' List
-            [array bit value count 'numberOfValues * 32']
-        ]
-        ['LWORD','1' BitString
-            [simple uint 64 value]
-        ]
-        ['LWORD' List
-            [array bit value count 'numberOfValues * 64']
+        ['LWORD'     LWORD
+            [simple   uint 64 value]
         ]
         ['SINT','1' SINT
-            [reserved uint 8 '0x00']
-            [simple   int 8  value ]
+            [reserved uint 8  '0x00']
+            [simple   int 8   value ]
         ]
         ['SINT' List
             [array int 8 value count 'numberOfValues']
@@ -405,16 +399,16 @@
             [array float 64 value count 'numberOfValues']
         ]
         ['CHAR','1' CHAR
-            [simple uint 8 value]
+            [simple string 8 value encoding='"UTF-8"']
         ]
         ['CHAR' List
-            [array uint 8 value count 'numberOfValues']
+            [array string 8 value count 'numberOfValues' encoding='"UTF-8"']
         ]
         ['WCHAR','1' WCHAR
-            [simple uint 16 value]
+            [simple string 16 value encoding='"UTF-16"']
         ]
         ['WCHAR' List
-            [array uint 16 value count 'numberOfValues']
+            [array string 16 value count 'numberOfValues' encoding='"UTF-16"']
         ]
     ]
 ]

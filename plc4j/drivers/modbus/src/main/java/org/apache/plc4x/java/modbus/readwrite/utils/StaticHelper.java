@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -37,8 +37,8 @@ public class StaticHelper {
 
         // A procedure for generating an LRC is:
         // 1. Add all bytes in the message, (byte) excluding the starting ‘colon’ and ending
-        //    CRLF. Add them into an 8–bit field, (byte) so that carries will be discarded.
-        // 2. Subtract the final field value from FF hex (all 1’s), (byte) to produce the
+        //    CRLF. Add them into an 8–bit tag, (byte) so that carries will be discarded.
+        // 2. Subtract the final tag value from FF hex (all 1’s), (byte) to produce the
         //    ones–complement.
         // 3. Add 1 to produce the twos–complement
         // 4. Convert the 8 bit checksum into it's 16 bit (2 char) hex representation.

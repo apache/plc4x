@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -67,9 +67,9 @@ public class Plc4xSinkTask extends SinkTask {
     private static final String PLC4X_TIMEOUT_CONFIG = "timeout";
     private static final String PLC4X_TIMEOUT_DOC = "Time between retries";
 
-    // Syntax for the queries: {field-alias}#{field-address}:{field-alias}#{field-address}...,{topic}:{rate}:....
+    // Syntax for the queries: {tag-alias}#{tag-address}:{tag-alias}#{tag-address}...,{topic}:{rate}:....
     static final String QUERIES_CONFIG = "queries";
-    private static final String QUERIES_DOC = "Fields to be sent to the PLC";
+    private static final String QUERIES_DOC = "Tags to be sent to the PLC";
 
     private static final ConfigDef CONFIG_DEF = new ConfigDef()
         .define(CONNECTION_NAME_CONFIG,
@@ -117,7 +117,7 @@ public class Plc4xSinkTask extends SinkTask {
     private Integer plc4xTimeout;
     private Integer remainingRetries;
     private AbstractConfig config;
-    private Map<String, String> fields;
+    private Map<String, String> tags;
 
     @Override
     public void start(Map<String, String> props) {
@@ -130,21 +130,21 @@ public class Plc4xSinkTask extends SinkTask {
         plc4xTimeout = config.getInt(PLC4X_TIMEOUT_CONFIG);
 
         String queries = config.getString(QUERIES_CONFIG);
-        fields = new HashMap<>();
+        tags = new HashMap<>();
 
-        String[] fieldsConfigSegments = queries.split("\\|");
-        for(int i = 0; i < fieldsConfigSegments.length; i++) {
-            String[] fieldSegments = fieldsConfigSegments[i].split("#");
-            if(fieldSegments.length != 2) {
-                log.warn(String.format("Error in field configuration. " +
-                        "The field segment expects a format {field-alias}#{field-address}, but got '%s'",
-                    fieldsConfigSegments[i]));
+        String[] tagsConfigSegments = queries.split("\\|");
+        for (String tagsConfigSegment : tagsConfigSegments) {
+            String[] tagSegments = tagsConfigSegment.split("#");
+            if (tagSegments.length != 2) {
+                log.warn(String.format("Error in tag configuration. " +
+                        "The tag segment expects a format {tag-alias}#{tag-address}, but got '%s'",
+                    tagsConfigSegment));
                 continue;
             }
-            String fieldAlias = fieldSegments[0];
-            String fieldAddress = fieldSegments[1];
+            String tagAlias = tagSegments[0];
+            String tagAddress = tagSegments[1];
 
-            fields.put(fieldAlias, fieldAddress);
+            tags.put(tagAlias, tagAddress);
         }
 
         log.info("Creating Pooled PLC4x driver manager");
@@ -187,12 +187,12 @@ public class Plc4xSinkTask extends SinkTask {
             Struct record = (Struct) r.value();
             String topic = r.topic();
 
-            Struct plcFields = record.getStruct(Constants.FIELDS_CONFIG);
-            Schema plcFieldsSchema = plcFields.schema();
+            Struct plcTags = record.getStruct(Constants.TAGS_CONFIG);
+            Schema plcTagsSchema = plcTags.schema();
 
-            for (Field plcField : plcFieldsSchema.fields()) {
-                String field = plcField.name();
-                Object value = plcFields.get(field);
+            for (Field plcTag : plcTagsSchema.fields()) {
+                String tagName = plcTag.name();
+                Object value = plcTags.get(tagName);
                 if (value != null) {
                     Long timestamp = record.getInt64("timestamp");
                     Long expiresOffset = record.getInt64("expires");
@@ -204,29 +204,29 @@ public class Plc4xSinkTask extends SinkTask {
                     //Discard records we are not or no longer interested in.
                     if (!topic.equals(plc4xTopic) || plc4xTopic.equals("")) {
                         log.debug("Ignoring write request received on wrong topic");
-                    } else if (!fields.containsKey(field)) {
-                        log.warn("Unable to find address for field " + field);
+                    } else if (!tags.containsKey(tagName)) {
+                        log.warn("Unable to find address for tag " + tagName);
                     } else if ((System.currentTimeMillis() > expires) & !(expires == 0)) {
-                        log.warn("Write request has expired {} - {}, discarding {}", expires, System.currentTimeMillis(), field);
+                        log.warn("Write request has expired {} - {}, discarding {}", expires, System.currentTimeMillis(), tagName);
                     } else {
-                        String address = fields.get(field);
+                        String address = tags.get(tagName);
                         try {
                             //If an array value is passed instead of a single value then convert to a String array
                             if (value instanceof String) {
                                 String sValue = (String) value;
                                 if ((sValue.charAt(0) == '[') && (sValue.charAt(sValue.length() - 1) == ']')) {
                                     String[] values = sValue.substring(1,sValue.length() - 1).split(",");
-                                    builder.addItem(address, address, values);
+                                    builder.addTagAddress(address, address, values);
                                 } else {
-                                    builder.addItem(address, address, value);
+                                    builder.addTagAddress(address, address, value);
                                 }
                             } else {
-                                builder.addItem(address, address, value);
+                                builder.addTagAddress(address, address, value);
                             }
 
                             validCount += 1;
                         } catch (Exception e) {
-                            //When building a request we want to discard the write if there is an error.
+                            //When building a request we want to discard the write-operation if there is an error.
                             log.warn("Invalid Address format for protocol {}", address);
                         }
                     }
@@ -249,7 +249,7 @@ public class Plc4xSinkTask extends SinkTask {
                     try {
                         connection.close();
                     } catch (Exception f) {
-                        log.warn("Failed to Close {} on RetriableException", plc4xConnectionString);
+                        log.warn("Failed to Close {} on RetryableException", plc4xConnectionString);
                     }
                     throw new RetriableException("Failed to Write to " + plc4xConnectionString + " retrying records that haven't expired");
                 }

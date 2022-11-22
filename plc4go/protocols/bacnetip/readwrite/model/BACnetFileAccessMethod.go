@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetFileAccessMethod uint8
 
 type IBACnetFileAccessMethod interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -48,24 +48,24 @@ func init() {
 	}
 }
 
-func BACnetFileAccessMethodByValue(value uint8) BACnetFileAccessMethod {
+func BACnetFileAccessMethodByValue(value uint8) (enum BACnetFileAccessMethod, ok bool) {
 	switch value {
 	case 0:
-		return BACnetFileAccessMethod_RECORD_ACCESS
+		return BACnetFileAccessMethod_RECORD_ACCESS, true
 	case 1:
-		return BACnetFileAccessMethod_STREAM_ACCESS
+		return BACnetFileAccessMethod_STREAM_ACCESS, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetFileAccessMethodByName(value string) BACnetFileAccessMethod {
+func BACnetFileAccessMethodByName(value string) (enum BACnetFileAccessMethod, ok bool) {
 	switch value {
 	case "RECORD_ACCESS":
-		return BACnetFileAccessMethod_RECORD_ACCESS
+		return BACnetFileAccessMethod_RECORD_ACCESS, true
 	case "STREAM_ACCESS":
-		return BACnetFileAccessMethod_STREAM_ACCESS
+		return BACnetFileAccessMethod_STREAM_ACCESS, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetFileAccessMethodKnows(value uint8) bool {
@@ -95,19 +95,37 @@ func (m BACnetFileAccessMethod) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFileAccessMethodParse(readBuffer utils.ReadBuffer) (BACnetFileAccessMethod, error) {
+func BACnetFileAccessMethodParse(theBytes []byte) (BACnetFileAccessMethod, error) {
+	return BACnetFileAccessMethodParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetFileAccessMethodParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFileAccessMethod, error) {
 	val, err := readBuffer.ReadUint8("BACnetFileAccessMethod", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetFileAccessMethod")
 	}
-	return BACnetFileAccessMethodByValue(val), nil
+	if enum, ok := BACnetFileAccessMethodByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetFileAccessMethod(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetFileAccessMethod) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetFileAccessMethod", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetFileAccessMethod) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetFileAccessMethod) name() string {
+func (e BACnetFileAccessMethod) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetFileAccessMethod", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetFileAccessMethod) PLC4XEnumName() string {
 	switch e {
 	case BACnetFileAccessMethod_RECORD_ACCESS:
 		return "RECORD_ACCESS"
@@ -118,5 +136,5 @@ func (e BACnetFileAccessMethod) name() string {
 }
 
 func (e BACnetFileAccessMethod) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

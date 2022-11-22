@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -29,7 +29,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.readwrite.DateAndTime;
@@ -445,12 +445,12 @@ public class S7SysEvent  implements S7Event{
     }
 
     @Override
-    public Collection<String> getFieldNames() {
+    public Collection<String> getTagNames() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public PlcField getField(String name) {
+    public PlcTag getTag(String name) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

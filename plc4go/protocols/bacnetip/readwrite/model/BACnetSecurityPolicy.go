@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetSecurityPolicy uint8
 
 type IBACnetSecurityPolicy interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -52,32 +52,32 @@ func init() {
 	}
 }
 
-func BACnetSecurityPolicyByValue(value uint8) BACnetSecurityPolicy {
+func BACnetSecurityPolicyByValue(value uint8) (enum BACnetSecurityPolicy, ok bool) {
 	switch value {
 	case 0:
-		return BACnetSecurityPolicy_PLAIN_NON_TRUSTED
+		return BACnetSecurityPolicy_PLAIN_NON_TRUSTED, true
 	case 1:
-		return BACnetSecurityPolicy_PLAIN_TRUSTED
+		return BACnetSecurityPolicy_PLAIN_TRUSTED, true
 	case 2:
-		return BACnetSecurityPolicy_SIGNED_TRUSTED
+		return BACnetSecurityPolicy_SIGNED_TRUSTED, true
 	case 3:
-		return BACnetSecurityPolicy_ENCRYPTED_TRUSTED
+		return BACnetSecurityPolicy_ENCRYPTED_TRUSTED, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetSecurityPolicyByName(value string) BACnetSecurityPolicy {
+func BACnetSecurityPolicyByName(value string) (enum BACnetSecurityPolicy, ok bool) {
 	switch value {
 	case "PLAIN_NON_TRUSTED":
-		return BACnetSecurityPolicy_PLAIN_NON_TRUSTED
+		return BACnetSecurityPolicy_PLAIN_NON_TRUSTED, true
 	case "PLAIN_TRUSTED":
-		return BACnetSecurityPolicy_PLAIN_TRUSTED
+		return BACnetSecurityPolicy_PLAIN_TRUSTED, true
 	case "SIGNED_TRUSTED":
-		return BACnetSecurityPolicy_SIGNED_TRUSTED
+		return BACnetSecurityPolicy_SIGNED_TRUSTED, true
 	case "ENCRYPTED_TRUSTED":
-		return BACnetSecurityPolicy_ENCRYPTED_TRUSTED
+		return BACnetSecurityPolicy_ENCRYPTED_TRUSTED, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetSecurityPolicyKnows(value uint8) bool {
@@ -107,19 +107,37 @@ func (m BACnetSecurityPolicy) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSecurityPolicyParse(readBuffer utils.ReadBuffer) (BACnetSecurityPolicy, error) {
+func BACnetSecurityPolicyParse(theBytes []byte) (BACnetSecurityPolicy, error) {
+	return BACnetSecurityPolicyParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetSecurityPolicyParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSecurityPolicy, error) {
 	val, err := readBuffer.ReadUint8("BACnetSecurityPolicy", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetSecurityPolicy")
 	}
-	return BACnetSecurityPolicyByValue(val), nil
+	if enum, ok := BACnetSecurityPolicyByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetSecurityPolicy(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetSecurityPolicy) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetSecurityPolicy", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetSecurityPolicy) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetSecurityPolicy) name() string {
+func (e BACnetSecurityPolicy) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetSecurityPolicy", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetSecurityPolicy) PLC4XEnumName() string {
 	switch e {
 	case BACnetSecurityPolicy_PLAIN_NON_TRUSTED:
 		return "PLAIN_NON_TRUSTED"
@@ -134,5 +152,5 @@ func (e BACnetSecurityPolicy) name() string {
 }
 
 func (e BACnetSecurityPolicy) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

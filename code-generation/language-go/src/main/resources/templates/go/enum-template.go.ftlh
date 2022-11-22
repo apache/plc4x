@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-	  http://www.apache.org/licenses/LICENSE-2.0
+	  https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -36,7 +36,7 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/m
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -49,7 +49,7 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/m
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -60,12 +60,12 @@ import (
 type ${type.name} ${baseType}
 
 type I${type.name} interface {
+	utils.Serializable
 <#if type.constantNames?has_content>
 	<#list type.constantNames as constantName>
 	${constantName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}
 	</#list>
 </#if>
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const(
@@ -126,24 +126,24 @@ func ${type.name}FirstEnumForField${constantName?cap_first}(value ${helper.getLa
 }
 	</#list>
 </#if>
-func ${type.name}ByValue(value <#if type.type.isPresent()>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())}<#else>string</#if>) ${type.name} {
+func ${type.name}ByValue(value <#if type.type.isPresent()>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())}<#else>string</#if>) (enum ${type.name}, ok bool) {
 	switch value {
 <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
 		case <#if type.type.orElseThrow().isStringTypeReference()>"${enumValue.value}"<#else>${enumValue.value}</#if>:
-			return ${type.name}_${enumValue.name}
+			return ${type.name}_${enumValue.name}, true
 </#list>
 	}
-	return <#if type.type.orElseThrow().isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>
+	return <#if type.type.orElseThrow().isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, false
 }
 
-func ${type.name}ByName(value string) ${type.name} {
+func ${type.name}ByName(value string) (enum ${type.name}, ok bool) {
 	switch value {
 	<#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
 	case "${enumValue.name}":
-		return ${type.name}_${enumValue.name}
+		return ${type.name}_${enumValue.name}, true
 	</#list>
 	}
-	return <#if type.type.orElseThrow().isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>
+	return <#if type.type.orElseThrow().isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, false
 }
 
 func ${type.name}Knows(value <#if type.type.isPresent()>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())}<#else>string</#if>)  bool {
@@ -177,21 +177,39 @@ func (m ${type.name}) GetLengthInBytes() uint16 {
 <#if type.type?has_content && type.type.orElseThrow().isSimpleTypeReference()>
 	<#assign simpleTypeReference = type.type.orElseThrow().asSimpleTypeReference().orElseThrow()>
 	<#if simpleTypeReference.getSizeInBits() != -1>
-func ${type.name}Parse(readBuffer utils.ReadBuffer) (${type.name}, error) {
-	val, err := ${helper.getReadBufferReadMethodCall(type.name, type.type.orElseThrow(), null)}
-	if err != nil {
-		return <#if type.type.orElseThrow().isStringTypeReference() || type.type.orElseThrow().isVstringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, nil
-	}
-	return ${type.name}ByValue(val), nil
+func ${type.name}Parse(theBytes []byte) (${type.name}, error) {
+	return ${type.name}ParseWithBuffer(utils.NewReadBufferByteBased(theBytes${helper.getEndiannessOptions(true, true)}))
 }
 
-func (e ${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
-	return ${helper.getWriteBufferWriteMethodCall(type.name, type.type.orElseThrow(), helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow()) + "(e)", null, "utils.WithAdditionalStringRepresentation(e.name())")}
+func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer) (${type.name}, error) {
+	val, err := ${helper.getReadBufferReadMethodCall(type.name, type.type.orElseThrow(), null)}
+	if err != nil {
+		return <#if type.type.orElseThrow().isStringTypeReference() || type.type.orElseThrow().isVstringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, errors.Wrap(err, "error reading ${type.name}")
+	}
+	if enum, ok := ${type.name}ByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return ${type.name}(val), nil
+	} else {
+		return enum, nil
+	}
+}
+
+func (e ${type.name}) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(${helper.getEndiannessOptions(false, false)})
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ${type.name}) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return ${helper.getWriteBufferWriteMethodCall(type.name, type.type.orElseThrow(), helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow()) + "(e)", null, "utils.WithAdditionalStringRepresentation(e.PLC4XEnumName())")}
 }
 	</#if>
 </#if>
 
-func (e ${type.name}) name() string {
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ${type.name}) PLC4XEnumName() string {
 	switch e {
 	<#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
 	case ${type.name}_${enumValue.name}:
@@ -202,7 +220,7 @@ func (e ${type.name}) name() string {
 }
 
 func (e ${type.name}) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }
 
 </#outputformat>

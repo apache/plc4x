@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,6 @@ package org.apache.plc4x.java.scraper.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
 
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,7 @@ public class JobConfigurationImpl implements JobConfiguration {
     protected final String triggerConfig;
     protected final Integer scrapeRate;
     protected final List<String> sources;
-    protected final Map<String, String> fields;
+    protected final Map<String, String> tags;
 
     /**
      * Default constructor
@@ -41,19 +40,19 @@ public class JobConfigurationImpl implements JobConfiguration {
      * @param triggerConfig configuration string for triggered jobs
      * @param scrapeRate    rate in which the data should be acquired
      * @param sources source alias (<b>not</b> connection string but the alias (from @{@link ScraperConfigurationClassicImpl}).
-     * @param fields Map from field alias (how it is named in the result map) to plc4x field query
+     * @param tags Map from tag alias (how it is named in the result map) to plc4x tag query
      */
     @JsonCreator
     public JobConfigurationImpl(@JsonProperty(value = "name", required = true) String name,
                                 @JsonProperty(value = "triggerConfig") String triggerConfig,
                                 @JsonProperty(value = "scrapeRate") Integer scrapeRate,
                                 @JsonProperty(value = "sources", required = true) List<String> sources,
-                                @JsonProperty(value = "fields", required = true) Map<String, String> fields) {
+                                @JsonProperty(value = "tags", required = true) Map<String, String> tags) {
         this.name = name;
         this.triggerConfig = triggerConfig;
         this.scrapeRate = scrapeRate;
         this.sources = sources;
-        this.fields = fields;
+        this.tags = tags;
     }
 
     @Override
@@ -72,8 +71,8 @@ public class JobConfigurationImpl implements JobConfiguration {
     }
 
     @Override
-    public Map<String, String> getFields() {
-        return fields;
+    public Map<String, String> getTags() {
+        return tags;
     }
 
     @Override

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -29,7 +29,8 @@ func encodeS7TsapId(deviceGroup model.DeviceGroup, rack int32, slot int32) uint1
 
 func decodeDeviceGroup(tsapId int32) model.DeviceGroup {
 	deviceGroupCode := uint8((tsapId >> 8) & (0xFF))
-	return model.DeviceGroupByValue(deviceGroupCode)
+	value, _ := model.DeviceGroupByValue(deviceGroupCode)
+	return value
 }
 
 func decodeRack(tsapId int32) int64 {

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -22,38 +22,41 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.model.PlcSubscriptionField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
-import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.utils.Serializable;
-import org.w3c.dom.Element;
 
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Serializable {
 
     private final PlcSubscriber subscriber;
 
-    private final LinkedHashMap<String, PlcSubscriptionField> fields;
+    private final LinkedHashMap<String, PlcSubscriptionTag> tags;
+
+    private final LinkedHashMap<String, List<Consumer<PlcSubscriptionEvent>>> preRegisteredConsumers;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public DefaultPlcSubscriptionRequest(@JsonProperty("subscriber") PlcSubscriber subscriber,
-                                         @JsonProperty("fields") LinkedHashMap<String, PlcSubscriptionField> fields) {
+                                         @JsonProperty("tags") LinkedHashMap<String, PlcSubscriptionTag> tags,
+                                         @JsonProperty("preRegisteredConsumers") LinkedHashMap<String, List<Consumer<PlcSubscriptionEvent>>> preRegisteredConsumers) {
         this.subscriber = subscriber;
-        this.fields = fields;
+        this.tags = tags;
+        this.preRegisteredConsumers = preRegisteredConsumers;
     }
 
     @Override
@@ -64,56 +67,50 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
 
     @Override
     @JsonIgnore
-    public int getNumberOfFields() {
-        return fields.size();
+    public int getNumberOfTags() {
+        return tags.size();
     }
 
     @Override
     @JsonIgnore
-    public LinkedHashSet<String> getFieldNames() {
-        return new LinkedHashSet<>(fields.keySet());
+    public LinkedHashSet<String> getTagNames() {
+        return new LinkedHashSet<>(tags.keySet());
     }
 
     @Override
     @JsonIgnore
-    public PlcSubscriptionField getField(String name) {
-        return fields.get(name);
+    public PlcSubscriptionTag getTag(String name) {
+        return tags.get(name);
     }
 
     @Override
     @JsonIgnore
-    public List<PlcSubscriptionField> getFields() {
-        return new ArrayList<>(fields.values());
+    public List<PlcSubscriptionTag> getTags() {
+        return new ArrayList<>(tags.values());
     }
 
+    @Override
     @JsonIgnore
-    public List<Pair<String, PlcSubscriptionField>> getNamedFields() {
-        return fields.entrySet()
-            .stream()
-            .map(stringPlcFieldEntry -> Pair.of(stringPlcFieldEntry.getKey(), stringPlcFieldEntry.getValue()))
-            .collect(Collectors.toCollection(LinkedList::new));
-    }
-
-    public PlcSubscriber getSubscriber() {
-        return subscriber;
+    public Map<String, List<Consumer<PlcSubscriptionEvent>>> getPreRegisteredConsumers() {
+        return new LinkedHashMap<>(preRegisteredConsumers);
     }
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcSubscriptionRequest");
 
-        writeBuffer.pushContext("fields");
-        for (Map.Entry<String, PlcSubscriptionField> fieldEntry : fields.entrySet()) {
-            String fieldName = fieldEntry.getKey();
-            writeBuffer.pushContext(fieldName);
-            PlcField field = fieldEntry.getValue();
-            if(!(field instanceof Serializable)) {
-                throw new RuntimeException("Error serializing. Field doesn't implement XmlSerializable");
+        writeBuffer.pushContext("tags");
+        for (Map.Entry<String, PlcSubscriptionTag> tagEntry : tags.entrySet()) {
+            String tagName = tagEntry.getKey();
+            writeBuffer.pushContext(tagName);
+            PlcTag tag = tagEntry.getValue();
+            if (!(tag instanceof Serializable)) {
+                throw new RuntimeException("Error serializing. Tag doesn't implement XmlSerializable");
             }
-            ((Serializable) field).serialize(writeBuffer);
-            writeBuffer.popContext(fieldName);
+            ((Serializable) tag).serialize(writeBuffer);
+            writeBuffer.popContext(tagName);
         }
-        writeBuffer.popContext("fields");
+        writeBuffer.popContext("tags");
 
         writeBuffer.popContext("PlcSubscriptionRequest");
     }
@@ -121,58 +118,105 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
     public static class Builder implements PlcSubscriptionRequest.Builder {
 
         private final PlcSubscriber subscriber;
-        private final PlcFieldHandler fieldHandler;
-        private final Map<String, BuilderItem> fields;
+        private final PlcTagHandler tagHandler;
+        private final Map<String, BuilderItem> tags;
+        private final LinkedHashMap<String, List<Consumer<PlcSubscriptionEvent>>> preRegisteredConsumers;
 
-        public Builder(PlcSubscriber subscriber, PlcFieldHandler fieldHandler) {
+        public Builder(PlcSubscriber subscriber, PlcTagHandler tagHandler) {
             this.subscriber = subscriber;
-            this.fieldHandler = fieldHandler;
-            fields = new TreeMap<>();
+            this.tagHandler = tagHandler;
+            this.tags = new TreeMap<>();
+            this.preRegisteredConsumers = new LinkedHashMap<>();
         }
 
         @Override
-        public PlcSubscriptionRequest.Builder addCyclicField(String name, String fieldQuery, Duration pollingInterval) {
-            fields.put(name, new BuilderItem(fieldQuery, PlcSubscriptionType.CYCLIC, pollingInterval));
-            return this;
-        }
-
-        @Override
-        public PlcSubscriptionRequest.Builder addChangeOfStateField(String name, String fieldQuery) {
-            fields.put(name, new BuilderItem(fieldQuery, PlcSubscriptionType.CHANGE_OF_STATE));
-            return this;
-        }
-
-        @Override
-        public PlcSubscriptionRequest.Builder addEventField(String name, String fieldQuery) {
-            if (fields.containsKey(name)) {
-                throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
+        public PlcSubscriptionRequest.Builder addCyclicTagAddress(String name, String tagAddress, Duration pollingInterval) {
+            if (tags.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
             }
-            fields.put(name, new BuilderItem(fieldQuery, PlcSubscriptionType.EVENT));
+            tags.put(name, new BuilderItem(() -> tagHandler.parseTag(tagAddress), PlcSubscriptionType.CYCLIC, pollingInterval));
+            return this;
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addCyclicTag(String name, PlcTag tag, Duration pollingInterval) {
+            if (tags.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
+            }
+            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CYCLIC, pollingInterval));
+            return this;
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress) {
+            if (tags.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
+            }
+            tags.put(name, new BuilderItem(() -> tagHandler.parseTag(tagAddress), PlcSubscriptionType.CHANGE_OF_STATE));
+            return this;
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag) {
+            if (tags.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
+            }
+            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE));
+            return this;
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addEventTagAddress(String name, String tagAddress) {
+            if (tags.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
+            }
+            tags.put(name, new BuilderItem(() -> tagHandler.parseTag(tagAddress), PlcSubscriptionType.EVENT));
+            return this;
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addEventTag(String name, PlcTag tag) {
+            if (tags.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
+            }
+            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.EVENT));
+            return this;
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addPreRegisteredConsumer(String name, Consumer<PlcSubscriptionEvent> consumer) {
+            preRegisteredConsumers.putIfAbsent(name, new LinkedList<>());
+            preRegisteredConsumers.get(name).add(consumer);
             return this;
         }
 
         @Override
         public PlcSubscriptionRequest build() {
-            LinkedHashMap<String, PlcSubscriptionField> parsedFields = new LinkedHashMap<>();
+            LinkedHashMap<String, PlcSubscriptionTag> parsedTags = new LinkedHashMap<>();
 
-            fields.forEach((name, builderItem) -> {
-                PlcField parsedField = fieldHandler.createField(builderItem.fieldQuery);
-                parsedFields.put(name, new DefaultPlcSubscriptionField(builderItem.plcSubscriptionType, parsedField, builderItem.duration));
+            tags.forEach((name, builderItem) -> {
+                PlcTag parsedTag = builderItem.tag.get();
+                parsedTags.put(name, new DefaultPlcSubscriptionTag(builderItem.plcSubscriptionType, parsedTag, builderItem.duration));
             });
-            return new DefaultPlcSubscriptionRequest(subscriber, parsedFields);
+            preRegisteredConsumers.forEach((tagName, ignored) -> {
+                if (!tags.containsKey(tagName)) {
+                    throw new RuntimeException("tagName " + tagName + "for preRegisteredConsumer not found");
+                }
+            });
+            return new DefaultPlcSubscriptionRequest(subscriber, parsedTags, preRegisteredConsumers);
         }
 
         private static class BuilderItem {
-            private final String fieldQuery;
+            private final Supplier<PlcTag> tag;
             private final PlcSubscriptionType plcSubscriptionType;
             private final Duration duration;
 
-            private BuilderItem(String fieldQuery, PlcSubscriptionType plcSubscriptionType) {
-                this(fieldQuery, plcSubscriptionType, null);
+            private BuilderItem(Supplier<PlcTag> tag, PlcSubscriptionType plcSubscriptionType) {
+                this(tag, plcSubscriptionType, null);
             }
 
-            private BuilderItem(String fieldQuery, PlcSubscriptionType plcSubscriptionType, Duration duration) {
-                this.fieldQuery = fieldQuery;
+            private BuilderItem(Supplier<PlcTag> tag, PlcSubscriptionType plcSubscriptionType, Duration duration) {
+                this.tag = tag;
                 this.plcSubscriptionType = plcSubscriptionType;
                 this.duration = duration;
             }
@@ -185,7 +229,7 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
     public String toString() {
         return "DefaultPlcSubscriptionRequest{" +
             "subscriber=" + subscriber +
-            ", fields=" + fields +
+            ", tags=" + tags +
             '}';
     }
 }

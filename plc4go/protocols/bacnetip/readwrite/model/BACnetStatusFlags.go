@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetStatusFlags uint8
 
 type IBACnetStatusFlags interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -52,32 +52,32 @@ func init() {
 	}
 }
 
-func BACnetStatusFlagsByValue(value uint8) BACnetStatusFlags {
+func BACnetStatusFlagsByValue(value uint8) (enum BACnetStatusFlags, ok bool) {
 	switch value {
 	case 0:
-		return BACnetStatusFlags_IN_ALARM
+		return BACnetStatusFlags_IN_ALARM, true
 	case 1:
-		return BACnetStatusFlags_FAULT
+		return BACnetStatusFlags_FAULT, true
 	case 2:
-		return BACnetStatusFlags_OVERRIDDEN
+		return BACnetStatusFlags_OVERRIDDEN, true
 	case 3:
-		return BACnetStatusFlags_OUT_OF_SERVICE
+		return BACnetStatusFlags_OUT_OF_SERVICE, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetStatusFlagsByName(value string) BACnetStatusFlags {
+func BACnetStatusFlagsByName(value string) (enum BACnetStatusFlags, ok bool) {
 	switch value {
 	case "IN_ALARM":
-		return BACnetStatusFlags_IN_ALARM
+		return BACnetStatusFlags_IN_ALARM, true
 	case "FAULT":
-		return BACnetStatusFlags_FAULT
+		return BACnetStatusFlags_FAULT, true
 	case "OVERRIDDEN":
-		return BACnetStatusFlags_OVERRIDDEN
+		return BACnetStatusFlags_OVERRIDDEN, true
 	case "OUT_OF_SERVICE":
-		return BACnetStatusFlags_OUT_OF_SERVICE
+		return BACnetStatusFlags_OUT_OF_SERVICE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetStatusFlagsKnows(value uint8) bool {
@@ -107,19 +107,37 @@ func (m BACnetStatusFlags) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetStatusFlagsParse(readBuffer utils.ReadBuffer) (BACnetStatusFlags, error) {
+func BACnetStatusFlagsParse(theBytes []byte) (BACnetStatusFlags, error) {
+	return BACnetStatusFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetStatusFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetStatusFlags, error) {
 	val, err := readBuffer.ReadUint8("BACnetStatusFlags", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetStatusFlags")
 	}
-	return BACnetStatusFlagsByValue(val), nil
+	if enum, ok := BACnetStatusFlagsByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetStatusFlags(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetStatusFlags) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetStatusFlags", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetStatusFlags) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetStatusFlags) name() string {
+func (e BACnetStatusFlags) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetStatusFlags", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetStatusFlags) PLC4XEnumName() string {
 	switch e {
 	case BACnetStatusFlags_IN_ALARM:
 		return "IN_ALARM"
@@ -134,5 +152,5 @@ func (e BACnetStatusFlags) name() string {
 }
 
 func (e BACnetStatusFlags) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -64,7 +64,7 @@ public abstract class Plc4xBaseTable extends AbstractTable {
         this.queue = queue;
         this.conf = conf;
         // Extract names
-        names = new ArrayList<>(conf.getFields().keySet());
+        names = new ArrayList<>(conf.getTags().keySet());
     }
 
     @Override
@@ -112,7 +112,7 @@ public abstract class Plc4xBaseTable extends AbstractTable {
         List<RelDataType> types = names.stream()
             .map(n -> {
                 Object o = first.values.get(n);
-                logger.debug("Infer field '{}' as class '{}'", n, o.getClass());
+                logger.debug("Infer tag '{}' as class '{}'", n, o.getClass());
                 return typeFactory.createJavaType(o.getClass());
             })
             .collect(Collectors.toList());

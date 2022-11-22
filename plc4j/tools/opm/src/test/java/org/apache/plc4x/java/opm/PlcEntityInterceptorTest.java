@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -117,19 +117,19 @@ public class PlcEntityInterceptorTest implements WithAssertions {
     @Test
     public void getTyped_notOkResponse_throws() {
         DefaultPlcReadResponse response = new DefaultPlcReadResponse(null,
-            Collections.singletonMap("field", new ResponseItem<>(PlcResponseCode.NOT_FOUND, null)));
-        assertThatThrownBy(() -> PlcEntityInterceptor.getTyped(Long.class, response, "field"))
+            Collections.singletonMap("tag", new ResponseItem<>(PlcResponseCode.NOT_FOUND, null)));
+        assertThatThrownBy(() -> PlcEntityInterceptor.getTyped(Long.class, response, "tag"))
             .isInstanceOf(PlcRuntimeException.class)
-            .hasMessage("Unable to read specified field 'field', response code was 'NOT_FOUND'");
+            .hasMessage("Unable to read specified tag 'tag', response code was 'NOT_FOUND'");
     }
 
     @Test
     public void getterWithNoField() throws OPMException {
         BadEntity entity = entityManager.connect(BadEntity.class, "mock:test");
 
-        assertThatThrownBy(entity::getField1)
+        assertThatThrownBy(entity::getTag1)
             .isInstanceOf(OPMException.class)
-            .hasMessage("Unable to identify field with name 'field1' for call to 'getField1'");
+            .hasMessage("Unable to identify tag with name 'tag1' for call to 'getTag1'");
     }
 
     @Nested
@@ -143,7 +143,7 @@ public class PlcEntityInterceptorTest implements WithAssertions {
 
         class MiscEntity {
 
-            @PlcField("asd")
+            @PlcTag("asd")
             private String ok2;
 
             public void getTest(String a) {
@@ -186,18 +186,18 @@ public class PlcEntityInterceptorTest implements WithAssertions {
                 .hasMessage("Only getter with no arguments are supported");
             assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk"), callable, null, plcDriverManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
-                .hasMessageMatching("Unable to identify field with name .*");
+                .hasMessageMatching("Unable to identify tag with name .*");
             assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk2"), callable, null, plcDriverManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Problem during processing");
             assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk2"), callable, null, plcDriverManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Problem during processing")
-                .hasStackTraceContaining(" Unable to read specified field 'org.apache.plc4x.java.opm.PlcEntityInterceptorTest$Misc$MiscEntity.ok2', response code was 'null'");
+                .hasStackTraceContaining(" Unable to read specified tag 'org.apache.plc4x.java.opm.PlcEntityInterceptorTest$Misc$MiscEntity.ok2', response code was 'null'");
             assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("setOk2", String.class), callable, null, plcDriverManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Problem during processing")
-                .hasStackTraceContaining(" Unable to read specified field 'org.apache.plc4x.java.opm.PlcEntityInterceptorTest$Misc$MiscEntity.ok2', response code was 'null'");
+                .hasStackTraceContaining(" Unable to read specified tag 'org.apache.plc4x.java.opm.PlcEntityInterceptorTest$Misc$MiscEntity.ok2', response code was 'null'");
             assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("setOkOk", String.class, String.class), callable, null, plcDriverManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Only setter with one arguments are supported");
@@ -223,8 +223,8 @@ public class PlcEntityInterceptorTest implements WithAssertions {
             // For OPM
         }
 
-        // Getter with no field
-        public String getField1() {
+        // Getter with no tag
+        public String getTag1() {
             return "";
         }
 

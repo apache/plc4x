@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -22,6 +22,7 @@ import io.netty.channel.*;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 import org.apache.plc4x.java.api.EventPlcConnection;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.listener.ConnectionStateListener;
@@ -33,7 +34,6 @@ import org.apache.plc4x.java.spi.events.*;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -54,6 +54,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
 
     protected final Configuration configuration;
     protected final ChannelFactory channelFactory;
+
     protected final boolean awaitSessionSetupComplete;
     protected final boolean awaitSessionDisconnectComplete;
     protected final boolean awaitSessionDiscoverComplete;
@@ -64,12 +65,13 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     protected Channel channel;
     protected boolean connected;
 
-    public DefaultNettyPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe,
-                                     PlcFieldHandler fieldHandler, PlcValueHandler valueHandler, Configuration configuration,
+    public DefaultNettyPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe, boolean canBrowse,
+                                     PlcTagHandler tagHandler, PlcValueHandler valueHandler, Configuration configuration,
                                      ChannelFactory channelFactory, boolean awaitSessionSetupComplete,
                                      boolean awaitSessionDisconnectComplete, boolean awaitSessionDiscoverComplete,
-                                     ProtocolStackConfigurer stackConfigurer, BaseOptimizer optimizer) {
-        super(canRead, canWrite, canSubscribe, fieldHandler, valueHandler, optimizer);
+                                     ProtocolStackConfigurer stackConfigurer, BaseOptimizer optimizer,
+                                     PlcAuthentication authentication) {
+        super(canRead, canWrite, canSubscribe, canBrowse, tagHandler, valueHandler, optimizer, authentication);
         this.configuration = configuration;
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;
@@ -220,7 +222,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                 // Initialize via Transport Layer
                 channelFactory.initializePipeline(pipeline);
                 // Initialize Protocol Layer
-                setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, channelFactory.isPassive()));
+                setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, getAuthentication(),
+                    channelFactory.isPassive()));
             }
         };
     }

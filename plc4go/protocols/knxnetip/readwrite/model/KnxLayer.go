@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type KnxLayer uint8
 
 type IKnxLayer interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -50,28 +50,28 @@ func init() {
 	}
 }
 
-func KnxLayerByValue(value uint8) KnxLayer {
+func KnxLayerByValue(value uint8) (enum KnxLayer, ok bool) {
 	switch value {
 	case 0x02:
-		return KnxLayer_TUNNEL_LINK_LAYER
+		return KnxLayer_TUNNEL_LINK_LAYER, true
 	case 0x04:
-		return KnxLayer_TUNNEL_RAW
+		return KnxLayer_TUNNEL_RAW, true
 	case 0x80:
-		return KnxLayer_TUNNEL_BUSMONITOR
+		return KnxLayer_TUNNEL_BUSMONITOR, true
 	}
-	return 0
+	return 0, false
 }
 
-func KnxLayerByName(value string) KnxLayer {
+func KnxLayerByName(value string) (enum KnxLayer, ok bool) {
 	switch value {
 	case "TUNNEL_LINK_LAYER":
-		return KnxLayer_TUNNEL_LINK_LAYER
+		return KnxLayer_TUNNEL_LINK_LAYER, true
 	case "TUNNEL_RAW":
-		return KnxLayer_TUNNEL_RAW
+		return KnxLayer_TUNNEL_RAW, true
 	case "TUNNEL_BUSMONITOR":
-		return KnxLayer_TUNNEL_BUSMONITOR
+		return KnxLayer_TUNNEL_BUSMONITOR, true
 	}
-	return 0
+	return 0, false
 }
 
 func KnxLayerKnows(value uint8) bool {
@@ -101,19 +101,37 @@ func (m KnxLayer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxLayerParse(readBuffer utils.ReadBuffer) (KnxLayer, error) {
+func KnxLayerParse(theBytes []byte) (KnxLayer, error) {
+	return KnxLayerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func KnxLayerParseWithBuffer(readBuffer utils.ReadBuffer) (KnxLayer, error) {
 	val, err := readBuffer.ReadUint8("KnxLayer", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading KnxLayer")
 	}
-	return KnxLayerByValue(val), nil
+	if enum, ok := KnxLayerByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return KnxLayer(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e KnxLayer) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("KnxLayer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e KnxLayer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e KnxLayer) name() string {
+func (e KnxLayer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("KnxLayer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e KnxLayer) PLC4XEnumName() string {
 	switch e {
 	case KnxLayer_TUNNEL_LINK_LAYER:
 		return "TUNNEL_LINK_LAYER"
@@ -126,5 +144,5 @@ func (e KnxLayer) name() string {
 }
 
 func (e KnxLayer) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

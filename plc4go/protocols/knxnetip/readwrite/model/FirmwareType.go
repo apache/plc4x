@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type FirmwareType uint16
 
 type IFirmwareType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -76,80 +76,80 @@ func init() {
 	}
 }
 
-func FirmwareTypeByValue(value uint16) FirmwareType {
+func FirmwareTypeByValue(value uint16) (enum FirmwareType, ok bool) {
 	switch value {
 	case 0x0010:
-		return FirmwareType_SYSTEM_1
+		return FirmwareType_SYSTEM_1, true
 	case 0x0020:
-		return FirmwareType_SYSTEM_2
+		return FirmwareType_SYSTEM_2, true
 	case 0x0300:
-		return FirmwareType_SYSTEM_300
+		return FirmwareType_SYSTEM_300, true
 	case 0x0700:
-		return FirmwareType_SYSTEM_7
+		return FirmwareType_SYSTEM_7, true
 	case 0x07B0:
-		return FirmwareType_SYSTEM_B
+		return FirmwareType_SYSTEM_B, true
 	case 0x0810:
-		return FirmwareType_IR_DECODER
+		return FirmwareType_IR_DECODER, true
 	case 0x0910:
-		return FirmwareType_COUPLER
+		return FirmwareType_COUPLER, true
 	case 0x0AF0:
-		return FirmwareType_NONE
+		return FirmwareType_NONE, true
 	case 0x10B0:
-		return FirmwareType_SYSTEM_1_PL110
+		return FirmwareType_SYSTEM_1_PL110, true
 	case 0x17B0:
-		return FirmwareType_SYSTEM_B_PL110
+		return FirmwareType_SYSTEM_B_PL110, true
 	case 0x1900:
-		return FirmwareType_MEDIA_COUPLER_PL_TP
+		return FirmwareType_MEDIA_COUPLER_PL_TP, true
 	case 0x2000:
-		return FirmwareType_RF_BI_DIRECTIONAL_DEVICES
+		return FirmwareType_RF_BI_DIRECTIONAL_DEVICES, true
 	case 0x2100:
-		return FirmwareType_RF_UNI_DIRECTIONAL_DEVICES
+		return FirmwareType_RF_UNI_DIRECTIONAL_DEVICES, true
 	case 0x3000:
-		return FirmwareType_SYSTEM_1_TP0
+		return FirmwareType_SYSTEM_1_TP0, true
 	case 0x4000:
-		return FirmwareType_SYSTEM_1_PL132
+		return FirmwareType_SYSTEM_1_PL132, true
 	case 0x5700:
-		return FirmwareType_SYSTEM_7_KNX_NET_IP
+		return FirmwareType_SYSTEM_7_KNX_NET_IP, true
 	}
-	return 0
+	return 0, false
 }
 
-func FirmwareTypeByName(value string) FirmwareType {
+func FirmwareTypeByName(value string) (enum FirmwareType, ok bool) {
 	switch value {
 	case "SYSTEM_1":
-		return FirmwareType_SYSTEM_1
+		return FirmwareType_SYSTEM_1, true
 	case "SYSTEM_2":
-		return FirmwareType_SYSTEM_2
+		return FirmwareType_SYSTEM_2, true
 	case "SYSTEM_300":
-		return FirmwareType_SYSTEM_300
+		return FirmwareType_SYSTEM_300, true
 	case "SYSTEM_7":
-		return FirmwareType_SYSTEM_7
+		return FirmwareType_SYSTEM_7, true
 	case "SYSTEM_B":
-		return FirmwareType_SYSTEM_B
+		return FirmwareType_SYSTEM_B, true
 	case "IR_DECODER":
-		return FirmwareType_IR_DECODER
+		return FirmwareType_IR_DECODER, true
 	case "COUPLER":
-		return FirmwareType_COUPLER
+		return FirmwareType_COUPLER, true
 	case "NONE":
-		return FirmwareType_NONE
+		return FirmwareType_NONE, true
 	case "SYSTEM_1_PL110":
-		return FirmwareType_SYSTEM_1_PL110
+		return FirmwareType_SYSTEM_1_PL110, true
 	case "SYSTEM_B_PL110":
-		return FirmwareType_SYSTEM_B_PL110
+		return FirmwareType_SYSTEM_B_PL110, true
 	case "MEDIA_COUPLER_PL_TP":
-		return FirmwareType_MEDIA_COUPLER_PL_TP
+		return FirmwareType_MEDIA_COUPLER_PL_TP, true
 	case "RF_BI_DIRECTIONAL_DEVICES":
-		return FirmwareType_RF_BI_DIRECTIONAL_DEVICES
+		return FirmwareType_RF_BI_DIRECTIONAL_DEVICES, true
 	case "RF_UNI_DIRECTIONAL_DEVICES":
-		return FirmwareType_RF_UNI_DIRECTIONAL_DEVICES
+		return FirmwareType_RF_UNI_DIRECTIONAL_DEVICES, true
 	case "SYSTEM_1_TP0":
-		return FirmwareType_SYSTEM_1_TP0
+		return FirmwareType_SYSTEM_1_TP0, true
 	case "SYSTEM_1_PL132":
-		return FirmwareType_SYSTEM_1_PL132
+		return FirmwareType_SYSTEM_1_PL132, true
 	case "SYSTEM_7_KNX_NET_IP":
-		return FirmwareType_SYSTEM_7_KNX_NET_IP
+		return FirmwareType_SYSTEM_7_KNX_NET_IP, true
 	}
-	return 0
+	return 0, false
 }
 
 func FirmwareTypeKnows(value uint16) bool {
@@ -179,19 +179,37 @@ func (m FirmwareType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmwareTypeParse(readBuffer utils.ReadBuffer) (FirmwareType, error) {
+func FirmwareTypeParse(theBytes []byte) (FirmwareType, error) {
+	return FirmwareTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func FirmwareTypeParseWithBuffer(readBuffer utils.ReadBuffer) (FirmwareType, error) {
 	val, err := readBuffer.ReadUint16("FirmwareType", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading FirmwareType")
 	}
-	return FirmwareTypeByValue(val), nil
+	if enum, ok := FirmwareTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return FirmwareType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e FirmwareType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("FirmwareType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e FirmwareType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e FirmwareType) name() string {
+func (e FirmwareType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("FirmwareType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e FirmwareType) PLC4XEnumName() string {
 	switch e {
 	case FirmwareType_SYSTEM_1:
 		return "SYSTEM_1"
@@ -230,5 +248,5 @@ func (e FirmwareType) name() string {
 }
 
 func (e FirmwareType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

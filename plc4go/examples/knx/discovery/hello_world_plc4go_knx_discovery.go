@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,14 +20,15 @@
 package main
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/logging"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"github.com/rs/zerolog/log"
 	"os"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
+	"github.com/apache/plc4x/plc4go/pkg/api/logging"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/rs/zerolog/log"
 )
 
 func main() {
@@ -40,7 +41,7 @@ func main() {
 	var connectionStrings []string
 	if len(os.Args) < 2 {
 		// Try to auto-find KNX gateways via broadcast-message discovery
-		_ = driverManager.Discover(func(event model.PlcDiscoveryEvent) {
+		_ = driverManager.Discover(func(event model.PlcDiscoveryItem) {
 			connStr := event.GetProtocolCode() + "://" + event.GetTransportUrl().Host
 			log.Info().Str("connection string", connStr).Msg("Found KNX Gateway")
 
@@ -70,22 +71,22 @@ func main() {
 
 		// Try to find all KNX devices on the current network
 		browseRequest, err := connection.BrowseRequestBuilder().
-			AddItem("allDevices", "[1-15].[1-15].[0-255]").
-			//AddItem("allMyDevices", "[1-3].[1-6].[0-60]").
-			//AddItem("onlyOneDevice", "1.1.20")
+			AddQuery("allDevices", "[1-15].[1-15].[0-255]").
+			//AddQuery("allMyDevices", "[1-3].[1-6].[0-60]").
+			//AddQuery("onlyOneDevice", "1.1.20")
 			Build()
 		if err != nil {
 			log.Error().Err(err).Msg("error creating browse request")
 			return
 		}
-		brr := browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseEvent) bool {
-			knxField := result.GetResult().GetField()
-			knxAddress := knxField.GetAddressString()
+		brr := browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseItem) bool {
+			knxTag := result.GetTag()
+			knxAddress := knxTag.GetAddressString()
 			log.Info().Msgf("Inspecting detected Device at KNX Address: %s", knxAddress)
 
 			// Try to get all the com-objects and the group addresses they are attached to.
 			browseRequest, err := connection.BrowseRequestBuilder().
-				AddItem("comObjects", knxAddress+"#com-obj").
+				AddQuery("comObjects", knxAddress+"#com-obj").
 				Build()
 			if err != nil {
 				log.Error().Err(err).Msg("error creating read request")
@@ -114,12 +115,12 @@ func main() {
 				} else {
 					permissions += " "
 				}
-				log.Info().Msgf(" - %15s (%s) %s", result.GetField().GetAddressString(), permissions, result.GetName())
+				log.Info().Msgf(" - %15s (%s) %s", result.GetTag().GetAddressString(), permissions, result.GetName())
 			}
 
 			readRequest, err := connection.ReadRequestBuilder().
-				AddQuery("applicationProgramVersion", knxAddress+"#3/13").
-				AddQuery("interfaceProgramVersion", knxAddress+"#4/13").
+				AddTagAddress("applicationProgramVersion", knxAddress+"#3/13").
+				AddTagAddress("interfaceProgramVersion", knxAddress+"#4/13").
 				Build()
 			if err != nil {
 				log.Error().Msgf("Error creating read request for scanning %s", knxAddress)

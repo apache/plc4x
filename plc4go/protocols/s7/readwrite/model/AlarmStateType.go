@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type AlarmStateType uint8
 
 type IAlarmStateType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -56,40 +56,40 @@ func init() {
 	}
 }
 
-func AlarmStateTypeByValue(value uint8) AlarmStateType {
+func AlarmStateTypeByValue(value uint8) (enum AlarmStateType, ok bool) {
 	switch value {
 	case 0x00:
-		return AlarmStateType_SCAN_ABORT
+		return AlarmStateType_SCAN_ABORT, true
 	case 0x01:
-		return AlarmStateType_SCAN_INITIATE
+		return AlarmStateType_SCAN_INITIATE, true
 	case 0x04:
-		return AlarmStateType_ALARM_ABORT
+		return AlarmStateType_ALARM_ABORT, true
 	case 0x05:
-		return AlarmStateType_ALARM_INITIATE
+		return AlarmStateType_ALARM_INITIATE, true
 	case 0x08:
-		return AlarmStateType_ALARM_S_ABORT
+		return AlarmStateType_ALARM_S_ABORT, true
 	case 0x09:
-		return AlarmStateType_ALARM_S_INITIATE
+		return AlarmStateType_ALARM_S_INITIATE, true
 	}
-	return 0
+	return 0, false
 }
 
-func AlarmStateTypeByName(value string) AlarmStateType {
+func AlarmStateTypeByName(value string) (enum AlarmStateType, ok bool) {
 	switch value {
 	case "SCAN_ABORT":
-		return AlarmStateType_SCAN_ABORT
+		return AlarmStateType_SCAN_ABORT, true
 	case "SCAN_INITIATE":
-		return AlarmStateType_SCAN_INITIATE
+		return AlarmStateType_SCAN_INITIATE, true
 	case "ALARM_ABORT":
-		return AlarmStateType_ALARM_ABORT
+		return AlarmStateType_ALARM_ABORT, true
 	case "ALARM_INITIATE":
-		return AlarmStateType_ALARM_INITIATE
+		return AlarmStateType_ALARM_INITIATE, true
 	case "ALARM_S_ABORT":
-		return AlarmStateType_ALARM_S_ABORT
+		return AlarmStateType_ALARM_S_ABORT, true
 	case "ALARM_S_INITIATE":
-		return AlarmStateType_ALARM_S_INITIATE
+		return AlarmStateType_ALARM_S_INITIATE, true
 	}
-	return 0
+	return 0, false
 }
 
 func AlarmStateTypeKnows(value uint8) bool {
@@ -119,19 +119,37 @@ func (m AlarmStateType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmStateTypeParse(readBuffer utils.ReadBuffer) (AlarmStateType, error) {
+func AlarmStateTypeParse(theBytes []byte) (AlarmStateType, error) {
+	return AlarmStateTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AlarmStateTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmStateType, error) {
 	val, err := readBuffer.ReadUint8("AlarmStateType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading AlarmStateType")
 	}
-	return AlarmStateTypeByValue(val), nil
+	if enum, ok := AlarmStateTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return AlarmStateType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e AlarmStateType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("AlarmStateType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e AlarmStateType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e AlarmStateType) name() string {
+func (e AlarmStateType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("AlarmStateType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e AlarmStateType) PLC4XEnumName() string {
 	switch e {
 	case AlarmStateType_SCAN_ABORT:
 		return "SCAN_ABORT"
@@ -150,5 +168,5 @@ func (e AlarmStateType) name() string {
 }
 
 func (e AlarmStateType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

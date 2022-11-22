@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,9 +20,9 @@
 package knxnetip
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	api "github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type ValueDecoder struct {
@@ -36,8 +36,8 @@ func NewValueDecoder(rb utils.ReadBuffer) ValueDecoder {
 }
 
 func (m ValueDecoder) Decode(typeName string) api.PlcValue {
-	datatype := driverModel.KnxDatapointTypeByName(typeName)
-	plcValue, err := driverModel.KnxDatapointParse(m.rb, datatype)
+	datatype, _ := driverModel.KnxDatapointTypeByName(typeName)
+	plcValue, err := driverModel.KnxDatapointParseWithBuffer(m.rb, datatype)
 	if err != nil {
 		return nil
 	}

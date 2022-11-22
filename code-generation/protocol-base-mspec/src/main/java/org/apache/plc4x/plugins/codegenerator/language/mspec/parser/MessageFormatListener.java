@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -38,6 +38,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Literal;
+import org.apache.plc4x.plugins.codegenerator.types.terms.NumericLiteral;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import org.apache.plc4x.plugins.codegenerator.types.terms.VariableLiteral;
 import org.slf4j.Logger;
@@ -153,8 +154,13 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
             // If the type has sub-types it's an abstract type.
             SwitchField switchField = getSwitchField();
             boolean abstractType = switchField != null;
+            final List<Field> fields = parserContexts.pop();
             DefaultComplexTypeDefinition type = new DefaultComplexTypeDefinition(
-                typeName, attributes, parserArguments, abstractType, parserContexts.peek());
+                typeName, attributes, parserArguments, abstractType, fields);
+            // Link the fields and the complex types.
+            if (fields != null) {
+                fields.forEach(field -> ((DefaultField) field).setOwner(type));
+            }
             dispatchType(typeName, type);
 
             // Set the parent type for all sub-types.
@@ -166,7 +172,6 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
                     }
                 }
             }
-            parserContexts.pop();
         }
     }
 
@@ -454,7 +459,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         List<VariableLiteral> variableLiterals = ctx.discriminators.variableLiteral().stream()
             .map(this::getVariableLiteral)
             .collect(Collectors.toList());
-        DefaultSwitchField field = new DefaultSwitchField(variableLiterals);
+        DefaultSwitchField field = new DefaultSwitchField(getAttributes(ctx), variableLiterals);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -498,7 +503,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         if (ctx.description != null) {
             description = ctx.description.getText();
         }
-        Field field = new DefaultValidationField(validationExpression, description, shouldFail);
+        Field field = new DefaultValidationField(getAttributes(ctx), validationExpression, description, shouldFail);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -512,7 +517,12 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     @Override
     public void exitCaseStatement(MSpecParser.CaseStatementContext ctx) {
-        String typeName = ctx.name.getText();
+        String namePrefix = "";
+        // TODO: maybe name this prefix and suffix wildcard
+        if (ctx.nameWildcard != null) {
+            namePrefix = currentTypeName;
+        }
+        String typeName = namePrefix + ctx.name.getText();
 
         final Map<String, Term> attributes = batchSetAttributes.peek();
 
@@ -536,9 +546,14 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         } else {
             discriminatorValues = Collections.emptyList();
         }
+        final List<Field> fields = parserContexts.pop();
         DefaultDiscriminatedComplexTypeDefinition type =
             new DefaultDiscriminatedComplexTypeDefinition(typeName, attributes, parserArguments,
-                discriminatorValues, parserContexts.pop());
+                discriminatorValues, fields);
+        // Link the fields and the complex types.
+        if (fields != null) {
+            fields.forEach(field -> ((DefaultField) field).setOwner(type));
+        }
 
         // For DataIO we don't need to generate the sub-types as these will be PlcValues.
         if (!(ctx.parent.parent instanceof MSpecParser.DataIoDefinitionContext)) {
@@ -687,6 +702,36 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
             case UINT:
                 int integerSize = Integer.parseInt(ctx.size.getText());
                 return new DefaultIntegerTypeReference(simpleBaseType, integerSize);
+            case VINT: {
+                final Map<String, Term> attributes = getAttributes(ctx.parent.parent);
+                SimpleTypeReference propertyType;
+                int propertySizeInBits = 32;
+                if (attributes.containsKey("propertySizeInBits")) {
+                    final Term propertySizeInBitsTerm = attributes.get("propertySizeInBits");
+                    if (!(propertySizeInBitsTerm instanceof NumericLiteral)) {
+                        throw new RuntimeException("'propertySizeInBits' attribute is required to be a numeric literal");
+                    }
+                    NumericLiteral propertySizeInBitsLiteral = (NumericLiteral) propertySizeInBitsTerm;
+                    propertySizeInBits = propertySizeInBitsLiteral.getNumber().intValue();
+                }
+                propertyType = new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT, propertySizeInBits);
+                return new DefaultVintegerTypeReference(simpleBaseType, propertyType);
+            }
+            case VUINT: {
+                final Map<String, Term> attributes = getAttributes(ctx.parent.parent);
+                SimpleTypeReference propertyType;
+                int propertySizeInBits = 32;
+                if (attributes.containsKey("propertySizeInBits")) {
+                    final Term propertySizeInBitsTerm = attributes.get("propertySizeInBits");
+                    if (!(propertySizeInBitsTerm instanceof NumericLiteral)) {
+                        throw new RuntimeException("'propertySizeInBits' attribute is required to be a numeric literal");
+                    }
+                    NumericLiteral propertySizeInBitsLiteral = (NumericLiteral) propertySizeInBitsTerm;
+                    propertySizeInBits = propertySizeInBitsLiteral.getNumber().intValue();
+                }
+                propertyType = new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.UINT, propertySizeInBits);
+                return new DefaultVintegerTypeReference(simpleBaseType, propertyType);
+            }
             case FLOAT:
             case UFLOAT:
                 int floatSize = Integer.parseInt(ctx.size.getText());

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetBinaryPV uint8
 
 type IBACnetBinaryPV interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -48,24 +48,24 @@ func init() {
 	}
 }
 
-func BACnetBinaryPVByValue(value uint8) BACnetBinaryPV {
+func BACnetBinaryPVByValue(value uint8) (enum BACnetBinaryPV, ok bool) {
 	switch value {
 	case 0:
-		return BACnetBinaryPV_INACTIVE
+		return BACnetBinaryPV_INACTIVE, true
 	case 1:
-		return BACnetBinaryPV_ACTIVE
+		return BACnetBinaryPV_ACTIVE, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetBinaryPVByName(value string) BACnetBinaryPV {
+func BACnetBinaryPVByName(value string) (enum BACnetBinaryPV, ok bool) {
 	switch value {
 	case "INACTIVE":
-		return BACnetBinaryPV_INACTIVE
+		return BACnetBinaryPV_INACTIVE, true
 	case "ACTIVE":
-		return BACnetBinaryPV_ACTIVE
+		return BACnetBinaryPV_ACTIVE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetBinaryPVKnows(value uint8) bool {
@@ -95,19 +95,37 @@ func (m BACnetBinaryPV) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetBinaryPVParse(readBuffer utils.ReadBuffer) (BACnetBinaryPV, error) {
+func BACnetBinaryPVParse(theBytes []byte) (BACnetBinaryPV, error) {
+	return BACnetBinaryPVParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetBinaryPVParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetBinaryPV, error) {
 	val, err := readBuffer.ReadUint8("BACnetBinaryPV", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetBinaryPV")
 	}
-	return BACnetBinaryPVByValue(val), nil
+	if enum, ok := BACnetBinaryPVByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetBinaryPV(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetBinaryPV) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetBinaryPV", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetBinaryPV) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetBinaryPV) name() string {
+func (e BACnetBinaryPV) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetBinaryPV", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetBinaryPV) PLC4XEnumName() string {
 	switch e {
 	case BACnetBinaryPV_INACTIVE:
 		return "INACTIVE"
@@ -118,5 +136,5 @@ func (e BACnetBinaryPV) name() string {
 }
 
 func (e BACnetBinaryPV) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

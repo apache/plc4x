@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BVLCResultCode uint16
 
 type IBVLCResultCode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -58,44 +58,44 @@ func init() {
 	}
 }
 
-func BVLCResultCodeByValue(value uint16) BVLCResultCode {
+func BVLCResultCodeByValue(value uint16) (enum BVLCResultCode, ok bool) {
 	switch value {
 	case 0x0000:
-		return BVLCResultCode_SUCCESSFUL_COMPLETION
+		return BVLCResultCode_SUCCESSFUL_COMPLETION, true
 	case 0x0010:
-		return BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK
+		return BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK, true
 	case 0x0020:
-		return BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK
+		return BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK, true
 	case 0x0030:
-		return BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK
+		return BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK, true
 	case 0x0040:
-		return BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK
+		return BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK, true
 	case 0x0050:
-		return BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK
+		return BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK, true
 	case 0x0060:
-		return BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK
+		return BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK, true
 	}
-	return 0
+	return 0, false
 }
 
-func BVLCResultCodeByName(value string) BVLCResultCode {
+func BVLCResultCodeByName(value string) (enum BVLCResultCode, ok bool) {
 	switch value {
 	case "SUCCESSFUL_COMPLETION":
-		return BVLCResultCode_SUCCESSFUL_COMPLETION
+		return BVLCResultCode_SUCCESSFUL_COMPLETION, true
 	case "WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK":
-		return BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK
+		return BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK, true
 	case "READ_BROADCAST_DISTRIBUTION_TABLE_NAK":
-		return BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK
+		return BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK, true
 	case "REGISTER_FOREIGN_DEVICE_NAK":
-		return BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK
+		return BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK, true
 	case "READ_FOREIGN_DEVICE_TABLE_NAK":
-		return BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK
+		return BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK, true
 	case "DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK":
-		return BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK
+		return BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK, true
 	case "DISTRIBUTE_BROADCAST_TO_NETWORK_NAK":
-		return BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK
+		return BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK, true
 	}
-	return 0
+	return 0, false
 }
 
 func BVLCResultCodeKnows(value uint16) bool {
@@ -125,19 +125,37 @@ func (m BVLCResultCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCResultCodeParse(readBuffer utils.ReadBuffer) (BVLCResultCode, error) {
+func BVLCResultCodeParse(theBytes []byte) (BVLCResultCode, error) {
+	return BVLCResultCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BVLCResultCodeParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCResultCode, error) {
 	val, err := readBuffer.ReadUint16("BVLCResultCode", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BVLCResultCode")
 	}
-	return BVLCResultCodeByValue(val), nil
+	if enum, ok := BVLCResultCodeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BVLCResultCode(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BVLCResultCode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BVLCResultCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BVLCResultCode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BVLCResultCode) name() string {
+func (e BVLCResultCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BVLCResultCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BVLCResultCode) PLC4XEnumName() string {
 	switch e {
 	case BVLCResultCode_SUCCESSFUL_COMPLETION:
 		return "SUCCESSFUL_COMPLETION"
@@ -158,5 +176,5 @@ func (e BVLCResultCode) name() string {
 }
 
 func (e BVLCResultCode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

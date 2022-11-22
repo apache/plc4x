@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,6 +20,7 @@
 package knxnetip
 
 import (
+	"context"
 	"fmt"
 	"math"
 	"net"
@@ -27,9 +28,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	"github.com/apache/plc4x/plc4go/internal/spi/transports/udp"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -38,7 +39,7 @@ import (
 // Internal helper functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-func (m *Connection) interceptIncomingMessage(interface{}) {
+func (m *Connection) interceptIncomingMessage(spi.Message) {
 	m.resetTimeout()
 	if m.connectionStateTimer != nil {
 		// Reset the timer for sending the ConnectionStateRequest
@@ -46,55 +47,55 @@ func (m *Connection) interceptIncomingMessage(interface{}) {
 	}
 }
 
-func (m *Connection) castIpToKnxAddress(ip net.IP) *driverModel.IPAddress {
+func (m *Connection) castIpToKnxAddress(ip net.IP) driverModel.IPAddress {
 	return driverModel.NewIPAddress(ip[len(ip)-4:])
 }
 
-func (m *Connection) handleIncomingTunnelingRequest(tunnelingRequest *driverModel.TunnelingRequest) {
+func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunnelingRequest driverModel.TunnelingRequest) {
 	go func() {
-		lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi.Child)
-		if lDataInd == nil {
+		lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataIndExactly)
+		if !ok {
 			return
 		}
 		var destinationAddress []byte
-		switch lDataInd.DataFrame.Child.(type) {
-		case *driverModel.LDataExtended:
-			dataFrame := driverModel.CastLDataExtended(lDataInd.DataFrame)
-			destinationAddress = dataFrame.DestinationAddress
-			switch dataFrame.Apdu.Child.(type) {
-			case *driverModel.ApduDataContainer:
-				container := driverModel.CastApduDataContainer(dataFrame.Apdu)
-				switch container.DataApdu.Child.(type) {
-				case *driverModel.ApduDataGroupValueWrite:
-					groupValueWrite := driverModel.CastApduDataGroupValueWrite(container.DataApdu)
+		switch lDataInd.GetDataFrame().(type) {
+		case driverModel.LDataExtendedExactly:
+			dataFrame := lDataInd.GetDataFrame().(driverModel.LDataExtended)
+			destinationAddress = dataFrame.GetDestinationAddress()
+			switch dataFrame.GetApdu().(type) {
+			case driverModel.ApduDataContainerExactly:
+				container := dataFrame.GetApdu().(driverModel.ApduDataContainer)
+				switch container.GetDataApdu().(type) {
+				case driverModel.ApduDataGroupValueWriteExactly:
+					groupValueWrite := container.GetDataApdu().(driverModel.ApduDataGroupValueWrite)
 					if destinationAddress == nil {
 						return
 					}
 					var payload []byte
-					payload = append(payload, byte(groupValueWrite.DataFirstByte))
-					payload = append(payload, groupValueWrite.Data...)
+					payload = append(payload, byte(groupValueWrite.GetDataFirstByte()))
+					payload = append(payload, groupValueWrite.GetData()...)
 
 					m.handleValueCacheUpdate(destinationAddress, payload)
 				default:
-					if dataFrame.GroupAddress {
+					if dataFrame.GetGroupAddress() {
 						return
 					}
-					// If this is an individual address and it is targeted at us, we need to ack that.
-					targetAddress := ByteArrayToKnxAddress(dataFrame.DestinationAddress)
-					if *targetAddress == *m.ClientKnxAddress {
+					// If this is an individual address, and it is targeted at us, we need to ack that.
+					targetAddress := ByteArrayToKnxAddress(dataFrame.GetDestinationAddress())
+					if targetAddress == m.ClientKnxAddress {
 						log.Info().Msg("Acknowleding an unhandled data message.")
-						_ = m.sendDeviceAck(*dataFrame.SourceAddress, dataFrame.Apdu.Counter, func(err error) {})
+						_ = m.sendDeviceAck(ctx, dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
 					}
 				}
-			case *driverModel.ApduControlContainer:
-				if dataFrame.GroupAddress {
+			case driverModel.ApduControlContainerExactly:
+				if dataFrame.GetGroupAddress() {
 					return
 				}
-				// If this is an individual address and it is targeted at us, we need to ack that.
-				targetAddress := ByteArrayToKnxAddress(dataFrame.DestinationAddress)
-				if *targetAddress == *m.ClientKnxAddress {
+				// If this is an individual address, and it is targeted at us, we need to ack that.
+				targetAddress := ByteArrayToKnxAddress(dataFrame.GetDestinationAddress())
+				if targetAddress == m.ClientKnxAddress {
 					log.Info().Msg("Acknowleding an unhandled contol message.")
-					_ = m.sendDeviceAck(*dataFrame.SourceAddress, dataFrame.Apdu.Counter, func(err error) {})
+					_ = m.sendDeviceAck(ctx, dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
 				}
 			}
 		default:
@@ -232,6 +233,6 @@ func (m *Connection) getNextCounter(targetAddress driverModel.KnxAddress) uint8 
 	return counter
 }
 
-func KnxAddressToString(knxAddress *driverModel.KnxAddress) string {
-	return fmt.Sprintf("%d.%d.%d", knxAddress.MainGroup, knxAddress.MiddleGroup, knxAddress.SubGroup)
+func KnxAddressToString(knxAddress driverModel.KnxAddress) string {
+	return fmt.Sprintf("%d.%d.%d", knxAddress.GetMainGroup(), knxAddress.GetMiddleGroup(), knxAddress.GetSubGroup())
 }

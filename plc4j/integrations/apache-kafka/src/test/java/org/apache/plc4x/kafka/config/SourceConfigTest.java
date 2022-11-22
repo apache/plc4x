@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -69,18 +69,18 @@ public class SourceConfigTest {
             "\n" +
             "jobs=s7-dashboard,s7-heartbeat,ads-heartbeat\n" +
             "jobs.s7-dashboard.interval=500\n" +
-            "jobs.s7-dashboard.fields=inputPreasure,outputPreasure,temperature\n" +
-            "jobs.s7-dashboard.fields.inputPreasure=%DB.DB1.4:INT\n" +
-            "jobs.s7-dashboard.fields.outputPreasure=%Q1:BYT\n" +
-            "jobs.s7-dashboard.fields.temperature=%I3:INT\n" +
+            "jobs.s7-dashboard.tags=inputPreasure,outputPreasure,temperature\n" +
+            "jobs.s7-dashboard.tags.inputPreasure=%DB.DB1.4:INT\n" +
+            "jobs.s7-dashboard.tags.outputPreasure=%Q1:BYT\n" +
+            "jobs.s7-dashboard.tags.temperature=%I3:INT\n" +
             "\n" +
             "jobs.s7-heartbeat.interval=1000\n" +
-            "jobs.s7-heartbeat.fields=active\n" +
-            "jobs.s7-heartbeat.fields.active=%I0.2:BOOL\n" +
+            "jobs.s7-heartbeat.tags=active\n" +
+            "jobs.s7-heartbeat.tags.active=%I0.2:BOOL\n" +
             "\n" +
             "jobs.ads-heartbeat.interval=1000\n" +
-            "jobs.ads-heartbeat.fields=active\n" +
-            "jobs.ads-heartbeat.fields.active=Main.running\n"));
+            "jobs.ads-heartbeat.tags=active\n" +
+            "jobs.ads-heartbeat.tags.active=Main.running\n"));
         SourceConfig sourceConfig = new SourceConfig(toStringMap(properties));
 
         assertNotNull(sourceConfig);
@@ -114,18 +114,18 @@ public class SourceConfigTest {
             "\n" +
             "jobs=s7-dashboard,s7-heartbeat,ads-heartbeat\n" +
             "jobs.s7-dashboard.interval=500\n" +
-            "jobs.s7-dashboard.fields=inputPreasure,outputPreasure,temperature\n" +
-            "jobs.s7-dashboard.fields.inputPreasure=%DB.DB1.4:INT\n" +
-            "jobs.s7-dashboard.fields.outputPreasure=%Q1:BYT\n" +
-            "jobs.s7-dashboard.fields.temperature=%I3:INT\n" +
+            "jobs.s7-dashboard.tags=inputPreasure,outputPreasure,temperature\n" +
+            "jobs.s7-dashboard.tags.inputPreasure=%DB.DB1.4:INT\n" +
+            "jobs.s7-dashboard.tags.outputPreasure=%Q1:BYT\n" +
+            "jobs.s7-dashboard.tags.temperature=%I3:INT\n" +
             "\n" +
             "jobs.s7-heartbeat.interval=1000\n" +
-            "jobs.s7-heartbeat.fields=active\n" +
-            "jobs.s7-heartbeat.fields.active=%I0.2:BOOL\n" +
+            "jobs.s7-heartbeat.tags=active\n" +
+            "jobs.s7-heartbeat.tags.active=%I0.2:BOOL\n" +
             "\n" +
             "jobs.ads-heartbeat.interval=1000\n" +
-            "jobs.ads-heartbeat.fields=active\n" +
-            "jobs.ads-heartbeat.fields.active=Main.running\n"));
+            "jobs.ads-heartbeat.tags=active\n" +
+            "jobs.ads-heartbeat.tags.active=Main.running\n"));
 
         Map<String, String> map = new HashMap<String, String>();
         for (final String name: properties.stringPropertyNames())

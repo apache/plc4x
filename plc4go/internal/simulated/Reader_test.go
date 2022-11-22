@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,16 +20,19 @@
 package simulated
 
 import (
-	s72 "github.com/apache/plc4x/plc4go/internal/s7"
-	model3 "github.com/apache/plc4x/plc4go/internal/spi/model"
-	values2 "github.com/apache/plc4x/plc4go/internal/spi/values"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
-	model4 "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
-	model2 "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
+	"context"
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/internal/s7"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	model4 "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
+	model2 "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
+	model3 "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	values2 "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 func TestReader_Read(t *testing.T) {
@@ -38,7 +41,7 @@ func TestReader_Read(t *testing.T) {
 		options map[string][]string
 	}
 	type args struct {
-		fields     map[string]model.PlcField
+		fields     map[string]model.PlcTag
 		fieldNames []string
 	}
 	tests := []struct {
@@ -53,15 +56,15 @@ func TestReader_Read(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[SimulatedField]*values.PlcValue{
-						NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+					State: map[simulatedTag]*values.PlcValue{
+						NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{},
 			},
 			args: args{
-				fields: map[string]model.PlcField{
-					"test": NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1),
+				fields: map[string]model.PlcTag{
+					"test": NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1),
 				},
 				fieldNames: []string{"test"},
 			},
@@ -79,8 +82,8 @@ func TestReader_Read(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[SimulatedField]*values.PlcValue{
-						NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+					State: map[simulatedTag]*values.PlcValue{
+						NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{
@@ -88,8 +91,8 @@ func TestReader_Read(t *testing.T) {
 				},
 			},
 			args: args{
-				fields: map[string]model.PlcField{
-					"test": NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1),
+				fields: map[string]model.PlcTag{
+					"test": NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1),
 				},
 				fieldNames: []string{"test"},
 			},
@@ -107,15 +110,15 @@ func TestReader_Read(t *testing.T) {
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[SimulatedField]*values.PlcValue{
-						NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+					State: map[simulatedTag]*values.PlcValue{
+						NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{},
 			},
 			args: args{
-				fields: map[string]model.PlcField{
-					"test": NewSimulatedField(FieldState, "lalala", model2.SimulatedDataTypeSizes_BOOL, 1),
+				fields: map[string]model.PlcTag{
+					"test": NewSimulatedTag(TagState, "lalala", model2.SimulatedDataTypeSizes_BOOL, 1),
 				},
 				fieldNames: []string{"test"},
 			},
@@ -128,29 +131,21 @@ func TestReader_Read(t *testing.T) {
 				}),
 			delayAtLeast: 0,
 		},
-		// Passing in a completely wrong type of field.
+		// Passing in a completely wrong type of tag.
 		{
-			name: "invalid field type",
+			name: "invalid tag type",
 			fields: fields{
 				device: &Device{
 					Name: "hurz",
-					State: map[SimulatedField]*values.PlcValue{
-						NewSimulatedField(FieldState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+					State: map[simulatedTag]*values.PlcValue{
+						NewSimulatedTag(TagState, "test", model2.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 					},
 				},
 				options: map[string][]string{},
 			},
 			args: args{
-				fields: map[string]model.PlcField{
-					"test": s72.PlcField{
-						FieldType:   s72.S7Field,
-						MemoryArea:  model4.MemoryArea_DATA_BLOCKS,
-						BlockNumber: 1,
-						ByteOffset:  1,
-						BitOffset:   0,
-						NumElements: 1,
-						Datatype:    model4.TransportSize_BOOL,
-					},
+				fields: map[string]model.PlcTag{
+					"test": s7.NewTag(model4.MemoryArea_DATA_BLOCKS, 1, 1, 0, 1, model4.TransportSize_BOOL),
 				},
 				fieldNames: []string{"test"},
 			},
@@ -169,7 +164,9 @@ func TestReader_Read(t *testing.T) {
 			r := NewReader(tt.fields.device, tt.fields.options, nil)
 			readRequest := model3.NewDefaultPlcReadRequest(tt.args.fields, tt.args.fieldNames, r, nil)
 			timeBeforeReadRequest := time.Now()
-			readResponseChannel := r.Read(readRequest)
+			readResponseChannel := r.Read(context.TODO(), readRequest)
+			timeout := time.NewTimer(3 * time.Second)
+			defer utils.CleanupTimer(timeout)
 			select {
 			case readResponse := <-readResponseChannel:
 				timeAfterReadRequest := time.Now()
@@ -184,7 +181,7 @@ func TestReader_Read(t *testing.T) {
 				if !reflect.DeepEqual(readResponse.GetRequest(), readRequest) {
 					t.Errorf("Reader.Read() ReadRequest = %v, want %v", readResponse.GetRequest(), readRequest)
 				}
-				for _, fieldName := range readRequest.GetFieldNames() {
+				for _, fieldName := range readRequest.GetTagNames() {
 					if !reflect.DeepEqual(readResponse.GetResponse().GetResponseCode(fieldName), tt.want.GetResponseCode(fieldName)) {
 						t.Errorf("Reader.Read() PlcResponse.ResponseCode = %v, want %v",
 							readResponse.GetResponse().GetResponseCode(fieldName), tt.want.GetResponseCode(fieldName))
@@ -194,7 +191,7 @@ func TestReader_Read(t *testing.T) {
 							readResponse.GetResponse().GetValue(fieldName), tt.want.GetValue(fieldName))
 					}
 				}
-			case <-time.After(3 * time.Second):
+			case <-timeout.C:
 				t.Errorf("Reader.Read() got timeout")
 			}
 		})

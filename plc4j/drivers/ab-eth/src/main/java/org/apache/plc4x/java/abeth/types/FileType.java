@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,36 +18,43 @@
  */
 package org.apache.plc4x.java.abeth.types;
 
+import org.apache.plc4x.java.api.types.PlcValueType;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public enum FileType {
 
-    HURZ((short) 0x64),
-    STATUS((short) 0x84),
-    BIT((short) 0x85),
-    TIMER((short) 0x86),
-    COUNTER((short) 0x87),
-    CONTROL((short) 0x88),
-    INTEGER((short) 0x89),
-    FLOAT((short) 0x8A),
-    OUTPUT((short) 0x8B),
-    INPUT((short) 0x8C),
-    STRING((short) 0x8D),
-    ASCII((short) 0x8E),
-    BCD((short) 0x8F),
-    WORD((short) 0x89),  // custom 2-byte Integer
-    DWORD((short) 0x89), // custom 4-byte Integer
-    SINGLEBIT((short) 0x89); // custom single bit from Integer file, no official AB type
+    STATUS((short) 0x84, PlcValueType.RAW_BYTE_ARRAY),
+    BIT((short) 0x85, PlcValueType.BOOL),
+    TIMER((short) 0x86, PlcValueType.TIME),
+    COUNTER((short) 0x87, PlcValueType.RAW_BYTE_ARRAY),
+    CONTROL((short) 0x88, PlcValueType.RAW_BYTE_ARRAY),
+    INTEGER((short) 0x89, PlcValueType.INT),
+    FLOAT((short) 0x8A, PlcValueType.REAL),
+    OUTPUT((short) 0x8B, PlcValueType.RAW_BYTE_ARRAY),
+    INPUT((short) 0x8C, PlcValueType.RAW_BYTE_ARRAY),
+    STRING((short) 0x8D, PlcValueType.STRING),
+    ASCII((short) 0x8E, PlcValueType.STRING),
+    BCD((short) 0x8F, PlcValueType.RAW_BYTE_ARRAY),
+    WORD((short) 0x89, PlcValueType.WORD),  // custom 2-byte Integer
+    DWORD((short) 0x89, PlcValueType.DWORD), // custom 4-byte Integer
+    SINGLEBIT((short) 0x89, PlcValueType.WORD); // custom single bit from Integer file, no official AB type
 
     private final short typeCode;
+    private final PlcValueType plcValueType;
 
-    FileType(short typeCode) {
+    FileType(short typeCode, PlcValueType plcValueType) {
         this.typeCode = typeCode;
+        this.plcValueType = plcValueType;
     }
 
     public short getTypeCode() {
         return typeCode;
+    }
+
+    public PlcValueType getPlcValueType() {
+        return plcValueType;
     }
 
     private static final Map<Short, FileType> map;

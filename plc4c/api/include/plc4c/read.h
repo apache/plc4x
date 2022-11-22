@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -31,13 +31,13 @@ extern "C" {
 void plc4c_read_request_destroy(plc4c_read_request *read_request);
 
 /**
- * Function for adding a new item to a given request.
+ * Function for adding a new tag, based on a given address to a given request.
  * @param read_request the read-request.
  * @param address address string
  * @return return code
  */
-plc4c_return_code plc4c_read_request_add_item(plc4c_read_request *read_request,
-                                              char *field_name,
+plc4c_return_code plc4c_read_request_add_tag_address(plc4c_read_request *read_request,
+                                              char *tag_name,
                                               char *address);
 
 /**

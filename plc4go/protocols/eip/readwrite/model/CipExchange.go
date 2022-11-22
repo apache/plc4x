@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,7 +21,7 @@ package model
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -32,24 +32,27 @@ const CipExchange_ITEMCOUNT uint16 = 0x02
 const CipExchange_NULLPTR uint32 = 0x0
 const CipExchange_UNCONNECTEDDATA uint16 = 0x00B2
 
-// CipExchange is the data-structure of this message
-type CipExchange struct {
-	Service *CipService
+// CipExchange is the corresponding interface of CipExchange
+type CipExchange interface {
+	utils.LengthAware
+	utils.Serializable
+	// GetService returns Service (property field)
+	GetService() CipService
+}
+
+// CipExchangeExactly can be used when we want exactly this type and not a type which fulfills CipExchange.
+// This is useful for switch cases.
+type CipExchangeExactly interface {
+	CipExchange
+	isCipExchange() bool
+}
+
+// _CipExchange is the data-structure of this message
+type _CipExchange struct {
+	Service CipService
 
 	// Arguments.
 	ExchangeLen uint16
-}
-
-// ICipExchange is the corresponding interface of CipExchange
-type ICipExchange interface {
-	// GetService returns Service (property field)
-	GetService() *CipService
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 ///////////////////////////////////////////////////////////
@@ -57,7 +60,7 @@ type ICipExchange interface {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *CipExchange) GetService() *CipService {
+func (m *_CipExchange) GetService() CipService {
 	return m.Service
 }
 
@@ -70,15 +73,15 @@ func (m *CipExchange) GetService() *CipService {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *CipExchange) GetItemCount() uint16 {
+func (m *_CipExchange) GetItemCount() uint16 {
 	return CipExchange_ITEMCOUNT
 }
 
-func (m *CipExchange) GetNullPtr() uint32 {
+func (m *_CipExchange) GetNullPtr() uint32 {
 	return CipExchange_NULLPTR
 }
 
-func (m *CipExchange) GetUnconnectedData() uint16 {
+func (m *_CipExchange) GetUnconnectedData() uint16 {
 	return CipExchange_UNCONNECTEDDATA
 }
 
@@ -87,30 +90,31 @@ func (m *CipExchange) GetUnconnectedData() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewCipExchange factory function for CipExchange
-func NewCipExchange(service *CipService, exchangeLen uint16) *CipExchange {
-	return &CipExchange{Service: service, ExchangeLen: exchangeLen}
+// NewCipExchange factory function for _CipExchange
+func NewCipExchange(service CipService, exchangeLen uint16) *_CipExchange {
+	return &_CipExchange{Service: service, ExchangeLen: exchangeLen}
 }
 
-func CastCipExchange(structType interface{}) *CipExchange {
+// Deprecated: use the interface for direct cast
+func CastCipExchange(structType interface{}) CipExchange {
 	if casted, ok := structType.(CipExchange); ok {
-		return &casted
+		return casted
 	}
 	if casted, ok := structType.(*CipExchange); ok {
-		return casted
+		return *casted
 	}
 	return nil
 }
 
-func (m *CipExchange) GetTypeName() string {
+func (m *_CipExchange) GetTypeName() string {
 	return "CipExchange"
 }
 
-func (m *CipExchange) GetLengthInBits() uint16 {
+func (m *_CipExchange) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *CipExchange) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_CipExchange) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (itemCount)
@@ -131,15 +135,19 @@ func (m *CipExchange) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *CipExchange) GetLengthInBytes() uint16 {
+func (m *_CipExchange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExchange, error) {
+func CipExchangeParse(theBytes []byte, exchangeLen uint16) (CipExchange, error) {
+	return CipExchangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), exchangeLen)
+}
+
+func CipExchangeParseWithBuffer(readBuffer utils.ReadBuffer, exchangeLen uint16) (CipExchange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipExchange"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for CipExchange")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -147,7 +155,7 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 	// Const Field (itemCount)
 	itemCount, _itemCountErr := readBuffer.ReadUint16("itemCount", 16)
 	if _itemCountErr != nil {
-		return nil, errors.Wrap(_itemCountErr, "Error parsing 'itemCount' field")
+		return nil, errors.Wrap(_itemCountErr, "Error parsing 'itemCount' field of CipExchange")
 	}
 	if itemCount != CipExchange_ITEMCOUNT {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CipExchange_ITEMCOUNT) + " but got " + fmt.Sprintf("%d", itemCount))
@@ -156,7 +164,7 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 	// Const Field (nullPtr)
 	nullPtr, _nullPtrErr := readBuffer.ReadUint32("nullPtr", 32)
 	if _nullPtrErr != nil {
-		return nil, errors.Wrap(_nullPtrErr, "Error parsing 'nullPtr' field")
+		return nil, errors.Wrap(_nullPtrErr, "Error parsing 'nullPtr' field of CipExchange")
 	}
 	if nullPtr != CipExchange_NULLPTR {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CipExchange_NULLPTR) + " but got " + fmt.Sprintf("%d", nullPtr))
@@ -165,7 +173,7 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 	// Const Field (unconnectedData)
 	unconnectedData, _unconnectedDataErr := readBuffer.ReadUint16("unconnectedData", 16)
 	if _unconnectedDataErr != nil {
-		return nil, errors.Wrap(_unconnectedDataErr, "Error parsing 'unconnectedData' field")
+		return nil, errors.Wrap(_unconnectedDataErr, "Error parsing 'unconnectedData' field of CipExchange")
 	}
 	if unconnectedData != CipExchange_UNCONNECTEDDATA {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CipExchange_UNCONNECTEDDATA) + " but got " + fmt.Sprintf("%d", unconnectedData))
@@ -175,35 +183,46 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 	size, _sizeErr := readBuffer.ReadUint16("size", 16)
 	_ = size
 	if _sizeErr != nil {
-		return nil, errors.Wrap(_sizeErr, "Error parsing 'size' field")
+		return nil, errors.Wrap(_sizeErr, "Error parsing 'size' field of CipExchange")
 	}
 
 	// Simple Field (service)
 	if pullErr := readBuffer.PullContext("service"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for service")
 	}
-	_service, _serviceErr := CipServiceParse(readBuffer, uint16(uint16(exchangeLen)-uint16(uint16(10))))
+	_service, _serviceErr := CipServiceParseWithBuffer(readBuffer, uint16(uint16(exchangeLen)-uint16(uint16(10))))
 	if _serviceErr != nil {
-		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field")
+		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field of CipExchange")
 	}
-	service := CastCipService(_service)
+	service := _service.(CipService)
 	if closeErr := readBuffer.CloseContext("service"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for service")
 	}
 
 	if closeErr := readBuffer.CloseContext("CipExchange"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for CipExchange")
 	}
 
 	// Create the instance
-	return NewCipExchange(service, exchangeLen), nil
+	return &_CipExchange{
+		ExchangeLen: exchangeLen,
+		Service:     service,
+	}, nil
 }
 
-func (m *CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CipExchange) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CipExchange) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CipExchange"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for CipExchange")
 	}
 
 	// Const Field (itemCount)
@@ -233,29 +252,43 @@ func (m *CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Simple Field (service)
 	if pushErr := writeBuffer.PushContext("service"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for service")
 	}
-	_serviceErr := m.Service.Serialize(writeBuffer)
+	_serviceErr := writeBuffer.WriteSerializable(m.GetService())
 	if popErr := writeBuffer.PopContext("service"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for service")
 	}
 	if _serviceErr != nil {
 		return errors.Wrap(_serviceErr, "Error serializing 'service' field")
 	}
 
 	if popErr := writeBuffer.PopContext("CipExchange"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for CipExchange")
 	}
 	return nil
 }
 
-func (m *CipExchange) String() string {
+////
+// Arguments Getter
+
+func (m *_CipExchange) GetExchangeLen() uint16 {
+	return m.ExchangeLen
+}
+
+//
+////
+
+func (m *_CipExchange) isCipExchange() bool {
+	return true
+}
+
+func (m *_CipExchange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

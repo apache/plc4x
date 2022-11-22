@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type KnxMedium uint8
 
 type IKnxMedium interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -56,40 +56,40 @@ func init() {
 	}
 }
 
-func KnxMediumByValue(value uint8) KnxMedium {
+func KnxMediumByValue(value uint8) (enum KnxMedium, ok bool) {
 	switch value {
 	case 0x01:
-		return KnxMedium_MEDIUM_RESERVED_1
+		return KnxMedium_MEDIUM_RESERVED_1, true
 	case 0x02:
-		return KnxMedium_MEDIUM_TP1
+		return KnxMedium_MEDIUM_TP1, true
 	case 0x04:
-		return KnxMedium_MEDIUM_PL110
+		return KnxMedium_MEDIUM_PL110, true
 	case 0x08:
-		return KnxMedium_MEDIUM_RESERVED_2
+		return KnxMedium_MEDIUM_RESERVED_2, true
 	case 0x10:
-		return KnxMedium_MEDIUM_RF
+		return KnxMedium_MEDIUM_RF, true
 	case 0x20:
-		return KnxMedium_MEDIUM_KNX_IP
+		return KnxMedium_MEDIUM_KNX_IP, true
 	}
-	return 0
+	return 0, false
 }
 
-func KnxMediumByName(value string) KnxMedium {
+func KnxMediumByName(value string) (enum KnxMedium, ok bool) {
 	switch value {
 	case "MEDIUM_RESERVED_1":
-		return KnxMedium_MEDIUM_RESERVED_1
+		return KnxMedium_MEDIUM_RESERVED_1, true
 	case "MEDIUM_TP1":
-		return KnxMedium_MEDIUM_TP1
+		return KnxMedium_MEDIUM_TP1, true
 	case "MEDIUM_PL110":
-		return KnxMedium_MEDIUM_PL110
+		return KnxMedium_MEDIUM_PL110, true
 	case "MEDIUM_RESERVED_2":
-		return KnxMedium_MEDIUM_RESERVED_2
+		return KnxMedium_MEDIUM_RESERVED_2, true
 	case "MEDIUM_RF":
-		return KnxMedium_MEDIUM_RF
+		return KnxMedium_MEDIUM_RF, true
 	case "MEDIUM_KNX_IP":
-		return KnxMedium_MEDIUM_KNX_IP
+		return KnxMedium_MEDIUM_KNX_IP, true
 	}
-	return 0
+	return 0, false
 }
 
 func KnxMediumKnows(value uint8) bool {
@@ -119,19 +119,37 @@ func (m KnxMedium) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxMediumParse(readBuffer utils.ReadBuffer) (KnxMedium, error) {
+func KnxMediumParse(theBytes []byte) (KnxMedium, error) {
+	return KnxMediumParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func KnxMediumParseWithBuffer(readBuffer utils.ReadBuffer) (KnxMedium, error) {
 	val, err := readBuffer.ReadUint8("KnxMedium", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading KnxMedium")
 	}
-	return KnxMediumByValue(val), nil
+	if enum, ok := KnxMediumByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return KnxMedium(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e KnxMedium) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("KnxMedium", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e KnxMedium) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e KnxMedium) name() string {
+func (e KnxMedium) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("KnxMedium", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e KnxMedium) PLC4XEnumName() string {
 	switch e {
 	case KnxMedium_MEDIUM_RESERVED_1:
 		return "MEDIUM_RESERVED_1"
@@ -150,5 +168,5 @@ func (e KnxMedium) name() string {
 }
 
 func (e KnxMedium) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

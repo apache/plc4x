@@ -7,7 +7,7 @@
     (the "License"); you may not use this file except in compliance with
     the License.  You may obtain a copy of the License at
 
-         http://www.apache.org/licenses/LICENSE-2.0
+         https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,7 +18,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="100%" height="100%" viewBox="0 0 1200 675" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
     <g id="Ebene1">
-        <rect x="0" y="-1.225" width="1200.98" height="678.007" style="fill:rgb(50,255,255);"/>
+        <rect x="0" y="-1.225" width="1200.98" height="678.007" style="fill:rgb(80, 133, 199);"/>
     </g>
     <g id="logo-PLC4X-color-CMYK-300x" serif:id="logo PLC4X color CMYK@300x" transform="matrix(3.42915,0,0,3.42915,596.343,243.246)">
         <g transform="matrix(1,0,0,1,-162.765,-52.96)">
@@ -861,7 +861,7 @@
     </g>
     <g transform="matrix(1.75314,0,0,1.75314,-101.901,-409.208)">
         <text x="155.18px" y="546.631px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:50px;">Universal IIoT<tspan x="462.699px 473.832px 507.182px " y="546.631px 546.631px 546.631px "> Ad</tspan>apter</text>
-        <text x="156.083px" y="598.267px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:50px;">version 0.9.0 released</text>
+        <text x="156.083px" y="598.267px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:50px;">version 0.10.0 released</text>
     </g>
     <defs>
         <linearGradient id="_Linear4" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.3,-85.75,85.75,0.3,251.28,114.16)"><stop offset="0" style="stop-color:rgb(157,32,100);stop-opacity:1"/><stop offset="0.32" style="stop-color:rgb(157,32,100);stop-opacity:1"/><stop offset="0.63" style="stop-color:rgb(201,32,57);stop-opacity:1"/><stop offset="0.75" style="stop-color:rgb(205,32,53);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(231,121,39);stop-opacity:1"/></linearGradient>

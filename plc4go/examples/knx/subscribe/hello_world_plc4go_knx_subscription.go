@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,13 +21,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/logging"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"strings"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
+	"github.com/apache/plc4x/plc4go/pkg/api/logging"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
 func main() {
@@ -54,14 +55,14 @@ func main() {
 	// Prepare a subscription-request
 	if subscriptionRequest, err := connection.SubscriptionRequestBuilder().
 		// Intentionally catching all without datatype and the temperature values of the first floor with type
-		AddChangeOfStateQuery("all", "*/*/*").
-		AddChangeOfStateQuery("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp").
-		AddItemHandler(func(event model.PlcSubscriptionEvent) {
-			// Iterate over all fields that were triggered in the current event.
-			for _, fieldName := range event.GetFieldNames() {
-				if event.GetResponseCode(fieldName) == model.PlcResponseCode_OK {
-					address := event.GetAddress(fieldName)
-					value := event.GetValue(fieldName)
+		AddChangeOfStateTagAddress("all", "*/*/*").
+		AddChangeOfStateTagAddress("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp").
+		AddPreRegisteredConsumer("all", func(event model.PlcSubscriptionEvent) {
+			// Iterate over all tags that were triggered in the current event.
+			for _, tagName := range event.GetTagNames() {
+				if event.GetResponseCode(tagName) == model.PlcResponseCode_OK {
+					address := event.GetAddress(tagName)
+					value := event.GetValue(tagName)
 					// If the plc-value was a raw-plcValue, we will try lazily decode the value
 					// In my installation all group addresses ending with "/10" are temperature values
 					// and ending on "/0" are light switch actions.
@@ -102,9 +103,9 @@ func main() {
 		}
 
 		// Do something with the response
-		for _, fieldName := range rrr.GetResponse().GetFieldNames() {
-			if rrr.GetResponse().GetResponseCode(fieldName) != model.PlcResponseCode_OK {
-				fmt.Printf("error an non-ok return code for field %s: %s\n", fieldName, rrr.GetResponse().GetResponseCode(fieldName).GetName())
+		for _, tagName := range rrr.GetResponse().GetTagNames() {
+			if rrr.GetResponse().GetResponseCode(tagName) != model.PlcResponseCode_OK {
+				fmt.Printf("error an non-ok return code for tag %s: %s\n", tagName, rrr.GetResponse().GetResponseCode(tagName).GetName())
 				continue
 			}
 		}

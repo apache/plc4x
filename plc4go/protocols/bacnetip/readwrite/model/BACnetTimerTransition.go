@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetTimerTransition uint8
 
 type IBACnetTimerTransition interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -60,48 +60,48 @@ func init() {
 	}
 }
 
-func BACnetTimerTransitionByValue(value uint8) BACnetTimerTransition {
+func BACnetTimerTransitionByValue(value uint8) (enum BACnetTimerTransition, ok bool) {
 	switch value {
 	case 0:
-		return BACnetTimerTransition_NONE
+		return BACnetTimerTransition_NONE, true
 	case 1:
-		return BACnetTimerTransition_IDLE_TO_RUNNING
+		return BACnetTimerTransition_IDLE_TO_RUNNING, true
 	case 2:
-		return BACnetTimerTransition_RUNNING_TO_IDLE
+		return BACnetTimerTransition_RUNNING_TO_IDLE, true
 	case 3:
-		return BACnetTimerTransition_RUNNING_TO_RUNNING
+		return BACnetTimerTransition_RUNNING_TO_RUNNING, true
 	case 4:
-		return BACnetTimerTransition_RUNNING_TO_EXPIRED
+		return BACnetTimerTransition_RUNNING_TO_EXPIRED, true
 	case 5:
-		return BACnetTimerTransition_FORCED_TO_EXPIRED
+		return BACnetTimerTransition_FORCED_TO_EXPIRED, true
 	case 6:
-		return BACnetTimerTransition_EXPIRED_TO_IDLE
+		return BACnetTimerTransition_EXPIRED_TO_IDLE, true
 	case 7:
-		return BACnetTimerTransition_EXPIRED_TO_RUNNING
+		return BACnetTimerTransition_EXPIRED_TO_RUNNING, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetTimerTransitionByName(value string) BACnetTimerTransition {
+func BACnetTimerTransitionByName(value string) (enum BACnetTimerTransition, ok bool) {
 	switch value {
 	case "NONE":
-		return BACnetTimerTransition_NONE
+		return BACnetTimerTransition_NONE, true
 	case "IDLE_TO_RUNNING":
-		return BACnetTimerTransition_IDLE_TO_RUNNING
+		return BACnetTimerTransition_IDLE_TO_RUNNING, true
 	case "RUNNING_TO_IDLE":
-		return BACnetTimerTransition_RUNNING_TO_IDLE
+		return BACnetTimerTransition_RUNNING_TO_IDLE, true
 	case "RUNNING_TO_RUNNING":
-		return BACnetTimerTransition_RUNNING_TO_RUNNING
+		return BACnetTimerTransition_RUNNING_TO_RUNNING, true
 	case "RUNNING_TO_EXPIRED":
-		return BACnetTimerTransition_RUNNING_TO_EXPIRED
+		return BACnetTimerTransition_RUNNING_TO_EXPIRED, true
 	case "FORCED_TO_EXPIRED":
-		return BACnetTimerTransition_FORCED_TO_EXPIRED
+		return BACnetTimerTransition_FORCED_TO_EXPIRED, true
 	case "EXPIRED_TO_IDLE":
-		return BACnetTimerTransition_EXPIRED_TO_IDLE
+		return BACnetTimerTransition_EXPIRED_TO_IDLE, true
 	case "EXPIRED_TO_RUNNING":
-		return BACnetTimerTransition_EXPIRED_TO_RUNNING
+		return BACnetTimerTransition_EXPIRED_TO_RUNNING, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetTimerTransitionKnows(value uint8) bool {
@@ -131,19 +131,37 @@ func (m BACnetTimerTransition) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimerTransitionParse(readBuffer utils.ReadBuffer) (BACnetTimerTransition, error) {
+func BACnetTimerTransitionParse(theBytes []byte) (BACnetTimerTransition, error) {
+	return BACnetTimerTransitionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetTimerTransitionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimerTransition, error) {
 	val, err := readBuffer.ReadUint8("BACnetTimerTransition", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetTimerTransition")
 	}
-	return BACnetTimerTransitionByValue(val), nil
+	if enum, ok := BACnetTimerTransitionByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetTimerTransition(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetTimerTransition) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetTimerTransition", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetTimerTransition) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetTimerTransition) name() string {
+func (e BACnetTimerTransition) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetTimerTransition", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetTimerTransition) PLC4XEnumName() string {
 	switch e {
 	case BACnetTimerTransition_NONE:
 		return "NONE"
@@ -166,5 +184,5 @@ func (e BACnetTimerTransition) name() string {
 }
 
 func (e BACnetTimerTransition) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

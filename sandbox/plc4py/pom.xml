@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.plc4x.sandbox</groupId>
     <artifactId>plc4x-sandbox</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.11.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4py</artifactId>
@@ -35,7 +35,6 @@
   <description>Implementation of the protocol adapters for usage as Python library.</description>
 
   <properties>
-    <unity.version>2.5.0</unity.version>
     <!-- Tell Sonar where to find the python sources -->
     <sonar.sources>plc4py</sonar.sources>
     <option.with-proxies>OFF</option.with-proxies>
@@ -85,11 +84,11 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>python</executable>
+              <executable>python3</executable>
               <arguments>
                 <argument>-m</argument>
                 <argument>venv</argument>
-                <argument> ./venv</argument>
+                <argument>./venv</argument>
               </arguments>
             </configuration>
           </execution>
@@ -101,7 +100,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${python.venv.bin}pip</executable>
+              <executable>${python.venv.bin}pip3</executable>
               <arguments>
                 <argument>install</argument>
                 <argument>.</argument>
@@ -116,7 +115,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${python.venv.bin}pip</executable>
+              <executable>${python.venv.bin}pip3</executable>
               <arguments>
                 <argument>install</argument>
                 <argument>.[dev]</argument>
@@ -131,7 +130,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${python.venv.bin}python</executable>
+              <executable>${python.venv.bin}python3</executable>
               <arguments>
                 <argument>-m</argument>
                 <argument>pytest</argument>
@@ -148,7 +147,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${python.venv.bin}pip</executable>
+              <executable>${python.venv.bin}pip3</executable>
               <arguments>
                 <argument>wheel</argument>
                 <argument>.</argument>
@@ -158,17 +157,20 @@
               </arguments>
             </configuration>
           </execution>
-
         </executions>
       </plugin>
 
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-clean-plugin</artifactId>
-        <version>${maven.clean.plugin.version}</version>
         <configuration>
           <filesets>
             <fileset>
-              <directory>venv</directory>
+              <directory>.pytest_cache</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>build</directory>
               <followSymlinks>false</followSymlinks>
             </fileset>
             <fileset>
@@ -176,22 +178,36 @@
               <followSymlinks>false</followSymlinks>
             </fileset>
             <fileset>
-              <directory>.pytest_cache</directory>
+              <directory>venv</directory>
               <followSymlinks>false</followSymlinks>
             </fileset>
             <fileset>
               <directory>plc4py.egg-info</directory>
               <followSymlinks>false</followSymlinks>
             </fileset>
-            <fileset>
-              <directory>build</directory>
-              <followSymlinks>false</followSymlinks>
-            </fileset>
           </filesets>
         </configuration>
       </plugin>
-
-      </plugins>
+    </plugins>
   </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-modbus</artifactId>
+      <version>0.11.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-simulated</artifactId>
+      <version>0.11.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+
+  </dependencies>
 
 </project>

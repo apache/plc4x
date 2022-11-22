@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetAuthenticationFactorType uint8
 
 type IBACnetAuthenticationFactorType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -94,116 +94,116 @@ func init() {
 	}
 }
 
-func BACnetAuthenticationFactorTypeByValue(value uint8) BACnetAuthenticationFactorType {
+func BACnetAuthenticationFactorTypeByValue(value uint8) (enum BACnetAuthenticationFactorType, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAuthenticationFactorType_UNDEFINED
+		return BACnetAuthenticationFactorType_UNDEFINED, true
 	case 1:
-		return BACnetAuthenticationFactorType_ERROR
+		return BACnetAuthenticationFactorType_ERROR, true
 	case 10:
-		return BACnetAuthenticationFactorType_WIEGAND37_FACILITY
+		return BACnetAuthenticationFactorType_WIEGAND37_FACILITY, true
 	case 11:
-		return BACnetAuthenticationFactorType_FACILITY16_CARD32
+		return BACnetAuthenticationFactorType_FACILITY16_CARD32, true
 	case 12:
-		return BACnetAuthenticationFactorType_FACILITY32_CARD32
+		return BACnetAuthenticationFactorType_FACILITY32_CARD32, true
 	case 13:
-		return BACnetAuthenticationFactorType_FASC_N
+		return BACnetAuthenticationFactorType_FASC_N, true
 	case 14:
-		return BACnetAuthenticationFactorType_FASC_N_BCD
+		return BACnetAuthenticationFactorType_FASC_N_BCD, true
 	case 15:
-		return BACnetAuthenticationFactorType_FASC_N_LARGE
+		return BACnetAuthenticationFactorType_FASC_N_LARGE, true
 	case 16:
-		return BACnetAuthenticationFactorType_FASC_N_LARGE_BCD
+		return BACnetAuthenticationFactorType_FASC_N_LARGE_BCD, true
 	case 17:
-		return BACnetAuthenticationFactorType_GSA75
+		return BACnetAuthenticationFactorType_GSA75, true
 	case 18:
-		return BACnetAuthenticationFactorType_CHUID
+		return BACnetAuthenticationFactorType_CHUID, true
 	case 19:
-		return BACnetAuthenticationFactorType_CHUID_FULL
+		return BACnetAuthenticationFactorType_CHUID_FULL, true
 	case 2:
-		return BACnetAuthenticationFactorType_CUSTOM
+		return BACnetAuthenticationFactorType_CUSTOM, true
 	case 20:
-		return BACnetAuthenticationFactorType_GUID
+		return BACnetAuthenticationFactorType_GUID, true
 	case 21:
-		return BACnetAuthenticationFactorType_CBEFF_A
+		return BACnetAuthenticationFactorType_CBEFF_A, true
 	case 22:
-		return BACnetAuthenticationFactorType_CBEFF_B
+		return BACnetAuthenticationFactorType_CBEFF_B, true
 	case 23:
-		return BACnetAuthenticationFactorType_CBEFF_C
+		return BACnetAuthenticationFactorType_CBEFF_C, true
 	case 24:
-		return BACnetAuthenticationFactorType_USER_PASSWORD
+		return BACnetAuthenticationFactorType_USER_PASSWORD, true
 	case 3:
-		return BACnetAuthenticationFactorType_SIMPLE_NUMBER16
+		return BACnetAuthenticationFactorType_SIMPLE_NUMBER16, true
 	case 4:
-		return BACnetAuthenticationFactorType_SIMPLE_NUMBER32
+		return BACnetAuthenticationFactorType_SIMPLE_NUMBER32, true
 	case 5:
-		return BACnetAuthenticationFactorType_SIMPLE_NUMBER56
+		return BACnetAuthenticationFactorType_SIMPLE_NUMBER56, true
 	case 6:
-		return BACnetAuthenticationFactorType_SIMPLE_ALPHA_NUMERIC
+		return BACnetAuthenticationFactorType_SIMPLE_ALPHA_NUMERIC, true
 	case 7:
-		return BACnetAuthenticationFactorType_ABA_TRACK2
+		return BACnetAuthenticationFactorType_ABA_TRACK2, true
 	case 8:
-		return BACnetAuthenticationFactorType_WIEGAND26
+		return BACnetAuthenticationFactorType_WIEGAND26, true
 	case 9:
-		return BACnetAuthenticationFactorType_WIEGAND37
+		return BACnetAuthenticationFactorType_WIEGAND37, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetAuthenticationFactorTypeByName(value string) BACnetAuthenticationFactorType {
+func BACnetAuthenticationFactorTypeByName(value string) (enum BACnetAuthenticationFactorType, ok bool) {
 	switch value {
 	case "UNDEFINED":
-		return BACnetAuthenticationFactorType_UNDEFINED
+		return BACnetAuthenticationFactorType_UNDEFINED, true
 	case "ERROR":
-		return BACnetAuthenticationFactorType_ERROR
+		return BACnetAuthenticationFactorType_ERROR, true
 	case "WIEGAND37_FACILITY":
-		return BACnetAuthenticationFactorType_WIEGAND37_FACILITY
+		return BACnetAuthenticationFactorType_WIEGAND37_FACILITY, true
 	case "FACILITY16_CARD32":
-		return BACnetAuthenticationFactorType_FACILITY16_CARD32
+		return BACnetAuthenticationFactorType_FACILITY16_CARD32, true
 	case "FACILITY32_CARD32":
-		return BACnetAuthenticationFactorType_FACILITY32_CARD32
+		return BACnetAuthenticationFactorType_FACILITY32_CARD32, true
 	case "FASC_N":
-		return BACnetAuthenticationFactorType_FASC_N
+		return BACnetAuthenticationFactorType_FASC_N, true
 	case "FASC_N_BCD":
-		return BACnetAuthenticationFactorType_FASC_N_BCD
+		return BACnetAuthenticationFactorType_FASC_N_BCD, true
 	case "FASC_N_LARGE":
-		return BACnetAuthenticationFactorType_FASC_N_LARGE
+		return BACnetAuthenticationFactorType_FASC_N_LARGE, true
 	case "FASC_N_LARGE_BCD":
-		return BACnetAuthenticationFactorType_FASC_N_LARGE_BCD
+		return BACnetAuthenticationFactorType_FASC_N_LARGE_BCD, true
 	case "GSA75":
-		return BACnetAuthenticationFactorType_GSA75
+		return BACnetAuthenticationFactorType_GSA75, true
 	case "CHUID":
-		return BACnetAuthenticationFactorType_CHUID
+		return BACnetAuthenticationFactorType_CHUID, true
 	case "CHUID_FULL":
-		return BACnetAuthenticationFactorType_CHUID_FULL
+		return BACnetAuthenticationFactorType_CHUID_FULL, true
 	case "CUSTOM":
-		return BACnetAuthenticationFactorType_CUSTOM
+		return BACnetAuthenticationFactorType_CUSTOM, true
 	case "GUID":
-		return BACnetAuthenticationFactorType_GUID
+		return BACnetAuthenticationFactorType_GUID, true
 	case "CBEFF_A":
-		return BACnetAuthenticationFactorType_CBEFF_A
+		return BACnetAuthenticationFactorType_CBEFF_A, true
 	case "CBEFF_B":
-		return BACnetAuthenticationFactorType_CBEFF_B
+		return BACnetAuthenticationFactorType_CBEFF_B, true
 	case "CBEFF_C":
-		return BACnetAuthenticationFactorType_CBEFF_C
+		return BACnetAuthenticationFactorType_CBEFF_C, true
 	case "USER_PASSWORD":
-		return BACnetAuthenticationFactorType_USER_PASSWORD
+		return BACnetAuthenticationFactorType_USER_PASSWORD, true
 	case "SIMPLE_NUMBER16":
-		return BACnetAuthenticationFactorType_SIMPLE_NUMBER16
+		return BACnetAuthenticationFactorType_SIMPLE_NUMBER16, true
 	case "SIMPLE_NUMBER32":
-		return BACnetAuthenticationFactorType_SIMPLE_NUMBER32
+		return BACnetAuthenticationFactorType_SIMPLE_NUMBER32, true
 	case "SIMPLE_NUMBER56":
-		return BACnetAuthenticationFactorType_SIMPLE_NUMBER56
+		return BACnetAuthenticationFactorType_SIMPLE_NUMBER56, true
 	case "SIMPLE_ALPHA_NUMERIC":
-		return BACnetAuthenticationFactorType_SIMPLE_ALPHA_NUMERIC
+		return BACnetAuthenticationFactorType_SIMPLE_ALPHA_NUMERIC, true
 	case "ABA_TRACK2":
-		return BACnetAuthenticationFactorType_ABA_TRACK2
+		return BACnetAuthenticationFactorType_ABA_TRACK2, true
 	case "WIEGAND26":
-		return BACnetAuthenticationFactorType_WIEGAND26
+		return BACnetAuthenticationFactorType_WIEGAND26, true
 	case "WIEGAND37":
-		return BACnetAuthenticationFactorType_WIEGAND37
+		return BACnetAuthenticationFactorType_WIEGAND37, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAuthenticationFactorTypeKnows(value uint8) bool {
@@ -233,19 +233,37 @@ func (m BACnetAuthenticationFactorType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAuthenticationFactorTypeParse(readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorType, error) {
+func BACnetAuthenticationFactorTypeParse(theBytes []byte) (BACnetAuthenticationFactorType, error) {
+	return BACnetAuthenticationFactorTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetAuthenticationFactorTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorType, error) {
 	val, err := readBuffer.ReadUint8("BACnetAuthenticationFactorType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAuthenticationFactorType")
 	}
-	return BACnetAuthenticationFactorTypeByValue(val), nil
+	if enum, ok := BACnetAuthenticationFactorTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetAuthenticationFactorType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetAuthenticationFactorType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetAuthenticationFactorType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetAuthenticationFactorType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetAuthenticationFactorType) name() string {
+func (e BACnetAuthenticationFactorType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetAuthenticationFactorType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAuthenticationFactorType) PLC4XEnumName() string {
 	switch e {
 	case BACnetAuthenticationFactorType_UNDEFINED:
 		return "UNDEFINED"
@@ -302,5 +320,5 @@ func (e BACnetAuthenticationFactorType) name() string {
 }
 
 func (e BACnetAuthenticationFactorType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

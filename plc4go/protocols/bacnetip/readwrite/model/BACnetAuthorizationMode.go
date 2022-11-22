@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetAuthorizationMode uint16
 
 type IBACnetAuthorizationMode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -58,44 +58,44 @@ func init() {
 	}
 }
 
-func BACnetAuthorizationModeByValue(value uint16) BACnetAuthorizationMode {
+func BACnetAuthorizationModeByValue(value uint16) (enum BACnetAuthorizationMode, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAuthorizationMode_AUTHORIZE
+		return BACnetAuthorizationMode_AUTHORIZE, true
 	case 0xFFFF:
-		return BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE
+		return BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetAuthorizationMode_GRANT_ACTIVE
+		return BACnetAuthorizationMode_GRANT_ACTIVE, true
 	case 2:
-		return BACnetAuthorizationMode_DENY_ALL
+		return BACnetAuthorizationMode_DENY_ALL, true
 	case 3:
-		return BACnetAuthorizationMode_VERIFICATION_REQUIRED
+		return BACnetAuthorizationMode_VERIFICATION_REQUIRED, true
 	case 4:
-		return BACnetAuthorizationMode_AUTHORIZATION_DELAYED
+		return BACnetAuthorizationMode_AUTHORIZATION_DELAYED, true
 	case 5:
-		return BACnetAuthorizationMode_NONE
+		return BACnetAuthorizationMode_NONE, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetAuthorizationModeByName(value string) BACnetAuthorizationMode {
+func BACnetAuthorizationModeByName(value string) (enum BACnetAuthorizationMode, ok bool) {
 	switch value {
 	case "AUTHORIZE":
-		return BACnetAuthorizationMode_AUTHORIZE
+		return BACnetAuthorizationMode_AUTHORIZE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE
+		return BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE, true
 	case "GRANT_ACTIVE":
-		return BACnetAuthorizationMode_GRANT_ACTIVE
+		return BACnetAuthorizationMode_GRANT_ACTIVE, true
 	case "DENY_ALL":
-		return BACnetAuthorizationMode_DENY_ALL
+		return BACnetAuthorizationMode_DENY_ALL, true
 	case "VERIFICATION_REQUIRED":
-		return BACnetAuthorizationMode_VERIFICATION_REQUIRED
+		return BACnetAuthorizationMode_VERIFICATION_REQUIRED, true
 	case "AUTHORIZATION_DELAYED":
-		return BACnetAuthorizationMode_AUTHORIZATION_DELAYED
+		return BACnetAuthorizationMode_AUTHORIZATION_DELAYED, true
 	case "NONE":
-		return BACnetAuthorizationMode_NONE
+		return BACnetAuthorizationMode_NONE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetAuthorizationModeKnows(value uint16) bool {
@@ -125,19 +125,37 @@ func (m BACnetAuthorizationMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAuthorizationModeParse(readBuffer utils.ReadBuffer) (BACnetAuthorizationMode, error) {
+func BACnetAuthorizationModeParse(theBytes []byte) (BACnetAuthorizationMode, error) {
+	return BACnetAuthorizationModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetAuthorizationModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthorizationMode, error) {
 	val, err := readBuffer.ReadUint16("BACnetAuthorizationMode", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAuthorizationMode")
 	}
-	return BACnetAuthorizationModeByValue(val), nil
+	if enum, ok := BACnetAuthorizationModeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetAuthorizationMode(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetAuthorizationMode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetAuthorizationMode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetAuthorizationMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetAuthorizationMode) name() string {
+func (e BACnetAuthorizationMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetAuthorizationMode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAuthorizationMode) PLC4XEnumName() string {
 	switch e {
 	case BACnetAuthorizationMode_AUTHORIZE:
 		return "AUTHORIZE"
@@ -158,5 +176,5 @@ func (e BACnetAuthorizationMode) name() string {
 }
 
 func (e BACnetAuthorizationMode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

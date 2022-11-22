@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type SzlSublist uint8
 
 type ISzlSublist interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -82,92 +82,92 @@ func init() {
 	}
 }
 
-func SzlSublistByValue(value uint8) SzlSublist {
+func SzlSublistByValue(value uint8) (enum SzlSublist, ok bool) {
 	switch value {
 	case 0x11:
-		return SzlSublist_MODULE_IDENTIFICATION
+		return SzlSublist_MODULE_IDENTIFICATION, true
 	case 0x12:
-		return SzlSublist_CPU_FEATURES
+		return SzlSublist_CPU_FEATURES, true
 	case 0x13:
-		return SzlSublist_USER_MEMORY_AREA
+		return SzlSublist_USER_MEMORY_AREA, true
 	case 0x14:
-		return SzlSublist_SYSTEM_AREAS
+		return SzlSublist_SYSTEM_AREAS, true
 	case 0x15:
-		return SzlSublist_BLOCK_TYPES
+		return SzlSublist_BLOCK_TYPES, true
 	case 0x19:
-		return SzlSublist_STATUS_MODULE_LEDS
+		return SzlSublist_STATUS_MODULE_LEDS, true
 	case 0x1C:
-		return SzlSublist_COMPONENT_IDENTIFICATION
+		return SzlSublist_COMPONENT_IDENTIFICATION, true
 	case 0x22:
-		return SzlSublist_INTERRUPT_STATUS
+		return SzlSublist_INTERRUPT_STATUS, true
 	case 0x25:
-		return SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS
+		return SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS, true
 	case 0x32:
-		return SzlSublist_COMMUNICATION_STATUS_DATA
+		return SzlSublist_COMMUNICATION_STATUS_DATA, true
 	case 0x74:
-		return SzlSublist_STATUS_SINGLE_MODULE_LED
+		return SzlSublist_STATUS_SINGLE_MODULE_LED, true
 	case 0x90:
-		return SzlSublist_DP_MASTER_SYSTEM_INFORMATION
+		return SzlSublist_DP_MASTER_SYSTEM_INFORMATION, true
 	case 0x91:
-		return SzlSublist_MODULE_STATUS_INFORMATION
+		return SzlSublist_MODULE_STATUS_INFORMATION, true
 	case 0x92:
-		return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION
+		return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION, true
 	case 0x94:
-		return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION_2
+		return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION_2, true
 	case 0x95:
-		return SzlSublist_ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION
+		return SzlSublist_ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION, true
 	case 0x96:
-		return SzlSublist_MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP
+		return SzlSublist_MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP, true
 	case 0xA0:
-		return SzlSublist_DIAGNOSTIC_BUFFER
+		return SzlSublist_DIAGNOSTIC_BUFFER, true
 	case 0xB1:
-		return SzlSublist_MODULE_DIAGNOSTIC_DATA
+		return SzlSublist_MODULE_DIAGNOSTIC_DATA, true
 	}
-	return 0
+	return 0, false
 }
 
-func SzlSublistByName(value string) SzlSublist {
+func SzlSublistByName(value string) (enum SzlSublist, ok bool) {
 	switch value {
 	case "MODULE_IDENTIFICATION":
-		return SzlSublist_MODULE_IDENTIFICATION
+		return SzlSublist_MODULE_IDENTIFICATION, true
 	case "CPU_FEATURES":
-		return SzlSublist_CPU_FEATURES
+		return SzlSublist_CPU_FEATURES, true
 	case "USER_MEMORY_AREA":
-		return SzlSublist_USER_MEMORY_AREA
+		return SzlSublist_USER_MEMORY_AREA, true
 	case "SYSTEM_AREAS":
-		return SzlSublist_SYSTEM_AREAS
+		return SzlSublist_SYSTEM_AREAS, true
 	case "BLOCK_TYPES":
-		return SzlSublist_BLOCK_TYPES
+		return SzlSublist_BLOCK_TYPES, true
 	case "STATUS_MODULE_LEDS":
-		return SzlSublist_STATUS_MODULE_LEDS
+		return SzlSublist_STATUS_MODULE_LEDS, true
 	case "COMPONENT_IDENTIFICATION":
-		return SzlSublist_COMPONENT_IDENTIFICATION
+		return SzlSublist_COMPONENT_IDENTIFICATION, true
 	case "INTERRUPT_STATUS":
-		return SzlSublist_INTERRUPT_STATUS
+		return SzlSublist_INTERRUPT_STATUS, true
 	case "ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS":
-		return SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS
+		return SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS, true
 	case "COMMUNICATION_STATUS_DATA":
-		return SzlSublist_COMMUNICATION_STATUS_DATA
+		return SzlSublist_COMMUNICATION_STATUS_DATA, true
 	case "STATUS_SINGLE_MODULE_LED":
-		return SzlSublist_STATUS_SINGLE_MODULE_LED
+		return SzlSublist_STATUS_SINGLE_MODULE_LED, true
 	case "DP_MASTER_SYSTEM_INFORMATION":
-		return SzlSublist_DP_MASTER_SYSTEM_INFORMATION
+		return SzlSublist_DP_MASTER_SYSTEM_INFORMATION, true
 	case "MODULE_STATUS_INFORMATION":
-		return SzlSublist_MODULE_STATUS_INFORMATION
+		return SzlSublist_MODULE_STATUS_INFORMATION, true
 	case "RACK_OR_STATION_STATUS_INFORMATION":
-		return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION
+		return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION, true
 	case "RACK_OR_STATION_STATUS_INFORMATION_2":
-		return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION_2
+		return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION_2, true
 	case "ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION":
-		return SzlSublist_ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION
+		return SzlSublist_ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION, true
 	case "MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP":
-		return SzlSublist_MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP
+		return SzlSublist_MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP, true
 	case "DIAGNOSTIC_BUFFER":
-		return SzlSublist_DIAGNOSTIC_BUFFER
+		return SzlSublist_DIAGNOSTIC_BUFFER, true
 	case "MODULE_DIAGNOSTIC_DATA":
-		return SzlSublist_MODULE_DIAGNOSTIC_DATA
+		return SzlSublist_MODULE_DIAGNOSTIC_DATA, true
 	}
-	return 0
+	return 0, false
 }
 
 func SzlSublistKnows(value uint8) bool {
@@ -197,19 +197,37 @@ func (m SzlSublist) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SzlSublistParse(readBuffer utils.ReadBuffer) (SzlSublist, error) {
+func SzlSublistParse(theBytes []byte) (SzlSublist, error) {
+	return SzlSublistParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SzlSublistParseWithBuffer(readBuffer utils.ReadBuffer) (SzlSublist, error) {
 	val, err := readBuffer.ReadUint8("SzlSublist", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading SzlSublist")
 	}
-	return SzlSublistByValue(val), nil
+	if enum, ok := SzlSublistByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return SzlSublist(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e SzlSublist) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("SzlSublist", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e SzlSublist) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e SzlSublist) name() string {
+func (e SzlSublist) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("SzlSublist", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e SzlSublist) PLC4XEnumName() string {
 	switch e {
 	case SzlSublist_MODULE_IDENTIFICATION:
 		return "MODULE_IDENTIFICATION"
@@ -254,5 +272,5 @@ func (e SzlSublist) name() string {
 }
 
 func (e SzlSublist) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

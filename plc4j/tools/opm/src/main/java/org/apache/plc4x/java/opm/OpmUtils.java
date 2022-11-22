@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -51,7 +51,7 @@ final class OpmUtils {
 
     static String getOrResolveAddress(AliasRegistry registry, String addressString) {
         if (!isValidExpression(addressString)) {
-            throw new IllegalArgumentException("Invalid Syntax, either use field address (no starting $) " +
+            throw new IllegalArgumentException("Invalid Syntax, either use tag address (no starting $) " +
                 "or an alias with Syntax ${xxx}. But given was '" + addressString + "'");
         }
         if (!isAlias(addressString)) {

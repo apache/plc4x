@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -22,10 +22,11 @@ import org.apache.maven.project.MavenProject
 
 project = (MavenProject) project
 def bacnetEnumsFile = new File(project.basedir, "src/main/resources/protocols/bacnetip/bacnet-bit-strings.mspec")
+def bacnetEnumsFileContent = bacnetEnumsFile.text
 foundEnums = []
-enumPattern = ~/\[enum \w+ \d+ (\w+)\r?\n((?: *\[.*]\r?\n)*)]/
+enumPattern = ~/\[enum \w+ \d+ (\w+)\r?\n((?:(?:(?: *\[.*] *(?:\/\/.*)?)|(?: *\/\/.*))\r?\n)*)]/
 enumEntryPattern = ~/ *\['(\d)+' *([\w_]+).*]/
-matcher = bacnetEnumsFile.text =~ enumPattern
+matcher = bacnetEnumsFileContent =~ enumPattern
 if (matcher.find()) {
     matcher.each {
         def enumName = it[1]
@@ -56,7 +57,7 @@ taggedEnumsTemplate = """
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -75,8 +76,7 @@ taggedEnumsTemplate = """
                                                     "tagnumber doesn't match" shouldFail=false                  ]
     [simple BACnetTagPayloadBitString('header.actualLength')
                     payload                                                                                     ]
-
-<% for (enumIndex in item.enumEntries.keySet().sort()) { %>    [virtual    bit <%= item.enumEntries[enumIndex].enumCamelCase %>         'payload.data[<%= enumIndex %>]'          ]\n<% } %>
+<% for (enumIndex in item.enumEntries.keySet().sort()) { %>    [virtual    bit <%= item.enumEntries[enumIndex].enumCamelCase %>         '(COUNT(payload.data)><%= enumIndex %>)?payload.data[<%= enumIndex %>]:false'          ]\n<% } %>
 ]
 <% } %>
 """

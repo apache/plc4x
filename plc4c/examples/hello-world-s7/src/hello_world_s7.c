@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -164,73 +164,73 @@ int main(int argc, char** argv) {
         }
         printf("SUCCESS\n");
 
-        result =
-            plc4c_read_request_add_item(read_request, "BOOL", "%DB4:0.0:BOOL");
+        result = plc4c_read_request_add_tag_address(read_request, "BOOL",
+                                                    "%DB4:0.0:BOOL");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "BYTE", "%DB4.1:BYTE");
+        result = plc4c_read_request_add_tag_address(read_request, "BYTE",
+                                                    "%DB4.1:BYTE");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "WORD", "%DB4.2:WORD");
+        result = plc4c_read_request_add_tag_address(read_request, "WORD",
+                                                    "%DB4.2:WORD");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "DWORD", "%DB4.4:DWORD");
+        result = plc4c_read_request_add_tag_address(read_request, "DWORD",
+                                                    "%DB4.4:DWORD");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "SINT", "%DB4.16:SINT");
+        result = plc4c_read_request_add_tag_address(read_request, "SINT",
+                                                    "%DB4.16:SINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "USINT", "%DB4.17:USINT");
+        result = plc4c_read_request_add_tag_address(read_request, "USINT",
+                                                    "%DB4.17:USINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "INT", "%DB4.18:INT");
+        result = plc4c_read_request_add_tag_address(read_request, "INT",
+                                                    "%DB4.18:INT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "UINT", "%DB4.20:UINT");
+        result = plc4c_read_request_add_tag_address(read_request, "UINT",
+                                                    "%DB4.20:UINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "DINT", "%DB4.22:DINT");
+        result = plc4c_read_request_add_tag_address(read_request, "DINT",
+                                                    "%DB4.22:DINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "UDINT", "%DB4.26:UDINT");
+        result = plc4c_read_request_add_tag_address(read_request, "UDINT",
+                                                    "%DB4.26:UDINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "REAL", "%DB4.46:REAL");
+        result = plc4c_read_request_add_tag_address(read_request, "REAL",
+                                                    "%DB4.46:REAL");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
+/*        result =
             plc4c_read_request_add_item(read_request, "TIME", "%DB4:58:TIME");
         if (result != OK) {
           printf("FAILED\n");
@@ -261,12 +261,12 @@ int main(int argc, char** argv) {
           return -1;
         }
         // UTF-16 doesn't work well in a portable way
-        result = plc4c_read_request_add_item(read_request, "STRING",
+        result = plc4c_read_request_add_tag_address(read_request, "STRING",
                                              "%DB4:140:STRING(10)");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
-        }
+        }*/
         // UTF-16 doesn't work well in a portable way
         printf("SUCCESS\n");
 

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,10 +19,10 @@
 
 package model
 
-func AsciiLrcCheck(address uint8, pdu *ModbusPDU) (uint8, error) {
+func AsciiLrcCheck(address uint8, pdu ModbusPDU) (uint8, error) {
 	return 0, nil
 }
 
-func RtuCrcCheck(address uint8, pdu *ModbusPDU) (uint16, error) {
+func RtuCrcCheck(address uint8, pdu ModbusPDU) (uint16, error) {
 	return 0, nil
 }

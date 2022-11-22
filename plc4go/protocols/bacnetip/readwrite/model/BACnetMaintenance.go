@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetMaintenance uint8
 
 type IBACnetMaintenance interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -54,36 +54,36 @@ func init() {
 	}
 }
 
-func BACnetMaintenanceByValue(value uint8) BACnetMaintenance {
+func BACnetMaintenanceByValue(value uint8) (enum BACnetMaintenance, ok bool) {
 	switch value {
 	case 0:
-		return BACnetMaintenance_NONE
+		return BACnetMaintenance_NONE, true
 	case 0xFF:
-		return BACnetMaintenance_VENDOR_PROPRIETARY_VALUE
+		return BACnetMaintenance_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetMaintenance_PERIODIC_TEST
+		return BACnetMaintenance_PERIODIC_TEST, true
 	case 2:
-		return BACnetMaintenance_NEED_SERVICE_OPERATIONAL
+		return BACnetMaintenance_NEED_SERVICE_OPERATIONAL, true
 	case 3:
-		return BACnetMaintenance_NEED_SERVICE_INOPERATIVE
+		return BACnetMaintenance_NEED_SERVICE_INOPERATIVE, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetMaintenanceByName(value string) BACnetMaintenance {
+func BACnetMaintenanceByName(value string) (enum BACnetMaintenance, ok bool) {
 	switch value {
 	case "NONE":
-		return BACnetMaintenance_NONE
+		return BACnetMaintenance_NONE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetMaintenance_VENDOR_PROPRIETARY_VALUE
+		return BACnetMaintenance_VENDOR_PROPRIETARY_VALUE, true
 	case "PERIODIC_TEST":
-		return BACnetMaintenance_PERIODIC_TEST
+		return BACnetMaintenance_PERIODIC_TEST, true
 	case "NEED_SERVICE_OPERATIONAL":
-		return BACnetMaintenance_NEED_SERVICE_OPERATIONAL
+		return BACnetMaintenance_NEED_SERVICE_OPERATIONAL, true
 	case "NEED_SERVICE_INOPERATIVE":
-		return BACnetMaintenance_NEED_SERVICE_INOPERATIVE
+		return BACnetMaintenance_NEED_SERVICE_INOPERATIVE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetMaintenanceKnows(value uint8) bool {
@@ -113,19 +113,37 @@ func (m BACnetMaintenance) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetMaintenanceParse(readBuffer utils.ReadBuffer) (BACnetMaintenance, error) {
+func BACnetMaintenanceParse(theBytes []byte) (BACnetMaintenance, error) {
+	return BACnetMaintenanceParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetMaintenanceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetMaintenance, error) {
 	val, err := readBuffer.ReadUint8("BACnetMaintenance", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetMaintenance")
 	}
-	return BACnetMaintenanceByValue(val), nil
+	if enum, ok := BACnetMaintenanceByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetMaintenance(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetMaintenance) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetMaintenance", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetMaintenance) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetMaintenance) name() string {
+func (e BACnetMaintenance) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetMaintenance", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetMaintenance) PLC4XEnumName() string {
 	switch e {
 	case BACnetMaintenance_NONE:
 		return "NONE"
@@ -142,5 +160,5 @@ func (e BACnetMaintenance) name() string {
 }
 
 func (e BACnetMaintenance) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,21 +20,22 @@
 package simulated
 
 import (
-	values2 "github.com/apache/plc4x/plc4go/internal/spi/values"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
-	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
-	"github.com/rs/zerolog/log"
 	"reflect"
 	"testing"
+
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
+	values2 "github.com/apache/plc4x/plc4go/spi/values"
+	"github.com/rs/zerolog/log"
 )
 
 func TestDevice_Get(t1 *testing.T) {
 	type fields struct {
 		Name  string
-		State map[SimulatedField]*values.PlcValue
+		State map[simulatedTag]*values.PlcValue
 	}
 	type args struct {
-		field        SimulatedField
+		field        simulatedTag
 		verifyOutput bool
 	}
 	tests := []struct {
@@ -47,12 +48,12 @@ func TestDevice_Get(t1 *testing.T) {
 			name: "simple state",
 			fields: fields{
 				Name: "hurz",
-				State: map[SimulatedField]*values.PlcValue{
-					NewSimulatedField(FieldState, "boolField", model.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
+				State: map[simulatedTag]*values.PlcValue{
+					NewSimulatedTag(TagState, "boolTag", model.SimulatedDataTypeSizes_BOOL, 1): ToReference(values2.NewPlcBOOL(true)),
 				},
 			},
 			args: args{
-				field:        NewSimulatedField(FieldState, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
+				field:        NewSimulatedTag(TagState, "boolTag", model.SimulatedDataTypeSizes_BOOL, 1),
 				verifyOutput: true,
 			},
 			want: ToReference(values2.NewPlcBOOL(true)),
@@ -61,10 +62,10 @@ func TestDevice_Get(t1 *testing.T) {
 			name: "simple random",
 			fields: fields{
 				Name:  "hurz",
-				State: map[SimulatedField]*values.PlcValue{},
+				State: map[simulatedTag]*values.PlcValue{},
 			},
 			args: args{
-				field:        NewSimulatedField(FieldRandom, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
+				field:        NewSimulatedTag(TagRandom, "boolTag", model.SimulatedDataTypeSizes_BOOL, 1),
 				verifyOutput: false,
 			},
 			want: ToReference(values2.NewPlcBOOL(true)),
@@ -73,10 +74,10 @@ func TestDevice_Get(t1 *testing.T) {
 			name: "simple stdout",
 			fields: fields{
 				Name:  "hurz",
-				State: map[SimulatedField]*values.PlcValue{},
+				State: map[simulatedTag]*values.PlcValue{},
 			},
 			args: args{
-				field:        NewSimulatedField(FieldStdOut, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
+				field:        NewSimulatedTag(TagStdOut, "boolTag", model.SimulatedDataTypeSizes_BOOL, 1),
 				verifyOutput: false,
 			},
 			want: nil,
@@ -108,10 +109,10 @@ func TestDevice_Get(t1 *testing.T) {
 func TestDevice_Random(t1 *testing.T) {
 	type fields struct {
 		Name  string
-		State map[SimulatedField]*values.PlcValue
+		State map[simulatedTag]*values.PlcValue
 	}
 	type args struct {
-		field   SimulatedField
+		field   simulatedTag
 		numRuns int
 	}
 	tests := []struct {
@@ -124,10 +125,10 @@ func TestDevice_Random(t1 *testing.T) {
 			name: "simple random",
 			fields: fields{
 				Name:  "hurz",
-				State: map[SimulatedField]*values.PlcValue{},
+				State: map[simulatedTag]*values.PlcValue{},
 			},
 			args: args{
-				field:   NewSimulatedField(FieldRandom, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
+				field:   NewSimulatedTag(TagRandom, "boolTag", model.SimulatedDataTypeSizes_BOOL, 1),
 				numRuns: 1000,
 			},
 			want: ToReference(values2.NewPlcBOOL(true)),
@@ -162,10 +163,10 @@ func TestDevice_Random(t1 *testing.T) {
 func TestDevice_Set(t1 *testing.T) {
 	type fields struct {
 		Name  string
-		State map[SimulatedField]*values.PlcValue
+		State map[simulatedTag]*values.PlcValue
 	}
 	type args struct {
-		field         SimulatedField
+		field         simulatedTag
 		value         *values.PlcValue
 		shouldBeSaved bool
 	}
@@ -178,10 +179,10 @@ func TestDevice_Set(t1 *testing.T) {
 			name: "simple state",
 			fields: fields{
 				Name:  "hurz",
-				State: map[SimulatedField]*values.PlcValue{},
+				State: map[simulatedTag]*values.PlcValue{},
 			},
 			args: args{
-				field:         NewSimulatedField(FieldState, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
+				field:         NewSimulatedTag(TagState, "boolTag", model.SimulatedDataTypeSizes_BOOL, 1),
 				value:         ToReference(values2.NewPlcBOOL(true)),
 				shouldBeSaved: true,
 			},
@@ -190,10 +191,10 @@ func TestDevice_Set(t1 *testing.T) {
 			name: "simple random",
 			fields: fields{
 				Name:  "hurz",
-				State: map[SimulatedField]*values.PlcValue{},
+				State: map[simulatedTag]*values.PlcValue{},
 			},
 			args: args{
-				field:         NewSimulatedField(FieldRandom, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
+				field:         NewSimulatedTag(TagRandom, "boolTag", model.SimulatedDataTypeSizes_BOOL, 1),
 				value:         ToReference(values2.NewPlcBOOL(true)),
 				shouldBeSaved: false,
 			},
@@ -202,10 +203,10 @@ func TestDevice_Set(t1 *testing.T) {
 			name: "simple stdout",
 			fields: fields{
 				Name:  "hurz",
-				State: map[SimulatedField]*values.PlcValue{},
+				State: map[simulatedTag]*values.PlcValue{},
 			},
 			args: args{
-				field:         NewSimulatedField(FieldStdOut, "boolField", model.SimulatedDataTypeSizes_BOOL, 1),
+				field:         NewSimulatedTag(TagStdOut, "boolTag", model.SimulatedDataTypeSizes_BOOL, 1),
 				value:         ToReference(values2.NewPlcBOOL(true)),
 				shouldBeSaved: false,
 			},
@@ -237,10 +238,10 @@ func TestDevice_Set(t1 *testing.T) {
 func TestDevice_getRandomValue(t1 *testing.T) {
 	type fields struct {
 		Name  string
-		State map[SimulatedField]*values.PlcValue
+		State map[simulatedTag]*values.PlcValue
 	}
 	type args struct {
-		field SimulatedField
+		field simulatedTag
 	}
 	tests := []struct {
 		name   string

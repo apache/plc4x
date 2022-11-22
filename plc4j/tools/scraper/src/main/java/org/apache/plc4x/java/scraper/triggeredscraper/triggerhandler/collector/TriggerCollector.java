@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -28,13 +28,13 @@ public interface TriggerCollector {
 
     /**
      * submits a trigger request to TriggerCollector
-     * @param plcField a (plc) field that is used for triggering procedure
+     * @param tag a (plc) tag that is used for triggering procedure
      * @param plcConnectionString the connection string to the regarding source
      * @param maxAwaitingTime max awaiting time until request shall be submitted
      * @return a uuid under that the request is handled internally
      * @throws ScraperException something went wrong
      */
-    String submitTrigger(String plcField, String plcConnectionString, long maxAwaitingTime) throws ScraperException;
+    String submitTrigger(String tag, String plcConnectionString, long maxAwaitingTime) throws ScraperException;
 
     /**
      * requests the result of submitted plc request with default timeout

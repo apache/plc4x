@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetShedState uint8
 
 type IBACnetShedState interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -52,32 +52,32 @@ func init() {
 	}
 }
 
-func BACnetShedStateByValue(value uint8) BACnetShedState {
+func BACnetShedStateByValue(value uint8) (enum BACnetShedState, ok bool) {
 	switch value {
 	case 0:
-		return BACnetShedState_SHED_INACTIVE
+		return BACnetShedState_SHED_INACTIVE, true
 	case 1:
-		return BACnetShedState_SHED_REQUEST_PENDING
+		return BACnetShedState_SHED_REQUEST_PENDING, true
 	case 2:
-		return BACnetShedState_SHED_COMPLIANT
+		return BACnetShedState_SHED_COMPLIANT, true
 	case 3:
-		return BACnetShedState_SHED_NON_COMPLIANT
+		return BACnetShedState_SHED_NON_COMPLIANT, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetShedStateByName(value string) BACnetShedState {
+func BACnetShedStateByName(value string) (enum BACnetShedState, ok bool) {
 	switch value {
 	case "SHED_INACTIVE":
-		return BACnetShedState_SHED_INACTIVE
+		return BACnetShedState_SHED_INACTIVE, true
 	case "SHED_REQUEST_PENDING":
-		return BACnetShedState_SHED_REQUEST_PENDING
+		return BACnetShedState_SHED_REQUEST_PENDING, true
 	case "SHED_COMPLIANT":
-		return BACnetShedState_SHED_COMPLIANT
+		return BACnetShedState_SHED_COMPLIANT, true
 	case "SHED_NON_COMPLIANT":
-		return BACnetShedState_SHED_NON_COMPLIANT
+		return BACnetShedState_SHED_NON_COMPLIANT, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetShedStateKnows(value uint8) bool {
@@ -107,19 +107,37 @@ func (m BACnetShedState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetShedStateParse(readBuffer utils.ReadBuffer) (BACnetShedState, error) {
+func BACnetShedStateParse(theBytes []byte) (BACnetShedState, error) {
+	return BACnetShedStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetShedStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetShedState, error) {
 	val, err := readBuffer.ReadUint8("BACnetShedState", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetShedState")
 	}
-	return BACnetShedStateByValue(val), nil
+	if enum, ok := BACnetShedStateByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetShedState(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetShedState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetShedState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetShedState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetShedState) name() string {
+func (e BACnetShedState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetShedState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetShedState) PLC4XEnumName() string {
 	switch e {
 	case BACnetShedState_SHED_INACTIVE:
 		return "SHED_INACTIVE"
@@ -134,5 +152,5 @@ func (e BACnetShedState) name() string {
 }
 
 func (e BACnetShedState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

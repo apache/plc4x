@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -92,7 +92,7 @@ public class WriteBufferBoxBased implements WriteBuffer, BufferCommons {
     @Override
     public void writeByte(String logicalName, byte value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("%02x%s", value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%02x '%c'%s", value, value < 32 || value > 126 ? '.' : value, additionalStringRepresentation), 0)));
         move(8);
     }
 
@@ -228,7 +228,7 @@ public class WriteBufferBoxBased implements WriteBuffer, BufferCommons {
         } else if (value instanceof Serializable) {
             Serializable serializable = (Serializable) value;
             try {
-                WriteBufferBoxBased writeBuffer = new WriteBufferBoxBased(asciiBoxWriterLight, asciiBoxWriterLight, true, true);
+                WriteBufferBoxBased writeBuffer = new WriteBufferBoxBased(true, true);
                 serializable.serialize(writeBuffer);
                 virtualBox = asciiBoxWriterLight.boxBox(logicalName, writeBuffer.getBox(), 0);
             } catch (SerializationException e) {

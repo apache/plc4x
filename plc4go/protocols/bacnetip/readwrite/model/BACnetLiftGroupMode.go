@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetLiftGroupMode uint8
 
 type IBACnetLiftGroupMode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -58,44 +58,44 @@ func init() {
 	}
 }
 
-func BACnetLiftGroupModeByValue(value uint8) BACnetLiftGroupMode {
+func BACnetLiftGroupModeByValue(value uint8) (enum BACnetLiftGroupMode, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLiftGroupMode_UNKNOWN
+		return BACnetLiftGroupMode_UNKNOWN, true
 	case 1:
-		return BACnetLiftGroupMode_NORMAL
+		return BACnetLiftGroupMode_NORMAL, true
 	case 2:
-		return BACnetLiftGroupMode_DOWN_PEAK
+		return BACnetLiftGroupMode_DOWN_PEAK, true
 	case 3:
-		return BACnetLiftGroupMode_TWO_WAY
+		return BACnetLiftGroupMode_TWO_WAY, true
 	case 4:
-		return BACnetLiftGroupMode_FOUR_WAY
+		return BACnetLiftGroupMode_FOUR_WAY, true
 	case 5:
-		return BACnetLiftGroupMode_EMERGENCY_POWER
+		return BACnetLiftGroupMode_EMERGENCY_POWER, true
 	case 6:
-		return BACnetLiftGroupMode_UP_PEAK
+		return BACnetLiftGroupMode_UP_PEAK, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetLiftGroupModeByName(value string) BACnetLiftGroupMode {
+func BACnetLiftGroupModeByName(value string) (enum BACnetLiftGroupMode, ok bool) {
 	switch value {
 	case "UNKNOWN":
-		return BACnetLiftGroupMode_UNKNOWN
+		return BACnetLiftGroupMode_UNKNOWN, true
 	case "NORMAL":
-		return BACnetLiftGroupMode_NORMAL
+		return BACnetLiftGroupMode_NORMAL, true
 	case "DOWN_PEAK":
-		return BACnetLiftGroupMode_DOWN_PEAK
+		return BACnetLiftGroupMode_DOWN_PEAK, true
 	case "TWO_WAY":
-		return BACnetLiftGroupMode_TWO_WAY
+		return BACnetLiftGroupMode_TWO_WAY, true
 	case "FOUR_WAY":
-		return BACnetLiftGroupMode_FOUR_WAY
+		return BACnetLiftGroupMode_FOUR_WAY, true
 	case "EMERGENCY_POWER":
-		return BACnetLiftGroupMode_EMERGENCY_POWER
+		return BACnetLiftGroupMode_EMERGENCY_POWER, true
 	case "UP_PEAK":
-		return BACnetLiftGroupMode_UP_PEAK
+		return BACnetLiftGroupMode_UP_PEAK, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLiftGroupModeKnows(value uint8) bool {
@@ -125,19 +125,37 @@ func (m BACnetLiftGroupMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLiftGroupModeParse(readBuffer utils.ReadBuffer) (BACnetLiftGroupMode, error) {
+func BACnetLiftGroupModeParse(theBytes []byte) (BACnetLiftGroupMode, error) {
+	return BACnetLiftGroupModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLiftGroupModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLiftGroupMode, error) {
 	val, err := readBuffer.ReadUint8("BACnetLiftGroupMode", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetLiftGroupMode")
 	}
-	return BACnetLiftGroupModeByValue(val), nil
+	if enum, ok := BACnetLiftGroupModeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetLiftGroupMode(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetLiftGroupMode) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetLiftGroupMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetLiftGroupMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetLiftGroupMode) name() string {
+func (e BACnetLiftGroupMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetLiftGroupMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLiftGroupMode) PLC4XEnumName() string {
 	switch e {
 	case BACnetLiftGroupMode_UNKNOWN:
 		return "UNKNOWN"
@@ -158,5 +176,5 @@ func (e BACnetLiftGroupMode) name() string {
 }
 
 func (e BACnetLiftGroupMode) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

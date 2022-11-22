@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetDoorSecuredStatus uint8
 
 type IBACnetDoorSecuredStatus interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -50,28 +50,28 @@ func init() {
 	}
 }
 
-func BACnetDoorSecuredStatusByValue(value uint8) BACnetDoorSecuredStatus {
+func BACnetDoorSecuredStatusByValue(value uint8) (enum BACnetDoorSecuredStatus, ok bool) {
 	switch value {
 	case 0:
-		return BACnetDoorSecuredStatus_SECURED
+		return BACnetDoorSecuredStatus_SECURED, true
 	case 1:
-		return BACnetDoorSecuredStatus_UNSECURED
+		return BACnetDoorSecuredStatus_UNSECURED, true
 	case 2:
-		return BACnetDoorSecuredStatus_UNKNOWN
+		return BACnetDoorSecuredStatus_UNKNOWN, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetDoorSecuredStatusByName(value string) BACnetDoorSecuredStatus {
+func BACnetDoorSecuredStatusByName(value string) (enum BACnetDoorSecuredStatus, ok bool) {
 	switch value {
 	case "SECURED":
-		return BACnetDoorSecuredStatus_SECURED
+		return BACnetDoorSecuredStatus_SECURED, true
 	case "UNSECURED":
-		return BACnetDoorSecuredStatus_UNSECURED
+		return BACnetDoorSecuredStatus_UNSECURED, true
 	case "UNKNOWN":
-		return BACnetDoorSecuredStatus_UNKNOWN
+		return BACnetDoorSecuredStatus_UNKNOWN, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetDoorSecuredStatusKnows(value uint8) bool {
@@ -101,19 +101,37 @@ func (m BACnetDoorSecuredStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDoorSecuredStatusParse(readBuffer utils.ReadBuffer) (BACnetDoorSecuredStatus, error) {
+func BACnetDoorSecuredStatusParse(theBytes []byte) (BACnetDoorSecuredStatus, error) {
+	return BACnetDoorSecuredStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetDoorSecuredStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDoorSecuredStatus, error) {
 	val, err := readBuffer.ReadUint8("BACnetDoorSecuredStatus", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetDoorSecuredStatus")
 	}
-	return BACnetDoorSecuredStatusByValue(val), nil
+	if enum, ok := BACnetDoorSecuredStatusByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetDoorSecuredStatus(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetDoorSecuredStatus) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetDoorSecuredStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetDoorSecuredStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetDoorSecuredStatus) name() string {
+func (e BACnetDoorSecuredStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetDoorSecuredStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetDoorSecuredStatus) PLC4XEnumName() string {
 	switch e {
 	case BACnetDoorSecuredStatus_SECURED:
 		return "SECURED"
@@ -126,5 +144,5 @@ func (e BACnetDoorSecuredStatus) name() string {
 }
 
 func (e BACnetDoorSecuredStatus) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

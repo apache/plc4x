@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type LightingCompatible uint8
 
 type ILightingCompatible interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -52,32 +52,32 @@ func init() {
 	}
 }
 
-func LightingCompatibleByValue(value uint8) LightingCompatible {
+func LightingCompatibleByValue(value uint8) (enum LightingCompatible, ok bool) {
 	switch value {
 	case 0x0:
-		return LightingCompatible_NO
+		return LightingCompatible_NO, true
 	case 0x1:
-		return LightingCompatible_YES
+		return LightingCompatible_YES, true
 	case 0x2:
-		return LightingCompatible_YES_BUT_RESTRICTIONS
+		return LightingCompatible_YES_BUT_RESTRICTIONS, true
 	case 0x3:
-		return LightingCompatible_NA
+		return LightingCompatible_NA, true
 	}
-	return 0
+	return 0, false
 }
 
-func LightingCompatibleByName(value string) LightingCompatible {
+func LightingCompatibleByName(value string) (enum LightingCompatible, ok bool) {
 	switch value {
 	case "NO":
-		return LightingCompatible_NO
+		return LightingCompatible_NO, true
 	case "YES":
-		return LightingCompatible_YES
+		return LightingCompatible_YES, true
 	case "YES_BUT_RESTRICTIONS":
-		return LightingCompatible_YES_BUT_RESTRICTIONS
+		return LightingCompatible_YES_BUT_RESTRICTIONS, true
 	case "NA":
-		return LightingCompatible_NA
+		return LightingCompatible_NA, true
 	}
-	return 0
+	return 0, false
 }
 
 func LightingCompatibleKnows(value uint8) bool {
@@ -107,19 +107,37 @@ func (m LightingCompatible) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LightingCompatibleParse(readBuffer utils.ReadBuffer) (LightingCompatible, error) {
+func LightingCompatibleParse(theBytes []byte) (LightingCompatible, error) {
+	return LightingCompatibleParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func LightingCompatibleParseWithBuffer(readBuffer utils.ReadBuffer) (LightingCompatible, error) {
 	val, err := readBuffer.ReadUint8("LightingCompatible", 4)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading LightingCompatible")
 	}
-	return LightingCompatibleByValue(val), nil
+	if enum, ok := LightingCompatibleByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return LightingCompatible(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e LightingCompatible) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("LightingCompatible", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e LightingCompatible) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e LightingCompatible) name() string {
+func (e LightingCompatible) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("LightingCompatible", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e LightingCompatible) PLC4XEnumName() string {
 	switch e {
 	case LightingCompatible_NO:
 		return "NO"
@@ -134,5 +152,5 @@ func (e LightingCompatible) name() string {
 }
 
 func (e LightingCompatible) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

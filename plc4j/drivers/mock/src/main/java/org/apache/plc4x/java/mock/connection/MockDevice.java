@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -34,11 +34,11 @@ import java.util.function.Consumer;
  */
 public interface MockDevice {
 
-    ResponseItem<PlcValue> read(String fieldQuery);
+    ResponseItem<PlcValue> read(String tagQuery);
 
-    PlcResponseCode write(String fieldQuery, Object value);
+    PlcResponseCode write(String tagQuery, Object value);
 
-    ResponseItem<PlcSubscriptionHandle> subscribe(String fieldQuery);
+    ResponseItem<PlcSubscriptionHandle> subscribe(String tagQuery);
 
     void unsubscribe();
 

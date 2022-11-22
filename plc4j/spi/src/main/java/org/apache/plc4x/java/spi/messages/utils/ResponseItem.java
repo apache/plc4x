@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -50,7 +50,7 @@ public class ResponseItem<T> implements Serializable {
         writeBuffer.writeString("result", codeName.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), codeName);
         if (value != null) {
             if (!(value instanceof Serializable)) {
-                throw new RuntimeException("Error serializing. Field value doesn't implement XmlSerializable");
+                throw new RuntimeException("Error serializing. Tag value doesn't implement XmlSerializable");
             }
             ((Serializable) value).serialize(writeBuffer);
         }

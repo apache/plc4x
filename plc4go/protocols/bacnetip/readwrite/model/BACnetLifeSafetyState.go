@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetLifeSafetyState uint16
 
 type IBACnetLifeSafetyState interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -94,116 +94,116 @@ func init() {
 	}
 }
 
-func BACnetLifeSafetyStateByValue(value uint16) BACnetLifeSafetyState {
+func BACnetLifeSafetyStateByValue(value uint16) (enum BACnetLifeSafetyState, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLifeSafetyState_QUIET
+		return BACnetLifeSafetyState_QUIET, true
 	case 0xFFFF:
-		return BACnetLifeSafetyState_VENDOR_PROPRIETARY_VALUE
+		return BACnetLifeSafetyState_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetLifeSafetyState_PRE_ALARM
+		return BACnetLifeSafetyState_PRE_ALARM, true
 	case 10:
-		return BACnetLifeSafetyState_TEST_ACTIVE
+		return BACnetLifeSafetyState_TEST_ACTIVE, true
 	case 11:
-		return BACnetLifeSafetyState_TEST_FAULT
+		return BACnetLifeSafetyState_TEST_FAULT, true
 	case 12:
-		return BACnetLifeSafetyState_TEST_FAULT_ALARM
+		return BACnetLifeSafetyState_TEST_FAULT_ALARM, true
 	case 13:
-		return BACnetLifeSafetyState_HOLDUP
+		return BACnetLifeSafetyState_HOLDUP, true
 	case 14:
-		return BACnetLifeSafetyState_DURESS
+		return BACnetLifeSafetyState_DURESS, true
 	case 15:
-		return BACnetLifeSafetyState_TAMPER_ALARM
+		return BACnetLifeSafetyState_TAMPER_ALARM, true
 	case 16:
-		return BACnetLifeSafetyState_ABNORMAL
+		return BACnetLifeSafetyState_ABNORMAL, true
 	case 17:
-		return BACnetLifeSafetyState_EMERGENCY_POWER
+		return BACnetLifeSafetyState_EMERGENCY_POWER, true
 	case 18:
-		return BACnetLifeSafetyState_DELAYED
+		return BACnetLifeSafetyState_DELAYED, true
 	case 19:
-		return BACnetLifeSafetyState_BLOCKED
+		return BACnetLifeSafetyState_BLOCKED, true
 	case 2:
-		return BACnetLifeSafetyState_ALARM
+		return BACnetLifeSafetyState_ALARM, true
 	case 20:
-		return BACnetLifeSafetyState_LOCAL_ALARM
+		return BACnetLifeSafetyState_LOCAL_ALARM, true
 	case 21:
-		return BACnetLifeSafetyState_GENERAL_ALARM
+		return BACnetLifeSafetyState_GENERAL_ALARM, true
 	case 22:
-		return BACnetLifeSafetyState_SUPERVISORY
+		return BACnetLifeSafetyState_SUPERVISORY, true
 	case 23:
-		return BACnetLifeSafetyState_TEST_SUPERVISORY
+		return BACnetLifeSafetyState_TEST_SUPERVISORY, true
 	case 3:
-		return BACnetLifeSafetyState_FAULT
+		return BACnetLifeSafetyState_FAULT, true
 	case 4:
-		return BACnetLifeSafetyState_FAULT_PRE_ALARM
+		return BACnetLifeSafetyState_FAULT_PRE_ALARM, true
 	case 5:
-		return BACnetLifeSafetyState_FAULT_ALARM
+		return BACnetLifeSafetyState_FAULT_ALARM, true
 	case 6:
-		return BACnetLifeSafetyState_NOT_READY
+		return BACnetLifeSafetyState_NOT_READY, true
 	case 7:
-		return BACnetLifeSafetyState_ACTIVE
+		return BACnetLifeSafetyState_ACTIVE, true
 	case 8:
-		return BACnetLifeSafetyState_TAMPER
+		return BACnetLifeSafetyState_TAMPER, true
 	case 9:
-		return BACnetLifeSafetyState_TEST_ALARM
+		return BACnetLifeSafetyState_TEST_ALARM, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetLifeSafetyStateByName(value string) BACnetLifeSafetyState {
+func BACnetLifeSafetyStateByName(value string) (enum BACnetLifeSafetyState, ok bool) {
 	switch value {
 	case "QUIET":
-		return BACnetLifeSafetyState_QUIET
+		return BACnetLifeSafetyState_QUIET, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetLifeSafetyState_VENDOR_PROPRIETARY_VALUE
+		return BACnetLifeSafetyState_VENDOR_PROPRIETARY_VALUE, true
 	case "PRE_ALARM":
-		return BACnetLifeSafetyState_PRE_ALARM
+		return BACnetLifeSafetyState_PRE_ALARM, true
 	case "TEST_ACTIVE":
-		return BACnetLifeSafetyState_TEST_ACTIVE
+		return BACnetLifeSafetyState_TEST_ACTIVE, true
 	case "TEST_FAULT":
-		return BACnetLifeSafetyState_TEST_FAULT
+		return BACnetLifeSafetyState_TEST_FAULT, true
 	case "TEST_FAULT_ALARM":
-		return BACnetLifeSafetyState_TEST_FAULT_ALARM
+		return BACnetLifeSafetyState_TEST_FAULT_ALARM, true
 	case "HOLDUP":
-		return BACnetLifeSafetyState_HOLDUP
+		return BACnetLifeSafetyState_HOLDUP, true
 	case "DURESS":
-		return BACnetLifeSafetyState_DURESS
+		return BACnetLifeSafetyState_DURESS, true
 	case "TAMPER_ALARM":
-		return BACnetLifeSafetyState_TAMPER_ALARM
+		return BACnetLifeSafetyState_TAMPER_ALARM, true
 	case "ABNORMAL":
-		return BACnetLifeSafetyState_ABNORMAL
+		return BACnetLifeSafetyState_ABNORMAL, true
 	case "EMERGENCY_POWER":
-		return BACnetLifeSafetyState_EMERGENCY_POWER
+		return BACnetLifeSafetyState_EMERGENCY_POWER, true
 	case "DELAYED":
-		return BACnetLifeSafetyState_DELAYED
+		return BACnetLifeSafetyState_DELAYED, true
 	case "BLOCKED":
-		return BACnetLifeSafetyState_BLOCKED
+		return BACnetLifeSafetyState_BLOCKED, true
 	case "ALARM":
-		return BACnetLifeSafetyState_ALARM
+		return BACnetLifeSafetyState_ALARM, true
 	case "LOCAL_ALARM":
-		return BACnetLifeSafetyState_LOCAL_ALARM
+		return BACnetLifeSafetyState_LOCAL_ALARM, true
 	case "GENERAL_ALARM":
-		return BACnetLifeSafetyState_GENERAL_ALARM
+		return BACnetLifeSafetyState_GENERAL_ALARM, true
 	case "SUPERVISORY":
-		return BACnetLifeSafetyState_SUPERVISORY
+		return BACnetLifeSafetyState_SUPERVISORY, true
 	case "TEST_SUPERVISORY":
-		return BACnetLifeSafetyState_TEST_SUPERVISORY
+		return BACnetLifeSafetyState_TEST_SUPERVISORY, true
 	case "FAULT":
-		return BACnetLifeSafetyState_FAULT
+		return BACnetLifeSafetyState_FAULT, true
 	case "FAULT_PRE_ALARM":
-		return BACnetLifeSafetyState_FAULT_PRE_ALARM
+		return BACnetLifeSafetyState_FAULT_PRE_ALARM, true
 	case "FAULT_ALARM":
-		return BACnetLifeSafetyState_FAULT_ALARM
+		return BACnetLifeSafetyState_FAULT_ALARM, true
 	case "NOT_READY":
-		return BACnetLifeSafetyState_NOT_READY
+		return BACnetLifeSafetyState_NOT_READY, true
 	case "ACTIVE":
-		return BACnetLifeSafetyState_ACTIVE
+		return BACnetLifeSafetyState_ACTIVE, true
 	case "TAMPER":
-		return BACnetLifeSafetyState_TAMPER
+		return BACnetLifeSafetyState_TAMPER, true
 	case "TEST_ALARM":
-		return BACnetLifeSafetyState_TEST_ALARM
+		return BACnetLifeSafetyState_TEST_ALARM, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLifeSafetyStateKnows(value uint16) bool {
@@ -233,19 +233,37 @@ func (m BACnetLifeSafetyState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLifeSafetyStateParse(readBuffer utils.ReadBuffer) (BACnetLifeSafetyState, error) {
+func BACnetLifeSafetyStateParse(theBytes []byte) (BACnetLifeSafetyState, error) {
+	return BACnetLifeSafetyStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLifeSafetyStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLifeSafetyState, error) {
 	val, err := readBuffer.ReadUint16("BACnetLifeSafetyState", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetLifeSafetyState")
 	}
-	return BACnetLifeSafetyStateByValue(val), nil
+	if enum, ok := BACnetLifeSafetyStateByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetLifeSafetyState(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetLifeSafetyState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetLifeSafetyState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetLifeSafetyState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetLifeSafetyState) name() string {
+func (e BACnetLifeSafetyState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetLifeSafetyState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLifeSafetyState) PLC4XEnumName() string {
 	switch e {
 	case BACnetLifeSafetyState_QUIET:
 		return "QUIET"
@@ -302,5 +320,5 @@ func (e BACnetLifeSafetyState) name() string {
 }
 
 func (e BACnetLifeSafetyState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

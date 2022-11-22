@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,17 +20,18 @@
 package knxnetip
 
 import (
+	"context"
 	"errors"
 	"strconv"
 	"strings"
 	"time"
 
-	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	internalValues "github.com/apache/plc4x/plc4go/internal/spi/values"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	apiValues "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	internalValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 type Reader struct {
@@ -43,117 +44,114 @@ func NewReader(connection *Connection) *Reader {
 	}
 }
 
-func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
+func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
+	// TODO: handle ctx
 	resultChan := make(chan apiModel.PlcReadRequestResult)
 	go func() {
 		responseCodes := map[string]apiModel.PlcResponseCode{}
 		plcValues := map[string]apiValues.PlcValue{}
 
-		// Sort the fields in direct properties and memory addresses, which will have to be actively
+		// Sort the tags in direct properties and memory addresses, which will have to be actively
 		// read from the devices and group-addresses which will be locally processed from the local cache.
-		deviceAddresses := map[driverModel.KnxAddress]map[string]DeviceField{}
-		groupAddresses := map[string]GroupAddressField{}
-		for _, fieldName := range readRequest.GetFieldNames() {
-			// Get the knx field
-			field, err := CastToFieldFromPlcField(readRequest.GetField(fieldName))
+		deviceAddresses := map[driverModel.KnxAddress]map[string]DeviceTag{}
+		groupAddresses := map[string]GroupAddressTag{}
+		for _, tagName := range readRequest.GetTagNames() {
+			// Get the knx knxTag
+			knxTag, err := CastToKnxTagFromPlcTag(readRequest.GetTag(tagName))
 			if err != nil {
-				responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS
-				plcValues[fieldName] = nil
+				responseCodes[tagName] = apiModel.PlcResponseCode_INVALID_ADDRESS
+				plcValues[tagName] = nil
 				continue
 			}
 
-			switch field.(type) {
-			case DevicePropertyAddressPlcField:
-				propertyField := field.(DevicePropertyAddressPlcField)
-				knxAddress := propertyField.toKnxAddress()
+			switch knxTag.(type) {
+			case DevicePropertyAddressPlcTag:
+				propertyTag := knxTag.(DevicePropertyAddressPlcTag)
+				knxAddress := propertyTag.toKnxAddress()
 				if knxAddress == nil {
 					continue
 				}
-				if _, ok := deviceAddresses[*knxAddress]; !ok {
-					deviceAddresses[*knxAddress] = map[string]DeviceField{}
+				if _, ok := deviceAddresses[knxAddress]; !ok {
+					deviceAddresses[knxAddress] = map[string]DeviceTag{}
 				}
-				deviceAddresses[*knxAddress][fieldName] = propertyField
-			case DeviceMemoryAddressPlcField:
-				memoryField := field.(DeviceMemoryAddressPlcField)
-				knxAddress := memoryField.toKnxAddress()
+				deviceAddresses[knxAddress][tagName] = propertyTag
+			case DeviceMemoryAddressPlcTag:
+				memoryTag := knxTag.(DeviceMemoryAddressPlcTag)
+				knxAddress := memoryTag.toKnxAddress()
 				if knxAddress == nil {
 					continue
 				}
-				if _, ok := deviceAddresses[*knxAddress]; !ok {
-					deviceAddresses[*knxAddress] = map[string]DeviceField{}
+				if _, ok := deviceAddresses[knxAddress]; !ok {
+					deviceAddresses[knxAddress] = map[string]DeviceTag{}
 				}
-				deviceAddresses[*knxAddress][fieldName] = memoryField
-			case CommunicationObjectQueryField:
-				responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS
-				plcValues[fieldName] = nil
-				continue
-			case GroupAddressField:
-				groupAddressField := field.(GroupAddressField)
-				groupAddresses[fieldName] = groupAddressField
+				deviceAddresses[knxAddress][tagName] = memoryTag
+			case GroupAddressTag:
+				groupAddressTag := knxTag.(GroupAddressTag)
+				groupAddresses[tagName] = groupAddressTag
 			default:
-				responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS
-				plcValues[fieldName] = nil
+				responseCodes[tagName] = apiModel.PlcResponseCode_INVALID_ADDRESS
+				plcValues[tagName] = nil
 			}
 		}
 
 		// Process the direct properties.
 		// Connect to each knx device and read all of the properties on that particular device.
-		for deviceAddress, fields := range deviceAddresses {
+		for deviceAddress, tags := range deviceAddresses {
 			// Collect all the properties on this device
-			for fieldName, field := range fields {
-				switch field.(type) {
-				case DevicePropertyAddressPlcField:
-					propertyField := field.(DevicePropertyAddressPlcField)
+			for tagName, tag := range tags {
+				switch tag.(type) {
+				case DevicePropertyAddressPlcTag:
+					propertyTag := tag.(DevicePropertyAddressPlcTag)
 
 					timeout := time.NewTimer(m.connection.defaultTtl)
-					results := m.connection.DeviceReadProperty(deviceAddress, propertyField.ObjectId, propertyField.PropertyId, propertyField.PropertyIndex, propertyField.NumElements)
+					results := m.connection.DeviceReadProperty(ctx, deviceAddress, propertyTag.ObjectId, propertyTag.PropertyId, propertyTag.PropertyIndex, propertyTag.NumElements)
 					select {
 					case result := <-results:
 						if !timeout.Stop() {
 							<-timeout.C
 						}
 						if result.err == nil {
-							responseCodes[fieldName] = apiModel.PlcResponseCode_OK
-							plcValues[fieldName] = *result.value
+							responseCodes[tagName] = apiModel.PlcResponseCode_OK
+							plcValues[tagName] = *result.value
 						} else {
-							responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-							plcValues[fieldName] = nil
+							responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
+							plcValues[tagName] = nil
 						}
 					case <-timeout.C:
 						timeout.Stop()
-						responseCodes[fieldName] = apiModel.PlcResponseCode_REMOTE_BUSY
-						plcValues[fieldName] = nil
+						responseCodes[tagName] = apiModel.PlcResponseCode_REMOTE_BUSY
+						plcValues[tagName] = nil
 					}
-				case DeviceMemoryAddressPlcField:
+				case DeviceMemoryAddressPlcTag:
 					timeout := time.NewTimer(m.connection.defaultTtl)
-					memoryField := field.(DeviceMemoryAddressPlcField)
-					results := m.connection.DeviceReadMemory(deviceAddress, memoryField.Address, memoryField.NumElements, memoryField.FieldType)
+					memoryTag := tag.(DeviceMemoryAddressPlcTag)
+					results := m.connection.DeviceReadMemory(ctx, deviceAddress, memoryTag.Address, memoryTag.NumElements, memoryTag.TagType)
 					select {
 					case result := <-results:
 						if !timeout.Stop() {
 							<-timeout.C
 						}
 						if result.err == nil {
-							responseCodes[fieldName] = apiModel.PlcResponseCode_OK
-							plcValues[fieldName] = *result.value
+							responseCodes[tagName] = apiModel.PlcResponseCode_OK
+							plcValues[tagName] = *result.value
 						} else {
-							responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-							plcValues[fieldName] = nil
+							responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
+							plcValues[tagName] = nil
 						}
 					case <-timeout.C:
 						timeout.Stop()
-						responseCodes[fieldName] = apiModel.PlcResponseCode_REMOTE_BUSY
-						plcValues[fieldName] = nil
+						responseCodes[tagName] = apiModel.PlcResponseCode_REMOTE_BUSY
+						plcValues[tagName] = nil
 					}
 				}
 			}
 		}
 
 		// Get the group address values from the cache
-		for fieldName, field := range groupAddresses {
-			responseCode, plcValue := m.readGroupAddress(field)
-			responseCodes[fieldName] = responseCode
-			plcValues[fieldName] = plcValue
+		for tagName, tag := range groupAddresses {
+			responseCode, plcValue := m.readGroupAddress(ctx, tag)
+			responseCodes[tagName] = responseCode
+			plcValues[tagName] = plcValue
 		}
 
 		// Assemble the results
@@ -167,8 +165,8 @@ func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcRea
 	return resultChan
 }
 
-func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseCode, apiValues.PlcValue) {
-	rawAddresses, err := m.resolveAddresses(field)
+func (m Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (apiModel.PlcResponseCode, apiValues.PlcValue) {
+	rawAddresses, err := m.resolveAddresses(tag)
 	if err != nil {
 		return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
 	}
@@ -180,7 +178,7 @@ func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseC
 	returnCodes := map[string]apiModel.PlcResponseCode{}
 	for _, numericAddress := range rawAddresses {
 		// Create a string representation of this numeric address depending on the type of requested address
-		stringAddress := NumericGroupAddressToString(numericAddress, field)
+		stringAddress := NumericGroupAddressToString(numericAddress, tag)
 
 		// Try to get a value from the cache
 		m.connection.valueCacheMutex.RLock()
@@ -191,7 +189,7 @@ func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseC
 		// Otherwise respond with values from the cache.
 		if !ok {
 			addr := []byte{byte(numericAddress >> 8), byte(numericAddress & 0xFF)}
-			rrc := m.connection.ReadGroupAddress(addr, field.GetFieldType())
+			rrc := m.connection.ReadGroupAddress(ctx, addr, tag.GetTagType())
 			select {
 			case readResult := <-rrc:
 				if readResult.value != nil {
@@ -209,20 +207,20 @@ func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseC
 				// TODO: Do we need a "default" case here?
 			}
 		} else {
-			// If we don't have any field-type information, add the raw data
-			if field.GetTypeName() == "" {
-				values[stringAddress] = internalValues.NewPlcByteArray(int8s)
+			// If we don't have any tag-type information, add the raw data
+			if tag.GetTagType() == nil {
+				values[stringAddress] = internalValues.NewPlcRawByteArray(int8s)
 			} else {
-				// Decode the data according to the fields type
+				// Decode the data according to the tags type
 				rb := utils.NewReadBufferByteBased(int8s)
-				if field.GetFieldType() == nil {
+				if tag.GetTagType() == nil {
 					return apiModel.PlcResponseCode_INVALID_DATATYPE, nil
 				}
-				// If the size of the field is greater than 6, we have to skip the first byte
-				if field.GetFieldType().GetLengthInBits() > 6 {
-					_, _ = rb.ReadUint8("fieldType", 8)
+				// If the size of the tag is greater than 6, we have to skip the first byte
+				if tag.GetTagType().GetLengthInBits() > 6 {
+					_, _ = rb.ReadUint8("tagType", 8)
 				}
-				plcValue, err := driverModel.KnxDatapointParse(rb, *field.GetFieldType())
+				plcValue, err := driverModel.KnxDatapointParseWithBuffer(rb, *tag.GetTagType())
 				// If any of the values doesn't decode correctly, we can't return any
 				if err != nil {
 					return apiModel.PlcResponseCode_INVALID_DATA, nil
@@ -235,7 +233,7 @@ func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseC
 	// If there is only one address to read, return this directly.
 	// Otherwise return a struct, with the keys being the string representations of the address.
 	if len(rawAddresses) == 1 {
-		stringAddress := NumericGroupAddressToString(rawAddresses[0], field)
+		stringAddress := NumericGroupAddressToString(rawAddresses[0], tag)
 		return apiModel.PlcResponseCode_OK, values[stringAddress]
 	} else if len(rawAddresses) > 1 {
 		// Add it to the result
@@ -246,23 +244,23 @@ func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseC
 	}
 }
 
-// If the given field is a field containing a pattern, resolve to all the possible addresses
+// If the given tag is a tag containing a pattern, resolve to all the possible addresses
 // it could be referring to.
-func (m Reader) resolveAddresses(field GroupAddressField) ([]uint16, error) {
-	// Depending on the type of field, get the uint16 ids of all values that match the current field
+func (m Reader) resolveAddresses(tag GroupAddressTag) ([]uint16, error) {
+	// Depending on the type of tag, get the uint16 ids of all values that match the current tag
 	var result []uint16
-	switch field.(type) {
-	case GroupAddress3LevelPlcField:
-		address3LevelPlcField := field.(GroupAddress3LevelPlcField)
-		mainSegmentValues, err := m.resoleSegment(address3LevelPlcField.MainGroup, 0, 31)
+	switch tag.(type) {
+	case GroupAddress3LevelPlcTag:
+		address3LevelPlcTag := tag.(GroupAddress3LevelPlcTag)
+		mainSegmentValues, err := m.resoleSegment(address3LevelPlcTag.MainGroup, 0, 31)
 		if err != nil {
 			return []uint16{}, err
 		}
-		middleSegmentValues, err := m.resoleSegment(address3LevelPlcField.MiddleGroup, 0, 7)
+		middleSegmentValues, err := m.resoleSegment(address3LevelPlcTag.MiddleGroup, 0, 7)
 		if err != nil {
 			return []uint16{}, err
 		}
-		subSegmentValues, err := m.resoleSegment(address3LevelPlcField.SubGroup, 0, 255)
+		subSegmentValues, err := m.resoleSegment(address3LevelPlcTag.SubGroup, 0, 255)
 		if err != nil {
 			return []uint16{}, err
 		}
@@ -273,13 +271,13 @@ func (m Reader) resolveAddresses(field GroupAddressField) ([]uint16, error) {
 				}
 			}
 		}
-	case GroupAddress2LevelPlcField:
-		address2LevelPlcField := field.(GroupAddress2LevelPlcField)
-		mainSegmentValues, err := m.resoleSegment(address2LevelPlcField.MainGroup, 0, 31)
+	case GroupAddress2LevelPlcTag:
+		address2LevelPlcTag := tag.(GroupAddress2LevelPlcTag)
+		mainSegmentValues, err := m.resoleSegment(address2LevelPlcTag.MainGroup, 0, 31)
 		if err != nil {
 			return []uint16{}, err
 		}
-		subSegmentValues, err := m.resoleSegment(address2LevelPlcField.SubGroup, 0, 2047)
+		subSegmentValues, err := m.resoleSegment(address2LevelPlcTag.SubGroup, 0, 2047)
 		if err != nil {
 			return []uint16{}, err
 		}
@@ -288,9 +286,9 @@ func (m Reader) resolveAddresses(field GroupAddressField) ([]uint16, error) {
 				result = append(result, main<<11|sub)
 			}
 		}
-	case GroupAddress1LevelPlcField:
-		address1LevelPlcField := field.(GroupAddress1LevelPlcField)
-		mainSegmentValues, err := m.resoleSegment(address1LevelPlcField.MainGroup, 0, 65535)
+	case GroupAddress1LevelPlcTag:
+		address1LevelPlcTag := tag.(GroupAddress1LevelPlcTag)
+		mainSegmentValues, err := m.resoleSegment(address1LevelPlcTag.MainGroup, 0, 65535)
 		if err != nil {
 			return []uint16{}, err
 		}

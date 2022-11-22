@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,9 +30,9 @@ import (
 type DeviceDescriptor uint16
 
 type IDeviceDescriptor interface {
+	utils.Serializable
 	FirmwareType() FirmwareType
 	MediumType() DeviceDescriptorMediumType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -371,132 +371,132 @@ func DeviceDescriptorFirstEnumForFieldMediumType(value DeviceDescriptorMediumTyp
 	}
 	return 0, errors.Errorf("enum for %v describing MediumType not found", value)
 }
-func DeviceDescriptorByValue(value uint16) DeviceDescriptor {
+func DeviceDescriptorByValue(value uint16) (enum DeviceDescriptor, ok bool) {
 	switch value {
 	case 0x0010:
-		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_0
+		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_0, true
 	case 0x0011:
-		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_1
+		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_1, true
 	case 0x0012:
-		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_2
+		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_2, true
 	case 0x0013:
-		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_3
+		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_3, true
 	case 0x0020:
-		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_0
+		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_0, true
 	case 0x0021:
-		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_1
+		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_1, true
 	case 0x0025:
-		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_5
+		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_5, true
 	case 0x0300:
-		return DeviceDescriptor_TP1_SYSTEM_300
+		return DeviceDescriptor_TP1_SYSTEM_300, true
 	case 0x0700:
-		return DeviceDescriptor_TP1_BIM_M112_0
+		return DeviceDescriptor_TP1_BIM_M112_0, true
 	case 0x0701:
-		return DeviceDescriptor_TP1_BIM_M112_1
+		return DeviceDescriptor_TP1_BIM_M112_1, true
 	case 0x0705:
-		return DeviceDescriptor_TP1_BIM_M112_5
+		return DeviceDescriptor_TP1_BIM_M112_5, true
 	case 0x07B0:
-		return DeviceDescriptor_TP1_SYSTEM_B
+		return DeviceDescriptor_TP1_SYSTEM_B, true
 	case 0x0810:
-		return DeviceDescriptor_TP1_IR_DECODER_0
+		return DeviceDescriptor_TP1_IR_DECODER_0, true
 	case 0x0811:
-		return DeviceDescriptor_TP1_IR_DECODER_1
+		return DeviceDescriptor_TP1_IR_DECODER_1, true
 	case 0x0910:
-		return DeviceDescriptor_TP1_COUPLER_0
+		return DeviceDescriptor_TP1_COUPLER_0, true
 	case 0x0911:
-		return DeviceDescriptor_TP1_COUPLER_1
+		return DeviceDescriptor_TP1_COUPLER_1, true
 	case 0x0912:
-		return DeviceDescriptor_TP1_COUPLER_2
+		return DeviceDescriptor_TP1_COUPLER_2, true
 	case 0x091A:
-		return DeviceDescriptor_TP1_KNXNETIP_ROUTER
+		return DeviceDescriptor_TP1_KNXNETIP_ROUTER, true
 	case 0x0AFD:
-		return DeviceDescriptor_TP1_NONE_D
+		return DeviceDescriptor_TP1_NONE_D, true
 	case 0x0AFE:
-		return DeviceDescriptor_TP1_NONE_E
+		return DeviceDescriptor_TP1_NONE_E, true
 	case 0x1012:
-		return DeviceDescriptor_PL110_BCU_1_2
+		return DeviceDescriptor_PL110_BCU_1_2, true
 	case 0x1013:
-		return DeviceDescriptor_PL110_BCU_1_3
+		return DeviceDescriptor_PL110_BCU_1_3, true
 	case 0x17B0:
-		return DeviceDescriptor_PL110_SYSTEM_B
+		return DeviceDescriptor_PL110_SYSTEM_B, true
 	case 0x1900:
-		return DeviceDescriptor_PL110_MEDIA_COUPLER_PL_TP
+		return DeviceDescriptor_PL110_MEDIA_COUPLER_PL_TP, true
 	case 0x2010:
-		return DeviceDescriptor_RF_BI_DIRECTIONAL_DEVICES
+		return DeviceDescriptor_RF_BI_DIRECTIONAL_DEVICES, true
 	case 0x2110:
-		return DeviceDescriptor_RF_UNI_DIRECTIONAL_DEVICES
+		return DeviceDescriptor_RF_UNI_DIRECTIONAL_DEVICES, true
 	case 0x3012:
-		return DeviceDescriptor_TP0_BCU_1
+		return DeviceDescriptor_TP0_BCU_1, true
 	case 0x4012:
-		return DeviceDescriptor_PL132_BCU_1
+		return DeviceDescriptor_PL132_BCU_1, true
 	case 0x5705:
-		return DeviceDescriptor_KNX_IP_SYSTEM7
+		return DeviceDescriptor_KNX_IP_SYSTEM7, true
 	}
-	return 0
+	return 0, false
 }
 
-func DeviceDescriptorByName(value string) DeviceDescriptor {
+func DeviceDescriptorByName(value string) (enum DeviceDescriptor, ok bool) {
 	switch value {
 	case "TP1_BCU_1_SYSTEM_1_0":
-		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_0
+		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_0, true
 	case "TP1_BCU_1_SYSTEM_1_1":
-		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_1
+		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_1, true
 	case "TP1_BCU_1_SYSTEM_1_2":
-		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_2
+		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_2, true
 	case "TP1_BCU_1_SYSTEM_1_3":
-		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_3
+		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_3, true
 	case "TP1_BCU_2_SYSTEM_2_0":
-		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_0
+		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_0, true
 	case "TP1_BCU_2_SYSTEM_2_1":
-		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_1
+		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_1, true
 	case "TP1_BCU_2_SYSTEM_2_5":
-		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_5
+		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_5, true
 	case "TP1_SYSTEM_300":
-		return DeviceDescriptor_TP1_SYSTEM_300
+		return DeviceDescriptor_TP1_SYSTEM_300, true
 	case "TP1_BIM_M112_0":
-		return DeviceDescriptor_TP1_BIM_M112_0
+		return DeviceDescriptor_TP1_BIM_M112_0, true
 	case "TP1_BIM_M112_1":
-		return DeviceDescriptor_TP1_BIM_M112_1
+		return DeviceDescriptor_TP1_BIM_M112_1, true
 	case "TP1_BIM_M112_5":
-		return DeviceDescriptor_TP1_BIM_M112_5
+		return DeviceDescriptor_TP1_BIM_M112_5, true
 	case "TP1_SYSTEM_B":
-		return DeviceDescriptor_TP1_SYSTEM_B
+		return DeviceDescriptor_TP1_SYSTEM_B, true
 	case "TP1_IR_DECODER_0":
-		return DeviceDescriptor_TP1_IR_DECODER_0
+		return DeviceDescriptor_TP1_IR_DECODER_0, true
 	case "TP1_IR_DECODER_1":
-		return DeviceDescriptor_TP1_IR_DECODER_1
+		return DeviceDescriptor_TP1_IR_DECODER_1, true
 	case "TP1_COUPLER_0":
-		return DeviceDescriptor_TP1_COUPLER_0
+		return DeviceDescriptor_TP1_COUPLER_0, true
 	case "TP1_COUPLER_1":
-		return DeviceDescriptor_TP1_COUPLER_1
+		return DeviceDescriptor_TP1_COUPLER_1, true
 	case "TP1_COUPLER_2":
-		return DeviceDescriptor_TP1_COUPLER_2
+		return DeviceDescriptor_TP1_COUPLER_2, true
 	case "TP1_KNXNETIP_ROUTER":
-		return DeviceDescriptor_TP1_KNXNETIP_ROUTER
+		return DeviceDescriptor_TP1_KNXNETIP_ROUTER, true
 	case "TP1_NONE_D":
-		return DeviceDescriptor_TP1_NONE_D
+		return DeviceDescriptor_TP1_NONE_D, true
 	case "TP1_NONE_E":
-		return DeviceDescriptor_TP1_NONE_E
+		return DeviceDescriptor_TP1_NONE_E, true
 	case "PL110_BCU_1_2":
-		return DeviceDescriptor_PL110_BCU_1_2
+		return DeviceDescriptor_PL110_BCU_1_2, true
 	case "PL110_BCU_1_3":
-		return DeviceDescriptor_PL110_BCU_1_3
+		return DeviceDescriptor_PL110_BCU_1_3, true
 	case "PL110_SYSTEM_B":
-		return DeviceDescriptor_PL110_SYSTEM_B
+		return DeviceDescriptor_PL110_SYSTEM_B, true
 	case "PL110_MEDIA_COUPLER_PL_TP":
-		return DeviceDescriptor_PL110_MEDIA_COUPLER_PL_TP
+		return DeviceDescriptor_PL110_MEDIA_COUPLER_PL_TP, true
 	case "RF_BI_DIRECTIONAL_DEVICES":
-		return DeviceDescriptor_RF_BI_DIRECTIONAL_DEVICES
+		return DeviceDescriptor_RF_BI_DIRECTIONAL_DEVICES, true
 	case "RF_UNI_DIRECTIONAL_DEVICES":
-		return DeviceDescriptor_RF_UNI_DIRECTIONAL_DEVICES
+		return DeviceDescriptor_RF_UNI_DIRECTIONAL_DEVICES, true
 	case "TP0_BCU_1":
-		return DeviceDescriptor_TP0_BCU_1
+		return DeviceDescriptor_TP0_BCU_1, true
 	case "PL132_BCU_1":
-		return DeviceDescriptor_PL132_BCU_1
+		return DeviceDescriptor_PL132_BCU_1, true
 	case "KNX_IP_SYSTEM7":
-		return DeviceDescriptor_KNX_IP_SYSTEM7
+		return DeviceDescriptor_KNX_IP_SYSTEM7, true
 	}
-	return 0
+	return 0, false
 }
 
 func DeviceDescriptorKnows(value uint16) bool {
@@ -526,19 +526,37 @@ func (m DeviceDescriptor) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DeviceDescriptorParse(readBuffer utils.ReadBuffer) (DeviceDescriptor, error) {
+func DeviceDescriptorParse(theBytes []byte) (DeviceDescriptor, error) {
+	return DeviceDescriptorParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func DeviceDescriptorParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceDescriptor, error) {
 	val, err := readBuffer.ReadUint16("DeviceDescriptor", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading DeviceDescriptor")
 	}
-	return DeviceDescriptorByValue(val), nil
+	if enum, ok := DeviceDescriptorByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return DeviceDescriptor(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e DeviceDescriptor) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("DeviceDescriptor", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e DeviceDescriptor) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e DeviceDescriptor) name() string {
+func (e DeviceDescriptor) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("DeviceDescriptor", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e DeviceDescriptor) PLC4XEnumName() string {
 	switch e {
 	case DeviceDescriptor_TP1_BCU_1_SYSTEM_1_0:
 		return "TP1_BCU_1_SYSTEM_1_0"
@@ -603,5 +621,5 @@ func (e DeviceDescriptor) name() string {
 }
 
 func (e DeviceDescriptor) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

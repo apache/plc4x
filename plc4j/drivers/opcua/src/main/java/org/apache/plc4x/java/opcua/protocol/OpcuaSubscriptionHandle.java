@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -23,14 +23,14 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.opcua.context.SecureChannel;
-import org.apache.plc4x.java.opcua.field.OpcuaField;
+import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.opcua.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaSubscriptionHandle.class);
 
     private Set<Consumer<PlcSubscriptionEvent>> consumers;
-    private List<String> fieldNames;
+    private List<String> tagNames;
     private SecureChannel channel;
     private PlcSubscriptionRequest subscriptionRequest;
     private AtomicBoolean destroy = new AtomicBoolean(false);
@@ -67,7 +67,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         super(plcSubscriber);
         this.consumers = new HashSet<>();
         this.subscriptionRequest = subscriptionRequest;
-        this.fieldNames = new ArrayList<>(subscriptionRequest.getFieldNames());
+        this.tagNames = new ArrayList<>(subscriptionRequest.getTagNames());
         this.channel = channel;
         this.subscriptionId = subscriptionId;
         this.plcSubscriber = plcSubscriber;
@@ -84,11 +84,11 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     }
 
     private CompletableFuture<CreateMonitoredItemsResponse> onSubscribeCreateMonitoredItemsRequest() {
-        List<ExtensionObjectDefinition> requestList = new ArrayList<>(this.fieldNames.size());
-        for (int i = 0; i < this.fieldNames.size(); i++) {
-            final DefaultPlcSubscriptionField fieldDefaultPlcSubscription = (DefaultPlcSubscriptionField) subscriptionRequest.getField(fieldNames.get(i));
+        List<ExtensionObjectDefinition> requestList = new ArrayList<>(this.tagNames.size());
+        for (int i = 0; i < this.tagNames.size(); i++) {
+            final DefaultPlcSubscriptionTag tagDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagNames.get(i));
 
-            NodeId idNode = generateNodeId((OpcuaField) fieldDefaultPlcSubscription.getPlcField());
+            NodeId idNode = generateNodeId((OpcuaTag) tagDefaultPlcSubscription.getTag());
 
             ReadValueId readValueId = new ReadValueId(
                 idNode,
@@ -97,7 +97,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                 new QualifiedName(0, OpcuaProtocolLogic.NULL_STRING));
 
             MonitoringMode monitoringMode;
-            switch (fieldDefaultPlcSubscription.getPlcSubscriptionType()) {
+            switch (tagDefaultPlcSubscription.getPlcSubscriptionType()) {
                 case CYCLIC:
                     monitoringMode = MonitoringMode.monitoringModeSampling;
                     break;
@@ -181,9 +181,9 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                 for (int index = 0, arrayLength = array.length; index < arrayLength; index++) {
                     MonitoredItemCreateResult result = array[index];
                     if (OpcuaStatusCode.enumForValue(result.getStatusCode().getStatusCode()) != OpcuaStatusCode.Good) {
-                        LOGGER.error("Invalid Field {}, subscription created without this field", fieldNames.get(index));
+                        LOGGER.error("Invalid Tag {}, subscription created without this tag", tagNames.get(index));
                     } else {
-                        LOGGER.debug("Field {} was added to the subscription", fieldNames.get(index));
+                        LOGGER.debug("Tag {} was added to the subscription", tagNames.get(index));
                     }
                 }
                 future.complete(responseMessage);
@@ -421,14 +421,14 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
      * @param values - array of data values to be sent to the client.
      */
     private void onSubscriptionValue(MonitoredItemNotification[] values) {
-        LinkedHashSet<String> fieldList = new LinkedHashSet<>();
+        LinkedHashSet<String> tagNameList = new LinkedHashSet<>();
         List<DataValue> dataValues = new ArrayList<>(values.length);
         for (MonitoredItemNotification value : values) {
-            fieldList.add(fieldNames.get((int) value.getClientHandle() - 1));
+            tagNameList.add(tagNames.get((int) value.getClientHandle() - 1));
             dataValues.add(value.getValue());
         }
-        Map<String, ResponseItem<PlcValue>> fields = plcSubscriber.readResponse(fieldList, dataValues);
-        final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), fields);
+        Map<String, ResponseItem<PlcValue>> tags = plcSubscriber.readResponse(tagNameList, dataValues);
+        final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), tags);
 
         consumers.forEach(plcSubscriptionEventConsumer -> plcSubscriptionEventConsumer.accept(event));
     }
@@ -447,25 +447,25 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     }
 
     /**
-     * Given an PLC4X OpcuaField generate the OPC UA Node Id
+     * Given an PLC4X OpcuaTag generate the OPC UA Node Id
      *
-     * @param field - The PLC4X OpcuaField, this is the field generated from the OpcuaField class from the parsed field string.
+     * @param tag - The PLC4X OpcuaTag, this is the tag generated from the OpcuaTag class from the parsed tag string.
      * @return NodeId - Returns an OPC UA Node Id which can be sent over the wire.
      */
-    private NodeId generateNodeId(OpcuaField field) {
+    private NodeId generateNodeId(OpcuaTag tag) {
         NodeId nodeId = null;
-        if (field.getIdentifierType() == OpcuaIdentifierType.BINARY_IDENTIFIER) {
-            nodeId = new NodeId(new NodeIdTwoByte(Short.parseShort(field.getIdentifier())));
-        } else if (field.getIdentifierType() == OpcuaIdentifierType.NUMBER_IDENTIFIER) {
-            nodeId = new NodeId(new NodeIdNumeric((short) field.getNamespace(), Long.parseLong(field.getIdentifier())));
-        } else if (field.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
-            UUID guid = UUID.fromString(field.getIdentifier());
+        if (tag.getIdentifierType() == OpcuaIdentifierType.BINARY_IDENTIFIER) {
+            nodeId = new NodeId(new NodeIdTwoByte(Short.parseShort(tag.getIdentifier())));
+        } else if (tag.getIdentifierType() == OpcuaIdentifierType.NUMBER_IDENTIFIER) {
+            nodeId = new NodeId(new NodeIdNumeric((short) tag.getNamespace(), Long.parseLong(tag.getIdentifier())));
+        } else if (tag.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
+            UUID guid = UUID.fromString(tag.getIdentifier());
             byte[] guidBytes = new byte[16];
             System.arraycopy(guid.getMostSignificantBits(), 0, guidBytes, 0, 8);
             System.arraycopy(guid.getLeastSignificantBits(), 0, guidBytes, 8, 8);
-            nodeId = new NodeId(new NodeIdGuid((short) field.getNamespace(), guidBytes));
-        } else if (field.getIdentifierType() == OpcuaIdentifierType.STRING_IDENTIFIER) {
-            nodeId = new NodeId(new NodeIdString((short) field.getNamespace(), new PascalString(field.getIdentifier())));
+            nodeId = new NodeId(new NodeIdGuid((short) tag.getNamespace(), guidBytes));
+        } else if (tag.getIdentifierType() == OpcuaIdentifierType.STRING_IDENTIFIER) {
+            nodeId = new NodeId(new NodeIdString((short) tag.getNamespace(), new PascalString(tag.getIdentifier())));
         }
         return nodeId;
     }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -52,7 +52,9 @@ plc4c_driver *plc4c_driver_modbus_create() {
   driver->write_function = &plc4c_driver_modbus_write_function;
   driver->subscribe_function = NULL;
   driver->unsubscribe_function = NULL;
+  driver->free_read_request_function = &plc4c_driver_modbus_free_read_request;
   driver->free_read_response_function = &plc4c_driver_modbus_free_read_response;
+  driver->free_write_request_function = &plc4c_driver_modbus_free_write_request;
   driver->free_write_response_function = &plc4c_driver_modbus_free_write_response;
   driver->free_subscription_response_function = NULL;
   driver->free_unsubscription_response_function = NULL;

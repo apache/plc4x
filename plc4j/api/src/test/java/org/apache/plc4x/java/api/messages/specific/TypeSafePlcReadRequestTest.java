@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,14 +18,7 @@
  */
 package org.apache.plc4x.java.api.messages.specific;
 
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.model.PlcField;
-
-import java.util.Collections;
-
-import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class TypeSafePlcReadRequestTest {
 
@@ -52,8 +45,8 @@ public class TypeSafePlcReadRequestTest {
     }
 
     @Test
-    public void addItem() {
-        new TypeSafePlcReadRequest<>(String.class).addItem(readRequestItemString);
+    public void addField() {
+        new TypeSafePlcReadRequest<>(String.class).addField(readRequestItemString);
     }
 
     @Test

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -81,7 +81,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
     /**
      * @param url               Url that this connection is for
      * @param connectionFactory Factory to create a suitable connection.
-     * @param timeoutMillis     Time out in milliseonds
+     * @param timeoutMillis     Time out in milliseconds
      */
     public CachedDriverManager(String url, PlcConnectionFactory connectionFactory, int timeoutMillis) {
         logger.info("Creating new cached Connection for url {} with timeout {} ms", url, timeoutMillis);
@@ -91,7 +91,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
 
         // MBean
         try {
-            ManagementFactory.getPlatformMBeanServer().registerMBean(this, new ObjectName("org.pragmaticindustries.cockpit.plc:name=cached-driver-manager,url=\"" + url + "\""));
+            ManagementFactory.getPlatformMBeanServer().registerMBean(this, new ObjectName("org.apache.plc4x.plc:name=cached-driver-manager,url=\"" + url + "\""));
         } catch (Exception ignore) {
         }
     }
@@ -102,7 +102,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
         cancelWatchdog();
         if (state.get() == ConnectionState.DISCONNECTED) {
             // Getting Disconnected Connection, nothing to do.
-            logger.trace("Connection allready disconnected");
+            logger.trace("Connection already disconnected");
             return;
         }
         if (state.get() != ConnectionState.BORROWED) {

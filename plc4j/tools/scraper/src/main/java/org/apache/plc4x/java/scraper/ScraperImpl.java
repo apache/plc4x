@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -125,7 +125,7 @@ public class ScraperImpl implements Scraper {
                         tuple.getLeft().getJobName(), tuple.getMiddle(), tuple.getRight(), tuple.getLeft().getScrapeRate());
                     ScraperTask task = new ScraperTaskImpl(driverManager,
                         tuple.getLeft().getJobName(), tuple.getMiddle(), tuple.getRight(),
-                        tuple.getLeft().getFields(),
+                        tuple.getLeft().getTags(),
                         1_000,
                         handlerPool, resultHandler);
                     // Add task to internal list

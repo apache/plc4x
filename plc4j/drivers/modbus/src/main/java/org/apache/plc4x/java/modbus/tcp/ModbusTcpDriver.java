@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,22 +21,21 @@ package org.apache.plc4x.java.modbus.tcp;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
+import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
 import org.apache.plc4x.java.modbus.readwrite.DriverType;
 import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpConfiguration;
 import org.apache.plc4x.java.modbus.tcp.discovery.ModbusPlcDiscoverer;
-import org.apache.plc4x.java.modbus.base.field.ModbusField;
-import org.apache.plc4x.java.modbus.base.field.ModbusFieldHandler;
+import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU;
 import org.apache.plc4x.java.modbus.tcp.protocol.ModbusTcpProtocolLogic;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
+import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 
 import java.util.function.ToIntFunction;
 
@@ -107,17 +106,17 @@ public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> {
 
     @Override
     protected BaseOptimizer getOptimizer() {
-        return new SingleFieldOptimizer();
+        return new SingleTagOptimizer();
     }
 
     @Override
-    protected ModbusFieldHandler getFieldHandler() {
-        return new ModbusFieldHandler();
+    protected ModbusTagHandler getTagHandler() {
+        return new ModbusTagHandler();
     }
 
     @Override
-    protected PlcValueHandler getValueHandler() {
-        return new IEC61131ValueHandler();
+    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
+        return new PlcValueHandler();
     }
 
     @Override
@@ -143,8 +142,8 @@ public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> {
     }
 
     @Override
-    public ModbusField prepareField(String query){
-        return ModbusField.of(query);
+    public ModbusTag prepareTag(String tagAddress){
+        return ModbusTag.of(tagAddress);
     }
 
 }

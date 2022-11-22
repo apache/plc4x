@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -420,8 +420,8 @@ plc4c_return_code plc4c_spi_write_double(plc4c_spi_write_buffer* buf,
 plc4c_return_code plc4c_spi_write_string(plc4c_spi_write_buffer* buf,
                                          uint8_t num_bits, char* encoding,
                                          char* value) {
-  // Right now we only support utf-8.
-  if(strcmp(encoding,"UTF-8") != 0) {
+  // Right now we only support utf-8 and utf-16.
+  if((strcmp(encoding,"UTF-8") != 0) && (strcmp(encoding,"UTF-16") != 0)) {
     return INVALID_ARGUMENT;
   }
   // Simply output the bytes to the buffer.

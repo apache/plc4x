@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -22,25 +22,25 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.plc4x.java.knxnetip.ets.model.GroupAddress;
-import org.apache.plc4x.java.knxnetip.field.KnxNetIpField;
+import org.apache.plc4x.java.knxnetip.tag.KnxNetIpTag;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 
 public class KnxNetIpSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
-    private final KnxNetIpField field;
+    private final KnxNetIpTag tag;
 
-    public KnxNetIpSubscriptionHandle(PlcSubscriber plcSubscriber, KnxNetIpField field) {
+    public KnxNetIpSubscriptionHandle(PlcSubscriber plcSubscriber, KnxNetIpTag tag) {
         super(plcSubscriber);
-        this.field = field;
+        this.tag = tag;
     }
 
-    public KnxNetIpField getField() {
-        return field;
+    public KnxNetIpTag getTag() {
+        return tag;
     }
 
     public boolean matches(GroupAddress address) {
-        return field.matchesGroupAddress(address);
+        return tag.matchesGroupAddress(address);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class KnxNetIpSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         KnxNetIpSubscriptionHandle that = (KnxNetIpSubscriptionHandle) o;
 
         return new EqualsBuilder()
-            .append(getField(), that.getField())
+            .append(getTag(), that.getTag())
             .isEquals();
     }
 
@@ -64,14 +64,14 @@ public class KnxNetIpSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
             .appendSuper(super.hashCode())
-            .append(getField())
+            .append(getTag())
             .toHashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-            .append("field", field)
+            .append("tag", tag)
             .toString();
     }
 

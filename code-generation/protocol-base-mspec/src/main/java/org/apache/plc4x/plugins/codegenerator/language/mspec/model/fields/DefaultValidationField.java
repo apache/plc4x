@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,21 +18,24 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ValidationField;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class DefaultValidationField implements ValidationField, Field {
+public class DefaultValidationField extends DefaultField implements ValidationField, Field {
 
     private final Term validationExpression;
     private final String description;
 
     private final boolean shouldFail;
 
-    public DefaultValidationField(Term validationExpression, String description, boolean shouldFail) {
+    public DefaultValidationField(Map<String, Term> attributes, Term validationExpression, String description, boolean shouldFail) {
+        super(attributes);
         this.validationExpression = Objects.requireNonNull(validationExpression);
         this.description = description;
         this.shouldFail = shouldFail;

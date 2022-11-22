@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetNotifyType uint8
 
 type IBACnetNotifyType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -50,28 +50,28 @@ func init() {
 	}
 }
 
-func BACnetNotifyTypeByValue(value uint8) BACnetNotifyType {
+func BACnetNotifyTypeByValue(value uint8) (enum BACnetNotifyType, ok bool) {
 	switch value {
 	case 0x0:
-		return BACnetNotifyType_ALARM
+		return BACnetNotifyType_ALARM, true
 	case 0x1:
-		return BACnetNotifyType_EVENT
+		return BACnetNotifyType_EVENT, true
 	case 0x2:
-		return BACnetNotifyType_ACK_NOTIFICATION
+		return BACnetNotifyType_ACK_NOTIFICATION, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetNotifyTypeByName(value string) BACnetNotifyType {
+func BACnetNotifyTypeByName(value string) (enum BACnetNotifyType, ok bool) {
 	switch value {
 	case "ALARM":
-		return BACnetNotifyType_ALARM
+		return BACnetNotifyType_ALARM, true
 	case "EVENT":
-		return BACnetNotifyType_EVENT
+		return BACnetNotifyType_EVENT, true
 	case "ACK_NOTIFICATION":
-		return BACnetNotifyType_ACK_NOTIFICATION
+		return BACnetNotifyType_ACK_NOTIFICATION, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetNotifyTypeKnows(value uint8) bool {
@@ -101,19 +101,37 @@ func (m BACnetNotifyType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotifyTypeParse(readBuffer utils.ReadBuffer) (BACnetNotifyType, error) {
+func BACnetNotifyTypeParse(theBytes []byte) (BACnetNotifyType, error) {
+	return BACnetNotifyTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetNotifyTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNotifyType, error) {
 	val, err := readBuffer.ReadUint8("BACnetNotifyType", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetNotifyType")
 	}
-	return BACnetNotifyTypeByValue(val), nil
+	if enum, ok := BACnetNotifyTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetNotifyType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetNotifyType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetNotifyType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetNotifyType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetNotifyType) name() string {
+func (e BACnetNotifyType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetNotifyType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetNotifyType) PLC4XEnumName() string {
 	switch e {
 	case BACnetNotifyType_ALARM:
 		return "ALARM"
@@ -126,5 +144,5 @@ func (e BACnetNotifyType) name() string {
 }
 
 func (e BACnetNotifyType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

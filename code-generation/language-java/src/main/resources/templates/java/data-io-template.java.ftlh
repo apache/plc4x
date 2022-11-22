@@ -7,7 +7,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -35,7 +35,7 @@ ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -48,7 +48,7 @@ package ${helper.packageName(protocolName, languageName, outputFlavor)};
 
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.generation.EvaluationHelper;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -422,6 +422,8 @@ public class ${type.name} {
             ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.getStruct().get("${simpleField.name}").get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
                         <#else>
                             <#if simpleField.name == "value">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                            <#elseif simpleField.name == "secondsSinceEpoch">
             ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
                             <#else>
                                 <#-- Just for now -->

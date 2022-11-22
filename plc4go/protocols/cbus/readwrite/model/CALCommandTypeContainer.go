@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,9 +30,9 @@ import (
 type CALCommandTypeContainer uint8
 
 type ICALCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() CALCommandType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -40,6 +40,8 @@ const (
 	CALCommandTypeContainer_CALCommandRecall                 CALCommandTypeContainer = 0x1A
 	CALCommandTypeContainer_CALCommandIdentify               CALCommandTypeContainer = 0x21
 	CALCommandTypeContainer_CALCommandGetStatus              CALCommandTypeContainer = 0x2A
+	CALCommandTypeContainer_CALCommandAcknowledge            CALCommandTypeContainer = 0x32
+	CALCommandTypeContainer_CALCommandReply_0Bytes           CALCommandTypeContainer = 0x80
 	CALCommandTypeContainer_CALCommandReply_1Bytes           CALCommandTypeContainer = 0x81
 	CALCommandTypeContainer_CALCommandReply_2Bytes           CALCommandTypeContainer = 0x82
 	CALCommandTypeContainer_CALCommandReply_3Bytes           CALCommandTypeContainer = 0x83
@@ -71,7 +73,23 @@ const (
 	CALCommandTypeContainer_CALCommandReply_29Bytes          CALCommandTypeContainer = 0x9D
 	CALCommandTypeContainer_CALCommandReply_30Bytes          CALCommandTypeContainer = 0x9E
 	CALCommandTypeContainer_CALCommandReply_31Bytes          CALCommandTypeContainer = 0x9F
-	CALCommandTypeContainer_CALCommandAcknowledge            CALCommandTypeContainer = 0x32
+	CALCommandTypeContainer_CALCommandWrite_0Bytes           CALCommandTypeContainer = 0xA0
+	CALCommandTypeContainer_CALCommandWrite_1Bytes           CALCommandTypeContainer = 0xA1
+	CALCommandTypeContainer_CALCommandWrite_2Bytes           CALCommandTypeContainer = 0xA2
+	CALCommandTypeContainer_CALCommandWrite_3Bytes           CALCommandTypeContainer = 0xA3
+	CALCommandTypeContainer_CALCommandWrite_4Bytes           CALCommandTypeContainer = 0xA4
+	CALCommandTypeContainer_CALCommandWrite_5Bytes           CALCommandTypeContainer = 0xA5
+	CALCommandTypeContainer_CALCommandWrite_6Bytes           CALCommandTypeContainer = 0xA6
+	CALCommandTypeContainer_CALCommandWrite_7Bytes           CALCommandTypeContainer = 0xA7
+	CALCommandTypeContainer_CALCommandWrite_8Bytes           CALCommandTypeContainer = 0xA8
+	CALCommandTypeContainer_CALCommandWrite_9Bytes           CALCommandTypeContainer = 0xA9
+	CALCommandTypeContainer_CALCommandWrite_10Bytes          CALCommandTypeContainer = 0xAA
+	CALCommandTypeContainer_CALCommandWrite_11Bytes          CALCommandTypeContainer = 0xAB
+	CALCommandTypeContainer_CALCommandWrite_12Bytes          CALCommandTypeContainer = 0xAC
+	CALCommandTypeContainer_CALCommandWrite_13Bytes          CALCommandTypeContainer = 0xAD
+	CALCommandTypeContainer_CALCommandWrite_14Bytes          CALCommandTypeContainer = 0xAE
+	CALCommandTypeContainer_CALCommandWrite_15Bytes          CALCommandTypeContainer = 0xAF
+	CALCommandTypeContainer_CALCommandStatus_0Bytes          CALCommandTypeContainer = 0xC0
 	CALCommandTypeContainer_CALCommandStatus_1Bytes          CALCommandTypeContainer = 0xC1
 	CALCommandTypeContainer_CALCommandStatus_2Bytes          CALCommandTypeContainer = 0xC2
 	CALCommandTypeContainer_CALCommandStatus_3Bytes          CALCommandTypeContainer = 0xC3
@@ -103,8 +121,9 @@ const (
 	CALCommandTypeContainer_CALCommandStatus_29Bytes         CALCommandTypeContainer = 0xDD
 	CALCommandTypeContainer_CALCommandStatus_30Bytes         CALCommandTypeContainer = 0xDE
 	CALCommandTypeContainer_CALCommandStatus_31Bytes         CALCommandTypeContainer = 0xDF
+	CALCommandTypeContainer_CALCommandStatusExtended_0Bytes  CALCommandTypeContainer = 0xE0
 	CALCommandTypeContainer_CALCommandStatusExtended_1Bytes  CALCommandTypeContainer = 0xE1
-	CALCommandTypeContainer_CALCommandStatusExtended_2Bytes  CALCommandTypeContainer = 0xE1
+	CALCommandTypeContainer_CALCommandStatusExtended_2Bytes  CALCommandTypeContainer = 0xE2
 	CALCommandTypeContainer_CALCommandStatusExtended_3Bytes  CALCommandTypeContainer = 0xE3
 	CALCommandTypeContainer_CALCommandStatusExtended_4Bytes  CALCommandTypeContainer = 0xE4
 	CALCommandTypeContainer_CALCommandStatusExtended_5Bytes  CALCommandTypeContainer = 0xE5
@@ -145,6 +164,8 @@ func init() {
 		CALCommandTypeContainer_CALCommandRecall,
 		CALCommandTypeContainer_CALCommandIdentify,
 		CALCommandTypeContainer_CALCommandGetStatus,
+		CALCommandTypeContainer_CALCommandAcknowledge,
+		CALCommandTypeContainer_CALCommandReply_0Bytes,
 		CALCommandTypeContainer_CALCommandReply_1Bytes,
 		CALCommandTypeContainer_CALCommandReply_2Bytes,
 		CALCommandTypeContainer_CALCommandReply_3Bytes,
@@ -176,7 +197,23 @@ func init() {
 		CALCommandTypeContainer_CALCommandReply_29Bytes,
 		CALCommandTypeContainer_CALCommandReply_30Bytes,
 		CALCommandTypeContainer_CALCommandReply_31Bytes,
-		CALCommandTypeContainer_CALCommandAcknowledge,
+		CALCommandTypeContainer_CALCommandWrite_0Bytes,
+		CALCommandTypeContainer_CALCommandWrite_1Bytes,
+		CALCommandTypeContainer_CALCommandWrite_2Bytes,
+		CALCommandTypeContainer_CALCommandWrite_3Bytes,
+		CALCommandTypeContainer_CALCommandWrite_4Bytes,
+		CALCommandTypeContainer_CALCommandWrite_5Bytes,
+		CALCommandTypeContainer_CALCommandWrite_6Bytes,
+		CALCommandTypeContainer_CALCommandWrite_7Bytes,
+		CALCommandTypeContainer_CALCommandWrite_8Bytes,
+		CALCommandTypeContainer_CALCommandWrite_9Bytes,
+		CALCommandTypeContainer_CALCommandWrite_10Bytes,
+		CALCommandTypeContainer_CALCommandWrite_11Bytes,
+		CALCommandTypeContainer_CALCommandWrite_12Bytes,
+		CALCommandTypeContainer_CALCommandWrite_13Bytes,
+		CALCommandTypeContainer_CALCommandWrite_14Bytes,
+		CALCommandTypeContainer_CALCommandWrite_15Bytes,
+		CALCommandTypeContainer_CALCommandStatus_0Bytes,
 		CALCommandTypeContainer_CALCommandStatus_1Bytes,
 		CALCommandTypeContainer_CALCommandStatus_2Bytes,
 		CALCommandTypeContainer_CALCommandStatus_3Bytes,
@@ -208,6 +245,7 @@ func init() {
 		CALCommandTypeContainer_CALCommandStatus_29Bytes,
 		CALCommandTypeContainer_CALCommandStatus_30Bytes,
 		CALCommandTypeContainer_CALCommandStatus_31Bytes,
+		CALCommandTypeContainer_CALCommandStatusExtended_0Bytes,
 		CALCommandTypeContainer_CALCommandStatusExtended_1Bytes,
 		CALCommandTypeContainer_CALCommandStatusExtended_2Bytes,
 		CALCommandTypeContainer_CALCommandStatusExtended_3Bytes,
@@ -250,18 +288,22 @@ func (e CALCommandTypeContainer) NumBytes() uint8 {
 		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return 0
+			return 2
 		}
 	case 0x21:
 		{ /* '0x21' */
-			return 0
+			return 1
 		}
 	case 0x2A:
 		{ /* '0x2A' */
-			return 0
+			return 2
 		}
 	case 0x32:
 		{ /* '0x32' */
+			return 2
+		}
+	case 0x80:
+		{ /* '0x80' */
 			return 0
 		}
 	case 0x81:
@@ -388,6 +430,74 @@ func (e CALCommandTypeContainer) NumBytes() uint8 {
 		{ /* '0x9F' */
 			return 31
 		}
+	case 0xA0:
+		{ /* '0xA0' */
+			return 0
+		}
+	case 0xA1:
+		{ /* '0xA1' */
+			return 1
+		}
+	case 0xA2:
+		{ /* '0xA2' */
+			return 2
+		}
+	case 0xA3:
+		{ /* '0xA3' */
+			return 3
+		}
+	case 0xA4:
+		{ /* '0xA4' */
+			return 4
+		}
+	case 0xA5:
+		{ /* '0xA5' */
+			return 5
+		}
+	case 0xA6:
+		{ /* '0xA6' */
+			return 6
+		}
+	case 0xA7:
+		{ /* '0xA7' */
+			return 7
+		}
+	case 0xA8:
+		{ /* '0xA8' */
+			return 8
+		}
+	case 0xA9:
+		{ /* '0xA9' */
+			return 9
+		}
+	case 0xAA:
+		{ /* '0xAA' */
+			return 10
+		}
+	case 0xAB:
+		{ /* '0xAB' */
+			return 11
+		}
+	case 0xAC:
+		{ /* '0xAC' */
+			return 12
+		}
+	case 0xAD:
+		{ /* '0xAD' */
+			return 13
+		}
+	case 0xAE:
+		{ /* '0xAE' */
+			return 14
+		}
+	case 0xAF:
+		{ /* '0xAF' */
+			return 15
+		}
+	case 0xC0:
+		{ /* '0xC0' */
+			return 0
+		}
 	case 0xC1:
 		{ /* '0xC1' */
 			return 1
@@ -512,9 +622,17 @@ func (e CALCommandTypeContainer) NumBytes() uint8 {
 		{ /* '0xDF' */
 			return 31
 		}
+	case 0xE0:
+		{ /* '0xE0' */
+			return 0
+		}
 	case 0xE1:
 		{ /* '0xE1' */
 			return 1
+		}
+	case 0xE2:
+		{ /* '0xE2' */
+			return 2
 		}
 	case 0xE3:
 		{ /* '0xE3' */
@@ -670,6 +788,10 @@ func (e CALCommandTypeContainer) CommandType() CALCommandType {
 		{ /* '0x32' */
 			return CALCommandType_ACKNOWLEDGE
 		}
+	case 0x80:
+		{ /* '0x80' */
+			return CALCommandType_REPLY
+		}
 	case 0x81:
 		{ /* '0x81' */
 			return CALCommandType_REPLY
@@ -793,6 +915,74 @@ func (e CALCommandTypeContainer) CommandType() CALCommandType {
 	case 0x9F:
 		{ /* '0x9F' */
 			return CALCommandType_REPLY
+		}
+	case 0xA0:
+		{ /* '0xA0' */
+			return CALCommandType_WRITE
+		}
+	case 0xA1:
+		{ /* '0xA1' */
+			return CALCommandType_WRITE
+		}
+	case 0xA2:
+		{ /* '0xA2' */
+			return CALCommandType_WRITE
+		}
+	case 0xA3:
+		{ /* '0xA3' */
+			return CALCommandType_WRITE
+		}
+	case 0xA4:
+		{ /* '0xA4' */
+			return CALCommandType_WRITE
+		}
+	case 0xA5:
+		{ /* '0xA5' */
+			return CALCommandType_WRITE
+		}
+	case 0xA6:
+		{ /* '0xA6' */
+			return CALCommandType_WRITE
+		}
+	case 0xA7:
+		{ /* '0xA7' */
+			return CALCommandType_WRITE
+		}
+	case 0xA8:
+		{ /* '0xA8' */
+			return CALCommandType_WRITE
+		}
+	case 0xA9:
+		{ /* '0xA9' */
+			return CALCommandType_WRITE
+		}
+	case 0xAA:
+		{ /* '0xAA' */
+			return CALCommandType_WRITE
+		}
+	case 0xAB:
+		{ /* '0xAB' */
+			return CALCommandType_WRITE
+		}
+	case 0xAC:
+		{ /* '0xAC' */
+			return CALCommandType_WRITE
+		}
+	case 0xAD:
+		{ /* '0xAD' */
+			return CALCommandType_WRITE
+		}
+	case 0xAE:
+		{ /* '0xAE' */
+			return CALCommandType_WRITE
+		}
+	case 0xAF:
+		{ /* '0xAF' */
+			return CALCommandType_WRITE
+		}
+	case 0xC0:
+		{ /* '0xC0' */
+			return CALCommandType_STATUS
 		}
 	case 0xC1:
 		{ /* '0xC1' */
@@ -918,8 +1108,16 @@ func (e CALCommandTypeContainer) CommandType() CALCommandType {
 		{ /* '0xDF' */
 			return CALCommandType_STATUS
 		}
+	case 0xE0:
+		{ /* '0xE0' */
+			return CALCommandType_STATUS_EXTENDED
+		}
 	case 0xE1:
 		{ /* '0xE1' */
+			return CALCommandType_STATUS_EXTENDED
+		}
+	case 0xE2:
+		{ /* '0xE2' */
 			return CALCommandType_STATUS_EXTENDED
 		}
 	case 0xE3:
@@ -1053,404 +1251,484 @@ func CALCommandTypeContainerFirstEnumForFieldCommandType(value CALCommandType) (
 	}
 	return 0, errors.Errorf("enum for %v describing CommandType not found", value)
 }
-func CALCommandTypeContainerByValue(value uint8) CALCommandTypeContainer {
+func CALCommandTypeContainerByValue(value uint8) (enum CALCommandTypeContainer, ok bool) {
 	switch value {
 	case 0x08:
-		return CALCommandTypeContainer_CALCommandReset
+		return CALCommandTypeContainer_CALCommandReset, true
 	case 0x1A:
-		return CALCommandTypeContainer_CALCommandRecall
+		return CALCommandTypeContainer_CALCommandRecall, true
 	case 0x21:
-		return CALCommandTypeContainer_CALCommandIdentify
+		return CALCommandTypeContainer_CALCommandIdentify, true
 	case 0x2A:
-		return CALCommandTypeContainer_CALCommandGetStatus
+		return CALCommandTypeContainer_CALCommandGetStatus, true
 	case 0x32:
-		return CALCommandTypeContainer_CALCommandAcknowledge
+		return CALCommandTypeContainer_CALCommandAcknowledge, true
+	case 0x80:
+		return CALCommandTypeContainer_CALCommandReply_0Bytes, true
 	case 0x81:
-		return CALCommandTypeContainer_CALCommandReply_1Bytes
+		return CALCommandTypeContainer_CALCommandReply_1Bytes, true
 	case 0x82:
-		return CALCommandTypeContainer_CALCommandReply_2Bytes
+		return CALCommandTypeContainer_CALCommandReply_2Bytes, true
 	case 0x83:
-		return CALCommandTypeContainer_CALCommandReply_3Bytes
+		return CALCommandTypeContainer_CALCommandReply_3Bytes, true
 	case 0x84:
-		return CALCommandTypeContainer_CALCommandReply_4Bytes
+		return CALCommandTypeContainer_CALCommandReply_4Bytes, true
 	case 0x85:
-		return CALCommandTypeContainer_CALCommandReply_5Bytes
+		return CALCommandTypeContainer_CALCommandReply_5Bytes, true
 	case 0x86:
-		return CALCommandTypeContainer_CALCommandReply_6Bytes
+		return CALCommandTypeContainer_CALCommandReply_6Bytes, true
 	case 0x87:
-		return CALCommandTypeContainer_CALCommandReply_7Bytes
+		return CALCommandTypeContainer_CALCommandReply_7Bytes, true
 	case 0x88:
-		return CALCommandTypeContainer_CALCommandReply_8Bytes
+		return CALCommandTypeContainer_CALCommandReply_8Bytes, true
 	case 0x89:
-		return CALCommandTypeContainer_CALCommandReply_9Bytes
+		return CALCommandTypeContainer_CALCommandReply_9Bytes, true
 	case 0x8A:
-		return CALCommandTypeContainer_CALCommandReply_10Bytes
+		return CALCommandTypeContainer_CALCommandReply_10Bytes, true
 	case 0x8B:
-		return CALCommandTypeContainer_CALCommandReply_11Bytes
+		return CALCommandTypeContainer_CALCommandReply_11Bytes, true
 	case 0x8C:
-		return CALCommandTypeContainer_CALCommandReply_12Bytes
+		return CALCommandTypeContainer_CALCommandReply_12Bytes, true
 	case 0x8D:
-		return CALCommandTypeContainer_CALCommandReply_13Bytes
+		return CALCommandTypeContainer_CALCommandReply_13Bytes, true
 	case 0x8E:
-		return CALCommandTypeContainer_CALCommandReply_14Bytes
+		return CALCommandTypeContainer_CALCommandReply_14Bytes, true
 	case 0x8F:
-		return CALCommandTypeContainer_CALCommandReply_15Bytes
+		return CALCommandTypeContainer_CALCommandReply_15Bytes, true
 	case 0x90:
-		return CALCommandTypeContainer_CALCommandReply_16Bytes
+		return CALCommandTypeContainer_CALCommandReply_16Bytes, true
 	case 0x91:
-		return CALCommandTypeContainer_CALCommandReply_17Bytes
+		return CALCommandTypeContainer_CALCommandReply_17Bytes, true
 	case 0x92:
-		return CALCommandTypeContainer_CALCommandReply_18Bytes
+		return CALCommandTypeContainer_CALCommandReply_18Bytes, true
 	case 0x93:
-		return CALCommandTypeContainer_CALCommandReply_19Bytes
+		return CALCommandTypeContainer_CALCommandReply_19Bytes, true
 	case 0x94:
-		return CALCommandTypeContainer_CALCommandReply_20Bytes
+		return CALCommandTypeContainer_CALCommandReply_20Bytes, true
 	case 0x95:
-		return CALCommandTypeContainer_CALCommandReply_21Bytes
+		return CALCommandTypeContainer_CALCommandReply_21Bytes, true
 	case 0x96:
-		return CALCommandTypeContainer_CALCommandReply_22Bytes
+		return CALCommandTypeContainer_CALCommandReply_22Bytes, true
 	case 0x97:
-		return CALCommandTypeContainer_CALCommandReply_23Bytes
+		return CALCommandTypeContainer_CALCommandReply_23Bytes, true
 	case 0x98:
-		return CALCommandTypeContainer_CALCommandReply_24Bytes
+		return CALCommandTypeContainer_CALCommandReply_24Bytes, true
 	case 0x99:
-		return CALCommandTypeContainer_CALCommandReply_25Bytes
+		return CALCommandTypeContainer_CALCommandReply_25Bytes, true
 	case 0x9A:
-		return CALCommandTypeContainer_CALCommandReply_26Bytes
+		return CALCommandTypeContainer_CALCommandReply_26Bytes, true
 	case 0x9B:
-		return CALCommandTypeContainer_CALCommandReply_27Bytes
+		return CALCommandTypeContainer_CALCommandReply_27Bytes, true
 	case 0x9C:
-		return CALCommandTypeContainer_CALCommandReply_28Bytes
+		return CALCommandTypeContainer_CALCommandReply_28Bytes, true
 	case 0x9D:
-		return CALCommandTypeContainer_CALCommandReply_29Bytes
+		return CALCommandTypeContainer_CALCommandReply_29Bytes, true
 	case 0x9E:
-		return CALCommandTypeContainer_CALCommandReply_30Bytes
+		return CALCommandTypeContainer_CALCommandReply_30Bytes, true
 	case 0x9F:
-		return CALCommandTypeContainer_CALCommandReply_31Bytes
+		return CALCommandTypeContainer_CALCommandReply_31Bytes, true
+	case 0xA0:
+		return CALCommandTypeContainer_CALCommandWrite_0Bytes, true
+	case 0xA1:
+		return CALCommandTypeContainer_CALCommandWrite_1Bytes, true
+	case 0xA2:
+		return CALCommandTypeContainer_CALCommandWrite_2Bytes, true
+	case 0xA3:
+		return CALCommandTypeContainer_CALCommandWrite_3Bytes, true
+	case 0xA4:
+		return CALCommandTypeContainer_CALCommandWrite_4Bytes, true
+	case 0xA5:
+		return CALCommandTypeContainer_CALCommandWrite_5Bytes, true
+	case 0xA6:
+		return CALCommandTypeContainer_CALCommandWrite_6Bytes, true
+	case 0xA7:
+		return CALCommandTypeContainer_CALCommandWrite_7Bytes, true
+	case 0xA8:
+		return CALCommandTypeContainer_CALCommandWrite_8Bytes, true
+	case 0xA9:
+		return CALCommandTypeContainer_CALCommandWrite_9Bytes, true
+	case 0xAA:
+		return CALCommandTypeContainer_CALCommandWrite_10Bytes, true
+	case 0xAB:
+		return CALCommandTypeContainer_CALCommandWrite_11Bytes, true
+	case 0xAC:
+		return CALCommandTypeContainer_CALCommandWrite_12Bytes, true
+	case 0xAD:
+		return CALCommandTypeContainer_CALCommandWrite_13Bytes, true
+	case 0xAE:
+		return CALCommandTypeContainer_CALCommandWrite_14Bytes, true
+	case 0xAF:
+		return CALCommandTypeContainer_CALCommandWrite_15Bytes, true
+	case 0xC0:
+		return CALCommandTypeContainer_CALCommandStatus_0Bytes, true
 	case 0xC1:
-		return CALCommandTypeContainer_CALCommandStatus_1Bytes
+		return CALCommandTypeContainer_CALCommandStatus_1Bytes, true
 	case 0xC2:
-		return CALCommandTypeContainer_CALCommandStatus_2Bytes
+		return CALCommandTypeContainer_CALCommandStatus_2Bytes, true
 	case 0xC3:
-		return CALCommandTypeContainer_CALCommandStatus_3Bytes
+		return CALCommandTypeContainer_CALCommandStatus_3Bytes, true
 	case 0xC4:
-		return CALCommandTypeContainer_CALCommandStatus_4Bytes
+		return CALCommandTypeContainer_CALCommandStatus_4Bytes, true
 	case 0xC5:
-		return CALCommandTypeContainer_CALCommandStatus_5Bytes
+		return CALCommandTypeContainer_CALCommandStatus_5Bytes, true
 	case 0xC6:
-		return CALCommandTypeContainer_CALCommandStatus_6Bytes
+		return CALCommandTypeContainer_CALCommandStatus_6Bytes, true
 	case 0xC7:
-		return CALCommandTypeContainer_CALCommandStatus_7Bytes
+		return CALCommandTypeContainer_CALCommandStatus_7Bytes, true
 	case 0xC8:
-		return CALCommandTypeContainer_CALCommandStatus_8Bytes
+		return CALCommandTypeContainer_CALCommandStatus_8Bytes, true
 	case 0xC9:
-		return CALCommandTypeContainer_CALCommandStatus_9Bytes
+		return CALCommandTypeContainer_CALCommandStatus_9Bytes, true
 	case 0xCA:
-		return CALCommandTypeContainer_CALCommandStatus_10Bytes
+		return CALCommandTypeContainer_CALCommandStatus_10Bytes, true
 	case 0xCB:
-		return CALCommandTypeContainer_CALCommandStatus_11Bytes
+		return CALCommandTypeContainer_CALCommandStatus_11Bytes, true
 	case 0xCC:
-		return CALCommandTypeContainer_CALCommandStatus_12Bytes
+		return CALCommandTypeContainer_CALCommandStatus_12Bytes, true
 	case 0xCD:
-		return CALCommandTypeContainer_CALCommandStatus_13Bytes
+		return CALCommandTypeContainer_CALCommandStatus_13Bytes, true
 	case 0xCE:
-		return CALCommandTypeContainer_CALCommandStatus_14Bytes
+		return CALCommandTypeContainer_CALCommandStatus_14Bytes, true
 	case 0xCF:
-		return CALCommandTypeContainer_CALCommandStatus_15Bytes
+		return CALCommandTypeContainer_CALCommandStatus_15Bytes, true
 	case 0xD0:
-		return CALCommandTypeContainer_CALCommandStatus_16Bytes
+		return CALCommandTypeContainer_CALCommandStatus_16Bytes, true
 	case 0xD1:
-		return CALCommandTypeContainer_CALCommandStatus_17Bytes
+		return CALCommandTypeContainer_CALCommandStatus_17Bytes, true
 	case 0xD2:
-		return CALCommandTypeContainer_CALCommandStatus_18Bytes
+		return CALCommandTypeContainer_CALCommandStatus_18Bytes, true
 	case 0xD3:
-		return CALCommandTypeContainer_CALCommandStatus_19Bytes
+		return CALCommandTypeContainer_CALCommandStatus_19Bytes, true
 	case 0xD4:
-		return CALCommandTypeContainer_CALCommandStatus_20Bytes
+		return CALCommandTypeContainer_CALCommandStatus_20Bytes, true
 	case 0xD5:
-		return CALCommandTypeContainer_CALCommandStatus_21Bytes
+		return CALCommandTypeContainer_CALCommandStatus_21Bytes, true
 	case 0xD6:
-		return CALCommandTypeContainer_CALCommandStatus_22Bytes
+		return CALCommandTypeContainer_CALCommandStatus_22Bytes, true
 	case 0xD7:
-		return CALCommandTypeContainer_CALCommandStatus_23Bytes
+		return CALCommandTypeContainer_CALCommandStatus_23Bytes, true
 	case 0xD8:
-		return CALCommandTypeContainer_CALCommandStatus_24Bytes
+		return CALCommandTypeContainer_CALCommandStatus_24Bytes, true
 	case 0xD9:
-		return CALCommandTypeContainer_CALCommandStatus_25Bytes
+		return CALCommandTypeContainer_CALCommandStatus_25Bytes, true
 	case 0xDA:
-		return CALCommandTypeContainer_CALCommandStatus_26Bytes
+		return CALCommandTypeContainer_CALCommandStatus_26Bytes, true
 	case 0xDB:
-		return CALCommandTypeContainer_CALCommandStatus_27Bytes
+		return CALCommandTypeContainer_CALCommandStatus_27Bytes, true
 	case 0xDC:
-		return CALCommandTypeContainer_CALCommandStatus_28Bytes
+		return CALCommandTypeContainer_CALCommandStatus_28Bytes, true
 	case 0xDD:
-		return CALCommandTypeContainer_CALCommandStatus_29Bytes
+		return CALCommandTypeContainer_CALCommandStatus_29Bytes, true
 	case 0xDE:
-		return CALCommandTypeContainer_CALCommandStatus_30Bytes
+		return CALCommandTypeContainer_CALCommandStatus_30Bytes, true
 	case 0xDF:
-		return CALCommandTypeContainer_CALCommandStatus_31Bytes
+		return CALCommandTypeContainer_CALCommandStatus_31Bytes, true
+	case 0xE0:
+		return CALCommandTypeContainer_CALCommandStatusExtended_0Bytes, true
 	case 0xE1:
-		return CALCommandTypeContainer_CALCommandStatusExtended_1Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_1Bytes, true
+	case 0xE2:
+		return CALCommandTypeContainer_CALCommandStatusExtended_2Bytes, true
 	case 0xE3:
-		return CALCommandTypeContainer_CALCommandStatusExtended_3Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_3Bytes, true
 	case 0xE4:
-		return CALCommandTypeContainer_CALCommandStatusExtended_4Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_4Bytes, true
 	case 0xE5:
-		return CALCommandTypeContainer_CALCommandStatusExtended_5Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_5Bytes, true
 	case 0xE6:
-		return CALCommandTypeContainer_CALCommandStatusExtended_6Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_6Bytes, true
 	case 0xE7:
-		return CALCommandTypeContainer_CALCommandStatusExtended_7Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_7Bytes, true
 	case 0xE8:
-		return CALCommandTypeContainer_CALCommandStatusExtended_8Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_8Bytes, true
 	case 0xE9:
-		return CALCommandTypeContainer_CALCommandStatusExtended_9Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_9Bytes, true
 	case 0xEA:
-		return CALCommandTypeContainer_CALCommandStatusExtended_10Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_10Bytes, true
 	case 0xEB:
-		return CALCommandTypeContainer_CALCommandStatusExtended_11Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_11Bytes, true
 	case 0xEC:
-		return CALCommandTypeContainer_CALCommandStatusExtended_12Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_12Bytes, true
 	case 0xED:
-		return CALCommandTypeContainer_CALCommandStatusExtended_13Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_13Bytes, true
 	case 0xEE:
-		return CALCommandTypeContainer_CALCommandStatusExtended_14Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_14Bytes, true
 	case 0xEF:
-		return CALCommandTypeContainer_CALCommandStatusExtended_15Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_15Bytes, true
 	case 0xF0:
-		return CALCommandTypeContainer_CALCommandStatusExtended_16Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_16Bytes, true
 	case 0xF1:
-		return CALCommandTypeContainer_CALCommandStatusExtended_17Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_17Bytes, true
 	case 0xF2:
-		return CALCommandTypeContainer_CALCommandStatusExtended_18Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_18Bytes, true
 	case 0xF3:
-		return CALCommandTypeContainer_CALCommandStatusExtended_19Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_19Bytes, true
 	case 0xF4:
-		return CALCommandTypeContainer_CALCommandStatusExtended_20Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_20Bytes, true
 	case 0xF5:
-		return CALCommandTypeContainer_CALCommandStatusExtended_21Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_21Bytes, true
 	case 0xF6:
-		return CALCommandTypeContainer_CALCommandStatusExtended_22Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_22Bytes, true
 	case 0xF7:
-		return CALCommandTypeContainer_CALCommandStatusExtended_23Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_23Bytes, true
 	case 0xF8:
-		return CALCommandTypeContainer_CALCommandStatusExtended_24Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_24Bytes, true
 	case 0xF9:
-		return CALCommandTypeContainer_CALCommandStatusExtended_25Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_25Bytes, true
 	case 0xFA:
-		return CALCommandTypeContainer_CALCommandStatusExtended_26Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_26Bytes, true
 	case 0xFB:
-		return CALCommandTypeContainer_CALCommandStatusExtended_27Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_27Bytes, true
 	case 0xFC:
-		return CALCommandTypeContainer_CALCommandStatusExtended_28Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_28Bytes, true
 	case 0xFD:
-		return CALCommandTypeContainer_CALCommandStatusExtended_29Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_29Bytes, true
 	case 0xFE:
-		return CALCommandTypeContainer_CALCommandStatusExtended_30Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_30Bytes, true
 	case 0xFF:
-		return CALCommandTypeContainer_CALCommandStatusExtended_31Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_31Bytes, true
 	}
-	return 0
+	return 0, false
 }
 
-func CALCommandTypeContainerByName(value string) CALCommandTypeContainer {
+func CALCommandTypeContainerByName(value string) (enum CALCommandTypeContainer, ok bool) {
 	switch value {
 	case "CALCommandReset":
-		return CALCommandTypeContainer_CALCommandReset
+		return CALCommandTypeContainer_CALCommandReset, true
 	case "CALCommandRecall":
-		return CALCommandTypeContainer_CALCommandRecall
+		return CALCommandTypeContainer_CALCommandRecall, true
 	case "CALCommandIdentify":
-		return CALCommandTypeContainer_CALCommandIdentify
+		return CALCommandTypeContainer_CALCommandIdentify, true
 	case "CALCommandGetStatus":
-		return CALCommandTypeContainer_CALCommandGetStatus
+		return CALCommandTypeContainer_CALCommandGetStatus, true
 	case "CALCommandAcknowledge":
-		return CALCommandTypeContainer_CALCommandAcknowledge
+		return CALCommandTypeContainer_CALCommandAcknowledge, true
+	case "CALCommandReply_0Bytes":
+		return CALCommandTypeContainer_CALCommandReply_0Bytes, true
 	case "CALCommandReply_1Bytes":
-		return CALCommandTypeContainer_CALCommandReply_1Bytes
+		return CALCommandTypeContainer_CALCommandReply_1Bytes, true
 	case "CALCommandReply_2Bytes":
-		return CALCommandTypeContainer_CALCommandReply_2Bytes
+		return CALCommandTypeContainer_CALCommandReply_2Bytes, true
 	case "CALCommandReply_3Bytes":
-		return CALCommandTypeContainer_CALCommandReply_3Bytes
+		return CALCommandTypeContainer_CALCommandReply_3Bytes, true
 	case "CALCommandReply_4Bytes":
-		return CALCommandTypeContainer_CALCommandReply_4Bytes
+		return CALCommandTypeContainer_CALCommandReply_4Bytes, true
 	case "CALCommandReply_5Bytes":
-		return CALCommandTypeContainer_CALCommandReply_5Bytes
+		return CALCommandTypeContainer_CALCommandReply_5Bytes, true
 	case "CALCommandReply_6Bytes":
-		return CALCommandTypeContainer_CALCommandReply_6Bytes
+		return CALCommandTypeContainer_CALCommandReply_6Bytes, true
 	case "CALCommandReply_7Bytes":
-		return CALCommandTypeContainer_CALCommandReply_7Bytes
+		return CALCommandTypeContainer_CALCommandReply_7Bytes, true
 	case "CALCommandReply_8Bytes":
-		return CALCommandTypeContainer_CALCommandReply_8Bytes
+		return CALCommandTypeContainer_CALCommandReply_8Bytes, true
 	case "CALCommandReply_9Bytes":
-		return CALCommandTypeContainer_CALCommandReply_9Bytes
+		return CALCommandTypeContainer_CALCommandReply_9Bytes, true
 	case "CALCommandReply_10Bytes":
-		return CALCommandTypeContainer_CALCommandReply_10Bytes
+		return CALCommandTypeContainer_CALCommandReply_10Bytes, true
 	case "CALCommandReply_11Bytes":
-		return CALCommandTypeContainer_CALCommandReply_11Bytes
+		return CALCommandTypeContainer_CALCommandReply_11Bytes, true
 	case "CALCommandReply_12Bytes":
-		return CALCommandTypeContainer_CALCommandReply_12Bytes
+		return CALCommandTypeContainer_CALCommandReply_12Bytes, true
 	case "CALCommandReply_13Bytes":
-		return CALCommandTypeContainer_CALCommandReply_13Bytes
+		return CALCommandTypeContainer_CALCommandReply_13Bytes, true
 	case "CALCommandReply_14Bytes":
-		return CALCommandTypeContainer_CALCommandReply_14Bytes
+		return CALCommandTypeContainer_CALCommandReply_14Bytes, true
 	case "CALCommandReply_15Bytes":
-		return CALCommandTypeContainer_CALCommandReply_15Bytes
+		return CALCommandTypeContainer_CALCommandReply_15Bytes, true
 	case "CALCommandReply_16Bytes":
-		return CALCommandTypeContainer_CALCommandReply_16Bytes
+		return CALCommandTypeContainer_CALCommandReply_16Bytes, true
 	case "CALCommandReply_17Bytes":
-		return CALCommandTypeContainer_CALCommandReply_17Bytes
+		return CALCommandTypeContainer_CALCommandReply_17Bytes, true
 	case "CALCommandReply_18Bytes":
-		return CALCommandTypeContainer_CALCommandReply_18Bytes
+		return CALCommandTypeContainer_CALCommandReply_18Bytes, true
 	case "CALCommandReply_19Bytes":
-		return CALCommandTypeContainer_CALCommandReply_19Bytes
+		return CALCommandTypeContainer_CALCommandReply_19Bytes, true
 	case "CALCommandReply_20Bytes":
-		return CALCommandTypeContainer_CALCommandReply_20Bytes
+		return CALCommandTypeContainer_CALCommandReply_20Bytes, true
 	case "CALCommandReply_21Bytes":
-		return CALCommandTypeContainer_CALCommandReply_21Bytes
+		return CALCommandTypeContainer_CALCommandReply_21Bytes, true
 	case "CALCommandReply_22Bytes":
-		return CALCommandTypeContainer_CALCommandReply_22Bytes
+		return CALCommandTypeContainer_CALCommandReply_22Bytes, true
 	case "CALCommandReply_23Bytes":
-		return CALCommandTypeContainer_CALCommandReply_23Bytes
+		return CALCommandTypeContainer_CALCommandReply_23Bytes, true
 	case "CALCommandReply_24Bytes":
-		return CALCommandTypeContainer_CALCommandReply_24Bytes
+		return CALCommandTypeContainer_CALCommandReply_24Bytes, true
 	case "CALCommandReply_25Bytes":
-		return CALCommandTypeContainer_CALCommandReply_25Bytes
+		return CALCommandTypeContainer_CALCommandReply_25Bytes, true
 	case "CALCommandReply_26Bytes":
-		return CALCommandTypeContainer_CALCommandReply_26Bytes
+		return CALCommandTypeContainer_CALCommandReply_26Bytes, true
 	case "CALCommandReply_27Bytes":
-		return CALCommandTypeContainer_CALCommandReply_27Bytes
+		return CALCommandTypeContainer_CALCommandReply_27Bytes, true
 	case "CALCommandReply_28Bytes":
-		return CALCommandTypeContainer_CALCommandReply_28Bytes
+		return CALCommandTypeContainer_CALCommandReply_28Bytes, true
 	case "CALCommandReply_29Bytes":
-		return CALCommandTypeContainer_CALCommandReply_29Bytes
+		return CALCommandTypeContainer_CALCommandReply_29Bytes, true
 	case "CALCommandReply_30Bytes":
-		return CALCommandTypeContainer_CALCommandReply_30Bytes
+		return CALCommandTypeContainer_CALCommandReply_30Bytes, true
 	case "CALCommandReply_31Bytes":
-		return CALCommandTypeContainer_CALCommandReply_31Bytes
+		return CALCommandTypeContainer_CALCommandReply_31Bytes, true
+	case "CALCommandWrite_0Bytes":
+		return CALCommandTypeContainer_CALCommandWrite_0Bytes, true
+	case "CALCommandWrite_1Bytes":
+		return CALCommandTypeContainer_CALCommandWrite_1Bytes, true
+	case "CALCommandWrite_2Bytes":
+		return CALCommandTypeContainer_CALCommandWrite_2Bytes, true
+	case "CALCommandWrite_3Bytes":
+		return CALCommandTypeContainer_CALCommandWrite_3Bytes, true
+	case "CALCommandWrite_4Bytes":
+		return CALCommandTypeContainer_CALCommandWrite_4Bytes, true
+	case "CALCommandWrite_5Bytes":
+		return CALCommandTypeContainer_CALCommandWrite_5Bytes, true
+	case "CALCommandWrite_6Bytes":
+		return CALCommandTypeContainer_CALCommandWrite_6Bytes, true
+	case "CALCommandWrite_7Bytes":
+		return CALCommandTypeContainer_CALCommandWrite_7Bytes, true
+	case "CALCommandWrite_8Bytes":
+		return CALCommandTypeContainer_CALCommandWrite_8Bytes, true
+	case "CALCommandWrite_9Bytes":
+		return CALCommandTypeContainer_CALCommandWrite_9Bytes, true
+	case "CALCommandWrite_10Bytes":
+		return CALCommandTypeContainer_CALCommandWrite_10Bytes, true
+	case "CALCommandWrite_11Bytes":
+		return CALCommandTypeContainer_CALCommandWrite_11Bytes, true
+	case "CALCommandWrite_12Bytes":
+		return CALCommandTypeContainer_CALCommandWrite_12Bytes, true
+	case "CALCommandWrite_13Bytes":
+		return CALCommandTypeContainer_CALCommandWrite_13Bytes, true
+	case "CALCommandWrite_14Bytes":
+		return CALCommandTypeContainer_CALCommandWrite_14Bytes, true
+	case "CALCommandWrite_15Bytes":
+		return CALCommandTypeContainer_CALCommandWrite_15Bytes, true
+	case "CALCommandStatus_0Bytes":
+		return CALCommandTypeContainer_CALCommandStatus_0Bytes, true
 	case "CALCommandStatus_1Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_1Bytes
+		return CALCommandTypeContainer_CALCommandStatus_1Bytes, true
 	case "CALCommandStatus_2Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_2Bytes
+		return CALCommandTypeContainer_CALCommandStatus_2Bytes, true
 	case "CALCommandStatus_3Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_3Bytes
+		return CALCommandTypeContainer_CALCommandStatus_3Bytes, true
 	case "CALCommandStatus_4Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_4Bytes
+		return CALCommandTypeContainer_CALCommandStatus_4Bytes, true
 	case "CALCommandStatus_5Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_5Bytes
+		return CALCommandTypeContainer_CALCommandStatus_5Bytes, true
 	case "CALCommandStatus_6Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_6Bytes
+		return CALCommandTypeContainer_CALCommandStatus_6Bytes, true
 	case "CALCommandStatus_7Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_7Bytes
+		return CALCommandTypeContainer_CALCommandStatus_7Bytes, true
 	case "CALCommandStatus_8Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_8Bytes
+		return CALCommandTypeContainer_CALCommandStatus_8Bytes, true
 	case "CALCommandStatus_9Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_9Bytes
+		return CALCommandTypeContainer_CALCommandStatus_9Bytes, true
 	case "CALCommandStatus_10Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_10Bytes
+		return CALCommandTypeContainer_CALCommandStatus_10Bytes, true
 	case "CALCommandStatus_11Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_11Bytes
+		return CALCommandTypeContainer_CALCommandStatus_11Bytes, true
 	case "CALCommandStatus_12Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_12Bytes
+		return CALCommandTypeContainer_CALCommandStatus_12Bytes, true
 	case "CALCommandStatus_13Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_13Bytes
+		return CALCommandTypeContainer_CALCommandStatus_13Bytes, true
 	case "CALCommandStatus_14Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_14Bytes
+		return CALCommandTypeContainer_CALCommandStatus_14Bytes, true
 	case "CALCommandStatus_15Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_15Bytes
+		return CALCommandTypeContainer_CALCommandStatus_15Bytes, true
 	case "CALCommandStatus_16Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_16Bytes
+		return CALCommandTypeContainer_CALCommandStatus_16Bytes, true
 	case "CALCommandStatus_17Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_17Bytes
+		return CALCommandTypeContainer_CALCommandStatus_17Bytes, true
 	case "CALCommandStatus_18Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_18Bytes
+		return CALCommandTypeContainer_CALCommandStatus_18Bytes, true
 	case "CALCommandStatus_19Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_19Bytes
+		return CALCommandTypeContainer_CALCommandStatus_19Bytes, true
 	case "CALCommandStatus_20Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_20Bytes
+		return CALCommandTypeContainer_CALCommandStatus_20Bytes, true
 	case "CALCommandStatus_21Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_21Bytes
+		return CALCommandTypeContainer_CALCommandStatus_21Bytes, true
 	case "CALCommandStatus_22Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_22Bytes
+		return CALCommandTypeContainer_CALCommandStatus_22Bytes, true
 	case "CALCommandStatus_23Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_23Bytes
+		return CALCommandTypeContainer_CALCommandStatus_23Bytes, true
 	case "CALCommandStatus_24Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_24Bytes
+		return CALCommandTypeContainer_CALCommandStatus_24Bytes, true
 	case "CALCommandStatus_25Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_25Bytes
+		return CALCommandTypeContainer_CALCommandStatus_25Bytes, true
 	case "CALCommandStatus_26Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_26Bytes
+		return CALCommandTypeContainer_CALCommandStatus_26Bytes, true
 	case "CALCommandStatus_27Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_27Bytes
+		return CALCommandTypeContainer_CALCommandStatus_27Bytes, true
 	case "CALCommandStatus_28Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_28Bytes
+		return CALCommandTypeContainer_CALCommandStatus_28Bytes, true
 	case "CALCommandStatus_29Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_29Bytes
+		return CALCommandTypeContainer_CALCommandStatus_29Bytes, true
 	case "CALCommandStatus_30Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_30Bytes
+		return CALCommandTypeContainer_CALCommandStatus_30Bytes, true
 	case "CALCommandStatus_31Bytes":
-		return CALCommandTypeContainer_CALCommandStatus_31Bytes
+		return CALCommandTypeContainer_CALCommandStatus_31Bytes, true
+	case "CALCommandStatusExtended_0Bytes":
+		return CALCommandTypeContainer_CALCommandStatusExtended_0Bytes, true
 	case "CALCommandStatusExtended_1Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_1Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_1Bytes, true
+	case "CALCommandStatusExtended_2Bytes":
+		return CALCommandTypeContainer_CALCommandStatusExtended_2Bytes, true
 	case "CALCommandStatusExtended_3Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_3Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_3Bytes, true
 	case "CALCommandStatusExtended_4Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_4Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_4Bytes, true
 	case "CALCommandStatusExtended_5Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_5Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_5Bytes, true
 	case "CALCommandStatusExtended_6Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_6Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_6Bytes, true
 	case "CALCommandStatusExtended_7Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_7Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_7Bytes, true
 	case "CALCommandStatusExtended_8Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_8Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_8Bytes, true
 	case "CALCommandStatusExtended_9Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_9Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_9Bytes, true
 	case "CALCommandStatusExtended_10Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_10Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_10Bytes, true
 	case "CALCommandStatusExtended_11Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_11Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_11Bytes, true
 	case "CALCommandStatusExtended_12Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_12Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_12Bytes, true
 	case "CALCommandStatusExtended_13Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_13Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_13Bytes, true
 	case "CALCommandStatusExtended_14Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_14Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_14Bytes, true
 	case "CALCommandStatusExtended_15Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_15Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_15Bytes, true
 	case "CALCommandStatusExtended_16Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_16Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_16Bytes, true
 	case "CALCommandStatusExtended_17Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_17Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_17Bytes, true
 	case "CALCommandStatusExtended_18Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_18Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_18Bytes, true
 	case "CALCommandStatusExtended_19Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_19Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_19Bytes, true
 	case "CALCommandStatusExtended_20Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_20Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_20Bytes, true
 	case "CALCommandStatusExtended_21Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_21Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_21Bytes, true
 	case "CALCommandStatusExtended_22Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_22Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_22Bytes, true
 	case "CALCommandStatusExtended_23Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_23Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_23Bytes, true
 	case "CALCommandStatusExtended_24Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_24Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_24Bytes, true
 	case "CALCommandStatusExtended_25Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_25Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_25Bytes, true
 	case "CALCommandStatusExtended_26Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_26Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_26Bytes, true
 	case "CALCommandStatusExtended_27Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_27Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_27Bytes, true
 	case "CALCommandStatusExtended_28Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_28Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_28Bytes, true
 	case "CALCommandStatusExtended_29Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_29Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_29Bytes, true
 	case "CALCommandStatusExtended_30Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_30Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_30Bytes, true
 	case "CALCommandStatusExtended_31Bytes":
-		return CALCommandTypeContainer_CALCommandStatusExtended_31Bytes
+		return CALCommandTypeContainer_CALCommandStatusExtended_31Bytes, true
 	}
-	return 0
+	return 0, false
 }
 
 func CALCommandTypeContainerKnows(value uint8) bool {
@@ -1480,19 +1758,37 @@ func (m CALCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALCommandTypeContainerParse(readBuffer utils.ReadBuffer) (CALCommandTypeContainer, error) {
+func CALCommandTypeContainerParse(theBytes []byte) (CALCommandTypeContainer, error) {
+	return CALCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func CALCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (CALCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("CALCommandTypeContainer", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading CALCommandTypeContainer")
 	}
-	return CALCommandTypeContainerByValue(val), nil
+	if enum, ok := CALCommandTypeContainerByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return CALCommandTypeContainer(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e CALCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("CALCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e CALCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e CALCommandTypeContainer) name() string {
+func (e CALCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("CALCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e CALCommandTypeContainer) PLC4XEnumName() string {
 	switch e {
 	case CALCommandTypeContainer_CALCommandReset:
 		return "CALCommandReset"
@@ -1504,6 +1800,8 @@ func (e CALCommandTypeContainer) name() string {
 		return "CALCommandGetStatus"
 	case CALCommandTypeContainer_CALCommandAcknowledge:
 		return "CALCommandAcknowledge"
+	case CALCommandTypeContainer_CALCommandReply_0Bytes:
+		return "CALCommandReply_0Bytes"
 	case CALCommandTypeContainer_CALCommandReply_1Bytes:
 		return "CALCommandReply_1Bytes"
 	case CALCommandTypeContainer_CALCommandReply_2Bytes:
@@ -1566,6 +1864,40 @@ func (e CALCommandTypeContainer) name() string {
 		return "CALCommandReply_30Bytes"
 	case CALCommandTypeContainer_CALCommandReply_31Bytes:
 		return "CALCommandReply_31Bytes"
+	case CALCommandTypeContainer_CALCommandWrite_0Bytes:
+		return "CALCommandWrite_0Bytes"
+	case CALCommandTypeContainer_CALCommandWrite_1Bytes:
+		return "CALCommandWrite_1Bytes"
+	case CALCommandTypeContainer_CALCommandWrite_2Bytes:
+		return "CALCommandWrite_2Bytes"
+	case CALCommandTypeContainer_CALCommandWrite_3Bytes:
+		return "CALCommandWrite_3Bytes"
+	case CALCommandTypeContainer_CALCommandWrite_4Bytes:
+		return "CALCommandWrite_4Bytes"
+	case CALCommandTypeContainer_CALCommandWrite_5Bytes:
+		return "CALCommandWrite_5Bytes"
+	case CALCommandTypeContainer_CALCommandWrite_6Bytes:
+		return "CALCommandWrite_6Bytes"
+	case CALCommandTypeContainer_CALCommandWrite_7Bytes:
+		return "CALCommandWrite_7Bytes"
+	case CALCommandTypeContainer_CALCommandWrite_8Bytes:
+		return "CALCommandWrite_8Bytes"
+	case CALCommandTypeContainer_CALCommandWrite_9Bytes:
+		return "CALCommandWrite_9Bytes"
+	case CALCommandTypeContainer_CALCommandWrite_10Bytes:
+		return "CALCommandWrite_10Bytes"
+	case CALCommandTypeContainer_CALCommandWrite_11Bytes:
+		return "CALCommandWrite_11Bytes"
+	case CALCommandTypeContainer_CALCommandWrite_12Bytes:
+		return "CALCommandWrite_12Bytes"
+	case CALCommandTypeContainer_CALCommandWrite_13Bytes:
+		return "CALCommandWrite_13Bytes"
+	case CALCommandTypeContainer_CALCommandWrite_14Bytes:
+		return "CALCommandWrite_14Bytes"
+	case CALCommandTypeContainer_CALCommandWrite_15Bytes:
+		return "CALCommandWrite_15Bytes"
+	case CALCommandTypeContainer_CALCommandStatus_0Bytes:
+		return "CALCommandStatus_0Bytes"
 	case CALCommandTypeContainer_CALCommandStatus_1Bytes:
 		return "CALCommandStatus_1Bytes"
 	case CALCommandTypeContainer_CALCommandStatus_2Bytes:
@@ -1628,8 +1960,12 @@ func (e CALCommandTypeContainer) name() string {
 		return "CALCommandStatus_30Bytes"
 	case CALCommandTypeContainer_CALCommandStatus_31Bytes:
 		return "CALCommandStatus_31Bytes"
+	case CALCommandTypeContainer_CALCommandStatusExtended_0Bytes:
+		return "CALCommandStatusExtended_0Bytes"
 	case CALCommandTypeContainer_CALCommandStatusExtended_1Bytes:
 		return "CALCommandStatusExtended_1Bytes"
+	case CALCommandTypeContainer_CALCommandStatusExtended_2Bytes:
+		return "CALCommandStatusExtended_2Bytes"
 	case CALCommandTypeContainer_CALCommandStatusExtended_3Bytes:
 		return "CALCommandStatusExtended_3Bytes"
 	case CALCommandTypeContainer_CALCommandStatusExtended_4Bytes:
@@ -1693,5 +2029,5 @@ func (e CALCommandTypeContainer) name() string {
 }
 
 func (e CALCommandTypeContainer) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

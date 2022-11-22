@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -50,7 +50,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( datapointType == KnxDatapointType.BYTE ) { // BitString
+            } else if( datapointType == KnxDatapointType.BYTE ) { // BYTE
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -63,8 +63,8 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Simple Field (value)
                 var value = readBuffer.ReadByte("", 8);
 
-                return new PlcBitString(value);
-            } else if( datapointType == KnxDatapointType.WORD ) { // BitString
+                return new PlcBYTE(value);
+            } else if( datapointType == KnxDatapointType.WORD ) { // WORD
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -77,8 +77,8 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Simple Field (value)
                 var value = readBuffer.ReadUshort("", 16);
 
-                return new PlcBitString(value);
-            } else if( datapointType == KnxDatapointType.DWORD ) { // BitString
+                return new PlcWORD(value);
+            } else if( datapointType == KnxDatapointType.DWORD ) { // DWORD
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -91,8 +91,8 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Simple Field (value)
                 var value = readBuffer.ReadUint("", 32);
 
-                return new PlcBitString(value);
-            } else if( datapointType == KnxDatapointType.LWORD ) { // BitString
+                return new PlcDWORD(value);
+            } else if( datapointType == KnxDatapointType.LWORD ) { // LWORD
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -105,7 +105,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Simple Field (value)
                 var value = readBuffer.ReadUlong("", 64);
 
-                return new PlcBitString(value);
+                return new PlcLWORD(value);
             } else if( datapointType == KnxDatapointType.USINT ) { // USINT
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -257,7 +257,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 }
 
                 // Simple Field (value)
-                var value = readBuffer.ReadByte("", 8);
+                var value = readBuffer.ReadString("", 8, System.Text.Encoding.GetEncoding("UTF-8"));
 
                 return new PlcCHAR(Convert.ToChar(value));
             } else if( datapointType == KnxDatapointType.WCHAR ) { // WCHAR
@@ -271,7 +271,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 }
 
                 // Simple Field (value)
-                var value = readBuffer.ReadUshort("", 16);
+                var value = readBuffer.ReadString("", 16, System.Text.Encoding.GetEncoding("UTF-16"));
 
                 return new PlcWCHAR(Convert.ToChar(value));
             } else if( datapointType == KnxDatapointType.TIME ) { // TIME
@@ -6541,7 +6541,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.BYTE ) { // BitString
+        } else if( datapointType == KnxDatapointType.BYTE ) { // BYTE
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6550,7 +6550,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.WORD ) { // BitString
+        } else if( datapointType == KnxDatapointType.WORD ) { // WORD
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6559,7 +6559,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.DWORD ) { // BitString
+        } else if( datapointType == KnxDatapointType.DWORD ) { // DWORD
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6568,7 +6568,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (uint) _value.GetUint();
                 writeBuffer.WriteUint("", 32, (uint) (value));
             return writeBuffer;
-        } else if( datapointType == KnxDatapointType.LWORD ) { // BitString
+        } else if( datapointType == KnxDatapointType.LWORD ) { // LWORD
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
@@ -6673,8 +6673,8 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Reserved Field
                 writeBuffer.WriteByte("", 8, (byte) 0x00);
                 // Simple Field (value)
-                var value = (byte) _value.GetByte();
-                writeBuffer.WriteByte("", 8, (byte) (value));
+                var value = (string) _value.GetString();
+                writeBuffer.WriteString("", 8, "UTF-8", (string) (value));
             return writeBuffer;
         } else if( datapointType == KnxDatapointType.WCHAR ) { // WCHAR
                 var writeBuffer = new WriteBuffer();
@@ -6682,8 +6682,8 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Reserved Field
                 writeBuffer.WriteByte("", 8, (byte) 0x00);
                 // Simple Field (value)
-                var value = (ushort) _value.GetUshort();
-                writeBuffer.WriteUshort("", 16, (ushort) (value));
+                var value = (string) _value.GetString();
+                writeBuffer.WriteString("", 16, "UTF-16", (string) (value));
             return writeBuffer;
         } else if( datapointType == KnxDatapointType.TIME ) { // TIME
                 var writeBuffer = new WriteBuffer();

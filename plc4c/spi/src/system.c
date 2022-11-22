@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -27,6 +27,10 @@
 
 // Uncomment to add printf spam at end of plc4c_system_create_connection()
 //#define DEBUG_PLC4C_SYSTEM
+
+#ifdef DEBUG_PLC4C_SYSTEM
+#include <stdio.h>
+#endif
 
 #ifdef _WIN32
 #define strtok_r strtok_s
@@ -295,7 +299,6 @@ plc4c_return_code plc4c_system_create_connection(
   }
   
 #ifdef DEBUG_PLC4C_SYSTEM
-#include <stdio.h>
   printf("\n~~~~~~~~ PLC4C Connection ~~~~~~~~\n"
     "Connection String:\t%s\n"
     "Protocol Code:\t\t%s\n"

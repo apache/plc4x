@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,8 +20,9 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,35 +31,45 @@ import (
 // Constant values.
 const KnxNetIpMessage_PROTOCOLVERSION uint8 = 0x10
 
-// KnxNetIpMessage is the data-structure of this message
-type KnxNetIpMessage struct {
-	Child IKnxNetIpMessageChild
-}
-
-// IKnxNetIpMessage is the corresponding interface of KnxNetIpMessage
-type IKnxNetIpMessage interface {
+// KnxNetIpMessage is the corresponding interface of KnxNetIpMessage
+type KnxNetIpMessage interface {
+	utils.LengthAware
+	utils.Serializable
 	// GetMsgType returns MsgType (discriminator field)
 	GetMsgType() uint16
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-type IKnxNetIpMessageParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child IKnxNetIpMessage, serializeChildFunction func() error) error
+// KnxNetIpMessageExactly can be used when we want exactly this type and not a type which fulfills KnxNetIpMessage.
+// This is useful for switch cases.
+type KnxNetIpMessageExactly interface {
+	KnxNetIpMessage
+	isKnxNetIpMessage() bool
+}
+
+// _KnxNetIpMessage is the data-structure of this message
+type _KnxNetIpMessage struct {
+	_KnxNetIpMessageChildRequirements
+}
+
+type _KnxNetIpMessageChildRequirements interface {
+	utils.Serializable
+	GetLengthInBits() uint16
+	GetLengthInBitsConditional(lastItem bool) uint16
+	GetMsgType() uint16
+}
+
+type KnxNetIpMessageParent interface {
+	SerializeParent(writeBuffer utils.WriteBuffer, child KnxNetIpMessage, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
-type IKnxNetIpMessageChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *KnxNetIpMessage)
+type KnxNetIpMessageChild interface {
+	utils.Serializable
+	InitializeParent(parent KnxNetIpMessage)
 	GetParent() *KnxNetIpMessage
 
 	GetTypeName() string
-	IKnxNetIpMessage
+	KnxNetIpMessage
 }
 
 ///////////////////////////////////////////////////////////
@@ -66,7 +77,7 @@ type IKnxNetIpMessageChild interface {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *KnxNetIpMessage) GetProtocolVersion() uint8 {
+func (m *_KnxNetIpMessage) GetProtocolVersion() uint8 {
 	return KnxNetIpMessage_PROTOCOLVERSION
 }
 
@@ -75,37 +86,27 @@ func (m *KnxNetIpMessage) GetProtocolVersion() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewKnxNetIpMessage factory function for KnxNetIpMessage
-func NewKnxNetIpMessage() *KnxNetIpMessage {
-	return &KnxNetIpMessage{}
+// NewKnxNetIpMessage factory function for _KnxNetIpMessage
+func NewKnxNetIpMessage() *_KnxNetIpMessage {
+	return &_KnxNetIpMessage{}
 }
 
-func CastKnxNetIpMessage(structType interface{}) *KnxNetIpMessage {
+// Deprecated: use the interface for direct cast
+func CastKnxNetIpMessage(structType interface{}) KnxNetIpMessage {
 	if casted, ok := structType.(KnxNetIpMessage); ok {
-		return &casted
-	}
-	if casted, ok := structType.(*KnxNetIpMessage); ok {
 		return casted
 	}
-	if casted, ok := structType.(IKnxNetIpMessageChild); ok {
-		return casted.GetParent()
+	if casted, ok := structType.(*KnxNetIpMessage); ok {
+		return *casted
 	}
 	return nil
 }
 
-func (m *KnxNetIpMessage) GetTypeName() string {
+func (m *_KnxNetIpMessage) GetTypeName() string {
 	return "KnxNetIpMessage"
 }
 
-func (m *KnxNetIpMessage) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *KnxNetIpMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.GetLengthInBits()
-}
-
-func (m *KnxNetIpMessage) GetParentLengthInBits() uint16 {
+func (m *_KnxNetIpMessage) GetParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (headerLength)
@@ -122,15 +123,19 @@ func (m *KnxNetIpMessage) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *KnxNetIpMessage) GetLengthInBytes() uint16 {
+func (m *_KnxNetIpMessage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func KnxNetIpMessageParse(theBytes []byte) (KnxNetIpMessage, error) {
+	return KnxNetIpMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+}
+
+func KnxNetIpMessageParseWithBuffer(readBuffer utils.ReadBuffer) (KnxNetIpMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpMessage"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for KnxNetIpMessage")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -139,13 +144,13 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error)
 	headerLength, _headerLengthErr := readBuffer.ReadUint8("headerLength", 8)
 	_ = headerLength
 	if _headerLengthErr != nil {
-		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field")
+		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field of KnxNetIpMessage")
 	}
 
 	// Const Field (protocolVersion)
 	protocolVersion, _protocolVersionErr := readBuffer.ReadUint8("protocolVersion", 8)
 	if _protocolVersionErr != nil {
-		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field")
+		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field of KnxNetIpMessage")
 	}
 	if protocolVersion != KnxNetIpMessage_PROTOCOLVERSION {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", KnxNetIpMessage_PROTOCOLVERSION) + " but got " + fmt.Sprintf("%d", protocolVersion))
@@ -154,82 +159,83 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error)
 	// Discriminator Field (msgType) (Used as input to a switch field)
 	msgType, _msgTypeErr := readBuffer.ReadUint16("msgType", 16)
 	if _msgTypeErr != nil {
-		return nil, errors.Wrap(_msgTypeErr, "Error parsing 'msgType' field")
+		return nil, errors.Wrap(_msgTypeErr, "Error parsing 'msgType' field of KnxNetIpMessage")
 	}
 
 	// Implicit Field (totalLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	totalLength, _totalLengthErr := readBuffer.ReadUint16("totalLength", 16)
 	_ = totalLength
 	if _totalLengthErr != nil {
-		return nil, errors.Wrap(_totalLengthErr, "Error parsing 'totalLength' field")
+		return nil, errors.Wrap(_totalLengthErr, "Error parsing 'totalLength' field of KnxNetIpMessage")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	type KnxNetIpMessageChild interface {
-		InitializeParent(*KnxNetIpMessage)
-		GetParent() *KnxNetIpMessage
+	type KnxNetIpMessageChildSerializeRequirement interface {
+		KnxNetIpMessage
+		InitializeParent(KnxNetIpMessage)
+		GetParent() KnxNetIpMessage
 	}
-	var _child KnxNetIpMessageChild
+	var _childTemp interface{}
+	var _child KnxNetIpMessageChildSerializeRequirement
 	var typeSwitchError error
 	switch {
 	case msgType == 0x0201: // SearchRequest
-		_child, typeSwitchError = SearchRequestParse(readBuffer)
+		_childTemp, typeSwitchError = SearchRequestParseWithBuffer(readBuffer)
 	case msgType == 0x0202: // SearchResponse
-		_child, typeSwitchError = SearchResponseParse(readBuffer)
+		_childTemp, typeSwitchError = SearchResponseParseWithBuffer(readBuffer)
 	case msgType == 0x0203: // DescriptionRequest
-		_child, typeSwitchError = DescriptionRequestParse(readBuffer)
+		_childTemp, typeSwitchError = DescriptionRequestParseWithBuffer(readBuffer)
 	case msgType == 0x0204: // DescriptionResponse
-		_child, typeSwitchError = DescriptionResponseParse(readBuffer)
+		_childTemp, typeSwitchError = DescriptionResponseParseWithBuffer(readBuffer)
 	case msgType == 0x0205: // ConnectionRequest
-		_child, typeSwitchError = ConnectionRequestParse(readBuffer)
+		_childTemp, typeSwitchError = ConnectionRequestParseWithBuffer(readBuffer)
 	case msgType == 0x0206: // ConnectionResponse
-		_child, typeSwitchError = ConnectionResponseParse(readBuffer)
+		_childTemp, typeSwitchError = ConnectionResponseParseWithBuffer(readBuffer)
 	case msgType == 0x0207: // ConnectionStateRequest
-		_child, typeSwitchError = ConnectionStateRequestParse(readBuffer)
+		_childTemp, typeSwitchError = ConnectionStateRequestParseWithBuffer(readBuffer)
 	case msgType == 0x0208: // ConnectionStateResponse
-		_child, typeSwitchError = ConnectionStateResponseParse(readBuffer)
+		_childTemp, typeSwitchError = ConnectionStateResponseParseWithBuffer(readBuffer)
 	case msgType == 0x0209: // DisconnectRequest
-		_child, typeSwitchError = DisconnectRequestParse(readBuffer)
+		_childTemp, typeSwitchError = DisconnectRequestParseWithBuffer(readBuffer)
 	case msgType == 0x020A: // DisconnectResponse
-		_child, typeSwitchError = DisconnectResponseParse(readBuffer)
+		_childTemp, typeSwitchError = DisconnectResponseParseWithBuffer(readBuffer)
 	case msgType == 0x020B: // UnknownMessage
-		_child, typeSwitchError = UnknownMessageParse(readBuffer, totalLength)
+		_childTemp, typeSwitchError = UnknownMessageParseWithBuffer(readBuffer, totalLength)
 	case msgType == 0x0310: // DeviceConfigurationRequest
-		_child, typeSwitchError = DeviceConfigurationRequestParse(readBuffer, totalLength)
+		_childTemp, typeSwitchError = DeviceConfigurationRequestParseWithBuffer(readBuffer, totalLength)
 	case msgType == 0x0311: // DeviceConfigurationAck
-		_child, typeSwitchError = DeviceConfigurationAckParse(readBuffer)
+		_childTemp, typeSwitchError = DeviceConfigurationAckParseWithBuffer(readBuffer)
 	case msgType == 0x0420: // TunnelingRequest
-		_child, typeSwitchError = TunnelingRequestParse(readBuffer, totalLength)
+		_childTemp, typeSwitchError = TunnelingRequestParseWithBuffer(readBuffer, totalLength)
 	case msgType == 0x0421: // TunnelingResponse
-		_child, typeSwitchError = TunnelingResponseParse(readBuffer)
+		_childTemp, typeSwitchError = TunnelingResponseParseWithBuffer(readBuffer)
 	case msgType == 0x0530: // RoutingIndication
-		_child, typeSwitchError = RoutingIndicationParse(readBuffer)
+		_childTemp, typeSwitchError = RoutingIndicationParseWithBuffer(readBuffer)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [msgType=%v]", msgType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of KnxNetIpMessage")
 	}
+	_child = _childTemp.(KnxNetIpMessageChildSerializeRequirement)
 
 	if closeErr := readBuffer.CloseContext("KnxNetIpMessage"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for KnxNetIpMessage")
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child.GetParent())
-	return _child.GetParent(), nil
+	_child.InitializeParent(_child)
+	return _child, nil
 }
 
-func (m *KnxNetIpMessage) Serialize(writeBuffer utils.WriteBuffer) error {
-	return m.Child.Serialize(writeBuffer)
-}
-
-func (m *KnxNetIpMessage) SerializeParent(writeBuffer utils.WriteBuffer, child IKnxNetIpMessage, serializeChildFunction func() error) error {
+func (pm *_KnxNetIpMessage) SerializeParent(writeBuffer utils.WriteBuffer, child KnxNetIpMessage, serializeChildFunction func() error) error {
+	// We redirect all calls through client as some methods are only implemented there
+	m := child
+	_ = m
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("KnxNetIpMessage"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for KnxNetIpMessage")
 	}
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -266,18 +272,22 @@ func (m *KnxNetIpMessage) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	}
 
 	if popErr := writeBuffer.PopContext("KnxNetIpMessage"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for KnxNetIpMessage")
 	}
 	return nil
 }
 
-func (m *KnxNetIpMessage) String() string {
+func (m *_KnxNetIpMessage) isKnxNetIpMessage() bool {
+	return true
+}
+
+func (m *_KnxNetIpMessage) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

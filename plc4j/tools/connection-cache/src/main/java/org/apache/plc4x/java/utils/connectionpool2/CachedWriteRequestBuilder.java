@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,9 +18,8 @@
  */
 package org.apache.plc4x.java.utils.connectionpool2;
 
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 
 public class CachedWriteRequestBuilder implements PlcWriteRequest.Builder {
 
@@ -33,8 +32,14 @@ public class CachedWriteRequestBuilder implements PlcWriteRequest.Builder {
     }
 
     @Override
-    public PlcWriteRequest.Builder addItem(String name, String fieldQuery, Object... values) {
-        builder.addItem(name, fieldQuery, values);
+    public PlcWriteRequest.Builder addTagAddress(String name, String tagAddress, Object... values) {
+        builder.addTagAddress(name, tagAddress, values);
+        return this;
+    }
+
+    @Override
+    public PlcWriteRequest.Builder addTag(String name, PlcTag tag, Object... values) {
+        builder.addTag(name, tag, values);
         return this;
     }
 

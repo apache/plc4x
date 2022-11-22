@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -140,6 +140,7 @@ public class MessageValidatorAndMigrator {
 
                     String content;
                     try {
+                        // REMARK: In know IntelliJ tells us this is "optimizable", don't do it as it will break the build.
                         content = new String(Files.readAllBytes(path), charset);
                         // Make sure this also works on Windows
                         // (Mainly when using git to check out Windows style and commit in Unix style)

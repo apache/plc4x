@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,8 +20,8 @@
 package readwrite
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"strconv"
 	"strings"
@@ -50,40 +50,40 @@ func (m S7XmlParserHelper) Parse(typeName string, xmlString string, parserArgume
 			return nil, err
 		}
 		stringLength := int32(parsedInt1)
-		return model.DataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataProtocolId, stringLength)
+		return model.DataItemParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataProtocolId, stringLength)
 	case "SzlId":
-		return model.SzlIdParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.SzlIdParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AlarmMessageObjectAckType":
-		return model.AlarmMessageObjectAckTypeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AlarmMessageObjectAckTypeParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AlarmMessageAckPushType":
-		return model.AlarmMessageAckPushTypeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AlarmMessageAckPushTypeParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "S7Message":
-		return model.S7MessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.S7MessageParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "S7VarPayloadStatusItem":
-		return model.S7VarPayloadStatusItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.S7VarPayloadStatusItemParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "S7Parameter":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
 			return nil, err
 		}
 		messageType := uint8(parsedUint0)
-		return model.S7ParameterParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), messageType)
+		return model.S7ParameterParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), messageType)
 	case "S7DataAlarmMessage":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 4)
 		if err != nil {
 			return nil, err
 		}
 		cpuFunctionType := uint8(parsedUint0)
-		return model.S7DataAlarmMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cpuFunctionType)
+		return model.S7DataAlarmMessageParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cpuFunctionType)
 	case "SzlDataTreeItem":
-		return model.SzlDataTreeItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.SzlDataTreeItemParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "COTPPacket":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
 		cotpLen := uint16(parsedUint0)
-		return model.COTPPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cotpLen)
+		return model.COTPPacketParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cotpLen)
 	case "S7PayloadUserDataItem":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 4)
 		if err != nil {
@@ -95,30 +95,30 @@ func (m S7XmlParserHelper) Parse(typeName string, xmlString string, parserArgume
 			return nil, err
 		}
 		cpuSubfunction := uint8(parsedUint1)
-		return model.S7PayloadUserDataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cpuFunctionType, cpuSubfunction)
+		return model.S7PayloadUserDataItemParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cpuFunctionType, cpuSubfunction)
 	case "DateAndTime":
-		return model.DateAndTimeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.DateAndTimeParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "COTPParameter":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
 			return nil, err
 		}
 		rest := uint8(parsedUint0)
-		return model.COTPParameterParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), rest)
+		return model.COTPParameterParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), rest)
 	case "AlarmMessageObjectPushType":
-		return model.AlarmMessageObjectPushTypeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AlarmMessageObjectPushTypeParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "State":
-		return model.StateParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.StateParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AlarmMessagePushType":
-		return model.AlarmMessagePushTypeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AlarmMessagePushTypeParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "TPKTPacket":
-		return model.TPKTPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.TPKTPacketParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AlarmMessageAckType":
-		return model.AlarmMessageAckTypeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AlarmMessageAckTypeParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AssociatedValueType":
-		return model.AssociatedValueTypeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AssociatedValueTypeParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AlarmMessageAckObjectPushType":
-		return model.AlarmMessageAckObjectPushTypeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AlarmMessageAckObjectPushTypeParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "S7Payload":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -127,21 +127,21 @@ func (m S7XmlParserHelper) Parse(typeName string, xmlString string, parserArgume
 		messageType := uint8(parsedUint0)
 		// TODO: find a way to parse the sub types
 		var parameter model.S7Parameter
-		return model.S7PayloadParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), messageType, &parameter)
+		return model.S7PayloadParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), messageType, parameter)
 	case "S7VarRequestParameterItem":
-		return model.S7VarRequestParameterItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.S7VarRequestParameterItemParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "S7VarPayloadDataItem":
-		return model.S7VarPayloadDataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.S7VarPayloadDataItemParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AlarmMessageQueryType":
-		return model.AlarmMessageQueryTypeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AlarmMessageQueryTypeParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AlarmMessageAckResponseType":
-		return model.AlarmMessageAckResponseTypeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AlarmMessageAckResponseTypeParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AlarmMessageObjectQueryType":
-		return model.AlarmMessageObjectQueryTypeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AlarmMessageObjectQueryTypeParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "S7Address":
-		return model.S7AddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.S7AddressParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "S7ParameterUserDataItem":
-		return model.S7ParameterUserDataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.S7ParameterUserDataItemParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

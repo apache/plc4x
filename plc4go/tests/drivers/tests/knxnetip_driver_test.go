@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,10 +21,10 @@ package tests
 
 import (
 	"github.com/apache/plc4x/plc4go/internal/knxnetip"
-	"github.com/apache/plc4x/plc4go/internal/spi/testutils"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	knxIO "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite"
 	knxModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"testing"
 )
@@ -32,7 +32,7 @@ import (
 func TestKNXNetIPDriver(t *testing.T) {
 	t.Skip("No test yet")
 	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
-		return knxModel.KnxNetIpMessageParse(readBufferByteBased)
+		return knxModel.KnxNetIpMessageParseWithBuffer(readBufferByteBased)
 	})}
 	testutils.RunDriverTestsuiteWithOptions(t, knxnetip.NewDriver(), "assets/testing/protocols/knxnetip/DriverTestsuite.xml", knxIO.KnxnetipXmlParserHelper{}, options)
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetEventTransitionBits uint8
 
 type IBACnetEventTransitionBits interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -50,28 +50,28 @@ func init() {
 	}
 }
 
-func BACnetEventTransitionBitsByValue(value uint8) BACnetEventTransitionBits {
+func BACnetEventTransitionBitsByValue(value uint8) (enum BACnetEventTransitionBits, ok bool) {
 	switch value {
 	case 0:
-		return BACnetEventTransitionBits_TO_OFFNORMAL
+		return BACnetEventTransitionBits_TO_OFFNORMAL, true
 	case 1:
-		return BACnetEventTransitionBits_TO_FAULT
+		return BACnetEventTransitionBits_TO_FAULT, true
 	case 2:
-		return BACnetEventTransitionBits_TO_NORMAL
+		return BACnetEventTransitionBits_TO_NORMAL, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetEventTransitionBitsByName(value string) BACnetEventTransitionBits {
+func BACnetEventTransitionBitsByName(value string) (enum BACnetEventTransitionBits, ok bool) {
 	switch value {
 	case "TO_OFFNORMAL":
-		return BACnetEventTransitionBits_TO_OFFNORMAL
+		return BACnetEventTransitionBits_TO_OFFNORMAL, true
 	case "TO_FAULT":
-		return BACnetEventTransitionBits_TO_FAULT
+		return BACnetEventTransitionBits_TO_FAULT, true
 	case "TO_NORMAL":
-		return BACnetEventTransitionBits_TO_NORMAL
+		return BACnetEventTransitionBits_TO_NORMAL, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetEventTransitionBitsKnows(value uint8) bool {
@@ -101,19 +101,37 @@ func (m BACnetEventTransitionBits) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventTransitionBitsParse(readBuffer utils.ReadBuffer) (BACnetEventTransitionBits, error) {
+func BACnetEventTransitionBitsParse(theBytes []byte) (BACnetEventTransitionBits, error) {
+	return BACnetEventTransitionBitsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetEventTransitionBitsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventTransitionBits, error) {
 	val, err := readBuffer.ReadUint8("BACnetEventTransitionBits", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetEventTransitionBits")
 	}
-	return BACnetEventTransitionBitsByValue(val), nil
+	if enum, ok := BACnetEventTransitionBitsByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetEventTransitionBits(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetEventTransitionBits) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetEventTransitionBits", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetEventTransitionBits) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetEventTransitionBits) name() string {
+func (e BACnetEventTransitionBits) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetEventTransitionBits", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetEventTransitionBits) PLC4XEnumName() string {
 	switch e {
 	case BACnetEventTransitionBits_TO_OFFNORMAL:
 		return "TO_OFFNORMAL"
@@ -126,5 +144,5 @@ func (e BACnetEventTransitionBits) name() string {
 }
 
 func (e BACnetEventTransitionBits) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

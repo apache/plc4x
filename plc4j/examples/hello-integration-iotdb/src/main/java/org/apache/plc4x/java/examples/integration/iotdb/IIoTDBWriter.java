@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@ package org.apache.plc4x.java.examples.integration.iotdb;
 
 public interface IIoTDBWriter {
     void initStorageGroup(String storageGroup);
-    void writeData(String deviceId, String field, long timestamp, Integer value);
+    void writeData(String deviceId, String tag, long timestamp, Integer value);
     void close();
     void createTimeseries(String timeseries, String dataType);
 }

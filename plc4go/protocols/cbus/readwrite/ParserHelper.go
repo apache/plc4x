@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,8 +20,8 @@
 package readwrite
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -32,89 +32,201 @@ type CbusParserHelper struct {
 
 func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
-	case "CALData":
-		return model.CALDataParse(io)
-	case "Checksum":
-		return model.ChecksumParse(io)
-	case "CALReply":
-		return model.CALReplyParse(io)
-	case "ExclamationMark":
-		return model.ExclamationMarkParse(io)
-	case "NetworkRoute":
-		return model.NetworkRouteParse(io)
-	case "NetworkNumber":
-		return model.NetworkNumberParse(io)
-	case "StandardFormatStatusReply":
-		return model.StandardFormatStatusReplyParse(io)
+	case "HVACStatusFlags":
+		return model.HVACStatusFlagsParseWithBuffer(io)
+	case "ParameterValue":
+		parameterType, _ := model.ParameterTypeByName(arguments[0])
+		numBytes, err := utils.StrToUint8(arguments[1])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.ParameterValueParseWithBuffer(io, parameterType, numBytes)
+	case "ReplyOrConfirmation":
+		var cBusOptions model.CBusOptions
+		var requestContext model.RequestContext
+		return model.ReplyOrConfirmationParseWithBuffer(io, cBusOptions, requestContext)
 	case "CBusOptions":
-		return model.CBusOptionsParse(io)
-	case "SALData":
-		return model.SALDataParse(io)
-	case "CBusCommand":
-		srchk, err := utils.StrToBool(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.CBusCommandParse(io, srchk)
-	case "IdentifyReplyCommand":
-		attribute := model.AttributeByName(arguments[0])
-		return model.IdentifyReplyCommandParse(io, attribute)
-	case "BridgeCount":
-		return model.BridgeCountParse(io)
-	case "PowerUp":
-		return model.PowerUpParse(io)
-	case "Reply":
-		return model.ReplyParse(io)
-	case "SerialInterfaceAddress":
-		return model.SerialInterfaceAddressParse(io)
-	case "BridgeAddress":
-		return model.BridgeAddressParse(io)
+		return model.CBusOptionsParseWithBuffer(io)
+	case "TemperatureBroadcastData":
+		return model.TemperatureBroadcastDataParseWithBuffer(io)
+	case "PanicStatus":
+		return model.PanicStatusParseWithBuffer(io)
+	case "IdentifyReplyCommandUnitSummary":
+		return model.IdentifyReplyCommandUnitSummaryParseWithBuffer(io)
+	case "InterfaceOptions1PowerUpSettings":
+		return model.InterfaceOptions1PowerUpSettingsParseWithBuffer(io)
 	case "MonitoredSAL":
-		return model.MonitoredSALParse(io)
-	case "ParameterChange":
-		return model.ParameterChangeParse(io)
-	case "StatusByte":
-		return model.StatusByteParse(io)
+		var cBusOptions model.CBusOptions
+		return model.MonitoredSALParseWithBuffer(io, cBusOptions)
 	case "ReplyNetwork":
-		return model.ReplyNetworkParse(io)
-	case "ExtendedStatusHeader":
-		return model.ExtendedStatusHeaderParse(io)
-	case "CommandHeader":
-		return model.CommandHeaderParse(io)
-	case "Confirmation":
-		return model.ConfirmationParse(io)
+		return model.ReplyNetworkParseWithBuffer(io)
+	case "SerialNumber":
+		return model.SerialNumberParseWithBuffer(io)
 	case "CBusPointToMultiPointCommand":
-		srchk, err := utils.StrToBool(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.CBusPointToMultiPointCommandParse(io, srchk)
-	case "StatusHeader":
-		return model.StatusHeaderParse(io)
+		var cBusOptions model.CBusOptions
+		return model.CBusPointToMultiPointCommandParseWithBuffer(io, cBusOptions)
 	case "StatusRequest":
-		return model.StatusRequestParse(io)
+		return model.StatusRequestParseWithBuffer(io)
+	case "InterfaceOptions3":
+		return model.InterfaceOptions3ParseWithBuffer(io)
+	case "InterfaceOptions1":
+		return model.InterfaceOptions1ParseWithBuffer(io)
+	case "InterfaceOptions2":
+		return model.InterfaceOptions2ParseWithBuffer(io)
+	case "HVACModeAndFlags":
+		return model.HVACModeAndFlagsParseWithBuffer(io)
+	case "LightingData":
+		return model.LightingDataParseWithBuffer(io)
+	case "SALData":
+		applicationId, _ := model.ApplicationIdByName(arguments[0])
+		return model.SALDataParseWithBuffer(io, applicationId)
+	case "CBusCommand":
+		var cBusOptions model.CBusOptions
+		return model.CBusCommandParseWithBuffer(io, cBusOptions)
+	case "HVACHumidity":
+		return model.HVACHumidityParseWithBuffer(io)
+	case "HVACHumidityModeAndFlags":
+		return model.HVACHumidityModeAndFlagsParseWithBuffer(io)
+	case "CBusConstants":
+		return model.CBusConstantsParseWithBuffer(io)
+	case "SerialInterfaceAddress":
+		return model.SerialInterfaceAddressParseWithBuffer(io)
+	case "MeasurementData":
+		return model.MeasurementDataParseWithBuffer(io)
+	case "HVACZoneList":
+		return model.HVACZoneListParseWithBuffer(io)
+	case "MediaTransportControlData":
+		return model.MediaTransportControlDataParseWithBuffer(io)
+	case "StatusByte":
+		return model.StatusByteParseWithBuffer(io)
+	case "TriggerControlLabelOptions":
+		return model.TriggerControlLabelOptionsParseWithBuffer(io)
+	case "HVACAuxiliaryLevel":
+		return model.HVACAuxiliaryLevelParseWithBuffer(io)
+	case "ErrorReportingData":
+		return model.ErrorReportingDataParseWithBuffer(io)
 	case "UnitAddress":
-		return model.UnitAddressParse(io)
+		return model.UnitAddressParseWithBuffer(io)
+	case "SecurityArmCode":
+		return model.SecurityArmCodeParseWithBuffer(io)
+	case "MeteringData":
+		return model.MeteringDataParseWithBuffer(io)
+	case "EnableControlData":
+		return model.EnableControlDataParseWithBuffer(io)
+	case "ApplicationAddress2":
+		return model.ApplicationAddress2ParseWithBuffer(io)
+	case "ApplicationAddress1":
+		return model.ApplicationAddress1ParseWithBuffer(io)
+	case "RequestContext":
+		return model.RequestContextParseWithBuffer(io)
+	case "TriggerControlData":
+		return model.TriggerControlDataParseWithBuffer(io)
+	case "HVACStartTime":
+		return model.HVACStartTimeParseWithBuffer(io)
+	case "HVACTemperature":
+		return model.HVACTemperatureParseWithBuffer(io)
+	case "RequestTermination":
+		return model.RequestTerminationParseWithBuffer(io)
+	case "CBusMessage":
+		isResponse, err := utils.StrToBool(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		var requestContext model.RequestContext
+		var cBusOptions model.CBusOptions
+		return model.CBusMessageParseWithBuffer(io, isResponse, requestContext, cBusOptions)
+	case "ErrorReportingSystemCategory":
+		return model.ErrorReportingSystemCategoryParseWithBuffer(io)
+	case "PowerUp":
+		return model.PowerUpParseWithBuffer(io)
+	case "Reply":
+		var cBusOptions model.CBusOptions
+		var requestContext model.RequestContext
+		return model.ReplyParseWithBuffer(io, cBusOptions, requestContext)
+	case "TelephonyData":
+		return model.TelephonyDataParseWithBuffer(io)
+	case "HVACHumidityStatusFlags":
+		return model.HVACHumidityStatusFlagsParseWithBuffer(io)
+	case "ParameterChange":
+		return model.ParameterChangeParseWithBuffer(io)
+	case "ErrorReportingSystemCategoryType":
+		errorReportingSystemCategoryClass, _ := model.ErrorReportingSystemCategoryClassByName(arguments[0])
+		return model.ErrorReportingSystemCategoryTypeParseWithBuffer(io, errorReportingSystemCategoryClass)
+	case "Confirmation":
+		return model.ConfirmationParseWithBuffer(io)
+	case "SecurityData":
+		return model.SecurityDataParseWithBuffer(io)
 	case "NetworkProtocolControlInformation":
-		return model.NetworkProtocolControlInformationParse(io)
-	case "ExtendedFormatStatusReply":
-		return model.ExtendedFormatStatusReplyParse(io)
+		return model.NetworkProtocolControlInformationParseWithBuffer(io)
 	case "CBusHeader":
-		return model.CBusHeaderParse(io)
-	case "CBusPointToPointCommand":
-		srchk, err := utils.StrToBool(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.CBusPointToPointCommandParse(io, srchk)
+		return model.CBusHeaderParseWithBuffer(io)
+	case "Request":
+		var cBusOptions model.CBusOptions
+		return model.RequestParseWithBuffer(io, cBusOptions)
 	case "Alpha":
-		return model.AlphaParse(io)
-	case "CBusPointToPointToMultipointCommand":
-		srchk, err := utils.StrToBool(arguments[0])
+		return model.AlphaParseWithBuffer(io)
+	case "CALData":
+		var requestContext model.RequestContext
+		return model.CALDataParseWithBuffer(io, requestContext)
+	case "Checksum":
+		return model.ChecksumParseWithBuffer(io)
+	case "CALReply":
+		var cBusOptions model.CBusOptions
+		var requestContext model.RequestContext
+		return model.CALReplyParseWithBuffer(io, cBusOptions, requestContext)
+	case "CustomManufacturer":
+		numBytes, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.CBusPointToPointToMultipointCommandParse(io, srchk)
+		return model.CustomManufacturerParseWithBuffer(io, numBytes)
+	case "AccessControlData":
+		return model.AccessControlDataParseWithBuffer(io)
+	case "ClockAndTimekeepingData":
+		return model.ClockAndTimekeepingDataParseWithBuffer(io)
+	case "NetworkRoute":
+		return model.NetworkRouteParseWithBuffer(io)
+	case "ResponseTermination":
+		return model.ResponseTerminationParseWithBuffer(io)
+	case "LevelInformation":
+		return model.LevelInformationParseWithBuffer(io)
+	case "TamperStatus":
+		return model.TamperStatusParseWithBuffer(io)
+	case "IdentifyReplyCommand":
+		attribute, _ := model.AttributeByName(arguments[0])
+		numBytes, err := utils.StrToUint8(arguments[1])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.IdentifyReplyCommandParseWithBuffer(io, attribute, numBytes)
+	case "HVACRawLevels":
+		return model.HVACRawLevelsParseWithBuffer(io)
+	case "ZoneStatus":
+		return model.ZoneStatusParseWithBuffer(io)
+	case "BridgeAddress":
+		return model.BridgeAddressParseWithBuffer(io)
+	case "LightingLabelOptions":
+		return model.LightingLabelOptionsParseWithBuffer(io)
+	case "CustomTypes":
+		numBytes, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.CustomTypesParseWithBuffer(io, numBytes)
+	case "EncodedReply":
+		var cBusOptions model.CBusOptions
+		var requestContext model.RequestContext
+		return model.EncodedReplyParseWithBuffer(io, cBusOptions, requestContext)
+	case "CBusPointToPointToMultiPointCommand":
+		var cBusOptions model.CBusOptions
+		return model.CBusPointToPointToMultiPointCommandParseWithBuffer(io, cBusOptions)
+	case "CBusPointToPointCommand":
+		var cBusOptions model.CBusOptions
+		return model.CBusPointToPointCommandParseWithBuffer(io, cBusOptions)
+	case "AirConditioningData":
+		return model.AirConditioningDataParseWithBuffer(io)
+	case "LogicAssignment":
+		return model.LogicAssignmentParseWithBuffer(io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

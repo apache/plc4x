@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetLiftCarDirection uint16
 
 type IBACnetLiftCarDirection interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -58,44 +58,44 @@ func init() {
 	}
 }
 
-func BACnetLiftCarDirectionByValue(value uint16) BACnetLiftCarDirection {
+func BACnetLiftCarDirectionByValue(value uint16) (enum BACnetLiftCarDirection, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLiftCarDirection_UNKNOWN
+		return BACnetLiftCarDirection_UNKNOWN, true
 	case 0xFFFF:
-		return BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE
+		return BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetLiftCarDirection_NONE
+		return BACnetLiftCarDirection_NONE, true
 	case 2:
-		return BACnetLiftCarDirection_STOPPED
+		return BACnetLiftCarDirection_STOPPED, true
 	case 3:
-		return BACnetLiftCarDirection_UP
+		return BACnetLiftCarDirection_UP, true
 	case 4:
-		return BACnetLiftCarDirection_DOWN
+		return BACnetLiftCarDirection_DOWN, true
 	case 5:
-		return BACnetLiftCarDirection_UP_AND_DOWN
+		return BACnetLiftCarDirection_UP_AND_DOWN, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetLiftCarDirectionByName(value string) BACnetLiftCarDirection {
+func BACnetLiftCarDirectionByName(value string) (enum BACnetLiftCarDirection, ok bool) {
 	switch value {
 	case "UNKNOWN":
-		return BACnetLiftCarDirection_UNKNOWN
+		return BACnetLiftCarDirection_UNKNOWN, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE
+		return BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE, true
 	case "NONE":
-		return BACnetLiftCarDirection_NONE
+		return BACnetLiftCarDirection_NONE, true
 	case "STOPPED":
-		return BACnetLiftCarDirection_STOPPED
+		return BACnetLiftCarDirection_STOPPED, true
 	case "UP":
-		return BACnetLiftCarDirection_UP
+		return BACnetLiftCarDirection_UP, true
 	case "DOWN":
-		return BACnetLiftCarDirection_DOWN
+		return BACnetLiftCarDirection_DOWN, true
 	case "UP_AND_DOWN":
-		return BACnetLiftCarDirection_UP_AND_DOWN
+		return BACnetLiftCarDirection_UP_AND_DOWN, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLiftCarDirectionKnows(value uint16) bool {
@@ -125,19 +125,37 @@ func (m BACnetLiftCarDirection) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLiftCarDirectionParse(readBuffer utils.ReadBuffer) (BACnetLiftCarDirection, error) {
+func BACnetLiftCarDirectionParse(theBytes []byte) (BACnetLiftCarDirection, error) {
+	return BACnetLiftCarDirectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLiftCarDirectionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLiftCarDirection, error) {
 	val, err := readBuffer.ReadUint16("BACnetLiftCarDirection", 16)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetLiftCarDirection")
 	}
-	return BACnetLiftCarDirectionByValue(val), nil
+	if enum, ok := BACnetLiftCarDirectionByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetLiftCarDirection(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetLiftCarDirection) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint16("BACnetLiftCarDirection", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetLiftCarDirection) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetLiftCarDirection) name() string {
+func (e BACnetLiftCarDirection) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetLiftCarDirection", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLiftCarDirection) PLC4XEnumName() string {
 	switch e {
 	case BACnetLiftCarDirection_UNKNOWN:
 		return "UNKNOWN"
@@ -158,5 +176,5 @@ func (e BACnetLiftCarDirection) name() string {
 }
 
 func (e BACnetLiftCarDirection) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

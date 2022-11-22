@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,8 +20,8 @@
 package readwrite
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -37,21 +37,21 @@ func (m EipParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.CipServiceParse(io, serviceLen)
+		return model.CipServiceParseWithBuffer(io, serviceLen)
 	case "EipPacket":
-		return model.EipPacketParse(io)
+		return model.EipPacketParseWithBuffer(io)
 	case "Services":
 		servicesLen, err := utils.StrToUint16(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.ServicesParse(io, servicesLen)
+		return model.ServicesParseWithBuffer(io, servicesLen)
 	case "CipExchange":
 		exchangeLen, err := utils.StrToUint16(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.CipExchangeParse(io, exchangeLen)
+		return model.CipExchangeParseWithBuffer(io, exchangeLen)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

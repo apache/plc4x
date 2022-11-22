@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -152,92 +152,92 @@ int main() {
         }
         printf("SUCCESS\n");
 
-        result =
-            plc4c_read_request_add_item(read_request, "BOOL", "holding-register:1:BOOL");
+        result = plc4c_read_request_add_tag_address(read_request, "BOOL",
+                                                    "holding-register:1:BOOL");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "BYTE", "holding-register:2:BYTE");
+        result = plc4c_read_request_add_tag_address(read_request, "BYTE",
+                                                    "holding-register:2:BYTE");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "WORD", "holding-register:3:WORD");
+        result = plc4c_read_request_add_tag_address(read_request, "WORD",
+                                                    "holding-register:3:WORD");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "DWORD", "holding-register:4:DWORD");
+        result = plc4c_read_request_add_tag_address(read_request, "DWORD",
+                                                    "holding-register:4:DWORD");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "LWORD", "holding-register:6:LWORD");
+        result = plc4c_read_request_add_tag_address(read_request, "LWORD",
+                                                    "holding-register:6:LWORD");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "SINT", "holding-register:10:SINT");
+        result = plc4c_read_request_add_tag_address(read_request, "SINT",
+                                                    "holding-register:10:SINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "USINT", "holding-register:11:USINT");
+        result = plc4c_read_request_add_tag_address(
+            read_request, "USINT", "holding-register:11:USINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "INT", "holding-register:12:INT");
+        result = plc4c_read_request_add_tag_address(read_request, "INT",
+                                                    "holding-register:12:INT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "UINT", "holding-register:13:UINT");
+        result = plc4c_read_request_add_tag_address(read_request, "UINT",
+                                                    "holding-register:13:UINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "DINT", "holding-register:14:DINT");
+        result = plc4c_read_request_add_tag_address(read_request, "DINT",
+                                                    "holding-register:14:DINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "UDINT", "holding-register:16:UDINT");
+        result = plc4c_read_request_add_tag_address(
+            read_request, "UDINT", "holding-register:16:UDINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "LINT", "holding-register:18:LINT");
+        result = plc4c_read_request_add_tag_address(read_request, "LINT",
+                                                    "holding-register:18:LINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "ULINT", "holding-register:22:ULINT");
+        result = plc4c_read_request_add_tag_address(
+            read_request, "ULINT", "holding-register:22:ULINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "REAL", "holding-register:26:REAL");
+        result = plc4c_read_request_add_tag_address(read_request, "REAL",
+                                                    "holding-register:26:REAL");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "REAL", "holding-register:28:LREAL");
+        result = plc4c_read_request_add_tag_address(
+            read_request, "REAL", "holding-register:28:LREAL");
         if (result != OK) {
           printf("FAILED\n");
           return -1;

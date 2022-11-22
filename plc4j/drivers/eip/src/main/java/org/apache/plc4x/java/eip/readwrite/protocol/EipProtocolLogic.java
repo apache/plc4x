@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -22,12 +22,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.eip.readwrite.*;
 import org.apache.plc4x.java.eip.readwrite.configuration.EIPConfiguration;
-import org.apache.plc4x.java.eip.readwrite.field.EipField;
+import org.apache.plc4x.java.eip.readwrite.tag.EipTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
@@ -95,15 +95,15 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
-        List<CipReadRequest> requests = new ArrayList<>(request.getNumberOfFields());
-        for (PlcField field : request.getFields()) {
-            EipField plcField = (EipField) field;
-            String tag = plcField.getTag();
+        List<CipReadRequest> requests = new ArrayList<>(request.getNumberOfTags());
+        for (PlcTag tag : request.getTags()) {
+            EipTag eipTag = (EipTag) tag;
+            String tagName = eipTag.getTag();
             int elements = 1;
-            if (plcField.getElementNb() > 1) {
-                elements = plcField.getElementNb();
+            if (eipTag.getElementNb() > 1) {
+                elements = eipTag.getElementNb();
             }
-            CipReadRequest req = new CipReadRequest(getRequestSize(tag), toAnsi(tag), elements, -1);
+            CipReadRequest req = new CipReadRequest(getRequestSize(tagName), toAnsi(tagName), elements, -1);
             requests.add(req);
         }
         return toPlcReadResponse(readRequest, readInternal(requests));
@@ -269,20 +269,20 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
     private PlcResponse decodeReadResponse(CipService p, PlcReadRequest readRequest) {
         Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
-        // only 1 field
+        // only 1 tag
         if (p instanceof CipReadResponse) {
             CipReadResponse resp = (CipReadResponse) p;
-            String fieldName = readRequest.getFieldNames().iterator().next();
-            EipField field = (EipField) readRequest.getField(fieldName);
+            String tagName = readRequest.getTagNames().iterator().next();
+            EipTag tag = (EipTag) readRequest.getTag(tagName);
             PlcResponseCode code = decodeResponseCode(resp.getStatus());
             PlcValue plcValue = null;
             CIPDataTypeCode type = resp.getDataType();
             ByteBuf data = Unpooled.wrappedBuffer(resp.getData());
             if (code == PlcResponseCode.OK) {
-                plcValue = parsePlcValue(field, data, type);
+                plcValue = parsePlcValue(tag, data, type);
             }
             ResponseItem<PlcValue> result = new ResponseItem<>(code, plcValue);
-            values.put(fieldName, result);
+            values.put(tagName, result);
         }
         //Multiple response
         else if (p instanceof MultipleServiceResponse) {
@@ -290,7 +290,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             int nb = responses.getServiceNb();
             List<CipService> arr = new ArrayList<>(nb);
             ReadBufferByteBased read = new ReadBufferByteBased(responses.getServicesData(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
-            int total = (int) read.getTotalBytes();
+            int total = read.getTotalBytes();
             for (int i = 0; i < nb; i++) {
                 int length = 0;
                 int offset = responses.getOffsets().get(i) - responses.getOffsets().get(0); //Substract first offset as we only have the service in the buffer (not servicesNb and offsets)
@@ -309,10 +309,10 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 }
             }
             Services services = new Services(nb, responses.getOffsets(), arr, -1);
-            Iterator<String> it = readRequest.getFieldNames().iterator();
+            Iterator<String> it = readRequest.getTagNames().iterator();
             for (int i = 0; i < nb && it.hasNext(); i++) {
-                String fieldName = it.next();
-                EipField field = (EipField) readRequest.getField(fieldName);
+                String tagName = it.next();
+                EipTag tag = (EipTag) readRequest.getTag(tagName);
                 PlcValue plcValue = null;
                 if (services.getServices().get(i) instanceof CipReadResponse) {
                     CipReadResponse readResponse = (CipReadResponse) services.getServices().get(i);
@@ -325,18 +325,19 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     CIPDataTypeCode type = readResponse.getDataType();
                     ByteBuf data = Unpooled.wrappedBuffer(readResponse.getData());
                     if (code == PlcResponseCode.OK) {
-                        plcValue = parsePlcValue(field, data, type);
+                        plcValue = parsePlcValue(tag, data, type);
                     }
                     ResponseItem<PlcValue> result = new ResponseItem<>(code, plcValue);
-                    values.put(fieldName, result);
+                    values.put(tagName, result);
                 }
             }
         }
         return new DefaultPlcReadResponse(readRequest, values);
     }
 
-    private PlcValue parsePlcValue(EipField field, ByteBuf data, CIPDataTypeCode type) {
-        int nb = field.getElementNb();
+    private PlcValue parsePlcValue(EipTag tag, ByteBuf data, CIPDataTypeCode type) {
+        final int STRING_LEN_OFFSET = 2, STRING_DATA_OFFSET = 6;
+        int nb = tag.getElementNb();
         if (nb > 1) {
             int index = 0;
             List<PlcValue> list = new ArrayList<>();
@@ -358,9 +359,29 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                         list.add(new PlcLREAL(swap(data.getFloat(index))));
                         index += type.getSize();
                         break;
+                    case LINT:
+                        list.add(new PlcLINT(Long.reverseBytes(data.getLong(index))));
+                        index += type.getSize();
+                        break;							  
                     case BOOL:
                         list.add(new PlcBOOL(data.getBoolean(index)));
                         index += type.getSize();
+                        break;
+                    case Struct: {
+                        Short structuredType = Short.reverseBytes(data.getShort(0));
+                        Short structuredLen = Short.reverseBytes(data.getShort(STRING_LEN_OFFSET));
+                        if (structuredType == CIPStructTypeCode.STRING.getValue()) {
+                            // Length offset is 2, data offset is 6
+                            list.add(new PlcSTRING(StandardCharsets
+                                .UTF_8.decode(data.nioBuffer(STRING_DATA_OFFSET, structuredLen)).toString()));
+                            index += type.getSize();
+                        }
+                        else {
+                            // This is a different type of STRUCTURED data
+                            // TODO: return as type STRUCT with structuredType to let user
+                            // apps/progs handle it.
+                        }
+                    }
                     default:
                         return null;
                 }
@@ -374,10 +395,25 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     return new PlcINT(Short.reverseBytes(data.getShort(0)));
                 case DINT:
                     return new PlcDINT(Integer.reverseBytes(data.getInt(0)));
+                case LINT:
+                    return new PlcLINT(Long.reverseBytes(data.getLong(0)));
                 case REAL:
                     return new PlcREAL(swap(data.getFloat(0)));
                 case BOOL:
                     return new PlcBOOL(data.getBoolean(0));
+                case STRING:
+                case Struct: {
+                    Short structuredType = Short.reverseBytes(data.getShort(0));
+                    Short structuredLen = Short.reverseBytes(data.getShort(STRING_LEN_OFFSET));
+                    if (structuredType == CIPStructTypeCode.STRING.getValue()) {
+                        // Length offset is 2, data offset is 6
+                        return new PlcSTRING(StandardCharsets
+                            .UTF_8.decode(data.nioBuffer(STRING_DATA_OFFSET, structuredLen)).toString());
+                    }
+                    else {
+                        // This is a different type of STRUCTURED data
+                    }
+                }							  
                 default:
                     return null;
             }
@@ -386,39 +422,46 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
     public float swap(float value) {
         int bytes = Float.floatToIntBits(value);
-        int b1 = (bytes >> 0) & 0xff;
+        int b1 = (bytes) & 0xff;
         int b2 = (bytes >> 8) & 0xff;
         int b3 = (bytes >> 16) & 0xff;
         int b4 = (bytes >> 24) & 0xff;
-        return Float.intBitsToFloat(b1 << 24 | b2 << 16 | b3 << 8 | b4 << 0);
+        return Float.intBitsToFloat(b1 << 24 | b2 << 16 | b3 << 8 | b4);
     }
 
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
-        List<CipWriteRequest> items = new ArrayList<>(writeRequest.getNumberOfFields());
-        for (String fieldName : request.getFieldNames()) {
-            final EipField field = (EipField) request.getField(fieldName);
-            final PlcValue value = request.getPlcValue(fieldName);
-            String tag = field.getTag();
+        List<CipWriteRequest> items = new ArrayList<>(writeRequest.getNumberOfTags());
+        for (String tagName : request.getTagNames()) {
+            final EipTag tag = (EipTag) request.getTag(tagName);
+            final PlcValue value = request.getPlcValue(tagName);
+            String tagTag = tag.getTag();
             int elements = 1;
-            if (field.getElementNb() > 1) {
-                elements = field.getElementNb();
+            if (tag.getElementNb() > 1) {
+                elements = tag.getElementNb();
             }
 
             //We need the size of the request in words (0x91, tagLength, ... tag + possible pad)
             // Taking half to get word size
             boolean isArray = false;
-            String tagIsolated = tag;
-            if (tag.contains("[")) {
+            boolean isStruct = false;
+            String tagIsolated = tagTag;
+            if (tagTag.contains("[")) {
                 isArray = true;
-                tagIsolated = tag.substring(0, tag.indexOf("["));
+                tagIsolated = tagTag.substring(0, tagTag.indexOf("["));
             }
-            int dataLength = (tagIsolated.length() + 2 + (tagIsolated.length() % 2) + (isArray ? 2 : 0));
+
+            if (tagTag.contains(".")) {
+                isStruct = true;
+                tagIsolated = tagIsolated.replace(".", "");
+            }
+
+            int dataLength = (tagIsolated.length() + 2 + ((tagIsolated.length() % 2) * 2) + (isArray ? 2 : 0) + (isStruct ? 2 : 0));
             byte requestPathSize = (byte) (dataLength / 2);
-            byte[] data = encodeValue(value, field.getType(), (short) elements);
-            CipWriteRequest writeReq = new CipWriteRequest(requestPathSize, toAnsi(tag), field.getType(), elements, data, -1);
+            byte[] data = encodeValue(value, tag.getType(), (short) elements);
+            CipWriteRequest writeReq = new CipWriteRequest(requestPathSize, toAnsi(tagTag), tag.getType(), elements, data, -1);
             items.add(writeReq);
         }
 
@@ -504,16 +547,16 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
         if (p instanceof CipWriteResponse) {
             CipWriteResponse resp = (CipWriteResponse) p;
-            String fieldName = writeRequest.getFieldNames().iterator().next();
-            EipField field = (EipField) writeRequest.getField(fieldName);
-            responses.put(fieldName, decodeResponseCode(resp.getStatus()));
+            String tagName = writeRequest.getTagNames().iterator().next();
+            EipTag tag = (EipTag) writeRequest.getTag(tagName);
+            responses.put(tagName, decodeResponseCode(resp.getStatus()));
             return new DefaultPlcWriteResponse(writeRequest, responses);
         } else if (p instanceof MultipleServiceResponse) {
             MultipleServiceResponse resp = (MultipleServiceResponse) p;
             int nb = resp.getServiceNb();
             List<CipService> arr = new ArrayList<>(nb);
             ReadBufferByteBased read = new ReadBufferByteBased(resp.getServicesData());
-            int total = (int) read.getTotalBytes();
+            int total = read.getTotalBytes();
             for (int i = 0; i < nb; i++) {
                 int length = 0;
                 int offset = resp.getOffsets().get(i);
@@ -532,15 +575,15 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 }
             }
             Services services = new Services(nb, resp.getOffsets(), arr, -1);
-            Iterator<String> it = writeRequest.getFieldNames().iterator();
+            Iterator<String> it = writeRequest.getTagNames().iterator();
             for (int i = 0; i < nb && it.hasNext(); i++) {
-                String fieldName = it.next();
-                EipField field = (EipField) writeRequest.getField(fieldName);
+                String tagName = it.next();
+                EipTag tag = (EipTag) writeRequest.getTag(tagName);
                 PlcValue plcValue = null;
                 if (services.getServices().get(i) instanceof CipWriteResponse) {
                     CipWriteResponse writeResponse = (CipWriteResponse) services.getServices().get(i);
                     PlcResponseCode code = decodeResponseCode(writeResponse.getStatus());
-                    responses.put(fieldName, code);
+                    responses.put(tagName, code);
                 }
             }
             return new DefaultPlcWriteResponse(writeRequest, responses);
@@ -552,6 +595,9 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         //ByteBuffer buffer = ByteBuffer.allocate(4+type.getSize()).order(ByteOrder.LITTLE_ENDIAN);
         ByteBuffer buffer = ByteBuffer.allocate(type.getSize()).order(ByteOrder.LITTLE_ENDIAN);
         switch (type) {
+            case BOOL:
+                buffer.put(value.getByte());
+                break;
             case SINT:
                 buffer.put(value.getByte());
                 break;
@@ -563,6 +609,16 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 break;
             case REAL:
                 buffer.putDouble(value.getDouble());
+                break;
+            case LINT:
+                buffer.putLong(value.getLong());
+                break;
+            case STRING:
+                buffer.putInt(value.getString().length());
+                buffer.put(value.getString().getBytes(), 0, value.getString().length());
+                break;
+            case Struct:
+                // Need to handle
                 break;
             default:
                 break;

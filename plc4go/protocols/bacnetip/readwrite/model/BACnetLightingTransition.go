@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetLightingTransition uint8
 
 type IBACnetLightingTransition interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -52,32 +52,32 @@ func init() {
 	}
 }
 
-func BACnetLightingTransitionByValue(value uint8) BACnetLightingTransition {
+func BACnetLightingTransitionByValue(value uint8) (enum BACnetLightingTransition, ok bool) {
 	switch value {
 	case 0:
-		return BACnetLightingTransition_NONE
+		return BACnetLightingTransition_NONE, true
 	case 0xFF:
-		return BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE
+		return BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetLightingTransition_FADE
+		return BACnetLightingTransition_FADE, true
 	case 2:
-		return BACnetLightingTransition_RAMP
+		return BACnetLightingTransition_RAMP, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetLightingTransitionByName(value string) BACnetLightingTransition {
+func BACnetLightingTransitionByName(value string) (enum BACnetLightingTransition, ok bool) {
 	switch value {
 	case "NONE":
-		return BACnetLightingTransition_NONE
+		return BACnetLightingTransition_NONE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE
+		return BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE, true
 	case "FADE":
-		return BACnetLightingTransition_FADE
+		return BACnetLightingTransition_FADE, true
 	case "RAMP":
-		return BACnetLightingTransition_RAMP
+		return BACnetLightingTransition_RAMP, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetLightingTransitionKnows(value uint8) bool {
@@ -107,19 +107,37 @@ func (m BACnetLightingTransition) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLightingTransitionParse(readBuffer utils.ReadBuffer) (BACnetLightingTransition, error) {
+func BACnetLightingTransitionParse(theBytes []byte) (BACnetLightingTransition, error) {
+	return BACnetLightingTransitionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLightingTransitionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLightingTransition, error) {
 	val, err := readBuffer.ReadUint8("BACnetLightingTransition", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetLightingTransition")
 	}
-	return BACnetLightingTransitionByValue(val), nil
+	if enum, ok := BACnetLightingTransitionByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetLightingTransition(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetLightingTransition) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetLightingTransition", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetLightingTransition) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetLightingTransition) name() string {
+func (e BACnetLightingTransition) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetLightingTransition", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetLightingTransition) PLC4XEnumName() string {
 	switch e {
 	case BACnetLightingTransition_NONE:
 		return "NONE"
@@ -134,5 +152,5 @@ func (e BACnetLightingTransition) name() string {
 }
 
 func (e BACnetLightingTransition) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

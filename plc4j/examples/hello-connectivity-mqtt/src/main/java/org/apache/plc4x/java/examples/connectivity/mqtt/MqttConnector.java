@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -37,7 +37,7 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.examples.connectivity.mqtt.model.Configuration;
-import org.apache.plc4x.java.examples.connectivity.mqtt.model.PlcFieldConfig;
+import org.apache.plc4x.java.examples.connectivity.mqtt.model.PlcTagConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,8 +93,8 @@ public class MqttConnector {
 
             // Create a new read request.
             PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-            for (PlcFieldConfig fieldConfig : config.getPlcConfig().getPlcFields()) {
-                builder = builder.addItem(fieldConfig.getName(), fieldConfig.getAddress());
+            for (PlcTagConfig tagConfig : config.getPlcConfig().getPlcTags()) {
+                builder = builder.addTagAddress(tagConfig.getName(), tagConfig.getAddress());
             }
             PlcReadRequest readRequest = builder.build();
 
@@ -130,13 +130,13 @@ public class MqttConnector {
 
     private String getPayload(PlcReadResponse response) {
         JsonObject jsonObject = new JsonObject();
-        response.getFieldNames().forEach(fieldName -> {
-            if(response.getNumberOfValues(fieldName) == 1) {
-                jsonObject.addProperty(fieldName, response.getObject(fieldName).toString());
-            } else if (response.getNumberOfValues(fieldName) > 1) {
+        response.getTagNames().forEach(tagName -> {
+            if(response.getNumberOfValues(tagName) == 1) {
+                jsonObject.addProperty(tagName, response.getObject(tagName).toString());
+            } else if (response.getNumberOfValues(tagName) > 1) {
                 JsonArray values = new JsonArray();
-                response.getAllBytes(fieldName).forEach(values::add);
-                jsonObject.add(fieldName, values);
+                response.getAllBytes(tagName).forEach(values::add);
+                jsonObject.add(tagName, values);
             }
         });
         return jsonObject.toString();

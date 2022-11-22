@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -61,18 +61,18 @@
             </COTPPacketConnectionRequest>
             <parameters isList="true">
               <COTPParameter>
-                <parameterType dataType="uint" bitLength="8">194</parameterType>
-                <parameterLength dataType="uint" bitLength="8">2</parameterLength>
-                <COTPParameterCalledTsap>
-                  <tsapId dataType="uint" bitLength="16">256</tsapId>
-                </COTPParameterCalledTsap>
-              </COTPParameter>
-              <COTPParameter>
                 <parameterType dataType="uint" bitLength="8">193</parameterType>
                 <parameterLength dataType="uint" bitLength="8">2</parameterLength>
                 <COTPParameterCallingTsap>
                   <tsapId dataType="uint" bitLength="16">785</tsapId>
                 </COTPParameterCallingTsap>
+              </COTPParameter>
+              <COTPParameter>
+                <parameterType dataType="uint" bitLength="8">194</parameterType>
+                <parameterLength dataType="uint" bitLength="8">2</parameterLength>
+                <COTPParameterCalledTsap>
+                  <tsapId dataType="uint" bitLength="16">256</tsapId>
+                </COTPParameterCalledTsap>
               </COTPParameter>
               <COTPParameter>
                 <parameterType dataType="uint" bitLength="8">192</parameterType>
@@ -436,408 +436,408 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest className="TestReadRequest">
-          <fields>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field1</name>
+          <tags>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag1</name>
               <address>%DB1.DBD0:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field2</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag2</name>
               <address>%DB1.DBD4:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field3</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag3</name>
               <address>%DB1.DBD12:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field4</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag4</name>
               <address>%DB1.DBD16:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field5</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag5</name>
               <address>%DB1.DBD20:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field6</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag6</name>
               <address>%DB1.DBD24:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field7</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag7</name>
               <address>%DB1.DBD28:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field8</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag8</name>
               <address>%DB1.DBD32:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field9</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag9</name>
               <address>%DB1.DBD36:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field10</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag10</name>
               <address>%DB1.DBD40:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field11</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag11</name>
               <address>%DB1.DBD44:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field12</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag12</name>
               <address>%DB1.DBD48:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field13</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag13</name>
               <address>%DB1.DBD52:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field14</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag14</name>
               <address>%DB1.DBD56:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field15</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag15</name>
               <address>%DB1.DBD60:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field16</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag16</name>
               <address>%DB1.DBD64:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field17</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag17</name>
               <address>%DB1.DBD68:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field18</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag18</name>
               <address>%DB1.DBD72:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field19</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag19</name>
               <address>%DB1.DBD76:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field20</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag20</name>
               <address>%DB1.DBD80:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field21</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag21</name>
               <address>%DB1.DBD84:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field22</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag22</name>
               <address>%DB1.DBD88:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field23</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag23</name>
               <address>%DB1.DBD92:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field24</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag24</name>
               <address>%DB1.DBD96:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field25</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag25</name>
               <address>%DB1.DBD100:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field26</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag26</name>
               <address>%DB1.DBD104:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field27</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag27</name>
               <address>%DB1.DBD108:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field28</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag28</name>
               <address>%DB1.DBD112:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field29</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag29</name>
               <address>%DB1.DBD116:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field30</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag30</name>
               <address>%DB1.DBD120:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field31</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag31</name>
               <address>%DB1.DBD124:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field32</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag32</name>
               <address>%DB1.DBD128:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field33</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag33</name>
               <address>%DB1.DBD132:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field34</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag34</name>
               <address>%DB1.DBD136:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field35</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag35</name>
               <address>%DB1.DBD140:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field36</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag36</name>
               <address>%DB1.DBD144:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field37</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag37</name>
               <address>%DB1.DBD148:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field38</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag38</name>
               <address>%DB1.DBD152:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field39</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag39</name>
               <address>%DB1.DBD156:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field40</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag40</name>
               <address>%DB1.DBD160:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field41</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag41</name>
               <address>%DB1.DBD164:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field42</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag42</name>
               <address>%DB1.DBD168:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field43</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag43</name>
               <address>%DB1.DBD172:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field44</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag44</name>
               <address>%DB1.DBD176:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field45</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag45</name>
               <address>%DB1.DBD180:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field46</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag46</name>
               <address>%DB1.DBD184:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field47</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag47</name>
               <address>%DB1.DBD188:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field48</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag48</name>
               <address>%DB1.DBD192:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field49</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag49</name>
               <address>%DB1.DBD196:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field50</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag50</name>
               <address>%DB1.DBD200:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field51</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag51</name>
               <address>%DB1.DBD204:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field52</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag52</name>
               <address>%DB1.DBD208:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field53</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag53</name>
               <address>%DB1.DBD212:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field54</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag54</name>
               <address>%DB1.DBD216:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field55</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag55</name>
               <address>%DB1.DBD220:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field56</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag56</name>
               <address>%DB1.DBD224:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field57</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag57</name>
               <address>%DB1.DBD228:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field58</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag58</name>
               <address>%DB1.DBD232:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field59</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag59</name>
               <address>%DB1.DBD236:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field60</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag60</name>
               <address>%DB1.DBD240:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field61</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag61</name>
               <address>%DB1.DBD244:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field62</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag62</name>
               <address>%DB1.DBD248:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field63</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag63</name>
               <address>%DB1.DBD252:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field64</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag64</name>
               <address>%DB1.DBD256:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field65</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag65</name>
               <address>%DB1.DBD260:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field66</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag66</name>
               <address>%DB1.DBD264:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field67</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag67</name>
               <address>%DB1.DBD268:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field68</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag68</name>
               <address>%DB1.DBD272:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field69</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag69</name>
               <address>%DB1.DBD276:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field70</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag70</name>
               <address>%DB1.DBD280:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field71</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag71</name>
               <address>%DB1.DBD284:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field72</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag72</name>
               <address>%DB1.DBD288:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field73</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag73</name>
               <address>%DB1.DBD292:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field74</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag74</name>
               <address>%DB1.DBD296:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field75</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag75</name>
               <address>%DB1.DBD300:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field76</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag76</name>
               <address>%DB1.DBD304:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field77</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag77</name>
               <address>%DB1.DBD308:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field78</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag78</name>
               <address>%DB1.DBD312:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field79</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag79</name>
               <address>%DB1.DBD316:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field80</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag80</name>
               <address>%DB1.DBD320:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field81</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag81</name>
               <address>%DB1.DBD324:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field82</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag82</name>
               <address>%DB1.DBD328:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field83</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag83</name>
               <address>%DB1.DBD332:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field84</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag84</name>
               <address>%DB1.DBD336:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field85</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag85</name>
               <address>%DB1.DBD340:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field86</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag86</name>
               <address>%DB1.DBD344:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field87</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag87</name>
               <address>%DB1.DBD348:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field88</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag88</name>
               <address>%DB1.DBD352:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field89</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag89</name>
               <address>%DB1.DBD356:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field90</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag90</name>
               <address>%DB1.DBD360:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field91</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag91</name>
               <address>%DB1.DBD364:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field92</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag92</name>
               <address>%DB1.DBD368:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field93</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag93</name>
               <address>%DB1.DBD372:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field94</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag94</name>
               <address>%DB1.DBD376:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field95</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag95</name>
               <address>%DB1.DBD380:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field96</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag96</name>
               <address>%DB1.DBD384:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field97</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag97</name>
               <address>%DB1.DBD388:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field98</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag98</name>
               <address>%DB1.DBD392:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field99</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag99</name>
               <address>%DB1.DBD396:REAL</address>
-            </field>
-            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
-              <name>field100</name>
+            </tag>
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+              <name>tag100</name>
               <address>%DB1.DBD400:REAL</address>
-            </field>
-          </fields>
+            </tag>
+          </tags>
         </TestReadRequest>
       </api-request>
       <!--outgoing-plc-message name="Send first part of the S7 Read Request">
@@ -2457,18 +2457,18 @@
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
           <PlcReadRequest>
-            <fields>
+            <tags>
               <hurz>
-                <S7Field>
+                <S7Tag>
                   <memoryArea>OUTPUTS</memoryArea>
                   <blockNumber>0</blockNumber>
                   <byteOffset>0</byteOffset>
                   <bitOffset>0</bitOffset>
                   <numElements>1</numElements>
                   <dataType>BOOL</dataType>
-                </S7Field>
+                </S7Tag>
               </hurz>
-            </fields>
+            </tags>
           </PlcReadRequest>
           <values>
             <hurz result="OK">

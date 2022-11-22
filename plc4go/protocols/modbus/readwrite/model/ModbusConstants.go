@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,7 +21,7 @@ package model
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,18 +30,21 @@ import (
 // Constant values.
 const ModbusConstants_MODBUSTCPDEFAULTPORT uint16 = uint16(502)
 
-// ModbusConstants is the data-structure of this message
-type ModbusConstants struct {
+// ModbusConstants is the corresponding interface of ModbusConstants
+type ModbusConstants interface {
+	utils.LengthAware
+	utils.Serializable
 }
 
-// IModbusConstants is the corresponding interface of ModbusConstants
-type IModbusConstants interface {
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+// ModbusConstantsExactly can be used when we want exactly this type and not a type which fulfills ModbusConstants.
+// This is useful for switch cases.
+type ModbusConstantsExactly interface {
+	ModbusConstants
+	isModbusConstants() bool
+}
+
+// _ModbusConstants is the data-structure of this message
+type _ModbusConstants struct {
 }
 
 ///////////////////////////////////////////////////////////
@@ -49,7 +52,7 @@ type IModbusConstants interface {
 /////////////////////// Accessors for const fields.
 ///////////////////////
 
-func (m *ModbusConstants) GetModbusTcpDefaultPort() uint16 {
+func (m *_ModbusConstants) GetModbusTcpDefaultPort() uint16 {
 	return ModbusConstants_MODBUSTCPDEFAULTPORT
 }
 
@@ -58,30 +61,31 @@ func (m *ModbusConstants) GetModbusTcpDefaultPort() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewModbusConstants factory function for ModbusConstants
-func NewModbusConstants() *ModbusConstants {
-	return &ModbusConstants{}
+// NewModbusConstants factory function for _ModbusConstants
+func NewModbusConstants() *_ModbusConstants {
+	return &_ModbusConstants{}
 }
 
-func CastModbusConstants(structType interface{}) *ModbusConstants {
+// Deprecated: use the interface for direct cast
+func CastModbusConstants(structType interface{}) ModbusConstants {
 	if casted, ok := structType.(ModbusConstants); ok {
-		return &casted
+		return casted
 	}
 	if casted, ok := structType.(*ModbusConstants); ok {
-		return casted
+		return *casted
 	}
 	return nil
 }
 
-func (m *ModbusConstants) GetTypeName() string {
+func (m *_ModbusConstants) GetTypeName() string {
 	return "ModbusConstants"
 }
 
-func (m *ModbusConstants) GetLengthInBits() uint16 {
+func (m *_ModbusConstants) GetLengthInBits() uint16 {
 	return m.GetLengthInBitsConditional(false)
 }
 
-func (m *ModbusConstants) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_ModbusConstants) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (modbusTcpDefaultPort)
@@ -90,15 +94,19 @@ func (m *ModbusConstants) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *ModbusConstants) GetLengthInBytes() uint16 {
+func (m *_ModbusConstants) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusConstantsParse(readBuffer utils.ReadBuffer) (*ModbusConstants, error) {
+func ModbusConstantsParse(theBytes []byte) (ModbusConstants, error) {
+	return ModbusConstantsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ModbusConstantsParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusConstants"); pullErr != nil {
-		return nil, pullErr
+		return nil, errors.Wrap(pullErr, "Error pulling for ModbusConstants")
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
@@ -106,25 +114,33 @@ func ModbusConstantsParse(readBuffer utils.ReadBuffer) (*ModbusConstants, error)
 	// Const Field (modbusTcpDefaultPort)
 	modbusTcpDefaultPort, _modbusTcpDefaultPortErr := readBuffer.ReadUint16("modbusTcpDefaultPort", 16)
 	if _modbusTcpDefaultPortErr != nil {
-		return nil, errors.Wrap(_modbusTcpDefaultPortErr, "Error parsing 'modbusTcpDefaultPort' field")
+		return nil, errors.Wrap(_modbusTcpDefaultPortErr, "Error parsing 'modbusTcpDefaultPort' field of ModbusConstants")
 	}
 	if modbusTcpDefaultPort != ModbusConstants_MODBUSTCPDEFAULTPORT {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ModbusConstants_MODBUSTCPDEFAULTPORT) + " but got " + fmt.Sprintf("%d", modbusTcpDefaultPort))
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusConstants"); closeErr != nil {
-		return nil, closeErr
+		return nil, errors.Wrap(closeErr, "Error closing for ModbusConstants")
 	}
 
 	// Create the instance
-	return NewModbusConstants(), nil
+	return &_ModbusConstants{}, nil
 }
 
-func (m *ModbusConstants) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusConstants) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ModbusConstants) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ModbusConstants"); pushErr != nil {
-		return pushErr
+		return errors.Wrap(pushErr, "Error pushing for ModbusConstants")
 	}
 
 	// Const Field (modbusTcpDefaultPort)
@@ -134,18 +150,22 @@ func (m *ModbusConstants) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if popErr := writeBuffer.PopContext("ModbusConstants"); popErr != nil {
-		return popErr
+		return errors.Wrap(popErr, "Error popping for ModbusConstants")
 	}
 	return nil
 }
 
-func (m *ModbusConstants) String() string {
+func (m *_ModbusConstants) isModbusConstants() bool {
+	return true
+}
+
+func (m *_ModbusConstants) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type DeviceGroup uint8
 
 type IDeviceGroup interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -50,28 +50,28 @@ func init() {
 	}
 }
 
-func DeviceGroupByValue(value uint8) DeviceGroup {
+func DeviceGroupByValue(value uint8) (enum DeviceGroup, ok bool) {
 	switch value {
 	case 0x01:
-		return DeviceGroup_PG_OR_PC
+		return DeviceGroup_PG_OR_PC, true
 	case 0x02:
-		return DeviceGroup_OS
+		return DeviceGroup_OS, true
 	case 0x03:
-		return DeviceGroup_OTHERS
+		return DeviceGroup_OTHERS, true
 	}
-	return 0
+	return 0, false
 }
 
-func DeviceGroupByName(value string) DeviceGroup {
+func DeviceGroupByName(value string) (enum DeviceGroup, ok bool) {
 	switch value {
 	case "PG_OR_PC":
-		return DeviceGroup_PG_OR_PC
+		return DeviceGroup_PG_OR_PC, true
 	case "OS":
-		return DeviceGroup_OS
+		return DeviceGroup_OS, true
 	case "OTHERS":
-		return DeviceGroup_OTHERS
+		return DeviceGroup_OTHERS, true
 	}
-	return 0
+	return 0, false
 }
 
 func DeviceGroupKnows(value uint8) bool {
@@ -101,19 +101,37 @@ func (m DeviceGroup) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DeviceGroupParse(readBuffer utils.ReadBuffer) (DeviceGroup, error) {
+func DeviceGroupParse(theBytes []byte) (DeviceGroup, error) {
+	return DeviceGroupParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func DeviceGroupParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceGroup, error) {
 	val, err := readBuffer.ReadUint8("DeviceGroup", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading DeviceGroup")
 	}
-	return DeviceGroupByValue(val), nil
+	if enum, ok := DeviceGroupByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return DeviceGroup(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e DeviceGroup) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("DeviceGroup", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e DeviceGroup) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e DeviceGroup) name() string {
+func (e DeviceGroup) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("DeviceGroup", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e DeviceGroup) PLC4XEnumName() string {
 	switch e {
 	case DeviceGroup_PG_OR_PC:
 		return "PG_OR_PC"
@@ -126,5 +144,5 @@ func (e DeviceGroup) name() string {
 }
 
 func (e DeviceGroup) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type ApduType uint8
 
 type IApduType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -76,80 +76,80 @@ func init() {
 	}
 }
 
-func ApduTypeByValue(value uint8) ApduType {
+func ApduTypeByValue(value uint8) (enum ApduType, ok bool) {
 	switch value {
 	case 0x0:
-		return ApduType_CONFIRMED_REQUEST_PDU
+		return ApduType_CONFIRMED_REQUEST_PDU, true
 	case 0x1:
-		return ApduType_UNCONFIRMED_REQUEST_PDU
+		return ApduType_UNCONFIRMED_REQUEST_PDU, true
 	case 0x2:
-		return ApduType_SIMPLE_ACK_PDU
+		return ApduType_SIMPLE_ACK_PDU, true
 	case 0x3:
-		return ApduType_COMPLEX_ACK_PDU
+		return ApduType_COMPLEX_ACK_PDU, true
 	case 0x4:
-		return ApduType_SEGMENT_ACK_PDU
+		return ApduType_SEGMENT_ACK_PDU, true
 	case 0x5:
-		return ApduType_ERROR_PDU
+		return ApduType_ERROR_PDU, true
 	case 0x6:
-		return ApduType_REJECT_PDU
+		return ApduType_REJECT_PDU, true
 	case 0x7:
-		return ApduType_ABORT_PDU
+		return ApduType_ABORT_PDU, true
 	case 0x8:
-		return ApduType_APDU_UNKNOWN_8
+		return ApduType_APDU_UNKNOWN_8, true
 	case 0x9:
-		return ApduType_APDU_UNKNOWN_9
+		return ApduType_APDU_UNKNOWN_9, true
 	case 0xA:
-		return ApduType_APDU_UNKNOWN_A
+		return ApduType_APDU_UNKNOWN_A, true
 	case 0xB:
-		return ApduType_APDU_UNKNOWN_B
+		return ApduType_APDU_UNKNOWN_B, true
 	case 0xC:
-		return ApduType_APDU_UNKNOWN_C
+		return ApduType_APDU_UNKNOWN_C, true
 	case 0xD:
-		return ApduType_APDU_UNKNOWN_D
+		return ApduType_APDU_UNKNOWN_D, true
 	case 0xE:
-		return ApduType_APDU_UNKNOWN_E
+		return ApduType_APDU_UNKNOWN_E, true
 	case 0xF:
-		return ApduType_APDU_UNKNOWN_F
+		return ApduType_APDU_UNKNOWN_F, true
 	}
-	return 0
+	return 0, false
 }
 
-func ApduTypeByName(value string) ApduType {
+func ApduTypeByName(value string) (enum ApduType, ok bool) {
 	switch value {
 	case "CONFIRMED_REQUEST_PDU":
-		return ApduType_CONFIRMED_REQUEST_PDU
+		return ApduType_CONFIRMED_REQUEST_PDU, true
 	case "UNCONFIRMED_REQUEST_PDU":
-		return ApduType_UNCONFIRMED_REQUEST_PDU
+		return ApduType_UNCONFIRMED_REQUEST_PDU, true
 	case "SIMPLE_ACK_PDU":
-		return ApduType_SIMPLE_ACK_PDU
+		return ApduType_SIMPLE_ACK_PDU, true
 	case "COMPLEX_ACK_PDU":
-		return ApduType_COMPLEX_ACK_PDU
+		return ApduType_COMPLEX_ACK_PDU, true
 	case "SEGMENT_ACK_PDU":
-		return ApduType_SEGMENT_ACK_PDU
+		return ApduType_SEGMENT_ACK_PDU, true
 	case "ERROR_PDU":
-		return ApduType_ERROR_PDU
+		return ApduType_ERROR_PDU, true
 	case "REJECT_PDU":
-		return ApduType_REJECT_PDU
+		return ApduType_REJECT_PDU, true
 	case "ABORT_PDU":
-		return ApduType_ABORT_PDU
+		return ApduType_ABORT_PDU, true
 	case "APDU_UNKNOWN_8":
-		return ApduType_APDU_UNKNOWN_8
+		return ApduType_APDU_UNKNOWN_8, true
 	case "APDU_UNKNOWN_9":
-		return ApduType_APDU_UNKNOWN_9
+		return ApduType_APDU_UNKNOWN_9, true
 	case "APDU_UNKNOWN_A":
-		return ApduType_APDU_UNKNOWN_A
+		return ApduType_APDU_UNKNOWN_A, true
 	case "APDU_UNKNOWN_B":
-		return ApduType_APDU_UNKNOWN_B
+		return ApduType_APDU_UNKNOWN_B, true
 	case "APDU_UNKNOWN_C":
-		return ApduType_APDU_UNKNOWN_C
+		return ApduType_APDU_UNKNOWN_C, true
 	case "APDU_UNKNOWN_D":
-		return ApduType_APDU_UNKNOWN_D
+		return ApduType_APDU_UNKNOWN_D, true
 	case "APDU_UNKNOWN_E":
-		return ApduType_APDU_UNKNOWN_E
+		return ApduType_APDU_UNKNOWN_E, true
 	case "APDU_UNKNOWN_F":
-		return ApduType_APDU_UNKNOWN_F
+		return ApduType_APDU_UNKNOWN_F, true
 	}
-	return 0
+	return 0, false
 }
 
 func ApduTypeKnows(value uint8) bool {
@@ -179,19 +179,37 @@ func (m ApduType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduTypeParse(readBuffer utils.ReadBuffer) (ApduType, error) {
+func ApduTypeParse(theBytes []byte) (ApduType, error) {
+	return ApduTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ApduTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ApduType, error) {
 	val, err := readBuffer.ReadUint8("ApduType", 4)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading ApduType")
 	}
-	return ApduTypeByValue(val), nil
+	if enum, ok := ApduTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return ApduType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e ApduType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("ApduType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e ApduType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e ApduType) name() string {
+func (e ApduType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("ApduType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e ApduType) PLC4XEnumName() string {
 	switch e {
 	case ApduType_CONFIRMED_REQUEST_PDU:
 		return "CONFIRMED_REQUEST_PDU"
@@ -230,5 +248,5 @@ func (e ApduType) name() string {
 }
 
 func (e ApduType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

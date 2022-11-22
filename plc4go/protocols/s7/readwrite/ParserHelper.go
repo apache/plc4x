@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,8 +20,8 @@
 package readwrite
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -41,37 +41,37 @@ func (m S7ParserHelper) Parse(typeName string, arguments []string, io utils.Read
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.DataItemParse(io, dataProtocolId, stringLength)
+		return model.DataItemParseWithBuffer(io, dataProtocolId, stringLength)
 	case "SzlId":
-		return model.SzlIdParse(io)
+		return model.SzlIdParseWithBuffer(io)
 	case "AlarmMessageObjectAckType":
-		return model.AlarmMessageObjectAckTypeParse(io)
+		return model.AlarmMessageObjectAckTypeParseWithBuffer(io)
 	case "AlarmMessageAckPushType":
-		return model.AlarmMessageAckPushTypeParse(io)
+		return model.AlarmMessageAckPushTypeParseWithBuffer(io)
 	case "S7Message":
-		return model.S7MessageParse(io)
+		return model.S7MessageParseWithBuffer(io)
 	case "S7VarPayloadStatusItem":
-		return model.S7VarPayloadStatusItemParse(io)
+		return model.S7VarPayloadStatusItemParseWithBuffer(io)
 	case "S7Parameter":
 		messageType, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.S7ParameterParse(io, messageType)
+		return model.S7ParameterParseWithBuffer(io, messageType)
 	case "S7DataAlarmMessage":
 		cpuFunctionType, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.S7DataAlarmMessageParse(io, cpuFunctionType)
+		return model.S7DataAlarmMessageParseWithBuffer(io, cpuFunctionType)
 	case "SzlDataTreeItem":
-		return model.SzlDataTreeItemParse(io)
+		return model.SzlDataTreeItemParseWithBuffer(io)
 	case "COTPPacket":
 		cotpLen, err := utils.StrToUint16(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.COTPPacketParse(io, cotpLen)
+		return model.COTPPacketParseWithBuffer(io, cotpLen)
 	case "S7PayloadUserDataItem":
 		cpuFunctionType, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -81,50 +81,50 @@ func (m S7ParserHelper) Parse(typeName string, arguments []string, io utils.Read
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.S7PayloadUserDataItemParse(io, cpuFunctionType, cpuSubfunction)
+		return model.S7PayloadUserDataItemParseWithBuffer(io, cpuFunctionType, cpuSubfunction)
 	case "DateAndTime":
-		return model.DateAndTimeParse(io)
+		return model.DateAndTimeParseWithBuffer(io)
 	case "COTPParameter":
 		rest, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.COTPParameterParse(io, rest)
+		return model.COTPParameterParseWithBuffer(io, rest)
 	case "AlarmMessageObjectPushType":
-		return model.AlarmMessageObjectPushTypeParse(io)
+		return model.AlarmMessageObjectPushTypeParseWithBuffer(io)
 	case "State":
-		return model.StateParse(io)
+		return model.StateParseWithBuffer(io)
 	case "AlarmMessagePushType":
-		return model.AlarmMessagePushTypeParse(io)
+		return model.AlarmMessagePushTypeParseWithBuffer(io)
 	case "TPKTPacket":
-		return model.TPKTPacketParse(io)
+		return model.TPKTPacketParseWithBuffer(io)
 	case "AlarmMessageAckType":
-		return model.AlarmMessageAckTypeParse(io)
+		return model.AlarmMessageAckTypeParseWithBuffer(io)
 	case "AssociatedValueType":
-		return model.AssociatedValueTypeParse(io)
+		return model.AssociatedValueTypeParseWithBuffer(io)
 	case "AlarmMessageAckObjectPushType":
-		return model.AlarmMessageAckObjectPushTypeParse(io)
+		return model.AlarmMessageAckObjectPushTypeParseWithBuffer(io)
 	case "S7Payload":
 		messageType, err := utils.StrToUint8(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		var parameter model.S7Parameter
-		return model.S7PayloadParse(io, messageType, &parameter)
+		return model.S7PayloadParseWithBuffer(io, messageType, parameter)
 	case "S7VarRequestParameterItem":
-		return model.S7VarRequestParameterItemParse(io)
+		return model.S7VarRequestParameterItemParseWithBuffer(io)
 	case "S7VarPayloadDataItem":
-		return model.S7VarPayloadDataItemParse(io)
+		return model.S7VarPayloadDataItemParseWithBuffer(io)
 	case "AlarmMessageQueryType":
-		return model.AlarmMessageQueryTypeParse(io)
+		return model.AlarmMessageQueryTypeParseWithBuffer(io)
 	case "AlarmMessageAckResponseType":
-		return model.AlarmMessageAckResponseTypeParse(io)
+		return model.AlarmMessageAckResponseTypeParseWithBuffer(io)
 	case "AlarmMessageObjectQueryType":
-		return model.AlarmMessageObjectQueryTypeParse(io)
+		return model.AlarmMessageObjectQueryTypeParseWithBuffer(io)
 	case "S7Address":
-		return model.S7AddressParse(io)
+		return model.S7AddressParseWithBuffer(io)
 	case "S7ParameterUserDataItem":
-		return model.S7ParameterUserDataItemParse(io)
+		return model.S7ParameterUserDataItemParseWithBuffer(io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

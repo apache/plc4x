@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,14 +18,14 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 
 import java.util.concurrent.CompletableFuture;
 
 /**
  * Request to read one or more values from a plc.
  */
-public interface PlcReadRequest extends PlcFieldRequest {
+public interface PlcReadRequest extends PlcTagRequest {
 
     @Override
     CompletableFuture<? extends PlcReadResponse> execute();
@@ -35,8 +35,8 @@ public interface PlcReadRequest extends PlcFieldRequest {
         @Override
         PlcReadRequest build();
 
-        Builder addItem(String name, String fieldQuery);
-        Builder addItem(String name, PlcField fieldQuery);
+        Builder addTagAddress(String name, String tagAddress);
+        Builder addTag(String name, PlcTag tag);
 
     }
 

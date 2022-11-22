@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -22,11 +22,14 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
+import org.apache.plc4x.java.api.model.ArrayInfo;
+import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.*;
-import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
@@ -34,7 +37,7 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcDINT;
 import org.apache.plc4x.java.spi.values.PlcLINT;
 import org.assertj.core.api.WithAssertions;
@@ -48,10 +51,7 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -127,26 +127,26 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
     private PlcEntityManager getInitializedEntityManager() throws PlcConnectionException {
         Map<String, PlcValue> map = new HashMap<>();
         String prefix = ConnectedEntity.class.getName() + ".";
-        map.put(prefix + "boolVar", IEC61131ValueHandler.of(true));
-        map.put(prefix + "byteVar", IEC61131ValueHandler.of((byte) 1));
-        map.put(prefix + "shortVar", IEC61131ValueHandler.of((short) 1));
-        map.put(prefix + "intVar", IEC61131ValueHandler.of(1));
-        map.put(prefix + "longVar", IEC61131ValueHandler.of(1L));
-        map.put(prefix + "boxedBoolVar", IEC61131ValueHandler.of(1L));
-        map.put(prefix + "boxedByteVar", IEC61131ValueHandler.of((byte) 1));
-        map.put(prefix + "boxedShortVar", IEC61131ValueHandler.of((short) 1));
-        map.put(prefix + "boxedIntegerVar", IEC61131ValueHandler.of(1));
-        map.put(prefix + "boxedLongVar", IEC61131ValueHandler.of(1L));
-        map.put(prefix + "bigIntegerVar", IEC61131ValueHandler.of(BigInteger.ONE));
-        map.put(prefix + "floatVar", IEC61131ValueHandler.of(1f));
-        map.put(prefix + "doubleVar", IEC61131ValueHandler.of(1d));
-        map.put(prefix + "bigDecimalVar", IEC61131ValueHandler.of(BigDecimal.ONE));
-        map.put(prefix + "localTimeVar", IEC61131ValueHandler.of(LocalTime.of(1, 1)));
-        map.put(prefix + "localDateVar", IEC61131ValueHandler.of(LocalDate.of(1, 1, 1)));
-        map.put(prefix + "localDateTimeVar", IEC61131ValueHandler.of(LocalDateTime.of(1, 1, 1, 1, 1)));
-        map.put(prefix + "byteArrayVar", IEC61131ValueHandler.of(new Byte[]{0x0, 0x1}));
-        map.put(prefix + "bigByteArrayVar", IEC61131ValueHandler.of(new Byte[]{0x0, 0x1}));
-        map.put(prefix + "stringVar", IEC61131ValueHandler.of("Hallo"));
+        map.put(prefix + "boolVar", PlcValueHandler.of(true));
+        map.put(prefix + "byteVar", PlcValueHandler.of((byte) 1));
+        map.put(prefix + "shortVar", PlcValueHandler.of((short) 1));
+        map.put(prefix + "intVar", PlcValueHandler.of(1));
+        map.put(prefix + "longVar", PlcValueHandler.of(1L));
+        map.put(prefix + "boxedBoolVar", PlcValueHandler.of(1L));
+        map.put(prefix + "boxedByteVar", PlcValueHandler.of((byte) 1));
+        map.put(prefix + "boxedShortVar", PlcValueHandler.of((short) 1));
+        map.put(prefix + "boxedIntegerVar", PlcValueHandler.of(1));
+        map.put(prefix + "boxedLongVar", PlcValueHandler.of(1L));
+        map.put(prefix + "bigIntegerVar", PlcValueHandler.of(BigInteger.ONE));
+        map.put(prefix + "floatVar", PlcValueHandler.of(1f));
+        map.put(prefix + "doubleVar", PlcValueHandler.of(1d));
+        map.put(prefix + "bigDecimalVar", PlcValueHandler.of(BigDecimal.ONE));
+        map.put(prefix + "localTimeVar", PlcValueHandler.of(LocalTime.of(1, 1)));
+        map.put(prefix + "localDateVar", PlcValueHandler.of(LocalDate.of(1, 1, 1)));
+        map.put(prefix + "localDateTimeVar", PlcValueHandler.of(LocalDateTime.of(1, 1, 1, 1, 1)));
+        map.put(prefix + "byteArrayVar", PlcValueHandler.of(new Byte[]{0x0, 0x1}));
+        map.put(prefix + "bigByteArrayVar", PlcValueHandler.of(new Byte[]{0x0, 0x1}));
+        map.put(prefix + "stringVar", PlcValueHandler.of("Hallo"));
         return getPlcEntityManager(map);
     }
 
@@ -217,47 +217,72 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
             public boolean canSubscribe() {
                 return true;
             }
+
+            @Override
+            public boolean canBrowse() {
+                return true;
+            }
+
         });
 
         PlcReader reader = readRequest -> {
-            Map<String, ResponseItem<PlcValue>> map = readRequest.getFieldNames().stream()
+            Map<String, ResponseItem<PlcValue>> map = readRequest.getTagNames().stream()
                 .collect(Collectors.toMap(
                     Function.identity(),
                     s -> new ResponseItem<>(PlcResponseCode.OK, Objects.requireNonNull(responses.get(s), s + " not found"))
                 ));
             return CompletableFuture.completedFuture(new DefaultPlcReadResponse(readRequest, map));
         };
-        when(connection.readRequestBuilder()).then(invocation -> new DefaultPlcReadRequest.Builder(reader, getFieldHandler()));
+        when(connection.readRequestBuilder()).then(invocation -> new DefaultPlcReadRequest.Builder(reader, getTagHandler()));
         PlcWriter writer = writeRequest -> {
-            Map<String, PlcResponseCode> map = writeRequest.getFieldNames().stream()
+            Map<String, PlcResponseCode> map = writeRequest.getTagNames().stream()
                 .collect(Collectors.toMap(
                     Function.identity(),
                     s -> PlcResponseCode.OK
                 ));
             return CompletableFuture.completedFuture(new DefaultPlcWriteResponse(writeRequest, map));
         };
-        when(connection.writeRequestBuilder()).then(invocation -> new DefaultPlcWriteRequest.Builder(writer, getFieldHandler(), getValueHandler()));
+        when(connection.writeRequestBuilder()).then(invocation -> new DefaultPlcWriteRequest.Builder(writer, getTagHandler(), getValueHandler()));
 
         return new PlcEntityManager(mock);
     }
 
-    private PlcFieldHandler getFieldHandler() {
-        return new NoOpPlcFieldHandler();
+    private PlcTagHandler getTagHandler() {
+        return new NoOpPlcTagHandler();
     }
 
-    private PlcValueHandler getValueHandler() {
+    private org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
         return new NoOpPlcValueHandler();
     }
 
-    private static class NoOpPlcFieldHandler implements PlcFieldHandler {
+    private static class NoOpPlcTagHandler implements PlcTagHandler {
         @Override
-        public org.apache.plc4x.java.api.model.PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
-            return new org.apache.plc4x.java.api.model.PlcField() {
+        public org.apache.plc4x.java.api.model.PlcTag parseTag(String tagAddress) throws PlcInvalidTagException {
+            return new org.apache.plc4x.java.api.model.PlcTag() {
+                @Override
+                public String getAddressString() {
+                    return "address";
+                }
+
+                @Override
+                public PlcValueType getPlcValueType() {
+                    return org.apache.plc4x.java.api.model.PlcTag.super.getPlcValueType();
+                }
+
+                @Override
+                public List<ArrayInfo> getArrayInfo() {
+                    return org.apache.plc4x.java.api.model.PlcTag.super.getArrayInfo();
+                }
             };
+        }
+
+        @Override
+        public PlcQuery parseQuery(String query) {
+            throw new UnsupportedOperationException("This driver doesn't support browsing");
         }
     }
 
-    private static class NoOpPlcValueHandler implements PlcValueHandler {
+    private static class NoOpPlcValueHandler implements org.apache.plc4x.java.api.value.PlcValueHandler {
         @Override
         public PlcValue newPlcValue(Object value) {
             throw new RuntimeException("Data Type " + value.getClass().getSimpleName() + "Is not supported");
@@ -269,12 +294,12 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
         }
 
         @Override
-        public PlcValue newPlcValue(org.apache.plc4x.java.api.model.PlcField field, Object value) {
+        public PlcValue newPlcValue(org.apache.plc4x.java.api.model.PlcTag tag, Object value) {
             throw new RuntimeException("Data Type " + value.getClass().getSimpleName() + "Is not supported");
         }
 
         @Override
-        public PlcValue newPlcValue(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
+        public PlcValue newPlcValue(org.apache.plc4x.java.api.model.PlcTag tag, Object[] values) {
             throw new RuntimeException("Data Type " + values.getClass().getSimpleName() + "Is not supported");
         }
     }
@@ -286,7 +311,7 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
     @PlcEntity()
     public static class EntityWithBadConstructor {
 
-        @PlcField("asdf")
+        @PlcTag("asdf")
         private long field;
 
         public EntityWithBadConstructor(long field) {
@@ -301,10 +326,10 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
     @PlcEntity()
     public static class MyEntity {
 
-        @PlcField("%DB3.DBW500")
+        @PlcTag("%DB3.DBW500")
         private Long counter;
 
-        @PlcField("%DB3.DBW504")
+        @PlcTag("%DB3.DBW504")
         private long counter2;
 
         public Long getCounter() {
@@ -320,46 +345,46 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
     @PlcEntity()
     public static class ConnectedEntity {
 
-        @PlcField("%DB1.DW111:BOOL")
+        @PlcTag("%DB1.DW111:BOOL")
         private boolean boolVar;
-        @PlcField("%DB1.DW111:BYTE")
+        @PlcTag("%DB1.DW111:BYTE")
         private byte byteVar;
-        @PlcField("%DB1.DW111:SHORT")
+        @PlcTag("%DB1.DW111:SHORT")
         private short shortVar;
-        @PlcField("%DB1.DW111:INT")
+        @PlcTag("%DB1.DW111:INT")
         private int intVar;
-        @PlcField("%DB1.DW111:LONG")
+        @PlcTag("%DB1.DW111:LONG")
         private long longVar;
-        @PlcField("%DB1.DW111:BOOL")
+        @PlcTag("%DB1.DW111:BOOL")
         private Boolean boxedBoolVar;
-        @PlcField("%DB1.DW111:BYTE")
+        @PlcTag("%DB1.DW111:BYTE")
         private Byte boxedByteVar;
-        @PlcField("%DB1.DW111:SHORT")
+        @PlcTag("%DB1.DW111:SHORT")
         private Short boxedShortVar;
-        @PlcField("%DB1.DW111:SHORT")
+        @PlcTag("%DB1.DW111:SHORT")
         private Integer boxedIntegerVar;
-        @PlcField("%DB1.DW111:LONG")
+        @PlcTag("%DB1.DW111:LONG")
         private Long boxedLongVar;
-        @PlcField("%DB1.DW111:BIGINT")
+        @PlcTag("%DB1.DW111:BIGINT")
         private BigInteger bigIntegerVar;
-        @PlcField("%DB1.DW111:FLOAT")
+        @PlcTag("%DB1.DW111:FLOAT")
         private Float floatVar;
-        @PlcField("%DB1.DW111:DOUBLE")
+        @PlcTag("%DB1.DW111:DOUBLE")
         private Double doubleVar;
-        @PlcField("%DB1.DW111:BIGDECIMAL")
+        @PlcTag("%DB1.DW111:BIGDECIMAL")
         private BigDecimal bigDecimalVar;
-        @PlcField("%DB1.DW111:LOCALTIME")
+        @PlcTag("%DB1.DW111:LOCALTIME")
         private LocalTime localTimeVar;
-        @PlcField("%DB1.DW111:LOCALDATE")
+        @PlcTag("%DB1.DW111:LOCALDATE")
         private LocalDate localDateVar;
-        @PlcField("%DB1.DW111:LOCALDATETIME")
+        @PlcTag("%DB1.DW111:LOCALDATETIME")
         private LocalDateTime localDateTimeVar;
-        @PlcField("%DB1.DW111:BYTEARRAY")
+        @PlcTag("%DB1.DW111:BYTEARRAY")
         private byte[] byteArrayVar;
-        @PlcField("%DB1.DW111:BYTEARRAY")
+        @PlcTag("%DB1.DW111:BYTEARRAY")
         private Byte[] bigByteArrayVar;
 
-        @PlcField("%DB1.DW111:STRING")
+        @PlcTag("%DB1.DW111:STRING")
         private String stringVar;
 
         public ConnectedEntity() {

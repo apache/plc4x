@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -36,7 +36,7 @@ public class JobConfigurationClassicImplBuilder {
     private final int scrapeRateMs;
 
     private final List<String> sources = new ArrayList<>();
-    private final Map<String, String> fields = new HashMap<>();
+    private final Map<String, String> tags = new HashMap<>();
 
     public JobConfigurationClassicImplBuilder(ScraperConfigurationClassicImplBuilder parent, String name, int scrapeRateMs) {
         this.parent = parent;
@@ -49,13 +49,13 @@ public class JobConfigurationClassicImplBuilder {
         return this;
     }
 
-    public JobConfigurationClassicImplBuilder field(String alias, String fieldQuery) {
-        this.fields.put(alias, fieldQuery);
+    public JobConfigurationClassicImplBuilder tag(String alias, String tagAddress) {
+        this.tags.put(alias, tagAddress);
         return this;
     }
 
     private JobConfigurationClassicImpl buildInternal() {
-        return new JobConfigurationClassicImpl(name,null, scrapeRateMs, sources, fields);
+        return new JobConfigurationClassicImpl(name,null, scrapeRateMs, sources, tags);
     }
 
     public ScraperConfigurationClassicImplBuilder build() {

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type DriverType uint32
 
 type IDriverType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -50,28 +50,28 @@ func init() {
 	}
 }
 
-func DriverTypeByValue(value uint32) DriverType {
+func DriverTypeByValue(value uint32) (enum DriverType, ok bool) {
 	switch value {
 	case 0x01:
-		return DriverType_MODBUS_TCP
+		return DriverType_MODBUS_TCP, true
 	case 0x02:
-		return DriverType_MODBUS_RTU
+		return DriverType_MODBUS_RTU, true
 	case 0x03:
-		return DriverType_MODBUS_ASCII
+		return DriverType_MODBUS_ASCII, true
 	}
-	return 0
+	return 0, false
 }
 
-func DriverTypeByName(value string) DriverType {
+func DriverTypeByName(value string) (enum DriverType, ok bool) {
 	switch value {
 	case "MODBUS_TCP":
-		return DriverType_MODBUS_TCP
+		return DriverType_MODBUS_TCP, true
 	case "MODBUS_RTU":
-		return DriverType_MODBUS_RTU
+		return DriverType_MODBUS_RTU, true
 	case "MODBUS_ASCII":
-		return DriverType_MODBUS_ASCII
+		return DriverType_MODBUS_ASCII, true
 	}
-	return 0
+	return 0, false
 }
 
 func DriverTypeKnows(value uint32) bool {
@@ -101,19 +101,37 @@ func (m DriverType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DriverTypeParse(readBuffer utils.ReadBuffer) (DriverType, error) {
+func DriverTypeParse(theBytes []byte) (DriverType, error) {
+	return DriverTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func DriverTypeParseWithBuffer(readBuffer utils.ReadBuffer) (DriverType, error) {
 	val, err := readBuffer.ReadUint32("DriverType", 32)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading DriverType")
 	}
-	return DriverTypeByValue(val), nil
+	if enum, ok := DriverTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return DriverType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e DriverType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint32("DriverType", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e DriverType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e DriverType) name() string {
+func (e DriverType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint32("DriverType", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e DriverType) PLC4XEnumName() string {
 	switch e {
 	case DriverType_MODBUS_TCP:
 		return "MODBUS_TCP"
@@ -126,5 +144,5 @@ func (e DriverType) name() string {
 }
 
 func (e DriverType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

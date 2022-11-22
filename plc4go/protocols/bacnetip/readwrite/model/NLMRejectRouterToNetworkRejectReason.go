@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type NLMRejectRouterToNetworkRejectReason uint8
 
 type INLMRejectRouterToNetworkRejectReason interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -58,44 +58,44 @@ func init() {
 	}
 }
 
-func NLMRejectRouterToNetworkRejectReasonByValue(value uint8) NLMRejectRouterToNetworkRejectReason {
+func NLMRejectRouterToNetworkRejectReasonByValue(value uint8) (enum NLMRejectRouterToNetworkRejectReason, ok bool) {
 	switch value {
 	case 0:
-		return NLMRejectRouterToNetworkRejectReason_OTHER
+		return NLMRejectRouterToNetworkRejectReason_OTHER, true
 	case 1:
-		return NLMRejectRouterToNetworkRejectReason_NOT_DIRECTLY_CONNECTED
+		return NLMRejectRouterToNetworkRejectReason_NOT_DIRECTLY_CONNECTED, true
 	case 2:
-		return NLMRejectRouterToNetworkRejectReason_BUSY
+		return NLMRejectRouterToNetworkRejectReason_BUSY, true
 	case 3:
-		return NLMRejectRouterToNetworkRejectReason_UNKNOWN_NLMT
+		return NLMRejectRouterToNetworkRejectReason_UNKNOWN_NLMT, true
 	case 4:
-		return NLMRejectRouterToNetworkRejectReason_TOO_LONG
+		return NLMRejectRouterToNetworkRejectReason_TOO_LONG, true
 	case 5:
-		return NLMRejectRouterToNetworkRejectReason_SECURITY_ERROR
+		return NLMRejectRouterToNetworkRejectReason_SECURITY_ERROR, true
 	case 6:
-		return NLMRejectRouterToNetworkRejectReason_ADDRESSING_ERROR
+		return NLMRejectRouterToNetworkRejectReason_ADDRESSING_ERROR, true
 	}
-	return 0
+	return 0, false
 }
 
-func NLMRejectRouterToNetworkRejectReasonByName(value string) NLMRejectRouterToNetworkRejectReason {
+func NLMRejectRouterToNetworkRejectReasonByName(value string) (enum NLMRejectRouterToNetworkRejectReason, ok bool) {
 	switch value {
 	case "OTHER":
-		return NLMRejectRouterToNetworkRejectReason_OTHER
+		return NLMRejectRouterToNetworkRejectReason_OTHER, true
 	case "NOT_DIRECTLY_CONNECTED":
-		return NLMRejectRouterToNetworkRejectReason_NOT_DIRECTLY_CONNECTED
+		return NLMRejectRouterToNetworkRejectReason_NOT_DIRECTLY_CONNECTED, true
 	case "BUSY":
-		return NLMRejectRouterToNetworkRejectReason_BUSY
+		return NLMRejectRouterToNetworkRejectReason_BUSY, true
 	case "UNKNOWN_NLMT":
-		return NLMRejectRouterToNetworkRejectReason_UNKNOWN_NLMT
+		return NLMRejectRouterToNetworkRejectReason_UNKNOWN_NLMT, true
 	case "TOO_LONG":
-		return NLMRejectRouterToNetworkRejectReason_TOO_LONG
+		return NLMRejectRouterToNetworkRejectReason_TOO_LONG, true
 	case "SECURITY_ERROR":
-		return NLMRejectRouterToNetworkRejectReason_SECURITY_ERROR
+		return NLMRejectRouterToNetworkRejectReason_SECURITY_ERROR, true
 	case "ADDRESSING_ERROR":
-		return NLMRejectRouterToNetworkRejectReason_ADDRESSING_ERROR
+		return NLMRejectRouterToNetworkRejectReason_ADDRESSING_ERROR, true
 	}
-	return 0
+	return 0, false
 }
 
 func NLMRejectRouterToNetworkRejectReasonKnows(value uint8) bool {
@@ -125,19 +125,37 @@ func (m NLMRejectRouterToNetworkRejectReason) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMRejectRouterToNetworkRejectReasonParse(readBuffer utils.ReadBuffer) (NLMRejectRouterToNetworkRejectReason, error) {
+func NLMRejectRouterToNetworkRejectReasonParse(theBytes []byte) (NLMRejectRouterToNetworkRejectReason, error) {
+	return NLMRejectRouterToNetworkRejectReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func NLMRejectRouterToNetworkRejectReasonParseWithBuffer(readBuffer utils.ReadBuffer) (NLMRejectRouterToNetworkRejectReason, error) {
 	val, err := readBuffer.ReadUint8("NLMRejectRouterToNetworkRejectReason", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading NLMRejectRouterToNetworkRejectReason")
 	}
-	return NLMRejectRouterToNetworkRejectReasonByValue(val), nil
+	if enum, ok := NLMRejectRouterToNetworkRejectReasonByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return NLMRejectRouterToNetworkRejectReason(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e NLMRejectRouterToNetworkRejectReason) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("NLMRejectRouterToNetworkRejectReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e NLMRejectRouterToNetworkRejectReason) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e NLMRejectRouterToNetworkRejectReason) name() string {
+func (e NLMRejectRouterToNetworkRejectReason) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("NLMRejectRouterToNetworkRejectReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e NLMRejectRouterToNetworkRejectReason) PLC4XEnumName() string {
 	switch e {
 	case NLMRejectRouterToNetworkRejectReason_OTHER:
 		return "OTHER"
@@ -158,5 +176,5 @@ func (e NLMRejectRouterToNetworkRejectReason) name() string {
 }
 
 func (e NLMRejectRouterToNetworkRejectReason) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetProgramState uint8
 
 type IBACnetProgramState interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -56,40 +56,40 @@ func init() {
 	}
 }
 
-func BACnetProgramStateByValue(value uint8) BACnetProgramState {
+func BACnetProgramStateByValue(value uint8) (enum BACnetProgramState, ok bool) {
 	switch value {
 	case 0:
-		return BACnetProgramState_IDLE
+		return BACnetProgramState_IDLE, true
 	case 1:
-		return BACnetProgramState_LOADING
+		return BACnetProgramState_LOADING, true
 	case 2:
-		return BACnetProgramState_RUNNING
+		return BACnetProgramState_RUNNING, true
 	case 3:
-		return BACnetProgramState_WAITING
+		return BACnetProgramState_WAITING, true
 	case 4:
-		return BACnetProgramState_HALTED
+		return BACnetProgramState_HALTED, true
 	case 5:
-		return BACnetProgramState_UNLOADING
+		return BACnetProgramState_UNLOADING, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetProgramStateByName(value string) BACnetProgramState {
+func BACnetProgramStateByName(value string) (enum BACnetProgramState, ok bool) {
 	switch value {
 	case "IDLE":
-		return BACnetProgramState_IDLE
+		return BACnetProgramState_IDLE, true
 	case "LOADING":
-		return BACnetProgramState_LOADING
+		return BACnetProgramState_LOADING, true
 	case "RUNNING":
-		return BACnetProgramState_RUNNING
+		return BACnetProgramState_RUNNING, true
 	case "WAITING":
-		return BACnetProgramState_WAITING
+		return BACnetProgramState_WAITING, true
 	case "HALTED":
-		return BACnetProgramState_HALTED
+		return BACnetProgramState_HALTED, true
 	case "UNLOADING":
-		return BACnetProgramState_UNLOADING
+		return BACnetProgramState_UNLOADING, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetProgramStateKnows(value uint8) bool {
@@ -119,19 +119,37 @@ func (m BACnetProgramState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetProgramStateParse(readBuffer utils.ReadBuffer) (BACnetProgramState, error) {
+func BACnetProgramStateParse(theBytes []byte) (BACnetProgramState, error) {
+	return BACnetProgramStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetProgramStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetProgramState, error) {
 	val, err := readBuffer.ReadUint8("BACnetProgramState", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetProgramState")
 	}
-	return BACnetProgramStateByValue(val), nil
+	if enum, ok := BACnetProgramStateByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetProgramState(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetProgramState) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetProgramState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetProgramState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetProgramState) name() string {
+func (e BACnetProgramState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetProgramState", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetProgramState) PLC4XEnumName() string {
 	switch e {
 	case BACnetProgramState_IDLE:
 		return "IDLE"
@@ -150,5 +168,5 @@ func (e BACnetProgramState) name() string {
 }
 
 func (e BACnetProgramState) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

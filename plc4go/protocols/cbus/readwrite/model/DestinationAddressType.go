@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type DestinationAddressType uint8
 
 type IDestinationAddressType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -50,28 +50,28 @@ func init() {
 	}
 }
 
-func DestinationAddressTypeByValue(value uint8) DestinationAddressType {
+func DestinationAddressTypeByValue(value uint8) (enum DestinationAddressType, ok bool) {
 	switch value {
 	case 0x03:
-		return DestinationAddressType_PointToPointToMultiPoint
+		return DestinationAddressType_PointToPointToMultiPoint, true
 	case 0x05:
-		return DestinationAddressType_PointToMultiPoint
+		return DestinationAddressType_PointToMultiPoint, true
 	case 0x06:
-		return DestinationAddressType_PointToPoint
+		return DestinationAddressType_PointToPoint, true
 	}
-	return 0
+	return 0, false
 }
 
-func DestinationAddressTypeByName(value string) DestinationAddressType {
+func DestinationAddressTypeByName(value string) (enum DestinationAddressType, ok bool) {
 	switch value {
 	case "PointToPointToMultiPoint":
-		return DestinationAddressType_PointToPointToMultiPoint
+		return DestinationAddressType_PointToPointToMultiPoint, true
 	case "PointToMultiPoint":
-		return DestinationAddressType_PointToMultiPoint
+		return DestinationAddressType_PointToMultiPoint, true
 	case "PointToPoint":
-		return DestinationAddressType_PointToPoint
+		return DestinationAddressType_PointToPoint, true
 	}
-	return 0
+	return 0, false
 }
 
 func DestinationAddressTypeKnows(value uint8) bool {
@@ -101,19 +101,37 @@ func (m DestinationAddressType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DestinationAddressTypeParse(readBuffer utils.ReadBuffer) (DestinationAddressType, error) {
+func DestinationAddressTypeParse(theBytes []byte) (DestinationAddressType, error) {
+	return DestinationAddressTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func DestinationAddressTypeParseWithBuffer(readBuffer utils.ReadBuffer) (DestinationAddressType, error) {
 	val, err := readBuffer.ReadUint8("DestinationAddressType", 3)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading DestinationAddressType")
 	}
-	return DestinationAddressTypeByValue(val), nil
+	if enum, ok := DestinationAddressTypeByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return DestinationAddressType(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e DestinationAddressType) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("DestinationAddressType", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e DestinationAddressType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e DestinationAddressType) name() string {
+func (e DestinationAddressType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("DestinationAddressType", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e DestinationAddressType) PLC4XEnumName() string {
 	switch e {
 	case DestinationAddressType_PointToPointToMultiPoint:
 		return "PointToPointToMultiPoint"
@@ -126,5 +144,5 @@ func (e DestinationAddressType) name() string {
 }
 
 func (e DestinationAddressType) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

@@ -7,7 +7,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -35,7 +35,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -561,7 +561,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#if optionalField.type.isSimpleTypeReference()>
     _res = ${helper.getWriteBufferWriteMethodCall(optionalField.type.asSimpleTypeReference().orElseThrow(), "*_message->" + helper.getFieldName(baseType, optionalField), optionalField)};
             <#else>
-    _res = ${helper.getCTypeName(optionalField.type.asNonSimpleTypeReference().orElseThrow().name)}_serialize(writeBuffer, _message-><@fieldName baseType=baseType field=optionalField/>);
+    _res = ${helper.getCTypeName(optionalField.type.asNonSimpleTypeReference().orElseThrow().name)}_serialize(writeBuffer<#if optionalField.type.isDataIoTypeReference() && optionalField.type.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list optionalField.type.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toSerializationExpression(baseType, optionalField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, <#if optionalField.type.isEnumTypeReference() || optionalField.type.isDataIoTypeReference()>&</#if>_message-><@fieldName baseType=baseType field=optionalField/>);
             </#if>
     if(_res != OK) {
       return _res;
@@ -604,7 +604,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
   _res = ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "_message->" + helper.getFieldName(baseType, simpleField), simpleField)};
             <#else>
                 <#assign nonSimpleTypeRererence = simpleField.type.asNonSimpleTypeReference().orElseThrow()>
-  _res = ${helper.getCTypeName(nonSimpleTypeRererence.name)}_serialize(writeBuffer, <#if simpleField.type.isEnumTypeReference()>&</#if>_message-><@fieldName baseType=baseType field=simpleField/>);
+  _res = ${helper.getCTypeName(nonSimpleTypeRererence.name)}_serialize(writeBuffer<#if simpleField.type.isDataIoTypeReference() && simpleField.type.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list simpleField.type.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toSerializationExpression(baseType, simpleField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>, <#if simpleField.type.isEnumTypeReference() || simpleField.type.isDataIoTypeReference()>&</#if>_message-><@fieldName baseType=baseType field=simpleField/>);
             </#if>
   if(_res != OK) {
     return _res;
@@ -730,7 +730,7 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
                     <#assign simpleTypeReference = optionalField.type.asSimpleTypeReference().orElseThrow()>
     lengthInBits += ${simpleTypeReference.sizeInBits};
                 <#else>
-    lengthInBits += ${helper.getLengthInBitsFunctionNameForComplexTypedField(optionalField)}(_message-><@fieldName baseType=baseType field=optionalField/>);
+    lengthInBits += ${helper.getLengthInBitsFunctionNameForComplexTypedField(optionalField)}(_message-><@fieldName baseType=baseType field=optionalField/><#if optionalField.type.isDataIoTypeReference() && optionalField.type.asNonSimpleTypeReference().get().getParams().isPresent()>, <#list optionalField.type.asNonSimpleTypeReference().get().getParams().get() as parserTerm>${helper.toSerializationExpression(baseType, optionalField, parserTerm, parserArguments)}<#sep>, </#sep></#list></#if>);
                 </#if>
   }
                 <#break>
@@ -740,8 +740,8 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
 
   // Padding Field (padding)
             <#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
- int _needsPadding = (int) (${helper.toSerializationExpression(type, paddingField, paddingField.paddingCondition, parserArguments)?replace("lastItem", "false")});
- while(_needsPadding-- > 0) {
+  int _needsPadding = (int) (${helper.toSerializationExpression(type, paddingField, paddingField.paddingCondition, parserArguments)?replace("lastItem", "false")});
+  while(_needsPadding-- > 0) {
     lengthInBits += ${simpleTypeReference.sizeInBits};
   }
                 <#break>

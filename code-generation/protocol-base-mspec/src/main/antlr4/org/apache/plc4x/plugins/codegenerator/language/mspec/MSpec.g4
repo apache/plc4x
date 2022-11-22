@@ -8,7 +8,7 @@ grammar MSpec;
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -154,14 +154,16 @@ typeReference
  ;
 
 caseStatement
- : LBRACKET (discriminatorValues=multipleExpressions)? name=IDENTIFIER_LITERAL (LRBRACKET params=argumentList RRBRACKET)? (fieldDefinition|batchSetDefinition)* RBRACKET
+ : LBRACKET (discriminatorValues=multipleExpressions)? (nameWildcard=ASTERISK)? name=IDENTIFIER_LITERAL (LRBRACKET params=argumentList RRBRACKET)? (fieldDefinition|batchSetDefinition)* RBRACKET
  ;
 
 dataType
  : base='bit'
  | base='byte'
  | base='int' size=INTEGER_LITERAL
+ | base='vint'
  | base='uint' size=INTEGER_LITERAL
+ | base='vuint'
  | base='float' size=INTEGER_LITERAL
  | base='ufloat' size=INTEGER_LITERAL
  | base='string' size=INTEGER_LITERAL
@@ -341,13 +343,13 @@ STRING_CHARACTER
 // Stuff we just want to ignore
 
 LINE_COMMENT
- : '//' ~[\r\n]* -> skip
+ : '//' ~[\r\n]* -> channel(HIDDEN)
  ;
 
 BLOCK_COMMENT
- : '/*' .*? '*/' -> skip
+ : '/*' .*? '*/' -> channel(HIDDEN)
  ;
 
 WS
- : [ \t\r\n\u000C]+ -> skip
+ : [ \t\r\n\u000C]+ -> channel(HIDDEN)
  ;

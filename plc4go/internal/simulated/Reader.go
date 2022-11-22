@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,12 +20,14 @@
 package simulated
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	model2 "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"context"
 	"strconv"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi"
+	model2 "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type Reader struct {
@@ -42,7 +44,8 @@ func NewReader(device *Device, options map[string][]string, tracer *spi.Tracer) 
 	}
 }
 
-func (r Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+func (r Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+	// TODO: handle ctx
 	ch := make(chan model.PlcReadRequestResult)
 	go func() {
 		var txId string
@@ -62,20 +65,20 @@ func (r Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadReque
 		// Process the request
 		responseCodes := make(map[string]model.PlcResponseCode)
 		responseValues := make(map[string]values.PlcValue)
-		for _, fieldName := range readRequest.GetFieldNames() {
-			field := readRequest.GetField(fieldName)
-			simulatedField, ok := field.(SimulatedField)
+		for _, tagName := range readRequest.GetTagNames() {
+			tag := readRequest.GetTag(tagName)
+			simulatedTagVar, ok := tag.(simulatedTag)
 			if !ok {
-				responseCodes[fieldName] = model.PlcResponseCode_INVALID_ADDRESS
-				responseValues[fieldName] = nil
+				responseCodes[tagName] = model.PlcResponseCode_INVALID_ADDRESS
+				responseValues[tagName] = nil
 			} else {
-				value := r.device.Get(simulatedField)
+				value := r.device.Get(simulatedTagVar)
 				if value == nil {
-					responseCodes[fieldName] = model.PlcResponseCode_NOT_FOUND
-					responseValues[fieldName] = nil
+					responseCodes[tagName] = model.PlcResponseCode_NOT_FOUND
+					responseValues[tagName] = nil
 				} else {
-					responseCodes[fieldName] = model.PlcResponseCode_OK
-					responseValues[fieldName] = *value
+					responseCodes[tagName] = model.PlcResponseCode_OK
+					responseValues[tagName] = *value
 				}
 			}
 		}

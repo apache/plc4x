@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetAction uint8
 
 type IBACnetAction interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -48,24 +48,24 @@ func init() {
 	}
 }
 
-func BACnetActionByValue(value uint8) BACnetAction {
+func BACnetActionByValue(value uint8) (enum BACnetAction, ok bool) {
 	switch value {
 	case 0:
-		return BACnetAction_DIRECT
+		return BACnetAction_DIRECT, true
 	case 1:
-		return BACnetAction_REVERSE
+		return BACnetAction_REVERSE, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetActionByName(value string) BACnetAction {
+func BACnetActionByName(value string) (enum BACnetAction, ok bool) {
 	switch value {
 	case "DIRECT":
-		return BACnetAction_DIRECT
+		return BACnetAction_DIRECT, true
 	case "REVERSE":
-		return BACnetAction_REVERSE
+		return BACnetAction_REVERSE, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetActionKnows(value uint8) bool {
@@ -95,19 +95,37 @@ func (m BACnetAction) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetActionParse(readBuffer utils.ReadBuffer) (BACnetAction, error) {
+func BACnetActionParse(theBytes []byte) (BACnetAction, error) {
+	return BACnetActionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetActionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAction, error) {
 	val, err := readBuffer.ReadUint8("BACnetAction", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetAction")
 	}
-	return BACnetActionByValue(val), nil
+	if enum, ok := BACnetActionByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetAction(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetAction) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetAction", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetAction) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetAction) name() string {
+func (e BACnetAction) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetAction", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetAction) PLC4XEnumName() string {
 	switch e {
 	case BACnetAction_DIRECT:
 		return "DIRECT"
@@ -118,5 +136,5 @@ func (e BACnetAction) name() string {
 }
 
 func (e BACnetAction) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

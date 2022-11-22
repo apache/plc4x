@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -39,23 +39,23 @@ public abstract class BaseOptimizer {
     }
 
     protected PlcReadResponse processReadResponses(PlcReadRequest readRequest, Map<PlcRequest, Either<PlcResponse, Exception>> readResponses) {
-        Map<String, ResponseItem<PlcValue>> fields = new HashMap<>();
+        Map<String, ResponseItem<PlcValue>> tags = new HashMap<>();
         for (Map.Entry<PlcRequest, Either<PlcResponse, Exception>> requestsEntries : readResponses.entrySet()) {
             PlcReadRequest curRequest = (PlcReadRequest) requestsEntries.getKey();
             Either<PlcResponse, Exception> readResponse = requestsEntries.getValue();
-            for (String fieldName : curRequest.getFieldNames()) {
+            for (String tagName : curRequest.getTagNames()) {
                 if (readResponse.isLeft()) {
                     PlcReadResponse subReadResponse = (PlcReadResponse) readResponse.getLeft();
-                    PlcResponseCode responseCode = subReadResponse.getResponseCode(fieldName);
+                    PlcResponseCode responseCode = subReadResponse.getResponseCode(tagName);
                     PlcValue value = (responseCode == PlcResponseCode.OK) ?
-                        subReadResponse.getAsPlcValue().getValue(fieldName) : null;
-                    fields.put(fieldName, new ResponseItem<>(responseCode, value));
+                        subReadResponse.getAsPlcValue().getValue(tagName) : null;
+                    tags.put(tagName, new ResponseItem<>(responseCode, value));
                 } else {
-                    fields.put(fieldName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+                    tags.put(tagName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                 }
             }
         }
-        return new DefaultPlcReadResponse(readRequest, fields);
+        return new DefaultPlcReadResponse(readRequest, tags);
     }
 
     protected List<PlcRequest> processWriteRequest(PlcWriteRequest writeRequest, DriverContext driverContext) {
@@ -64,20 +64,20 @@ public abstract class BaseOptimizer {
 
     protected PlcWriteResponse processWriteResponses(PlcWriteRequest writeRequest,
                                                      Map<PlcRequest, Either<PlcResponse, Exception>> writeResponses) {
-        Map<String, PlcResponseCode> fields = new HashMap<>();
+        Map<String, PlcResponseCode> tags = new HashMap<>();
         for (Map.Entry<PlcRequest, Either<PlcResponse, Exception>> requestsEntries : writeResponses.entrySet()) {
             PlcWriteRequest subWriteRequest = (PlcWriteRequest) requestsEntries.getKey();
             Either<PlcResponse, Exception> writeResponse = requestsEntries.getValue();
-            for (String fieldName : subWriteRequest.getFieldNames()) {
+            for (String tagName : subWriteRequest.getTagNames()) {
                 if (writeResponse.isLeft()) {
                     PlcWriteResponse subWriteResponse = (PlcWriteResponse) writeResponse.getLeft();
-                    fields.put(fieldName, subWriteResponse.getResponseCode(fieldName));
+                    tags.put(tagName, subWriteResponse.getResponseCode(tagName));
                 } else {
-                    fields.put(fieldName, PlcResponseCode.INTERNAL_ERROR);
+                    tags.put(tagName, PlcResponseCode.INTERNAL_ERROR);
                 }
             }
         }
-        return new DefaultPlcWriteResponse(writeRequest, fields);
+        return new DefaultPlcWriteResponse(writeRequest, tags);
     }
 
     protected List<PlcRequest> processSubscriptionRequest(PlcSubscriptionRequest subscriptionRequest,
@@ -137,14 +137,14 @@ public abstract class BaseOptimizer {
         if((requests.size() == 1) && (requests.get(0) == originalRequest)) {
             return sender.apply(requests.get(0));
         }
-        // If at least one sub request is requested, split up each field request into a separate sub-request
+        // If at least one sub request is requested, split up each tag request into a separate sub-request
         // And have the reader process each one independently. After the last sub-request is finished,
         // Merge the results back together.
         else if (!requests.isEmpty()) {
             // Create a new future which will be used to return the aggregated response back to the application.
             CompletableFuture<PlcResponse> parentFuture = new CompletableFuture<>();
 
-            // Create one sub-request for every single field and store the futures in a map.
+            // Create one sub-request for every single tag and store the futures in a map.
             Map<PlcRequest, CompletableFuture<PlcResponse>> subFutures = new HashMap<>();
             for (PlcRequest subRequest : requests) {
                 subFutures.put(subRequest, sender.apply(subRequest));

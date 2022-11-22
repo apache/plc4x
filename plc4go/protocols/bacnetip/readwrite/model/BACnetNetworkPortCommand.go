@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +30,7 @@ import (
 type BACnetNetworkPortCommand uint8
 
 type IBACnetNetworkPortCommand interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -62,52 +62,52 @@ func init() {
 	}
 }
 
-func BACnetNetworkPortCommandByValue(value uint8) BACnetNetworkPortCommand {
+func BACnetNetworkPortCommandByValue(value uint8) (enum BACnetNetworkPortCommand, ok bool) {
 	switch value {
 	case 0:
-		return BACnetNetworkPortCommand_IDLE
+		return BACnetNetworkPortCommand_IDLE, true
 	case 0xFF:
-		return BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE
+		return BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE, true
 	case 1:
-		return BACnetNetworkPortCommand_DISCARD_CHANGES
+		return BACnetNetworkPortCommand_DISCARD_CHANGES, true
 	case 2:
-		return BACnetNetworkPortCommand_RENEW_FD_REGISTRATION
+		return BACnetNetworkPortCommand_RENEW_FD_REGISTRATION, true
 	case 3:
-		return BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY
+		return BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY, true
 	case 4:
-		return BACnetNetworkPortCommand_RENEW_DHCP
+		return BACnetNetworkPortCommand_RENEW_DHCP, true
 	case 5:
-		return BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION
+		return BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION, true
 	case 6:
-		return BACnetNetworkPortCommand_DISCONNECT
+		return BACnetNetworkPortCommand_DISCONNECT, true
 	case 7:
-		return BACnetNetworkPortCommand_RESTART_PORT
+		return BACnetNetworkPortCommand_RESTART_PORT, true
 	}
-	return 0
+	return 0, false
 }
 
-func BACnetNetworkPortCommandByName(value string) BACnetNetworkPortCommand {
+func BACnetNetworkPortCommandByName(value string) (enum BACnetNetworkPortCommand, ok bool) {
 	switch value {
 	case "IDLE":
-		return BACnetNetworkPortCommand_IDLE
+		return BACnetNetworkPortCommand_IDLE, true
 	case "VENDOR_PROPRIETARY_VALUE":
-		return BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE
+		return BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE, true
 	case "DISCARD_CHANGES":
-		return BACnetNetworkPortCommand_DISCARD_CHANGES
+		return BACnetNetworkPortCommand_DISCARD_CHANGES, true
 	case "RENEW_FD_REGISTRATION":
-		return BACnetNetworkPortCommand_RENEW_FD_REGISTRATION
+		return BACnetNetworkPortCommand_RENEW_FD_REGISTRATION, true
 	case "RESTART_SLAVE_DISCOVERY":
-		return BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY
+		return BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY, true
 	case "RENEW_DHCP":
-		return BACnetNetworkPortCommand_RENEW_DHCP
+		return BACnetNetworkPortCommand_RENEW_DHCP, true
 	case "RESTART_AUTONEGOTIATION":
-		return BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION
+		return BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION, true
 	case "DISCONNECT":
-		return BACnetNetworkPortCommand_DISCONNECT
+		return BACnetNetworkPortCommand_DISCONNECT, true
 	case "RESTART_PORT":
-		return BACnetNetworkPortCommand_RESTART_PORT
+		return BACnetNetworkPortCommand_RESTART_PORT, true
 	}
-	return 0
+	return 0, false
 }
 
 func BACnetNetworkPortCommandKnows(value uint8) bool {
@@ -137,19 +137,37 @@ func (m BACnetNetworkPortCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNetworkPortCommandParse(readBuffer utils.ReadBuffer) (BACnetNetworkPortCommand, error) {
+func BACnetNetworkPortCommandParse(theBytes []byte) (BACnetNetworkPortCommand, error) {
+	return BACnetNetworkPortCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetNetworkPortCommandParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNetworkPortCommand, error) {
 	val, err := readBuffer.ReadUint8("BACnetNetworkPortCommand", 8)
 	if err != nil {
-		return 0, nil
+		return 0, errors.Wrap(err, "error reading BACnetNetworkPortCommand")
 	}
-	return BACnetNetworkPortCommandByValue(val), nil
+	if enum, ok := BACnetNetworkPortCommandByValue(val); !ok {
+		Plc4xModelLog.Debug().Msgf("no value %x found for RequestType", val)
+		return BACnetNetworkPortCommand(val), nil
+	} else {
+		return enum, nil
+	}
 }
 
-func (e BACnetNetworkPortCommand) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteUint8("BACnetNetworkPortCommand", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
+func (e BACnetNetworkPortCommand) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
 }
 
-func (e BACnetNetworkPortCommand) name() string {
+func (e BACnetNetworkPortCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetNetworkPortCommand", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+// PLC4XEnumName returns the name that is used in code to identify this enum
+func (e BACnetNetworkPortCommand) PLC4XEnumName() string {
 	switch e {
 	case BACnetNetworkPortCommand_IDLE:
 		return "IDLE"
@@ -174,5 +192,5 @@ func (e BACnetNetworkPortCommand) name() string {
 }
 
 func (e BACnetNetworkPortCommand) String() string {
-	return e.name()
+	return e.PLC4XEnumName()
 }

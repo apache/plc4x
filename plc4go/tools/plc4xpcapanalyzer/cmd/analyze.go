@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -20,9 +20,10 @@
 package cmd
 
 import (
+	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/analyzer"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
+	"math"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -30,14 +31,8 @@ import (
 
 var validProtocolType = map[string]interface{}{
 	"bacnet": nil,
+	"c-bus":  nil,
 }
-
-// flags here
-var (
-	filter                              string
-	noFilter, onlyParse, noBytesCompare bool
-	bacnetFilter                        string
-)
 
 // analyzeCmd represents the analyze command
 var analyzeCmd = &cobra.Command{
@@ -62,28 +57,26 @@ TODO: document me
 	Run: func(cmd *cobra.Command, args []string) {
 		protocolType := args[0]
 		pcapFile := args[1]
-		if !noFilter {
-			switch protocolType {
-			case "bacnet":
-				if filter != "" && bacnetFilter != "" {
-					log.Debug().Str("filter", filter).Msg("Setting bacnet filter")
-					filter = bacnetFilter
-				}
-			}
-		} else {
-			log.Info().Msg("All filtering disabled")
+		if err := analyzer.Analyze(pcapFile, protocolType); err != nil {
+			panic(err)
 		}
-		analyzer.Analyze(pcapFile, protocolType, filter, onlyParse, noBytesCompare)
+		println("Done")
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(analyzeCmd)
 
-	analyzeCmd.Flags().StringVarP(&filter, "filter", "f", "", "BFF filter to apply")
-	analyzeCmd.Flags().BoolVarP(&noFilter, "no-filter", "n", false, "disable filter")
-	analyzeCmd.Flags().BoolVarP(&onlyParse, "onlyParse", "o", false, "only parse messaged")
-	analyzeCmd.Flags().BoolVarP(&noBytesCompare, "noBytesCompare", "c", false, "don't compare original bytes with serialized bytes")
-	analyzeCmd.PersistentFlags().StringVarP(&bacnetFilter, "default-bacnet-filter", "", "udp port 47808 and udp[4:2] > 29", "Defines the default filter when bacnet is selected")
-	// TODO: support other protocols
+	addAnalyzeFlags(analyzeCmd)
+}
+
+func addAnalyzeFlags(command *cobra.Command) {
+	command.Flags().StringVarP(&config.AnalyzeConfigInstance.Filter, "filter", "f", "", "BFF filter to apply")
+	command.Flags().BoolVarP(&config.AnalyzeConfigInstance.NoFilter, "no-filter", "n", false, "disable filter")
+	command.Flags().BoolVarP(&config.AnalyzeConfigInstance.OnlyParse, "only-parse", "o", false, "only parse messaged")
+	command.Flags().BoolVarP(&config.AnalyzeConfigInstance.NoBytesCompare, "no-bytes-compare", "b", false, "don't compare original bytes with serialized bytes")
+	command.Flags().BoolVarP(&config.AnalyzeConfigInstance.NoCustomMapping, "no-custom-mapping", "", false, "don't use the custom mapper for protocols")
+	command.Flags().StringVarP(&config.AnalyzeConfigInstance.Client, "client", "c", "", "The client ip (this is useful for protocols where request/response is different e.g. modbus, cbus)")
+	command.Flags().UintVarP(&config.AnalyzeConfigInstance.StartPackageNumber, "start-package-umber", "s", 0, "Defines with what package number should be started")
+	command.Flags().UintVarP(&config.AnalyzeConfigInstance.PackageNumberLimit, "package-number-limit", "l", math.MaxUint, "Defines how many packages should be parsed")
 }
