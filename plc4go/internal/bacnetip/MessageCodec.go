@@ -96,7 +96,7 @@ func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
 	if err2 != nil {
 		panic(err2)
 	}
-	iocb, err := NewIOCB(NewPDU(message, WithPDUDestination(*address)), m.remoteAddress)
+	iocb, err := NewIOCB(NewPDU(message, WithPDUDestination(address)), m.remoteAddress)
 	if err != nil {
 		return errors.Wrap(err, "error creating IOCB")
 	}

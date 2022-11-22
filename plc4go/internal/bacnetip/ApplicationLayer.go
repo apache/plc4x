@@ -96,7 +96,7 @@ type SSM struct {
 
 	ssmSAP SSMSAPRequirements
 
-	pduAddress Address
+	pduAddress *Address
 	deviceInfo *DeviceInfo
 
 	invokeId uint8
@@ -121,10 +121,10 @@ type SSM struct {
 	maxApduLengthAccepted readWriteModel.MaxApduLengthAccepted
 }
 
-func NewSSM(sap SSMSAPRequirements, pduAddress Address) (SSM, error) {
+func NewSSM(sap SSMSAPRequirements, pduAddress *Address) (SSM, error) {
 	log.Debug().Interface("sap", sap).Interface("pdu_address", pduAddress).Msg("init")
 	var deviceInfo *DeviceInfo
-	deviceInfoTemp, ok := sap.GetDeviceInfoCache().GetDeviceInfo(DeviceInfoCacheKey{PduSource: &pduAddress})
+	deviceInfoTemp, ok := sap.GetDeviceInfoCache().GetDeviceInfo(DeviceInfoCacheKey{PduSource: pduAddress})
 	if ok {
 		deviceInfo = &deviceInfoTemp
 	}
@@ -377,7 +377,7 @@ type ClientSSM struct {
 	SSM
 }
 
-func NewClientSSM(sap SSMSAPRequirements, pduAddress Address) (*ClientSSM, error) {
+func NewClientSSM(sap SSMSAPRequirements, pduAddress *Address) (*ClientSSM, error) {
 	log.Debug().Interface("sap", sap).Interface("pduAddress", pduAddress).Msg("init")
 	ssm, err := NewSSM(sap, pduAddress)
 	if err != nil {
@@ -417,8 +417,7 @@ func (c *ClientSSM) Request(apdu _PDU) error {
 	log.Debug().Msgf("request\n%c", apdu)
 
 	// make sure it has a good source and destination
-	nullAddress, _ := NewAddress()
-	apdu = NewPDUFromPDU(apdu, WithPDUSource(*nullAddress), WithPDUDestination(c.pduAddress))
+	apdu = NewPDUFromPDU(apdu, WithPDUSource(nil), WithPDUDestination(c.pduAddress))
 
 	// send it via the device
 	return c.ssmSAP.Request(apdu)
@@ -533,8 +532,7 @@ func (c *ClientSSM) Response(apdu _PDU) error {
 	log.Debug().Msgf("response\n%c", apdu)
 
 	// make sure it has a good source and destination
-	nullAddress, _ := NewAddress()
-	apdu = NewPDUFromPDU(apdu, WithPDUSource(c.pduAddress), WithPDUDestination(*nullAddress))
+	apdu = NewPDUFromPDU(apdu, WithPDUSource(c.pduAddress), WithPDUDestination(nil))
 
 	// send it to the application
 	return c.ssmSAP.SapResponse(apdu)
@@ -951,7 +949,7 @@ type ServerSSM struct {
 	segmentedResponseAccepted bool
 }
 
-func NewServerSSM(sap SSMSAPRequirements, pduAddress Address) (*ServerSSM, error) {
+func NewServerSSM(sap SSMSAPRequirements, pduAddress *Address) (*ServerSSM, error) {
 	log.Debug().Interface("sap", sap).Interface("pduAddress", pduAddress).Msg("init")
 	ssm, err := NewSSM(sap, pduAddress)
 	if err != nil {

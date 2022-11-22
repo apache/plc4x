@@ -121,7 +121,7 @@ func NewUDPMultiplexer(address interface{}, noBroadcast bool) (*UDPMultiplexer, 
 	log.Debug().Msgf("address: %v", u.address)
 	log.Debug().Msgf("addrTuple: %v", u.addrTuple)
 	log.Debug().Msgf("addrBroadcastTuple: %v", u.addrBroadcastTuple)
-	//log.Debug().Msgf("route_aware: %v", settings.RouteAware)
+	log.Debug().Msgf("route_aware: %v", settings.RouteAware)
 
 	// create and bind direct address
 	var err error
@@ -176,7 +176,7 @@ func (m *UDPMultiplexer) Indication(server *_MultiplexServer, pdu _PDU) error {
 	pduDestination := pdu.GetPDUDestination()
 
 	// broadcast message
-	var dest Address
+	var dest *Address
 	if pduDestination.AddrType == LOCAL_BROADCAST_ADDRESS {
 		// interface might not support broadcasts
 		if m.addrBroadcastTuple == nil {
@@ -187,7 +187,7 @@ func (m *UDPMultiplexer) Indication(server *_MultiplexServer, pdu _PDU) error {
 		if err != nil {
 			return errors.Wrap(err, "error getting address from tuple")
 		}
-		dest = *address
+		dest = address
 		log.Debug().Msgf("requesting local broadcast: %v", dest)
 	} else if pduDestination.AddrType == LOCAL_STATION_ADDRESS {
 		dest = pduDestination

@@ -43,16 +43,16 @@ func init() {
 // TODO: implement me
 type _PCI struct {
 	pduUserData    interface{}
-	pduSource      Address
-	pduDestination Address
+	pduSource      *Address
+	pduDestination *Address
 }
 
-func _New_PCI(pduUserData interface{}, pduSource Address, pduDestination Address) *_PCI {
+func _New_PCI(pduUserData interface{}, pduSource *Address, pduDestination *Address) *_PCI {
 	return &_PCI{pduUserData, pduSource, pduDestination}
 }
 
 func (p *_PCI) String() string {
-	return fmt.Sprintf("pduUserData:\n%s\n, pduSource: %s, pduDestination: %s", p.pduUserData, &p.pduSource, &p.pduDestination)
+	return fmt.Sprintf("pduUserData:\n%s\n, pduSource: %s, pduDestination: %s", p.pduUserData, p.pduSource, p.pduDestination)
 }
 
 // _Client is an interface used for documentation
