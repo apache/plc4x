@@ -21,12 +21,15 @@ package values
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -84,47 +87,94 @@ const (
 	////
 )
 
-type IEC61131ValueHandler struct {
+type DefaultValueHandler struct {
 }
 
-func (m IEC61131ValueHandler) NewPlcValue(tag model.PlcTag, value interface{}) (values.PlcValue, error) {
-	/*	typeName := tag.GetTypeName()
-		quantity := tag.GetQuantity()
-		if quantity > 1 {
-			s := reflect.ValueOf(value)
-			if s.Kind() != reflect.Slice {
-				return nil, errors.New("couldn't cast value to []interface{}")
-			}
-			curValues := make([]interface{}, s.Len())
-			for i := 0; i < s.Len(); i++ {
-				curValues[i] = s.Index(i).Interface()
-			}
+func (m DefaultValueHandler) NewPlcValue(tag model.PlcTag, value interface{}) (values.PlcValue, error) {
+	return m.parseType(tag, tag.GetArrayInfo(), value)
+}
 
-			if len(curValues) != int(quantity) {
-				return nil, errors.New("number of actual values " + strconv.Itoa(len(curValues)) +
-					" doesn't match tag size " + strconv.Itoa(int(quantity)))
-			}
-			var plcValues []values.PlcValue
-			for i := uint16(0); i < quantity; i++ {
-				curValue := curValues[i]
-				plcValue, err := m.NewPlcValueFromType(typeName, curValue)
-				if err != nil {
-					return nil, errors.New("error parsing PlcValue: " + err.Error())
-				}
-				plcValues = append(plcValues, plcValue)
-			}
-			return NewPlcList(plcValues), nil
+func (m DefaultValueHandler) parseType(tag model.PlcTag, arrayInfo []model.ArrayInfo, value interface{}) (values.PlcValue, error) {
+	valueType := tag.GetValueType()
+	if (arrayInfo != nil) && (len(arrayInfo) > 0) {
+		return m.ParseListType(tag, arrayInfo, value)
+	} else if valueType == values.Struct {
+		return m.ParseStructType(tag, value)
+	}
+	return m.ParseSimpleType(tag, value)
+}
+
+func (m DefaultValueHandler) ParseListType(tag model.PlcTag, arrayInfo []model.ArrayInfo, value interface{}) (values.PlcValue, error) {
+	// We've reached the end of the recursion.
+	if len(arrayInfo) == 0 {
+		return m.parseType(tag, arrayInfo, value)
+	}
+
+	s := reflect.ValueOf(value)
+	if s.Kind() != reflect.Slice {
+		return nil, errors.New("couldn't cast value to []interface{}")
+	}
+	curValues := make([]interface{}, s.Len())
+	for i := 0; i < s.Len(); i++ {
+		curValues[i] = s.Index(i).Interface()
+	}
+
+	curArrayInfo := arrayInfo[0]
+	restArrayInfo := arrayInfo[1:]
+
+	// Check that the current slice has enough values.
+	if len(curValues) != int(curArrayInfo.GetSize()) {
+		return nil, errors.New("number of actual values " + strconv.Itoa(len(curValues)) +
+			" doesn't match tag size " + strconv.Itoa(int(curArrayInfo.GetSize())))
+	}
+
+	// Actually convert the current array info level.
+	var plcValues []values.PlcValue
+	for i := uint32(0); i < curArrayInfo.GetSize(); i++ {
+		curValue := curValues[i]
+		plcValue, err := m.ParseListType(tag, restArrayInfo, curValue)
+		if err != nil {
+			return nil, errors.New("error parsing PlcValue: " + err.Error())
 		}
-		return m.NewPlcValueFromType(typeName, value)
-	*/
-	return nil, nil
+		plcValues = append(plcValues, plcValue)
+	}
+	return NewPlcList(plcValues), nil
 }
 
-func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interface{}) (values.PlcValue, error) {
+func (m DefaultValueHandler) ParseStructType(_ model.PlcTag, _ interface{}) (values.PlcValue, error) {
+	return nil, errors.New("structured types not supported by the base value handler")
+}
+
+func (m DefaultValueHandler) ParseSimpleType(tag model.PlcTag, value interface{}) (values.PlcValue, error) {
+	plcValue, err := m.NewPlcValueFromType(tag.GetValueType(), value)
+	if err != nil && strings.HasPrefix(err.Error(), "couldn't cast") {
+		stringValue := fmt.Sprintf("%v", value)
+		plcValue, err = m.NewPlcValueFromType(tag.GetValueType(), stringValue)
+		if err == nil {
+			log.Debug().Msgf("had to convert %v into %v by using string conversion", value, plcValue)
+		}
+	}
+	return plcValue, err
+}
+
+func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, value interface{}) (values.PlcValue, error) {
+	// If the user passed in PLCValues, take a shortcut.
+	plcValue, isPlcValue := value.(values.PlcValue)
+	if isPlcValue {
+		if plcValue.GetPlcValueType() != valueType {
+			// TODO: Check if the used PlcValueType can be casted to the target type.
+		} else if plcValue.GetPlcValueType() == values.List {
+			// TODO: Check all items
+		} else if plcValue.GetPlcValueType() == values.Struct {
+			// TODO: Check all children
+		}
+		return plcValue, nil
+	}
+
 	stringValue, isString := value.(string)
-	switch typeName {
+	switch valueType {
 	// Bit & Bit-Strings
-	case IEC61131_BOOL:
+	case values.BOOL:
 		if isString {
 			casted, err := strconv.ParseBool(stringValue)
 			if err != nil {
@@ -138,7 +188,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 			}
 			return NewPlcBOOL(casted), nil
 		}
-	case IEC61131_BYTE:
+	case values.BYTE:
 		if isString {
 			casted, err := strconv.ParseUint(stringValue, 10, 8)
 			if err != nil {
@@ -152,7 +202,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 			}
 			return NewPlcBYTE(casted), nil
 		}
-	case IEC61131_WORD:
+	case values.WORD:
 		if isString {
 			casted, err := strconv.ParseUint(stringValue, 10, 16)
 			if err != nil {
@@ -166,7 +216,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 			}
 			return NewPlcWORD(casted), nil
 		}
-	case IEC61131_DWORD:
+	case values.DWORD:
 		if isString {
 			casted, err := strconv.ParseUint(stringValue, 10, 32)
 			if err != nil {
@@ -180,7 +230,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 			}
 			return NewPlcDWORD(casted), nil
 		}
-	case IEC61131_LWORD:
+	case values.LWORD:
 		if isString {
 			casted, err := strconv.ParseUint(stringValue, 10, 64)
 			if err != nil {
@@ -196,7 +246,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 		}
 
 	// Integers
-	case IEC61131_USINT:
+	case values.USINT:
 		if isString {
 			casted, err := strconv.ParseUint(stringValue, 10, 8)
 			if err != nil {
@@ -210,7 +260,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 			}
 			return NewPlcUSINT(casted), nil
 		}
-	case IEC61131_UINT:
+	case values.UINT:
 		if isString {
 			casted, err := strconv.ParseUint(stringValue, 10, 16)
 			if err != nil {
@@ -224,7 +274,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 			}
 			return NewPlcUINT(casted), nil
 		}
-	case IEC61131_UDINT:
+	case values.UDINT:
 		if isString {
 			casted, err := strconv.ParseUint(stringValue, 10, 32)
 			if err != nil {
@@ -238,7 +288,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 			}
 			return NewPlcUDINT(casted), nil
 		}
-	case IEC61131_ULINT:
+	case values.ULINT:
 		if isString {
 			casted, err := strconv.ParseUint(stringValue, 10, 64)
 			if err != nil {
@@ -252,7 +302,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 			}
 			return NewPlcULINT(casted), nil
 		}
-	case IEC61131_SINT:
+	case values.SINT:
 		if isString {
 			casted, err := strconv.ParseInt(stringValue, 10, 8)
 			if err != nil {
@@ -266,7 +316,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 			}
 			return NewPlcSINT(casted), nil
 		}
-	case IEC61131_INT:
+	case values.INT:
 		if isString {
 			casted, err := strconv.ParseInt(stringValue, 10, 16)
 			if err != nil {
@@ -280,7 +330,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 			}
 			return NewPlcINT(casted), nil
 		}
-	case IEC61131_DINT:
+	case values.DINT:
 		if isString {
 			casted, err := strconv.ParseInt(stringValue, 10, 32)
 			if err != nil {
@@ -294,7 +344,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 			}
 			return NewPlcDINT(casted), nil
 		}
-	case IEC61131_LINT:
+	case values.LINT:
 		if isString {
 			casted, err := strconv.ParseInt(stringValue, 10, 64)
 			if err != nil {
@@ -310,7 +360,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 		}
 
 	// Floating Point Values
-	case IEC61131_REAL:
+	case values.REAL:
 		if isString {
 			casted, err := strconv.ParseFloat(stringValue, 32)
 			if err != nil {
@@ -324,7 +374,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 			}
 			return NewPlcREAL(casted), nil
 		}
-	case IEC61131_LREAL:
+	case values.LREAL:
 		if isString {
 			casted, err := strconv.ParseFloat(stringValue, 64)
 			if err != nil {
@@ -340,7 +390,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 		}
 
 	// Temporal Values
-	case IEC61131_TIME:
+	case values.TIME:
 		if isString {
 			return nil, errors.New("string to IEC61131_TIME conversion not implemented")
 		} else {
@@ -350,7 +400,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 			}
 			return NewPlcTIME(casted), nil
 		}
-	case IEC61131_DATE:
+	case values.DATE:
 		if isString {
 			return nil, errors.New("string to IEC61131_DATE conversion not implemented")
 		} else {
@@ -360,7 +410,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 			}
 			return NewPlcDATE(casted), nil
 		}
-	case IEC61131_TIME_OF_DAY:
+	case values.TIME_OF_DAY:
 		if isString {
 			return nil, errors.New("string to IEC61131_TIME_OF_DAY conversion not implemented")
 		} else {
@@ -370,7 +420,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 			}
 			return NewPlcTIME_OF_DAY(casted), nil
 		}
-	case IEC61131_DATE_AND_TIME:
+	case values.DATE_AND_TIME:
 		if isString {
 			return nil, errors.New("string to IEC61131_DATE_AND_TIME conversion not implemented")
 		} else {
@@ -382,7 +432,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 		}
 
 	// Chars and Strings
-	case IEC61131_CHAR:
+	case values.CHAR:
 		if !isString {
 			return nil, errors.New("non-string to IEC61131_CHAR conversion not implemented")
 		} else if len(stringValue) > 1 {
@@ -390,7 +440,7 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 		} else {
 			return NewPlcCHAR(stringValue), nil
 		}
-	case IEC61131_WCHAR:
+	case values.WCHAR:
 		if !isString {
 			return nil, errors.New("non-string to IEC61131_WCHAR conversion not implemented")
 		} else if len(stringValue) > 1 {
@@ -398,13 +448,13 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 		} else {
 			return NewPlcWCHAR(stringValue), nil
 		}
-	case IEC61131_STRING:
+	case values.STRING:
 		if !isString {
 			return nil, errors.New("non-string to IEC61131_STRING conversion not implemented")
 		} else {
 			return NewPlcSTRING(stringValue), nil
 		}
-	case IEC61131_WSTRING:
+	case values.WSTRING:
 		if !isString {
 			return nil, errors.New("non-string to IEC61131_WSTRING conversion not implemented")
 		} else {
@@ -412,5 +462,5 @@ func (m IEC61131ValueHandler) NewPlcValueFromType(typeName string, value interfa
 		}
 	}
 
-	return nil, errors.New("Unsupported type " + typeName)
+	return nil, errors.New("Unsupported type " + valueType.String())
 }

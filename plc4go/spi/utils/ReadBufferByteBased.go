@@ -381,6 +381,12 @@ func (rb *byteReadBuffer) ReadString(logicalName string, bitLength uint32, encod
 	if err != nil {
 		return "", errors.Wrap(err, "Error reading big int")
 	}
+	// End the string at the 0-character.
+	for i, value := range stringBytes {
+		if value == 0x00 {
+			return string(stringBytes[0:i]), nil
+		}
+	}
 	return string(stringBytes), nil
 }
 

@@ -22,10 +22,13 @@ package utils
 import (
 	"bytes"
 	"encoding/binary"
-	"github.com/icza/bitio"
-	"github.com/pkg/errors"
 	"math"
 	"math/big"
+	"regexp"
+	"strings"
+
+	"github.com/icza/bitio"
+	"github.com/pkg/errors"
 )
 
 type WriteBufferByteBased interface {
@@ -238,9 +241,36 @@ func (wb *byteWriteBuffer) WriteBigFloat(_ string, bitLength uint8, value *big.F
 
 func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint32, encoding string, value string, _ ...WithWriterArgs) error {
 	wb.move(uint(bitLength))
+	var nonAlphanumericRegex = regexp.MustCompile(`[^A-Z0-9]+`)
+	encoding = nonAlphanumericRegex.ReplaceAllLiteralString(strings.ToUpper(encoding), "")
+	remainingBits := bitLength
 	// TODO: the implementation completely ignores encoding for now. Fix this
-	for _, theByte := range []byte(value) {
-		wb.writer.TryWriteByte(theByte)
+	switch encoding {
+	case "UTF8":
+		for _, theByte := range []byte(value) {
+			wb.writer.TryWriteByte(theByte)
+			remainingBits -= 8
+		}
+	case "UTF16":
+		fallthrough
+	case "UTF16BE":
+		// TODO: Really implement 2-byte characters
+		for _, theByte := range []byte(value) {
+			wb.writer.TryWriteByte(0x00)
+			wb.writer.TryWriteByte(theByte)
+			remainingBits -= 16
+		}
+	case "UTF16LE":
+		// TODO: Really implement 2-byte characters
+		for _, theByte := range []byte(value) {
+			wb.writer.TryWriteByte(theByte)
+			wb.writer.TryWriteByte(0x00)
+			remainingBits -= 16
+		}
+	}
+	// Fill up with 0-bytes
+	for i := 0; i < int(remainingBits/8); i++ {
+		wb.writer.TryWriteByte(0x00)
 	}
 	return wb.writer.TryError
 }

@@ -188,6 +188,10 @@ github.com/pkg/sftp v1.13.1/go.mod h1:3HaPG6Dq1ILlpPZRO0HVMrsydcdLt6HRDccSgb87qR
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4/go.mod h1:xMI15A0UPsDsEKsMN9yxemIoYk6Tm2C1GtYGdfGttqA=
+github.com/reiver/go-cast v0.0.0-20220716221226-5360a56d42f4 h1:7I6dRunKVXFjlO2OnYUcIaF4831y847o4xAdphrJ9ng=
+github.com/reiver/go-cast v0.0.0-20220716221226-5360a56d42f4/go.mod h1:iU2DntJWteNmgCu96FnUH5qLMfmOCRhzoCDfmhyjSCM=
+github.com/reiver/go-fck v0.0.1 h1:GhOiIp/4Au3iPUVC1YRfJJS5CdvLDNF9qt/n1lwgWnM=
+github.com/reiver/go-fck v0.0.1/go.mod h1:i77J0nD9GkSF0osPcURZbv9u19F0keF/mrhkgIu9wvM=
 github.com/rivo/tview v0.0.0-20220906194528-4664d8bf22d9 h1:/9fqJVVHxLYAqu+6aN4snnlxwyYi2u5NkrWS26WALlo=
 github.com/rivo/tview v0.0.0-20220906194528-4664d8bf22d9/go.mod h1:qNg8EdRsWg0Bxcj7npd4dSgxVbYB7kL7Mhk1YSOaVtw=
 github.com/rivo/uniseg v0.2.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=

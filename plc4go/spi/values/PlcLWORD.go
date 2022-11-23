@@ -22,6 +22,7 @@ package values
 import (
 	"encoding/binary"
 	"fmt"
+	"math"
 
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -95,6 +96,105 @@ func (m PlcLWORD) GetBoolArray() []bool {
 		m.value>>58&1 == 1, m.value>>59&1 == 1,
 		m.value>>60&1 == 1, m.value>>61&1 == 1,
 		m.value>>62&1 == 1, m.value>>63&1 == 1}
+}
+
+func (m PlcLWORD) IsByte() bool {
+	return m.IsUint8()
+}
+
+func (m PlcLWORD) GetByte() byte {
+	return m.GetUint8()
+}
+
+func (m PlcLWORD) IsUint8() bool {
+	return m.value <= math.MaxUint8
+}
+
+func (m PlcLWORD) GetUint8() uint8 {
+	if m.IsUint8() {
+		return uint8(m.GetUint16())
+	}
+	return 0
+}
+
+func (m PlcLWORD) IsUint16() bool {
+	return m.value <= math.MaxUint16
+}
+
+func (m PlcLWORD) GetUint16() uint16 {
+	if m.IsUint16() {
+		return uint16(m.GetUint32())
+	}
+	return 0
+}
+
+func (m PlcLWORD) IsUint32() bool {
+	return m.value <= math.MaxUint32
+}
+
+func (m PlcLWORD) GetUint32() uint32 {
+	if m.IsUint32() {
+		return uint32(m.GetUint64())
+	}
+	return 0
+}
+
+func (m PlcLWORD) GetUint64() uint64 {
+	return m.value
+}
+
+func (m PlcLWORD) IsInt8() bool {
+	return m.value < math.MaxInt8
+}
+
+func (m PlcLWORD) GetInt8() int8 {
+	if m.IsInt8() {
+		return int8(m.GetUint64())
+	}
+	return 0
+}
+
+func (m PlcLWORD) IsInt16() bool {
+	return m.value < math.MaxInt16
+}
+
+func (m PlcLWORD) GetInt16() int16 {
+	if m.IsInt16() {
+		return int16(m.GetUint64())
+	}
+	return 0
+}
+
+func (m PlcLWORD) IsInt32() bool {
+	return m.value < math.MaxInt32
+}
+
+func (m PlcLWORD) GetInt32() int32 {
+	if m.IsInt32() {
+		return int32(m.GetUint64())
+	}
+	return 0
+}
+
+func (m PlcLWORD) IsInt64() bool {
+	return m.value < math.MaxInt64
+}
+
+func (m PlcLWORD) GetInt64() int64 {
+	if m.IsInt64() {
+		return int64(m.GetUint64())
+	}
+	return 0
+}
+
+func (m PlcLWORD) GetFloat32() float32 {
+	//TODO: Check if this is ok
+	return float32(m.GetUint32())
+}
+
+func (m PlcLWORD) GetFloat64() float64 {
+	//TODO: Check if this is ok
+	return float64(m.GetUint32())
 }
 
 func (m PlcLWORD) IsString() bool {
