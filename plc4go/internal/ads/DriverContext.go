@@ -45,10 +45,23 @@ type DriverContext struct {
 	awaitDisconnectComplete bool
 }
 
-func NewDriverContext(configuration Configuration) (DriverContext, error) {
-	return DriverContext{
+func NewDriverContext(configuration Configuration) (*DriverContext, error) {
+	return &DriverContext{
 		invokeId: 0,
 	}, nil
+}
+
+func (m *DriverContext) clear() {
+	m.connectionId = ""
+	m.invokeId = 0
+	m.adsVersion = ""
+	m.deviceName = ""
+	m.symbolVersion = 0
+	m.onlineVersion = 0
+	m.dataTypeTable = map[string]driverModel.AdsDataTypeTableEntry{}
+	m.symbolTable = map[string]driverModel.AdsSymbolTableEntry{}
+	m.awaitSetupComplete = false
+	m.awaitDisconnectComplete = false
 }
 
 func (m *DriverContext) getDirectTagForSymbolTag(symbolicPlcTag SymbolicPlcTag) (*DirectPlcTag, error) {

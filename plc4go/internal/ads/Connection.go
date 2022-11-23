@@ -42,37 +42,35 @@ import (
 
 type Connection struct {
 	_default.DefaultConnection
+
 	messageCodec       spi.MessageCodec
 	requestInterceptor interceptors.RequestInterceptor
 	configuration      Configuration
-	driverContext      DriverContext
+	driverContext      *DriverContext
 	tracer             *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, tagHandler spi.PlcTagHandler, options map[string][]string) (*Connection, error) {
+func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, options map[string][]string) (*Connection, error) {
 	driverContext, err := NewDriverContext(configuration)
 	if err != nil {
 		return nil, err
 	}
 	connection := &Connection{
-		messageCodec: messageCodec,
-		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(
-			internalModel.NewDefaultPlcReadRequest,
-			internalModel.NewDefaultPlcWriteRequest,
-			internalModel.NewDefaultPlcReadResponse,
-			internalModel.NewDefaultPlcWriteResponse,
-		),
+		messageCodec:  messageCodec,
 		configuration: configuration,
 		driverContext: driverContext,
 	}
 	if traceEnabledOption, ok := options["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
+			// TODO: Connection Id is probably "" all the time.
 			connection.tracer = spi.NewTracer(driverContext.connectionId)
 		}
 	}
+	tagHandler := NewTagHandlerWithDriverContext(driverContext)
+	valueHandler := NewValueHandlerWithDriverContext(driverContext, tagHandler)
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
 		_default.WithPlcTagHandler(tagHandler),
-		_default.WithPlcValueHandler(NewValueHandler()),
+		_default.WithPlcValueHandler(valueHandler),
 	)
 	return connection, nil
 }
@@ -100,12 +98,8 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 
-	var err error
-	m.driverContext, err = NewDriverContext(m.configuration)
-	if err != nil {
-		ch <- _default.NewDefaultPlcConnectionConnectResult(m, err)
-		return ch
-	}
+	// Reset the driver context (Actually this should not be required, but just to be on the safe side)
+	m.driverContext.clear()
 
 	go func() {
 		err := m.messageCodec.Connect()

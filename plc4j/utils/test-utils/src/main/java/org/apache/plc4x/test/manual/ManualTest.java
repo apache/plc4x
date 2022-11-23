@@ -169,6 +169,8 @@ public abstract class ManualTest {
                             "Tag: " + tagName);
                     }
                 }
+
+                // TODO: We should also test multi-item-write-requests here, just like we do single-item ones.
             }
             System.out.println("Success");
         } catch (Exception e) {

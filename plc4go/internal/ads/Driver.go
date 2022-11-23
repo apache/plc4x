@@ -46,7 +46,7 @@ func NewDriver() plc4go.PlcDriver {
 
 func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(options))
-	// Get an the transport specified in the url
+	// Get the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
 		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
@@ -80,7 +80,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	}
 
 	// Create the new connection
-	connection, err := NewConnection(codec, configuration, m.GetPlcTagHandler(), options)
+	connection, err := NewConnection(codec, configuration, options)
 	if err != nil {
 		ch := make(chan plc4go.PlcConnectionConnectResult)
 		go func() {

@@ -39,14 +39,27 @@ type TagHandler struct {
 	directAdsTag       *regexp.Regexp
 	symbolicAdsTag     *regexp.Regexp
 	arrayInfoSegment   *regexp.Regexp
+	driverContext      *DriverContext
 }
 
+// NewTagHandler this constructor creates a version of the TagHandler that's detached from a connection and can't provide context-sensitive feedback.
 func NewTagHandler() TagHandler {
 	return TagHandler{
 		directAdsStringTag: regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
 		directAdsTag:       regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>\w+)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
 		symbolicAdsTag:     regexp.MustCompile(`^(?P<symbolicAddress>[^\[]+)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
 		arrayInfoSegment:   regexp.MustCompile(`((^(?P<numElements>\d+)$)|(^((?P<startElement>\d+)\.\.(?P<endElement>\d+))$)|(^((?P<startElement2>\d+):(?P<numElements2>\d+)))$)`),
+	}
+}
+
+// NewTagHandlerWithDriverContext this constructor creates a version of the TagHandler that is connected to a connection and can provide context-sensitive feedback.
+func NewTagHandlerWithDriverContext(driverContext *DriverContext) TagHandler {
+	return TagHandler{
+		directAdsStringTag: regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
+		directAdsTag:       regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>\w+)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
+		symbolicAdsTag:     regexp.MustCompile(`^(?P<symbolicAddress>[^\[]+)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
+		arrayInfoSegment:   regexp.MustCompile(`((^(?P<numElements>\d+)$)|(^((?P<startElement>\d+)\.\.(?P<endElement>\d+))$)|(^((?P<startElement2>\d+):(?P<numElements2>\d+)))$)`),
+		driverContext:      driverContext,
 	}
 }
 
