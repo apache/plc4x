@@ -57,7 +57,7 @@
         <artifactId>build-helper-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>add-plc4x-test-sources</id>
+            <id>add-plc4x-sources</id>
             <phase>generate-sources</phase>
             <goals>
               <goal>add-source</goal>
