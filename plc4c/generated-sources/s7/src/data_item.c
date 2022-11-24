@@ -251,47 +251,58 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
 
     } else         if(strcmp(dataProtocolId, "IEC61131_TIME") == 0) { /* TIME */
 
-                // Simple Field (value)
-                uint32_t value = 0;
-                _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) &value);
+                // Simple Field (milliseconds)
+                uint32_t milliseconds = 0;
+                _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) &milliseconds);
                 if(_res != OK) {
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_time_data(value);
+                *data_item = plc4c_data_create_time_data(milliseconds);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_LTIME") == 0) { /* LTIME */
 
-                // Simple Field (value)
-                uint64_t value = 0;
-                _res = plc4c_spi_read_unsigned_long(readBuffer, 64, (uint64_t*) &value);
+                // Simple Field (nanoseconds)
+                uint64_t nanoseconds = 0;
+                _res = plc4c_spi_read_unsigned_long(readBuffer, 64, (uint64_t*) &nanoseconds);
                 if(_res != OK) {
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_ltime_data(value);
+                *data_item = plc4c_data_create_ltime_data(nanoseconds);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_DATE") == 0) { /* DATE */
 
-                // Simple Field (value)
-                uint16_t value = 0;
-                _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &value);
+                // Simple Field (daysSinceSiemensEpoch)
+                uint16_t daysSinceSiemensEpoch = 0;
+                _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &daysSinceSiemensEpoch);
                 if(_res != OK) {
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_date_data(value);
+                *data_item = plc4c_data_create_date_data(daysSinceSiemensEpoch);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_TIME_OF_DAY") == 0) { /* TIME_OF_DAY */
 
-                // Simple Field (value)
-                uint32_t value = 0;
-                _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) &value);
+                // Simple Field (milliseconds)
+                uint32_t milliseconds = 0;
+                _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) &milliseconds);
                 if(_res != OK) {
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_time_of_day_data(value);
+                *data_item = plc4c_data_create_time_of_day_data(milliseconds);
+
+    } else         if(strcmp(dataProtocolId, "IEC61131_LTIME_OF_DAY") == 0) { /* LTIME_OF_DAY */
+
+                // Simple Field (nanoseconds)
+                uint64_t nanoseconds = 0;
+                _res = plc4c_spi_read_unsigned_long(readBuffer, 64, (uint64_t*) &nanoseconds);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_ltime_of_day_data(nanoseconds);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_DATE_AND_TIME") == 0) { /* DATE_AND_TIME */
 
@@ -365,14 +376,14 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
                 *data_item = plc4c_data_create_date_and_time_data(seconds);
 
 
-                // Simple Field (nanos)
-                uint32_t nanos = 0;
-                _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) &nanos);
+                // Simple Field (nanoseconds)
+                uint32_t nanoseconds = 0;
+                _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) &nanoseconds);
                 if(_res != OK) {
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_date_and_time_data(nanos);
+                *data_item = plc4c_data_create_date_and_time_data(nanoseconds);
 
     }
 
@@ -510,29 +521,36 @@ plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4c_spi_write_buffer
                     // Manual Field (value)
         } else         if(strcmp(dataProtocolId, "IEC61131_TIME") == 0) { /* TIME */
 
-                    // Simple field (value)
+                    // Simple field (milliseconds)
                     _res = plc4c_spi_write_unsigned_int(writeBuffer, 32, (*data_item)->data.time_value);
                     if(_res != OK) {
                         return _res;
                     }
         } else         if(strcmp(dataProtocolId, "IEC61131_LTIME") == 0) { /* LTIME */
 
-                    // Simple field (value)
+                    // Simple field (nanoseconds)
                     _res = plc4c_spi_write_unsigned_long(writeBuffer, 64, (*data_item)->data.ltime_value);
                     if(_res != OK) {
                         return _res;
                     }
         } else         if(strcmp(dataProtocolId, "IEC61131_DATE") == 0) { /* DATE */
 
-                    // Simple field (value)
+                    // Simple field (daysSinceSiemensEpoch)
                     _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (*data_item)->data.date_value);
                     if(_res != OK) {
                         return _res;
                     }
         } else         if(strcmp(dataProtocolId, "IEC61131_TIME_OF_DAY") == 0) { /* TIME_OF_DAY */
 
-                    // Simple field (value)
+                    // Simple field (milliseconds)
                     _res = plc4c_spi_write_unsigned_int(writeBuffer, 32, (*data_item)->data.time_of_day_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(strcmp(dataProtocolId, "IEC61131_LTIME_OF_DAY") == 0) { /* LTIME_OF_DAY */
+
+                    // Simple field (nanoseconds)
+                    _res = plc4c_spi_write_unsigned_long(writeBuffer, 64, (*data_item)->data.ltime_of_day_value);
                     if(_res != OK) {
                         return _res;
                     }
@@ -580,7 +598,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4c_spi_write_buffer
                         return _res;
                     }
 
-                    // Simple field (nanos)
+                    // Simple field (nanoseconds)
                     _res = plc4c_spi_write_unsigned_int(writeBuffer, 32, (*data_item)->data.date_and_time_value);
                     if(_res != OK) {
                         return _res;
@@ -682,20 +700,24 @@ uint16_t plc4c_s7_read_write_data_item_length_in_bits(plc4c_data* data_item, cha
         }
     } else     if(strcmp(dataProtocolId, "IEC61131_TIME") == 0) { /* TIME */
 
-        // Simple field (value)
+        // Simple field (milliseconds)
         lengthInBits += 32;
     } else     if(strcmp(dataProtocolId, "IEC61131_LTIME") == 0) { /* LTIME */
 
-        // Simple field (value)
+        // Simple field (nanoseconds)
         lengthInBits += 64;
     } else     if(strcmp(dataProtocolId, "IEC61131_DATE") == 0) { /* DATE */
 
-        // Simple field (value)
+        // Simple field (daysSinceSiemensEpoch)
         lengthInBits += 16;
     } else     if(strcmp(dataProtocolId, "IEC61131_TIME_OF_DAY") == 0) { /* TIME_OF_DAY */
 
-        // Simple field (value)
+        // Simple field (milliseconds)
         lengthInBits += 32;
+    } else     if(strcmp(dataProtocolId, "IEC61131_LTIME_OF_DAY") == 0) { /* LTIME_OF_DAY */
+
+        // Simple field (nanoseconds)
+        lengthInBits += 64;
     } else     if(strcmp(dataProtocolId, "IEC61131_DATE_AND_TIME") == 0) { /* DATE_AND_TIME */
 
         // Simple field (year)
@@ -719,7 +741,7 @@ uint16_t plc4c_s7_read_write_data_item_length_in_bits(plc4c_data* data_item, cha
         // Simple field (seconds)
         lengthInBits += 8;
 
-        // Simple field (nanos)
+        // Simple field (nanoseconds)
         lengthInBits += 32;
     }
   return lengthInBits;

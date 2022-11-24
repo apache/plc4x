@@ -43,15 +43,28 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
         throw new PlcRuntimeException("Invalid value type");
     }
 
+    public static PlcDATE_AND_TIME ofSecondsSinceEpoch(long secondsSinceEpoch) {
+        return new PlcDATE_AND_TIME(LocalDateTime.ofInstant(
+            Instant.ofEpochSecond(secondsSinceEpoch), ZoneId.systemDefault()));
+    }
+
+    public static PlcDATE_AND_TIME ofSegments(int year, int month, int day, int hour, int minutes, int seconds, int nanoseconds) {
+        return new PlcDATE_AND_TIME(LocalDateTime.of(year, month, day, hour, minutes, seconds, nanoseconds));
+    }
+
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcDATE_AND_TIME(@JsonProperty("value") LocalDateTime value) {
         super(value, true);
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcDATE_AND_TIME(@JsonProperty("value") Long value) {
+    public PlcDATE_AND_TIME(@JsonProperty("value") long secondsSinceEpoch) {
         super(LocalDateTime.ofInstant(
-            Instant.ofEpochSecond(value), ZoneId.of("UTC")), true);
+            Instant.ofEpochSecond(secondsSinceEpoch), ZoneId.systemDefault()), true);
+    }
+
+    public PlcDATE_AND_TIME(@JsonProperty("year") int year, @JsonProperty("month") int month, @JsonProperty("day") int day, @JsonProperty("hour") int hour, @JsonProperty("minutes") int minutes, @JsonProperty("seconds") int seconds, @JsonProperty("nanoseconds") int nanoseconds) {
+        super(LocalDateTime.of(year, month, day, hour, minutes, seconds, nanoseconds), true);
     }
 
     @Override

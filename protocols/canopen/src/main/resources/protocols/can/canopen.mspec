@@ -333,7 +333,7 @@
             [array byte value length 'size']
         ]
         ['OCTET_STRING' STRING
-           [simple vstring 'size' test]
+           [simple vstring 'size' value]
         ]
         ['VISIBLE_STRING' STRING
             [simple vstring 'size' value]

@@ -478,23 +478,32 @@
         // -----------------------------------------
         // Interpreted as "milliseconds"
         ['TIME' TIME
-            [simple uint 32 value]
+            [simple uint 32 milliseconds]
         ]
         // Interpreted as "nanoseconds"
         ['LTIME' LTIME
-            [simple uint 64 value]
+            [simple uint 64 nanoseconds]
         ]
         // Interpreted as "seconds since epoch"
         ['DATE' DATE
-            [simple uint 32 value]
+            [simple uint 32 secondsSinceEpoch]
+        ]
+        ['LDATE' LDATE
+            [simple uint 32 nanosecondsSinceEpoch]
         ]
         // Interpreted as "milliseconds since midnight"
         ['TIME_OF_DAY' TIME_OF_DAY
-            [simple uint 32 value]
+            [simple uint 32 millisecondsSinceMidnight]
+        ]
+        ['LTIME_OF_DAY' LTIME_OF_DAY
+            [simple uint 32 nanosecondsSinceMidnight]
         ]
         // Interpreted as "seconds since epoch"
         ['DATE_AND_TIME' DATE_AND_TIME
             [simple uint 32 secondsSinceEpoch]
+        ]
+        ['LDATE_AND_TIME' LDATE_AND_TIME
+            [simple uint 32 nanosecondsSinceEpoch]
         ]
     ]
 ]

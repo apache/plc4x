@@ -32,61 +32,6 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-const (
-	////
-	// Bit & Bit-Strings
-
-	IEC61131_BOOL  string = "BOOL"
-	IEC61131_BYTE  string = "BYTE"
-	IEC61131_WORD  string = "WORD"
-	IEC61131_DWORD string = "DWORD"
-	IEC61131_LWORD string = "LWORD"
-	//
-	////
-
-	////
-	// Integers
-
-	IEC61131_USINT string = "USINT"
-	IEC61131_UINT  string = "UINT"
-	IEC61131_UDINT string = "UDINT"
-	IEC61131_ULINT string = "ULINT"
-	IEC61131_SINT  string = "SINT"
-	IEC61131_INT   string = "INT"
-	IEC61131_DINT  string = "DINT"
-	IEC61131_LINT  string = "LINT"
-	//
-	////
-
-	////
-	// Floating Point Values
-
-	IEC61131_REAL  string = "REAL"
-	IEC61131_LREAL string = "LREAL"
-	//
-	////
-
-	////
-	// Temporal Values
-
-	IEC61131_TIME          string = "TIME"
-	IEC61131_DATE          string = "DATE"
-	IEC61131_TIME_OF_DAY   string = "TIME_OF_DAY"
-	IEC61131_DATE_AND_TIME string = "DATE_AND_TIME"
-	//
-	////
-
-	////
-	// Chars and Strings
-
-	IEC61131_CHAR    string = "CHAR"
-	IEC61131_WCHAR   string = "WCHAR"
-	IEC61131_STRING  string = "STRING"
-	IEC61131_WSTRING string = "WSTRING"
-	//
-	////
-)
-
 type DefaultValueHandler struct {
 }
 
@@ -390,16 +335,18 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 		}
 
 	// Temporal Values
+	// - Duration
 	case values.TIME:
 		if isString {
 			return nil, errors.New("string to IEC61131_TIME conversion not implemented")
 		} else {
-			casted, ok := value.(uint32)
+			casted, ok := value.(time.Duration)
 			if !ok {
-				return nil, errors.New("couldn't cast value of type " + reflect.TypeOf(value).Name() + " to uint32")
+				return nil, errors.New("couldn't cast value of type " + reflect.TypeOf(value).Name() + " to time.Duration")
 			}
 			return NewPlcTIME(casted), nil
 		}
+	// - Date
 	case values.DATE:
 		if isString {
 			return nil, errors.New("string to IEC61131_DATE conversion not implemented")
@@ -410,6 +357,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 			}
 			return NewPlcDATE(casted), nil
 		}
+	// - Time
 	case values.TIME_OF_DAY:
 		if isString {
 			return nil, errors.New("string to IEC61131_TIME_OF_DAY conversion not implemented")
@@ -420,6 +368,7 @@ func (m DefaultValueHandler) NewPlcValueFromType(valueType values.PlcValueType, 
 			}
 			return NewPlcTIME_OF_DAY(casted), nil
 		}
+	// - Date and Time
 	case values.DATE_AND_TIME:
 		if isString {
 			return nil, errors.New("string to IEC61131_DATE_AND_TIME conversion not implemented")

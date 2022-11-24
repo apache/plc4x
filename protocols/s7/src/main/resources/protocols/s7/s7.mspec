@@ -614,26 +614,38 @@
         // -----------------------------------------
         // TIA Date-Formats
         // -----------------------------------------
-        // Interpreted as "milliseconds"
+        // - Duration: Interpreted as "milliseconds"
         ['"IEC61131_TIME"' TIME
-            [simple uint 32 value]
+            [simple uint 32 milliseconds]
         ]
         //['"S7_S5TIME"' TIME
         //    [reserved uint 2  '0x00']
         //    [uint     uint 2  'base']
         //    [simple   uint 12 value]
         //]
-        // Interpreted as "number of nanoseconds"
+        // - Duration: Interpreted as "number of nanoseconds"
         ['"IEC61131_LTIME"' LTIME
-            [simple uint 64 value]
+            [simple uint 64 nanoseconds]
         ]
-        // Interpreted as "number of days since 1990-01-01"
+        // - Date: Interpreted as "number of days since 1990-01-01"
         ['"IEC61131_DATE"' DATE
-            [simple uint 16 value]
+            [simple uint 16 daysSinceSiemensEpoch]
+            // Number of days between 1990-01-01 and 1970-01-01 according to https://www.timeanddate.com/
+            //[virtual uint 16 daysSinceEpoch 'daysSinceSiemensEpoch + 7305']
         ]
+        //['"IEC61131_LDATE"' LDATE
+        //    [implicit uint 16 daysSinceSiemensEpoch 'daysSinceEpoch - 7305']
+        //    [virtual uint 16 daysSinceEpoch 'daysSinceSiemensEpoch + 7305']
+        //]
+        // - Time: Interpreted as "milliseconds since midnight (0:00)"
         ['"IEC61131_TIME_OF_DAY"' TIME_OF_DAY
-            [simple uint 32 value]
+            [simple uint 32 milliseconds]
         ]
+        // - Time: Interpreted as "nanoseconds since midnight (0:00)"
+        ['"IEC61131_LTIME_OF_DAY"' LTIME_OF_DAY
+            [simple uint 64 nanoseconds]
+        ]
+        // - Date & Time: interpreted as individual components.
         ['"IEC61131_DATE_AND_TIME"' DATE_AND_TIME
             [simple uint 16 year]
             [simple uint 8  month]
@@ -642,8 +654,13 @@
             [simple uint 8  hour]
             [simple uint 8  minutes]
             [simple uint 8  seconds]
-            [simple uint 32 nanos]
+            [simple uint 32 nanoseconds]
         ]
+        // - Date & Time: Interpreted as "number of nanoseconds since 1990-01-01"
+        //['"IEC61131_LDATE_AND_TIME"' LDATE_AND_TIME
+        //    [implicit uint 16 nanosecondsSinceSiemensEpoch 'nanosecondsSinceEpoch ...']
+        //    [virtual uint 16 nanosecondsSinceEpoch 'nanosecondsSinceSiemensEpoch ...']
+        //]
     ]
 ]
 

@@ -46,13 +46,18 @@ func NewPlcTIME_OF_DAY(value interface{}) PlcTIME_OF_DAY {
 		seconds := castedValue / 1000
 		nanoseconds := (castedValue % 1000) * 1000000
 		epochTime := time.Unix(int64(seconds), int64(nanoseconds))
-		safeValue = time.Date(0, 0, 0, epochTime.Hour(), epochTime.Minute(), epochTime.Second(),
+		safeValue = time.Date(0, 0, 0, epochTime.Hour(),
+			epochTime.Minute(), epochTime.Second(),
 			epochTime.Nanosecond(), epochTime.Location())
 	}
 
 	return PlcTIME_OF_DAY{
 		value: safeValue,
 	}
+}
+
+func NewPlcTIME_OF_DAYFromMillisecondsSinceMidnight(millisecondsSinceMidnight uint32) PlcTIME_OF_DAY {
+	return NewPlcTIME_OF_DAY(millisecondsSinceMidnight)
 }
 
 func (m PlcTIME_OF_DAY) GetRaw() []byte {

@@ -27,8 +27,12 @@ import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcLTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
@@ -37,9 +41,21 @@ public class PlcLTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
         if (value instanceof LocalTime) {
             return new PlcLTIME_OF_DAY((LocalTime) value);
         } else if (value instanceof Long) {
-            return new PlcLTIME_OF_DAY(LocalTime.ofSecondOfDay(((long) value) / 1000));
+            return new PlcLTIME_OF_DAY(LocalTime.ofSecondOfDay(((Long) value) / 1000));
+        } else if (value instanceof BigInteger) {
+            // TODO: Not 100% correct, we're loosing precision here
+            return new PlcLTIME_OF_DAY(LocalTime.ofSecondOfDay(((BigInteger) value).longValue() / 1000));
         }
         throw new PlcRuntimeException("Invalid value type");
+    }
+
+    public static PlcLTIME_OF_DAY ofNanosecondsSinceMidnight(Long nanosecondsSinceMidnight) {
+        return new PlcLTIME_OF_DAY(LocalTime.ofNanoOfDay(nanosecondsSinceMidnight));
+    }
+
+    public static PlcLTIME_OF_DAY ofNanosecondsSinceMidnight(BigInteger nanosecondsSinceMidnight) {
+        // TODO: Not 100% correct, we're loosing precision here
+        return new PlcLTIME_OF_DAY(LocalTime.ofNanoOfDay(nanosecondsSinceMidnight.longValue()));
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -48,8 +64,14 @@ public class PlcLTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcLTIME_OF_DAY(@JsonProperty("value") Long value) {
-        super(LocalTime.ofNanoOfDay(value * 1000000), true);
+    public PlcLTIME_OF_DAY(@JsonProperty("value") Long nanosecondsSinceMidnight) {
+        super(LocalTime.ofNanoOfDay(nanosecondsSinceMidnight), true);
+    }
+
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public PlcLTIME_OF_DAY(@JsonProperty("value") BigInteger nanosecondsSinceMidnight) {
+        // TODO: Not 100% correct, we're loosing precision here
+        super(LocalTime.ofNanoOfDay(nanosecondsSinceMidnight.longValue()), true);
     }
 
     @Override

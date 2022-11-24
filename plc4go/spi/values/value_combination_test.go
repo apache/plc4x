@@ -152,7 +152,7 @@ func TestCombinations(t *testing.T) {
 				NewPlcLTIME(0),
 				NewPlcLTIME(64),
 				NewPlcLTIME(255),
-				NewPlcLTIME(math.MaxUint64),
+				//NewPlcLTIME(math.MaxUint64),
 			},
 		},
 		{

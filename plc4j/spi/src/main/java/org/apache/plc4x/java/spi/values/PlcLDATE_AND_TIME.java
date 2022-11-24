@@ -43,15 +43,23 @@ public class PlcLDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
         throw new PlcRuntimeException("Invalid value type");
     }
 
+    public static PlcLDATE_AND_TIME ofNanosecondsSinceEpoch(long nanosecondsSinceEpoch) {
+        long epochSecond = nanosecondsSinceEpoch / 1000000;
+        int nanoOfSecond = (int) (nanosecondsSinceEpoch % 1000000);
+        return new PlcLDATE_AND_TIME(LocalDateTime.ofEpochSecond(epochSecond, nanoOfSecond,
+            ZoneOffset.of(ZoneOffset.systemDefault().getId())));
+    }
+
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcLDATE_AND_TIME(@JsonProperty("value") LocalDateTime value) {
         super(value, true);
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcLDATE_AND_TIME(@JsonProperty("value") Long value) {
-        super(LocalDateTime.ofInstant(
-            Instant.ofEpochSecond(value), ZoneId.of("UTC")), true);
+    public PlcLDATE_AND_TIME(@JsonProperty("value") long nanosecondsSinceEpoch) {
+        super(LocalDateTime.ofEpochSecond(nanosecondsSinceEpoch / 1000000,
+            (int) (nanosecondsSinceEpoch % 1000000),
+            ZoneOffset.of(ZoneOffset.systemDefault().getId())), true);
     }
 
     @Override

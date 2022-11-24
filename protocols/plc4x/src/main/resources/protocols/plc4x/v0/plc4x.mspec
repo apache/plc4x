@@ -175,24 +175,44 @@
         ['WCHAR'         STRING
             [simple   string 16                  value        encoding='"UTF-16"']
         ]
-        ['STRING'        STRING
-//            [implicit uint 8                     stringLength 'STR_LEN(value)'   ]
-//            [simple   vstring 'stringLength'     value                           ]
-        ]
-        ['WSTRING'       STRING
-//            [implicit uint 8                     stringLength 'STR_LEN(value)'   ]
-//            [simple   vstring 'stringLength * 2' value        encoding='"UTF-16"']
-        ]
+        //['STRING'        STRING
+        //    [implicit uint 8                     stringLength 'STR_LEN(value)'   ]
+        //    [simple   vstring 'stringLength'     value                           ]
+        //]
+        //['WSTRING'       STRING
+        //    [implicit uint 8                     stringLength 'STR_LEN(value)'   ]
+        //    [simple   vstring 'stringLength * 2' value        encoding='"UTF-16"']
+        //]
 
         // Times and Dates
-        ['TIME'          TIME         ]
-        ['TIME_OF_DAY'   TIME_OF_DAY  ]
-        ['DATE'          DATE         ]
-        ['DATE_AND_TIME' DATE_AND_TIME]
+        ['TIME'           TIME
+            [simple uint 32 milliseconds]
+        ]
+        ['LTIME'          LTIME
+            [simple uint 64 nanoseconds]
+        ]
+        ['DATE'           DATE
+            [simple uint 32 secondsSinceEpoch]
+        ]
+        ['LDATE'          LDATE
+            [simple uint 32 nanosecondsSinceEpoch]
+        ]
+        ['TIME_OF_DAY'    TIME_OF_DAY
+            [simple uint 32 millisecondsSinceMidnight]
+        ]
+        ['LTIME_OF_DAY'   LTIME_OF_DAY
+            [simple uint 64 nanosecondsSinceMidnight]
+        ]
+        ['DATE_AND_TIME'  DATE_AND_TIME
+            [simple uint 32 secondsSinceEpoch]
+        ]
+        ['LDATE_AND_TIME' LDATE_AND_TIME
+            [simple uint 32 nanosecondsSinceEpoch]
+        ]
 
         // Derived Types
         ['Struct'        Struct       ]
-        ['List'          List         ]
+        //['List'          List         ]
     ]
 ]
 

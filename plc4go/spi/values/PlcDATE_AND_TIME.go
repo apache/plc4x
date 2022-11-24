@@ -29,14 +29,22 @@ import (
 )
 
 type PlcDATE_AND_TIME struct {
-	value time.Time
 	PlcValueAdapter
+	value time.Time
 }
 
 func NewPlcDATE_AND_TIME(value time.Time) PlcDATE_AND_TIME {
 	return PlcDATE_AND_TIME{
 		value: value,
 	}
+}
+
+func NewPlcDATA_AND_TIMEFromSegments(year, month, day, hour, minutes, seconds, nanoseconds uint32) PlcDATE_AND_TIME {
+	return NewPlcDATE_AND_TIME(time.Date(int(year), time.Month(month), int(day), int(hour), int(minutes), int(seconds), int(nanoseconds), time.Local))
+}
+
+func NewPlcDATA_AND_TIMEFromSecondsSinceEpoch(secondsSinceEpoch uint32) PlcDATE_AND_TIME {
+	return NewPlcDATE_AND_TIME(time.Unix(int64(secondsSinceEpoch), 0))
 }
 
 func (m PlcDATE_AND_TIME) GetRaw() []byte {
@@ -47,6 +55,7 @@ func (m PlcDATE_AND_TIME) GetRaw() []byte {
 func (m PlcDATE_AND_TIME) IsDateTime() bool {
 	return true
 }
+
 func (m PlcDATE_AND_TIME) GetDateTime() time.Time {
 	return m.value
 }
