@@ -49,7 +49,7 @@ public class ProfinetConfiguration extends BaseConfiguration implements RawSocke
 
     private final Logger logger = LoggerFactory.getLogger(ProfinetConfiguration.class);
     public static final Pattern MACADDRESS_ARRAY_PATTERN = Pattern.compile("^\\[(([A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2})(,)?)*\\]");
-    public static final Pattern SUB_MODULE_ARRAY_PATTERN = Pattern.compile("(\\[[\\w, ]*\\]){1}[,]{0,1}");
+    public static final Pattern SUB_MODULE_ARRAY_PATTERN = Pattern.compile("(\\[[\\w, ]*\\]){1}[ ,]{0,2}");
 
     @Override
     public boolean getSupportVlans() {
@@ -127,6 +127,9 @@ public class ProfinetConfiguration extends BaseConfiguration implements RawSocke
     public void setSubModules() throws DecoderException, PlcConnectionException {
 
         // Split up the connection string into its individual segments.
+        if (subModules.length() < 2) {
+            return;
+        }
         Matcher matcher = SUB_MODULE_ARRAY_PATTERN.matcher(subModules.toUpperCase().substring(1, subModules.length() - 1));
         if (!matcher.matches()) {
             throw new PlcConnectionException("Profinet Submodule Array is not in the correct format " + subModules + ".");

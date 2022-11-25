@@ -128,7 +128,7 @@ public class ProfinetConfigurationTests {
     public void readProfinetSubModules() throws DecoderException, PlcConnectionException {
 
         String[] macAddresses = new String[] {"00:0c:29:75:25:67"};
-        String subModules = "[PLC4X_01, PLC4X_02, PLC4X_01, PLC4X_02]";
+        String subModules = "[[PLC4X_01, PLC4X_02, PLC4X_01, PLC4X_02]]";
         ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[" + String.join(",", macAddresses) + "]&submodules=" + subModules);
 
