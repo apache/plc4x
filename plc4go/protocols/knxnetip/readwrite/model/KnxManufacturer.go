@@ -642,8 +642,9 @@ const (
 	KnxManufacturer_M_ZHONGYUNXINZHIKONGGUJITUANYOUXIANGONGSI            KnxManufacturer = 603
 	KnxManufacturer_M_STUHL_REGELSYSTEME_GMBH                            KnxManufacturer = 604
 	KnxManufacturer_M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD                 KnxManufacturer = 605
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 606
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 607
+	KnxManufacturer_M_GAIMEX                                             KnxManufacturer = 606
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 607
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 608
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1257,6 +1258,7 @@ func init() {
 		KnxManufacturer_M_ZHONGYUNXINZHIKONGGUJITUANYOUXIANGONGSI,
 		KnxManufacturer_M_STUHL_REGELSYSTEME_GMBH,
 		KnxManufacturer_M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD,
+		KnxManufacturer_M_GAIMEX,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3522,10 +3524,14 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 606:
 		{ /* '606' */
-			return 43954
+			return 664
 		}
 	case 607:
 		{ /* '607' */
+			return 43954
+		}
+	case 608:
+		{ /* '608' */
 			return 43959
 		}
 	case 61:
@@ -5972,10 +5978,14 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 606:
 		{ /* '606' */
-			return "ABB - reserved"
+			return "Gaimex"
 		}
 	case 607:
 		{ /* '607' */
+			return "ABB - reserved"
+		}
+	case 608:
+		{ /* '608' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 61:
@@ -7292,8 +7302,10 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 605:
 		return KnxManufacturer_M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD, true
 	case 606:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_GAIMEX, true
 	case 607:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 608:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 61:
 		return KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS, true
@@ -8513,6 +8525,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_STUHL_REGELSYSTEME_GMBH, true
 	case "M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD":
 		return KnxManufacturer_M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD, true
+	case "M_GAIMEX":
+		return KnxManufacturer_M_GAIMEX, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -9792,6 +9806,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_STUHL_REGELSYSTEME_GMBH"
 	case KnxManufacturer_M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD:
 		return "M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD"
+	case KnxManufacturer_M_GAIMEX:
+		return "M_GAIMEX"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
