@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.profinet.readwrite.*;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Random;
 
 public class ProfinetMessageWrapper {
@@ -37,20 +38,20 @@ public class ProfinetMessageWrapper {
                 true,
                 false,
                 (short) 64,
-                new IpAddress(context.getLocalIpAddress().getAddress()),
-                new IpAddress(context.getIpAddress().getAddress()),
-                context.getSourcePort(),
-                context.getDestinationPort(),
+                new IpAddress(context.getDeviceContext().getLocalIpAddress().getAddress()),
+                new IpAddress(InetAddress.getByName(context.getDeviceContext().getIpAddress()).getAddress()),
+                context.getDeviceContext().getSourcePort(),
+                context.getDeviceContext().getDestinationPort(),
                 packet
             );
-            MacAddress srcAddress = context.getLocalMacAddress();
-            MacAddress dstAddress = context.getMacAddress();
+            MacAddress srcAddress = context.getDeviceContext().getLocalMacAddress();
+            MacAddress dstAddress = context.getDeviceContext().getMacAddress();
             Ethernet_Frame frame = new Ethernet_Frame(
                 dstAddress,
                 srcAddress,
                 udpFrame);
 
-            context.getChannel().send(frame);
+            context.getDeviceContext().getChannel().send(frame);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -62,7 +63,7 @@ public class ProfinetMessageWrapper {
     public static void sendPnioMessage(ProfinetCallable<Ethernet_Frame> callable, ProfinetDevice context) throws RuntimeException {
         try {
             Ethernet_Frame packet = callable.create();
-            context.getChannel().send(packet);
+            context.getDeviceContext().getChannel().send(packet);
         } catch (PlcException e) {
             throw new RuntimeException(e);
         }

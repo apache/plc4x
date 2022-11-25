@@ -20,12 +20,11 @@
 package org.apache.plc4x.java.profinet.gsdml;
 
 import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
-import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
+import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
-import org.apache.plc4x.java.profinet.readwrite.MacAddress;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -52,7 +51,6 @@ public class ProfinetConfigurationTests {
 
     @Test
     public void readGsdFilesInDirectory()  {
-
         String directory = "src/test/resources";
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "gsddirectory=" + directory);
@@ -79,7 +77,7 @@ public class ProfinetConfigurationTests {
         ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[" + String.join(",", macAddresses) + "]");
 
-        ProfinetDriverContext context = new ProfinetDriverContext();
+        ProfinetDeviceContext context = new ProfinetDeviceContext();
         context.setConfiguration(configuration);
 
         Map<String, ProfinetDevice> devices = configuration.getConfiguredDevices();
@@ -97,7 +95,7 @@ public class ProfinetConfigurationTests {
         ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[" + String.join(",", macAddresses) + "]");
 
-        ProfinetDriverContext context = new ProfinetDriverContext();
+        ProfinetDeviceContext context = new ProfinetDeviceContext();
         context.setConfiguration(configuration);
 
         Map<String, ProfinetDevice> devices = configuration.getConfiguredDevices();
@@ -114,7 +112,7 @@ public class ProfinetConfigurationTests {
         ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[" + String.join(",", macAddresses) + "]");
 
-        ProfinetDriverContext context = new ProfinetDriverContext();
+        ProfinetDeviceContext context = new ProfinetDeviceContext();
         context.setConfiguration(configuration);
 
         Map<String, ProfinetDevice> devices = configuration.getConfiguredDevices();
@@ -132,11 +130,16 @@ public class ProfinetConfigurationTests {
         ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[" + String.join(",", macAddresses) + "]&submodules=" + subModules);
 
-        ProfinetDriverContext context = new ProfinetDriverContext();
+        ProfinetDeviceContext context = new ProfinetDeviceContext();
         context.setConfiguration(configuration);
 
         Map<String, ProfinetDevice> devices = configuration.getConfiguredDevices();
-        configuration.setSubModules();
+        try {
+            configuration.setSubModules();
+        } catch (PlcException e) {
+            throw new RuntimeException(e);
+        }
+
 
         for (String mac : macAddresses) {
             String[] test = devices.get(mac.replace(":", "").toUpperCase()).getSubModules();

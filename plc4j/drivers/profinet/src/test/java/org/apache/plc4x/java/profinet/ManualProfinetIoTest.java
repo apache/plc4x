@@ -20,18 +20,32 @@ package org.apache.plc4x.java.profinet;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.profinet.device.ProfinetSubscriptionHandle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ManualProfinetIoTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ManualProfinetIoTest.class);
+
     public static void main(String[] args) throws Exception {
         final PlcConnection connection = new PlcDriverManager().getConnection("profinet://192.168.90.1?gsddirectory=/home/missy/Documents/Profinet/gsd&devices=[00:0c:29:75:25:67]&submodules=[[IDM_30,IDM_32,IDM_31,]]&reductionratio=512&sendclockfactor=32&dataholdfactor=3&watchdogfactor=10");
-        final PlcSubscriptionRequest request = connection.subscriptionRequestBuilder().addChangeOfStateField("Default Float", "I have no idea").build();
-        final PlcSubscriptionResponse plcResponse = request.execute().get();
-        System.out.println(plcResponse);
+        PlcBrowseRequest browseRequest = connection.browseRequestBuilder().addQuery("Browse", "00:0c:29:75:25:67").build();
+        final PlcBrowseResponse browseResponse = browseRequest.execute().get();
+        final PlcSubscriptionRequest request = connection.subscriptionRequestBuilder().addChangeOfStateField("*", "I have no idea").build();
+        final PlcSubscriptionResponse response = request.execute().get();
+
+        // Get result of creating subscription
+//        final ProfinetSubscriptionHandle subscriptionHandle = (ProfinetSubscriptionHandle) response.getSubscriptionHandle("*");
+        //subscriptionHandle.getFields();
+
+        // Create handler for returned value
+//        subscriptionHandle.register(plcSubscriptionEvent -> {
+//            assert plcSubscriptionEvent.getResponseCode(field).equals(PlcResponseCode.OK);
+//            LOGGER.info("Received a response from {} test {}", field, plcSubscriptionEvent.getPlcValue(field).toString());
+//        });
     }
 
 }

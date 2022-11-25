@@ -24,13 +24,11 @@ import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.device.ProfinetChannel;
-import org.apache.plc4x.java.profinet.device.ProfinetDevice;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.field.ProfinetField;
 import org.apache.plc4x.java.profinet.field.ProfinetFieldHandler;
 import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
 import org.apache.plc4x.java.profinet.readwrite.Ethernet_Frame;
-import org.apache.plc4x.java.profinet.readwrite.MacAddress;
 import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
@@ -41,14 +39,9 @@ import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
 import org.pcap4j.core.*;
-import org.pcap4j.util.LinkLayerAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
 import java.util.function.ToIntFunction;
 
 public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
@@ -126,6 +119,11 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
 
     @Override
     protected boolean canSubscribe() {
+        return true;
+    }
+
+    @Override
+    protected boolean canBrowse() {
         return true;
     }
 

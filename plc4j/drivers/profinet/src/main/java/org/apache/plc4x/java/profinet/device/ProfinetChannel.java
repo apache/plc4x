@@ -97,9 +97,6 @@ public class ProfinetChannel {
             thread.start();
         }
     }
-
-
-
     public PacketListener createListener() {
         PacketListener listener =
             packet -> {

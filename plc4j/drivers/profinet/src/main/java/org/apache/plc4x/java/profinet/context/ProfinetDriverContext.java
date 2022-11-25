@@ -16,63 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.plc4x.java.profinet.context;
 
-import org.apache.commons.codec.DecoderException;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.device.ProfinetChannel;
-import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
-import org.apache.plc4x.java.profinet.readwrite.DceRpc_ActivityUuid;
-import org.apache.plc4x.java.profinet.readwrite.IpAddress;
-import org.apache.plc4x.java.profinet.readwrite.MacAddress;
-import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.profinet.device.ProfinetDeviceMessageHandler;
+import org.apache.plc4x.java.profinet.device.ProfinetSubscriptionHandle;
 import org.apache.plc4x.java.spi.context.DriverContext;
 
+import java.net.DatagramSocket;
+import java.util.HashMap;
 import java.util.Map;
 
-public class ProfinetDriverContext  implements DriverContext, HasConfiguration<ProfinetConfiguration> {
-    private DceRpc_ActivityUuid dceRpc_activityUuid;
-    private MacAddress localMacAddress;
-    private IpAddress localIpAddress;
+public class ProfinetDriverContext implements DriverContext {
+
+    public static final int DEFAULT_UDP_PORT = 34964;
+
+    private Map<Long, ProfinetSubscriptionHandle> subscriptions = new HashMap<>();
+    private ProfinetDeviceMessageHandler handler = new ProfinetDeviceMessageHandler();
+    private ProfinetConfiguration configuration;
+    private DatagramSocket socket;
     private ProfinetChannel channel;
-
-    @Override
-    public void setConfiguration(ProfinetConfiguration configuration) {
-        try {
-            Map<String, ProfinetISO15745Profile> gsdfiles = configuration.readGsdFiles();
-            configuration.setDevices(configuration.getDevices());
-            configuration.setSubModules();
-        } catch (DecoderException e) {
-            throw new RuntimeException(e);
-        } catch (PlcConnectionException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public DceRpc_ActivityUuid getDceRpcActivityUuid() {
-        return dceRpc_activityUuid;
-    }
-
-    public void setDceRpcActivityUuid(DceRpc_ActivityUuid dceRpc_activityUuid) {
-        this.dceRpc_activityUuid = dceRpc_activityUuid;
-    }
-
-    public MacAddress getLocalMacAddress() {
-        return localMacAddress;
-    }
-
-    public void setLocalMacAddress(MacAddress localMacAddress) {
-        this.localMacAddress = localMacAddress;
-    }
-
-    public IpAddress getLocalIpAddress() {
-        return localIpAddress;
-    }
-
-    public void setLocalIpAddress(IpAddress localIpAddress) {
-        this.localIpAddress = localIpAddress;
-    }
 
     public ProfinetChannel getChannel() {
         return channel;
@@ -80,5 +45,37 @@ public class ProfinetDriverContext  implements DriverContext, HasConfiguration<P
 
     public void setChannel(ProfinetChannel channel) {
         this.channel = channel;
+    }
+
+    public Map<Long, ProfinetSubscriptionHandle> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(Map<Long, ProfinetSubscriptionHandle> subscriptions) {
+        this.subscriptions = subscriptions;
+    }
+
+    public ProfinetDeviceMessageHandler getHandler() {
+        return handler;
+    }
+
+    public void setHandler(ProfinetDeviceMessageHandler handler) {
+        this.handler = handler;
+    }
+
+    public ProfinetConfiguration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(ProfinetConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
+    public DatagramSocket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(DatagramSocket socket) {
+        this.socket = socket;
     }
 }

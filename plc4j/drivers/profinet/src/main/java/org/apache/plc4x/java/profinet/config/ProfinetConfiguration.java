@@ -22,6 +22,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.apache.plc4x.java.profinet.readwrite.MacAddress;
@@ -29,12 +30,15 @@ import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
+import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -107,16 +111,16 @@ public class ProfinetConfiguration extends BaseConfiguration implements RawSocke
         return devices;
     }
 
-    public void setDevices(String sDevices) throws DecoderException, PlcConnectionException {
+    public void setDevices() throws DecoderException, PlcConnectionException {
 
         // Split up the connection string into its individual segments.
-        Matcher matcher = MACADDRESS_ARRAY_PATTERN.matcher(sDevices.toUpperCase());
+        Matcher matcher = MACADDRESS_ARRAY_PATTERN.matcher(this.devices.toUpperCase());
 
         if (!matcher.matches()) {
-            throw new PlcConnectionException("Profinet Device Array is not in the correct format " + sDevices + ".");
+            throw new PlcConnectionException("Profinet Device Array is not in the correct format " + this.devices + ".");
         }
 
-        String[] devices = sDevices.substring(1, sDevices.length() - 1).split("[ ,]");
+        String[] devices = this.devices.substring(1, this.devices.length() - 1).split("[ ,]");
 
         for (String device : devices) {
             MacAddress macAddress = new MacAddress(Hex.decodeHex(device.replace(":", "")));
@@ -124,29 +128,32 @@ public class ProfinetConfiguration extends BaseConfiguration implements RawSocke
         }
     }
 
-    public void setSubModules() throws DecoderException, PlcConnectionException {
+    public void setSubModules() throws DecoderException, PlcException {
 
         // Split up the connection string into its individual segments.
+        String[] devices = new String[configuredDevices.size()];
         if (subModules.length() < 2) {
-            return;
+            int index = 0;
+            for (Map.Entry<String, ProfinetDevice> entry : configuredDevices.entrySet()) {
+                devices[index] = "[]";
+                index += 1;
+            }
+        } else {
+            Matcher matcher = SUB_MODULE_ARRAY_PATTERN.matcher(subModules.toUpperCase().substring(1, subModules.length() - 1));
+            if (!matcher.matches()) {
+                throw new PlcConnectionException("Profinet Submodule Array is not in the correct format " + subModules + ".");
+            }
+            if (matcher.groupCount() != configuredDevices.size()) {
+                throw new PlcConnectionException("Configured device array size doesn't match the submodule array size");
+            }
+            for (int j = 0; j < matcher.groupCount(); j++) {
+                devices[j] = matcher.group(j).replace(" ", "");
+            }
         }
-        Matcher matcher = SUB_MODULE_ARRAY_PATTERN.matcher(subModules.toUpperCase().substring(1, subModules.length() - 1));
-        if (!matcher.matches()) {
-            throw new PlcConnectionException("Profinet Submodule Array is not in the correct format " + subModules + ".");
-        }
-        String[] devices = new String[matcher.groupCount()];
-        for (int j = 0; j < matcher.groupCount(); j++) {
-            devices[j] = matcher.group(j).replace(" ", "");
-        }
-
-        if (matcher.groupCount() != configuredDevices.size()) {
-            throw new PlcConnectionException("Configured device array size doesn't match the submodule array size");
-        }
-
 
         int index = 0;
         for (Map.Entry<String, ProfinetDevice> entry : configuredDevices.entrySet()) {
-            entry.getValue().setSubModules(devices[index]);
+            entry.getValue().setSubModuleString(devices[index]);
             index += 1;
         }
     }
@@ -212,6 +219,14 @@ public class ProfinetConfiguration extends BaseConfiguration implements RawSocke
 
     public int getDataHoldFactor() {
         return dataHoldFactor;
+    }
+
+    public InetAddress getIpAddress() {
+        try {
+            return InetAddress.getByName(getTransportConfig().split(":")[0]);
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
