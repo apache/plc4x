@@ -88,7 +88,7 @@ func main() {
 		AddTagAddress("value.date", "MAIN.hurz_DATE", values.NewPlcDATE(date)).
 		AddTagAddress("value-time-of-day", "MAIN.hurz_TIME_OF_DAY", values.NewPlcTIME_OF_DAY(timeOfDay)).
 		AddTagAddress("value-date-and-time", "MAIN.hurz_DATE_AND_TIME", values.NewPlcDATE_AND_TIME(dateAndTime)).
-		//AddTagAddress("value-struct", "MAIN.hurz_Struct", values.NewPlcStruct(children)).
+		AddTagAddress("value-struct", "MAIN.hurz_Struct", values.NewPlcStruct(children)).
 		Build()
 	if err != nil {
 		panic(err)
