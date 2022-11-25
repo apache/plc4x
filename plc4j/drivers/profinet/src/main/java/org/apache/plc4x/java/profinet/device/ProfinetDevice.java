@@ -22,15 +22,20 @@ package org.apache.plc4x.java.profinet.device;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
+import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
 import org.apache.plc4x.java.profinet.gsdml.*;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.messages.DefaultPlcBrowseItem;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
+import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -166,6 +171,18 @@ public class ProfinetDevice {
             inputIoDataOffsetCount += 1;
             outputIoCsOffsetCount += 1;
         }
+        deviceContext.getExpectedSubmoduleReq().add(
+            new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
+                Collections.singletonList(
+                    new PnIoCm_ExpectedSubmoduleBlockReqApi(0,
+                        0x00000001,
+                        0x00000000,
+                        deviceContext.getExpectedSubModuleApiBlocks()
+                    )
+                )
+            )
+        );
+
         int slot = 1;
         for (String submodule : deviceContext.getSubModules()) {
             ProfinetModuleItem foundModule = null;
@@ -222,6 +239,7 @@ public class ProfinetDevice {
                     outputIoCsOffsetCount));
                 outputIoCsOffsetCount += 1 + foundModule.getOutputDataLength();
             }
+
             if (foundModule.getInputDataLength() != 0 && foundModule.getOutputDataLength() != 0) {
                 deviceContext.getExpectedSubmoduleReq().add(new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
                     Collections.singletonList(
@@ -338,7 +356,39 @@ public class ProfinetDevice {
 
     public List<PlcBrowseItem> getChildTags() {
         List<PlcBrowseItem> children = new ArrayList<>();
+        for (PnIoCm_Block_ExpectedSubmoduleReq ioData : deviceContext.getExpectedSubmoduleReq()) {
+            for (PnIoCm_ExpectedSubmoduleBlockReqApi module : ioData.getApis()) {
+                // Add Module to list of Children
+                ProfinetDeviceAccessPointItem deviceAccessPoint = findDeviceAccessPoint(module.getModuleIdentNumber());
+                if (deviceAccessPoint != null) {
+                    List<PlcBrowseItem> childChildren = getDeviceChildren(deviceAccessPoint);
+
+                    // Populate a map of protocol-dependent options.
+                    Map<String, PlcValue> options = new HashMap<>();
+                    options.put("name", new PlcSTRING(deviceAccessPoint.getModuleInfo().getName().getTextId()));
+                    options.put("infotext", new PlcSTRING(deviceAccessPoint.getModuleInfo().getInfoText().getTextId()));
+                    String childName = deviceContext.getDeviceName() + "." + deviceAccessPoint.getModuleInfo().getName().getTextId();
+                    children.add(new DefaultPlcBrowseItem(childName, childName, PlcValueType.Struct, false, false, true, childChildren, options));
+                }
+            }
+        }
         return children;
+    }
+
+    public List<PlcBrowseItem> getDeviceChildren(ProfinetDeviceAccessPointItem module) {
+        List<PlcBrowseItem> children = new ArrayList<>();
+        return children;
+    }
+
+    private ProfinetDeviceAccessPointItem findDeviceAccessPoint(long moduleIdentNumber) {
+        boolean foundModule = false;
+        for (ProfinetDeviceAccessPointItem gsdModule : deviceContext.getGsdFile().getProfileBody().getApplicationProcess().getDeviceAccessPointList()) {
+            int moduleIdent = Integer.decode(gsdModule.getModuleIdentNumber());
+            if (moduleIdentNumber == moduleIdent) {
+                return gsdModule;
+            }
+        }
+        return null;
     }
 
     private int generateSessionKey() {
@@ -565,17 +615,6 @@ public class ProfinetDevice {
             ));
 
             blocks.add(deviceContext.getOutputReq());
-
-            blocks.add(
-                new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
-                    Collections.singletonList(
-                        new PnIoCm_ExpectedSubmoduleBlockReqApi(0,
-                            0x00000001,
-                            0x00000000,
-                            deviceContext.getExpectedSubModuleApiBlocks()
-                        )
-                    )
-                ));
 
             for (PnIoCm_Block_ExpectedSubmoduleReq expectedSubModuleApiBlocksReq : deviceContext.getExpectedSubmoduleReq()) {
                 blocks.add(expectedSubModuleApiBlocksReq);
