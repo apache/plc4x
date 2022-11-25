@@ -72,6 +72,20 @@ func (m PlcDATE) GetRaw() []byte {
 	return theBytes
 }
 
+func (m PlcDATE) GetSecondsSinceEpoch() uint32 {
+	return uint32(m.value.Unix())
+}
+
+func (m PlcDATE) GetDaysSinceEpoch() uint16 {
+	// Seconds to days
+	return uint16(m.value.Unix() / 86400)
+}
+
+func (m PlcDATE) GetDaysSinceSiemensEpoch() uint16 {
+	// Seconds to days to 1990-01-01
+	return uint16((m.value.Unix() / 86400) - 7305)
+}
+
 func (m PlcDATE) IsDate() bool {
 	return true
 }

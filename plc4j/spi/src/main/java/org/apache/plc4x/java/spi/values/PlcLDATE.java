@@ -27,6 +27,7 @@ import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.*;
 
@@ -43,10 +44,10 @@ public class PlcLDATE extends PlcSimpleValue<LocalDate> {
         throw new PlcRuntimeException("Invalid value type");
     }
 
-    public static PlcLDATE ofNanosecondsSinceEpoch(long nanosecondsSinceEpoch) {
-        long epochSecond = nanosecondsSinceEpoch / 1000000;
-        int nanoOfSecond = (int) (nanosecondsSinceEpoch % 1000000);
-        return new PlcLDATE(LocalDateTime.ofEpochSecond(epochSecond, nanoOfSecond,
+    public static PlcLDATE ofNanosecondsSinceEpoch(BigInteger nanosecondsSinceEpoch) {
+        BigInteger epochSecond = nanosecondsSinceEpoch.divide(BigInteger.valueOf(1000_000));
+        BigInteger nanoOfSecond = nanosecondsSinceEpoch.mod(BigInteger.valueOf(1000_000));
+        return new PlcLDATE(LocalDateTime.ofEpochSecond(epochSecond.longValue(), nanoOfSecond.intValue(),
             ZoneOffset.of(ZoneOffset.systemDefault().getId())).toLocalDate());
     }
 
@@ -56,15 +57,20 @@ public class PlcLDATE extends PlcSimpleValue<LocalDate> {
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcLDATE(@JsonProperty("value") long nanosecondsSinceEpoch) {
-        super(LocalDateTime.ofEpochSecond(nanosecondsSinceEpoch / 1000000,
-            (int) (nanosecondsSinceEpoch % 1000000),
+    public PlcLDATE(@JsonProperty("value") BigInteger nanosecondsSinceEpoch) {
+        super(LocalDateTime.ofEpochSecond(nanosecondsSinceEpoch.longValue() / 1000000,
+            (int) (nanosecondsSinceEpoch.longValue() % 1000000),
             ZoneOffset.of(ZoneOffset.systemDefault().getId())).toLocalDate(), true);
     }
 
     @Override
     public PlcValueType getPlcValueType() {
         return PlcValueType.DATE;
+    }
+
+    public BigInteger getNanosecondsSinceEpoch() {
+        Instant instant = getDateTime().toInstant(ZoneOffset.of(ZoneOffset.systemDefault().getId()));
+        return BigInteger.valueOf(instant.getEpochSecond()).multiply(BigInteger.valueOf(1000_000_000)).add(BigInteger.valueOf(instant.getNano()));
     }
 
     @Override

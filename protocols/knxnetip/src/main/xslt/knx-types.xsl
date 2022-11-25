@@ -200,7 +200,7 @@
         ['DATE' DATE
             [reserved uint 8    '0x00'           ]
             // TODO: Check if this is correct ...
-            [simple   uint 16   secondsSinceEpoch]
+            [simple   uint 32   secondsSinceEpoch]
         ]
         ['TIME_OF_DAY' TIME_OF_DAY
             [reserved uint 8    '0x00'                   ]

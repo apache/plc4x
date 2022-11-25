@@ -284,25 +284,25 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
 
     } else         if(strcmp(dataProtocolId, "IEC61131_TIME_OF_DAY") == 0) { /* TIME_OF_DAY */
 
-                // Simple Field (milliseconds)
-                uint32_t milliseconds = 0;
-                _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) &milliseconds);
+                // Simple Field (millisecondsSinceMidnight)
+                uint32_t millisecondsSinceMidnight = 0;
+                _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) &millisecondsSinceMidnight);
                 if(_res != OK) {
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_time_of_day_data(milliseconds);
+                *data_item = plc4c_data_create_time_of_day_data(millisecondsSinceMidnight);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_LTIME_OF_DAY") == 0) { /* LTIME_OF_DAY */
 
-                // Simple Field (nanoseconds)
-                uint64_t nanoseconds = 0;
-                _res = plc4c_spi_read_unsigned_long(readBuffer, 64, (uint64_t*) &nanoseconds);
+                // Simple Field (nanosecondsSinceMidnight)
+                uint64_t nanosecondsSinceMidnight = 0;
+                _res = plc4c_spi_read_unsigned_long(readBuffer, 64, (uint64_t*) &nanosecondsSinceMidnight);
                 if(_res != OK) {
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_ltime_of_day_data(nanoseconds);
+                *data_item = plc4c_data_create_ltime_of_day_data(nanosecondsSinceMidnight);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_DATE_AND_TIME") == 0) { /* DATE_AND_TIME */
 
@@ -542,14 +542,14 @@ plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4c_spi_write_buffer
                     }
         } else         if(strcmp(dataProtocolId, "IEC61131_TIME_OF_DAY") == 0) { /* TIME_OF_DAY */
 
-                    // Simple field (milliseconds)
+                    // Simple field (millisecondsSinceMidnight)
                     _res = plc4c_spi_write_unsigned_int(writeBuffer, 32, (*data_item)->data.time_of_day_value);
                     if(_res != OK) {
                         return _res;
                     }
         } else         if(strcmp(dataProtocolId, "IEC61131_LTIME_OF_DAY") == 0) { /* LTIME_OF_DAY */
 
-                    // Simple field (nanoseconds)
+                    // Simple field (nanosecondsSinceMidnight)
                     _res = plc4c_spi_write_unsigned_long(writeBuffer, 64, (*data_item)->data.ltime_of_day_value);
                     if(_res != OK) {
                         return _res;
@@ -712,11 +712,11 @@ uint16_t plc4c_s7_read_write_data_item_length_in_bits(plc4c_data* data_item, cha
         lengthInBits += 16;
     } else     if(strcmp(dataProtocolId, "IEC61131_TIME_OF_DAY") == 0) { /* TIME_OF_DAY */
 
-        // Simple field (milliseconds)
+        // Simple field (millisecondsSinceMidnight)
         lengthInBits += 32;
     } else     if(strcmp(dataProtocolId, "IEC61131_LTIME_OF_DAY") == 0) { /* LTIME_OF_DAY */
 
-        // Simple field (nanoseconds)
+        // Simple field (nanosecondsSinceMidnight)
         lengthInBits += 64;
     } else     if(strcmp(dataProtocolId, "IEC61131_DATE_AND_TIME") == 0) { /* DATE_AND_TIME */
 

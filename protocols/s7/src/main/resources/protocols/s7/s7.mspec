@@ -639,11 +639,11 @@
         //]
         // - Time: Interpreted as "milliseconds since midnight (0:00)"
         ['"IEC61131_TIME_OF_DAY"' TIME_OF_DAY
-            [simple uint 32 milliseconds]
+            [simple uint 32 millisecondsSinceMidnight]
         ]
         // - Time: Interpreted as "nanoseconds since midnight (0:00)"
         ['"IEC61131_LTIME_OF_DAY"' LTIME_OF_DAY
-            [simple uint 64 nanoseconds]
+            [simple uint 64 nanosecondsSinceMidnight]
         ]
         // - Date & Time: interpreted as individual components.
         ['"IEC61131_DATE_AND_TIME"' DATE_AND_TIME

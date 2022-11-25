@@ -405,54 +405,77 @@ public class ${type.name} {
             }
                         </#if>
 
-                    <#if case.name == "BOOL">
+                        <#if case.name == "BOOL">
             while (writeBuffer.getPos() < writeBuffer.getData().length) {
                 writeBuffer.writeBit(false);
             }
-                    </#if>
-                    <#break>
+                        </#if>
+                        <#break>
                     <#case "const">
                         <#assign constField=field.asConstField().orElseThrow()>
             // Const Field (${constField.name})
             ${helper.getWriteBufferWriteMethodCall(constField.type.asSimpleTypeReference().orElseThrow(), constField.referenceValue, constField)};
-                    <#break>
+                        <#break>
                     <#case "enum">
                         <#assign enumField=field.asEnumField().orElseThrow()>
             // Enum field (${enumField.name})
             ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${enumField.name?cap_first}();
             ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(field.asTypedField().orElseThrow().type), "(" + enumField.name + ".getValue())", enumField)};
-                    <#break>
+                        <#break>
                     <#case "manual">
                         <#assign manualField=field.asManualField().orElseThrow()>
             // Manual Field (${manualField.name})
             ${helper.toSerializationExpression(manualField, manualField.type, manualField.serializeExpression, type.parserArguments.orElse(null))};
-                    <#break>
+                        <#break>
                     <#case "reserved">
                         <#assign reservedField=field.asReservedField().orElseThrow()>
             // Reserved Field
             ${helper.getWriteBufferWriteMethodCall(reservedField.type.asSimpleTypeReference().orElseThrow(), helper.getReservedValue(reservedField), reservedField)};
-                    <#break>
+                        <#break>
                     <#case "simple">
                         <#assign simpleField=field.asSimpleField().orElseThrow()>
             // Simple Field (${simpleField.name})
                         <#if case.name == "Struct">
             ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.getStruct().get("${simpleField.name}").get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
-                        <#else>
-                            <#if simpleField.name == "value">
+                        <#elseif simpleField.name == "value">
             ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
-                            <#elseif simpleField.name == "secondsSinceEpoch">
+                        <#elseif simpleField.name == "secondsSinceEpoch">
             ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
-                            <#else>
-                                <#-- Just for now -->
-            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = ${helper.getNullValueForTypeReference(simpleField.type)};
-                            </#if>
+                        <#elseif simpleField.name == "daysSinceEpoch">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "daysSinceSiemensEpoch">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "year">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "month">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "day">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "dayOfWeek">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "hour">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "minutes">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "seconds">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "milliseconds">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "millisecondsSinceMidnight">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "nanoseconds">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "nanosecondsSinceMidnight">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "nanosecondsSinceEpoch">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
                         </#if>
                         <#if simpleField.type.isSimpleTypeReference()>
             ${helper.getWriteBufferWriteMethodCall(simpleField.type.asSimpleTypeReference().orElseThrow(), "(" + simpleField.name + ")", simpleField)};
                         <#else>
             ${simpleField.type.asComplexTypeReference().orElseThrow().name}IO.staticSerialize(writeBuffer, ${simpleField.name});
                         </#if>
-                    <#break>
+                        <#break>
                 </#switch>
             </#list>
         }<#sep> else </#sep></#list>

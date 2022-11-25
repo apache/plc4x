@@ -48,6 +48,10 @@ func (m PlcTIME) GetRaw() []byte {
 	return theBytes
 }
 
+func (m PlcTIME) GetMilliseconds() uint32 {
+	return uint32(m.value.Milliseconds())
+}
+
 func (m PlcTIME) IsDuration() bool {
 	return true
 }

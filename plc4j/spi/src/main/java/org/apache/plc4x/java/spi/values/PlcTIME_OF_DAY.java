@@ -43,7 +43,7 @@ public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
     }
 
     public static PlcTIME_OF_DAY ofMillisecondsSinceMidnight(long millisecondsSinceMidnight) {
-        return new PlcTIME_OF_DAY(LocalTime.ofNanoOfDay(millisecondsSinceMidnight * 1000000));
+        return new PlcTIME_OF_DAY(LocalTime.ofNanoOfDay(millisecondsSinceMidnight * 1000_000));
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -53,12 +53,16 @@ public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcTIME_OF_DAY(@JsonProperty("value") long millisecondsSinceMidnight) {
-        super(LocalTime.ofNanoOfDay(millisecondsSinceMidnight * 1000000), true);
+        super(LocalTime.ofNanoOfDay(millisecondsSinceMidnight * 1000_000), true);
     }
 
     @Override
     public PlcValueType getPlcValueType() {
         return PlcValueType.TIME_OF_DAY;
+    }
+
+    public long getMillisecondsSinceMidnight() {
+        return ((long) value.toSecondOfDay() * 1000) + (value.getNano() / 1000_000);
     }
 
     @Override

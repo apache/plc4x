@@ -44,8 +44,8 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
     }
 
     public static PlcDATE_AND_TIME ofSecondsSinceEpoch(long secondsSinceEpoch) {
-        return new PlcDATE_AND_TIME(LocalDateTime.ofInstant(
-            Instant.ofEpochSecond(secondsSinceEpoch), ZoneId.systemDefault()));
+        return new PlcDATE_AND_TIME(LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0,
+            ZoneOffset.UTC));
     }
 
     public static PlcDATE_AND_TIME ofSegments(int year, int month, int day, int hour, int minutes, int seconds, int nanoseconds) {
@@ -59,8 +59,8 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcDATE_AND_TIME(@JsonProperty("value") long secondsSinceEpoch) {
-        super(LocalDateTime.ofInstant(
-            Instant.ofEpochSecond(secondsSinceEpoch), ZoneId.systemDefault()), true);
+        super(LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0,
+            ZoneOffset.UTC), true);
     }
 
     public PlcDATE_AND_TIME(@JsonProperty("year") int year, @JsonProperty("month") int month, @JsonProperty("day") int day, @JsonProperty("hour") int hour, @JsonProperty("minutes") int minutes, @JsonProperty("seconds") int seconds, @JsonProperty("nanoseconds") int nanoseconds) {
@@ -70,6 +70,43 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
     @Override
     public PlcValueType getPlcValueType() {
         return PlcValueType.DATE_AND_TIME;
+    }
+
+    public long getSecondsSinceEpoch() {
+        Instant instant = getDateTime().toInstant(ZoneOffset.of(ZoneOffset.UTC.getId()));
+        return instant.getEpochSecond();
+    }
+
+    public int getYear() {
+        return value.getYear();
+    }
+
+    public int getMonth() {
+        return value.getMonthValue();
+    }
+
+    public int getDay() {
+        return value.getDayOfMonth();
+    }
+
+    public int getDayOfWeek() {
+        return value.getDayOfWeek().getValue();
+    }
+
+    public int getHour() {
+        return value.getHour();
+    }
+
+    public int getMinutes() {
+        return value.getMinute();
+    }
+
+    public int getSeconds() {
+        return value.getSecond();
+    }
+
+    public int getNanoseconds() {
+        return value.getNano();
     }
 
     @Override

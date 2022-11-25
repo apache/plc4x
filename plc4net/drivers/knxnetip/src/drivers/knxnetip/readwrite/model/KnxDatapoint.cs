@@ -311,7 +311,7 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 }
 
                 // Simple Field (secondsSinceEpoch)
-                var secondsSinceEpoch = readBuffer.ReadUshort("", 16);
+                var secondsSinceEpoch = readBuffer.ReadUint("", 32);
 
             } else if( datapointType == KnxDatapointType.TIME_OF_DAY ) { // TIME_OF_DAY
 
@@ -6704,8 +6704,8 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Reserved Field
                 writeBuffer.WriteByte("", 8, (byte) 0x00);
                 // Simple Field (secondsSinceEpoch)
-                var secondsSinceEpoch = (ushort) _value.GetUshort();
-                writeBuffer.WriteUshort("", 16, (ushort) (secondsSinceEpoch));
+                var secondsSinceEpoch = (uint) _value.GetUint();
+                writeBuffer.WriteUint("", 32, (uint) (secondsSinceEpoch));
             return writeBuffer;
         } else if( datapointType == KnxDatapointType.TIME_OF_DAY ) { // TIME_OF_DAY
                 var writeBuffer = new WriteBuffer();

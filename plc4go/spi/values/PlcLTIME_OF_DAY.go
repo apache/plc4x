@@ -55,13 +55,18 @@ func NewPlcLTIME_OF_DAY(value interface{}) PlcLTIME_OF_DAY {
 	}
 }
 
-func NewPlcLTIME_OF_DAYFromNanosecondsSinceMidnight(nanosecondsSinceMidnight uint32) PlcLTIME_OF_DAY {
+func NewPlcLTIME_OF_DAYFromNanosecondsSinceMidnight(nanosecondsSinceMidnight uint64) PlcLTIME_OF_DAY {
 	return NewPlcLTIME_OF_DAY(nanosecondsSinceMidnight)
 }
 
 func (m PlcLTIME_OF_DAY) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes
+}
+
+func (m PlcLTIME_OF_DAY) GetNanosecondsSinceMidnight() uint64 {
+	midnight := time.Date(0, 0, 0, 0, 0, 0, 0, m.value.Location())
+	return uint64(m.value.UnixNano() - midnight.UnixNano())
 }
 
 func (m PlcLTIME_OF_DAY) IsTime() bool {

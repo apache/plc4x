@@ -59,6 +59,10 @@ func (m PlcLDATE_AND_TIME) GetRaw() []byte {
 	return theBytes
 }
 
+func (m PlcLDATE_AND_TIME) GetNanosecondsSinceEpoch() uint64 {
+	return uint64(m.value.UnixNano())
+}
+
 func (m PlcLDATE_AND_TIME) IsDate() bool {
 	return true
 }

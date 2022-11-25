@@ -289,7 +289,7 @@ func KnxDatapointParseWithBuffer(readBuffer utils.ReadBuffer, datapointType KnxD
 		}
 
 		// Simple Field (secondsSinceEpoch)
-		secondsSinceEpoch, _secondsSinceEpochErr := readBuffer.ReadUint16("secondsSinceEpoch", 16)
+		secondsSinceEpoch, _secondsSinceEpochErr := readBuffer.ReadUint32("secondsSinceEpoch", 32)
 		if _secondsSinceEpochErr != nil {
 			return nil, errors.Wrap(_secondsSinceEpochErr, "Error parsing 'secondsSinceEpoch' field")
 		}
@@ -7755,7 +7755,7 @@ func KnxDatapointSerializeWithWriteBuffer(writeBuffer utils.WriteBuffer, value a
 		}
 
 		// Simple Field (milliseconds)
-		if _err := writeBuffer.WriteUint32("milliseconds", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("milliseconds", 32, value.(values.PlcTIME).GetMilliseconds()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'milliseconds' field")
 		}
 	case datapointType == KnxDatapointType_LTIME: // LTIME
@@ -7765,7 +7765,7 @@ func KnxDatapointSerializeWithWriteBuffer(writeBuffer utils.WriteBuffer, value a
 		}
 
 		// Simple Field (nanoseconds)
-		if _err := writeBuffer.WriteUint64("nanoseconds", 64, value.GetUint64()); _err != nil {
+		if _err := writeBuffer.WriteUint64("nanoseconds", 64, value.(values.PlcLTIME).GetNanoseconds()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanoseconds' field")
 		}
 	case datapointType == KnxDatapointType_DATE: // DATE
@@ -7775,7 +7775,7 @@ func KnxDatapointSerializeWithWriteBuffer(writeBuffer utils.WriteBuffer, value a
 		}
 
 		// Simple Field (secondsSinceEpoch)
-		if _err := writeBuffer.WriteUint16("secondsSinceEpoch", 16, value.GetUint16()); _err != nil {
+		if _err := writeBuffer.WriteUint32("secondsSinceEpoch", 32, value.(values.PlcDATE).GetSecondsSinceEpoch()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'secondsSinceEpoch' field")
 		}
 	case datapointType == KnxDatapointType_TIME_OF_DAY: // TIME_OF_DAY
@@ -7785,7 +7785,7 @@ func KnxDatapointSerializeWithWriteBuffer(writeBuffer utils.WriteBuffer, value a
 		}
 
 		// Simple Field (millisecondsSinceMidnight)
-		if _err := writeBuffer.WriteUint32("millisecondsSinceMidnight", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("millisecondsSinceMidnight", 32, value.(values.PlcTIME_OF_DAY).GetMillisecondsSinceMidnight()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'millisecondsSinceMidnight' field")
 		}
 	case datapointType == KnxDatapointType_TOD: // TIME_OF_DAY
@@ -7795,7 +7795,7 @@ func KnxDatapointSerializeWithWriteBuffer(writeBuffer utils.WriteBuffer, value a
 		}
 
 		// Simple Field (millisecondsSinceMidnight)
-		if _err := writeBuffer.WriteUint32("millisecondsSinceMidnight", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("millisecondsSinceMidnight", 32, value.(values.PlcTIME_OF_DAY).GetMillisecondsSinceMidnight()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'millisecondsSinceMidnight' field")
 		}
 	case datapointType == KnxDatapointType_DATE_AND_TIME: // DATE_AND_TIME
@@ -7805,42 +7805,42 @@ func KnxDatapointSerializeWithWriteBuffer(writeBuffer utils.WriteBuffer, value a
 		}
 
 		// Simple Field (year)
-		if _err := writeBuffer.WriteUint16("year", 16, value.GetUint16()); _err != nil {
+		if _err := writeBuffer.WriteUint16("year", 16, value.(values.PlcDATE_AND_TIME).GetYear()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
 		}
 
 		// Simple Field (month)
-		if _err := writeBuffer.WriteUint8("month", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("month", 8, value.(values.PlcDATE_AND_TIME).GetMonth()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'month' field")
 		}
 
 		// Simple Field (day)
-		if _err := writeBuffer.WriteUint8("day", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("day", 8, value.(values.PlcDATE_AND_TIME).GetDay()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'day' field")
 		}
 
 		// Simple Field (dayOfWeek)
-		if _err := writeBuffer.WriteUint8("dayOfWeek", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("dayOfWeek", 8, value.(values.PlcDATE_AND_TIME).GetDayOfWeek()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dayOfWeek' field")
 		}
 
 		// Simple Field (hour)
-		if _err := writeBuffer.WriteUint8("hour", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("hour", 8, value.(values.PlcDATE_AND_TIME).GetHour()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hour' field")
 		}
 
 		// Simple Field (minutes)
-		if _err := writeBuffer.WriteUint8("minutes", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("minutes", 8, value.(values.PlcDATE_AND_TIME).GetMinutes()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'minutes' field")
 		}
 
 		// Simple Field (seconds)
-		if _err := writeBuffer.WriteUint8("seconds", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("seconds", 8, value.(values.PlcDATE_AND_TIME).GetSeconds()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 
 		// Simple Field (nanoseconds)
-		if _err := writeBuffer.WriteUint32("nanoseconds", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("nanoseconds", 32, value.(values.PlcDATE_AND_TIME).GetNanoseconds()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanoseconds' field")
 		}
 	case datapointType == KnxDatapointType_DT: // DATE_AND_TIME
@@ -7850,42 +7850,42 @@ func KnxDatapointSerializeWithWriteBuffer(writeBuffer utils.WriteBuffer, value a
 		}
 
 		// Simple Field (year)
-		if _err := writeBuffer.WriteUint16("year", 16, value.GetUint16()); _err != nil {
+		if _err := writeBuffer.WriteUint16("year", 16, value.(values.PlcDATE_AND_TIME).GetYear()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
 		}
 
 		// Simple Field (month)
-		if _err := writeBuffer.WriteUint8("month", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("month", 8, value.(values.PlcDATE_AND_TIME).GetMonth()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'month' field")
 		}
 
 		// Simple Field (day)
-		if _err := writeBuffer.WriteUint8("day", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("day", 8, value.(values.PlcDATE_AND_TIME).GetDay()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'day' field")
 		}
 
 		// Simple Field (dayOfWeek)
-		if _err := writeBuffer.WriteUint8("dayOfWeek", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("dayOfWeek", 8, value.(values.PlcDATE_AND_TIME).GetDayOfWeek()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dayOfWeek' field")
 		}
 
 		// Simple Field (hour)
-		if _err := writeBuffer.WriteUint8("hour", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("hour", 8, value.(values.PlcDATE_AND_TIME).GetHour()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hour' field")
 		}
 
 		// Simple Field (minutes)
-		if _err := writeBuffer.WriteUint8("minutes", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("minutes", 8, value.(values.PlcDATE_AND_TIME).GetMinutes()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'minutes' field")
 		}
 
 		// Simple Field (seconds)
-		if _err := writeBuffer.WriteUint8("seconds", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("seconds", 8, value.(values.PlcDATE_AND_TIME).GetSeconds()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 
 		// Simple Field (nanoseconds)
-		if _err := writeBuffer.WriteUint32("nanoseconds", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("nanoseconds", 32, value.(values.PlcDATE_AND_TIME).GetNanoseconds()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanoseconds' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Switch: // BOOL

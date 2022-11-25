@@ -63,6 +63,10 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
         return PlcValueType.TIME;
     }
 
+    public long getMilliseconds() {
+        return value.toMillis();
+    }
+
     @Override
     public boolean isInteger() {
         return true;

@@ -271,8 +271,8 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4c_spi_read_buffer
     } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_LDATE) { /* LDATE */
 
                 // Simple Field (nanosecondsSinceEpoch)
-                uint32_t nanosecondsSinceEpoch = 0;
-                _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) &nanosecondsSinceEpoch);
+                uint64_t nanosecondsSinceEpoch = 0;
+                _res = plc4c_spi_read_unsigned_long(readBuffer, 64, (uint64_t*) &nanosecondsSinceEpoch);
                 if(_res != OK) {
                     return _res;
                 }
@@ -315,8 +315,8 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4c_spi_read_buffer
     } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_LDATE_AND_TIME) { /* LDATE_AND_TIME */
 
                 // Simple Field (nanosecondsSinceEpoch)
-                uint32_t nanosecondsSinceEpoch = 0;
-                _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) &nanosecondsSinceEpoch);
+                uint64_t nanosecondsSinceEpoch = 0;
+                _res = plc4c_spi_read_unsigned_long(readBuffer, 64, (uint64_t*) &nanosecondsSinceEpoch);
                 if(_res != OK) {
                     return _res;
                 }
@@ -476,7 +476,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_serialize(plc4c_spi_write_b
         } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_LDATE) { /* LDATE */
 
                     // Simple field (nanosecondsSinceEpoch)
-                    _res = plc4c_spi_write_unsigned_int(writeBuffer, 32, (*data_item)->data.ldate_value);
+                    _res = plc4c_spi_write_unsigned_long(writeBuffer, 64, (*data_item)->data.ldate_value);
                     if(_res != OK) {
                         return _res;
                     }
@@ -504,7 +504,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_serialize(plc4c_spi_write_b
         } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_LDATE_AND_TIME) { /* LDATE_AND_TIME */
 
                     // Simple field (nanosecondsSinceEpoch)
-                    _res = plc4c_spi_write_unsigned_int(writeBuffer, 32, (*data_item)->data.ldate_and_time_value);
+                    _res = plc4c_spi_write_unsigned_long(writeBuffer, 64, (*data_item)->data.ldate_and_time_value);
                     if(_res != OK) {
                         return _res;
                     }
@@ -605,7 +605,7 @@ uint16_t plc4c_plc4x_read_write_plc4x_value_length_in_bits(plc4c_data* data_item
     } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_LDATE) { /* LDATE */
 
         // Simple field (nanosecondsSinceEpoch)
-        lengthInBits += 32;
+        lengthInBits += 64;
     } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_TIME_OF_DAY) { /* TIME_OF_DAY */
 
         // Simple field (millisecondsSinceMidnight)
@@ -621,7 +621,7 @@ uint16_t plc4c_plc4x_read_write_plc4x_value_length_in_bits(plc4c_data* data_item
     } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_LDATE_AND_TIME) { /* LDATE_AND_TIME */
 
         // Simple field (nanosecondsSinceEpoch)
-        lengthInBits += 32;
+        lengthInBits += 64;
     } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_Struct) { /* Struct */
     }
   return lengthInBits;

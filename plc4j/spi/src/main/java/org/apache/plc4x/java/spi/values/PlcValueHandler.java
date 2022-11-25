@@ -121,6 +121,10 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
         if (values.length == 1) {
             Object value = values[0];
             if(tag.getPlcValueType() == null) {
+                // TODO: This is a hacky shortcut ..
+                if(value instanceof PlcValue) {
+                    return (PlcValue) value;
+                }
                 return new PlcNull();
             }
             switch (tag.getPlcValueType()) {

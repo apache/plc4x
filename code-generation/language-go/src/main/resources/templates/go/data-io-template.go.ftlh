@@ -326,9 +326,15 @@ func ${type.name}SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer, value a
 					<#assign simpleField = field.asSimpleField().orElseThrow()>
 
 			// Simple Field (${simpleField.name})
+					<#if (case.name == "TIME") || (case.name == "LTIME") || (case.name == "DATE") || (case.name == "LDATE") || (case.name == "TIME_OF_DAY") || (case.name == "LTIME_OF_DAY") || (case.name == "DATE_AND_TIME") || (case.name == "LDATE_AND_TIME")>
+			if _err := ${helper.getWriteBufferWriteMethodCall(simpleField.name, simpleField.type.asSimpleTypeReference().orElseThrow(), "value.(values.Plc${case.name}).Get${simpleField.name?cap_first}()", simpleField)}; _err != nil {
+				return errors.Wrap(_err, "Error serializing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
+			}
+					<#else>
 			if _err := <#if simpleField.type.isSimpleTypeReference()>${helper.getWriteBufferWriteMethodCall(simpleField.name, simpleField.type.asSimpleTypeReference().orElseThrow(), "value.Get" + helper.getLanguageTypeNameForTypeReference(simpleField.type)?cap_first + "()", simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}Serialize(io, <#if simpleField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}) (${helper.toParseExpression(simpleField, helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>; _err != nil {
 				return errors.Wrap(_err, "Error serializing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			}
+					</#if>
 					<#break>
 			</#switch>
 		</#list>

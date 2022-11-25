@@ -48,6 +48,10 @@ func (m PlcLTIME) GetRaw() []byte {
 	return theBytes
 }
 
+func (m PlcLTIME) GetNanoseconds() uint64 {
+	return uint64(m.value.Nanoseconds())
+}
+
 func (m PlcLTIME) IsDuration() bool {
 	return true
 }

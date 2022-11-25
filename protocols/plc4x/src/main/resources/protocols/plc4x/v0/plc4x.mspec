@@ -195,7 +195,7 @@
             [simple uint 32 secondsSinceEpoch]
         ]
         ['LDATE'          LDATE
-            [simple uint 32 nanosecondsSinceEpoch]
+            [simple uint 64 nanosecondsSinceEpoch]
         ]
         ['TIME_OF_DAY'    TIME_OF_DAY
             [simple uint 32 millisecondsSinceMidnight]
@@ -207,7 +207,7 @@
             [simple uint 32 secondsSinceEpoch]
         ]
         ['LDATE_AND_TIME' LDATE_AND_TIME
-            [simple uint 32 nanosecondsSinceEpoch]
+            [simple uint 64 nanosecondsSinceEpoch]
         ]
 
         // Derived Types

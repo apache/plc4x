@@ -30,8 +30,6 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
@@ -77,6 +75,10 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
     @Override
     public PlcValueType getPlcValueType() {
         return PlcValueType.LTIME;
+    }
+
+    public long getNanoseconds() {
+        return value.toNanos();
     }
 
     @Override

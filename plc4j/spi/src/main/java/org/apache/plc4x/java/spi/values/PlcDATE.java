@@ -68,12 +68,14 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcDATE(@JsonProperty("value") int daysSinceEpoch) {
+        // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         super(LocalDateTime.ofInstant(
             Instant.ofEpochSecond(((long) daysSinceEpoch) * 86400), ZoneId.systemDefault()).toLocalDate(), true);
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcDATE(@JsonProperty("value") long secondsSinceEpoch) {
+        // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         super(LocalDateTime.ofInstant(
             Instant.ofEpochSecond(secondsSinceEpoch), ZoneId.systemDefault()).toLocalDate(), true);
     }
@@ -81,6 +83,18 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
     @Override
     public PlcValueType getPlcValueType() {
         return PlcValueType.DATE;
+    }
+
+    public long getSecondsSinceEpoch() {
+        return value.atStartOfDay(ZoneId.systemDefault()).toEpochSecond();
+    }
+
+    public int getDaysSinceEpoch() {
+        return (int) (value.atStartOfDay(ZoneId.systemDefault()).toEpochSecond() / 86400);
+    }
+
+    public int getDaysSinceSiemensEpoch() {
+        return ((int) (value.atStartOfDay(ZoneId.systemDefault()).toEpochSecond() / 86400)) - 7305;
     }
 
     @Override

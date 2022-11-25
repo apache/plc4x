@@ -65,6 +65,11 @@ func (m PlcTIME_OF_DAY) GetRaw() []byte {
 	return theBytes
 }
 
+func (m PlcTIME_OF_DAY) GetMillisecondsSinceMidnight() uint32 {
+	midnight := time.Date(0, 0, 0, 0, 0, 0, 0, m.value.Location())
+	return uint32(m.value.UnixMilli() - midnight.UnixMilli())
+}
+
 func (m PlcTIME_OF_DAY) IsTime() bool {
 	return true
 }

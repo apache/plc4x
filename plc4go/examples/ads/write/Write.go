@@ -20,6 +20,8 @@
 package main
 
 import (
+	"time"
+
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
 	values2 "github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -32,6 +34,12 @@ func main() {
 	drivers.RegisterAdsDriver(driverManager)
 	connectionChan := driverManager.GetConnection("ads:tcp://192.168.23.20?sourceAmsNetId=192.168.23.200.1.1&sourceAmsPort=65534&targetAmsNetId=192.168.23.20.1.1&targetAmsPort=851")
 	connection := <-connectionChan
+
+	duration, _ := time.ParseDuration("1.234S")
+	lduration, _ := time.ParseDuration("24015H23M12.034002044S")
+	date, _ := time.Parse("2014-11-12", "1978-03-28")
+	timeOfDay, _ := time.Parse("11:45:26.371Z", "15:36:30.123")
+	dateAndTime, _ := time.Parse("2014-11-12T11:45:26.371Z", "1996-05-06T15:36:30")
 
 	// Prepare the data structure for a custom type.
 	children := map[string]values2.PlcValue{}
@@ -52,12 +60,11 @@ func main() {
 	children["hurz_LREAL"] = values.NewPlcLREAL(14.0)
 	children["hurz_STRING"] = values.NewPlcSTRING("hurz")
 	children["hurz_WSTRING"] = values.NewPlcWSTRING("wolf")
-	//children["hurz_TIME"] = values.NewPlcTIME(Duration.parse("PT1.234S"))
-	//children["hurz_LTIME"] = values.NewPlcLTIME(Duration.parse("PT24015H23M12.034002044S"))
-	//children["hurz_DATE"] = values.NewPlcDATE(LocalDate.parse("1978-03-28"))
-	//children["hurz_TIME_OF_DAY"] = values.NewPlcTIME_OF_DAY(LocalTime.parse("15:36:30.123"))
-	//children["hurz_DATE_AND_TIME"] = values.NewPlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30"))
-
+	children["hurz_TIME"] = values.NewPlcTIME(duration)
+	children["hurz_LTIME"] = values.NewPlcLTIME(lduration)
+	children["hurz_DATE"] = values.NewPlcDATE(date)
+	children["hurz_TIME_OF_DAY"] = values.NewPlcTIME_OF_DAY(timeOfDay)
+	children["hurz_DATE_AND_TIME"] = values.NewPlcDATE_AND_TIME(dateAndTime)
 	writeRequest, err := connection.GetConnection().WriteRequestBuilder().
 		AddTagAddress("value-bool", "MAIN.hurz_BOOL", values.NewPlcBOOL(true)).                   // 1
 		AddTagAddress("value-byte", "MAIN.hurz_BYTE", values.NewPlcBYTE(42)).                     // 1
@@ -76,12 +83,12 @@ func main() {
 		AddTagAddress("value-lreal", "MAIN.hurz_LREAL", values.NewPlcLREAL(2.71828182846)).       // 8
 		AddTagAddress("value-string", "MAIN.hurz_STRING", values.NewPlcSTRING("hurz")).           // 4
 		AddTagAddress("value-wstring", "MAIN.hurz_WSTRING", values.NewPlcWSTRING("wolf")).        // 8
-		/*AddTagAddress("value-time", "MAIN.hurz_TIME")).
-		AddTagAddress("value-ltime", "MAIN.hurz_LTIME")).
-		AddTagAddress("value.date", "MAIN.hurz_DATE")).
-		AddTagAddress("value-time-of-day", "MAIN.hurz_TIME_OF_DAY")).
-		AddTagAddress("value-date-and-time", "MAIN.hurz_DATE_AND_TIME")).*/
-		AddTagAddress("value-struct", "MAIN.hurz_Struct", values.NewPlcStruct(children)).
+		AddTagAddress("value-time", "MAIN.hurz_TIME", values.NewPlcTIME(duration)).
+		AddTagAddress("value-ltime", "MAIN.hurz_LTIME", values.NewPlcLTIME(lduration)).
+		AddTagAddress("value.date", "MAIN.hurz_DATE", values.NewPlcDATE(date)).
+		AddTagAddress("value-time-of-day", "MAIN.hurz_TIME_OF_DAY", values.NewPlcTIME_OF_DAY(timeOfDay)).
+		AddTagAddress("value-date-and-time", "MAIN.hurz_DATE_AND_TIME", values.NewPlcDATE_AND_TIME(dateAndTime)).
+		//AddTagAddress("value-struct", "MAIN.hurz_Struct", values.NewPlcStruct(children)).
 		Build()
 	if err != nil {
 		panic(err)

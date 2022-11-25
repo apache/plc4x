@@ -228,7 +228,7 @@ func DataItemParseWithBuffer(readBuffer utils.ReadBuffer, plcValueType PlcValueT
 		return values.NewPlcDATEFromSecondsSinceEpoch(uint32(secondsSinceEpoch)), nil
 	case plcValueType == PlcValueType_LDATE: // LDATE
 		// Simple Field (nanosecondsSinceEpoch)
-		nanosecondsSinceEpoch, _nanosecondsSinceEpochErr := readBuffer.ReadUint32("nanosecondsSinceEpoch", 32)
+		nanosecondsSinceEpoch, _nanosecondsSinceEpochErr := readBuffer.ReadUint64("nanosecondsSinceEpoch", 64)
 		if _nanosecondsSinceEpochErr != nil {
 			return nil, errors.Wrap(_nanosecondsSinceEpochErr, "Error parsing 'nanosecondsSinceEpoch' field")
 		}
@@ -244,7 +244,7 @@ func DataItemParseWithBuffer(readBuffer utils.ReadBuffer, plcValueType PlcValueT
 		return values.NewPlcTIME_OF_DAYFromMillisecondsSinceMidnight(millisecondsSinceMidnight), nil
 	case plcValueType == PlcValueType_LTIME_OF_DAY: // LTIME_OF_DAY
 		// Simple Field (nanosecondsSinceMidnight)
-		nanosecondsSinceMidnight, _nanosecondsSinceMidnightErr := readBuffer.ReadUint32("nanosecondsSinceMidnight", 32)
+		nanosecondsSinceMidnight, _nanosecondsSinceMidnightErr := readBuffer.ReadUint64("nanosecondsSinceMidnight", 64)
 		if _nanosecondsSinceMidnightErr != nil {
 			return nil, errors.Wrap(_nanosecondsSinceMidnightErr, "Error parsing 'nanosecondsSinceMidnight' field")
 		}
@@ -260,7 +260,7 @@ func DataItemParseWithBuffer(readBuffer utils.ReadBuffer, plcValueType PlcValueT
 		return values.NewPlcDATA_AND_TIMEFromSecondsSinceEpoch(secondsSinceEpoch), nil
 	case plcValueType == PlcValueType_LDATE_AND_TIME: // LDATE_AND_TIME
 		// Simple Field (nanosecondsSinceEpoch)
-		nanosecondsSinceEpoch, _nanosecondsSinceEpochErr := readBuffer.ReadUint32("nanosecondsSinceEpoch", 32)
+		nanosecondsSinceEpoch, _nanosecondsSinceEpochErr := readBuffer.ReadUint64("nanosecondsSinceEpoch", 64)
 		if _nanosecondsSinceEpochErr != nil {
 			return nil, errors.Wrap(_nanosecondsSinceEpochErr, "Error parsing 'nanosecondsSinceEpoch' field")
 		}
@@ -402,42 +402,42 @@ func DataItemSerializeWithWriteBuffer(writeBuffer utils.WriteBuffer, value api.P
 		}
 	case plcValueType == PlcValueType_TIME: // TIME
 		// Simple Field (milliseconds)
-		if _err := writeBuffer.WriteUint32("milliseconds", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("milliseconds", 32, value.(values.PlcTIME).GetMilliseconds()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'milliseconds' field")
 		}
 	case plcValueType == PlcValueType_LTIME: // LTIME
 		// Simple Field (nanoseconds)
-		if _err := writeBuffer.WriteUint64("nanoseconds", 64, value.GetUint64()); _err != nil {
+		if _err := writeBuffer.WriteUint64("nanoseconds", 64, value.(values.PlcLTIME).GetNanoseconds()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanoseconds' field")
 		}
 	case plcValueType == PlcValueType_DATE: // DATE
 		// Simple Field (secondsSinceEpoch)
-		if _err := writeBuffer.WriteUint32("secondsSinceEpoch", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("secondsSinceEpoch", 32, value.(values.PlcDATE).GetSecondsSinceEpoch()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'secondsSinceEpoch' field")
 		}
 	case plcValueType == PlcValueType_LDATE: // LDATE
 		// Simple Field (nanosecondsSinceEpoch)
-		if _err := writeBuffer.WriteUint32("nanosecondsSinceEpoch", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint64("nanosecondsSinceEpoch", 64, value.(values.PlcLDATE).GetNanosecondsSinceEpoch()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanosecondsSinceEpoch' field")
 		}
 	case plcValueType == PlcValueType_TIME_OF_DAY: // TIME_OF_DAY
 		// Simple Field (millisecondsSinceMidnight)
-		if _err := writeBuffer.WriteUint32("millisecondsSinceMidnight", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("millisecondsSinceMidnight", 32, value.(values.PlcTIME_OF_DAY).GetMillisecondsSinceMidnight()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'millisecondsSinceMidnight' field")
 		}
 	case plcValueType == PlcValueType_LTIME_OF_DAY: // LTIME_OF_DAY
 		// Simple Field (nanosecondsSinceMidnight)
-		if _err := writeBuffer.WriteUint32("nanosecondsSinceMidnight", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint64("nanosecondsSinceMidnight", 64, value.(values.PlcLTIME_OF_DAY).GetNanosecondsSinceMidnight()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanosecondsSinceMidnight' field")
 		}
 	case plcValueType == PlcValueType_DATE_AND_TIME: // DATE_AND_TIME
 		// Simple Field (secondsSinceEpoch)
-		if _err := writeBuffer.WriteUint32("secondsSinceEpoch", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("secondsSinceEpoch", 32, value.(values.PlcDATE_AND_TIME).GetSecondsSinceEpoch()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'secondsSinceEpoch' field")
 		}
 	case plcValueType == PlcValueType_LDATE_AND_TIME: // LDATE_AND_TIME
 		// Simple Field (nanosecondsSinceEpoch)
-		if _err := writeBuffer.WriteUint32("nanosecondsSinceEpoch", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint64("nanosecondsSinceEpoch", 64, value.(values.PlcLDATE_AND_TIME).GetNanosecondsSinceEpoch()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanosecondsSinceEpoch' field")
 		}
 	default:

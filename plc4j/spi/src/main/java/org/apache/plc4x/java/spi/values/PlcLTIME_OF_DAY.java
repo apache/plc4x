@@ -29,10 +29,7 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneOffset;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcLTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
@@ -47,10 +44,6 @@ public class PlcLTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
             return new PlcLTIME_OF_DAY(LocalTime.ofSecondOfDay(((BigInteger) value).longValue() / 1000));
         }
         throw new PlcRuntimeException("Invalid value type");
-    }
-
-    public static PlcLTIME_OF_DAY ofNanosecondsSinceMidnight(Long nanosecondsSinceMidnight) {
-        return new PlcLTIME_OF_DAY(LocalTime.ofNanoOfDay(nanosecondsSinceMidnight));
     }
 
     public static PlcLTIME_OF_DAY ofNanosecondsSinceMidnight(BigInteger nanosecondsSinceMidnight) {
@@ -77,6 +70,10 @@ public class PlcLTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
     @Override
     public PlcValueType getPlcValueType() {
         return PlcValueType.TIME_OF_DAY;
+    }
+
+    public BigInteger getNanosecondsSinceMidnight() {
+        return BigInteger.valueOf(value.toSecondOfDay()).multiply(BigInteger.valueOf(1000_000_000)).add(BigInteger.valueOf(value.getNano()));
     }
 
     @Override
