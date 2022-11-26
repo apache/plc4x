@@ -1795,7 +1795,7 @@
                 </goals>
                 <configuration>
                   <sources>
-                    <source>${project.build.directory}/generated-sources/plc4x/</source>
+                    <source>${project.basedir}/src/main/generated/</source>
                   </sources>
                 </configuration>
               </execution>
