@@ -66,6 +66,9 @@ type PlcSubscriptionRequest interface {
 	PlcRequest
 	Execute() <-chan PlcSubscriptionRequestResult
 	ExecuteWithContext(ctx context.Context) <-chan PlcSubscriptionRequestResult
+
+	GetTagNames() []string
+	GetTag(tagName string) PlcTag
 }
 
 type PlcSubscriptionResponse interface {

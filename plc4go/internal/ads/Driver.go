@@ -24,6 +24,7 @@ import (
 	"net/url"
 	"strconv"
 
+	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	adsModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
@@ -71,7 +72,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	codec := NewMessageCodec(transportInstance)
 	log.Debug().Msgf("working with codec %#v", codec)
 
-	configuration, err := ParseFromOptions(options)
+	configuration, err := model.ParseFromOptions(options)
 	if err != nil {
 		log.Error().Err(err).Msgf("Invalid options")
 		ch := make(chan plc4go.PlcConnectionConnectResult)

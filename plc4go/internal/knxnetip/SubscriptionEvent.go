@@ -25,19 +25,19 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
-	internalMode "github.com/apache/plc4x/plc4go/spi/model"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type SubscriptionEvent struct {
-	internalMode.DefaultPlcSubscriptionEvent
+	internalModel.DefaultPlcSubscriptionEvent
 	addresses map[string][]byte
 }
 
-func NewSubscriptionEvent(tags map[string]apiModel.PlcTag, types map[string]internalMode.SubscriptionType,
+func NewSubscriptionEvent(tags map[string]apiModel.PlcTag, types map[string]internalModel.SubscriptionType,
 	intervals map[string]time.Duration, responseCodes map[string]apiModel.PlcResponseCode,
 	addresses map[string][]byte, values map[string]values.PlcValue) SubscriptionEvent {
 	subscriptionEvent := SubscriptionEvent{addresses: addresses}
-	subscriptionEvent.DefaultPlcSubscriptionEvent = internalMode.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values)
+	subscriptionEvent.DefaultPlcSubscriptionEvent = internalModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values)
 	return subscriptionEvent
 }
 

@@ -24,6 +24,7 @@ import (
 	"reflect"
 	"strconv"
 
+	model2 "github.com/apache/plc4x/plc4go/internal/ads/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
@@ -55,17 +56,17 @@ func (t ValueHandler) NewPlcValue(tag model.PlcTag, value interface{}) (apiValue
 
 func (t ValueHandler) parseType(tag model.PlcTag, value interface{}) (apiValues.PlcValue, error) {
 	// Resolve the symbolic tag to a direct tag, that has all the important information.
-	var directTag DirectPlcTag
+	var directTag model2.DirectPlcTag
 	switch tag.(type) {
-	case SymbolicPlcTag:
-		symbolicTag := tag.(SymbolicPlcTag)
+	case model2.SymbolicPlcTag:
+		symbolicTag := tag.(model2.SymbolicPlcTag)
 		directTagPointer, err := t.driverContext.getDirectTagForSymbolTag(symbolicTag)
 		if err != nil {
 			return nil, fmt.Errorf("couldn't resolve address %s to a valid tag on the PLC", symbolicTag.SymbolicAddress)
 		}
 		directTag = *directTagPointer
-	case DirectPlcTag:
-		directTag = tag.(DirectPlcTag)
+	case model2.DirectPlcTag:
+		directTag = tag.(model2.DirectPlcTag)
 	}
 
 	return t.AdsParseType(directTag.DataType, directTag.DataType.GetArrayInfo(), value)

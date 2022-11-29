@@ -23,6 +23,7 @@ import (
 	"context"
 	"strings"
 
+	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	internalModel "github.com/apache/plc4x/plc4go/spi/model"
@@ -113,9 +114,9 @@ func (m *Connection) filterDataTypes(parentName string, currentType driverModel.
 			})
 		}
 		foundTag := &internalModel.DefaultPlcBrowseItem{
-			Tag: SymbolicPlcTag{
-				PlcTag: PlcTag{
-					arrayInfo: arrayInfo,
+			Tag: model.SymbolicPlcTag{
+				PlcTag: model.PlcTag{
+					ArrayInfo: arrayInfo,
 				},
 				SymbolicAddress: parentName,
 			},

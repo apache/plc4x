@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
@@ -66,8 +67,8 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 	// Here we can be sure that we're only handling a single request.
 	tagName := readRequest.GetTagNames()[0]
 	tag := readRequest.GetTag(tagName)
-	if needsResolving(tag) {
-		adsField, err := castToSymbolicPlcTagFromPlcTag(tag)
+	if model.NeedsResolving(tag) {
+		adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
 		if err != nil {
 			result <- &internalModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
@@ -89,7 +90,7 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 			return
 		}
 	}
-	directAdsTag, ok := tag.(*DirectPlcTag)
+	directAdsTag, ok := tag.(*model.DirectPlcTag)
 	if !ok {
 		result <- &internalModel.DefaultPlcReadRequestResult{
 			Request:  readRequest,
@@ -142,12 +143,12 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 	// Calculate the size of all tags together.
 	// Calculate the expected size of the response data.
 	expectedResponseDataSize := uint32(0)
-	directAdsTags := map[string]*DirectPlcTag{}
+	directAdsTags := map[string]*model.DirectPlcTag{}
 	requestItems := make([]driverModel.AdsMultiRequestItem, 0)
 	for _, tagName := range readRequest.GetTagNames() {
 		tag := readRequest.GetTag(tagName)
-		if needsResolving(tag) {
-			adsField, err := castToSymbolicPlcTagFromPlcTag(tag)
+		if model.NeedsResolving(tag) {
+			adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
 			if err != nil {
 				result <- &internalModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
@@ -169,7 +170,7 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 				return
 			}
 		}
-		directAdsTag, ok := tag.(*DirectPlcTag)
+		directAdsTag, ok := tag.(*model.DirectPlcTag)
 		if !ok {
 			result <- &internalModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,

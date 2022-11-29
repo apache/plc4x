@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package ads
+package model
 
 import (
 	"encoding/binary"
@@ -37,10 +37,10 @@ const NONE = int32(-1)
 type PlcTag struct {
 	model.PlcTag
 
-	arrayInfo []model.ArrayInfo
+	ArrayInfo []model.ArrayInfo
 }
 
-func needsResolving(plcTag model.PlcTag) bool {
+func NeedsResolving(plcTag model.PlcTag) bool {
 	switch plcTag.(type) {
 	case SymbolicPlcTag:
 		return true
@@ -61,19 +61,19 @@ type DirectPlcTag struct {
 	DataType     driverModel.AdsDataTypeTableEntry
 }
 
-func newDirectAdsPlcTag(indexGroup uint32, indexOffset uint32, valueType values.PlcValueType, stringLength int32, arrayInfo []model.ArrayInfo) (model.PlcTag, error) {
+func NewDirectAdsPlcTag(indexGroup uint32, indexOffset uint32, valueType values.PlcValueType, stringLength int32, arrayInfo []model.ArrayInfo) (model.PlcTag, error) {
 	return DirectPlcTag{
 		IndexGroup:   indexGroup,
 		IndexOffset:  indexOffset,
 		ValueType:    valueType,
 		StringLength: stringLength,
 		PlcTag: PlcTag{
-			arrayInfo: arrayInfo,
+			ArrayInfo: arrayInfo,
 		},
 	}, nil
 }
 
-func castToDirectAdsTagFromPlcTag(plcTag model.PlcTag) (DirectPlcTag, error) {
+func CastToDirectAdsTagFromPlcTag(plcTag model.PlcTag) (DirectPlcTag, error) {
 	if adsTag, ok := plcTag.(DirectPlcTag); ok {
 		return adsTag, nil
 	}
@@ -85,8 +85,8 @@ func (m DirectPlcTag) GetAddressString() string {
 	if m.ValueType == values.STRING || m.ValueType == values.WSTRING {
 		address = address + "(" + strconv.Itoa(int(m.StringLength)) + ")"
 	}
-	if len(m.arrayInfo) > 0 {
-		for _, ai := range m.arrayInfo {
+	if len(m.ArrayInfo) > 0 {
+		for _, ai := range m.ArrayInfo {
 			address = address + "[" + strconv.Itoa(int(ai.GetLowerBound())) + ".." + strconv.Itoa(int(ai.GetUpperBound())) + "]"
 		}
 	}
@@ -128,11 +128,11 @@ func (m DirectPlcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 			return err
 		}
 	}
-	if len(m.arrayInfo) > 0 {
+	if len(m.ArrayInfo) > 0 {
 		if err := writeBuffer.PushContext("ArrayInfo"); err != nil {
 			return err
 		}
-		for _, ai := range m.arrayInfo {
+		for _, ai := range m.ArrayInfo {
 			if err := writeBuffer.PushContext("ArrayInfo"); err != nil {
 				return err
 			}
@@ -167,16 +167,16 @@ type SymbolicPlcTag struct {
 	SymbolicAddress string
 }
 
-func newAdsSymbolicPlcTag(symbolicAddress string, arrayInfo []model.ArrayInfo) (model.PlcTag, error) {
+func NewAdsSymbolicPlcTag(symbolicAddress string, arrayInfo []model.ArrayInfo) (model.PlcTag, error) {
 	return SymbolicPlcTag{
 		SymbolicAddress: symbolicAddress,
 		PlcTag: PlcTag{
-			arrayInfo: arrayInfo,
+			ArrayInfo: arrayInfo,
 		},
 	}, nil
 }
 
-func castToSymbolicPlcTagFromPlcTag(plcTag model.PlcTag) (SymbolicPlcTag, error) {
+func CastToSymbolicPlcTagFromPlcTag(plcTag model.PlcTag) (SymbolicPlcTag, error) {
 	if adsTag, ok := plcTag.(SymbolicPlcTag); ok {
 		return adsTag, nil
 	}
@@ -211,11 +211,11 @@ func (m SymbolicPlcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 	if err := writeBuffer.WriteString("symbolicAddress", uint32(len([]rune(m.SymbolicAddress))*8), "UTF-8", m.SymbolicAddress); err != nil {
 		return err
 	}
-	if len(m.arrayInfo) > 0 {
+	if len(m.ArrayInfo) > 0 {
 		if err := writeBuffer.PushContext("ArrayInfo"); err != nil {
 			return err
 		}
-		for _, ai := range m.arrayInfo {
+		for _, ai := range m.ArrayInfo {
 			if err := writeBuffer.PushContext("ArrayInfo"); err != nil {
 				return err
 			}

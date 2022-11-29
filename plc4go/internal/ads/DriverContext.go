@@ -26,6 +26,7 @@ import (
 	"strings"
 	"sync/atomic"
 
+	model3 "github.com/apache/plc4x/plc4go/internal/ads/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
@@ -45,7 +46,7 @@ type DriverContext struct {
 	awaitDisconnectComplete bool
 }
 
-func NewDriverContext(configuration Configuration) (*DriverContext, error) {
+func NewDriverContext(configuration model3.Configuration) (*DriverContext, error) {
 	return &DriverContext{
 		invokeId: 0,
 	}, nil
@@ -64,7 +65,7 @@ func (m *DriverContext) clear() {
 	m.awaitDisconnectComplete = false
 }
 
-func (m *DriverContext) getDirectTagForSymbolTag(symbolicPlcTag SymbolicPlcTag) (*DirectPlcTag, error) {
+func (m *DriverContext) getDirectTagForSymbolTag(symbolicPlcTag model3.SymbolicPlcTag) (*model3.DirectPlcTag, error) {
 	address := symbolicPlcTag.SymbolicAddress
 	addressSegments := strings.Split(address, ".")
 	var symbolName string
@@ -90,16 +91,16 @@ func (m *DriverContext) getDirectTagForSymbolTag(symbolicPlcTag SymbolicPlcTag) 
 	return m.resolveDirectTag(remainingSegments, dataTypeEntry, symbolEntry.GetGroup(), symbolEntry.GetOffset())
 }
 
-func (m *DriverContext) resolveDirectTag(remainingSegments []string, currentDatatype driverModel.AdsDataTypeTableEntry, indexGroup uint32, indexOffset uint32) (*DirectPlcTag, error) {
+func (m *DriverContext) resolveDirectTag(remainingSegments []string, currentDatatype driverModel.AdsDataTypeTableEntry, indexGroup uint32, indexOffset uint32) (*model3.DirectPlcTag, error) {
 	if len(remainingSegments) == 0 {
-		return &DirectPlcTag{
+		return &model3.DirectPlcTag{
 			IndexGroup:   indexGroup,
 			IndexOffset:  indexOffset,
 			ValueType:    m.getDataTypeForDataTypeTableEntry(currentDatatype),
 			StringLength: m.getStringLengthForDataTypeTableEntry(currentDatatype),
 			DataType:     currentDatatype,
-			PlcTag: PlcTag{
-				arrayInfo: m.getArrayInfoForDataTypeTableEntry(currentDatatype),
+			PlcTag: model3.PlcTag{
+				ArrayInfo: m.getArrayInfoForDataTypeTableEntry(currentDatatype),
 			},
 		}, nil
 	}

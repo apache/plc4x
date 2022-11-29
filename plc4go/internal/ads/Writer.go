@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
@@ -65,8 +66,8 @@ func (m *Connection) singleWrite(ctx context.Context, writeRequest apiModel.PlcW
 	// Here we can be sure that we're only handling a single request.
 	tagName := writeRequest.GetTagNames()[0]
 	tag := writeRequest.GetTag(tagName)
-	if needsResolving(tag) {
-		adsField, err := castToSymbolicPlcTagFromPlcTag(tag)
+	if model.NeedsResolving(tag) {
+		adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
 		if err != nil {
 			result <- &internalModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
@@ -88,7 +89,7 @@ func (m *Connection) singleWrite(ctx context.Context, writeRequest apiModel.PlcW
 			return
 		}
 	}
-	directAdsTag, ok := tag.(*DirectPlcTag)
+	directAdsTag, ok := tag.(*model.DirectPlcTag)
 	if !ok {
 		result <- &internalModel.DefaultPlcWriteRequestResult{
 			Request:  writeRequest,
@@ -147,13 +148,13 @@ func (m *Connection) multiWrite(ctx context.Context, writeRequest apiModel.PlcWr
 	// Calculate the size of all tags together.
 	// Calculate the expected size of the response data.
 	expectedResponseDataSize := uint32(0)
-	directAdsTags := map[string]*DirectPlcTag{}
+	directAdsTags := map[string]*model.DirectPlcTag{}
 	requestItems := make([]driverModel.AdsMultiRequestItem, 0)
 	io := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	for _, tagName := range writeRequest.GetTagNames() {
 		tag := writeRequest.GetTag(tagName)
-		if needsResolving(tag) {
-			adsField, err := castToSymbolicPlcTagFromPlcTag(tag)
+		if model.NeedsResolving(tag) {
+			adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
 			if err != nil {
 				result <- &internalModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
@@ -175,7 +176,7 @@ func (m *Connection) multiWrite(ctx context.Context, writeRequest apiModel.PlcWr
 				return
 			}
 		}
-		directAdsTag, ok := tag.(*DirectPlcTag)
+		directAdsTag, ok := tag.(*model.DirectPlcTag)
 		if !ok {
 			result <- &internalModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,

@@ -138,7 +138,7 @@ func (d *DefaultPlcSubscriptionRequestBuilder) Build() (model.PlcSubscriptionReq
 			d.tags[name] = tag
 		}
 	}
-	return NewDefaultPlcSubscriptionRequest(d.tags, d.tagNames, d.types, d.intervals, d.subscriber, d.preRegisteredConsumers), nil
+	return NewDefaultPlcSubscriptionRequest(d.subscriber, d.tagNames, d.tags, d.types, d.intervals, d.preRegisteredConsumers), nil
 }
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionRequest
@@ -146,12 +146,12 @@ type DefaultPlcSubscriptionRequest struct {
 	DefaultPlcTagRequest
 	types                  map[string]SubscriptionType
 	intervals              map[string]time.Duration
-	subscriber             spi.PlcSubscriber
 	preRegisteredConsumers map[string][]model.PlcSubscriptionEventConsumer `ignore:"true"`
+	subscriber             spi.PlcSubscriber
 }
 
-func NewDefaultPlcSubscriptionRequest(tags map[string]model.PlcTag, tagNames []string, types map[string]SubscriptionType, intervals map[string]time.Duration, subscriber spi.PlcSubscriber, preRegisteredConsumers map[string][]model.PlcSubscriptionEventConsumer) model.PlcSubscriptionRequest {
-	return &DefaultPlcSubscriptionRequest{NewDefaultPlcTagRequest(tags, tagNames), types, intervals, subscriber, preRegisteredConsumers}
+func NewDefaultPlcSubscriptionRequest(subscriber spi.PlcSubscriber, tagNames []string, tags map[string]model.PlcTag, types map[string]SubscriptionType, intervals map[string]time.Duration, preRegisteredConsumers map[string][]model.PlcSubscriptionEventConsumer) model.PlcSubscriptionRequest {
+	return &DefaultPlcSubscriptionRequest{NewDefaultPlcTagRequest(tags, tagNames), types, intervals, preRegisteredConsumers, subscriber}
 }
 
 func (d *DefaultPlcSubscriptionRequest) Execute() <-chan model.PlcSubscriptionRequestResult {

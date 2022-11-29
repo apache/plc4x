@@ -17,56 +17,57 @@
  * under the License.
  */
 
-package ads
+package model
 
 import (
+	"strconv"
+	"strings"
+
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"strconv"
-	"strings"
 )
 
 type Configuration struct {
-	sourceAmsNetId readWriteModel.AmsNetId
-	sourceAmsPort  uint16
-	targetAmsNetId readWriteModel.AmsNetId
-	targetAmsPort  uint16
+	SourceAmsNetId readWriteModel.AmsNetId
+	SourceAmsPort  uint16
+	TargetAmsNetId readWriteModel.AmsNetId
+	TargetAmsPort  uint16
 }
 
 func ParseFromOptions(options map[string][]string) (Configuration, error) {
 	configuration := Configuration{}
 
-	sourceAmsNetId := getFromOptions(options, "sourceAmsNetId")
+	sourceAmsNetId := getFromOptions(options, "SourceAmsNetId")
 	if sourceAmsNetId == "" {
-		return Configuration{}, errors.New("Required parameter sourceAmsNetId missing")
+		return Configuration{}, errors.New("Required parameter SourceAmsNetId missing")
 	}
 	split := strings.Split(sourceAmsNetId, ".")
 	octet1, err := strconv.ParseUint(split[0], 10, 8)
 	if err != nil {
-		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsNetId")
+		return Configuration{}, errors.Wrap(err, "error parsing SourceAmsNetId")
 	}
 	octet2, err := strconv.ParseUint(split[1], 10, 8)
 	if err != nil {
-		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsNetId")
+		return Configuration{}, errors.Wrap(err, "error parsing SourceAmsNetId")
 	}
 	octet3, err := strconv.ParseUint(split[2], 10, 8)
 	if err != nil {
-		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsNetId")
+		return Configuration{}, errors.Wrap(err, "error parsing SourceAmsNetId")
 	}
 	octet4, err := strconv.ParseUint(split[3], 10, 8)
 	if err != nil {
-		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsNetId")
+		return Configuration{}, errors.Wrap(err, "error parsing SourceAmsNetId")
 	}
 	octet5, err := strconv.ParseUint(split[4], 10, 8)
 	if err != nil {
-		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsNetId")
+		return Configuration{}, errors.Wrap(err, "error parsing SourceAmsNetId")
 	}
 	octet6, err := strconv.ParseUint(split[5], 10, 8)
 	if err != nil {
-		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsNetId")
+		return Configuration{}, errors.Wrap(err, "error parsing SourceAmsNetId")
 	}
-	configuration.sourceAmsNetId = readWriteModel.NewAmsNetId(
+	configuration.SourceAmsNetId = readWriteModel.NewAmsNetId(
 		uint8(octet1),
 		uint8(octet2),
 		uint8(octet3),
@@ -74,45 +75,45 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 		uint8(octet5),
 		uint8(octet6),
 	)
-	sourceAmsPort := getFromOptions(options, "sourceAmsPort")
+	sourceAmsPort := getFromOptions(options, "SourceAmsPort")
 	if sourceAmsPort == "" {
-		return Configuration{}, errors.New("Required parameter sourceAmsPort missing")
+		return Configuration{}, errors.New("Required parameter SourceAmsPort missing")
 	}
 	parsedUint, err := strconv.ParseUint(sourceAmsPort, 10, 16)
 	if err != nil {
-		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsPort")
+		return Configuration{}, errors.Wrap(err, "error parsing SourceAmsPort")
 	}
-	configuration.sourceAmsPort = uint16(parsedUint)
-	targetAmsNetId := getFromOptions(options, "targetAmsNetId")
+	configuration.SourceAmsPort = uint16(parsedUint)
+	targetAmsNetId := getFromOptions(options, "TargetAmsNetId")
 	if sourceAmsNetId == "" {
-		return Configuration{}, errors.New("Required parameter targetAmsNetId missing")
+		return Configuration{}, errors.New("Required parameter TargetAmsNetId missing")
 	}
 	split = strings.Split(targetAmsNetId, ".")
 	octet1, err = strconv.ParseUint(split[0], 10, 8)
 	if err != nil {
-		return Configuration{}, errors.Wrap(err, "error parsing targetAmsNetId")
+		return Configuration{}, errors.Wrap(err, "error parsing TargetAmsNetId")
 	}
 	octet2, err = strconv.ParseUint(split[1], 10, 8)
 	if err != nil {
-		return Configuration{}, errors.Wrap(err, "error parsing targetAmsNetId")
+		return Configuration{}, errors.Wrap(err, "error parsing TargetAmsNetId")
 	}
 	octet3, err = strconv.ParseUint(split[2], 10, 8)
 	if err != nil {
-		return Configuration{}, errors.Wrap(err, "error parsing targetAmsNetId")
+		return Configuration{}, errors.Wrap(err, "error parsing TargetAmsNetId")
 	}
 	octet4, err = strconv.ParseUint(split[3], 10, 8)
 	if err != nil {
-		return Configuration{}, errors.Wrap(err, "error parsing targetAmsNetId")
+		return Configuration{}, errors.Wrap(err, "error parsing TargetAmsNetId")
 	}
 	octet5, err = strconv.ParseUint(split[4], 10, 8)
 	if err != nil {
-		return Configuration{}, errors.Wrap(err, "error parsing targetAmsNetId")
+		return Configuration{}, errors.Wrap(err, "error parsing TargetAmsNetId")
 	}
 	octet6, err = strconv.ParseUint(split[5], 10, 8)
 	if err != nil {
-		return Configuration{}, errors.Wrap(err, "error parsing targetAmsNetId")
+		return Configuration{}, errors.Wrap(err, "error parsing TargetAmsNetId")
 	}
-	configuration.targetAmsNetId = readWriteModel.NewAmsNetId(
+	configuration.TargetAmsNetId = readWriteModel.NewAmsNetId(
 		uint8(octet1),
 		uint8(octet2),
 		uint8(octet3),
@@ -120,15 +121,15 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 		uint8(octet5),
 		uint8(octet6),
 	)
-	targetAmsPort := getFromOptions(options, "targetAmsPort")
+	targetAmsPort := getFromOptions(options, "TargetAmsPort")
 	if targetAmsPort == "" {
-		return Configuration{}, errors.New("Required parameter targetAmsPort missing")
+		return Configuration{}, errors.New("Required parameter TargetAmsPort missing")
 	}
 	parsedUint, err = strconv.ParseUint(targetAmsPort, 10, 16)
 	if err != nil {
-		return Configuration{}, errors.Wrap(err, "error parsing targetAmsPort")
+		return Configuration{}, errors.Wrap(err, "error parsing TargetAmsPort")
 	}
-	configuration.targetAmsPort = uint16(parsedUint)
+	configuration.TargetAmsPort = uint16(parsedUint)
 
 	return configuration, nil
 }
