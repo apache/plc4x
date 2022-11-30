@@ -38,9 +38,9 @@ type Configuration struct {
 func ParseFromOptions(options map[string][]string) (Configuration, error) {
 	configuration := Configuration{}
 
-	sourceAmsNetId := getFromOptions(options, "SourceAmsNetId")
+	sourceAmsNetId := getFromOptions(options, "sourceAmsNetId")
 	if sourceAmsNetId == "" {
-		return Configuration{}, errors.New("Required parameter SourceAmsNetId missing")
+		return Configuration{}, errors.New("Required parameter sourceAmsNetId missing")
 	}
 	split := strings.Split(sourceAmsNetId, ".")
 	octet1, err := strconv.ParseUint(split[0], 10, 8)
@@ -75,18 +75,18 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 		uint8(octet5),
 		uint8(octet6),
 	)
-	sourceAmsPort := getFromOptions(options, "SourceAmsPort")
+	sourceAmsPort := getFromOptions(options, "sourceAmsPort")
 	if sourceAmsPort == "" {
-		return Configuration{}, errors.New("Required parameter SourceAmsPort missing")
+		return Configuration{}, errors.New("Required parameter sourceAmsPort missing")
 	}
 	parsedUint, err := strconv.ParseUint(sourceAmsPort, 10, 16)
 	if err != nil {
-		return Configuration{}, errors.Wrap(err, "error parsing SourceAmsPort")
+		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsPort")
 	}
 	configuration.SourceAmsPort = uint16(parsedUint)
-	targetAmsNetId := getFromOptions(options, "TargetAmsNetId")
+	targetAmsNetId := getFromOptions(options, "targetAmsNetId")
 	if sourceAmsNetId == "" {
-		return Configuration{}, errors.New("Required parameter TargetAmsNetId missing")
+		return Configuration{}, errors.New("Required parameter targetAmsNetId missing")
 	}
 	split = strings.Split(targetAmsNetId, ".")
 	octet1, err = strconv.ParseUint(split[0], 10, 8)
@@ -121,13 +121,13 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 		uint8(octet5),
 		uint8(octet6),
 	)
-	targetAmsPort := getFromOptions(options, "TargetAmsPort")
+	targetAmsPort := getFromOptions(options, "targetAmsPort")
 	if targetAmsPort == "" {
-		return Configuration{}, errors.New("Required parameter TargetAmsPort missing")
+		return Configuration{}, errors.New("Required parameter targetAmsPort missing")
 	}
 	parsedUint, err = strconv.ParseUint(targetAmsPort, 10, 16)
 	if err != nil {
-		return Configuration{}, errors.Wrap(err, "error parsing TargetAmsPort")
+		return Configuration{}, errors.Wrap(err, "error parsing targetAmsPort")
 	}
 	configuration.TargetAmsPort = uint16(parsedUint)
 
