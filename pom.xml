@@ -1112,8 +1112,25 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.10.1</version>
           <configuration>
+            <!--
+              Use the eclipse compiler instead of the normal jdk one, as we were seeing
+              problems on the CI server when compiling the BACnet java driver.
+            -->
+            <compilerId>eclipse</compilerId>
             <release>${java.version}</release>
           </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.codehaus.plexus</groupId>
+              <artifactId>plexus-compiler-eclipse</artifactId>
+              <version>2.12.1</version>
+            </dependency>
+            <dependency>
+              <groupId>org.eclipse.jdt</groupId>
+              <artifactId>ecj</artifactId>
+              <version>3.31.0</version>
+            </dependency>
+          </dependencies>
         </plugin>
 
         <plugin>
