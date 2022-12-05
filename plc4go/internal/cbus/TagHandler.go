@@ -123,15 +123,17 @@ func (m TagHandler) ParseTag(tagAddress string) (model.PlcTag, error) {
 		return m.handleSALMonitorPattern(match)
 	} else if match := utils.GetSubgroupMatches(m.mmiMonitorPattern, tagAddress); match != nil {
 		return m.handleMMIMonitorPattern(match)
-	} else if match := utils.GetSubgroupMatches(m.unityQuery, tagAddress); match != nil {
-		return m.handleUnitQuery(match)
 	} else {
 		return nil, errors.Errorf("Unable to parse %s", tagAddress)
 	}
 }
 
-func (m TagHandler) ParseQuery(_ string) (model.PlcQuery, error) {
-	return nil, fmt.Errorf("queries not supported")
+func (m TagHandler) ParseQuery(query string) (model.PlcQuery, error) {
+	if match := utils.GetSubgroupMatches(m.unityQuery, query); match != nil {
+		return m.handleUnitQuery(match)
+	} else {
+		return nil, errors.Errorf("Unable to parse %s", query)
+	}
 }
 
 func (m TagHandler) handleStatusRequestPattern(match map[string]string) (model.PlcTag, error) {
@@ -398,7 +400,7 @@ func (m TagHandler) handleMMIMonitorPattern(match map[string]string) (model.PlcT
 	return NewMMIMonitorTag(unitAddress, application, 1), nil
 }
 
-func (m TagHandler) handleUnitQuery(match map[string]string) (model.PlcTag, error) {
+func (m TagHandler) handleUnitQuery(match map[string]string) (model.PlcQuery, error) {
 	var unitAddress *readWriteModel.UnitAddress
 	unitAddressArgument := match["unitAddress"]
 	if unitAddressArgument == "*" {
@@ -454,7 +456,7 @@ func (m TagHandler) handleUnitQuery(match map[string]string) (model.PlcTag, erro
 			attribute = &attributeVar
 		}
 	}
-	return NewUnitInfoTag(unitAddress, attribute, 1), nil
+	return NewUnitInfoQuery(unitAddress, attribute, 1), nil
 }
 
 func applicationIdFromArgument(applicationIdArgument string) (readWriteModel.ApplicationIdContainer, error) {
