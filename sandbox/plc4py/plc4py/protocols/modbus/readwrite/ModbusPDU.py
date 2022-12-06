@@ -26,28 +26,28 @@ from ctypes import c_bool
 from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 import math
-    
+
+
 @dataclass
 class ModbusPDU(ABC, PlcMessage):
-
-
     def __post_init__(self):
-        super().__init__( )
+        super().__init__()
 
     # Abstract accessors for discriminator values.
     @property
     @abstractmethod
     def error_flag(self) -> c_bool:
         pass
+
     @property
     @abstractmethod
     def function_flag(self) -> c_uint8:
         pass
+
     @property
     @abstractmethod
     def response(self) -> c_bool:
         pass
-
 
     @abstractmethod
     def serialize_modbus_pduChild(write_buffer: WriteBuffer) -> None:
@@ -59,16 +59,19 @@ class ModbusPDU(ABC, PlcMessage):
         write_buffer.push_context("ModbusPDU")
 
         # Discriminator Field (errorFlag) (Used as input to a switch field)
-        write_discriminator_field("errorFlag", self.error_flag(), write_boolean(write_buffer))
+        write_discriminator_field(
+            "errorFlag", self.error_flag(), write_boolean(write_buffer)
+        )
 
         # Discriminator Field (functionFlag) (Used as input to a switch field)
-        write_discriminator_field("functionFlag", self.function_flag(), write_unsigned_short(write_buffer, 7))
+        write_discriminator_field(
+            "functionFlag", self.function_flag(), write_unsigned_short(write_buffer, 7)
+        )
 
         # Switch field (Serialize the sub-type)
         self.serialize_modbus_pdu_child(write_buffer)
 
         write_buffer.pop_context("ModbusPDU")
-
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -87,11 +90,12 @@ class ModbusPDU(ABC, PlcMessage):
 
         return length_in_bits
 
-
-    def static_parse(read_buffer: ReadBuffer , args):
+    def static_parse(read_buffer: ReadBuffer, args):
         position_aware: PositionAware = read_buffer
         if (args is None) or (args.length is not 1):
-            raise PlcRuntimeException("Wrong number of arguments, expected 1, but got " + args.length)
+            raise PlcRuntimeException(
+                "Wrong number of arguments, expected 1, but got " + args.length
+            )
 
         response: c_bool = None
         if isinstance(args[0], c_bool):
@@ -99,10 +103,12 @@ class ModbusPDU(ABC, PlcMessage):
         elif isinstance(args[0], str):
             response = c_bool.valueOf(str(args[0]))
         else:
-            raise PlcRuntimeException("Argument 0 expected to be of type c_bool or a string which is parseable but was " + args[0].getClass().getName())
+            raise PlcRuntimeException(
+                "Argument 0 expected to be of type c_bool or a string which is parseable but was "
+                + args[0].getClass().getName()
+            )
 
         return staticParse(read_buffer, response)
-
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer, response: c_bool):
@@ -111,138 +117,384 @@ class ModbusPDU(ABC, PlcMessage):
         start_pos: int = position_aware.get_pos()
         cur_pos: int = 0
 
-        error_flag: c_bool = read_discriminator_field("errorFlag", read_boolean(read_buffer))
+        error_flag: c_bool = read_discriminator_field(
+            "errorFlag", read_boolean(read_buffer)
+        )
 
-        function_flag: c_uint8 = read_discriminator_field("functionFlag", read_unsigned_short(read_buffer, 7))
+        function_flag: c_uint8 = read_discriminator_field(
+            "functionFlag", read_unsigned_short(read_buffer, 7)
+        )
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: ModbusPDUBuilder = None
-        if EvaluationHelper.equals( errorFlag, c_bool(True) ):
+        if EvaluationHelper.equals(errorFlag, c_bool(True)):
 
             builder = ModbusPDUError.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x02) ) and EvaluationHelper.equals( response, c_bool(False) ):
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x02))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUReadDiscreteInputsRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x02) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUReadDiscreteInputsRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x02))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUReadDiscreteInputsResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x01) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = ModbusPDUReadDiscreteInputsResponse.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x01))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUReadCoilsRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x01) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUReadCoilsRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x01))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUReadCoilsResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x05) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = ModbusPDUReadCoilsResponse.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x05))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUWriteSingleCoilRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x05) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUWriteSingleCoilRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x05))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUWriteSingleCoilResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x0F) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = ModbusPDUWriteSingleCoilResponse.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x0F))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUWriteMultipleCoilsRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x0F) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUWriteMultipleCoilsRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x0F))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUWriteMultipleCoilsResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x04) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = ModbusPDUWriteMultipleCoilsResponse.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x04))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUReadInputRegistersRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x04) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUReadInputRegistersRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x04))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUReadInputRegistersResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x03) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = ModbusPDUReadInputRegistersResponse.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x03))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUReadHoldingRegistersRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x03) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUReadHoldingRegistersRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x03))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUReadHoldingRegistersResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x06) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = ModbusPDUReadHoldingRegistersResponse.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x06))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUWriteSingleRegisterRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x06) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUWriteSingleRegisterRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x06))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUWriteSingleRegisterResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x10) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = ModbusPDUWriteSingleRegisterResponse.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x10))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUWriteMultipleHoldingRegistersRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x10) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUWriteMultipleHoldingRegistersRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x10))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUWriteMultipleHoldingRegistersResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x17) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = ModbusPDUWriteMultipleHoldingRegistersResponse.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x17))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUReadWriteMultipleHoldingRegistersRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x17) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = (
+                ModbusPDUReadWriteMultipleHoldingRegistersRequest.staticParseBuilder(
+                    read_buffer, response
+                )
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x17))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUReadWriteMultipleHoldingRegistersResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x16) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = (
+                ModbusPDUReadWriteMultipleHoldingRegistersResponse.staticParseBuilder(
+                    read_buffer, response
+                )
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x16))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUMaskWriteHoldingRegisterRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x16) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUMaskWriteHoldingRegisterRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x16))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUMaskWriteHoldingRegisterResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x18) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = ModbusPDUMaskWriteHoldingRegisterResponse.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x18))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUReadFifoQueueRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x18) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUReadFifoQueueRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x18))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUReadFifoQueueResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x14) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = ModbusPDUReadFifoQueueResponse.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x14))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUReadFileRecordRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x14) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUReadFileRecordRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x14))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUReadFileRecordResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x15) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = ModbusPDUReadFileRecordResponse.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x15))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUWriteFileRecordRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x15) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUWriteFileRecordRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x15))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUWriteFileRecordResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x07) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = ModbusPDUWriteFileRecordResponse.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x07))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUReadExceptionStatusRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x07) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUReadExceptionStatusRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x07))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUReadExceptionStatusResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x08) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = ModbusPDUReadExceptionStatusResponse.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x08))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUDiagnosticRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x08) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUDiagnosticRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x08))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUDiagnosticResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x0B) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = ModbusPDUDiagnosticResponse.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x0B))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUGetComEventCounterRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x0B) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUGetComEventCounterRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x0B))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUGetComEventCounterResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x0C) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = ModbusPDUGetComEventCounterResponse.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x0C))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUGetComEventLogRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x0C) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUGetComEventLogRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x0C))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUGetComEventLogResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x11) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = ModbusPDUGetComEventLogResponse.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x11))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUReportServerIdRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x11) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUReportServerIdRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x11))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUReportServerIdResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x2B) ) and EvaluationHelper.equals( response, c_bool(False) ):
+            builder = ModbusPDUReportServerIdResponse.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x2B))
+            and EvaluationHelper.equals(response, c_bool(False))
+        ):
 
-            builder = ModbusPDUReadDeviceIdentificationRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, c_bool(False) ) and EvaluationHelper.equals( functionFlag, c_uint8(0x2B) ) and EvaluationHelper.equals( response, c_bool(True) ):
+            builder = ModbusPDUReadDeviceIdentificationRequest.staticParseBuilder(
+                read_buffer, response
+            )
+        if (
+            EvaluationHelper.equals(errorFlag, c_bool(False))
+            and EvaluationHelper.equals(functionFlag, c_uint8(0x2B))
+            and EvaluationHelper.equals(response, c_bool(True))
+        ):
 
-            builder = ModbusPDUReadDeviceIdentificationResponse.staticParseBuilder(read_buffer, response)
+            builder = ModbusPDUReadDeviceIdentificationResponse.staticParseBuilder(
+                read_buffer, response
+            )
         if builder is None:
-            raise ParseException("Unsupported case for discriminated type"+" parameters ["+"errorFlag="+errorFlag+" "+"functionFlag="+functionFlag+" "+"response="+response+"]")
-
+            raise ParseException(
+                "Unsupported case for discriminated type"
+                + " parameters ["
+                + "errorFlag="
+                + errorFlag
+                + " "
+                + "functionFlag="
+                + functionFlag
+                + " "
+                + "response="
+                + response
+                + "]"
+            )
 
         read_buffer.close_context("ModbusPDU")
         # Create the instance
         _modbus_pdu: ModbusPDU = builder.build()
         return _modbus_pdu
-
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -266,10 +518,9 @@ class ModbusPDU(ABC, PlcMessage):
 
         return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
+
 class ModbusPDUBuilder:
-    def build(self, ) -> ModbusPDU:
+    def build(
+        self,
+    ) -> ModbusPDU:
         pass
-
-
-
-

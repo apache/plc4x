@@ -27,9 +27,10 @@ from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 import math
-    
+
+
 @dataclass
-class ModbusPDUDiagnosticResponse(PlcMessage,ModbusPDU):
+class ModbusPDUDiagnosticResponse(PlcMessage, ModbusPDU):
     sub_function: c_uint16
     data: c_uint16
     # Accessors for discriminator values.
@@ -37,11 +38,8 @@ class ModbusPDUDiagnosticResponse(PlcMessage,ModbusPDU):
     function_flag: c_uint8 = 0x08
     response: c_bool = True
 
-
     def __post_init__(self):
-        super().__init__( )
-
-
+        super().__init__()
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         position_aware: PositionAware = write_buffer
@@ -49,13 +47,14 @@ class ModbusPDUDiagnosticResponse(PlcMessage,ModbusPDU):
         write_buffer.push_context("ModbusPDUDiagnosticResponse")
 
         # Simple Field (subFunction)
-        write_simple_field("subFunction", self.sub_function, write_unsigned_int(write_buffer, 16))
+        write_simple_field(
+            "subFunction", self.sub_function, write_unsigned_int(write_buffer, 16)
+        )
 
         # Simple Field (data)
         write_simple_field("data", self.data, write_unsigned_int(write_buffer, 16))
 
         write_buffer.pop_context("ModbusPDUDiagnosticResponse")
-
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -72,7 +71,6 @@ class ModbusPDUDiagnosticResponse(PlcMessage,ModbusPDU):
 
         return length_in_bits
 
-
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
         read_buffer.pull_context("ModbusPDUDiagnosticResponse")
@@ -80,14 +78,15 @@ class ModbusPDUDiagnosticResponse(PlcMessage,ModbusPDU):
         start_pos: int = position_aware.get_pos()
         cur_pos: int = 0
 
-        sub_function: c_uint16 = read_simple_field("subFunction", read_unsigned_int(read_buffer, 16))
+        sub_function: c_uint16 = read_simple_field(
+            "subFunction", read_unsigned_int(read_buffer, 16)
+        )
 
         data: c_uint16 = read_simple_field("data", read_unsigned_int(read_buffer, 16))
 
         read_buffer.close_context("ModbusPDUDiagnosticResponse")
         # Create the instance
-        return ModbusPDUDiagnosticResponseBuilder(sub_function, data )
-
+        return ModbusPDUDiagnosticResponseBuilder(sub_function, data)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -97,7 +96,12 @@ class ModbusPDUDiagnosticResponse(PlcMessage,ModbusPDU):
             return False
 
         that: ModbusPDUDiagnosticResponse = ModbusPDUDiagnosticResponse(o)
-        return (self.sub_function == that.sub_function) and (self.data == that.data) and super().equals(that) and True
+        return (
+            (self.sub_function == that.sub_function)
+            and (self.data == that.data)
+            and super().equals(that)
+            and True
+        )
 
     def hash_code(self) -> int:
         return hash(self)
@@ -120,9 +124,10 @@ class ModbusPDUDiagnosticResponseBuilder(ModbusPDUBuilder):
     def __post_init__(self):
         pass
 
-    def build(self,) -> ModbusPDUDiagnosticResponse:
-        modbus_pdu_diagnostic_response: ModbusPDUDiagnosticResponse = ModbusPDUDiagnosticResponse(self.sub_function, self.data )
+    def build(
+        self,
+    ) -> ModbusPDUDiagnosticResponse:
+        modbus_pdu_diagnostic_response: ModbusPDUDiagnosticResponse = (
+            ModbusPDUDiagnosticResponse(self.sub_function, self.data)
+        )
         return modbus_pdu_diagnostic_response
-
-
-
