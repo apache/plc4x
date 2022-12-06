@@ -29,10 +29,9 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from typing import List
 import math
-
-
+    
 @dataclass
-class ModbusPDUGetComEventLogResponse(PlcMessage, ModbusPDU):
+class ModbusPDUGetComEventLogResponse(PlcMessage,ModbusPDU):
     status: c_uint16
     event_count: c_uint16
     message_count: c_uint16
@@ -42,8 +41,11 @@ class ModbusPDUGetComEventLogResponse(PlcMessage, ModbusPDU):
     function_flag: c_uint8 = 0x0C
     response: c_bool = True
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         position_aware: PositionAware = write_buffer
@@ -52,27 +54,22 @@ class ModbusPDUGetComEventLogResponse(PlcMessage, ModbusPDU):
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         byte_count: c_uint8 = c_uint8(((COUNT(self.events())) + (6)))
-        write_implicit_field(
-            "byteCount", byte_count, write_unsigned_short(write_buffer, 8)
-        )
+        write_implicit_field("byteCount", byte_count, write_unsigned_short(write_buffer, 8))
 
         # Simple Field (status)
         write_simple_field("status", self.status, write_unsigned_int(write_buffer, 16))
 
         # Simple Field (eventCount)
-        write_simple_field(
-            "eventCount", self.event_count, write_unsigned_int(write_buffer, 16)
-        )
+        write_simple_field("eventCount", self.event_count, write_unsigned_int(write_buffer, 16))
 
         # Simple Field (messageCount)
-        write_simple_field(
-            "messageCount", self.message_count, write_unsigned_int(write_buffer, 16)
-        )
+        write_simple_field("messageCount", self.message_count, write_unsigned_int(write_buffer, 16))
 
         # Array Field (events)
         write_byte_array_field("events", self.events, writeByteArray(write_buffer, 8))
 
         write_buffer.pop_context("ModbusPDUGetComEventLogResponse")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -97,7 +94,9 @@ class ModbusPDUGetComEventLogResponse(PlcMessage, ModbusPDU):
         if self.events is not None:
             length_in_bits += 8 * self.events.length
 
+
         return length_in_bits
+
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
@@ -106,31 +105,20 @@ class ModbusPDUGetComEventLogResponse(PlcMessage, ModbusPDU):
         start_pos: int = position_aware.get_pos()
         cur_pos: int = 0
 
-        byte_count: c_uint8 = read_implicit_field(
-            "byteCount", read_unsigned_short(read_buffer, 8)
-        )
+        byte_count: c_uint8 = read_implicit_field("byteCount", read_unsigned_short(read_buffer, 8))
 
-        status: c_uint16 = read_simple_field(
-            "status", read_unsigned_int(read_buffer, 16)
-        )
+        status: c_uint16 = read_simple_field("status", read_unsigned_int(read_buffer, 16))
 
-        event_count: c_uint16 = read_simple_field(
-            "eventCount", read_unsigned_int(read_buffer, 16)
-        )
+        event_count: c_uint16 = read_simple_field("eventCount", read_unsigned_int(read_buffer, 16))
 
-        message_count: c_uint16 = read_simple_field(
-            "messageCount", read_unsigned_int(read_buffer, 16)
-        )
+        message_count: c_uint16 = read_simple_field("messageCount", read_unsigned_int(read_buffer, 16))
 
-        events: List[c_byte] = read_buffer.read_byte_array(
-            "events", int((byteCount) - (6))
-        )
+        events: List[c_byte] = read_buffer.read_byte_array("events", int((byteCount) - (6)))
 
         read_buffer.close_context("ModbusPDUGetComEventLogResponse")
         # Create the instance
-        return ModbusPDUGetComEventLogResponseBuilder(
-            status, event_count, message_count, events
-        )
+        return ModbusPDUGetComEventLogResponseBuilder(status, event_count, message_count, events )
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -140,14 +128,7 @@ class ModbusPDUGetComEventLogResponse(PlcMessage, ModbusPDU):
             return False
 
         that: ModbusPDUGetComEventLogResponse = ModbusPDUGetComEventLogResponse(o)
-        return (
-            (self.status == that.status)
-            and (self.event_count == that.event_count)
-            and (self.message_count == that.message_count)
-            and (self.events == that.events)
-            and super().equals(that)
-            and True
-        )
+        return (self.status == that.status) and (self.event_count == that.event_count) and (self.message_count == that.message_count) and (self.events == that.events) and super().equals(that) and True
 
     def hash_code(self) -> int:
         return hash(self)
@@ -172,12 +153,9 @@ class ModbusPDUGetComEventLogResponseBuilder(ModbusPDUBuilder):
     def __post_init__(self):
         pass
 
-    def build(
-        self,
-    ) -> ModbusPDUGetComEventLogResponse:
-        modbus_pdu_get_com_event_log_response: ModbusPDUGetComEventLogResponse = (
-            ModbusPDUGetComEventLogResponse(
-                self.status, self.event_count, self.message_count, self.events
-            )
-        )
+    def build(self,) -> ModbusPDUGetComEventLogResponse:
+        modbus_pdu_get_com_event_log_response: ModbusPDUGetComEventLogResponse = ModbusPDUGetComEventLogResponse(self.status, self.event_count, self.message_count, self.events )
         return modbus_pdu_get_com_event_log_response
+
+
+

@@ -102,10 +102,6 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.google.googlejavaformat</groupId>
-      <artifactId>google-java-format</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>

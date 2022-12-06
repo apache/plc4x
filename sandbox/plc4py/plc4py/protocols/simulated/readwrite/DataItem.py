@@ -41,8 +41,8 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_bool" ) and EvaluationHelper.equals( number_of_values, 1 ) :  # BOOL
 
 
-            // Simple Field (value)
-            c_bool value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readBit("");
+            # Simple Field (value)
+            value: c_bool= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readBit("");
 
             return new PlcBOOL(value);
         } else         if EvaluationHelper.equals( data_type, "_bool" ) :  # List
@@ -62,8 +62,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, "_byte" ) and EvaluationHelper.equals( number_of_values, 1 ) :  # BYTE
 
 
-            // Simple Field (value)
-            c_uint8 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedShort("", 8);
+            # Simple Field (value)
+            value: c_uint8= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedShort("", 8);
 
             return new PlcBYTE(value);
         } else         if EvaluationHelper.equals( data_type, "_byte" ) :  # List
@@ -83,8 +83,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, "_word" ) and EvaluationHelper.equals( number_of_values, 1 ) :  # WORD
 
 
-            // Simple Field (value)
-            c_uint16 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedInt("", 16);
+            # Simple Field (value)
+            value: c_uint16= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedInt("", 16);
 
             return new PlcWORD(value);
         } else         if EvaluationHelper.equals( data_type, "_word" ) :  # List
@@ -104,8 +104,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, "_dword" ) and EvaluationHelper.equals( number_of_values, 1 ) :  # DWORD
 
 
-            // Simple Field (value)
-            c_uint32 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedLong("", 32);
+            # Simple Field (value)
+            value: c_uint32= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedLong("", 32);
 
             return new PlcDWORD(value);
         } else         if EvaluationHelper.equals( data_type, "_dword" ) :  # List
@@ -125,8 +125,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, "_lword" ) and EvaluationHelper.equals( number_of_values, 1 ) :  # LWORD
 
 
-            // Simple Field (value)
-            c_uint64 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedBigInteger("", 64);
+            # Simple Field (value)
+            value: c_uint64= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedBigInteger("", 64);
 
             return new PlcLWORD(value);
         } else         if EvaluationHelper.equals( data_type, "_lword" ) :  # List
@@ -146,8 +146,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, "_sint" ) and EvaluationHelper.equals( number_of_values, 1 ) :  # SINT
 
 
-            // Simple Field (value)
-            c_int8 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readSignedByte("", 8);
+            # Simple Field (value)
+            value: c_int8= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readSignedByte("", 8);
 
             return new PlcSINT(value);
         } else         if EvaluationHelper.equals( data_type, "_sint" ) :  # List
@@ -167,8 +167,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, "_int" ) and EvaluationHelper.equals( number_of_values, 1 ) :  # INT
 
 
-            // Simple Field (value)
-            c_int16 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readShort("", 16);
+            # Simple Field (value)
+            value: c_int16= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readShort("", 16);
 
             return new PlcINT(value);
         } else         if EvaluationHelper.equals( data_type, "_int" ) :  # List
@@ -188,8 +188,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, "_dint" ) and EvaluationHelper.equals( number_of_values, 1 ) :  # DINT
 
 
-            // Simple Field (value)
-            c_int32 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readInt("", 32);
+            # Simple Field (value)
+            value: c_int32= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readInt("", 32);
 
             return new PlcDINT(value);
         } else         if EvaluationHelper.equals( data_type, "_dint" ) :  # List
@@ -209,8 +209,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, "_lint" ) and EvaluationHelper.equals( number_of_values, 1 ) :  # LINT
 
 
-            // Simple Field (value)
-            c_int64 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readLong("", 64);
+            # Simple Field (value)
+            value: c_int64= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readLong("", 64);
 
             return new PlcLINT(value);
         } else         if EvaluationHelper.equals( data_type, "_lint" ) :  # List
@@ -230,8 +230,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, "_usint" ) and EvaluationHelper.equals( number_of_values, 1 ) :  # USINT
 
 
-            // Simple Field (value)
-            c_uint8 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedShort("", 8);
+            # Simple Field (value)
+            value: c_uint8= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedShort("", 8);
 
             return new PlcUSINT(value);
         } else         if EvaluationHelper.equals( data_type, "_usint" ) :  # List
@@ -251,8 +251,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, "_uint" ) and EvaluationHelper.equals( number_of_values, 1 ) :  # UINT
 
 
-            // Simple Field (value)
-            c_uint16 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedInt("", 16);
+            # Simple Field (value)
+            value: c_uint16= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedInt("", 16);
 
             return new PlcUINT(value);
         } else         if EvaluationHelper.equals( data_type, "_uint" ) :  # List
@@ -272,8 +272,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, "_udint" ) and EvaluationHelper.equals( number_of_values, 1 ) :  # UDINT
 
 
-            // Simple Field (value)
-            c_uint32 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedLong("", 32);
+            # Simple Field (value)
+            value: c_uint32= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedLong("", 32);
 
             return new PlcUDINT(value);
         } else         if EvaluationHelper.equals( data_type, "_udint" ) :  # List
@@ -293,8 +293,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, "_ulint" ) and EvaluationHelper.equals( number_of_values, 1 ) :  # ULINT
 
 
-            // Simple Field (value)
-            c_uint64 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedBigInteger("", 64);
+            # Simple Field (value)
+            value: c_uint64= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedBigInteger("", 64);
 
             return new PlcULINT(value);
         } else         if EvaluationHelper.equals( data_type, "_ulint" ) :  # List
@@ -314,8 +314,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, "_real" ) and EvaluationHelper.equals( number_of_values, 1 ) :  # REAL
 
 
-            // Simple Field (value)
-            c_float value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readFloat("", 32);
+            # Simple Field (value)
+            value: c_float= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readFloat("", 32);
 
             return new PlcREAL(value);
         } else         if EvaluationHelper.equals( data_type, "_real" ) :  # List
@@ -335,8 +335,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, "_lreal" ) and EvaluationHelper.equals( number_of_values, 1 ) :  # LREAL
 
 
-            // Simple Field (value)
-            c_double value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readDouble("", 64);
+            # Simple Field (value)
+            value: c_double= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readDouble("", 64);
 
             return new PlcLREAL(value);
         } else         if EvaluationHelper.equals( data_type, "_lreal" ) :  # List
@@ -356,8 +356,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, "_char" ) and EvaluationHelper.equals( number_of_values, 1 ) :  # CHAR
 
 
-            // Simple Field (value)
-            str value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readString("", 8, "UTF-8");
+            # Simple Field (value)
+            value: str= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readString("", 8, "UTF-8");
 
             return new PlcCHAR(value);
         } else         if EvaluationHelper.equals( data_type, "_char" ) :  # List
@@ -377,8 +377,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, "_wchar" ) and EvaluationHelper.equals( number_of_values, 1 ) :  # WCHAR
 
 
-            // Simple Field (value)
-            str value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readString("", 16, "UTF-16");
+            # Simple Field (value)
+            value: str= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readString("", 16, "UTF-16");
 
             return new PlcWCHAR(value);
         } else         if EvaluationHelper.equals( data_type, "_wchar" ) :  # List
@@ -398,15 +398,15 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, "_string" ) :  # STRING
 
 
-            // Simple Field (value)
-            str value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readString("", 255, "UTF-8");
+            # Simple Field (value)
+            value: str= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readString("", 255, "UTF-8");
 
             return new PlcSTRING(value);
         } else         if EvaluationHelper.equals( data_type, "_wstring" ) :  # STRING
 
 
-            // Simple Field (value)
-            str value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readString("", 255, "UTF-16");
+            # Simple Field (value)
+            value: str= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readString("", 255, "UTF-16");
 
             return new PlcSTRING(value);
         }

@@ -27,10 +27,9 @@ from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 import math
-
-
+    
 @dataclass
-class ModbusPDUGetComEventCounterResponse(PlcMessage, ModbusPDU):
+class ModbusPDUGetComEventCounterResponse(PlcMessage,ModbusPDU):
     status: c_uint16
     event_count: c_uint16
     # Accessors for discriminator values.
@@ -38,8 +37,11 @@ class ModbusPDUGetComEventCounterResponse(PlcMessage, ModbusPDU):
     function_flag: c_uint8 = 0x0B
     response: c_bool = True
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         position_aware: PositionAware = write_buffer
@@ -50,11 +52,10 @@ class ModbusPDUGetComEventCounterResponse(PlcMessage, ModbusPDU):
         write_simple_field("status", self.status, write_unsigned_int(write_buffer, 16))
 
         # Simple Field (eventCount)
-        write_simple_field(
-            "eventCount", self.event_count, write_unsigned_int(write_buffer, 16)
-        )
+        write_simple_field("eventCount", self.event_count, write_unsigned_int(write_buffer, 16))
 
         write_buffer.pop_context("ModbusPDUGetComEventCounterResponse")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -71,6 +72,7 @@ class ModbusPDUGetComEventCounterResponse(PlcMessage, ModbusPDU):
 
         return length_in_bits
 
+
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
         read_buffer.pull_context("ModbusPDUGetComEventCounterResponse")
@@ -78,17 +80,14 @@ class ModbusPDUGetComEventCounterResponse(PlcMessage, ModbusPDU):
         start_pos: int = position_aware.get_pos()
         cur_pos: int = 0
 
-        status: c_uint16 = read_simple_field(
-            "status", read_unsigned_int(read_buffer, 16)
-        )
+        status: c_uint16 = read_simple_field("status", read_unsigned_int(read_buffer, 16))
 
-        event_count: c_uint16 = read_simple_field(
-            "eventCount", read_unsigned_int(read_buffer, 16)
-        )
+        event_count: c_uint16 = read_simple_field("eventCount", read_unsigned_int(read_buffer, 16))
 
         read_buffer.close_context("ModbusPDUGetComEventCounterResponse")
         # Create the instance
-        return ModbusPDUGetComEventCounterResponseBuilder(status, event_count)
+        return ModbusPDUGetComEventCounterResponseBuilder(status, event_count )
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -97,15 +96,8 @@ class ModbusPDUGetComEventCounterResponse(PlcMessage, ModbusPDU):
         if not isinstance(o, ModbusPDUGetComEventCounterResponse):
             return False
 
-        that: ModbusPDUGetComEventCounterResponse = ModbusPDUGetComEventCounterResponse(
-            o
-        )
-        return (
-            (self.status == that.status)
-            and (self.event_count == that.event_count)
-            and super().equals(that)
-            and True
-        )
+        that: ModbusPDUGetComEventCounterResponse = ModbusPDUGetComEventCounterResponse(o)
+        return (self.status == that.status) and (self.event_count == that.event_count) and super().equals(that) and True
 
     def hash_code(self) -> int:
         return hash(self)
@@ -128,10 +120,9 @@ class ModbusPDUGetComEventCounterResponseBuilder(ModbusPDUBuilder):
     def __post_init__(self):
         pass
 
-    def build(
-        self,
-    ) -> ModbusPDUGetComEventCounterResponse:
-        modbus_pdu_get_com_event_counter_response: ModbusPDUGetComEventCounterResponse = ModbusPDUGetComEventCounterResponse(
-            self.status, self.event_count
-        )
+    def build(self,) -> ModbusPDUGetComEventCounterResponse:
+        modbus_pdu_get_com_event_counter_response: ModbusPDUGetComEventCounterResponse = ModbusPDUGetComEventCounterResponse(self.status, self.event_count )
         return modbus_pdu_get_com_event_counter_response
+
+
+

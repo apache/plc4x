@@ -27,10 +27,9 @@ from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 import math
-
-
+    
 @dataclass
-class ModbusPDUReadCoilsRequest(PlcMessage, ModbusPDU):
+class ModbusPDUReadCoilsRequest(PlcMessage,ModbusPDU):
     starting_address: c_uint16
     quantity: c_uint16
     # Accessors for discriminator values.
@@ -38,8 +37,11 @@ class ModbusPDUReadCoilsRequest(PlcMessage, ModbusPDU):
     function_flag: c_uint8 = 0x01
     response: c_bool = False
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         position_aware: PositionAware = write_buffer
@@ -47,18 +49,13 @@ class ModbusPDUReadCoilsRequest(PlcMessage, ModbusPDU):
         write_buffer.push_context("ModbusPDUReadCoilsRequest")
 
         # Simple Field (startingAddress)
-        write_simple_field(
-            "startingAddress",
-            self.starting_address,
-            write_unsigned_int(write_buffer, 16),
-        )
+        write_simple_field("startingAddress", self.starting_address, write_unsigned_int(write_buffer, 16))
 
         # Simple Field (quantity)
-        write_simple_field(
-            "quantity", self.quantity, write_unsigned_int(write_buffer, 16)
-        )
+        write_simple_field("quantity", self.quantity, write_unsigned_int(write_buffer, 16))
 
         write_buffer.pop_context("ModbusPDUReadCoilsRequest")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -75,6 +72,7 @@ class ModbusPDUReadCoilsRequest(PlcMessage, ModbusPDU):
 
         return length_in_bits
 
+
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
         read_buffer.pull_context("ModbusPDUReadCoilsRequest")
@@ -82,17 +80,14 @@ class ModbusPDUReadCoilsRequest(PlcMessage, ModbusPDU):
         start_pos: int = position_aware.get_pos()
         cur_pos: int = 0
 
-        starting_address: c_uint16 = read_simple_field(
-            "startingAddress", read_unsigned_int(read_buffer, 16)
-        )
+        starting_address: c_uint16 = read_simple_field("startingAddress", read_unsigned_int(read_buffer, 16))
 
-        quantity: c_uint16 = read_simple_field(
-            "quantity", read_unsigned_int(read_buffer, 16)
-        )
+        quantity: c_uint16 = read_simple_field("quantity", read_unsigned_int(read_buffer, 16))
 
         read_buffer.close_context("ModbusPDUReadCoilsRequest")
         # Create the instance
-        return ModbusPDUReadCoilsRequestBuilder(starting_address, quantity)
+        return ModbusPDUReadCoilsRequestBuilder(starting_address, quantity )
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -102,12 +97,7 @@ class ModbusPDUReadCoilsRequest(PlcMessage, ModbusPDU):
             return False
 
         that: ModbusPDUReadCoilsRequest = ModbusPDUReadCoilsRequest(o)
-        return (
-            (self.starting_address == that.starting_address)
-            and (self.quantity == that.quantity)
-            and super().equals(that)
-            and True
-        )
+        return (self.starting_address == that.starting_address) and (self.quantity == that.quantity) and super().equals(that) and True
 
     def hash_code(self) -> int:
         return hash(self)
@@ -130,10 +120,9 @@ class ModbusPDUReadCoilsRequestBuilder(ModbusPDUBuilder):
     def __post_init__(self):
         pass
 
-    def build(
-        self,
-    ) -> ModbusPDUReadCoilsRequest:
-        modbus_pdu_read_coils_request: ModbusPDUReadCoilsRequest = (
-            ModbusPDUReadCoilsRequest(self.starting_address, self.quantity)
-        )
+    def build(self,) -> ModbusPDUReadCoilsRequest:
+        modbus_pdu_read_coils_request: ModbusPDUReadCoilsRequest = ModbusPDUReadCoilsRequest(self.starting_address, self.quantity )
         return modbus_pdu_read_coils_request
+
+
+

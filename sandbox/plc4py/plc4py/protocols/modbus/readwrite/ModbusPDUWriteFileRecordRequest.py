@@ -25,23 +25,23 @@ from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
-from plc4py.protocols.modbus.readwrite.ModbusPDUWriteFileRecordRequestItem import (
-    ModbusPDUWriteFileRecordRequestItem,
-)
+from plc4py.protocols.modbus.readwrite.ModbusPDUWriteFileRecordRequestItem import ModbusPDUWriteFileRecordRequestItem
 from typing import List
 import math
-
-
+    
 @dataclass
-class ModbusPDUWriteFileRecordRequest(PlcMessage, ModbusPDU):
+class ModbusPDUWriteFileRecordRequest(PlcMessage,ModbusPDU):
     items: List[ModbusPDUWriteFileRecordRequestItem]
     # Accessors for discriminator values.
     error_flag: c_bool = False
     function_flag: c_uint8 = 0x15
     response: c_bool = False
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         position_aware: PositionAware = write_buffer
@@ -50,14 +50,13 @@ class ModbusPDUWriteFileRecordRequest(PlcMessage, ModbusPDU):
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         byte_count: c_uint8 = c_uint8((ARRAY_SIZE_IN_BYTES(self.items())))
-        write_implicit_field(
-            "byteCount", byte_count, write_unsigned_short(write_buffer, 8)
-        )
+        write_implicit_field("byteCount", byte_count, write_unsigned_short(write_buffer, 8))
 
         # Array Field (items)
         write_complex_type_array_field("items", self.items, write_buffer)
 
         write_buffer.pop_context("ModbusPDUWriteFileRecordRequest")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -74,7 +73,10 @@ class ModbusPDUWriteFileRecordRequest(PlcMessage, ModbusPDU):
             for element in self.items:
                 length_in_bits += element.get_length_in_bits()
 
+
+
         return length_in_bits
+
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
@@ -83,22 +85,14 @@ class ModbusPDUWriteFileRecordRequest(PlcMessage, ModbusPDU):
         start_pos: int = position_aware.get_pos()
         cur_pos: int = 0
 
-        byte_count: c_uint8 = read_implicit_field(
-            "byteCount", read_unsigned_short(read_buffer, 8)
-        )
+        byte_count: c_uint8 = read_implicit_field("byteCount", read_unsigned_short(read_buffer, 8))
 
-        items: List[ModbusPDUWriteFileRecordRequestItem] = read_length_array_field(
-            "items",
-            DataReaderComplexDefault(
-                ModbusPDUWriteFileRecordRequestItem.static_parse(read_buffer),
-                read_buffer,
-            ),
-            byte_count,
-        )
+        items: List[ModbusPDUWriteFileRecordRequestItem] = read_length_array_field("items", DataReaderComplexDefault(ModbusPDUWriteFileRecordRequestItem.static_parse(read_buffer), read_buffer), byte_count)
 
         read_buffer.close_context("ModbusPDUWriteFileRecordRequest")
         # Create the instance
-        return ModbusPDUWriteFileRecordRequestBuilder(items)
+        return ModbusPDUWriteFileRecordRequestBuilder(items )
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -130,10 +124,9 @@ class ModbusPDUWriteFileRecordRequestBuilder(ModbusPDUBuilder):
     def __post_init__(self):
         pass
 
-    def build(
-        self,
-    ) -> ModbusPDUWriteFileRecordRequest:
-        modbus_pdu_write_file_record_request: ModbusPDUWriteFileRecordRequest = (
-            ModbusPDUWriteFileRecordRequest(self.items)
-        )
+    def build(self,) -> ModbusPDUWriteFileRecordRequest:
+        modbus_pdu_write_file_record_request: ModbusPDUWriteFileRecordRequest = ModbusPDUWriteFileRecordRequest(self.items )
         return modbus_pdu_write_file_record_request
+
+
+

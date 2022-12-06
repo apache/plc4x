@@ -641,8 +641,12 @@ const (
 	KnxManufacturer_M_ESTADA                                             KnxManufacturer = 602
 	KnxManufacturer_M_ZHONGYUNXINZHIKONGGUJITUANYOUXIANGONGSI            KnxManufacturer = 603
 	KnxManufacturer_M_STUHL_REGELSYSTEME_GMBH                            KnxManufacturer = 604
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 605
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 606
+	KnxManufacturer_M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD                 KnxManufacturer = 605
+	KnxManufacturer_M_GAIMEX                                             KnxManufacturer = 606
+	KnxManufacturer_M_B3_INTERNATIONAL_S_R_L                             KnxManufacturer = 607
+	KnxManufacturer_M_MM_ELECTRO                                         KnxManufacturer = 608
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 609
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 610
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1255,6 +1259,10 @@ func init() {
 		KnxManufacturer_M_ESTADA,
 		KnxManufacturer_M_ZHONGYUNXINZHIKONGGUJITUANYOUXIANGONGSI,
 		KnxManufacturer_M_STUHL_REGELSYSTEME_GMBH,
+		KnxManufacturer_M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD,
+		KnxManufacturer_M_GAIMEX,
+		KnxManufacturer_M_B3_INTERNATIONAL_S_R_L,
+		KnxManufacturer_M_MM_ELECTRO,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3516,15 +3524,31 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 605:
 		{ /* '605' */
-			return 43954
+			return 663
 		}
 	case 606:
 		{ /* '606' */
-			return 43959
+			return 664
+		}
+	case 607:
+		{ /* '607' */
+			return 665
+		}
+	case 608:
+		{ /* '608' */
+			return 666
+		}
+	case 609:
+		{ /* '609' */
+			return 43954
 		}
 	case 61:
 		{ /* '61' */
 			return 100
+		}
+	case 610:
+		{ /* '610' */
+			return 43959
 		}
 	case 62:
 		{ /* '62' */
@@ -5962,15 +5986,31 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 605:
 		{ /* '605' */
-			return "ABB - reserved"
+			return "Shenzhen Gluck Technology Co., LTD"
 		}
 	case 606:
 		{ /* '606' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "Gaimex"
+		}
+	case 607:
+		{ /* '607' */
+			return "B3 International S.R.L"
+		}
+	case 608:
+		{ /* '608' */
+			return "MM Electro"
+		}
+	case 609:
+		{ /* '609' */
+			return "ABB - reserved"
 		}
 	case 61:
 		{ /* '61' */
 			return "Schneider Electric Industries SAS"
+		}
+	case 610:
+		{ /* '610' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 62:
 		{ /* '62' */
@@ -7280,11 +7320,19 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 604:
 		return KnxManufacturer_M_STUHL_REGELSYSTEME_GMBH, true
 	case 605:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD, true
 	case 606:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
+		return KnxManufacturer_M_GAIMEX, true
+	case 607:
+		return KnxManufacturer_M_B3_INTERNATIONAL_S_R_L, true
+	case 608:
+		return KnxManufacturer_M_MM_ELECTRO, true
+	case 609:
+		return KnxManufacturer_M_ABB___RESERVED, true
 	case 61:
 		return KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS, true
+	case 610:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 62:
 		return KnxManufacturer_M_WHD_WILHELM_HUBER_Plus_SOEHNE, true
 	case 63:
@@ -8499,12 +8547,20 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_ZHONGYUNXINZHIKONGGUJITUANYOUXIANGONGSI, true
 	case "M_STUHL_REGELSYSTEME_GMBH":
 		return KnxManufacturer_M_STUHL_REGELSYSTEME_GMBH, true
+	case "M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD":
+		return KnxManufacturer_M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD, true
+	case "M_GAIMEX":
+		return KnxManufacturer_M_GAIMEX, true
+	case "M_B3_INTERNATIONAL_S_R_L":
+		return KnxManufacturer_M_B3_INTERNATIONAL_S_R_L, true
+	case "M_MM_ELECTRO":
+		return KnxManufacturer_M_MM_ELECTRO, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
-	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS":
 		return KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS, true
+	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_WHD_WILHELM_HUBER_Plus_SOEHNE":
 		return KnxManufacturer_M_WHD_WILHELM_HUBER_Plus_SOEHNE, true
 	case "M_BISCHOFF_ELEKTRONIK":
@@ -9776,12 +9832,20 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_ZHONGYUNXINZHIKONGGUJITUANYOUXIANGONGSI"
 	case KnxManufacturer_M_STUHL_REGELSYSTEME_GMBH:
 		return "M_STUHL_REGELSYSTEME_GMBH"
+	case KnxManufacturer_M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD:
+		return "M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD"
+	case KnxManufacturer_M_GAIMEX:
+		return "M_GAIMEX"
+	case KnxManufacturer_M_B3_INTERNATIONAL_S_R_L:
+		return "M_B3_INTERNATIONAL_S_R_L"
+	case KnxManufacturer_M_MM_ELECTRO:
+		return "M_MM_ELECTRO"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
-	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
-		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS:
 		return "M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS"
+	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
+		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_WHD_WILHELM_HUBER_Plus_SOEHNE:
 		return "M_WHD_WILHELM_HUBER_Plus_SOEHNE"
 	case KnxManufacturer_M_BISCHOFF_ELEKTRONIK:

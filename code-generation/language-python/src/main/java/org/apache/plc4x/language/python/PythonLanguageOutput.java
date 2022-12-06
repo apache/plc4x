@@ -18,27 +18,16 @@
  */
 package org.apache.plc4x.language.python;
 
-import com.google.googlejavaformat.java.Formatter;
-import com.google.googlejavaformat.java.FormatterException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import org.apache.commons.io.FileUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageOutput;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class PythonLanguageOutput extends FreemarkerLanguageOutput {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PythonLanguageOutput.class);
-
-    private final Formatter formatter = new Formatter();
 
     @Override
     public String getName() {
@@ -83,18 +72,4 @@ public class PythonLanguageOutput extends FreemarkerLanguageOutput {
         return new PythonLanguageTemplateHelper(thisType, protocolName, flavorName, types, options);
     }
 
-    @Override
-    protected void postProcessTemplateOutput(File outputFile) {
-        try {
-            FileUtils.writeStringToFile(
-                outputFile,
-                formatter.formatSourceAndFixImports(
-                    FileUtils.readFileToString(outputFile, StandardCharsets.UTF_8)
-                ),
-                StandardCharsets.UTF_8
-            );
-        } catch (IOException | FormatterException e) {
-            LOGGER.error("Error formatting {}", outputFile, e);
-        }
-    }
 }

@@ -26,17 +26,19 @@ from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 import math
-
-
+    
 @dataclass
-class ModbusPDUReportServerIdRequest(PlcMessage, ModbusPDU):
+class ModbusPDUReportServerIdRequest(PlcMessage,ModbusPDU):
     # Accessors for discriminator values.
     error_flag: c_bool = False
     function_flag: c_uint8 = 0x11
     response: c_bool = False
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         position_aware: PositionAware = write_buffer
@@ -44,6 +46,7 @@ class ModbusPDUReportServerIdRequest(PlcMessage, ModbusPDU):
         write_buffer.push_context("ModbusPDUReportServerIdRequest")
 
         write_buffer.pop_context("ModbusPDUReportServerIdRequest")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -53,6 +56,7 @@ class ModbusPDUReportServerIdRequest(PlcMessage, ModbusPDU):
         _value: ModbusPDUReportServerIdRequest = self
 
         return length_in_bits
+
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
@@ -64,6 +68,7 @@ class ModbusPDUReportServerIdRequest(PlcMessage, ModbusPDU):
         read_buffer.close_context("ModbusPDUReportServerIdRequest")
         # Create the instance
         return ModbusPDUReportServerIdRequestBuilder()
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -90,13 +95,13 @@ class ModbusPDUReportServerIdRequest(PlcMessage, ModbusPDU):
 
 @dataclass
 class ModbusPDUReportServerIdRequestBuilder(ModbusPDUBuilder):
+
     def __post_init__(self):
         pass
 
-    def build(
-        self,
-    ) -> ModbusPDUReportServerIdRequest:
-        modbus_pdu_report_server_id_request: ModbusPDUReportServerIdRequest = (
-            ModbusPDUReportServerIdRequest()
-        )
+    def build(self,) -> ModbusPDUReportServerIdRequest:
+        modbus_pdu_report_server_id_request: ModbusPDUReportServerIdRequest = ModbusPDUReportServerIdRequest()
         return modbus_pdu_report_server_id_request
+
+
+

@@ -23,14 +23,16 @@ from dataclasses import dataclass
 from ctypes import c_uint16
 from plc4py.api.messages.PlcMessage import PlcMessage
 import math
-
-
+    
 @dataclass
 class Dummy(PlcMessage):
     dummy: c_uint16
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize(self, write_buffer: WriteBuffer):
         position_aware: PositionAware = write_buffer
@@ -38,14 +40,10 @@ class Dummy(PlcMessage):
         write_buffer.push_context("Dummy")
 
         # Simple Field (dummy)
-        write_simple_field(
-            "dummy",
-            self.dummy,
-            write_unsigned_int(write_buffer, 16),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
-        )
+        write_simple_field("dummy", self.dummy, write_unsigned_int(write_buffer, 16), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
         write_buffer.pop_context("Dummy")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -59,9 +57,11 @@ class Dummy(PlcMessage):
 
         return length_in_bits
 
-    def static_parse(read_buffer: ReadBuffer, args):
+
+    def static_parse(read_buffer: ReadBuffer , args):
         position_aware: PositionAware = read_buffer
         return staticParse(read_buffer)
+
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
@@ -70,16 +70,13 @@ class Dummy(PlcMessage):
         start_pos: int = position_aware.get_pos()
         cur_pos: int = 0
 
-        dummy: c_uint16 = read_simple_field(
-            "dummy",
-            read_unsigned_int(read_buffer, 16),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN),
-        )
+        dummy: c_uint16 = read_simple_field("dummy", read_unsigned_int(read_buffer, 16), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN))
 
         read_buffer.close_context("Dummy")
         # Create the instance
-        _dummy: Dummy = Dummy(dummy)
+        _dummy: Dummy = Dummy(dummy )
         return _dummy
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -102,3 +99,7 @@ class Dummy(PlcMessage):
             raise RuntimeException(e)
 
         return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+
+
+
+

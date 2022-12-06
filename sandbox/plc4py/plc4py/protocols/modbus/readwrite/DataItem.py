@@ -46,11 +46,11 @@ class DataItem:
 
             reserved: c_uint16 = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedInt("", 15);
             if reserved != (c_uint16) 0x0000:
-                LOGGER.info("Expected constant value " + 0x0000 + " but got " + reserved + " for reserved field.");
+                log.info("Expected constant value " + 0x0000 + " but got " + reserved + " for reserved field.");
 
 
-            // Simple Field (value)
-            c_bool value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readBit("");
+            # Simple Field (value)
+            value: c_bool= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readBit("");
 
             return new PlcBOOL(value);
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.BOOL ) :  # List
@@ -74,11 +74,11 @@ class DataItem:
 
             reserved: c_uint8 = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedShort("", 8);
             if reserved != (c_uint8) 0x00:
-                LOGGER.info("Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
+                log.info("Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
 
 
-            // Simple Field (value)
-            c_uint8 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedShort("", 8);
+            # Simple Field (value)
+            value: c_uint8= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedShort("", 8);
 
             return new PlcBYTE(value);
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.BYTE ) :  # List
@@ -98,22 +98,22 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.WORD ) :  # WORD
 
 
-            // Simple Field (value)
-            c_uint16 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedInt("", 16);
+            # Simple Field (value)
+            value: c_uint16= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedInt("", 16);
 
             return new PlcWORD(value);
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.DWORD ) :  # DWORD
 
 
-            // Simple Field (value)
-            c_uint32 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedLong("", 32);
+            # Simple Field (value)
+            value: c_uint32= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedLong("", 32);
 
             return new PlcDWORD(value);
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.LWORD ) :  # LWORD
 
 
-            // Simple Field (value)
-            c_uint64 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedBigInteger("", 64);
+            # Simple Field (value)
+            value: c_uint64= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedBigInteger("", 64);
 
             return new PlcLWORD(value);
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.SINT ) and EvaluationHelper.equals( number_of_values, 1 ) :  # SINT
@@ -123,11 +123,11 @@ class DataItem:
 
             reserved: c_uint8 = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedShort("", 8);
             if reserved != (c_uint8) 0x00:
-                LOGGER.info("Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
+                log.info("Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
 
 
-            // Simple Field (value)
-            c_int8 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readSignedByte("", 8);
+            # Simple Field (value)
+            value: c_int8= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readSignedByte("", 8);
 
             return new PlcSINT(value);
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.SINT ) :  # List
@@ -147,8 +147,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.INT ) and EvaluationHelper.equals( number_of_values, 1 ) :  # INT
 
 
-            // Simple Field (value)
-            c_int16 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readShort("", 16);
+            # Simple Field (value)
+            value: c_int16= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readShort("", 16);
 
             return new PlcINT(value);
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.INT ) :  # List
@@ -168,8 +168,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.DINT ) and EvaluationHelper.equals( number_of_values, 1 ) :  # DINT
 
 
-            // Simple Field (value)
-            c_int32 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readInt("", 32);
+            # Simple Field (value)
+            value: c_int32= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readInt("", 32);
 
             return new PlcDINT(value);
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.DINT ) :  # List
@@ -189,8 +189,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.LINT ) and EvaluationHelper.equals( number_of_values, 1 ) :  # LINT
 
 
-            // Simple Field (value)
-            c_int64 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readLong("", 64);
+            # Simple Field (value)
+            value: c_int64= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readLong("", 64);
 
             return new PlcLINT(value);
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.LINT ) :  # List
@@ -214,11 +214,11 @@ class DataItem:
 
             reserved: c_uint8 = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedShort("", 8);
             if reserved != (c_uint8) 0x00:
-                LOGGER.info("Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
+                log.info("Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
 
 
-            // Simple Field (value)
-            c_uint8 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedShort("", 8);
+            # Simple Field (value)
+            value: c_uint8= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedShort("", 8);
 
             return new PlcUSINT(value);
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.USINT ) :  # List
@@ -238,8 +238,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.UINT ) and EvaluationHelper.equals( number_of_values, 1 ) :  # UINT
 
 
-            // Simple Field (value)
-            c_uint16 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedInt("", 16);
+            # Simple Field (value)
+            value: c_uint16= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedInt("", 16);
 
             return new PlcUINT(value);
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.UINT ) :  # List
@@ -259,8 +259,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.UDINT ) and EvaluationHelper.equals( number_of_values, 1 ) :  # UDINT
 
 
-            // Simple Field (value)
-            c_uint32 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedLong("", 32);
+            # Simple Field (value)
+            value: c_uint32= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedLong("", 32);
 
             return new PlcUDINT(value);
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.UDINT ) :  # List
@@ -280,8 +280,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.ULINT ) and EvaluationHelper.equals( number_of_values, 1 ) :  # ULINT
 
 
-            // Simple Field (value)
-            c_uint64 value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedBigInteger("", 64);
+            # Simple Field (value)
+            value: c_uint64= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readUnsignedBigInteger("", 64);
 
             return new PlcULINT(value);
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.ULINT ) :  # List
@@ -301,8 +301,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.REAL ) and EvaluationHelper.equals( number_of_values, 1 ) :  # REAL
 
 
-            // Simple Field (value)
-            c_float value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readFloat("", 32);
+            # Simple Field (value)
+            value: c_float= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readFloat("", 32);
 
             return new PlcREAL(value);
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.REAL ) :  # List
@@ -322,8 +322,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.LREAL ) and EvaluationHelper.equals( number_of_values, 1 ) :  # LREAL
 
 
-            // Simple Field (value)
-            c_double value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readDouble("", 64);
+            # Simple Field (value)
+            value: c_double= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readDouble("", 64);
 
             return new PlcLREAL(value);
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.LREAL ) :  # List
@@ -343,8 +343,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.CHAR ) and EvaluationHelper.equals( number_of_values, 1 ) :  # CHAR
 
 
-            // Simple Field (value)
-            str value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readString("", 8, "UTF-8");
+            # Simple Field (value)
+            value: str= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readString("", 8, "UTF-8");
 
             return new PlcCHAR(value);
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.CHAR ) :  # List
@@ -364,8 +364,8 @@ class DataItem:
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.WCHAR ) and EvaluationHelper.equals( number_of_values, 1 ) :  # WCHAR
 
 
-            // Simple Field (value)
-            str value = /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readString("", 16, "UTF-16");
+            # Simple Field (value)
+            value: str= /*TODO: migrate me*//*TODO: migrate me*/read_buffer.readString("", 16, "UTF-16");
 
             return new PlcWCHAR(value);
         } else         if EvaluationHelper.equals( data_type, ModbusDataType.WCHAR ) :  # List

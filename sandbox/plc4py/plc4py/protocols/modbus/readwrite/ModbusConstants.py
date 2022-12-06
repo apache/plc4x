@@ -23,14 +23,16 @@ from dataclasses import dataclass
 from ctypes import c_uint16
 from plc4py.api.messages.PlcMessage import PlcMessage
 import math
-
-
+    
 @dataclass
 class ModbusConstants(PlcMessage):
     MODBUSTCPDEFAULTPORT: c_uint16 = 502
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize(self, write_buffer: WriteBuffer):
         position_aware: PositionAware = write_buffer
@@ -38,13 +40,10 @@ class ModbusConstants(PlcMessage):
         write_buffer.push_context("ModbusConstants")
 
         # Const Field (modbusTcpDefaultPort)
-        write_const_field(
-            "modbusTcpDefaultPort",
-            self.modbus_tcp_default_port,
-            write_unsigned_int(write_buffer, 16),
-        )
+        write_const_field("modbusTcpDefaultPort", self.modbus_tcp_default_port, write_unsigned_int(write_buffer, 16))
 
         write_buffer.pop_context("ModbusConstants")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -58,9 +57,11 @@ class ModbusConstants(PlcMessage):
 
         return length_in_bits
 
-    def static_parse(read_buffer: ReadBuffer, args):
+
+    def static_parse(read_buffer: ReadBuffer , args):
         position_aware: PositionAware = read_buffer
         return staticParse(read_buffer)
+
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
@@ -69,16 +70,13 @@ class ModbusConstants(PlcMessage):
         start_pos: int = position_aware.get_pos()
         cur_pos: int = 0
 
-        modbus_tcp_default_port: c_uint16 = read_const_field(
-            "modbusTcpDefaultPort",
-            read_unsigned_int(read_buffer, 16),
-            ModbusConstants.MODBUSTCPDEFAULTPORT,
-        )
+        modbus_tcp_default_port: c_uint16 = read_const_field("modbusTcpDefaultPort", read_unsigned_int(read_buffer, 16), ModbusConstants.MODBUSTCPDEFAULTPORT)
 
         read_buffer.close_context("ModbusConstants")
         # Create the instance
         _modbus_constants: ModbusConstants = ModbusConstants()
         return _modbus_constants
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -101,3 +99,7 @@ class ModbusConstants(PlcMessage):
             raise RuntimeException(e)
 
         return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+
+
+
+
