@@ -174,6 +174,7 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 				log.Warn().Msgf("Got unexpected type of incoming ADS message %v", message)
 			}
 		}
+		log.Info().Msg("Done waiting for messages ...")
 	}()
 
 	// Subscribe for changes to the symbol or the offline-versions

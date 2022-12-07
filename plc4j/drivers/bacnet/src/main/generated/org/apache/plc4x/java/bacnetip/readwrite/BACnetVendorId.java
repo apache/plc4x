@@ -1602,6 +1602,7 @@ public enum BACnetVendorId {
   AKVO_ATMOSPHERIC_WATER_SYSTEMS_PVT_LTD(
       (int) 1392, (int) 1392, (String) "AKVO Atmospheric Water Systems Pvt. Ltd."),
   EM_FIRST_CO_LTD((int) 1393, (int) 1393, (String) "EmFirst Co. Ltd."),
+  IION_SYSTEMS_APS((int) 1394, (int) 1394, (String) "Iion Systems ApS"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

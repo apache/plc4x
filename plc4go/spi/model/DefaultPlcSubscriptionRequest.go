@@ -169,3 +169,7 @@ func (d *DefaultPlcSubscriptionRequest) GetType(name string) SubscriptionType {
 func (d *DefaultPlcSubscriptionRequest) GetInterval(name string) time.Duration {
 	return d.intervals[name]
 }
+
+func (d *DefaultPlcSubscriptionRequest) GetPreRegisteredConsumers(name string) []model.PlcSubscriptionEventConsumer {
+	return d.preRegisteredConsumers[name]
+}

@@ -74,12 +74,13 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 
 		subscriptionType := defaultSubscriptionRequest.GetType(tagName)
 		interval := defaultSubscriptionRequest.GetInterval(tagName)
+		preRegisteredConsumers := defaultSubscriptionRequest.GetPreRegisteredConsumers(tagName)
 		subSubscriptionRequests[tagName] = internalModel.NewDefaultPlcSubscriptionRequest(m,
 			[]string{tagName},
 			map[string]apiModel.PlcTag{tagName: directTag},
 			map[string]internalModel.SubscriptionType{tagName: subscriptionType},
 			map[string]time.Duration{tagName: interval},
-			map[string][]apiModel.PlcSubscriptionEventConsumer{tagName: {}})
+			map[string][]apiModel.PlcSubscriptionEventConsumer{tagName: preRegisteredConsumers})
 	}
 
 	// If this is a single item request, we can take a shortcut.
@@ -216,7 +217,7 @@ func (m *Connection) handleIncomingDeviceNotificationRequest(deviceNotificationR
 			// Create a readBuffer containing the sample data
 			readBuffer := utils.NewReadBufferByteBased(sample.GetData())
 
-			// Parse the data according to the type data stored in the tag
+			// Parse the data according to theÏ type data stored in the tag
 			directTag := adsSubscriptionHandler.GetDirectTag()
 			plcValue, err := m.parsePlcValue(directTag.DataType, directTag.DataType.GetArrayInfo(), readBuffer)
 			if err != nil {
