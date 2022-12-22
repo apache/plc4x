@@ -1,0 +1,78 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+labels: ["bug", "awaiting triage"]
+assignees:
+  - octocat
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Once you've created an issue, you can self-assign by commenting `.take-issue` and you can close by commenting `.close-issue`.
+        Anyone can reopen a closed issue by commenting `.reopen-issue`.
+        You can also add/remove labels by commenting `.add-labels label1,label2,'label 3 with spaces'` or `.remove-labels label1,label2,'label 3 with spaces'`,
+        or with `.set-labels label1,label2,'label 3 with spaces'` (which removes any labels not in that set).
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Please describe your issue, including the PLC model or tools being used.
+      placeholder: |
+        Please include steps to reproduce your issue.
+        
+        If this isn't a bug and you have a question or support request, please email issues@plc4x.apache.org with a description of the problem instead of opening this issue.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: "Which version are you using?"
+      placeholder: "v0.10.0"
+    validations:
+      required: true
+  - type: checkboxes
+    id: programming-language
+    attributes:
+      label: Programming Languages
+      description: Which languages are related to your report? (check all that apply)
+      options:
+        - label: "plc4j"
+        - label: "plc4go"
+        - label: "plc4c"
+        - label: "plc4net"
+  - type: checkboxes
+    id: protocols
+    attributes:
+      label: Protocols
+      description: Which protocols are related to your report? (check all that apply)
+      options:
+        - label: "AB-Ethernet"
+        - label: "ADS /AMS"
+        - label: "BACnet/IP"
+        - label: "CANopen"
+        - label: "DeltaV"
+        - label: "DF1"
+        - label: "EtherNet/IP"
+        - label: "Firmata"
+        - label: "KNXnet/IP"
+        - label: "Modbus"
+        - label: "OPC-UA"
+        - label: "S7"
