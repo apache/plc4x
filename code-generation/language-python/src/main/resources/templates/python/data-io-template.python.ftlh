@@ -100,7 +100,7 @@ class ${type.name}:
             # Array field (${helper.camelCaseToSnakeCase(arrayField.name)})
             <#-- Only update curPos if the length expression uses it -->
                         <#if arrayField.loopExpression.contains("curPos")>
-            cur_pos = read_buffer.get_pos() - start_pos;
+            cur_pos = read_buffer.get_pos() - start_pos
                         </#if>
             <#-- If this is a count array, we can directly initialize an array with the given size -->
                         <#if field.isCountArrayField()>
@@ -275,60 +275,63 @@ class ${type.name}:
             <#if valueDefined>
                 <#switch case.name>
                     <#case "TIME">
-            return PlcTIME(value);
+            return PlcTIME(value)
                     <#break>
                     <#case "DATE">
                     <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day")>
-            LocalDate value = LocalDate.of(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue());
+            value: LocalDate = LocalDate(int(year), (month == 0) ? 1 : int(month), (day == 0) ? 1 : int(day))
                     </#if>
-            return new PlcDATE(value);
+            return PlcDATE(value)
                     <#break>
                     <#case "TIME_OF_DAY">
                     <#if helper.hasFieldsWithNames(case.fields, "hour", "minutes", "seconds", "nanos")>
-            LocalTime value = LocalTime.of(hour.intValue(), minutes.intValue(), seconds.intValue(), nanos.intValue());
+            value: LocalTime = LocalTime(int(hour), int(minutes), int(seconds), int(nanos))
                     <#elseif helper.hasFieldsWithNames(case.fields, "hour", "minutes", "seconds")>
-            LocalTime value = LocalTime.of(hour.intValue(), minutes.intValue(), seconds.intValue());
+            value: LocalTime = LocalTime(int(hour), int(minutes), int(seconds))
                     </#if>
-            return new PlcTIME_OF_DAY(value);
+            return PlcTIME_OF_DAY(value);
                     <#break>
                     <#case "DATE_AND_TIME">
                     <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "nanos")>
-            LocalDateTime value = LocalDateTime.of(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue(), nanos.intValue());
+            value: LocalDateTime = LocalDateTime(int(year), (month == 0) ? 1 : int(month), (day == 0) ? 1 : int(day), int(hour), int(minutes), int(seconds), int(nanos))
                     <#elseif helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds")>
-            LocalDateTime value = LocalDateTime.of(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue());
+            value: LocalDateTime = LocalDateTime(int(year), (month == 0) ? 1 : int(month), (day == 0) ? 1 : int(day), int(hour), int(minutes), int(seconds))
                     <#elseif helper.hasFieldsWithNames(case.fields, "secondsSinceEpoch")>
-            LocalDateTime value = LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0, ZoneOffset.UTC);
+            value: LocalDateTime = LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0, ZoneOffset.UTC)
                     </#if>
-            return new PlcDATE_AND_TIME(value);
+            return PlcDATE_AND_TIME(value)
                     <#break>
                     <#case "Struct">
-            return new PlcStruct(_map);
+            return PlcStruct(_map)
                     <#break>
                     <#case "List">
-            return new PlcList(value);
+            return PlcList(value)
                     <#break>
                     <#default>
-            return new Plc${case.name}(value);
+            return Plc${case.name}(value)
                 </#switch>
             </#if>
         }<#sep> else </#sep></#list>
         <#if !defaultCaseOutput>
-        return null;
+        return None
         </#if>
     }
 
 <#if outputFlavor != "passive">
-    public static void staticSerialize(WriteBuffer writeBuffer, PlcValue _value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws SerializationException {
-        staticSerialize(writeBuffer, _value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>, ByteOrder.BIG_ENDIAN);
-    }
+    <@emitImport import="from abc import staticmethod" />
+    @staticmethod
+    def staticSerialize(writeBuffer: WriteBuffer, _value: PlcValue<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}: ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}<#sep>, </#sep></#list></#if>) -> None:
+        staticSerialize(writeBuffer, _value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>, ByteOrder.BIG_ENDIAN)
 
-    public static void staticSerialize(WriteBuffer writeBuffer, PlcValue _value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>, ByteOrder byteOrder) throws SerializationException {
+    <@emitImport import="from abc import staticmethod" />
+    @staticmethod
+    def staticSerialize(writeBuffer: WriteBuffer, _value: PlcValue<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}: ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}<#sep>, </#sep></#list></#if>, byteOrder: ByteOrder) -> None:
         <#assign defaultCaseOutput=false>
         <#assign dataIoTypeDefinition=type.asDataIoTypeDefinition().orElseThrow()>
         <#list dataIoTypeDefinition.switchField.orElseThrow().cases as case>
         <@compress single_line=true>
             <#if case.discriminatorValueTerms?has_content>
-                if(
+                if
                 <#list case.discriminatorValueTerms as discriminatorValueTerm>
                     <#assign discriminatorExpression=dataIoTypeDefinition.switchField.orElseThrow().discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
                     <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.name]>
@@ -339,20 +342,19 @@ class ${type.name}:
                     <#else>
                     ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                     </#if>
-                    )
-                    <#sep> && </#sep>
+                    <#sep> and </#sep>
                 </#list>
-                )
+                :
             <#else>
                 <#assign defaultCaseOutput=true>
             </#if>
-        </@compress> { // ${case.name}
+        </@compress> { # ${case.name}
             <#list case.fields as field>
                 <#switch field.typeName>
                     <#case "array">
                         <#assign arrayField=field.asArrayField().orElseThrow()>
                         <#assign elementTypeReference=arrayField.type.elementTypeReference>
-            PlcList values = (PlcList) _value;
+            values: PlcList = _value
 
                         <#if case.name == "Struct">
             for (PlcValue val : ((List<PlcValue>) values.getStruct().get("${arrayField.name}").getList())) {
