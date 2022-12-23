@@ -48,14 +48,11 @@ public class DataItem {
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
-        int reserved = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedInt("", 15);
-        if (reserved != (int) 0x0000) {
+        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedShort("", 7);
+        if (reserved != (short) 0x00) {
           LOGGER.info(
-              "Expected constant value "
-                  + 0x0000
-                  + " but got "
-                  + reserved
-                  + " for reserved field.");
+              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
         }
       }
 
@@ -543,7 +540,8 @@ public class DataItem {
         && EvaluationHelper.equals(numberOfValues, 1)) { // BOOL
       // Reserved Field
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 15, ((Number) (int) 0x0000).intValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
+          "", 7, ((Number) (short) 0x00).shortValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -792,7 +790,7 @@ public class DataItem {
     if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)
         && EvaluationHelper.equals(numberOfValues, 1)) { // BOOL
       // Reserved Field
-      sizeInBits += 15;
+      sizeInBits += 7;
       // Simple Field (value)
       sizeInBits += 1;
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)) { // List
