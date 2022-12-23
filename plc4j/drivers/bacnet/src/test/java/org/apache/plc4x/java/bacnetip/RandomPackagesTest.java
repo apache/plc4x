@@ -6102,7 +6102,7 @@ public class RandomPackagesTest {
             File pcapFile = FileSystems.getDefault().getPath(tempDirectory, RandomPackagesTest.class.getSimpleName(), file).toFile();
             FileUtils.createParentDirectories(pcapFile);
             if (!pcapFile.exists()) {
-                URL source = new URL("http://kargs.net/captures/" + file);
+                URL source = new URL("https://kargs.net/captures/" + file);
                 LOGGER.info("Downloading {}", source);
                 FileUtils.copyURLToFile(source, pcapFile);
             }

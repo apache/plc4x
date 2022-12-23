@@ -1230,7 +1230,7 @@ public enum BACnetVendorId {
       (int) 1069, (int) 1069, (String) "Building Automation Products, Inc."),
   ASSET_MAPPING((int) 1070, (int) 1070, (String) "Asset Mapping"),
   SMARTEH_COMPANY((int) 1071, (int) 1071, (String) "Smarteh Company"),
-  DATAPOD_AUSTRALIA_PTY_LTD((int) 1072, (int) 1072, (String) "Datapod Australia Pty Ltd."),
+  DATAPOD_AUSTRALIA_PTY_LTD((int) 1072, (int) 1072, (String) "Datapod (Australia) Pty Ltd."),
   BUILDINGS_ALIVE_PTY_LTD((int) 1073, (int) 1073, (String) "Buildings Alive Pty Ltd"),
   DIGITAL_ELEKTRONIK((int) 1074, (int) 1074, (String) "Digital Elektronik"),
   TALENT_AUTOMAOE_TECNOLOGIA_LTDA(
@@ -1603,6 +1603,7 @@ public enum BACnetVendorId {
       (int) 1392, (int) 1392, (String) "AKVO Atmospheric Water Systems Pvt. Ltd."),
   EM_FIRST_CO_LTD((int) 1393, (int) 1393, (String) "EmFirst Co. Ltd."),
   IION_SYSTEMS_APS((int) 1394, (int) 1394, (String) "Iion Systems ApS"),
+  SAF_TEHNIKAJSC((int) 1396, (int) 1396, (String) "SAF Tehnika JSC"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
