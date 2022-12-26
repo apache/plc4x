@@ -18,7 +18,9 @@
  */
 package org.apache.plc4x.java.profinet.protocol;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
@@ -29,14 +31,12 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
-import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.device.ProfinetChannel;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
-import org.apache.plc4x.java.profinet.device.ProfinetDeviceMessageHandler;
-import org.apache.plc4x.java.profinet.device.ProfinetSubscriptionHandle;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.field.ProfinetField;
+import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -45,60 +45,65 @@ import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
-import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.pcap4j.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> implements HasConfiguration<ProfinetConfiguration>, PlcSubscriber {
 
     private final Logger LOGGER = LoggerFactory.getLogger(ProfinetProtocolLogic.class);
+    public static final Pattern SUB_MODULE_ARRAY_PATTERN = Pattern.compile("(\\[[\\w, ]*\\]){1}[ ,]{0,2}");
+    public static final Pattern MACADDRESS_ARRAY_PATTERN = Pattern.compile("^\\[(([A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2})(,)?)*\\]");
+    public LinkedHashMap<String, ProfinetDevice> configuredDevices = new LinkedHashMap<>();
     private ProfinetDriverContext driverContext = new ProfinetDriverContext();
 
     @Override
     public void setConfiguration(ProfinetConfiguration configuration) {
         driverContext.setConfiguration(configuration);
-        try {
-            driverContext.getConfiguration().setDevices();
-            driverContext.getConfiguration().readGsdFiles();
-            driverContext.getConfiguration().setSubModules();
-        } catch (DecoderException e) {
-            throw new RuntimeException(e);
-        } catch (PlcException e) {
-            throw new RuntimeException(e);
-        }
-        driverContext.getHandler().setConfiguredDevices(configuration.configuredDevices);
     }
 
     @Override
     public void setContext(ConversationContext<Ethernet_Frame> context) {
         super.setContext(context);
         try {
+            setDevices();
+        } catch (DecoderException | PlcException e) {
+            throw new RuntimeException(e);
+        }
+        driverContext.getHandler().setConfiguredDevices(configuredDevices);
+        try {
             PcapNetworkInterface devByAddress = Pcaps.getDevByAddress(InetAddress.getByName(driverContext.getConfiguration().transportConfig.split(":")[0]));
             driverContext.setChannel(new ProfinetChannel(Collections.singletonList(devByAddress)));
-            driverContext.getChannel().setConfiguration(driverContext.getConfiguration());
+            driverContext.getChannel().setConfiguredDevices(this.configuredDevices);
         } catch (UnknownHostException | PcapNativeException e) {
             throw new RuntimeException(e);
         }
-        for (Map.Entry<String, ProfinetDevice> device : driverContext.getConfiguration().configuredDevices.entrySet()) {
+        for (Map.Entry<String, ProfinetDevice> device : configuredDevices.entrySet()) {
             device.getValue().setContext(context, this.driverContext.getChannel());
         }
 
         try {
             onDeviceDiscovery();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ignored) {
 
         }
 
-        for (Map.Entry<String, ProfinetDevice> device : driverContext.getConfiguration().configuredDevices.entrySet()) {
+        for (Map.Entry<String, ProfinetDevice> device : configuredDevices.entrySet()) {
             try {
                 device.getValue().setSubModulesObjects();
             } catch (PlcException e) {
@@ -107,20 +112,70 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         }
     }
 
+    public void setDevices() throws DecoderException, PlcConnectionException {
+        // Split up the connection string into its individual segments.
+        Matcher matcher = MACADDRESS_ARRAY_PATTERN.matcher(driverContext.getConfiguration().getDevices().toUpperCase());
+
+        if (!matcher.matches()) {
+            throw new PlcConnectionException("Profinet Device Array is not in the correct format " + driverContext.getConfiguration().getDevices() + ".");
+        }
+
+        String[] devices = driverContext.getConfiguration().getDevices().substring(1, driverContext.getConfiguration().getDevices().length() - 1).split("[ ,]");
+
+        matcher = MACADDRESS_ARRAY_PATTERN.matcher(driverContext.getConfiguration().getDeviceAccess().toUpperCase());
+
+        if (!matcher.matches()) {
+            throw new PlcConnectionException("Profinet Device Access Array is not in the correct format " + driverContext.getConfiguration().getDevices() + ".");
+        }
+
+        String[] deviceAccess = driverContext.getConfiguration().getDevices().substring(1, driverContext.getConfiguration().getDeviceAccess().length() - 1).split("[ ,]");
+
+        String[] subModules = getSubModules();
+
+        if (deviceAccess.length != devices.length && deviceAccess.length != subModules.length) {
+            throw new PlcConnectionException("Number of Devices not the same as those in the device access list and submodule list.");
+        }
+
+        for (int i = 0; i < devices.length; i++) {
+            MacAddress macAddress = new MacAddress(Hex.decodeHex(devices[i].replace(":", "")));
+            configuredDevices.put(devices[i].replace(":", "").toUpperCase(), new ProfinetDevice(macAddress, deviceAccess[i], subModules[i], driverContext));
+        }
+    }
+
+    public Map<String, ProfinetDevice> getDevices() {
+        return this.configuredDevices;
+    }
+
+
+
+    public String[] getSubModules() throws PlcConnectionException {
+        // Split up the connection string into its individual segments.
+        String[] subModules = new String[configuredDevices.size()];
+        if (driverContext.getConfiguration().getSubModules().length() < 2) {
+            for (int i = 0; i < configuredDevices.size(); i++) {
+                subModules[i] = "[]";
+            }
+        } else {
+            Matcher matcher = SUB_MODULE_ARRAY_PATTERN.matcher(driverContext.getConfiguration().getSubModules().toUpperCase().substring(1, driverContext.getConfiguration().getSubModules().length() - 1));
+            if (!matcher.matches()) {
+                throw new PlcConnectionException("Profinet Submodule Array is not in the correct format " + driverContext.getConfiguration().getSubModules() + ".");
+            }
+            if (matcher.groupCount() != configuredDevices.size()) {
+                throw new PlcConnectionException("Configured device array size doesn't match the submodule array size");
+            }
+            for (int j = 0; j < matcher.groupCount(); j++) {
+                subModules[j] = matcher.group(j).replace(" ", "");
+            }
+        }
+        return subModules;
+    }
+
     private void onDeviceDiscovery() throws InterruptedException {
         ProfinetPlcDiscoverer discoverer = new ProfinetPlcDiscoverer(this.driverContext.getChannel());
         this.driverContext.getChannel().setDiscoverer(discoverer);
-        DefaultPlcDiscoveryRequest request = new DefaultPlcDiscoveryRequest(
-            discoverer,
-            new LinkedHashMap<>()
-        );
+        DefaultPlcDiscoveryRequest request = new DefaultPlcDiscoveryRequest(discoverer, new LinkedHashMap<>());
 
-        discoverer.ongoingDiscoverWithHandler(
-            request,
-            driverContext.getHandler(),
-            5000L,
-            30000L
-        );
+        discoverer.ongoingDiscoverWithHandler(request, driverContext.getHandler(), 5000L, 30000L);
         waitForDeviceDiscovery();
     }
 
@@ -130,7 +185,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         int count = 0;
         while (!discovered) {
             discovered = true;
-            for (Map.Entry<String, ProfinetDevice> device : driverContext.getConfiguration().configuredDevices.entrySet()) {
+            for (Map.Entry<String, ProfinetDevice> device : this.configuredDevices.entrySet()) {
                 if (!device.getValue().hasLldpPdu() || !device.getValue().hasDcpPdu()) {
                     discovered = false;
                 }
@@ -149,15 +204,8 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
         CompletableFuture<PlcBrowseResponse> future = new CompletableFuture<>();
         List<PlcBrowseItem> values = new LinkedList<>();
-        for (Map.Entry<String, ProfinetDevice> device : driverContext.getConfiguration().configuredDevices.entrySet()) {
-            // If this type has children, add entries for its children.
-            List<PlcBrowseItem> children = device.getValue().getChildTags();
-
-            // Populate a map of protocol-dependent options.
-            Map<String, PlcValue> options = new HashMap<>();
-            options.put("comment", new PlcSTRING("Test"));
-
-            values.add(new DefaultPlcBrowseItem(device.getKey(), device.getKey(), PlcValueType.Struct, false, false, true, children, options));
+        for (Map.Entry<String, ProfinetDevice> device : this.configuredDevices.entrySet()) {
+            values.add(device.getValue().browseTags());
         }
 
         DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, values);
@@ -174,7 +222,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             throw new RuntimeException(e);
         }
         try {
-            for (Map.Entry<String, ProfinetDevice> device : driverContext.getConfiguration().configuredDevices.entrySet()) {
+            for (Map.Entry<String, ProfinetDevice> device : this.configuredDevices.entrySet()) {
                 device.getValue().onConnect(this);
             }
             context.fireConnected();

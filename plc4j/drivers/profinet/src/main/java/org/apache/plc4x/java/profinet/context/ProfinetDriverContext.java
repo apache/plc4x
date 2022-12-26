@@ -19,25 +19,32 @@
 
 package org.apache.plc4x.java.profinet.context;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.device.ProfinetChannel;
 import org.apache.plc4x.java.profinet.device.ProfinetDeviceMessageHandler;
 import org.apache.plc4x.java.profinet.device.ProfinetSubscriptionHandle;
+import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.apache.plc4x.java.spi.context.DriverContext;
 
+import java.io.IOException;
 import java.net.DatagramSocket;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ProfinetDriverContext implements DriverContext {
 
     public static final int DEFAULT_UDP_PORT = 34964;
-
     private Map<Long, ProfinetSubscriptionHandle> subscriptions = new HashMap<>();
     private ProfinetDeviceMessageHandler handler = new ProfinetDeviceMessageHandler();
     private ProfinetConfiguration configuration;
     private DatagramSocket socket;
     private ProfinetChannel channel;
+    private final Map<String, ProfinetISO15745Profile> gsdFiles = new HashMap<>();
 
     public ProfinetChannel getChannel() {
         return channel;
@@ -69,6 +76,7 @@ public class ProfinetDriverContext implements DriverContext {
 
     public void setConfiguration(ProfinetConfiguration configuration) {
         this.configuration = configuration;
+        setGsdDirectory();
     }
 
     public DatagramSocket getSocket() {
@@ -77,5 +85,28 @@ public class ProfinetDriverContext implements DriverContext {
 
     public void setSocket(DatagramSocket socket) {
         this.socket = socket;
+    }
+
+    public Map<String, ProfinetISO15745Profile> getGsdFiles() {
+        return gsdFiles;
+    }
+
+    private void setGsdDirectory() {
+        try {
+            DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(configuration.getGsdDirectory()));
+            XmlMapper xmlMapper = new XmlMapper();
+            for (Path file : stream) {
+                try {
+                    ProfinetISO15745Profile gsdFile = xmlMapper.readValue(file.toFile(), ProfinetISO15745Profile.class);
+                    if (gsdFile.getProfileHeader() != null && gsdFile.getProfileHeader().getProfileIdentification().equals("PROFINET Device Profile") && gsdFile.getProfileHeader().getProfileClassID().equals("Device")) {
+                        String id = gsdFile.getProfileBody().getDeviceIdentity().getVendorId() + "-" + gsdFile.getProfileBody().getDeviceIdentity().getDeviceID();
+                        this.gsdFiles.put(id, gsdFile);
+                    }
+                } catch (IOException ignored) {
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("GSDML File directory is un-readable");
+        }
     }
 }

@@ -51,10 +51,6 @@ import java.util.regex.Pattern;
 
 public class ProfinetConfiguration extends BaseConfiguration implements RawSocketTransportConfiguration {
 
-    private final Logger logger = LoggerFactory.getLogger(ProfinetConfiguration.class);
-    public static final Pattern MACADDRESS_ARRAY_PATTERN = Pattern.compile("^\\[(([A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2})(,)?)*\\]");
-    public static final Pattern SUB_MODULE_ARRAY_PATTERN = Pattern.compile("(\\[[\\w, ]*\\]){1}[ ,]{0,2}");
-
     @Override
     public boolean getSupportVlans() {
         return RawSocketTransportConfiguration.super.getSupportVlans();
@@ -74,6 +70,10 @@ public class ProfinetConfiguration extends BaseConfiguration implements RawSocke
     public PacketHandler getPcapPacketHandler() {
         return null;
     }
+
+    @ConfigurationParameter("deviceaccess")
+    @StringDefaultValue("")
+    private String deviceAccess;
 
     @ConfigurationParameter("devices")
     @StringDefaultValue("")
@@ -103,94 +103,8 @@ public class ProfinetConfiguration extends BaseConfiguration implements RawSocke
     @IntDefaultValue(50)
     private int dataHoldFactor;
 
-    public LinkedHashMap<String, ProfinetDevice> configuredDevices = new LinkedHashMap<>();
-
-    private final Map<String, ProfinetISO15745Profile> gsdFiles = new HashMap<>();
-
     public String getDevices() {
         return devices;
-    }
-
-    public void setDevices() throws DecoderException, PlcConnectionException {
-
-        // Split up the connection string into its individual segments.
-        Matcher matcher = MACADDRESS_ARRAY_PATTERN.matcher(this.devices.toUpperCase());
-
-        if (!matcher.matches()) {
-            throw new PlcConnectionException("Profinet Device Array is not in the correct format " + this.devices + ".");
-        }
-
-        String[] devices = this.devices.substring(1, this.devices.length() - 1).split("[ ,]");
-
-        for (String device : devices) {
-            MacAddress macAddress = new MacAddress(Hex.decodeHex(device.replace(":", "")));
-            configuredDevices.put(device.replace(":", "").toUpperCase(), new ProfinetDevice(macAddress, this));
-        }
-    }
-
-    public void setSubModules() throws DecoderException, PlcException {
-
-        // Split up the connection string into its individual segments.
-        String[] devices = new String[configuredDevices.size()];
-        if (subModules.length() < 2) {
-            int index = 0;
-            for (Map.Entry<String, ProfinetDevice> entry : configuredDevices.entrySet()) {
-                devices[index] = "[]";
-                index += 1;
-            }
-        } else {
-            Matcher matcher = SUB_MODULE_ARRAY_PATTERN.matcher(subModules.toUpperCase().substring(1, subModules.length() - 1));
-            if (!matcher.matches()) {
-                throw new PlcConnectionException("Profinet Submodule Array is not in the correct format " + subModules + ".");
-            }
-            if (matcher.groupCount() != configuredDevices.size()) {
-                throw new PlcConnectionException("Configured device array size doesn't match the submodule array size");
-            }
-            for (int j = 0; j < matcher.groupCount(); j++) {
-                devices[j] = matcher.group(j).replace(" ", "");
-            }
-        }
-
-        int index = 0;
-        for (Map.Entry<String, ProfinetDevice> entry : configuredDevices.entrySet()) {
-            entry.getValue().setSubModuleString(devices[index]);
-            index += 1;
-        }
-    }
-
-    public Map<String, ProfinetISO15745Profile> readGsdFiles() {
-        try {
-            DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(this.gsdDirectory));
-            XmlMapper xmlMapper = new XmlMapper();
-            for (Path file : stream) {
-                try {
-                    ProfinetISO15745Profile gsdFile = xmlMapper.readValue(file.toFile(), ProfinetISO15745Profile.class);
-                    if (gsdFile.getProfileHeader() != null && gsdFile.getProfileHeader().getProfileIdentification().equals("PROFINET Device Profile") && gsdFile.getProfileHeader().getProfileClassID().equals("Device")) {
-                        String id = gsdFile.getProfileBody().getDeviceIdentity().getVendorId() + "-" + gsdFile.getProfileBody().getDeviceIdentity().getDeviceID();
-                        logger.debug("Adding GSDML file for {}", gsdFile.getProfileBody().getDeviceIdentity().getVendorName().getValue());
-                        this.gsdFiles.put(id, gsdFile);
-                    }
-                } catch (IOException e) {
-                    // Pass - Ignore any files that aren't xml files.
-                    logger.debug(String.valueOf(e));
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("GSDML File directory is un-readable");
-        }
-        return this.gsdFiles;
-    }
-
-    public Map<String, ProfinetISO15745Profile> getGsdFiles() {
-        return gsdFiles;
-    }
-
-    public HashMap<String, ProfinetDevice> getConfiguredDevices() {
-        return configuredDevices;
-    }
-
-    public void setConfiguredDevices(LinkedHashMap<String, ProfinetDevice> configuredDevices) {
-        this.configuredDevices = configuredDevices;
     }
 
     public String getGsdDirectory() {
@@ -227,6 +141,10 @@ public class ProfinetConfiguration extends BaseConfiguration implements RawSocke
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String getDeviceAccess() {
+        return deviceAccess;
     }
 
     @Override

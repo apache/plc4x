@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
+import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -52,10 +53,14 @@ public class ProfinetConfigurationTests {
     @Test
     public void readGsdFilesInDirectory()  {
         String directory = "src/test/resources";
+        ProfinetProtocolLogic protocolLogic = new ProfinetProtocolLogic();
+
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "gsddirectory=" + directory);
-        Map<String, ProfinetISO15745Profile> gsdFiles = configuration.readGsdFiles();
-        assertEquals(directory, configuration.getGsdDirectory());
+        protocolLogic.setConfiguration(configuration);
+
+        Map<String, ProfinetISO15745Profile> gsdFiles = protocolLogic.readGsdFiles();
+        assertEquals(gsdFiles.size(), 1);
     }
 
     @Test
@@ -74,14 +79,15 @@ public class ProfinetConfigurationTests {
     public void readProfinetDevices() throws DecoderException, PlcConnectionException {
 
         String[] macAddresses = new String[] {"CA:FE:00:00:00:01"};
+        ProfinetProtocolLogic protocolLogic = new ProfinetProtocolLogic();
         ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[" + String.join(",", macAddresses) + "]");
 
         ProfinetDeviceContext context = new ProfinetDeviceContext();
         context.setConfiguration(configuration);
+        protocolLogic.setConfiguration(configuration);
 
-        Map<String, ProfinetDevice> devices = configuration.getConfiguredDevices();
-
+        Map<String, ProfinetDevice> devices = protocolLogic.getDevices();
 
         for (String mac : macAddresses) {
             assert(devices.containsKey(mac.replace(":", "")));
@@ -92,13 +98,15 @@ public class ProfinetConfigurationTests {
     public void readProfinetDevicesMultiple() throws DecoderException, PlcConnectionException {
 
         String[] macAddresses = new String[] {"CA:FE:00:00:00:01","CA:FE:00:00:00:02","CA:FE:00:00:00:03"};
+        ProfinetProtocolLogic protocolLogic = new ProfinetProtocolLogic();
         ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[" + String.join(",", macAddresses) + "]");
 
         ProfinetDeviceContext context = new ProfinetDeviceContext();
         context.setConfiguration(configuration);
+        protocolLogic.setConfiguration(configuration);
 
-        Map<String, ProfinetDevice> devices = configuration.getConfiguredDevices();
+        Map<String, ProfinetDevice> devices = protocolLogic.getDevices();
 
         for (String mac : macAddresses) {
             assert(devices.containsKey(mac.replace(":", "")));
@@ -109,13 +117,15 @@ public class ProfinetConfigurationTests {
     public void readProfinetLowerCase() throws DecoderException, PlcConnectionException {
 
         String[] macAddresses = new String[] {"00:0c:29:75:25:67"};
+        ProfinetProtocolLogic protocolLogic = new ProfinetProtocolLogic();
         ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[" + String.join(",", macAddresses) + "]");
 
         ProfinetDeviceContext context = new ProfinetDeviceContext();
         context.setConfiguration(configuration);
+        protocolLogic.setConfiguration(configuration);
 
-        Map<String, ProfinetDevice> devices = configuration.getConfiguredDevices();
+        Map<String, ProfinetDevice> devices = protocolLogic.getDevices();
 
         for (String mac : macAddresses) {
             assert(devices.containsKey(mac.replace(":", "").toUpperCase()));
@@ -127,22 +137,22 @@ public class ProfinetConfigurationTests {
 
         String[] macAddresses = new String[] {"00:0c:29:75:25:67"};
         String subModules = "[[PLC4X_01, PLC4X_02, PLC4X_01, PLC4X_02]]";
+        ProfinetProtocolLogic protocolLogic = new ProfinetProtocolLogic();
         ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[" + String.join(",", macAddresses) + "]&submodules=" + subModules);
 
         ProfinetDeviceContext context = new ProfinetDeviceContext();
         context.setConfiguration(configuration);
+        protocolLogic.setConfiguration(configuration);
 
-        Map<String, ProfinetDevice> devices = configuration.getConfiguredDevices();
         try {
-            configuration.setSubModules();
+            protocolLogic.setDevices();
         } catch (PlcException e) {
             throw new RuntimeException(e);
         }
-
+        Map<String, ProfinetDevice> devices = protocolLogic.getDevices();
 
         for (String mac : macAddresses) {
-            String[] test = devices.get(mac.replace(":", "").toUpperCase()).getSubModules();
             assertEquals("PLC4X_01", devices.get(mac.replace(":", "").toUpperCase()).getSubModules()[0]);
             assertEquals("PLC4X_02", devices.get(mac.replace(":", "").toUpperCase()).getSubModules()[1]);
             assertEquals("PLC4X_01", devices.get(mac.replace(":", "").toUpperCase()).getSubModules()[2]);
