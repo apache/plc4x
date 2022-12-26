@@ -80,6 +80,8 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 		switch controllerTypeString {
 		case "ANY":
 			configuration.controllerType = ControllerType_ANY
+		case "S7_200":
+			configuration.controllerType = ControllerType_S7_200
 		case "S7_300":
 			configuration.controllerType = ControllerType_S7_300
 		case "S7_400":
