@@ -42,12 +42,12 @@ public class Plc4XEndpointTest {
 
     // TODO: figure out what this is
     @Test
-    public void createProducer() throws Exception {
+    public void createProducer() {
         assertThat(SUT.createProducer(), notNullValue());
     }
 
     @Test
-    public void createConsumer() throws Exception {
+    public void createConsumer() {
         assertThat(SUT.createConsumer(mock(Processor.class)), notNullValue());
     }
 

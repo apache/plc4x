@@ -53,6 +53,7 @@ public class Plc4XProducerTest {
 
         when(endpointMock.getConnection()).thenReturn(mockConnection);
         SUT = new Plc4XProducer(endpointMock);
+        SUT.doStart();
         testExchange = mock(Exchange.class, RETURNS_DEEP_STUBS);
         Map<String, Map<String,Object>> tags = new HashMap();
         tags.put("test1", Collections.singletonMap("testAddress1",0));

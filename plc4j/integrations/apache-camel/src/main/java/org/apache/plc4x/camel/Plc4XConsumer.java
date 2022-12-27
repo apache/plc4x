@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
 public class Plc4XConsumer extends DefaultConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XConsumer.class);
 
-    private final PlcConnection plcConnection;
+    private PlcConnection plcConnection;
     private final Map<String, Object> tags;
     private final String trigger;
     private final Plc4XEndpoint plc4XEndpoint;
@@ -58,7 +58,6 @@ public class Plc4XConsumer extends DefaultConsumer {
     public Plc4XConsumer(Plc4XEndpoint endpoint, Processor processor) {
         super(endpoint, processor);
         this.plc4XEndpoint = endpoint;
-        this.plcConnection = endpoint.getConnection();
         this.tags = endpoint.getTags();
         this.trigger = endpoint.getTrigger();
     }
@@ -74,7 +73,12 @@ public class Plc4XConsumer extends DefaultConsumer {
     }
 
     @Override
-    protected void doStart() throws ScraperException {
+    protected void doStart() throws Exception {
+        super.doStart();
+        this.plcConnection = plc4XEndpoint.getConnection();
+        if (!plcConnection.isConnected()) {
+            plc4XEndpoint.reconnect();
+        }
         if (trigger == null) {
             startUnTriggered();
         } else {
@@ -147,11 +151,12 @@ public class Plc4XConsumer extends DefaultConsumer {
     }
 
     @Override
-    protected void doStop() {
+    protected void doStop() throws Exception {
         // First stop the polling process
         if (future != null) {
             future.cancel(true);
         }
+        super.doStop();
     }
 
 }
