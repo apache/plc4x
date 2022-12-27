@@ -312,7 +312,7 @@
     [typeSwitch dataType,numberOfValues
         ['BOOL','1'  BOOL
             // TODO: Possibly change the order of the bit and the reserved part.
-            [reserved uint 7 '0x00'                            ]
+            [reserved uint 15 '0x0000'                         ]
             [simple   bit     value                            ]
         ]
         ['BOOL'      List
