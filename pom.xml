@@ -826,6 +826,11 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <executions>
           <execution>
@@ -867,6 +872,7 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -1237,7 +1243,7 @@
             <outputEncoding>${project.reporting.outputencoding}</outputEncoding>
             <!--
               IntelliJ can't find the asciidoc config option in the site plugin, which is correct.
-              However, this config section is used by the asciidoctor site plugin extension. So plead
+              However, this config section is used by the asciidoctor site plugin extension. So please
               ignore this error, it's actually ok.
             -->
             <asciidoc>
