@@ -21,13 +21,12 @@ package org.apache.plc4x.java.profinet.device;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.gsdml.*;
@@ -58,7 +57,7 @@ public class ProfinetDevice {
     public ProfinetDevice(MacAddress macAddress, String deviceAccess, String subModules, ProfinetDriverContext driverContext) {
         this.driverContext = driverContext;
         deviceContext.setDeviceAccess(deviceAccess);
-        deviceContext.setSubModules(subModules.substring(1, subModules.length() - 1).split("[, ]"));
+        deviceContext.setSubModules(subModules);
         deviceContext.setMacAddress(macAddress);
         deviceContext.setConfiguration(driverContext.getConfiguration());
         deviceContext.setLocalIpAddress(deviceContext.getConfiguration().getIpAddress());
@@ -86,9 +85,9 @@ public class ProfinetDevice {
 
     private void issueGSDMLFile(String vendorId, String deviceId) {
         String id = "0x" + vendorId + "-0x" + deviceId;
-        if (driverContext.getGsdFiles().containsKey(id)) {
+        try {
             deviceContext.setGsdFile(driverContext.getGsdFiles().get(id));
-        } else {
+        } catch (PlcConnectionException e) {
             throw new RuntimeException("No GSDML file available for device " + deviceContext.getVendorId() + " - " + deviceContext.getDeviceId() + " - " + deviceContext.getDeviceName());
         }
     }
@@ -163,26 +162,48 @@ public class ProfinetDevice {
         thread.start();
     }
 
+    /*
+        Return metadata about the device. This is sourced from the connection string as well as GSD file.
+     */
     public Map<String, PlcValue> getDeviceInfo() {
         Map<String, PlcValue> options = new HashMap<>();
 
         return options;
     }
 
+    /*
+        Create a structure including all the devices tags and child tags.
+        The options include metadata about the device.
+        The children are a list of configured submodules, with the same format as the parent.
+        Each address of the children is formatted with the format i.e. parent.submodule.chiildtag
+     */
     public PlcBrowseItem browseTags() {
         // If this type has children, add entries for its children.
-        List<PlcBrowseItem> children = device.getValue().getChildTags();
+        List<PlcBrowseItem> children = getChildTags();
 
         // Populate a map of protocol-dependent options.
         Map<String, PlcValue> options = new HashMap<>();
-        for (Map.Entry<String, PlcValue> entry : device.getValue().getDeviceInfo().entrySet()) {
+        for (Map.Entry<String, PlcValue> entry : getDeviceInfo().entrySet()) {
             options.put(entry.getKey(), entry.getValue());
         }
-        return new DefaultPlcBrowseItem(device.getKey(), device.getKey(), PlcValueType.List, false, false, true, children, options);
+        return new DefaultPlcBrowseItem(
+            this.deviceContext.getMacAddress().toString(),
+            this.deviceContext.getDeviceName(),
+            PlcValueType.List,
+            false,
+            false,
+            true,
+            children,
+            options);
     }
 
+    /*
+        Loop through each configured submodule and return a list of child tags.
+        Each child in itself can also contain configued submodules.
+     */
     public List<PlcBrowseItem> getChildTags() {
         List<PlcBrowseItem> children = new ArrayList<>();
+
         for (PnIoCm_Block_ExpectedSubmoduleReq ioData : deviceContext.getExpectedSubmoduleReq()) {
             for (PnIoCm_ExpectedSubmoduleBlockReqApi api : ioData.getApis()) {
                 ProfinetDeviceAccessPointItem accessPointItem = findDeviceAccessPoint(api.getModuleIdentNumber());
@@ -195,24 +216,24 @@ public class ProfinetDevice {
                     options.put("infotext", new PlcSTRING(accessPointItem.getModuleInfo().getInfoText().getTextId()));
                     children.add(new DefaultPlcBrowseItem(accessPointItem.getModuleInfo().getName().getTextId(), accessPointItem.getModuleInfo().getName().getTextId(), PlcValueType.List, false, false, true, moduleChildren, options));
                 }
-
             }
         }
         return children;
     }
 
+    /*
+        Loop through an Access Point Item and return the configured submodules
+     */
     public List<PlcBrowseItem> getSubModules(ProfinetDeviceAccessPointItem module) {
         List<PlcBrowseItem> children = new ArrayList<>();
-        for (PnIoCm_Submodule module : module.get) {
-            List<PlcBrowseItem> childChildren = getDeviceChildren(accessPointItem);
 
+        for (ProfinetVirtualSubmoduleItem virtualSubModuleItem : module.getVirtualSubmoduleList()) {
             // Populate a map of protocol-dependent options.
             Map<String, PlcValue> options = new HashMap<>();
-            options.put("name", new PlcSTRING(accessPointItem.getModuleInfo().getName().getTextId()));
-            options.put("infotext", new PlcSTRING(accessPointItem.getModuleInfo().getInfoText().getTextId()));
-            String childName = deviceContext.getDeviceName() + "." + accessPointItem.getModuleInfo().getName().getTextId();
-            children.add(new DefaultPlcBrowseItem(childName, childName, PlcValueType.Struct, false, false, true, childChildren, options));
-
+            options.put("name", new PlcSTRING(virtualSubModuleItem.getModuleInfo().getName().getTextId()));
+            options.put("infotext", new PlcSTRING(virtualSubModuleItem.getModuleInfo().getInfoText().getTextId()));
+            String childName = deviceContext.getDeviceName() + "." + virtualSubModuleItem.getModuleInfo().getName().getTextId();
+            children.add(new DefaultPlcBrowseItem(childName, childName, PlcValueType.Struct, false, false, true, null, options));
         }
         return children;
     }

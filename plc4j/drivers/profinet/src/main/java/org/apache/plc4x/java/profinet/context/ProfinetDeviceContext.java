@@ -278,8 +278,16 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         return subModules;
     }
 
-    public void setSubModules(String[] subModules) {
-        this.subModules = subModules;
+    public void setSubModules(String subModules) {
+        String[] splitModules = subModules.split("[, ]");
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (String s : splitModules) {
+            if (s.length() > 0) {
+                arrayList.add(s);
+            }
+        }
+        this.subModules = new String[arrayList.size()];
+        arrayList.toArray(this.subModules);
     }
 
     public AtomicInteger getSessionKeyGenerator() {
@@ -382,7 +390,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         return gsdFile;
     }
 
-    public void setGsdFile(ProfinetISO15745Profile gsdFile) {
+    public void setGsdFile(ProfinetISO15745Profile gsdFile) throws PlcConnectionException {
         this.gsdFile = gsdFile;
         extractGSDFileInfo(this.gsdFile);
     }
@@ -479,36 +487,6 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         if (!matcher.matches()) {
             throw new PlcConnectionException("Physical Slots Range is not in the correct format " + deviceAccessItem.getPhysicalSlots());
         }
-
-        ArrayList<ProfinetModule> moduleArray = new ArrayList<>((Integer.parseInt(matcher.group("to"))) - (Integer.parseInt(matcher.group("from"))));
-
-        moduleArray.set(deviceAccessItem.getFixedInSlots(), deviceAccessItem);
-        for (int i = 0; i < subModules.length; i++) {
-            ProfinetModule foundModule = null;
-            for (ProfinetModuleItem module : gsdFile.getProfileBody().getApplicationProcess().getModuleList()) {
-                if (module.getId().equals(subModules[i])) {
-                    foundModule = module;
-                    break;
-                }
-            }
-            if (foundModule != null) {
-                if (moduleArray.get(i) != null) {
-                    throw new PlcConnectionException("Attempted to place multiple modules within the same slot");
-                }
-                moduleArray.set(i, foundModule);
-            } else {
-                throw new PlcConnectionException("Module with ID " + subModules[i] + "not found in GSD file");
-            }
-        }
-
-        for (ProfinetModule module : moduleArray) {
-            inputIoDataApiBlocks.addAll(module.getInputIoDataApiBlocks(1));
-            outputIoCsApiBlocks.addAll(module.getOutputIoCsApiBlocks(1));
-            inputIoCsApiBlocks.addAll(module.getInputIoCsApiBlocks(inputIoDataApiBlocks.size() + 1));
-            outputIoDataApiBlocks.addAll(module.getOutputIoDataApiBlocks(outputIoCsApiBlocks.size()));
-            expectedSubmoduleReq.addAll(module.getExpectedSubmoduleReq());
-        }
-
 
         int inputIoDataOffsetCount = 0;
         int outputIoCsOffsetCount = 0;

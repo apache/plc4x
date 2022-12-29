@@ -67,8 +67,9 @@ import java.util.regex.Pattern;
 public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> implements HasConfiguration<ProfinetConfiguration>, PlcSubscriber {
 
     private final Logger LOGGER = LoggerFactory.getLogger(ProfinetProtocolLogic.class);
-    public static final Pattern SUB_MODULE_ARRAY_PATTERN = Pattern.compile("(\\[[\\w, ]*\\]){1}[ ,]{0,2}");
-    public static final Pattern MACADDRESS_ARRAY_PATTERN = Pattern.compile("^\\[(([A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2})(,)?)*\\]");
+    public static final Pattern SUB_MODULE_ARRAY_PATTERN = Pattern.compile("^\\[((\\[[\\w, ]*\\]){1}[ ,]{0,2})*\\]");
+    public static final Pattern SUB_MODULE_SPLIT_ARRAY_PATTERN = Pattern.compile("(?:\\[(?:\\[([\\w, ]*)\\]){1}(?:[ ,]{0,2}))*\\]");
+    public static final Pattern MACADDRESS_ARRAY_PATTERN = Pattern.compile("^\\[(([A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2})[, ]?)*\\]");
     public LinkedHashMap<String, ProfinetDevice> configuredDevices = new LinkedHashMap<>();
     private ProfinetDriverContext driverContext = new ProfinetDriverContext();
 
@@ -99,9 +100,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
         try {
             onDeviceDiscovery();
-        } catch (InterruptedException ignored) {
-
-        }
+        } catch (InterruptedException ignored) {}
 
         for (Map.Entry<String, ProfinetDevice> device : configuredDevices.entrySet()) {
             try {
@@ -122,15 +121,9 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
         String[] devices = driverContext.getConfiguration().getDevices().substring(1, driverContext.getConfiguration().getDevices().length() - 1).split("[ ,]");
 
-        matcher = MACADDRESS_ARRAY_PATTERN.matcher(driverContext.getConfiguration().getDeviceAccess().toUpperCase());
+        String[] deviceAccess = driverContext.getConfiguration().getDeviceAccess().substring(1, driverContext.getConfiguration().getDeviceAccess().length() - 1).split("[ ,]");
 
-        if (!matcher.matches()) {
-            throw new PlcConnectionException("Profinet Device Access Array is not in the correct format " + driverContext.getConfiguration().getDevices() + ".");
-        }
-
-        String[] deviceAccess = driverContext.getConfiguration().getDevices().substring(1, driverContext.getConfiguration().getDeviceAccess().length() - 1).split("[ ,]");
-
-        String[] subModules = getSubModules();
+        String[] subModules = getSubModules(deviceAccess.length);
 
         if (deviceAccess.length != devices.length && deviceAccess.length != subModules.length) {
             throw new PlcConnectionException("Number of Devices not the same as those in the device access list and submodule list.");
@@ -147,24 +140,32 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     }
 
 
-
-    public String[] getSubModules() throws PlcConnectionException {
+    /*
+        Splits the connection string array for the submodules.
+     */
+    public String[] getSubModules(int len) throws PlcConnectionException {
         // Split up the connection string into its individual segments.
-        String[] subModules = new String[configuredDevices.size()];
+        String[] subModules = new String[len];
         if (driverContext.getConfiguration().getSubModules().length() < 2) {
-            for (int i = 0; i < configuredDevices.size(); i++) {
+            for (int i = 0; i < len; i++) {
                 subModules[i] = "[]";
             }
         } else {
-            Matcher matcher = SUB_MODULE_ARRAY_PATTERN.matcher(driverContext.getConfiguration().getSubModules().toUpperCase().substring(1, driverContext.getConfiguration().getSubModules().length() - 1));
+            String regexString = driverContext.getConfiguration().getSubModules().toUpperCase();
+            Matcher matcher = SUB_MODULE_ARRAY_PATTERN.matcher(regexString);
             if (!matcher.matches()) {
-                throw new PlcConnectionException("Profinet Submodule Array is not in the correct format " + driverContext.getConfiguration().getSubModules() + ".");
+                throw new PlcConnectionException("Profinet Submodule Array is not in the correct format " + regexString + ".");
             }
-            if (matcher.groupCount() != configuredDevices.size()) {
-                throw new PlcConnectionException("Configured device array size doesn't match the submodule array size");
+
+            String[] splitMatches = SUB_MODULE_SPLIT_ARRAY_PATTERN.split(regexString);
+            if (splitMatches.length == 0) {
+                splitMatches = new String[] {regexString};
             }
-            for (int j = 0; j < matcher.groupCount(); j++) {
-                subModules[j] = matcher.group(j).replace(" ", "");
+            for (int j = 0; j < splitMatches.length; j++) {
+                subModules[j] = splitMatches[j].replace("[", "").replace("]", "");
+                if (subModules[j].startsWith(",")){
+                    subModules[j] = subModules[j].substring(1);
+                }
             }
         }
         return subModules;
