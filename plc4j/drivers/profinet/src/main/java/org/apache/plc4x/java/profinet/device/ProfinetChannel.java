@@ -144,7 +144,7 @@ public class ProfinetChannel {
                                 }
                             } else if (payload instanceof Ethernet_FramePayload_IPv4) {
                                 String macAddress = Hex.encodeHexString(ethernetFrame.getSource().getAddress()).toUpperCase();
-                                if (configuration != null && this.configuredDevices != null) {
+                                if (this.configuredDevices != null) {
                                     ProfinetDevice device = this.configuredDevices.get(macAddress);
                                     device.handleResponse((Ethernet_FramePayload_IPv4) payload);
                                 }

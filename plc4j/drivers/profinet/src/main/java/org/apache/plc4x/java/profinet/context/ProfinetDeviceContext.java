@@ -398,7 +398,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     private void extractGSDFileInfo(ProfinetISO15745Profile gsdFile) throws PlcConnectionException {
         ProfinetDeviceAccessPointItem foundDeviceAccessItem = null;
         for (ProfinetDeviceAccessPointItem deviceAccessItem : gsdFile.getProfileBody().getApplicationProcess().getDeviceAccessPointList()) {
-            if (deviceAccess == deviceAccessItem.getId()) {
+            if (deviceAccess.equals(deviceAccessItem.getId())) {
                 foundDeviceAccessItem = deviceAccessItem;
             }
         }
