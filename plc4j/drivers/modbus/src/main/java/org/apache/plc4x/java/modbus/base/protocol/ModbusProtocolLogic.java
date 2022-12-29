@@ -272,7 +272,11 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
     protected byte[] fromPlcValue(PlcTag tag, PlcValue plcValue) {
         ModbusDataType tagDataType = ((ModbusTag) tag).getDataType();
         try {
-            if (plcValue instanceof PlcList) {
+            if (tag instanceof ModbusTagCoil && plcValue instanceof PlcBOOL) {
+                byte byteValue = (byte) (plcValue.getBoolean() ? 1 : 0);
+                return new byte[]{byteValue};
+            }
+            else if (plcValue instanceof PlcList) {
                 WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue, tagDataType, plcValue.getLength()));
                 DataItem.staticSerialize(writeBuffer, plcValue, tagDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
                 byte[] data = writeBuffer.getData();

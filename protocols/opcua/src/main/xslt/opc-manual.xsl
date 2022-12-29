@@ -381,9 +381,9 @@
 ]
 
 [type PascalString
-    [implicit int 32 sLength          'stringValue.length == 0 ? -1 : stringValue.length']
+    [implicit int 32 sLength          'STATIC_CALL("utf8Length", stringValue) == 0 ? -1 : STATIC_CALL("utf8Length", stringValue)']
     [simple vstring 'sLength == -1 ? 0 : sLength * 8' stringValue]
-    [virtual  int 32 stringLength     'stringValue.length == -1 ? 0 : stringValue.length']
+    [virtual  int 32 stringLength     'STATIC_CALL("utf8Length", stringValue) == -1 ? 0 : STATIC_CALL("utf8Length", stringValue)']
 ]
 
 [type PascalByteString

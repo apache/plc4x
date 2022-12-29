@@ -29,8 +29,8 @@ import (
 )
 
 type PlcDATE struct {
-	value time.Time
 	PlcValueAdapter
+	value time.Time
 }
 
 func NewPlcDATE(value interface{}) PlcDATE {
@@ -53,14 +53,43 @@ func NewPlcDATE(value interface{}) PlcDATE {
 	}
 }
 
+func NewPlcDATEFromSecondsSinceEpoch(secondsSinceEpoch uint32) PlcDATE {
+	return NewPlcDATE(time.Unix(int64(secondsSinceEpoch), 0))
+}
+
+func NewPlcDATEFromDaysSinceEpoch(daysSinceEpoch uint16) PlcDATE {
+	// 86400 = 24 hours x 60 Minutes x 60 Seconds
+	return NewPlcDATE(time.Unix(int64(daysSinceEpoch)*86400, 0))
+}
+
+func NewPlcDATEFromDaysSinceSiemensEpoch(daysSinceSiemensEpoch uint16) PlcDATE {
+	// 86400 = 24 hours x 60 Minutes x 60 Seconds
+	return NewPlcDATEFromDaysSinceEpoch(daysSinceSiemensEpoch + 7305)
+}
+
 func (m PlcDATE) GetRaw() []byte {
 	theBytes, _ := m.Serialize()
 	return theBytes
 }
 
+func (m PlcDATE) GetSecondsSinceEpoch() uint32 {
+	return uint32(m.value.Unix())
+}
+
+func (m PlcDATE) GetDaysSinceEpoch() uint16 {
+	// Seconds to days
+	return uint16(m.value.Unix() / 86400)
+}
+
+func (m PlcDATE) GetDaysSinceSiemensEpoch() uint16 {
+	// Seconds to days to 1990-01-01
+	return uint16((m.value.Unix() / 86400) - 7305)
+}
+
 func (m PlcDATE) IsDate() bool {
 	return true
 }
+
 func (m PlcDATE) GetDate() time.Time {
 	return time.Date(m.value.Year(), m.value.Month(), m.value.Day(), 0, 0, 0, 0, time.UTC)
 }

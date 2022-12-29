@@ -30,13 +30,17 @@ import (
 
 type PlcTIME struct {
 	PlcSimpleValueAdapter
-	value uint32
+	value time.Duration
 }
 
-func NewPlcTIME(value uint32) PlcTIME {
+func NewPlcTIME(value time.Duration) PlcTIME {
 	return PlcTIME{
 		value: value,
 	}
+}
+
+func NewPlcTIMEFromMilliseconds(milliseconds uint32) PlcTIME {
+	return NewPlcTIME(time.Duration(milliseconds) * time.Millisecond)
 }
 
 func (m PlcTIME) GetRaw() []byte {
@@ -44,12 +48,16 @@ func (m PlcTIME) GetRaw() []byte {
 	return theBytes
 }
 
+func (m PlcTIME) GetMilliseconds() uint32 {
+	return uint32(m.value.Milliseconds())
+}
+
 func (m PlcTIME) IsDuration() bool {
 	return true
 }
 
 func (m PlcTIME) GetDuration() time.Duration {
-	return time.Duration(m.value)
+	return m.value
 }
 
 func (m PlcTIME) IsString() bool {

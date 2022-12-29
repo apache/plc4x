@@ -1424,6 +1424,7 @@ const (
 	BACnetVendorId_AKVO_ATMOSPHERIC_WATER_SYSTEMS_PVT_LTD                                       BACnetVendorId = 1392
 	BACnetVendorId_EM_FIRST_CO_LTD                                                              BACnetVendorId = 1393
 	BACnetVendorId_IION_SYSTEMS_APS                                                             BACnetVendorId = 1394
+	BACnetVendorId_SAF_TEHNIKAJSC                                                               BACnetVendorId = 1396
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2820,6 +2821,7 @@ func init() {
 		BACnetVendorId_AKVO_ATMOSPHERIC_WATER_SYSTEMS_PVT_LTD,
 		BACnetVendorId_EM_FIRST_CO_LTD,
 		BACnetVendorId_IION_SYSTEMS_APS,
+		BACnetVendorId_SAF_TEHNIKAJSC,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4589,6 +4591,10 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1394:
 		{ /* '1394' */
 			return 1394
+		}
+	case 1396:
+		{ /* '1396' */
+			return 1396
 		}
 	case 14:
 		{ /* '14' */
@@ -8738,7 +8744,7 @@ func (e BACnetVendorId) VendorName() string {
 		}
 	case 1072:
 		{ /* '1072' */
-			return "Datapod Australia Pty Ltd."
+			return "Datapod (Australia) Pty Ltd."
 		}
 	case 1073:
 		{ /* '1073' */
@@ -10163,6 +10169,10 @@ func (e BACnetVendorId) VendorName() string {
 	case 1394:
 		{ /* '1394' */
 			return "Iion Systems ApS"
+		}
+	case 1396:
+		{ /* '1396' */
+			return "SAF Tehnika JSC"
 		}
 	case 14:
 		{ /* '14' */
@@ -14855,6 +14865,8 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_EM_FIRST_CO_LTD, true
 	case 1394:
 		return BACnetVendorId_IION_SYSTEMS_APS, true
+	case 1396:
+		return BACnetVendorId_SAF_TEHNIKAJSC, true
 	case 14:
 		return BACnetVendorId_CIMETRICS_TECHNOLOGY, true
 	case 140:
@@ -17639,6 +17651,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_EM_FIRST_CO_LTD, true
 	case "IION_SYSTEMS_APS":
 		return BACnetVendorId_IION_SYSTEMS_APS, true
+	case "SAF_TEHNIKAJSC":
+		return BACnetVendorId_SAF_TEHNIKAJSC, true
 	case "CIMETRICS_TECHNOLOGY":
 		return BACnetVendorId_CIMETRICS_TECHNOLOGY, true
 	case "VICONICS_ELECTRONICS_INC":
@@ -20480,6 +20494,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "EM_FIRST_CO_LTD"
 	case BACnetVendorId_IION_SYSTEMS_APS:
 		return "IION_SYSTEMS_APS"
+	case BACnetVendorId_SAF_TEHNIKAJSC:
+		return "SAF_TEHNIKAJSC"
 	case BACnetVendorId_CIMETRICS_TECHNOLOGY:
 		return "CIMETRICS_TECHNOLOGY"
 	case BACnetVendorId_VICONICS_ELECTRONICS_INC:

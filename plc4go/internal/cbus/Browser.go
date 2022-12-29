@@ -21,6 +21,9 @@ package cbus
 
 import (
 	"context"
+	"fmt"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/model"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -50,8 +53,8 @@ func NewBrowser(connection *Connection, messageCodec spi.MessageCodec) *Browser 
 
 func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
 	var queryResults []apiModel.PlcBrowseItem
-	/*switch query := query.(type) {
-	case *unitInfoTag:
+	switch query := query.(type) {
+	case *unitInfoQuery:
 		allUnits := false
 		var units []readWriteModel.UnitAddress
 		allAttributes := false
@@ -130,7 +133,7 @@ func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrow
 					continue unitLoop
 				}
 				queryResult := &model.DefaultPlcBrowseItem{
-					Tag:        NewCALIdentifyTag(unit, attribute, 1),
+					Tag:          NewCALIdentifyTag(unit, attribute, 1),
 					Name:         queryName,
 					Readable:     true,
 					Writable:     false,
@@ -147,7 +150,7 @@ func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrow
 		}
 	default:
 		return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
-	}*/
+	}
 	return apiModel.PlcResponseCode_OK, queryResults
 }
 

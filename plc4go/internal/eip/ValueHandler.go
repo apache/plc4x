@@ -24,7 +24,7 @@ import (
 )
 
 type ValueHandler struct {
-	values.IEC61131ValueHandler
+	values.DefaultValueHandler
 }
 
 func NewValueHandler() ValueHandler {

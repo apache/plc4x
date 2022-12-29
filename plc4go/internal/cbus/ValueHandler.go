@@ -30,7 +30,7 @@ import (
 )
 
 type ValueHandler struct {
-	spiValues.IEC61131ValueHandler
+	spiValues.DefaultValueHandler
 }
 
 func NewValueHandler() ValueHandler {
@@ -76,11 +76,11 @@ func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value interface{}) (apiVa
 					if len(curValues) != 2 {
 						return nil, errors.Errorf("%s requires exactly 2 arguments [temperatureGroup,temperatureByte]", salCommand)
 					}
-					temperatureGroup, err := m.IEC61131ValueHandler.NewPlcValueFromType(spiValues.IEC61131_BYTE, curValues[0])
+					temperatureGroup, err := m.DefaultValueHandler.NewPlcValueFromType(apiValues.BYTE, curValues[0])
 					if err != nil {
 						return nil, errors.Wrap(err, "error creating value for temperatureGroup")
 					}
-					temperatureByte, err := m.IEC61131ValueHandler.NewPlcValueFromType(spiValues.IEC61131_BYTE, curValues[1])
+					temperatureByte, err := m.DefaultValueHandler.NewPlcValueFromType(apiValues.BYTE, curValues[1])
 					if err != nil {
 						return nil, errors.Wrap(err, "error creating value for temperatureByte")
 					}
@@ -106,7 +106,7 @@ func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value interface{}) (apiVa
 					if len(curValues) != 1 {
 						return nil, errors.Errorf("%s requires exactly 1 arguments [groupe]", salCommand)
 					}
-					group, err := m.IEC61131ValueHandler.NewPlcValueFromType(spiValues.IEC61131_BYTE, curValues[0])
+					group, err := m.DefaultValueHandler.NewPlcValueFromType(apiValues.BYTE, curValues[0])
 					if err != nil {
 						return nil, errors.Wrap(err, "error creating value for group")
 					}
@@ -115,7 +115,7 @@ func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value interface{}) (apiVa
 					if len(curValues) != 1 {
 						return nil, errors.Errorf("%s requires exactly 1 arguments [groupe]", salCommand)
 					}
-					group, err := m.IEC61131ValueHandler.NewPlcValueFromType(spiValues.IEC61131_BYTE, curValues[0])
+					group, err := m.DefaultValueHandler.NewPlcValueFromType(apiValues.BYTE, curValues[0])
 					if err != nil {
 						return nil, errors.Wrap(err, "error creating value for group")
 					}
@@ -124,11 +124,11 @@ func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value interface{}) (apiVa
 					if len(curValues) != 2 {
 						return nil, errors.Errorf("%s requires exactly 2 arguments [group,level]", salCommand)
 					}
-					group, err := m.IEC61131ValueHandler.NewPlcValueFromType(spiValues.IEC61131_BYTE, curValues[0])
+					group, err := m.DefaultValueHandler.NewPlcValueFromType(apiValues.BYTE, curValues[0])
 					if err != nil {
 						return nil, errors.Wrap(err, "error creating value for group")
 					}
-					level, err := m.IEC61131ValueHandler.NewPlcValueFromType(spiValues.IEC61131_BYTE, curValues[0])
+					level, err := m.DefaultValueHandler.NewPlcValueFromType(apiValues.BYTE, curValues[0])
 					if err != nil {
 						return nil, errors.Wrap(err, "error creating value for level")
 					}
@@ -137,7 +137,7 @@ func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value interface{}) (apiVa
 					if len(curValues) != 1 {
 						return nil, errors.Errorf("%s requires exactly 1 arguments [groupe]", salCommand)
 					}
-					group, err := m.IEC61131ValueHandler.NewPlcValueFromType(spiValues.IEC61131_BYTE, curValues[0])
+					group, err := m.DefaultValueHandler.NewPlcValueFromType(apiValues.BYTE, curValues[0])
 					if err != nil {
 						return nil, errors.Wrap(err, "error creating value for group")
 					}
@@ -150,7 +150,7 @@ func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value interface{}) (apiVa
 			case readWriteModel.ApplicationId_AIR_CONDITIONING:
 				switch salCommand {
 				case readWriteModel.AirConditioningCommandType_SET_ZONE_GROUP_OFF.PLC4XEnumName():
-					zoneGroup, err := m.IEC61131ValueHandler.NewPlcValueFromType(spiValues.IEC61131_BYTE, curValues[0])
+					zoneGroup, err := m.DefaultValueHandler.NewPlcValueFromType(apiValues.BYTE, curValues[0])
 					if err != nil {
 						return nil, errors.Wrap(err, "error creating value for zoneGroup")
 					}
@@ -164,7 +164,7 @@ func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value interface{}) (apiVa
 				case readWriteModel.AirConditioningCommandType_ZONE_HUMIDITY.PLC4XEnumName():
 					panic("Implement me") //TODO: implement me
 				case readWriteModel.AirConditioningCommandType_REFRESH.PLC4XEnumName():
-					zoneGroup, err := m.IEC61131ValueHandler.NewPlcValueFromType(spiValues.IEC61131_BYTE, curValues[0])
+					zoneGroup, err := m.DefaultValueHandler.NewPlcValueFromType(apiValues.BYTE, curValues[0])
 					if err != nil {
 						return nil, errors.Wrap(err, "error creating value for zoneGroup")
 					}
@@ -188,7 +188,7 @@ func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value interface{}) (apiVa
 				case readWriteModel.AirConditioningCommandType_SET_HUMIDITY_LOWER_GUARD_LIMIT.PLC4XEnumName():
 					panic("Implement me") //TODO: implement me
 				case readWriteModel.AirConditioningCommandType_SET_ZONE_GROUP_ON.PLC4XEnumName():
-					zoneGroup, err := m.IEC61131ValueHandler.NewPlcValueFromType(spiValues.IEC61131_BYTE, curValues[0])
+					zoneGroup, err := m.DefaultValueHandler.NewPlcValueFromType(apiValues.BYTE, curValues[0])
 					if err != nil {
 						return nil, errors.Wrap(err, "error creating value for zoneGroup")
 					}
@@ -359,5 +359,5 @@ func (m ValueHandler) NewPlcValue(tag apiModel.PlcTag, value interface{}) (apiVa
 			}
 		}
 	}
-	return m.IEC61131ValueHandler.NewPlcValue(tag, value)
+	return m.DefaultValueHandler.NewPlcValue(tag, value)
 }

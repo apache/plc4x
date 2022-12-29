@@ -26,3 +26,8 @@ type Capability struct {
 // TODO: implement
 type Collector struct {
 }
+
+func (c *Collector) CapabilityFunctions(fn string) []func() {
+	// TODO: implement
+	return nil
+}

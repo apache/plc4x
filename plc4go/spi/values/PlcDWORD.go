@@ -22,6 +22,7 @@ package values
 import (
 	"encoding/binary"
 	"fmt"
+	"math"
 
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -79,6 +80,91 @@ func (m PlcDWORD) GetBoolArray() []bool {
 		m.value>>26&1 == 1, m.value>>27&1 == 1,
 		m.value>>28&1 == 1, m.value>>29&1 == 1,
 		m.value>>30&1 == 1, m.value>>31&1 == 1}
+}
+
+func (m PlcDWORD) IsUint8() bool {
+	return m.value <= math.MaxUint8
+}
+
+func (m PlcDWORD) GetUint8() uint8 {
+	if m.IsUint8() {
+		return uint8(m.GetUint16())
+	}
+	return 0
+}
+
+func (m PlcDWORD) IsUint16() bool {
+	return m.value <= math.MaxUint16
+}
+
+func (m PlcDWORD) GetUint16() uint16 {
+	if m.IsUint16() {
+		return uint16(m.GetUint32())
+	}
+	return 0
+}
+
+func (m PlcDWORD) GetUint32() uint32 {
+	return m.value
+}
+
+func (m PlcDWORD) GetUint64() uint64 {
+	return uint64(m.GetUint32())
+}
+
+func (m PlcDWORD) IsByte() bool {
+	return m.IsUint8()
+}
+
+func (m PlcDWORD) GetByte() byte {
+	return m.GetUint8()
+}
+
+func (m PlcDWORD) IsInt8() bool {
+	return m.value < math.MaxInt8
+}
+
+func (m PlcDWORD) GetInt8() int8 {
+	if m.IsInt8() {
+		return int8(m.GetUint32())
+	}
+	return 0
+}
+
+func (m PlcDWORD) IsInt16() bool {
+	return m.value < math.MaxInt16
+}
+
+func (m PlcDWORD) GetInt16() int16 {
+	if m.IsInt16() {
+		return int16(m.GetUint32())
+	}
+	return 0
+}
+
+func (m PlcDWORD) IsInt32() bool {
+	return m.value < math.MaxInt32
+}
+
+func (m PlcDWORD) GetInt32() int32 {
+	if m.IsInt32() {
+		return int32(m.GetUint32())
+	}
+	return 0
+}
+
+func (m PlcDWORD) GetInt64() int64 {
+	return int64(m.GetUint32())
+}
+
+func (m PlcDWORD) GetFloat32() float32 {
+	//TODO: Check if this is ok
+	return float32(m.GetUint32())
+}
+
+func (m PlcDWORD) GetFloat64() float64 {
+	//TODO: Check if this is ok
+	return float64(m.GetUint32())
 }
 
 func (m PlcDWORD) IsString() bool {

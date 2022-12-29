@@ -248,10 +248,13 @@ struct plc4c_data_t {
     double lreal_value;
 
     uint16_t date_value;
+    uint32_t ldate_value;
     uint32_t time_value;
     uint64_t ltime_value;
     uint32_t time_of_day_value;
+    uint64_t ltime_of_day_value;
     uint32_t date_and_time_value;
+    uint64_t ldate_and_time_value;
 
     char char_value;
     wchar_t wchar_value;

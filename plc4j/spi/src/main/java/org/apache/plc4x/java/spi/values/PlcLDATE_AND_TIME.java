@@ -27,6 +27,7 @@ import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.*;
 
@@ -43,20 +44,33 @@ public class PlcLDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
         throw new PlcRuntimeException("Invalid value type");
     }
 
+    public static PlcLDATE_AND_TIME ofNanosecondsSinceEpoch(BigInteger nanosecondsSinceEpoch) {
+        BigInteger epochSecond = nanosecondsSinceEpoch.divide(BigInteger.valueOf(1000_000));
+        BigInteger nanoOfSecond = nanosecondsSinceEpoch.mod(BigInteger.valueOf(1000_000));
+        return new PlcLDATE_AND_TIME(LocalDateTime.ofEpochSecond(epochSecond.longValue(), nanoOfSecond.intValue(),
+            ZoneOffset.of(ZoneOffset.systemDefault().getId())));
+    }
+
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcLDATE_AND_TIME(@JsonProperty("value") LocalDateTime value) {
         super(value, true);
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcLDATE_AND_TIME(@JsonProperty("value") Long value) {
-        super(LocalDateTime.ofInstant(
-            Instant.ofEpochSecond(value), ZoneId.of("UTC")), true);
+    public PlcLDATE_AND_TIME(@JsonProperty("value") BigInteger nanosecondsSinceEpoch) {
+        super(LocalDateTime.ofEpochSecond(nanosecondsSinceEpoch.divide(BigInteger.valueOf(1000_000)).longValue(),
+            nanosecondsSinceEpoch.mod(BigInteger.valueOf(1000_000)).intValue(),
+            ZoneOffset.of(ZoneOffset.systemDefault().getId())), true);
     }
 
     @Override
     public PlcValueType getPlcValueType() {
         return PlcValueType.DATE_AND_TIME;
+    }
+
+    public BigInteger getNanosecondsSinceEpoch() {
+        Instant instant = getDateTime().toInstant(ZoneOffset.of(ZoneOffset.systemDefault().getId()));
+        return BigInteger.valueOf(instant.getEpochSecond()).multiply(BigInteger.valueOf(1000_000_000)).add(BigInteger.valueOf(instant.getNano()));
     }
 
     @Override

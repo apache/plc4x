@@ -182,23 +182,6 @@ func NewMMIMonitorTag(unitAddress *readWriteModel.UnitAddress, application *read
 	}
 }
 
-// UnitInfoTag can be used to get information about unit(s)
-type UnitInfoTag interface {
-	Tag
-
-	GetUnitAddress() *readWriteModel.UnitAddress
-	GetAttribute() *readWriteModel.Attribute
-}
-
-func NewUnitInfoTag(unitAddress *readWriteModel.UnitAddress, attribute *readWriteModel.Attribute, numElements uint16) UnitInfoTag {
-	return &unitInfoTag{
-		unitAddress: unitAddress,
-		tagType:     UNIT_INFO,
-		attribute:   attribute,
-		numElements: numElements,
-	}
-}
-
 ///////////////////////////////////////
 ///////////////////////////////////////
 //
@@ -257,13 +240,6 @@ type mmiMonitorTag struct {
 	tagType     TagType
 	unitAddress *readWriteModel.UnitAddress
 	application *readWriteModel.ApplicationIdContainer
-	numElements uint16
-}
-
-type unitInfoTag struct {
-	tagType     TagType
-	unitAddress *readWriteModel.UnitAddress
-	attribute   *readWriteModel.Attribute
 	numElements uint16
 }
 
@@ -806,85 +782,6 @@ func (m mmiMonitorTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) e
 func (m mmiMonitorTag) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(m); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
-}
-
-func (u unitInfoTag) GetAddressString() string {
-	unitAddressString := "*"
-	if u.unitAddress != nil {
-		unitAddressString = fmt.Sprintf("%d", (*u.unitAddress).GetAddress())
-	}
-	attributeString := "*"
-	if u.attribute != nil {
-		unitAddressString = u.attribute.String()
-	}
-	return fmt.Sprintf("cal/%s/identify=%s", unitAddressString, attributeString)
-}
-
-func (u unitInfoTag) GetValueType() values.PlcValueType {
-	return values.Struct
-}
-
-func (u unitInfoTag) GetArrayInfo() []model.ArrayInfo {
-	if u.numElements != 1 {
-		return []model.ArrayInfo{
-			model2.DefaultArrayInfo{
-				LowerBound: 0,
-				UpperBound: uint32(u.numElements),
-			},
-		}
-	}
-	return []model.ArrayInfo{}
-}
-
-func (s unitInfoTag) GetTagType() TagType {
-	return s.tagType
-}
-
-func (u unitInfoTag) GetUnitAddress() *readWriteModel.UnitAddress {
-	return u.unitAddress
-}
-
-func (u unitInfoTag) GetAttribute() *readWriteModel.Attribute {
-	return u.attribute
-}
-
-func (u unitInfoTag) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := u.SerializeWithWriteBuffer(wb); err != nil {
-		return nil, err
-	}
-	return wb.GetBytes(), nil
-}
-
-func (u unitInfoTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(u.tagType.GetName()); err != nil {
-		return err
-	}
-
-	if unitAddress := u.unitAddress; unitAddress != nil {
-		if err := (*unitAddress).SerializeWithWriteBuffer(writeBuffer); err != nil {
-			return err
-		}
-	}
-
-	if attribute := u.attribute; attribute != nil {
-		if err := (*attribute).SerializeWithWriteBuffer(writeBuffer); err != nil {
-			return err
-		}
-	}
-
-	if err := writeBuffer.PopContext(u.tagType.GetName()); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (u unitInfoTag) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(u); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

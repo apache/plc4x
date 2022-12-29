@@ -21,15 +21,17 @@ package ads
 
 import (
 	"context"
-	"encoding/binary"
-	"fmt"
 	"strings"
 
+	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
-	model2 "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
+	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
 )
+
+func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
+	return internalModel.NewDefaultPlcBrowseRequestBuilder(m.GetPlcTagHandler(), m)
+}
 
 func (m *Connection) Browse(ctx context.Context, browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult {
 	return m.BrowseWithInterceptor(ctx, browseRequest, func(result apiModel.PlcBrowseItem) bool {
@@ -46,8 +48,8 @@ func (m *Connection) BrowseWithInterceptor(ctx context.Context, browseRequest ap
 			query := browseRequest.GetQuery(queryName)
 			responseCodes[queryName], results[queryName] = m.BrowseQuery(ctx, browseRequest, interceptor, queryName, query)
 		}
-		browseResponse := model2.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
-		result <- &model2.DefaultPlcBrowseRequestResult{
+		browseResponse := internalModel.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
+		result <- &internalModel.DefaultPlcBrowseRequestResult{
 			Request:  browseRequest,
 			Response: &browseResponse,
 			Err:      nil,
@@ -66,33 +68,6 @@ func (m *Connection) BrowseQuery(ctx context.Context, browseRequest apiModel.Plc
 }
 
 func (m *Connection) executeSymbolicAddressQuery(ctx context.Context, query SymbolicPlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
-	var err error
-
-	// First read the sizes of the data type and symbol table, if needed.
-	var tableSizes model.AdsTableSizes
-	if m.dataTypeTable == nil || m.symbolTable == nil {
-		tableSizes, err = m.readDataTypeTableAndSymbolTableSizes(ctx)
-		if err != nil {
-			return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
-		}
-	}
-
-	// Then read the data type table, if needed.
-	if m.dataTypeTable == nil {
-		m.dataTypeTable, err = m.readDataTypeTable(ctx, tableSizes.GetDataTypeLength(), tableSizes.GetDataTypeCount())
-		if err != nil {
-			return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
-		}
-	}
-
-	// Then read the symbol table, if needed.
-	if m.symbolTable == nil {
-		m.symbolTable, err = m.readSymbolTable(ctx, tableSizes.GetSymbolLength(), tableSizes.GetSymbolCount())
-		if err != nil {
-			return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
-		}
-	}
-
 	// Process the data type and symbol tables to produce the response.
 	tags := m.filterSymbols(query.GetSymbolicAddressPattern())
 	return apiModel.PlcResponseCode_OK, tags
@@ -113,7 +88,7 @@ func (m *Connection) filterSymbols(filterExpression string) []apiModel.PlcBrowse
 		remainingSegments = remainingSegments[1:]
 	}
 
-	if symbol, ok := m.symbolTable[symbolName]; !ok {
+	if symbol, ok := m.driverContext.symbolTable[symbolName]; !ok {
 		// Couldn't find the base symbol
 		return nil
 	} else if len(remainingSegments) == 0 {
@@ -121,7 +96,7 @@ func (m *Connection) filterSymbols(filterExpression string) []apiModel.PlcBrowse
 		return nil
 	} else {
 		symbolDataTypeName := symbol.GetDataTypeName()
-		if symbolDataType, ok := m.dataTypeTable[symbolDataTypeName]; ok {
+		if symbolDataType, ok := m.driverContext.dataTypeTable[symbolDataTypeName]; ok {
 			return m.filterDataTypes(symbolName, symbolDataType, symbolDataTypeName, remainingSegments)
 		}
 		// Couldn't find data type
@@ -129,19 +104,19 @@ func (m *Connection) filterSymbols(filterExpression string) []apiModel.PlcBrowse
 	}
 }
 
-func (m *Connection) filterDataTypes(parentName string, currentType model.AdsDataTypeTableEntry, currentPath string, remainingAddressSegments []string) []apiModel.PlcBrowseItem {
+func (m *Connection) filterDataTypes(parentName string, currentType driverModel.AdsDataTypeTableEntry, currentPath string, remainingAddressSegments []string) []apiModel.PlcBrowseItem {
 	if len(remainingAddressSegments) == 0 {
 		arrayInfo := []apiModel.ArrayInfo{}
 		for _, ai := range currentType.GetArrayInfo() {
-			arrayInfo = append(arrayInfo, model2.DefaultArrayInfo{
+			arrayInfo = append(arrayInfo, internalModel.DefaultArrayInfo{
 				LowerBound: ai.GetLowerBound(),
 				UpperBound: ai.GetUpperBound(),
 			})
 		}
-		foundTag := &model2.DefaultPlcBrowseItem{
-			Tag: SymbolicPlcTag{
-				PlcTag: PlcTag{
-					arrayInfo: arrayInfo,
+		foundTag := &internalModel.DefaultPlcBrowseItem{
+			Tag: model.SymbolicPlcTag{
+				PlcTag: model.PlcTag{
+					ArrayInfo: arrayInfo,
 				},
 				SymbolicAddress: parentName,
 			},
@@ -160,7 +135,7 @@ func (m *Connection) filterDataTypes(parentName string, currentType model.AdsDat
 	for _, child := range currentType.GetChildren() {
 		if child.GetPropertyName() == currentAddressSegment {
 			childTypeName := child.GetDataTypeName()
-			if symbolDataType, ok := m.dataTypeTable[childTypeName]; !ok {
+			if symbolDataType, ok := m.driverContext.dataTypeTable[childTypeName]; !ok {
 				// TODO: Couldn't find data type with the name defined in the protperty.
 				return nil
 			} else {
@@ -171,56 +146,4 @@ func (m *Connection) filterDataTypes(parentName string, currentType model.AdsDat
 	}
 	// TODO: Couldn't find property with the given name.
 	return nil
-}
-
-func (m *Connection) readDataTypeTableAndSymbolTableSizes(ctx context.Context) (model.AdsTableSizes, error) {
-	response, err := m.ExecuteAdsReadRequest(ctx, uint32(model.ReservedIndexGroups_ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES), 0x00000000, 24)
-	if err != nil {
-		return nil, fmt.Errorf("error reading table: %v", err)
-	}
-
-	// Parse and process the response
-	tableSizes, err := model.AdsTableSizesParse(response.GetData())
-	if err != nil {
-		return nil, fmt.Errorf("error parsing table: %v", err)
-	}
-	return tableSizes, nil
-}
-
-func (m *Connection) readDataTypeTable(ctx context.Context, dataTableSize uint32, numDataTypes uint32) (map[string]model.AdsDataTypeTableEntry, error) {
-	response, err := m.ExecuteAdsReadRequest(ctx, uint32(model.ReservedIndexGroups_ADSIGRP_DATA_TYPE_TABLE_UPLOAD), 0x00000000, dataTableSize)
-	if err != nil {
-		return nil, fmt.Errorf("error reading data-type table: %v", err)
-	}
-
-	// Parse and process the response
-	readBuffer := utils.NewReadBufferByteBased(response.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-	dataTypes := map[string]model.AdsDataTypeTableEntry{}
-	for i := uint32(0); i < numDataTypes; i++ {
-		dataType, err := model.AdsDataTypeTableEntryParseWithBuffer(readBuffer)
-		if err != nil {
-			return nil, fmt.Errorf("error parsing table: %v", err)
-		}
-		dataTypes[dataType.GetDataTypeName()] = dataType
-	}
-	return dataTypes, nil
-}
-
-func (m *Connection) readSymbolTable(ctx context.Context, symbolTableSize uint32, numSymbols uint32) (map[string]model.AdsSymbolTableEntry, error) {
-	response, err := m.ExecuteAdsReadRequest(ctx, uint32(model.ReservedIndexGroups_ADSIGRP_SYM_UPLOAD), 0x00000000, symbolTableSize)
-	if err != nil {
-		return nil, fmt.Errorf("error reading data-type table: %v", err)
-	}
-
-	// Parse and process the response
-	readBuffer := utils.NewReadBufferByteBased(response.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-	symbols := map[string]model.AdsSymbolTableEntry{}
-	for i := uint32(0); i < numSymbols; i++ {
-		symbol, err := model.AdsSymbolTableEntryParseWithBuffer(readBuffer)
-		if err != nil {
-			return nil, fmt.Errorf("error parsing table")
-		}
-		symbols[symbol.GetName()] = symbol
-	}
-	return symbols, nil
 }

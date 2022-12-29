@@ -27,8 +27,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	model2 "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -39,14 +40,27 @@ type TagHandler struct {
 	directAdsTag       *regexp.Regexp
 	symbolicAdsTag     *regexp.Regexp
 	arrayInfoSegment   *regexp.Regexp
+	driverContext      *DriverContext
 }
 
+// NewTagHandler this constructor creates a version of the TagHandler that's detached from a connection and can't provide context-sensitive feedback.
 func NewTagHandler() TagHandler {
 	return TagHandler{
 		directAdsStringTag: regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
 		directAdsTag:       regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>\w+)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
 		symbolicAdsTag:     regexp.MustCompile(`^(?P<symbolicAddress>[^\[]+)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
 		arrayInfoSegment:   regexp.MustCompile(`((^(?P<numElements>\d+)$)|(^((?P<startElement>\d+)\.\.(?P<endElement>\d+))$)|(^((?P<startElement2>\d+):(?P<numElements2>\d+)))$)`),
+	}
+}
+
+// NewTagHandlerWithDriverContext this constructor creates a version of the TagHandler that is connected to a connection and can provide context-sensitive feedback.
+func NewTagHandlerWithDriverContext(driverContext *DriverContext) TagHandler {
+	return TagHandler{
+		directAdsStringTag: regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
+		directAdsTag:       regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>\w+)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
+		symbolicAdsTag:     regexp.MustCompile(`^(?P<symbolicAddress>[^\[]+)(?P<arrayInfo>((\[(\d+)])|(\[(\d+)\.\.(\d+)])|(\[(\d+):(\d+)]))*)`),
+		arrayInfoSegment:   regexp.MustCompile(`((^(?P<numElements>\d+)$)|(^((?P<startElement>\d+)\.\.(?P<endElement>\d+))$)|(^((?P<startElement2>\d+):(?P<numElements2>\d+)))$)`),
+		driverContext:      driverContext,
 	}
 }
 
@@ -92,12 +106,12 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 		if adsDataTypeName == "" {
 			return nil, errors.Errorf("Missing ads data type")
 		}
-		adsDataType, ok := model.AdsDataTypeByName(adsDataTypeName)
+		plcValueType, ok := values.PlcValueByName(adsDataTypeName)
 		if !ok {
 			return nil, fmt.Errorf("invalid ads data type")
 		}
 
-		stringLength := NONE
+		stringLength := model.NONE
 		var arrayInfo []apiModel.ArrayInfo
 
 		tmpStringLength, err := strconv.ParseInt(match["stringLength"], 10, 32)
@@ -157,7 +171,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 			}
 		}
 
-		return newDirectAdsPlcTag(indexGroup, indexOffset, adsDataType, stringLength, arrayInfo)
+		return model.NewDirectAdsPlcTag(indexGroup, indexOffset, plcValueType, stringLength, arrayInfo)
 	} else if match := utils.GetSubgroupMatches(m.directAdsTag, query); match != nil {
 		var indexGroup uint32
 		if indexGroupHexString := match["indexGroupHex"]; indexGroupHexString != "" {
@@ -199,7 +213,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 		if adsDataTypeName == "" {
 			return nil, errors.Errorf("Missing ads data type")
 		}
-		adsDataType, ok := model.AdsDataTypeByName(adsDataTypeName)
+		plcValueType, ok := values.PlcValueByName(adsDataTypeName)
 		if !ok {
 			return nil, fmt.Errorf("invalid ads data type")
 		}
@@ -257,7 +271,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 			}
 		}
 
-		return newDirectAdsPlcTag(indexGroup, indexOffset, adsDataType, NONE, arrayInfo)
+		return model.NewDirectAdsPlcTag(indexGroup, indexOffset, plcValueType, model.NONE, arrayInfo)
 	} else if match := utils.GetSubgroupMatches(m.symbolicAdsTag, query); match != nil {
 		var arrayInfo []apiModel.ArrayInfo
 
@@ -312,7 +326,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 			}
 		}
 
-		return newAdsSymbolicPlcTag(match["symbolicAddress"], arrayInfo)
+		return model.NewAdsSymbolicPlcTag(match["symbolicAddress"], arrayInfo)
 	} else {
 		return nil, errors.Errorf("Invalid address format for address '%s'", query)
 	}

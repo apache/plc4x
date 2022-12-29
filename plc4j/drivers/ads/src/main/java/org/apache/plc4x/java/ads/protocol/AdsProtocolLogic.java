@@ -472,7 +472,6 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         Map<String, PlcResponseCode> responseCodes = new HashMap<>();
         Map<String, List<PlcBrowseItem>> values = new HashMap<>();
         for (String queryName : browseRequest.getQueryNames()) {
-            PlcQuery query = browseRequest.getQuery(queryName);
             List<PlcBrowseItem> resultsForQuery = new ArrayList<>();
             for (AdsSymbolTableEntry symbol : symbolTable.values()) {
                 // Get the datatype of this entry.
@@ -526,7 +525,6 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             }
             responseCodes.put(queryName, PlcResponseCode.OK);
             values.put(queryName, resultsForQuery);
-            throw new RuntimeException("Gotta implement this ... Currently ignoring all queries.");
         }
         DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, responseCodes, values);
         future.complete(response);

@@ -27,18 +27,27 @@ type _Task struct {
 	isScheduled bool
 }
 
-func (t *_Task) installTask(when *time.Time, delta *time.Duration) {
+func (t *_Task) InstallTask(when *time.Time, delta *time.Duration) {
 	// TODO: schedule task
 }
 
-func (t *_Task) suspendTask() {
+func (t *_Task) SuspendTask() {
 	// TODO: suspend task
 }
 
-func (t *_Task) resume() {
+func (t *_Task) Resume() {
 	// TODO: resume task
 }
 
 type OneShotTask struct {
 	_Task
+}
+
+type OneShotDeleteTask struct {
+	_Task
+}
+
+func FunctionTask(func()) _Task {
+	// TODO: implement me
+	return _Task{}
 }

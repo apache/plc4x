@@ -39,7 +39,8 @@ public class AdsTagHandler implements PlcTagHandler {
 
     @Override
     public PlcQuery parseQuery(String query) {
-        throw new UnsupportedOperationException("This driver doesn't support browsing");
+        // permit browse requests, even if we can't parse query
+        return null;
     }
 
 }

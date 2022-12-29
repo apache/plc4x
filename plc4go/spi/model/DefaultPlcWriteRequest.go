@@ -105,8 +105,8 @@ func (m *DefaultPlcWriteRequestBuilder) Build() (model.PlcWriteRequest, error) {
 
 	// Process the values for tags.
 	plcValues := make(map[string]values.PlcValue)
-	for name, field := range m.tags {
-		value, err := m.valueHandler.NewPlcValue(field, m.values[name])
+	for name, tag := range m.tags {
+		value, err := m.valueHandler.NewPlcValue(tag, m.values[name])
 		if err != nil {
 			//			return nil, errors.Wrapf(err, "Error parsing value of type: %s", tag.GetTypeName())
 		}

@@ -25,20 +25,193 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type UDPMultiplexer struct {
-	annexJ interface{}
+type _MultiplexClient struct {
+	*Client
+	multiplexer *UDPMultiplexer
 }
 
-func (m *UDPMultiplexer) Close() error {
-	panic("implement me")
+func _New_MultiplexClient(multiplexer *UDPMultiplexer) (*_MultiplexClient, error) {
+	m := &_MultiplexClient{
+		multiplexer: multiplexer,
+	}
+	var err error
+	m.Client, err = NewClient(nil, m)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating client")
+	}
+	return m, nil
+}
+
+func (m *_MultiplexClient) Confirmation(pdu _PDU) error {
+	return m.multiplexer.Confirmation(m, pdu)
+}
+
+type _MultiplexServer struct {
+	*Server
+	multiplexer *UDPMultiplexer
+}
+
+func _New_MultiplexServer(multiplexer *UDPMultiplexer) (*_MultiplexServer, error) {
+	m := &_MultiplexServer{
+		multiplexer: multiplexer,
+	}
+	var err error
+	m.Server, err = NewServer(nil, m)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating server")
+	}
+	return m, nil
+}
+
+func (m *_MultiplexServer) Indication(pdu _PDU) error {
+	return m.multiplexer.Indication(m, pdu)
+}
+
+type UDPMultiplexer struct {
+	address            Address
+	addrTuple          *AddressTuple[string, uint16]
+	addrBroadcastTuple *AddressTuple[string, uint16]
+	direct             *_MultiplexClient
+	directPort         *UDPDirector
+	broadcast          *_MultiplexClient
+	broadcastPort      *UDPDirector
+	annexH             *_MultiplexServer
+	annexJ             *_MultiplexServer
 }
 
 func NewUDPMultiplexer(address interface{}, noBroadcast bool) (*UDPMultiplexer, error) {
 	log.Debug().Msgf("NewUDPMultiplexer %v noBroadcast=%t", address, noBroadcast)
 	u := &UDPMultiplexer{}
 
-	// TODO: plumb later
+	// check for some options
+	specialBroadcast := false
+	if address == nil {
+		address, _ := NewAddress()
+		u.address = *address
+		u.addrTuple = &AddressTuple[string, uint16]{"", 47808}
+		u.addrBroadcastTuple = &AddressTuple[string, uint16]{"255.255.255.255", 47808}
+	} else {
+		// allow the address to be cast
+		if caddress, ok := address.(*Address); ok {
+			u.address = *caddress
+		} else if caddress, ok := address.(Address); ok {
+			u.address = caddress
+		} else {
+			newAddress, err := NewAddress(address)
+			if err != nil {
+				return nil, errors.Wrap(err, "error parsing address")
+			}
+			u.address = *newAddress
+		}
+
+		// promote the normal and broadcast tuples
+		u.addrTuple = u.address.AddrTuple
+		u.addrBroadcastTuple = u.address.AddrBroadcastTuple
+
+		// check for no broadcasting (loopback interface)
+		if u.addrBroadcastTuple == nil {
+			noBroadcast = true
+		} else if u.addrTuple == u.addrBroadcastTuple {
+			// old school broadcast address
+			u.addrBroadcastTuple = &AddressTuple[string, uint16]{"255.255.255.255", u.addrTuple.Right}
+		} else {
+			specialBroadcast = true
+		}
+	}
+
+	log.Debug().Msgf("address: %v", u.address)
+	log.Debug().Msgf("addrTuple: %v", u.addrTuple)
+	log.Debug().Msgf("addrBroadcastTuple: %v", u.addrBroadcastTuple)
+	log.Debug().Msgf("route_aware: %v", settings.RouteAware)
+
+	// create and bind direct address
+	var err error
+	u.direct, err = _New_MultiplexClient(u)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating multiplex client")
+	}
+	u.directPort, err = NewUDPDirector(u.addrTuple, nil, nil, nil, nil)
+	if err := bind(u.direct, u.directPort); err != nil {
+		return nil, errors.Wrap(err, "error binding ports")
+	}
+
+	// create and bind the broadcast address for non-Windows
+	if specialBroadcast && !noBroadcast {
+		u.broadcast, err = _New_MultiplexClient(u)
+		if err != nil {
+			return nil, errors.Wrap(err, "error creating broadcast multiplex client")
+		}
+		reuse := true
+		u.broadcastPort, err = NewUDPDirector(u.addrBroadcastTuple, nil, &reuse, nil, nil)
+		if err := bind(u.direct, u.directPort); err != nil {
+			return nil, errors.Wrap(err, "error binding ports")
+		}
+	}
+
+	// create and bind the Annex H and J servers
+	u.annexH, err = _New_MultiplexServer(u)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating annexH")
+	}
+	u.annexJ, err = _New_MultiplexServer(u)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating annexJ")
+	}
 	return u, nil
+}
+
+func (m *UDPMultiplexer) Close() error {
+	log.Debug().Msg("Close")
+
+	// pass along the close to the director(s)
+	m.directPort.Close()
+	if m.broadcastPort != nil {
+		m.broadcastPort.Close()
+	}
+	return nil
+}
+
+func (m *UDPMultiplexer) Indication(server *_MultiplexServer, pdu _PDU) error {
+	log.Debug().Msgf("Indication %v\n%v", server, pdu)
+
+	pduDestination := pdu.GetPDUDestination()
+
+	// broadcast message
+	var dest *Address
+	if pduDestination.AddrType == LOCAL_BROADCAST_ADDRESS {
+		// interface might not support broadcasts
+		if m.addrBroadcastTuple == nil {
+			return nil
+		}
+
+		address, err := NewAddress(*m.addrBroadcastTuple)
+		if err != nil {
+			return errors.Wrap(err, "error getting address from tuple")
+		}
+		dest = address
+		log.Debug().Msgf("requesting local broadcast: %v", dest)
+	} else if pduDestination.AddrType == LOCAL_STATION_ADDRESS {
+		dest = pduDestination
+	} else {
+		return errors.New("invalid destination address type")
+	}
+
+	return m.directPort.Indication(NewPDUFromPDU(pdu, WithPDUDestination(dest)))
+}
+
+func (m *UDPMultiplexer) Confirmation(client *_MultiplexClient, pdu _PDU) error {
+	log.Debug().Msgf("Confirmation %v\n%v", client, pdu)
+	log.Debug().Msgf("client address: %v", client.multiplexer.address)
+
+	// if this came from ourselves, dump it
+	pduSource := pdu.GetPDUSource()
+	if pduSource.Equals(m.address) {
+		log.Debug().Msg("from us")
+		return nil
+	}
+
+	// TODO: it is getting to messy, we need to solve the source destination topic
+	return nil
 }
 
 type AnnexJCodec struct {
@@ -62,12 +235,12 @@ func NewAnnexJCodec(cid *int, sid *int) (*AnnexJCodec, error) {
 	return a, nil
 }
 
-func (b *AnnexJCodec) Indication(apdu readWriteModel.APDU) error {
-	panic("we need to implement this with  generics as we handle npdu not apdu here")
+func (b *AnnexJCodec) Indication(pdu _PDU) error {
+	panic("not implemented yet")
 }
 
-func (b *AnnexJCodec) Confirmation(apdu readWriteModel.APDU) error {
-	panic("we need to implement this with  generics as we handle npdu not apdu here")
+func (b *AnnexJCodec) Confirmation(pdu _PDU) error {
+	panic("not implemented yet")
 }
 
 type _BIPSAP interface {
@@ -92,18 +265,16 @@ func NewBIPSAP(sapID *int, rootStruct _BIPSAP) (*BIPSAP, error) {
 	return b, nil
 }
 
-func (b *BIPSAP) SapIndication(apdu readWriteModel.APDU, pduDestination []byte) error {
-	log.Debug().Msgf("SapIndication\n%s\n%s", apdu, pduDestination)
-	// TODO: what to do with the destination?
+func (b *BIPSAP) SapIndication(pdu _PDU) error {
+	log.Debug().Msgf("SapIndication\n%ss", pdu)
 	// this is a request initiated by the ASE, send this downstream
-	return b.rootStruct.Request(apdu)
+	return b.rootStruct.Request(pdu)
 }
 
-func (b *BIPSAP) SapConfirmation(apdu readWriteModel.APDU, pduDestination []byte) error {
-	log.Debug().Msgf("SapConfirmation\n%s\n%s", apdu, pduDestination)
-	// TODO: what to do with the destination?
+func (b *BIPSAP) SapConfirmation(pdu _PDU) error {
+	log.Debug().Msgf("SapConfirmation\n%s", pdu)
 	// this is a response from the ASE, send this downstream
-	return b.rootStruct.Request(apdu)
+	return b.rootStruct.Request(pdu)
 }
 
 type BIPSimple struct {
@@ -133,10 +304,117 @@ func NewBIPSimple(sapID *int, cid *int, sid *int) (*BIPSimple, error) {
 	return b, nil
 }
 
-func (b *BIPSimple) Indication(apdu readWriteModel.APDU) error {
-	panic("we need to implement this with  generics as we handle npdu not apdu here")
+func (b *BIPSimple) Indication(pdu _PDU) error {
+	log.Debug().Msgf("Indication %s", pdu)
+
+	// check for local stations
+	switch pdu.GetPDUDestination().AddrType {
+	case LOCAL_STATION_ADDRESS:
+		// make an original unicast PDU
+		xpdu := readWriteModel.NewBVLCOriginalUnicastNPDU(pdu.GetMessage().(readWriteModel.NPDU), 0)
+		log.Debug().Msgf("xpdu:\n%s", xpdu)
+
+		// send it downstream
+		return b.Request(NewPDUFromPDUWithNewMessage(pdu, xpdu))
+	case LOCAL_BROADCAST_ADDRESS:
+		// make an original broadcast PDU
+		xpdu := readWriteModel.NewBVLCOriginalBroadcastNPDU(pdu.GetMessage().(readWriteModel.NPDU), 0)
+
+		log.Debug().Msgf("xpdu:\n%s", xpdu)
+
+		// send it downstream
+		return b.Request(NewPDUFromPDUWithNewMessage(pdu, xpdu))
+	default:
+		return errors.Errorf("invalid destination address: %s", pdu.GetPDUDestination())
+	}
 }
 
-func (b *BIPSimple) Response(apdu readWriteModel.APDU) error {
-	panic("we need to implement this with  generics as we handle npdu not apdu here")
+func (b *BIPSimple) Confirmation(pdu _PDU) error {
+	log.Debug().Msgf("Confirmation %s", pdu)
+
+	switch msg := pdu.GetMessage().(type) {
+	// some kind of response to a request
+	case readWriteModel.BVLCResultExactly:
+		// send this to the service access point
+		return b.SapRequest(pdu)
+	case readWriteModel.BVLCReadBroadcastDistributionTableAckExactly:
+		// send this to the service access point
+		return b.SapRequest(pdu)
+	case readWriteModel.BVLCReadForeignDeviceTableAckExactly:
+		// send this to the service access point
+		return b.SapRequest(pdu)
+	case readWriteModel.BVLCOriginalUnicastNPDUExactly:
+		// build a vanilla PDU
+		xpdu := NewPDU(msg, WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(pdu.GetPDUDestination()))
+		log.Debug().Msgf("xpdu: %s", xpdu)
+
+		// send it upstream
+		return b.Response(xpdu)
+	case readWriteModel.BVLCOriginalBroadcastNPDUExactly:
+		// build a PDU with a local broadcast address
+		xpdu := NewPDU(msg, WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(NewLocalBroadcast(nil)))
+		log.Debug().Msgf("xpdu: %s", xpdu)
+
+		// send it upstream
+		return b.Response(xpdu)
+	case readWriteModel.BVLCForwardedNPDUExactly:
+		// build a PDU with the source from the real source
+		ip := msg.GetIp()
+		port := msg.GetPort()
+		source, err := NewAddress(append(ip, uint16ToPort(port)...))
+		if err != nil {
+			return errors.Wrap(err, "error building a ip")
+		}
+		xpdu := NewPDU(msg, WithPDUSource(source), WithPDUDestination(NewLocalBroadcast(nil)))
+		log.Debug().Msgf("xpdu: %s", xpdu)
+
+		// send it upstream
+		return b.Response(xpdu)
+	case readWriteModel.BVLCWriteBroadcastDistributionTableExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+	case readWriteModel.BVLCReadBroadcastDistributionTableExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+		// build a response
+	case readWriteModel.BVLCRegisterForeignDeviceExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+	case readWriteModel.BVLCReadForeignDeviceTableExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+	case readWriteModel.BVLCDeleteForeignDeviceTableEntryExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+	case readWriteModel.BVLCDistributeBroadcastToNetworkExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+	default:
+		log.Warn().Msgf("invalid pdu type %T", msg)
+		return nil
+	}
 }

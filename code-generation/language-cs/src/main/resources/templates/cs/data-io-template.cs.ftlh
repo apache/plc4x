@@ -411,12 +411,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                         <#if case.name == "Struct">
                 var ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.GetStruct()["${simpleField.name}"].Get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
                         <#else>
-                            <#if simpleField.name == "value">
                 var ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.Get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
-                            <#else>
-                                <#-- Just for now -->
-                var ${simpleField.name} = ${helper.getNullValueForTypeReference(simpleField.type)};
-                            </#if>
                         </#if>
                         <#if simpleField.type.isSimpleTypeReference()>
                 ${helper.getWriteBufferWriteMethodCall(simpleField.type.asSimpleTypeReference().orElseThrow(), "(" + simpleField.name + ")", simpleField)};

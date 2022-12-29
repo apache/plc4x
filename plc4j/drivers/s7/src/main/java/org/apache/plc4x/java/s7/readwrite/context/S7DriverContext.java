@@ -57,7 +57,7 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
 
         // The Siemens LOGO device seems to only work with very limited settings,
         // so we're overriding some of the defaults.
-        if (this.controllerType == S7ControllerType.LOGO && configuration.pduSize == 1024) {
+        if ((this.controllerType == S7ControllerType.S7_200 || this.controllerType == S7ControllerType.LOGO) && configuration.pduSize == 1024) {
             configuration.pduSize = 480;
             this.pduSize = 480;
         } else {

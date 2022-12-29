@@ -26,6 +26,7 @@ import (
 	"net"
 	"net/url"
 	"strconv"
+	"sync"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -41,15 +42,18 @@ import (
 
 type Driver struct {
 	_default.DefaultDriver
+	applicationManager      ApplicationManager
 	tm                      spi.RequestTransactionManager
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
-	DeviceInventory         DeviceInventory
 }
 
 func NewDriver() plc4go.PlcDriver {
 	return &Driver{
-		DefaultDriver:           _default.NewDefaultDriver("bacnet-ip", "BACnet/IP", "udp", NewTagHandler()),
+		DefaultDriver: _default.NewDefaultDriver("bacnet-ip", "BACnet/IP", "udp", NewTagHandler()),
+		applicationManager: ApplicationManager{
+			applications: map[string]*ApplicationLayerMessageCodec{},
+		},
 		tm:                      *spi.NewRequestTransactionManager(math.MaxInt),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
@@ -87,44 +91,14 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 		return ch
 	}
 
-	var localAddr *net.UDPAddr
-	{
-		host := transportUrl.Host
-		port := transportUrl.Port()
-		if transportUrl.Port() == "" {
-			port = options["defaultUdpPort"][0]
-		}
-		var remoteAddr *net.UDPAddr
-		if resolvedRemoteAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%s", host, port)); err != nil {
-			panic(err)
-		} else {
-			remoteAddr = resolvedRemoteAddr
-		}
-		if dial, err := net.DialUDP("udp", nil, remoteAddr); err != nil {
-			log.Error().Stringer("transportUrl", &transportUrl).Msg("host unreachable")
-			ch := make(chan plc4go.PlcConnectionConnectResult)
-			go func() {
-				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't dial to host %#v", transportUrl.Host))
-			}()
-			return ch
-		} else {
-			localAddr = dial.LocalAddr().(*net.UDPAddr)
-			localAddr.Port, _ = strconv.Atoi(port)
-			_ = dial.Close()
-		}
-	}
-	// Have the transport create a new transport-instance.
-	transportInstance, err := udpTransport.CreateTransportInstanceForLocalAddress(transportUrl, options, localAddr)
+	codec, err := m.applicationManager.getApplicationLayerMessageCodec(udpTransport, transportUrl, options)
 	if err != nil {
-		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", options["defaultUdpPort"])
 		ch := make(chan plc4go.PlcConnectionConnectResult)
 		go func() {
-			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't initialize transport configuration for given transport url %v", transportUrl))
+			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "error getting application layer message codec"))
 		}()
 		return ch
 	}
-
-	codec := NewApplicationLayerMessageCodec(transportInstance, &m.DeviceInventory)
 	log.Debug().Msgf("working with codec %#v", codec)
 
 	// Create the new connection
@@ -143,4 +117,45 @@ func (m *Driver) Discover(callback func(event apiModel.PlcDiscoveryItem), discov
 
 func (m *Driver) DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
 	return NewDiscoverer().Discover(ctx, callback, discoveryOptions...)
+}
+
+type ApplicationManager struct {
+	sync.Mutex
+	applications map[string]*ApplicationLayerMessageCodec
+}
+
+func (a *ApplicationManager) getApplicationLayerMessageCodec(transport *udp.Transport, transportUrl url.URL, options map[string][]string) (*ApplicationLayerMessageCodec, error) {
+	var localAddress *net.UDPAddr
+	var remoteAddr *net.UDPAddr
+	{
+		host := transportUrl.Host
+		port := transportUrl.Port()
+		if transportUrl.Port() == "" {
+			port = options["defaultUdpPort"][0]
+		}
+		if resolvedRemoteAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%s", host, port)); err != nil {
+			panic(err)
+		} else {
+			remoteAddr = resolvedRemoteAddr
+		}
+		if dial, err := net.DialUDP("udp", nil, remoteAddr); err != nil {
+			return nil, errors.Errorf("couldn't dial to host %#v", transportUrl.Host)
+		} else {
+			localAddress = dial.LocalAddr().(*net.UDPAddr)
+			localAddress.Port, _ = strconv.Atoi(port)
+			_ = dial.Close()
+		}
+	}
+	a.Lock()
+	defer a.Unlock()
+	messageCodec, ok := a.applications[localAddress.String()]
+	if !ok {
+		newMessageCodec, err := NewApplicationLayerMessageCodec(transport, transportUrl, options, localAddress, remoteAddr)
+		if err != nil {
+			return nil, errors.Wrap(err, "error creating application layer code")
+		}
+		a.applications[localAddress.String()] = newMessageCodec
+		return newMessageCodec, nil
+	}
+	return messageCodec, nil
 }

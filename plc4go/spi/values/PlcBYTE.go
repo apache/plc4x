@@ -22,6 +22,7 @@ package values
 import (
 	"encoding/binary"
 	"fmt"
+	"math"
 
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -29,10 +30,10 @@ import (
 
 type PlcBYTE struct {
 	PlcSimpleValueAdapter
-	value byte
+	value uint8
 }
 
-func NewPlcBYTE(value byte) PlcBYTE {
+func NewPlcBYTE(value uint8) PlcBYTE {
 	return PlcBYTE{
 		value: value,
 	}
@@ -76,11 +77,53 @@ func (m PlcBYTE) GetByte() byte {
 	return m.value
 }
 
-func (m PlcBYTE) IsUint8() bool {
-	return true
-}
 func (m PlcBYTE) GetUint8() uint8 {
 	return m.value
+}
+
+func (m PlcBYTE) GetUint16() uint16 {
+	return uint16(m.GetUint8())
+}
+
+func (m PlcBYTE) GetUint32() uint32 {
+	return uint32(m.GetUint8())
+}
+
+func (m PlcBYTE) GetUint64() uint64 {
+	return uint64(m.GetUint8())
+}
+
+func (m PlcBYTE) IsInt8() bool {
+	return m.value < math.MaxInt8
+}
+
+func (m PlcBYTE) GetInt8() int8 {
+	if m.IsInt8() {
+		return int8(m.GetUint8())
+	}
+	return 0
+}
+
+func (m PlcBYTE) GetInt16() int16 {
+	return int16(m.GetUint8())
+}
+
+func (m PlcBYTE) GetInt32() int32 {
+	return int32(m.GetUint8())
+}
+
+func (m PlcBYTE) GetInt64() int64 {
+	return int64(m.GetUint8())
+}
+
+func (m PlcBYTE) GetFloat32() float32 {
+	//TODO: Check if this is ok
+	return float32(m.GetUint8())
+}
+
+func (m PlcBYTE) GetFloat64() float64 {
+	//TODO: Check if this is ok
+	return float64(m.GetUint8())
 }
 
 func (m PlcBYTE) IsString() bool {

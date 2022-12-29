@@ -284,45 +284,62 @@ public class ${type.name} {
                 <#assign valueDefined=true>
             </#if>
 
-            <#if valueDefined>
-                <#switch case.name>
-                    <#case "TIME">
-            return new PlcTIME(value);
-                    <#break>
-                    <#case "DATE">
-                    <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day")>
-            LocalDate value = LocalDate.of(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue());
+            <#switch case.name>
+                <#case "TIME">
+                    <#if helper.hasFieldsWithNames(case.fields, "milliseconds")>
+            return PlcTIME.ofMilliseconds(milliseconds);
                     </#if>
-            return new PlcDATE(value);
                     <#break>
-                    <#case "TIME_OF_DAY">
-                    <#if helper.hasFieldsWithNames(case.fields, "hour", "minutes", "seconds", "nanos")>
-            LocalTime value = LocalTime.of(hour.intValue(), minutes.intValue(), seconds.intValue(), nanos.intValue());
-                    <#elseif helper.hasFieldsWithNames(case.fields, "hour", "minutes", "seconds")>
-            LocalTime value = LocalTime.of(hour.intValue(), minutes.intValue(), seconds.intValue());
+                <#case "LTIME">
+                    <#if helper.hasFieldsWithNames(case.fields, "nanoseconds")>
+            return PlcLTIME.ofNanoseconds(nanoseconds);
                     </#if>
-            return new PlcTIME_OF_DAY(value);
                     <#break>
-                    <#case "DATE_AND_TIME">
-                    <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "nanos")>
-            LocalDateTime value = LocalDateTime.of(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue(), nanos.intValue());
-                    <#elseif helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds")>
-            LocalDateTime value = LocalDateTime.of(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue());
+                <#case "DATE">
+                    <#if helper.hasFieldsWithNames(case.fields, "secondsSinceEpoch")>
+            return PlcDATE.ofSecondsSinceEpoch(secondsSinceEpoch);
+                    <#elseif helper.hasFieldsWithNames(case.fields, "daysSinceEpoch")>
+            return PlcDATE.ofDaysSinceEpoch(daysSinceEpoch);
+                    <#elseif helper.hasFieldsWithNames(case.fields, "daysSinceSiemensEpoch")>
+            return PlcDATE.ofDaysSinceSiemensEpoch(daysSinceSiemensEpoch);
+                    </#if>
+                    <#break>
+                <#case "LDATE">
+                    <#if helper.hasFieldsWithNames(case.fields, "nanosecondsSinceEpoch")>
+            return PlcLDATE.ofNanosecondsSinceEpoch(nanosecondsSinceEpoch);
+                    </#if>
+                    <#break>
+                <#case "TIME_OF_DAY">
+                    <#if helper.hasFieldsWithNames(case.fields, "millisecondsSinceMidnight")>
+            return PlcTIME_OF_DAY.ofMillisecondsSinceMidnight(millisecondsSinceMidnight);
+                    </#if>
+                    <#break>
+                <#case "LTIME_OF_DAY">
+                    <#if helper.hasFieldsWithNames(case.fields, "nanosecondsSinceMidnight")>
+            return PlcLTIME_OF_DAY.ofNanosecondsSinceMidnight(nanosecondsSinceMidnight);
+                    </#if>
+                    <#break>
+                <#case "DATE_AND_TIME">
+                    <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "nanoseconds")>
+            return PlcDATE_AND_TIME.ofSegments(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue(), nanoseconds.intValue());
                     <#elseif helper.hasFieldsWithNames(case.fields, "secondsSinceEpoch")>
-            LocalDateTime value = LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0, ZoneOffset.UTC);
+            return PlcDATE_AND_TIME.ofSecondsSinceEpoch(secondsSinceEpoch);
                     </#if>
-            return new PlcDATE_AND_TIME(value);
                     <#break>
-                    <#case "Struct">
+                <#case "LDATE_AND_TIME">
+                    <#if helper.hasFieldsWithNames(case.fields, "nanosecondsSinceEpoch")>
+            return PlcLDATE_AND_TIME.ofNanosecondsSinceEpoch(nanosecondsSinceEpoch);
+                    </#if>
+                    <#break>
+                <#case "Struct">
             return new PlcStruct(_map);
                     <#break>
-                    <#case "List">
+                <#case "List">
             return new PlcList(value);
                     <#break>
-                    <#default>
+                <#default>
             return new Plc${case.name}(value);
-                </#switch>
-            </#if>
+            </#switch>
         }<#sep> else </#sep></#list>
         <#if !defaultCaseOutput>
         return null;
@@ -388,54 +405,77 @@ public class ${type.name} {
             }
                         </#if>
 
-                    <#if case.name == "BOOL">
+                        <#if case.name == "BOOL">
             while (writeBuffer.getPos() < writeBuffer.getData().length) {
                 writeBuffer.writeBit(false);
             }
-                    </#if>
-                    <#break>
+                        </#if>
+                        <#break>
                     <#case "const">
                         <#assign constField=field.asConstField().orElseThrow()>
             // Const Field (${constField.name})
             ${helper.getWriteBufferWriteMethodCall(constField.type.asSimpleTypeReference().orElseThrow(), constField.referenceValue, constField)};
-                    <#break>
+                        <#break>
                     <#case "enum">
                         <#assign enumField=field.asEnumField().orElseThrow()>
             // Enum field (${enumField.name})
             ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${enumField.name?cap_first}();
             ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(field.asTypedField().orElseThrow().type), "(" + enumField.name + ".getValue())", enumField)};
-                    <#break>
+                        <#break>
                     <#case "manual">
                         <#assign manualField=field.asManualField().orElseThrow()>
             // Manual Field (${manualField.name})
             ${helper.toSerializationExpression(manualField, manualField.type, manualField.serializeExpression, type.parserArguments.orElse(null))};
-                    <#break>
+                        <#break>
                     <#case "reserved">
                         <#assign reservedField=field.asReservedField().orElseThrow()>
             // Reserved Field
             ${helper.getWriteBufferWriteMethodCall(reservedField.type.asSimpleTypeReference().orElseThrow(), helper.getReservedValue(reservedField), reservedField)};
-                    <#break>
+                        <#break>
                     <#case "simple">
                         <#assign simpleField=field.asSimpleField().orElseThrow()>
             // Simple Field (${simpleField.name})
                         <#if case.name == "Struct">
             ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.getStruct().get("${simpleField.name}").get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
-                        <#else>
-                            <#if simpleField.name == "value">
+                        <#elseif simpleField.name == "value">
             ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
-                            <#elseif simpleField.name == "secondsSinceEpoch">
+                        <#elseif simpleField.name == "secondsSinceEpoch">
             ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
-                            <#else>
-                                <#-- Just for now -->
-            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = ${helper.getNullValueForTypeReference(simpleField.type)};
-                            </#if>
+                        <#elseif simpleField.name == "daysSinceEpoch">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "daysSinceSiemensEpoch">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "year">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "month">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "day">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "dayOfWeek">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "hour">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "minutes">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "seconds">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "milliseconds">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "millisecondsSinceMidnight">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "nanoseconds">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "nanosecondsSinceMidnight">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
+                        <#elseif simpleField.name == "nanosecondsSinceEpoch">
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}();
                         </#if>
                         <#if simpleField.type.isSimpleTypeReference()>
             ${helper.getWriteBufferWriteMethodCall(simpleField.type.asSimpleTypeReference().orElseThrow(), "(" + simpleField.name + ")", simpleField)};
                         <#else>
             ${simpleField.type.asComplexTypeReference().orElseThrow().name}IO.staticSerialize(writeBuffer, ${simpleField.name});
                         </#if>
-                    <#break>
+                        <#break>
                 </#switch>
             </#list>
         }<#sep> else </#sep></#list>
