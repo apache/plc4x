@@ -323,7 +323,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
     @Deprecated
     @Override
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
-        return "/*TODO: migrate me*/" + getReadBufferReadMethodCall("", simpleTypeReference, valueString, field);
+        return getReadBufferReadMethodCall("", simpleTypeReference, valueString, field);
     }
 
     @Deprecated
@@ -331,10 +331,10 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
                 String bitType = "Bit";
-                return "/*TODO: migrate me*/" + "read_buffer.read" + bitType + "(\"" + logicalName + "\")";
+                return "read_buffer.read" + bitType + "(\"" + logicalName + "\")";
             case BYTE:
                 String byteType = "Byte";
-                return "/*TODO: migrate me*/" + "read_buffer.read" + byteType + "(\"" + logicalName + "\")";
+                return "read_buffer.read" + byteType + "(\"" + logicalName + "\")";
             case UINT:
                 String unsignedIntegerType;
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
@@ -349,7 +349,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 } else {
                     unsignedIntegerType = "UnsignedBigInteger";
                 }
-                return "/*TODO: migrate me*/" + "read_buffer.read" + unsignedIntegerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                return "read_buffer.read" + unsignedIntegerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
             case INT:
                 String integerType;
                 if (simpleTypeReference.getSizeInBits() <= 8) {
@@ -363,10 +363,10 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 } else {
                     integerType = "BigInteger";
                 }
-                return "/*TODO: migrate me*/" + "read_buffer.read" + integerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                return "read_buffer.read" + integerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
             case FLOAT:
                 String floatType = (simpleTypeReference.getSizeInBits() <= 32) ? "Float" : "Double";
-                return "/*TODO: migrate me*/" + "read_buffer.read" + floatType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                return "read_buffer.read" + floatType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
             case STRING:
             case VSTRING:
                 String stringType = "String";
@@ -380,10 +380,10 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                     length = toParseExpression(field, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null);
                 }
-                return "/*TODO: migrate me*/" + "read_buffer.read" + stringType + "(\"" + logicalName + "\", " + length + ", \"" +
+                return "read_buffer.read" + stringType + "(\"" + logicalName + "\", " + length + ", \"" +
                     encoding + "\")";
         }
-        return "/*TODO: migrate me*/" + "";
+        return "# TODO: migrate me " + "";
     }
 
     public String getDataReaderCall(TypeReference typeReference) {
@@ -540,7 +540,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
     @Deprecated
     @Override
     public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field) {
-        return "/*TODO: migrate me*/" + getWriteBufferWriteMethodCall("", simpleTypeReference, fieldName, field);
+        return getWriteBufferWriteMethodCall("", simpleTypeReference, fieldName, field);
     }
 
     @Deprecated
@@ -551,47 +551,47 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         }
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "/*TODO: migrate me*/" + "writeBuffer.writeBit(\"" + logicalName + "\", (boolean) " + fieldName + "" + writerArgsString + ")";
+                return "writeBuffer.writeBit(\"" + logicalName + "\", bool( " + fieldName + "" + writerArgsString + "))";
             case BYTE:
                 ByteTypeReference byteTypeReference = (ByteTypeReference) simpleTypeReference;
-                return "/*TODO: migrate me*/" + "writeBuffer.writeByte(\"" + logicalName + "\", ((Number) " + fieldName + ").byteValue()" + writerArgsString + ")";
+                return "writeBuffer.writeByte(\"" + logicalName + "\", (" + fieldName + ").byteValue()" + writerArgsString + ")";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.writeUnsignedByte(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue()" + writerArgsString + ")";
+                    return "writeBuffer.writeUnsignedByte(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ".byteValue()" + writerArgsString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.writeUnsignedShort(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue()" + writerArgsString + ")";
+                    return "writeBuffer.writeUnsignedShort(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ".shortValue()" + writerArgsString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.writeUnsignedInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue()" + writerArgsString + ")";
+                    return "writeBuffer.writeUnsignedInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ".intValue()" + writerArgsString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.writeUnsignedLong(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue()" + writerArgsString + ")";
+                    return "writeBuffer.writeUnsignedLong(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ".longValue()" + writerArgsString + ")";
                 }
-                return "/*TODO: migrate me*/" + "writeBuffer.writeUnsignedBigInteger(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", (BigInteger) " + fieldName + "" + writerArgsString + ")";
+                return "writeBuffer.writeUnsignedBigInteger(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + "" + writerArgsString + ")";
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.writeSignedByte(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue()" + writerArgsString + ")";
+                    return "writeBuffer.writeSignedByte(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + ".byteValue()" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.writeShort(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue()" + writerArgsString + ")";
+                    return "writeBuffer.writeShort(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + ".shortValue()" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.writeInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue()" + writerArgsString + ")";
+                    return "writeBuffer.writeInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + ".intValue()" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.writeLong(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue()" + writerArgsString + ")";
+                    return "writeBuffer.writeLong(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + ".longValue()" + writerArgsString + ")";
                 }
-                return "/*TODO: migrate me*/" + "writeBuffer.writeBigInteger(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", BigInteger.valueOf( " + fieldName + ")" + writerArgsString + ")";
+                return "writeBuffer.writeBigInteger(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + "" + writerArgsString + ")";
             case FLOAT:
             case UFLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.writeFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + "," + fieldName + "" + writerArgsString + ")";
+                    return "writeBuffer.writeFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + "," + fieldName + "" + writerArgsString + ")";
                 } else if (floatTypeReference.getSizeInBits() <= 64) {
-                    return "/*TODO: migrate me*/" + "writeBuffer.writeDouble(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + "," + fieldName + "" + writerArgsString + ")";
+                    return "writeBuffer.writeDouble(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + "," + fieldName + "" + writerArgsString + ")";
                 } else {
                     throw new RuntimeException("Unsupported float type");
                 }
@@ -607,7 +607,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                     length = toSerializationExpression(field, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), thisType.getParserArguments().orElse(Collections.emptyList()));
                 }
-                return "/*TODO: migrate me*/" + "writeBuffer.writeString(\"" + logicalName + "\", " + length + ", \"" +
+                return "writeBuffer.writeString(\"" + logicalName + "\", " + length + ", \"" +
                     encoding + "\", (String) " + fieldName + "" + writerArgsString + ")";
         }
         throw new FreemarkerException("Unmapped basetype" + simpleTypeReference.getBaseType());
@@ -615,11 +615,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
 
     public String getReservedValue(ReservedField reservedField) {
         final String languageTypeName = getLanguageTypeNameForTypeReference(reservedField.getType(), true);
-        if ("BigInteger".equals(languageTypeName)) {
-            return "BigInteger.valueOf(" + reservedField.getReferenceValue() + ")";
-        } else {
-            return "(" + languageTypeName + ") " + reservedField.getReferenceValue();
-        }
+        return languageTypeName + "(" + reservedField.getReferenceValue() + ")";
     }
 
     /**
