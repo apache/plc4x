@@ -41,6 +41,7 @@ setup(
     install_requires=[
         "pytest-asyncio>=0.18.3",
         "pip-tools",
+        "black",
     ],
     extras_require={
         "dev": [
