@@ -19,49 +19,73 @@
 package org.apache.plc4x.java.modbus;
 
 import org.apache.plc4x.java.modbus.base.tag.*;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ModbusTagTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class ModbusTagTest {
 
     @Test
-    public void testHolding_INT_ARRAY_RANGE() {
-        for (int i = 1; i < 125; i++) {
+    void testHolding_INT_ARRAY_RANGE() {
+        for (int i = 1; i <= 125; i++) {
           final ModbusTagHoldingRegister holdingregister = ModbusTagHoldingRegister.of("400001:INT[" + i + "]");
-          Assertions.assertEquals(i, holdingregister.getNumberOfElements());
+          assertEquals(i, holdingregister.getNumberOfElements());
         }
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            ModbusTagHoldingRegister.of("400001:INT[126]");
+        });
+        assertTrue(exception.getMessage().startsWith("quantity may not be larger than "));
     }
 
     @Test
-    public void testInput_INT_ARRAY_RANGE() {
-        for (int i = 1; i < 125; i++) {
+    void testInput_INT_ARRAY_RANGE() {
+        for (int i = 1; i <= 125; i++) {
           final ModbusTagInputRegister inputregister = ModbusTagInputRegister.of("300001:INT[" + i + "]");
-          Assertions.assertEquals(i, inputregister.getNumberOfElements());
+          assertEquals(i, inputregister.getNumberOfElements());
         }
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            ModbusTagInputRegister.of("300001:INT[126]");
+        });
+        assertTrue(exception.getMessage().startsWith("quantity may not be larger than "));
     }
 
     @Test
-    public void testExtended_INT_ARRAY_RANGE() {
-        for (int i = 1; i < 125; i++) {
+    void testExtended_INT_ARRAY_RANGE() {
+        for (int i = 1; i <= 125; i++) {
           final ModbusTagExtendedRegister extendedRegister = ModbusTagExtendedRegister.of("600001:INT[" + i + "]");
-          Assertions.assertEquals(i, extendedRegister.getNumberOfElements());
+          assertEquals(i, extendedRegister.getNumberOfElements());
         }
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            ModbusTagExtendedRegister.of("600001:INT[126]");
+        });
+        assertTrue(exception.getMessage().startsWith("quantity may not be larger than "));
     }
 
     @Test
-    public void testCoil_INT_ARRAY_RANGE() {
-        for (int i = 1; i < 2000; i++) {
+    void testCoil_INT_ARRAY_RANGE() {
+        for (int i = 1; i <= 2000; i++) {
           final ModbusTagCoil coil = ModbusTagCoil.of("000001:BOOL[" + i + "]");
-          Assertions.assertEquals(i, coil.getNumberOfElements());
+          assertEquals(i, coil.getNumberOfElements());
         }
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            ModbusTagCoil.of("000001:BOOL[2001]");
+        });
+        assertTrue(exception.getMessage().startsWith("quantity may not be larger than "));
     }
 
     @Test
-    public void testDiscreteInput_INT_ARRAY_RANGE() {
-        for (int i = 1; i < 2000; i++) {
+    void testDiscreteInput_INT_ARRAY_RANGE() {
+        for (int i = 1; i <= 2000; i++) {
           final ModbusTagDiscreteInput discreteInput = ModbusTagDiscreteInput.of("100001:BOOL[" + i + "]");
-          Assertions.assertEquals(i, discreteInput.getNumberOfElements());
+          assertEquals(i, discreteInput.getNumberOfElements());
         }
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            ModbusTagDiscreteInput.of("100001:BOOL[2001]");
+        });
+        assertTrue(exception.getMessage().startsWith("quantity may not be larger than "));
     }
 
 }

@@ -84,6 +84,10 @@ public class ModbusTagExtendedRegister extends ModbusTag {
             throw new IllegalArgumentException("Last requested address is out of range, should be between 0 and " + REGISTER_MAXADDRESS + ". Was " + (address + (quantity - 1)));
         }
 
+        if (quantity > 125) {
+            throw new IllegalArgumentException("quantity may not be larger than 125. Was " + quantity);
+        }
+
         ModbusDataType dataType = (matcher.group("datatype") != null) ? ModbusDataType.valueOf(matcher.group("datatype")) : ModbusDataType.INT;
 
         return new ModbusTagExtendedRegister(address, quantity, dataType);

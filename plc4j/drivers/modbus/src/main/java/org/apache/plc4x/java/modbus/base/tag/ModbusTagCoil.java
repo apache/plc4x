@@ -84,6 +84,10 @@ public class ModbusTagCoil extends ModbusTag {
             throw new IllegalArgumentException("Last requested address is out of range, should be between " + PROTOCOL_ADDRESS_OFFSET + " and " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET + (quantity - 1)));
         }
 
+        if (quantity > 2000) {
+            throw new IllegalArgumentException("quantity may not be larger than 2000. Was " + quantity);
+        }
+
         ModbusDataType dataType = (matcher.group("datatype") != null) ? ModbusDataType.valueOf(matcher.group("datatype")) : ModbusDataType.BOOL;
 
         return new ModbusTagCoil(address, quantity, dataType);
