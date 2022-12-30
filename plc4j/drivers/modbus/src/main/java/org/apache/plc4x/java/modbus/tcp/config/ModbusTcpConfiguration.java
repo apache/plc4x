@@ -57,7 +57,9 @@ public class ModbusTcpConfiguration implements Configuration, TcpTransportConfig
 
     @Override
     public String toString() {
-        return "Configuration{" +
+        return "ModbusTcpConfiguration{" +
+            "requestTimeout=" + requestTimeout +
+            ", unitIdentifier=" + unitIdentifier +
             '}';
     }
 
