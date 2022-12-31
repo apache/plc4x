@@ -337,12 +337,18 @@ public class CachedPlcConnection implements PlcConnection, PlcConnectionMetadata
 
     @Override
     public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
-        throw new UnsupportedOperationException();
+        if (closed) {
+            throw new IllegalStateException("Trying to build a Request on a closed Connection!");
+        }
+        return new CachedSubscriptionRequestBuilder(this, this.getActiveConnection().subscriptionRequestBuilder());
     }
 
     @Override
     public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
-        throw new UnsupportedOperationException();
+        if (closed) {
+            throw new IllegalStateException("Trying to build a Request on a closed Connection!");
+        }
+        return new CachedUnsubscriptionRequestBuilder(this, this.getActiveConnection().unsubscriptionRequestBuilder());
     }
 
     @Override
