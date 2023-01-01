@@ -16,10 +16,15 @@
 # specific language governing permissions and limitations
 # under the License.
 # ----------------------------------------------------------------------------
-name: "Platform compatibility"
+name: "Go Platform compatibility"
 
 on:
   push:
+    branches: [ "develop", "plc4go" ]
+    paths:
+      - code-generation/**
+      - protocols/**
+      - plc4go**
   workflow_dispatch:
     inputs:
       forceUpdates:
@@ -32,7 +37,7 @@ jobs:
     strategy:
       matrix:
         # 8 not anymore supported for building
-        java: [ 11, 17 ]
+        java: [ 17 ]
         os: [ ubuntu-latest, macos-latest, windows-latest ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
@@ -112,8 +117,8 @@ jobs:
       # Note: due to github has no concept of recovering from a fail even if we have our fallback below we append a second un-parallel run behind this to be sure that it works with all checks. Only if that fails too we are ok with a "red" (which should be yellow) cross indicating a problem
       - name: Run mvnw
         run: |
-          ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -T 1C -B -P'with-sandbox,with-c,with-go,enable-all-checks' ${{ steps.platform_opts.outputs.platform_opts }} install || ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-sandbox,with-c,with-go,enable-all-checks' ${{ steps.platform_opts.outputs.platform_opts }} install
+          ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-go,enable-all-checks' -pl :plc4go -am ${{ steps.platform_opts.outputs.platform_opts }} install
 
-      - name: Run mvnv unparallel
+      - name: Run mvnv without BacNet regression tests
         if: ${{ failure() }}
-        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-sandbox,with-c,with-go,skip-bacnet-regression-test' ${{ steps.platform_opts.outputs.platform_opts }} install
+        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-go,skip-bacnet-regression-test' -pl :plc4go -am ${{ steps.platform_opts.outputs.platform_opts }} install
