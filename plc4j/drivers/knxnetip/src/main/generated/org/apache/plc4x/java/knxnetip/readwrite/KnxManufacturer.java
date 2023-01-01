@@ -684,24 +684,23 @@ public enum KnxManufacturer {
   M_ZHEJIANG_MOORGEN_INTELLIGENT_TECHNOLOGY_CO___LTD(
       (int) 595, (int) 653, (String) "Zhejiang Moorgen Intelligent Technology Co., Ltd"),
   M_GUANGDONG_KANWAY((int) 596, (int) 654, (String) "Guangdong Kanway"),
-  M_PHOENIX_CONTACT_2((int) 597, (int) 655, (String) "Phoenix Contact"),
-  M_RAMIREZ_ENGINEERING_GMBH((int) 598, (int) 656, (String) "RAMIREZ Engineering GmbH"),
+  M_RAMIREZ_ENGINEERING_GMBH((int) 597, (int) 656, (String) "RAMIREZ Engineering GmbH"),
   M_ZHONGSHAN_TAIYANG_IMPANDEXP__CO_LTD(
-      (int) 599, (int) 657, (String) "Zhongshan Taiyang IMP&EXP. CO LTD"),
-  M_VIHAN_ELECTRIC_PVT_LTD((int) 600, (int) 658, (String) "Vihan electric pvt ltd"),
-  M_SPLENDID_MINDS_GMBH((int) 601, (int) 659, (String) "Splendid Minds GmbH"),
-  M_ESTADA((int) 602, (int) 660, (String) "Estada"),
+      (int) 598, (int) 657, (String) "Zhongshan Taiyang IMP&EXP. CO LTD"),
+  M_VIHAN_ELECTRIC_PVT_LTD((int) 599, (int) 658, (String) "Vihan electric pvt ltd"),
+  M_SPLENDID_MINDS_GMBH((int) 600, (int) 659, (String) "Splendid Minds GmbH"),
+  M_ESTADA((int) 601, (int) 660, (String) "Estada"),
   M_ZHONGYUNXINZHIKONGGUJITUANYOUXIANGONGSI(
-      (int) 603, (int) 661, (String) "zhongyunxinzhikonggujituanyouxiangongsi"),
-  M_STUHL_REGELSYSTEME_GMBH((int) 604, (int) 662, (String) "Stuhl Regelsysteme GmbH"),
+      (int) 602, (int) 661, (String) "zhongyunxinzhikonggujituanyouxiangongsi"),
+  M_STUHL_REGELSYSTEME_GMBH((int) 603, (int) 662, (String) "Stuhl Regelsysteme GmbH"),
   M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD(
-      (int) 605, (int) 663, (String) "Shenzhen Gluck Technology Co., LTD"),
-  M_GAIMEX((int) 606, (int) 664, (String) "Gaimex"),
-  M_B3_INTERNATIONAL_S_R_L((int) 607, (int) 665, (String) "B3 International S.R.L"),
-  M_MM_ELECTRO((int) 608, (int) 666, (String) "MM Electro"),
-  M_ABB___RESERVED((int) 609, (int) 43954, (String) "ABB - reserved"),
+      (int) 604, (int) 663, (String) "Shenzhen Gluck Technology Co., LTD"),
+  M_GAIMEX((int) 605, (int) 664, (String) "Gaimex"),
+  M_B3_INTERNATIONAL_S_R_L((int) 606, (int) 665, (String) "B3 International S.R.L"),
+  M_MM_ELECTRO((int) 607, (int) 666, (String) "MM Electro"),
+  M_ABB___RESERVED((int) 608, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 610, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 609, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

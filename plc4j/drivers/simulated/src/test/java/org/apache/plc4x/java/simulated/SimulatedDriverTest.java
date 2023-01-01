@@ -51,7 +51,7 @@ class SimulatedDriverTest implements WithAssertions {
     void wrongUrl() {
         assertThatThrownBy(() -> SUT.getConnection("simulated:"))
             .isInstanceOf(PlcConnectionException.class)
-            .hasMessage("Invalid URL: no device name given.");
+            .hasMessage("Invalid URL: no device name given");
     }
 
 }
