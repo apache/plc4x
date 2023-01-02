@@ -80,12 +80,12 @@ def checkDotnet() {
     def output
     try {
         output = "dotnet --version".execute().text
-    } catch (IOException e) {
+    } catch (IOException ignored) {
         output = ""
     }
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
+        String curVersion = matcher[0][1]
         def result = checkVersionAtLeast(curVersion, "4.5.2")
         if (!result) {
             allConditionsMet = false
@@ -98,7 +98,7 @@ def checkDotnet() {
 
 def checkJavaVersion(String minVersion, String maxVersion) {
     print "Detecting Java version:    "
-    def curVersion = System.properties['java.version']
+    String curVersion = System.properties['java.version']
     def result
     if (minVersion != null) {
         result = checkVersionAtLeast(curVersion, minVersion)
@@ -111,14 +111,13 @@ def checkJavaVersion(String minVersion, String maxVersion) {
         result = checkVersionAtMost(curVersion, maxVersion)
         if (!result) {
             allConditionsMet = false
-            return
         }
     }
 }
 
 def checkMavenVersion(String minVersion, String maxVersion) {
     print "Detecting Maven version:   "
-    def curVersion = project.projectBuilderConfiguration.systemProperties['maven.version']
+    String curVersion = project.projectBuilderConfiguration.systemProperties['maven.version']
     def result
     if (minVersion != null) {
         result = checkVersionAtLeast(curVersion, minVersion)
@@ -131,7 +130,6 @@ def checkMavenVersion(String minVersion, String maxVersion) {
         result = checkVersionAtMost(curVersion, maxVersion)
         if (!result) {
             allConditionsMet = false
-            return
         }
     }
 }
@@ -142,12 +140,12 @@ def checkGcc() {
     def output
     try {
         output = "gcc --version".execute().text
-    } catch (IOException e) {
+    } catch (IOException ignored) {
         output = ""
     }
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
+        String curVersion = matcher[0][1]
         def result = checkVersionAtLeast(curVersion, "1.0.0")
         if (!result) {
             allConditionsMet = false
@@ -163,12 +161,12 @@ def checkGit() {
     def output
     try {
         output = "git --version".execute().text
-    } catch (IOException e) {
+    } catch (IOException ignored) {
         output = ""
     }
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
+        String curVersion = matcher[0][1]
         def result = checkVersionAtLeast(curVersion, "1.0.0")
         if (!result) {
             allConditionsMet = false
@@ -188,10 +186,10 @@ def checkPython() {
         def stdOut = new StringBuilder()
         def stdErr = new StringBuilder()
         process.consumeProcessOutput(stdOut, stdErr)
-        process.waitForOrKill(500)
+        process.waitForOrKill(5000)
         Matcher matcher = extractVersion(stdOut + stdErr)
         if (matcher.size() > 0) {
-            def curVersion = matcher[0][1]
+            String curVersion = matcher[0][1]
             def result = checkVersionAtLeast(curVersion, "3.7.0")
             if (!result) {
                 allConditionsMet = false
@@ -200,7 +198,7 @@ def checkPython() {
             println "missing (Please install at least version 3.7.0)"
             allConditionsMet = false
         }
-    } catch (Exception e) {
+    } catch (Exception ignored) {
         println "missing"
         allConditionsMet = false
     }
@@ -224,7 +222,7 @@ def checkPythonVenv() {
         } else {
             println "               OK"
         }
-    } catch (Exception e) {
+    } catch (Exception ignored) {
         println "missing"
         allConditionsMet = false
     }
@@ -237,7 +235,7 @@ def checkDocker() {
     def output
     try {
         output = "docker info".execute().text
-    } catch (IOException e) {
+    } catch (IOException ignored) {
         output = ""
     }
     // Check if Docker is installed at all
@@ -246,7 +244,7 @@ def checkDocker() {
         // If it is check if the daemon is running and if the version is ok
         def matcher2 = output =~ /Server Version: (\d+\.\d+(\.\d+)?).*/
         if (matcher2.size() > 0) {
-            def curVersion = matcher2[0][1]
+            String curVersion = matcher2[0][1]
             def result = checkVersionAtLeast(curVersion, "1.0.0")
             if (!result) {
                 allConditionsMet = false
@@ -304,7 +302,7 @@ def checkLibPcapHeaders() {
  * @param input
  * @return
  */
-private Matcher extractVersion(input) {
+private static Matcher extractVersion(input) {
     def matcher = input =~ /(\d+\.\d+(\.\d+)?).*/
     matcher
 }
