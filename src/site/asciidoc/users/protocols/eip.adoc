@@ -19,7 +19,7 @@
 
 == Logix
 
-=== Connection String Options
+=== Connection String Option
 
 [cols="2,2a,5a"]
 |===
