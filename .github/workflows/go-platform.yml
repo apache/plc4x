@@ -114,6 +114,11 @@ jobs:
               core.setOutput('extra_options', ``)
             }
 
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: go
+
       # Note: due to github has no concept of recovering from a fail even if we have our fallback below we append a second un-parallel run behind this to be sure that it works with all checks. Only if that fails too we are ok with a "red" (which should be yellow) cross indicating a problem
       - name: Run mvnw
         run: |
@@ -122,3 +127,6 @@ jobs:
       - name: Run mvnv without BacNet regression tests
         if: ${{ failure() }}
         run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-go,skip-bacnet-regression-test' -pl :plc4go -am ${{ steps.platform_opts.outputs.platform_opts }} install
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
