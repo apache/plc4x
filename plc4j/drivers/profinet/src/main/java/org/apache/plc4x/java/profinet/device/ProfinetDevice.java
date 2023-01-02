@@ -167,6 +167,21 @@ public class ProfinetDevice {
      */
     public Map<String, PlcValue> getDeviceInfo() {
         Map<String, PlcValue> options = new HashMap<>();
+        ProfinetDeviceIdentity deviceIdentity = this.deviceContext.getGsdFile().getProfileBody().getDeviceIdentity();
+        options.put("device_id", new PlcSTRING(deviceIdentity.getDeviceID()));
+        options.put("vendor_id", new PlcSTRING(deviceIdentity.getVendorId()));
+        options.put("vendor_name", new PlcSTRING(deviceIdentity.getVendorName().getValue()));
+        if (deviceIdentity.getInfoText() != null && deviceIdentity.getInfoText().getTextId() != null) {
+            String key = deviceIdentity.getInfoText().getTextId();
+            ProfinetExternalTextList externaltextList = this.deviceContext.getGsdFile().getProfileBody().getApplicationProcess().getExternalTextList();
+            for (ProfinetTextIdValue s : externaltextList.getPrimaryLanguage().getText()) {
+                if (key.equals(s.getTextId())) {
+                    options.put("info_text", new PlcSTRING(s.getValue()));
+                    break;
+                }
+            }
+
+        }
 
         return options;
     }
@@ -187,7 +202,7 @@ public class ProfinetDevice {
             options.put(entry.getKey(), entry.getValue());
         }
         return new DefaultPlcBrowseItem(
-            this.deviceContext.getMacAddress().toString(),
+            Hex.encodeHexString(this.deviceContext.getMacAddress().getAddress()),
             this.deviceContext.getDeviceName(),
             PlcValueType.List,
             false,
