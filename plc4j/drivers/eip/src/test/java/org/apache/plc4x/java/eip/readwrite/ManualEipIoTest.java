@@ -29,7 +29,7 @@ public class ManualEipIoTest {
 
     public static void main(String[] args) throws Exception {
         final PlcConnection connection = new PlcDriverManager().getConnection("logix://localhost");
-        final PlcReadRequest readRequest = connection.readRequestBuilder().addItem("MyTag", "MyTag").build();
+        final PlcReadRequest readRequest = connection.readRequestBuilder().addTagAddress("MyTag", "MyTag").build();
         final PlcReadResponse plcReadResponse = readRequest.execute().get();
         connection.close();
         assertEquals(plcReadResponse.getInteger("MyTag"), 0);

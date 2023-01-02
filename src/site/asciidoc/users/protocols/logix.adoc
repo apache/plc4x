@@ -1,0 +1,119 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/users/protocols
+:icons: font
+
+== Logix
+
+=== Connection String Options
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|Code
+2+|`logix`
+
+|Name
+2+|Logix CIP/EIP
+
+|Maven Dependency
+2+|
+----
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-driver-eip</artifactId>
+  <version>{current-last-released-version}</version>
+</dependency>
+----
+
+|Default Transport:
+2+| `tcp`
+
+|Compatible Transports:
+2+| - `tcp` (Default Port: 44818)
+
+
+3+|Supported Operations
+
+|
+2+| `read`
+
+|
+2+| `write`
+
+3+|Options
+
+|
+| `communicationPath`
+| The communication path allows for connection routing across multiple backplanes. It uses a common format found in logix controllers.
+  It consists of pairs of values, each pair begins with either 1 (Backplane) or 2 (Ethernet), followed by a slot in the case of a backplane address,
+  or if using Ethernet an ip address. e.g. [1,4,2,192.168.0.1,1,1] - Routes to the 4th slot in the first rack, which is a ethernet module, it then connects to the address 192.168.0.1, then finds the module in slot 1.
+
+|
+| `backplane` (1)
+| Without using routing information the backplane defaults to 1. This is overridden if communicationPath is provided.
+
+|
+| `slot` (1)
+| The slot within the backplane the CPU is located.
+
+|===
+
+=== Individual Resource Address Format
+
+==== Connection String
+
+Logix has the following connection string format:-
+----
+logix:tcp://{ip-address}:{port}?{options}
+----
+An example connection string would look like:-
+----
+logix:tcp://127.0.0.1:502?communicationPath=[1,1]
+----
+Note the port and option fields are optional.
+
+
+==== General Format
+
+In general all Logix addresses have this format:
+
+----
+{address}:{data-type}[{array-size}]
+----
+
+If the array-size part is omitted, the size-default of `1` is assumed.
+If the data-type part is omitted, the data type from the controller is used
+The address format matches that found in the controller.
+
+==== Data Types
+
+The following data types are supported
+
+- BOOL (boolean)
+- SINT (int 8)
+- USINT (uint 8)
+- BYTE (uint 8)
+- INT (int 16)
+- UINT (uint 16)
+- WORD (uint 16)
+- DINT (int 32)
+- UDINT (uint 32)
+- DWORD (uint 32)
+- LINT (int 64)
+- REAL (float)

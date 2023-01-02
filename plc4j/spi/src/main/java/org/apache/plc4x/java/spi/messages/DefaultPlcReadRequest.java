@@ -70,6 +70,11 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
         return new LinkedHashSet<>(tags.keySet());
     }
 
+    @JsonAnyGetter
+    public Map<String, PlcTag> getMap() {
+        return tags;
+    }
+
     @Override
     @JsonIgnore
     public PlcTag getTag(String name) {

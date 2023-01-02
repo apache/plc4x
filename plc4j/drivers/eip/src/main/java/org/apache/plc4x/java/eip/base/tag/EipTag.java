@@ -16,11 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-<<<<<<<< HEAD:plc4j/drivers/eip/src/main/java/org/apache/plc4x/java/eip/base/field/EipField.java
-package org.apache.plc4x.java.eip.base.field;
-========
-package org.apache.plc4x.java.eip.readwrite.tag;
->>>>>>>> develop:plc4j/drivers/eip/src/main/java/org/apache/plc4x/java/eip/readwrite/tag/EipTag.java
+
+package org.apache.plc4x.java.eip.base.tag;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.model.ArrayInfo;

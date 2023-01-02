@@ -22,11 +22,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.eip.base.configuration.EIPConfiguration;
-import org.apache.plc4x.java.eip.base.field.EipField;
+import org.apache.plc4x.java.eip.base.tag.EipTag;
 import org.apache.plc4x.java.eip.logix.configuration.LogixConfiguration;
 import org.apache.plc4x.java.eip.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
@@ -464,10 +464,10 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder());
 
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
-        for (Map.Entry<String, PlcField> entry : request.getMap().entrySet()) {
+        for (Map.Entry<String, PlcTag> entry : request.getMap().entrySet()) {
             CompletableFuture<Boolean> internalFuture = new CompletableFuture<>();
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-            EipField plcField = (EipField) entry.getValue();
+            EipTag plcField = (EipTag) entry.getValue();
             String tag = plcField.getTag();
 
             try {
@@ -540,9 +540,9 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder());
 
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
-        List<CipService> requests = new ArrayList<>(request.getNumberOfFields());
-        for (PlcField field : request.getFields()) {
-            EipField plcField = (EipField) field;
+        List<CipService> requests = new ArrayList<>(request.getNumberOfTags());
+        for (PlcTag field : request.getTags()) {
+            EipTag plcField = (EipTag) field;
             String tag = plcField.getTag();
 
             try {
@@ -621,10 +621,10 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
 
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
-        List<CipService> requests = new ArrayList<>(request.getNumberOfFields());
+        List<CipService> requests = new ArrayList<>(request.getNumberOfTags());
 
-        for (PlcField field : request.getFields()) {
-            EipField plcField = (EipField) field;
+        for (PlcTag field : request.getTags()) {
+            EipTag plcField = (EipTag) field;
             String tag = plcField.getTag();
 
             try {
@@ -649,7 +649,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             typeIds.add(new ConnectedDataItem(this.sequenceCount, requests.get(0), this.configuration.getByteOrder()));
         } else {
             List<Integer> offsets = new ArrayList<>(requests.size());
-            offsets.add(2 + 2 * request.getNumberOfFields());
+            offsets.add(2 + 2 * request.getNumberOfTags());
             for (CipService cipRequest : requests) {
                 if (requests.indexOf(cipRequest) != (requests.size() - 1)) {
                     offsets.add(offsets.get(requests.indexOf(cipRequest)) + cipRequest.getLengthInBytes());
@@ -753,14 +753,14 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         // only 1 field
         if (p instanceof CipReadResponse) {
             CipReadResponse resp = (CipReadResponse) p;
-            String fieldName = readRequest.getFieldNames().iterator().next();
-            EipField field = (EipField) readRequest.getField(fieldName);
+            String fieldName = readRequest.getTagNames().iterator().next();
+            EipTag tag = (EipTag) readRequest.getTag(fieldName);
             PlcResponseCode code = decodeResponseCode(resp.getStatus());
             PlcValue plcValue = null;
             CIPDataTypeCode type = resp.getData().getDataType();
             ByteBuf data = Unpooled.wrappedBuffer(resp.getData().getData());
             if (code == PlcResponseCode.OK) {
-                plcValue = parsePlcValue(field, data, type);
+                plcValue = parsePlcValue(tag, data, type);
             }
             ResponseItem<PlcValue> result = new ResponseItem<>(code, plcValue);
             values.put(fieldName, result);
@@ -790,10 +790,10 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 }
             }
             Services services = new Services(responses.getOffsets(), arr, -1, this.configuration.getByteOrder());
-            Iterator<String> it = readRequest.getFieldNames().iterator();
+            Iterator<String> it = readRequest.getTagNames().iterator();
             for (int i = 0; i < nb && it.hasNext(); i++) {
                 String fieldName = it.next();
-                EipField field = (EipField) readRequest.getField(fieldName);
+                EipTag tag = (EipTag) readRequest.getTag(fieldName);
                 PlcValue plcValue = null;
                 if (services.getServices().get(i) instanceof CipReadResponse) {
                     CipReadResponse readResponse = (CipReadResponse) services.getServices().get(i);
@@ -806,7 +806,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     CIPDataTypeCode type = readResponse.getData().getDataType();
                     ByteBuf data = Unpooled.wrappedBuffer(readResponse.getData().getData());
                     if (code == PlcResponseCode.OK) {
-                        plcValue = parsePlcValue(field, data, type);
+                        plcValue = parsePlcValue(tag, data, type);
                     }
                     ResponseItem<PlcValue> result = new ResponseItem<>(code, plcValue);
                     values.put(fieldName, result);
@@ -816,7 +816,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         return new DefaultPlcReadResponse(readRequest, values);
     }
 
-    private Map<String, ResponseItem<PlcValue>> decodeSingleReadResponse(CipService p, Map.Entry<String, PlcField> field) {
+    private Map<String, ResponseItem<PlcValue>> decodeSingleReadResponse(CipService p, Map.Entry<String, PlcTag> tag) {
         Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
         CipReadResponse resp = (CipReadResponse) p;
         PlcResponseCode code = decodeResponseCode(resp.getStatus());
@@ -824,16 +824,16 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         CIPDataTypeCode type = resp.getData().getDataType();
         ByteBuf data = Unpooled.wrappedBuffer(resp.getData().getData());
         if (code == PlcResponseCode.OK) {
-            plcValue = parsePlcValue((EipField) field.getValue(), data, type);
+            plcValue = parsePlcValue((EipTag) tag.getValue(), data, type);
         }
         ResponseItem<PlcValue> result = new ResponseItem<>(code, plcValue);
-        values.put(field.getKey(), result);
+        values.put(tag.getKey(), result);
         return values;
     }
 
-    private PlcValue parsePlcValue(EipField field, ByteBuf data, CIPDataTypeCode type) {
+    private PlcValue parsePlcValue(EipTag tag, ByteBuf data, CIPDataTypeCode type) {
         final int STRING_LEN_OFFSET = 2, STRING_DATA_OFFSET = 6;
-        int nb = field.getElementNb();
+        int nb = tag.getElementNb();
         if (nb > 1) {
             int index = 0;
             List<PlcValue> list = new ArrayList<>();
@@ -929,13 +929,13 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
     public CompletableFuture<PlcWriteResponse> writeWithoutMessageRouter(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
-        List<CipWriteRequest> items = new ArrayList<>(writeRequest.getNumberOfFields());
+        List<CipWriteRequest> items = new ArrayList<>(writeRequest.getNumberOfTags());
         PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6, this.configuration.getByteOrder()), this.configuration.getByteOrder());
         PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder());
         Map<String, PlcResponseCode> values = new HashMap<>();
 
-        for (String fieldName : writeRequest.getFieldNames()) {
-            final EipField field = (EipField) request.getField(fieldName);
+        for (String fieldName : writeRequest.getTagNames()) {
+            final EipTag field = (EipTag) request.getTag(fieldName);
             final PlcValue value = request.getPlcValue(fieldName);
             String tag = field.getTag();
             int elements = 1;
@@ -1018,9 +1018,9 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
     public CompletableFuture<PlcWriteResponse> writeWithoutConnectionManager(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
-        List<CipWriteRequest> items = new ArrayList<>(writeRequest.getNumberOfFields());
-        for (String fieldName : request.getFieldNames()) {
-            final EipField field = (EipField) request.getField(fieldName);
+        List<CipWriteRequest> items = new ArrayList<>(writeRequest.getNumberOfTags());
+        for (String fieldName : request.getTagNames()) {
+            final EipTag field = (EipTag) request.getTag(fieldName);
             final PlcValue value = request.getPlcValue(fieldName);
             String tag = field.getTag();
             int elements = 1;
@@ -1167,9 +1167,9 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
     public CompletableFuture<PlcWriteResponse> writeWithConnectionManager(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
-        List<CipWriteRequest> items = new ArrayList<>(writeRequest.getNumberOfFields());
-        for (String fieldName : request.getFieldNames()) {
-            final EipField field = (EipField) request.getField(fieldName);
+        List<CipWriteRequest> items = new ArrayList<>(writeRequest.getNumberOfTags());
+        for (String fieldName : request.getTagNames()) {
+            final EipTag field = (EipTag) request.getTag(fieldName);
             final PlcValue value = request.getPlcValue(fieldName);
             String tag = field.getTag();
             int elements = 1;
@@ -1307,7 +1307,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         return future;
     }
 
-    private Map<String, PlcResponseCode> decodeSingleWriteResponse(CipWriteResponse resp, String fieldName, PlcField field) {
+    private Map<String, PlcResponseCode> decodeSingleWriteResponse(CipWriteResponse resp, String fieldName, PlcTag field) {
         Map<String, PlcResponseCode> responses = new HashMap<>();
         responses.put(fieldName, decodeResponseCode(resp.getStatus()));
         return responses;
@@ -1318,8 +1318,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
         if (p instanceof CipWriteResponse) {
             CipWriteResponse resp = (CipWriteResponse) p;
-            String fieldName = writeRequest.getFieldNames().iterator().next();
-            EipField field = (EipField) writeRequest.getField(fieldName);
+            String fieldName = writeRequest.getTagNames().iterator().next();
+            EipTag field = (EipTag) writeRequest.getTag(fieldName);
             responses.put(fieldName, decodeResponseCode(resp.getStatus()));
             return new DefaultPlcWriteResponse(writeRequest, responses);
         } else if (p instanceof MultipleServiceResponse) {
@@ -1346,10 +1346,10 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 }
             }
             Services services = new Services(resp.getOffsets(), arr, -1, this.configuration.getByteOrder());
-            Iterator<String> it = writeRequest.getFieldNames().iterator();
+            Iterator<String> it = writeRequest.getTagNames().iterator();
             for (int i = 0; i < nb && it.hasNext(); i++) {
                 String fieldName = it.next();
-                EipField field = (EipField) writeRequest.getField(fieldName);
+                EipTag field = (EipTag) writeRequest.getTag(fieldName);
                 PlcValue plcValue = null;
                 if (services.getServices().get(i) instanceof CipWriteResponse) {
                     CipWriteResponse writeResponse = (CipWriteResponse) services.getServices().get(i);
