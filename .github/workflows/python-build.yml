@@ -25,6 +25,11 @@ on:
       - code-generation/**
       - protocols/**
       - sandbox/plc4py**
+  pull_request:
+    paths:
+      - code-generation/**
+      - protocols/**
+      - sandbox/plc4py**
   workflow_dispatch:
     inputs:
       forceUpdates:

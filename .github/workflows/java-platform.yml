@@ -25,6 +25,11 @@ on:
       - code-generation/**
       - protocols/**
       - plc4j**
+  pull_request:
+    paths:
+      - code-generation/**
+      - protocols/**
+      - plc4j**
   workflow_dispatch:
     inputs:
       forceUpdates:
