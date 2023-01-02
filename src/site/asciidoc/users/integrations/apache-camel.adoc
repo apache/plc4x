@@ -19,46 +19,4 @@
 
 == Apache Camel
 The Camel Component for PLC4X allows you to create routes using the PLC4X API to read from a PLC device or write to it.
-
-=== Maven dependency
-To use the Camel component, just add following dependency to your project
-----
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-apache-camel</artifactId>
-  <version>{current-last-released-version}</version>
-</dependency>
-----
-
-== Endpoint
-[cols="2"]
-|===
-|Name |Value
-
-|*Tags*   | The tags to read as `Map<String,String>` containing the tagname associated to its query
-|*Trigger*|(*Consumer*) Query to a trigger. On a rising edge of the trigger, the tags will be read once
-|*Period* |(*Consumer*) Interval on which the Trigger should be checked
-|*Driver parameters* | Every Parameter unknown to the Component will be passed to the driver
-|===
-=== URI Format
-----
-plc4x:[driver-code]://[IP|host][?parameters]
-----
-Note that sometimes you want to add the `Transport` code after the `Driver` code:
-
-----
-plc4x:[driver-code]:[transport-code]://[IP|host][?parameters]
-----
-== Consumer
-The consumer supports one-time reading or Triggered Reading. (_Schedulded Reading using Period only soon_).To read from
-the PLC, use a  `Map<String,String>` containing the Alias and Queries for the Data you want.
-
-The Body create by the Consumer will be a `Map<String,Object>` containing the Aliases and there associated value
-read from the PLC.
-
-== Producer
-To write data to the PLC, we also use a `Map`. The difference with the Producer is that the `Value` of the Map has also to
-be a Map. Also, this `Map` has to be set into the `Body` of the `Message`
-
-The used `Map` would be a `Map<String,Map<String,Object>` where the `Map<String,Object>` represent the Query and the
-data we want to write to it.
+This component is now maintained within the https://camel.apache.org/components/next/plc4x-component.html[Apache Camel] Project.

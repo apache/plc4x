@@ -34,7 +34,6 @@
   <description>Parent of all product specific integration modules.</description>
 
   <modules>
-    <module>apache-camel</module>
     <module>apache-nifi</module>
     <module>apache-calcite</module>
     <module>opcua-server</module>
