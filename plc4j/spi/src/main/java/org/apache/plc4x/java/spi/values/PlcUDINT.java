@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -68,7 +68,7 @@ public class PlcUDINT extends PlcIECValue<Long> {
 
     public PlcUDINT(Byte value) {
         if (value < minValue || value > maxValue) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.longValue();
         this.isNullable = false;
@@ -76,7 +76,7 @@ public class PlcUDINT extends PlcIECValue<Long> {
 
     public PlcUDINT(Short value) {
         if (value < minValue || value > maxValue) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.longValue();
         this.isNullable = false;
@@ -84,7 +84,7 @@ public class PlcUDINT extends PlcIECValue<Long> {
 
     public PlcUDINT(Integer value) {
         if (value < minValue || value > maxValue) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.longValue();
         this.isNullable = false;
@@ -92,7 +92,7 @@ public class PlcUDINT extends PlcIECValue<Long> {
 
     public PlcUDINT(Long value) {
         if (value < minValue || value > maxValue) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value;
         this.isNullable = false;
@@ -100,7 +100,7 @@ public class PlcUDINT extends PlcIECValue<Long> {
 
     public PlcUDINT(Float value) {
         if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.longValue();
         this.isNullable = false;
@@ -108,7 +108,7 @@ public class PlcUDINT extends PlcIECValue<Long> {
 
     public PlcUDINT(Double value) {
         if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.longValue();
         this.isNullable = false;
@@ -116,7 +116,7 @@ public class PlcUDINT extends PlcIECValue<Long> {
 
     public PlcUDINT(BigInteger value) {
         if ((value.compareTo(BigInteger.valueOf(minValue)) < 0) || (value.compareTo(BigInteger.valueOf(maxValue)) > 0)) {
-            throw new PlcInvalidFieldException("Value of type " + value +
+            throw new PlcInvalidTagException("Value of type " + value +
                 " is out of range " + minValue + " - " + maxValue + " for a " +
                 this.getClass().getSimpleName() + " Value");
         }
@@ -126,7 +126,7 @@ public class PlcUDINT extends PlcIECValue<Long> {
 
     public PlcUDINT(BigDecimal value) {
         if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.longValue();
         this.isNullable = true;
@@ -139,17 +139,17 @@ public class PlcUDINT extends PlcIECValue<Long> {
                 this.value = val;
                 this.isNullable = false;
             } else {
-                throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+                throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
             }
         } catch (Exception e) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcUDINT(@JsonProperty("value") long value) {
         if (value < minValue || value > maxValue) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value;
         this.isNullable = false;

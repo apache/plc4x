@@ -111,7 +111,11 @@ func (m *_BACnetDoorValueTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDoorValueTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetDoorValueTagged, error) {
+func BACnetDoorValueTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetDoorValueTagged, error) {
+	return BACnetDoorValueTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+}
+
+func BACnetDoorValueTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetDoorValueTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetDoorValueTagged"); pullErr != nil {
@@ -124,7 +128,7 @@ func BACnetDoorValueTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, ta
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetDoorValueTagged")
 	}
@@ -166,7 +170,15 @@ func BACnetDoorValueTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, ta
 	}, nil
 }
 
-func (m *_BACnetDoorValueTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetDoorValueTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetDoorValueTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetDoorValueTagged"); pushErr != nil {

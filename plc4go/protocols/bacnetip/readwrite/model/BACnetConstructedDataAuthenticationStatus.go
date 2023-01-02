@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataAuthenticationStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAuthenticationStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthenticationStatus, error) {
+func BACnetConstructedDataAuthenticationStatusParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthenticationStatus, error) {
+	return BACnetConstructedDataAuthenticationStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataAuthenticationStatusParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthenticationStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthenticationStatus"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataAuthenticationStatusParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("authenticationStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for authenticationStatus")
 	}
-	_authenticationStatus, _authenticationStatusErr := BACnetAuthenticationStatusTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_authenticationStatus, _authenticationStatusErr := BACnetAuthenticationStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _authenticationStatusErr != nil {
 		return nil, errors.Wrap(_authenticationStatusErr, "Error parsing 'authenticationStatus' field of BACnetConstructedDataAuthenticationStatus")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataAuthenticationStatusParse(readBuffer utils.ReadBuffer,
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataAuthenticationStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAuthenticationStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataAuthenticationStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

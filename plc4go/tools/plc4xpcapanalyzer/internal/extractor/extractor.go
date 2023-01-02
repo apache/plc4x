@@ -20,12 +20,13 @@
 package extractor
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/pcaphandler"
 	"github.com/fatih/color"
-	"github.com/google/gopacket/layers"
+	"github.com/gopacket/gopacket/layers"
 	"github.com/k0kubun/go-ansi"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -35,20 +36,10 @@ import (
 )
 
 func Extract(pcapFile, protocolType string) error {
-	return ExtractWithOutput(pcapFile, protocolType, ansi.NewAnsiStdout(), ansi.NewAnsiStderr())
+	return ExtractWithOutput(context.TODO(), pcapFile, protocolType, ansi.NewAnsiStdout(), ansi.NewAnsiStderr())
 }
 
-func ExtractWithOutput(pcapFile, protocolType string, stdout, stderr io.Writer) error {
-	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, config.ExtractConfigInstance.Filter)
-
-	handle, numberOfPackage, timestampToIndexMap, err := pcaphandler.GetIndexedPcapHandle(pcapFile, config.ExtractConfigInstance.Filter)
-	if err != nil {
-		return errors.Wrap(err, "Error getting handle")
-	}
-	log.Info().Msgf("Starting to analyze %d packages", numberOfPackage)
-	defer handle.Close()
-	log.Debug().Interface("handle", handle).Int("numberOfPackage", numberOfPackage).Msg("got handle")
-	source := pcaphandler.GetPacketSource(handle)
+func ExtractWithOutput(ctx context.Context, pcapFile, protocolType string, stdout, stderr io.Writer) error {
 	var printPayload = func(packetInformation common.PacketInformation, item []byte) {
 		_, _ = fmt.Fprintf(stdout, "%x\n", item)
 	}
@@ -90,6 +81,17 @@ func ExtractWithOutput(pcapFile, protocolType string, stdout, stderr io.Writer) 
 			}
 		}
 	}
+	filterExpression := config.ExtractConfigInstance.Filter
+	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, filterExpression)
+
+	handle, numberOfPackage, timestampToIndexMap, err := pcaphandler.GetIndexedPcapHandle(pcapFile, filterExpression)
+	if err != nil {
+		return errors.Wrap(err, "Error getting handle")
+	}
+	log.Info().Msgf("Starting to analyze %d packages", numberOfPackage)
+	defer handle.Close()
+	log.Debug().Interface("handle", handle).Int("numberOfPackage", numberOfPackage).Msg("got handle")
+	source := pcaphandler.GetPacketSource(handle)
 	bar := progressbar.NewOptions(numberOfPackage, progressbar.OptionSetWriter(ansi.NewAnsiStderr()),
 		progressbar.OptionSetVisibility(!config.RootConfigInstance.HideProgressBar),
 		progressbar.OptionEnableColorCodes(true),
@@ -108,6 +110,10 @@ func ExtractWithOutput(pcapFile, protocolType string, stdout, stderr io.Writer) 
 	serializeFails := 0
 	compareFails := 0
 	for packet := range source.Packets() {
+		if ctx.Err() == context.Canceled {
+			log.Info().Msgf("Aborted after %d packages", currentPackageNum)
+			break
+		}
 		currentPackageNum++
 		if currentPackageNum < config.ExtractConfigInstance.StartPackageNumber {
 			log.Debug().Msgf("Skipping package number %d (till no. %d)", currentPackageNum, config.ExtractConfigInstance.StartPackageNumber)

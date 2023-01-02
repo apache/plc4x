@@ -30,9 +30,9 @@ import (
 type EnableControlCommandTypeContainer uint8
 
 type IEnableControlCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() EnableControlCommandType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -344,7 +344,11 @@ func (m EnableControlCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func EnableControlCommandTypeContainerParse(readBuffer utils.ReadBuffer) (EnableControlCommandTypeContainer, error) {
+func EnableControlCommandTypeContainerParse(theBytes []byte) (EnableControlCommandTypeContainer, error) {
+	return EnableControlCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func EnableControlCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (EnableControlCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("EnableControlCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading EnableControlCommandTypeContainer")
@@ -357,7 +361,15 @@ func EnableControlCommandTypeContainerParse(readBuffer utils.ReadBuffer) (Enable
 	}
 }
 
-func (e EnableControlCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e EnableControlCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e EnableControlCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("EnableControlCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

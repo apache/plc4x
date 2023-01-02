@@ -23,11 +23,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class TestWriteRequest extends TestFieldRequest {
+public class TestWriteRequest extends TestTagRequest {
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public TestWriteRequest(@JsonProperty("fields") TestField[] fields) {
-        super(fields);
+    public TestWriteRequest(@JsonProperty("tags") TestTag[] tags) {
+        super(tags);
     }
 
 }

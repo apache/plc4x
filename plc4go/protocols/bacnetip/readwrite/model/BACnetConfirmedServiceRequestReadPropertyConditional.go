@@ -130,7 +130,11 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) GetLengthInBytes
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReadPropertyConditionalParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestReadPropertyConditional, error) {
+func BACnetConfirmedServiceRequestReadPropertyConditionalParse(theBytes []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestReadPropertyConditional, error) {
+	return BACnetConfirmedServiceRequestReadPropertyConditionalParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength, serviceRequestPayloadLength)
+}
+
+func BACnetConfirmedServiceRequestReadPropertyConditionalParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestReadPropertyConditional, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadPropertyConditional"); pullErr != nil {
@@ -160,7 +164,15 @@ func BACnetConfirmedServiceRequestReadPropertyConditionalParse(readBuffer utils.
 	return _child, nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

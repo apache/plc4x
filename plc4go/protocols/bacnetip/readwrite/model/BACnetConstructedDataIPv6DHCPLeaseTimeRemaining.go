@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataIPv6DHCPLeaseTimeRemainingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DHCPLeaseTimeRemaining, error) {
+func BACnetConstructedDataIPv6DHCPLeaseTimeRemainingParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DHCPLeaseTimeRemaining, error) {
+	return BACnetConstructedDataIPv6DHCPLeaseTimeRemainingParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataIPv6DHCPLeaseTimeRemainingParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DHCPLeaseTimeRemaining, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6DHCPLeaseTimeRemaining"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataIPv6DHCPLeaseTimeRemainingParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("ipv6DhcpLeaseTimeRemaining"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipv6DhcpLeaseTimeRemaining")
 	}
-	_ipv6DhcpLeaseTimeRemaining, _ipv6DhcpLeaseTimeRemainingErr := BACnetApplicationTagParse(readBuffer)
+	_ipv6DhcpLeaseTimeRemaining, _ipv6DhcpLeaseTimeRemainingErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _ipv6DhcpLeaseTimeRemainingErr != nil {
 		return nil, errors.Wrap(_ipv6DhcpLeaseTimeRemainingErr, "Error parsing 'ipv6DhcpLeaseTimeRemaining' field of BACnetConstructedDataIPv6DHCPLeaseTimeRemaining")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataIPv6DHCPLeaseTimeRemainingParse(readBuffer utils.ReadB
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -122,7 +122,11 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) GetLengthInBytes
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryDateParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryDate, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryDateParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryDate, error) {
+	return BACnetFaultParameterFaultExtendedParametersEntryDateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetFaultParameterFaultExtendedParametersEntryDateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryDate"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryDateParse(readBuffer utils.
 	if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateValue")
 	}
-	_dateValue, _dateValueErr := BACnetApplicationTagParse(readBuffer)
+	_dateValue, _dateValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _dateValueErr != nil {
 		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetFaultParameterFaultExtendedParametersEntryDate")
 	}
@@ -157,7 +161,15 @@ func BACnetFaultParameterFaultExtendedParametersEntryDateParse(readBuffer utils.
 	return _child, nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

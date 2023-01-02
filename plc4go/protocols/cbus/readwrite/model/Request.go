@@ -176,7 +176,11 @@ func (m *_Request) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Request, error) {
+func RequestParse(theBytes []byte, cBusOptions CBusOptions) (Request, error) {
+	return RequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+}
+
+func RequestParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Request, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Request"); pullErr != nil {
@@ -190,7 +194,7 @@ func RequestParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Request
 	if pullErr := readBuffer.PullContext("peekedByte"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedByte")
 	}
-	peekedByte, _err := RequestTypeParse(readBuffer)
+	peekedByte, _err := RequestTypeParseWithBuffer(readBuffer)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'peekedByte' field of Request")
 	}
@@ -206,7 +210,7 @@ func RequestParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Request
 		if pullErr := readBuffer.PullContext("startingCR"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for startingCR")
 		}
-		_val, _err := RequestTypeParse(readBuffer)
+		_val, _err := RequestTypeParseWithBuffer(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'startingCR' field of Request")
 		}
@@ -222,7 +226,7 @@ func RequestParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Request
 		if pullErr := readBuffer.PullContext("resetMode"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for resetMode")
 		}
-		_val, _err := RequestTypeParse(readBuffer)
+		_val, _err := RequestTypeParseWithBuffer(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'resetMode' field of Request")
 		}
@@ -237,7 +241,7 @@ func RequestParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Request
 	if pullErr := readBuffer.PullContext("secondPeek"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for secondPeek")
 	}
-	secondPeek, _err := RequestTypeParse(readBuffer)
+	secondPeek, _err := RequestTypeParseWithBuffer(readBuffer)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'secondPeek' field of Request")
 	}
@@ -263,19 +267,19 @@ func RequestParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Request
 	var typeSwitchError error
 	switch {
 	case actualPeek == RequestType_SMART_CONNECT_SHORTCUT: // RequestSmartConnectShortcut
-		_childTemp, typeSwitchError = RequestSmartConnectShortcutParse(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = RequestSmartConnectShortcutParseWithBuffer(readBuffer, cBusOptions)
 	case actualPeek == RequestType_RESET: // RequestReset
-		_childTemp, typeSwitchError = RequestResetParse(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = RequestResetParseWithBuffer(readBuffer, cBusOptions)
 	case actualPeek == RequestType_DIRECT_COMMAND: // RequestDirectCommandAccess
-		_childTemp, typeSwitchError = RequestDirectCommandAccessParse(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = RequestDirectCommandAccessParseWithBuffer(readBuffer, cBusOptions)
 	case actualPeek == RequestType_REQUEST_COMMAND: // RequestCommand
-		_childTemp, typeSwitchError = RequestCommandParse(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = RequestCommandParseWithBuffer(readBuffer, cBusOptions)
 	case actualPeek == RequestType_NULL: // RequestNull
-		_childTemp, typeSwitchError = RequestNullParse(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = RequestNullParseWithBuffer(readBuffer, cBusOptions)
 	case actualPeek == RequestType_EMPTY: // RequestEmpty
-		_childTemp, typeSwitchError = RequestEmptyParse(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = RequestEmptyParseWithBuffer(readBuffer, cBusOptions)
 	case 0 == 0: // RequestObsolete
-		_childTemp, typeSwitchError = RequestObsoleteParse(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = RequestObsoleteParseWithBuffer(readBuffer, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [actualPeek=%v]", actualPeek)
 	}
@@ -288,7 +292,7 @@ func RequestParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Request
 	if pullErr := readBuffer.PullContext("termination"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for termination")
 	}
-	_termination, _terminationErr := RequestTerminationParse(readBuffer)
+	_termination, _terminationErr := RequestTerminationParseWithBuffer(readBuffer)
 	if _terminationErr != nil {
 		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of Request")
 	}

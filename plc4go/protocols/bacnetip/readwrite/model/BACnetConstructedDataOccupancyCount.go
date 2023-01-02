@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataOccupancyCount) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOccupancyCountParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyCount, error) {
+func BACnetConstructedDataOccupancyCountParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyCount, error) {
+	return BACnetConstructedDataOccupancyCountParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataOccupancyCountParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyCount, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyCount"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataOccupancyCountParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("occupancyCount"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for occupancyCount")
 	}
-	_occupancyCount, _occupancyCountErr := BACnetApplicationTagParse(readBuffer)
+	_occupancyCount, _occupancyCountErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _occupancyCountErr != nil {
 		return nil, errors.Wrap(_occupancyCountErr, "Error parsing 'occupancyCount' field of BACnetConstructedDataOccupancyCount")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataOccupancyCountParse(readBuffer utils.ReadBuffer, tagNu
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataOccupancyCount) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataOccupancyCount) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataOccupancyCount) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -99,7 +99,11 @@ func (m *_CEMIAdditionalInformation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CEMIAdditionalInformationParse(readBuffer utils.ReadBuffer) (CEMIAdditionalInformation, error) {
+func CEMIAdditionalInformationParse(theBytes []byte) (CEMIAdditionalInformation, error) {
+	return CEMIAdditionalInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func CEMIAdditionalInformationParseWithBuffer(readBuffer utils.ReadBuffer) (CEMIAdditionalInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformation"); pullErr != nil {
@@ -125,9 +129,9 @@ func CEMIAdditionalInformationParse(readBuffer utils.ReadBuffer) (CEMIAdditional
 	var typeSwitchError error
 	switch {
 	case additionalInformationType == 0x03: // CEMIAdditionalInformationBusmonitorInfo
-		_childTemp, typeSwitchError = CEMIAdditionalInformationBusmonitorInfoParse(readBuffer)
+		_childTemp, typeSwitchError = CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(readBuffer)
 	case additionalInformationType == 0x04: // CEMIAdditionalInformationRelativeTimestamp
-		_childTemp, typeSwitchError = CEMIAdditionalInformationRelativeTimestampParse(readBuffer)
+		_childTemp, typeSwitchError = CEMIAdditionalInformationRelativeTimestampParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [additionalInformationType=%v]", additionalInformationType)
 	}

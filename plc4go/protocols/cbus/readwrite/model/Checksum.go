@@ -97,7 +97,11 @@ func (m *_Checksum) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ChecksumParse(readBuffer utils.ReadBuffer) (Checksum, error) {
+func ChecksumParse(theBytes []byte) (Checksum, error) {
+	return ChecksumParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ChecksumParseWithBuffer(readBuffer utils.ReadBuffer) (Checksum, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Checksum"); pullErr != nil {
@@ -123,7 +127,15 @@ func ChecksumParse(readBuffer utils.ReadBuffer) (Checksum, error) {
 	}, nil
 }
 
-func (m *_Checksum) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_Checksum) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_Checksum) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Checksum"); pushErr != nil {

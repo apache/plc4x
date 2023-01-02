@@ -122,7 +122,11 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) GetLengthIn
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryBitStringParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryBitString, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryBitStringParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryBitString, error) {
+	return BACnetFaultParameterFaultExtendedParametersEntryBitStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetFaultParameterFaultExtendedParametersEntryBitStringParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryBitString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryBitString"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryBitStringParse(readBuffer u
 	if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bitStringValue")
 	}
-	_bitStringValue, _bitStringValueErr := BACnetApplicationTagParse(readBuffer)
+	_bitStringValue, _bitStringValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _bitStringValueErr != nil {
 		return nil, errors.Wrap(_bitStringValueErr, "Error parsing 'bitStringValue' field of BACnetFaultParameterFaultExtendedParametersEntryBitString")
 	}
@@ -157,7 +161,15 @@ func BACnetFaultParameterFaultExtendedParametersEntryBitStringParse(readBuffer u
 	return _child, nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

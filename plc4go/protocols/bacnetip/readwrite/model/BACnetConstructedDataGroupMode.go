@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataGroupMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataGroupModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGroupMode, error) {
+func BACnetConstructedDataGroupModeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGroupMode, error) {
+	return BACnetConstructedDataGroupModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataGroupModeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGroupMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGroupMode"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataGroupModeParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("groupMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for groupMode")
 	}
-	_groupMode, _groupModeErr := BACnetLiftGroupModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_groupMode, _groupModeErr := BACnetLiftGroupModeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _groupModeErr != nil {
 		return nil, errors.Wrap(_groupModeErr, "Error parsing 'groupMode' field of BACnetConstructedDataGroupMode")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataGroupModeParse(readBuffer utils.ReadBuffer, tagNumber 
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataGroupMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataGroupMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataGroupMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

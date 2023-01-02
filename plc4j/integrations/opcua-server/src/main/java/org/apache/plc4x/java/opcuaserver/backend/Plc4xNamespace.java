@@ -110,9 +110,10 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
             UaVariableNode node = null;
             Variant variant = null;
             try {
-                datatype = plc4xServer.getField(tag, connectionString).getDefaultJavaType();
-                final int length = plc4xServer.getField(tag, connectionString).getNumberOfElements();
-                typeId = Plc4xCommunication.getNodeId(plc4xServer.getField(tag, connectionString).getPlcDataType());
+                datatype = plc4xServer.getTag(tag, connectionString).getPlcValueType().getDefaultJavaType();
+                final int length = (plc4xServer.getTag(tag, connectionString).getArrayInfo().isEmpty()) ? 1 :
+                    plc4xServer.getTag(tag, connectionString).getArrayInfo().get(0).getSize();
+                typeId = Plc4xCommunication.getNodeId(plc4xServer.getTag(tag, connectionString).getPlcValueType());
 
 
                 if (length > 1) {
@@ -181,10 +182,10 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
     @Override
     public void onDataItemsCreated(List<DataItem> dataItems) {
         for (DataItem item : dataItems) {
-            plc4xServer.addField(item);
+            plc4xServer.addTag(item);
 
             if (plc4xServer.getDriverManager() == null) {
-                plc4xServer.removeField(item);
+                plc4xServer.removeTag(item);
                 plc4xServer.setDriverManager(new PooledPlcDriverManager());
             }
         }
@@ -195,7 +196,7 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
     @Override
     public void onDataItemsModified(List<DataItem> dataItems) {
         for (DataItem item : dataItems) {
-            plc4xServer.addField(item);
+            plc4xServer.addTag(item);
         }
         subscriptionModel.onDataItemsModified(dataItems);
     }
@@ -203,7 +204,7 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
     @Override
     public void onDataItemsDeleted(List<DataItem> dataItems) {
         for (DataItem item : dataItems) {
-            plc4xServer.removeField(item);
+            plc4xServer.removeTag(item);
         }
         subscriptionModel.onDataItemsDeleted(dataItems);
     }

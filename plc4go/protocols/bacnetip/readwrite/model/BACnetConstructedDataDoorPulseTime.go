@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataDoorPulseTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDoorPulseTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorPulseTime, error) {
+func BACnetConstructedDataDoorPulseTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorPulseTime, error) {
+	return BACnetConstructedDataDoorPulseTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataDoorPulseTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorPulseTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorPulseTime"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataDoorPulseTimeParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("doorPulseTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doorPulseTime")
 	}
-	_doorPulseTime, _doorPulseTimeErr := BACnetApplicationTagParse(readBuffer)
+	_doorPulseTime, _doorPulseTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _doorPulseTimeErr != nil {
 		return nil, errors.Wrap(_doorPulseTimeErr, "Error parsing 'doorPulseTime' field of BACnetConstructedDataDoorPulseTime")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataDoorPulseTimeParse(readBuffer utils.ReadBuffer, tagNum
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataDoorPulseTime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDoorPulseTime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataDoorPulseTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

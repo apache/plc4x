@@ -122,7 +122,11 @@ func (m *_BACnetPriorityValueEnumerated) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueEnumeratedParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueEnumerated, error) {
+func BACnetPriorityValueEnumeratedParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueEnumerated, error) {
+	return BACnetPriorityValueEnumeratedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+}
+
+func BACnetPriorityValueEnumeratedParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueEnumerated, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueEnumerated"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPriorityValueEnumeratedParse(readBuffer utils.ReadBuffer, objectTypeA
 	if pullErr := readBuffer.PullContext("enumeratedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for enumeratedValue")
 	}
-	_enumeratedValue, _enumeratedValueErr := BACnetApplicationTagParse(readBuffer)
+	_enumeratedValue, _enumeratedValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _enumeratedValueErr != nil {
 		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field of BACnetPriorityValueEnumerated")
 	}
@@ -159,7 +163,15 @@ func BACnetPriorityValueEnumeratedParse(readBuffer utils.ReadBuffer, objectTypeA
 	return _child, nil
 }
 
-func (m *_BACnetPriorityValueEnumerated) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPriorityValueEnumerated) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPriorityValueEnumerated) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

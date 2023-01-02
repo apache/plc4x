@@ -122,7 +122,11 @@ func (m *_BACnetRecipientAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRecipientAddressParse(readBuffer utils.ReadBuffer) (BACnetRecipientAddress, error) {
+func BACnetRecipientAddressParse(theBytes []byte) (BACnetRecipientAddress, error) {
+	return BACnetRecipientAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetRecipientAddressParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRecipientAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetRecipientAddress"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetRecipientAddressParse(readBuffer utils.ReadBuffer) (BACnetRecipientAd
 	if pullErr := readBuffer.PullContext("addressValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for addressValue")
 	}
-	_addressValue, _addressValueErr := BACnetAddressEnclosedParse(readBuffer, uint8(uint8(1)))
+	_addressValue, _addressValueErr := BACnetAddressEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _addressValueErr != nil {
 		return nil, errors.Wrap(_addressValueErr, "Error parsing 'addressValue' field of BACnetRecipientAddress")
 	}
@@ -157,7 +161,15 @@ func BACnetRecipientAddressParse(readBuffer utils.ReadBuffer) (BACnetRecipientAd
 	return _child, nil
 }
 
-func (m *_BACnetRecipientAddress) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetRecipientAddress) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetRecipientAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -30,7 +30,7 @@ import (
 type ErrorClass uint16
 
 type IErrorClass interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -137,7 +137,11 @@ func (m ErrorClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorClassParse(readBuffer utils.ReadBuffer) (ErrorClass, error) {
+func ErrorClassParse(theBytes []byte) (ErrorClass, error) {
+	return ErrorClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ErrorClassParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorClass, error) {
 	val, err := readBuffer.ReadUint16("ErrorClass", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorClass")
@@ -150,7 +154,15 @@ func ErrorClassParse(readBuffer utils.ReadBuffer) (ErrorClass, error) {
 	}
 }
 
-func (e ErrorClass) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ErrorClass) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ErrorClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("ErrorClass", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

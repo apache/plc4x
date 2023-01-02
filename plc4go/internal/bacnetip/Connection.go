@@ -21,6 +21,9 @@ package bacnetip
 
 import (
 	"fmt"
+	"sync"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -28,8 +31,6 @@ import (
 	internalModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/rs/zerolog/log"
-	"sync"
-	"time"
 )
 
 type Connection struct {
@@ -43,7 +44,7 @@ type Connection struct {
 	tracer       *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, fieldHandler spi.PlcFieldHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
+func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
 	connection := &Connection{
 		invokeIdGenerator: InvokeIdGenerator{currentInvokeId: 0},
 		messageCodec:      messageCodec,
@@ -55,7 +56,7 @@ func NewConnection(messageCodec spi.MessageCodec, fieldHandler spi.PlcFieldHandl
 		}
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
-		_default.WithPlcFieldHandler(fieldHandler),
+		_default.WithPlcTagHandler(tagHandler),
 		_default.WithPlcValueHandler(NewValueHandler()),
 	)
 	return connection
@@ -80,7 +81,7 @@ func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 		connectionConnectResult := <-c.DefaultConnection.Connect()
 		go func() {
 			for c.IsConnected() {
-				log.Debug().Msg("Polling data")
+				log.Trace().Msg("Polling data")
 				incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
 				timeout := time.NewTimer(20 * time.Millisecond)
 				select {
@@ -107,11 +108,11 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 }
 
 func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilder(c.GetPlcFieldHandler(), NewReader(&c.invokeIdGenerator, c.messageCodec, c.tm))
+	return internalModel.NewDefaultPlcReadRequestBuilder(c.GetPlcTagHandler(), NewReader(&c.invokeIdGenerator, c.messageCodec, c.tm))
 }
 
 func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
-	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(c.GetPlcFieldHandler(), c.GetPlcValueHandler(), NewSubscriber(c))
+	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(c.GetPlcTagHandler(), c.GetPlcValueHandler(), NewSubscriber(c))
 }
 
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
@@ -136,10 +137,6 @@ type InvokeIdGenerator struct {
 func (t *InvokeIdGenerator) getAndIncrement() uint8 {
 	t.lock.Lock()
 	defer t.lock.Unlock()
-	// If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-	if t.currentInvokeId > 0xFF {
-		t.currentInvokeId = 0
-	}
 	result := t.currentInvokeId
 	t.currentInvokeId += 1
 	return result

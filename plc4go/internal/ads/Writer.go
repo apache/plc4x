@@ -21,193 +21,327 @@ package ads
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
-	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
+	"encoding/binary"
+	"fmt"
+	"strings"
+
+	"github.com/apache/plc4x/plc4go/internal/ads/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"math"
-	"sync/atomic"
 )
 
-type Writer struct {
-	transactionIdentifier uint32
-	targetAmsNetId        readWriteModel.AmsNetId
-	targetAmsPort         uint16
-	sourceAmsNetId        readWriteModel.AmsNetId
-	sourceAmsPort         uint16
-	messageCodec          spi.MessageCodec
-	reader                *Reader
+func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
+	return internalModel.NewDefaultPlcWriteRequestBuilder(m.GetPlcTagHandler(), m.GetPlcValueHandler(), m)
 }
 
-func NewWriter(messageCodec spi.MessageCodec, targetAmsNetId readWriteModel.AmsNetId, targetAmsPort uint16, sourceAmsNetId readWriteModel.AmsNetId, sourceAmsPort uint16, reader *Reader) *Writer {
-	return &Writer{
-		transactionIdentifier: 0,
-		targetAmsNetId:        targetAmsNetId,
-		targetAmsPort:         targetAmsPort,
-		sourceAmsNetId:        sourceAmsNetId,
-		sourceAmsPort:         sourceAmsPort,
-		messageCodec:          messageCodec,
-		reader:                reader,
-	}
-}
-
-func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
-	// TODO: handle context
-	result := make(chan model.PlcWriteRequestResult)
+func (m *Connection) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
+	log.Trace().Msg("Writing")
+	result := make(chan apiModel.PlcWriteRequestResult)
 	go func() {
-		// If we are requesting only one field, use a
-		if len(writeRequest.GetFieldNames()) != 1 {
-			result <- &plc4goModel.DefaultPlcWriteRequestResult{
-				Request:  writeRequest,
-				Response: nil,
-				Err:      errors.New("ads only supports single-item requests"),
-			}
-			return
+		if len(writeRequest.GetTagNames()) <= 1 {
+			m.singleWrite(ctx, writeRequest, result)
+		} else {
+			m.multiWrite(ctx, writeRequest, result)
 		}
-		fieldName := writeRequest.GetFieldNames()[0]
-
-		// Get the ads field instance from the request
-		field := writeRequest.GetField(fieldName)
-		if needsResolving(field) {
-			adsField, err := castToSymbolicPlcFieldFromPlcField(field)
-			if err != nil {
-				result <- &plc4goModel.DefaultPlcWriteRequestResult{
-					Request:  writeRequest,
-					Response: nil,
-					Err:      errors.Wrap(err, "invalid field item type"),
-				}
-				log.Debug().Msgf("Invalid field item type %T", field)
-				return
-			}
-			field, err = m.reader.resolveField(ctx, adsField)
-			if err != nil {
-				result <- &plc4goModel.DefaultPlcWriteRequestResult{
-					Request:  writeRequest,
-					Response: nil,
-					Err:      errors.Wrap(err, "invalid field item type"),
-				}
-				log.Debug().Msgf("Invalid field item type %T", field)
-				return
-			}
-		}
-		adsField, err := castToDirectAdsFieldFromPlcField(field)
-		if err != nil {
-			result <- &plc4goModel.DefaultPlcWriteRequestResult{
-				Request:  writeRequest,
-				Response: nil,
-				Err:      errors.Wrap(err, "invalid field item type"),
-			}
-			return
-		}
-
-		// Get the value from the request and serialize it to a byte array
-		value := writeRequest.GetValue(fieldName)
-		io := utils.NewLittleEndianWriteBufferByteBased()
-		if err := readWriteModel.DataItemSerialize(io, value, adsField.Datatype.PlcValueType(), adsField.StringLength); err != nil {
-			result <- &plc4goModel.DefaultPlcWriteRequestResult{
-				Request:  writeRequest,
-				Response: nil,
-				Err:      errors.Wrap(err, "error serializing value"),
-			}
-			return
-		}
-		/*data := io.GetBytes()
-
-		userdata := readWriteModel.NewAmsPacket(
-			m.targetAmsNetId,
-			m.targetAmsPort,
-			m.sourceAmsNetId,
-			m.sourceAmsPort,
-			readWriteModel.CommandId_ADS_READ,
-			readWriteModel.NewState(false, false, false, false, false, true, false, false, false),
-			0,
-			0,
-			nil,
-		)*/
-		switch adsField.FieldType {
-		case DirectAdsStringField:
-			//userdata.Data = readWriteModel.NewAdsWriteRequest(adsField.IndexGroup, adsField.IndexOffset, data)
-			panic("implement me")
-		case DirectAdsField:
-			panic("implement me")
-		case SymbolicAdsStringField, SymbolicAdsField:
-			panic("we should never reach this point as symbols are resolved before")
-		default:
-			result <- &plc4goModel.DefaultPlcWriteRequestResult{
-				Request:  writeRequest,
-				Response: nil,
-				Err:      errors.New("unsupported field type"),
-			}
-			return
-		}
-
-		// Calculate a new unit identifier
-		/*userdata.InvokeId = m.getInvokeId()
-
-		// Assemble the finished amsTcpPaket
-		log.Trace().Msg("Assemble amsTcpPaket")
-		amsTcpPaket := readWriteModel.NewAmsTCPPacket(userdata)
-
-		// Send the TCP Paket over the wire
-		err = m.messageCodec.SendRequest(ctx, amsTcpPaket, func(message spi.Message) bool {
-			paket := readWriteModel.CastAmsTCPPacket(message)
-			return paket.GetUserdata().GetInvokeId() == transactionIdentifier
-		}, func(message spi.Message) error {
-			// Convert the response into an responseAmsTcpPaket
-			responseAmsTcpPaket := readWriteModel.CastAmsTCPPacket(message)
-			// Convert the ads response into a PLC4X response
-			readResponse, err := m.ToPlc4xWriteResponse(amsTcpPaket, responseAmsTcpPaket, writeRequest)
-
-			if err != nil {
-				result <- &plc4goModel.DefaultPlcWriteRequestResult{
-					Request: writeRequest,
-					Err:     errors.Wrap(err, "Error decoding response"),
-				}
-			} else {
-				result <- &plc4goModel.DefaultPlcWriteRequestResult{
-					Request:  writeRequest,
-					Response: readResponse,
-				}
-			}
-			return nil
-		}, func(err error) error {
-			result <- &plc4goModel.DefaultPlcWriteRequestResult{
-				Request: writeRequest,
-				Err:     errors.New("got timeout while waiting for response"),
-			}
-			return nil
-		}, time.Second*1)*/
 	}()
 	return result
 }
 
-func (m *Writer) ToPlc4xWriteResponse(requestTcpPaket readWriteModel.AmsTCPPacket, responseTcpPaket readWriteModel.AmsTCPPacket, writeRequest model.PlcWriteRequest) (model.PlcWriteResponse, error) {
-	responseCodes := map[string]model.PlcResponseCode{}
-	fieldName := writeRequest.GetFieldNames()[0]
-
-	// we default to an error until its proven wrong
-	responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
-	switch writeResponse := responseTcpPaket.GetUserdata().(type) {
-	case readWriteModel.AdsWriteResponseExactly:
-		responseCodes[fieldName] = model.PlcResponseCode(writeResponse.GetResult())
-	default:
-		return nil, errors.Errorf("unsupported response type %T", responseTcpPaket.GetUserdata())
+func (m *Connection) singleWrite(ctx context.Context, writeRequest apiModel.PlcWriteRequest, result chan apiModel.PlcWriteRequestResult) {
+	if len(writeRequest.GetTagNames()) != 1 {
+		result <- &internalModel.DefaultPlcWriteRequestResult{
+			Request:  writeRequest,
+			Response: nil,
+			Err:      errors.New("this part of the ads driver only supports single-item requests"),
+		}
+		log.Debug().Msgf("this part of the ads driver only supports single-item requests. Got %d tags", len(writeRequest.GetTagNames()))
+		return
 	}
 
-	// Return the response
-	log.Trace().Msg("Returning the response")
-	return plc4goModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
+	// Here we can be sure that we're only handling a single request.
+	tagName := writeRequest.GetTagNames()[0]
+	tag := writeRequest.GetTag(tagName)
+	if model.NeedsResolving(tag) {
+		adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
+		if err != nil {
+			result <- &internalModel.DefaultPlcWriteRequestResult{
+				Request:  writeRequest,
+				Response: nil,
+				Err:      errors.Wrap(err, "invalid tag item type"),
+			}
+			log.Debug().Msgf("Invalid tag item type %T", tag)
+			return
+		}
+		// Replace the symbolic tag with a direct one
+		tag, err = m.resolveSymbolicTag(ctx, adsField)
+		if err != nil {
+			result <- &internalModel.DefaultPlcWriteRequestResult{
+				Request:  writeRequest,
+				Response: nil,
+				Err:      errors.Wrap(err, "invalid tag item type"),
+			}
+			log.Debug().Msgf("Invalid tag item type %T", tag)
+			return
+		}
+	}
+	directAdsTag, ok := tag.(*model.DirectPlcTag)
+	if !ok {
+		result <- &internalModel.DefaultPlcWriteRequestResult{
+			Request:  writeRequest,
+			Response: nil,
+			Err:      errors.New("invalid tag item type"),
+		}
+		log.Debug().Msgf("Invalid tag item type %T", tag)
+		return
+	}
+
+	// Get the value from the request and serialize it to a byte array
+	value := writeRequest.GetValue(tagName)
+	io := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	err := m.serializePlcValue(directAdsTag.DataType, directAdsTag.GetArrayInfo(), value, io)
+	if err != nil {
+		result <- &internalModel.DefaultPlcWriteRequestResult{
+			Request:  writeRequest,
+			Response: nil,
+			Err:      errors.Wrap(err, "error serializing plc value"),
+		}
+		return
+	}
+	data := io.GetBytes()
+
+	go func() {
+		response, err := m.ExecuteAdsWriteRequest(ctx, directAdsTag.IndexGroup, directAdsTag.IndexOffset, data)
+		if err != nil {
+			result <- &internalModel.DefaultPlcWriteRequestResult{
+				Request: writeRequest,
+				Err:     errors.Wrap(err, "got error executing the write request"),
+			}
+			return
+		}
+
+		if response.GetErrorCode() != 0x00000000 {
+			// TODO: Handle this ...
+		}
+
+		responseCodes := map[string]apiModel.PlcResponseCode{}
+		if response.GetErrorCode() != 0x00000000 {
+			// TODO: Correctly handle this.
+			responseCodes[tagName] = apiModel.PlcResponseCode_REMOTE_ERROR
+		} else {
+			responseCodes[tagName] = apiModel.PlcResponseCode_OK
+		}
+		// Return the response to the caller.
+		result <- &internalModel.DefaultPlcWriteRequestResult{
+			Request:  writeRequest,
+			Response: internalModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes),
+			Err:      nil,
+		}
+	}()
 }
 
-func (m *Writer) getInvokeId() uint32 {
-	// Calculate a new transaction identifier
-	transactionIdentifier := atomic.AddUint32(&m.transactionIdentifier, 1)
-	if transactionIdentifier > math.MaxUint8 {
-		transactionIdentifier = 1
-		atomic.StoreUint32(&m.transactionIdentifier, 1)
+func (m *Connection) multiWrite(ctx context.Context, writeRequest apiModel.PlcWriteRequest, result chan apiModel.PlcWriteRequestResult) {
+	// Calculate the size of all tags together.
+	// Calculate the expected size of the response data.
+	expectedResponseDataSize := uint32(0)
+	directAdsTags := map[string]*model.DirectPlcTag{}
+	requestItems := make([]driverModel.AdsMultiRequestItem, 0)
+	io := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	for _, tagName := range writeRequest.GetTagNames() {
+		tag := writeRequest.GetTag(tagName)
+		if model.NeedsResolving(tag) {
+			adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
+			if err != nil {
+				result <- &internalModel.DefaultPlcWriteRequestResult{
+					Request:  writeRequest,
+					Response: nil,
+					Err:      errors.Wrap(err, "invalid tag item type"),
+				}
+				log.Debug().Msgf("Invalid tag item type %T", tag)
+				return
+			}
+			// Replace the symbolic tag with a direct one
+			tag, err = m.resolveSymbolicTag(ctx, adsField)
+			if err != nil {
+				result <- &internalModel.DefaultPlcWriteRequestResult{
+					Request:  writeRequest,
+					Response: nil,
+					Err:      errors.Wrap(err, "invalid tag item type"),
+				}
+				log.Debug().Msgf("Invalid tag item type %T", tag)
+				return
+			}
+		}
+		directAdsTag, ok := tag.(*model.DirectPlcTag)
+		if !ok {
+			result <- &internalModel.DefaultPlcWriteRequestResult{
+				Request:  writeRequest,
+				Response: nil,
+				Err:      errors.New("invalid tag item type"),
+			}
+			log.Debug().Msgf("Invalid tag item type %T", tag)
+			return
+		}
+
+		directAdsTags[tagName] = directAdsTag
+
+		// Serialize the plc value
+		err := m.serializePlcValue(directAdsTag.DataType, directAdsTag.GetArrayInfo(), writeRequest.GetValue(tagName), io)
+		if err != nil {
+			result <- &internalModel.DefaultPlcWriteRequestResult{
+				Request:  writeRequest,
+				Response: nil,
+				Err:      errors.Wrap(err, "error serializing plc value"),
+			}
+			return
+		}
+
+		// Size of one element.
+		size := directAdsTag.DataType.GetSize()
+
+		// Calculate how many elements in total we'll be reading.
+		arraySize := uint32(1)
+		if len(tag.GetArrayInfo()) > 0 {
+			for _, arrayInfo := range tag.GetArrayInfo() {
+				arraySize = arraySize * arrayInfo.GetSize()
+			}
+		}
+
+		// Status code + payload size
+		expectedResponseDataSize += 4
+
+		requestItems = append(requestItems, driverModel.NewAdsMultiRequestItemWrite(
+			directAdsTag.IndexGroup, directAdsTag.IndexOffset, size*arraySize))
 	}
-	return transactionIdentifier
+
+	response, err := m.ExecuteAdsReadWriteRequest(ctx,
+		uint32(driverModel.ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE), uint32(len(directAdsTags)),
+		expectedResponseDataSize, requestItems, io.GetBytes())
+	if err != nil {
+		result <- &internalModel.DefaultPlcWriteRequestResult{
+			Request:  writeRequest,
+			Response: nil,
+			Err:      errors.Wrap(err, "error executing multi-item write request"),
+		}
+		return
+	}
+
+	if response.GetResult() != driverModel.ReturnCode_OK {
+		result <- &internalModel.DefaultPlcWriteRequestResult{
+			Request:  writeRequest,
+			Response: nil,
+			Err:      fmt.Errorf("got return result %s from remote", response.GetResult().String()),
+		}
+		return
+	}
+
+	rb := utils.NewReadBufferByteBased(response.GetData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+
+	// Read in the response codes first.
+	responseCodes := map[string]apiModel.PlcResponseCode{}
+	for _, tagName := range writeRequest.GetTagNames() {
+		returnCodeValue, err := rb.ReadUint32("returnCode", 32)
+		if err != nil {
+			responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
+		} else if returnCodeValue != 0x00000000 {
+			// TODO: Correctly handle this.
+			responseCodes[tagName] = apiModel.PlcResponseCode_REMOTE_ERROR
+		} else {
+			responseCodes[tagName] = apiModel.PlcResponseCode_OK
+		}
+	}
+
+	// Return the response to the caller.
+	result <- &internalModel.DefaultPlcWriteRequestResult{
+		Request:  writeRequest,
+		Response: internalModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes),
+		Err:      nil,
+	}
+}
+
+func (m *Connection) serializePlcValue(dataType driverModel.AdsDataTypeTableEntry, arrayInfo []apiModel.ArrayInfo, plcValue values.PlcValue, wb utils.WriteBufferByteBased) error {
+	// Decode the data according to the information from the request
+	// Based on the AdsDataTypeTableEntry in tag.DataType() parse the data
+	if len(arrayInfo) > 0 {
+		// This is an Array/List type.
+		curArrayInfo := arrayInfo[0]
+		// Do some initial checks
+		if !plcValue.IsList() {
+			return fmt.Errorf("expecting a plc value of type list")
+		}
+		plcValues := plcValue.GetList()
+		if uint32(len(plcValues)) != curArrayInfo.GetSize() {
+			return fmt.Errorf("expecting exactly %d items in the list", len(plcValues))
+		}
+
+		arrayItemTypeName := dataType.GetDataTypeName()[strings.Index(dataType.GetDataTypeName(), " OF ")+4:]
+		arrayItemType, ok := m.driverContext.dataTypeTable[arrayItemTypeName]
+		if !ok {
+			return fmt.Errorf("couldn't resolve array item type %s", arrayItemTypeName)
+		}
+
+		for _, plcValue := range plcValues {
+			restArrayInfo := arrayInfo[1:]
+			err := m.serializePlcValue(arrayItemType, restArrayInfo, plcValue, wb)
+			if err != nil {
+				return errors.Wrap(err, "error encoding list item")
+			}
+		}
+		return nil
+	} else if len(dataType.GetChildren()) > 0 {
+		// Do some initial checks
+		if !plcValue.IsStruct() {
+			return fmt.Errorf("expecting a plc value of type struct")
+		}
+		plcValues := plcValue.GetStruct()
+		if len(plcValues) != len(dataType.GetChildren()) {
+			return fmt.Errorf("expecting exactly %d children in struct, but got %d",
+				len(plcValues), len(dataType.GetChildren()))
+		}
+
+		// This is a Struct type.
+		startPos := uint32(wb.GetPos())
+		curPos := uint32(0)
+		for _, child := range dataType.GetChildren() {
+			childName := child.GetPropertyName()
+			childDataType, ok := m.driverContext.dataTypeTable[child.GetDataTypeName()]
+			if !ok {
+				return fmt.Errorf("couldn't find data type named %s for property %s of type %s", child.GetDataTypeName(), childName, dataType.GetDataTypeName())
+			}
+			if child.GetOffset() > curPos {
+				skipBytes := child.GetOffset() - curPos
+				for i := uint32(0); i < skipBytes; i++ {
+					_ = wb.WriteByte("", 0x00)
+				}
+			}
+			var childArrayInfo []apiModel.ArrayInfo
+			for _, adsArrayInfo := range childDataType.GetArrayInfo() {
+				childArrayInfo = append(childArrayInfo, internalModel.DefaultArrayInfo{
+					LowerBound: adsArrayInfo.GetLowerBound(),
+					UpperBound: adsArrayInfo.GetUpperBound(),
+				})
+			}
+			err := m.serializePlcValue(childDataType, childArrayInfo, plcValues[childName], wb)
+			if err != nil {
+				return errors.Wrap(err, fmt.Sprintf("error parsing propery %s of type %s", childName, dataType.GetDataTypeName()))
+			}
+			curPos = uint32(wb.GetPos()) - startPos
+		}
+		return nil
+	} else {
+		// This is a primitive type.
+		valueType, stringLength := m.getPlcValueForAdsDataTypeTableEntry(dataType)
+		if valueType == values.NULL {
+			return errors.New(fmt.Sprintf("error converting %s into plc4x plc-value type", dataType.GetDataTypeName()))
+		}
+		adsValueType, ok := driverModel.PlcValueTypeByName(valueType.String())
+		if !ok {
+			return errors.New(fmt.Sprintf("error converting plc4x plc-value type %s into ads plc-value type", valueType.String()))
+		}
+		return driverModel.DataItemSerializeWithWriteBuffer(wb, plcValue, adsValueType, stringLength)
+	}
 }

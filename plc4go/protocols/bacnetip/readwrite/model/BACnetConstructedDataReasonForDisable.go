@@ -136,7 +136,11 @@ func (m *_BACnetConstructedDataReasonForDisable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataReasonForDisableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReasonForDisable, error) {
+func BACnetConstructedDataReasonForDisableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReasonForDisable, error) {
+	return BACnetConstructedDataReasonForDisableParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataReasonForDisableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReasonForDisable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReasonForDisable"); pullErr != nil {
@@ -153,12 +157,11 @@ func BACnetConstructedDataReasonForDisableParse(readBuffer utils.ReadBuffer, tag
 	var reasonForDisable []BACnetAccessCredentialDisableReasonTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetAccessCredentialDisableReasonTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
+			_item, _err := BACnetAccessCredentialDisableReasonTaggedParseWithBuffer(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'reasonForDisable' field of BACnetConstructedDataReasonForDisable")
 			}
 			reasonForDisable = append(reasonForDisable, _item.(BACnetAccessCredentialDisableReasonTagged))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("reasonForDisable", utils.WithRenderAsList(true)); closeErr != nil {
@@ -181,7 +184,15 @@ func BACnetConstructedDataReasonForDisableParse(readBuffer utils.ReadBuffer, tag
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataReasonForDisable) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataReasonForDisable) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataReasonForDisable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

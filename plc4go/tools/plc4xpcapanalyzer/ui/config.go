@@ -20,6 +20,7 @@
 package ui
 
 import (
+	cliConfig "github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -31,7 +32,11 @@ import (
 
 var plc4xpcapanalyzerConfigDir string
 var configFile string
-var config Config
+var config = Config{
+	MaxConsoleLines: 500,
+	MaxOutputLines:  500,
+	CliConfigs:      allCliConfigsInstances,
+}
 
 type Config struct {
 	HostIp  string `yaml:"host_ip"`
@@ -39,11 +44,30 @@ type Config struct {
 		Last10Files    []string `yaml:"last_hosts"`
 		Last10Commands []string `yaml:"last_commands"`
 	}
-	AutoRegisterDrivers []string  `yaml:"auto_register_driver"`
-	LastUpdated         time.Time `yaml:"last_updated"`
-	LogLevel            string    `yaml:"log_level"`
-	MaxConsoleLines     int       `yaml:"max_console_lines"`
-	MaxOutputLines      int       `yaml:"max_output_lines"`
+	AutoRegisterDrivers []string      `yaml:"auto_register_driver"`
+	LastUpdated         time.Time     `yaml:"last_updated"`
+	LogLevel            string        `yaml:"log_level"`
+	MaxConsoleLines     int           `yaml:"max_console_lines"`
+	MaxOutputLines      int           `yaml:"max_output_lines"`
+	CliConfigs          allCliConfigs `yaml:"cli_configs"`
+}
+
+type allCliConfigs struct {
+	RootConfig    *cliConfig.RootConfig
+	AnalyzeConfig *cliConfig.AnalyzeConfig
+	ExtractConfig *cliConfig.ExtractConfig
+	BacnetConfig  *cliConfig.BacnetConfig
+	CBusConfig    *cliConfig.CBusConfig
+	PcapConfig    *cliConfig.PcapConfig
+}
+
+var allCliConfigsInstances = allCliConfigs{
+	&cliConfig.RootConfigInstance,
+	&cliConfig.AnalyzeConfigInstance,
+	&cliConfig.ExtractConfigInstance,
+	&cliConfig.BacnetConfigInstance,
+	&cliConfig.CBusConfigInstance,
+	&cliConfig.PcapConfigInstance,
 }
 
 func init() {

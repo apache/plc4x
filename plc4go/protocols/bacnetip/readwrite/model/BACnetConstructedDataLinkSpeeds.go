@@ -169,7 +169,11 @@ func (m *_BACnetConstructedDataLinkSpeeds) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLinkSpeedsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLinkSpeeds, error) {
+func BACnetConstructedDataLinkSpeedsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLinkSpeeds, error) {
+	return BACnetConstructedDataLinkSpeedsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataLinkSpeedsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLinkSpeeds, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLinkSpeeds"); pullErr != nil {
@@ -190,7 +194,7 @@ func BACnetConstructedDataLinkSpeedsParse(readBuffer utils.ReadBuffer, tagNumber
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
-		_val, _err := BACnetApplicationTagParse(readBuffer)
+		_val, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -213,12 +217,11 @@ func BACnetConstructedDataLinkSpeedsParse(readBuffer utils.ReadBuffer, tagNumber
 	var linkSpeeds []BACnetApplicationTagReal
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetApplicationTagParse(readBuffer)
+			_item, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'linkSpeeds' field of BACnetConstructedDataLinkSpeeds")
 			}
 			linkSpeeds = append(linkSpeeds, _item.(BACnetApplicationTagReal))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("linkSpeeds", utils.WithRenderAsList(true)); closeErr != nil {
@@ -242,7 +245,15 @@ func BACnetConstructedDataLinkSpeedsParse(readBuffer utils.ReadBuffer, tagNumber
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataLinkSpeeds) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLinkSpeeds) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataLinkSpeeds) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

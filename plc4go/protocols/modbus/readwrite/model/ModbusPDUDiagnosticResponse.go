@@ -143,7 +143,11 @@ func (m *_ModbusPDUDiagnosticResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUDiagnosticResponseParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDUDiagnosticResponse, error) {
+func ModbusPDUDiagnosticResponseParse(theBytes []byte, response bool) (ModbusPDUDiagnosticResponse, error) {
+	return ModbusPDUDiagnosticResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+}
+
+func ModbusPDUDiagnosticResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUDiagnosticResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUDiagnosticResponse"); pullErr != nil {
@@ -180,7 +184,15 @@ func ModbusPDUDiagnosticResponseParse(readBuffer utils.ReadBuffer, response bool
 	return _child, nil
 }
 
-func (m *_ModbusPDUDiagnosticResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUDiagnosticResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ModbusPDUDiagnosticResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

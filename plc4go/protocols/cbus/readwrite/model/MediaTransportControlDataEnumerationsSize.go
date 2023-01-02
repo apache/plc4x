@@ -186,7 +186,11 @@ func (m *_MediaTransportControlDataEnumerationsSize) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlDataEnumerationsSizeParse(readBuffer utils.ReadBuffer) (MediaTransportControlDataEnumerationsSize, error) {
+func MediaTransportControlDataEnumerationsSizeParse(theBytes []byte) (MediaTransportControlDataEnumerationsSize, error) {
+	return MediaTransportControlDataEnumerationsSizeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func MediaTransportControlDataEnumerationsSizeParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataEnumerationsSize, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataEnumerationsSize"); pullErr != nil {
@@ -251,7 +255,15 @@ func MediaTransportControlDataEnumerationsSizeParse(readBuffer utils.ReadBuffer)
 	return _child, nil
 }
 
-func (m *_MediaTransportControlDataEnumerationsSize) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataEnumerationsSize) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_MediaTransportControlDataEnumerationsSize) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

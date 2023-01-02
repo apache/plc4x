@@ -172,7 +172,11 @@ func (m *_GroupObjectDescriptorRealisationType1) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func GroupObjectDescriptorRealisationType1Parse(readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType1, error) {
+func GroupObjectDescriptorRealisationType1Parse(theBytes []byte) (GroupObjectDescriptorRealisationType1, error) {
+	return GroupObjectDescriptorRealisationType1ParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func GroupObjectDescriptorRealisationType1ParseWithBuffer(readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType1, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("GroupObjectDescriptorRealisationType1"); pullErr != nil {
@@ -244,7 +248,7 @@ func GroupObjectDescriptorRealisationType1Parse(readBuffer utils.ReadBuffer) (Gr
 	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for priority")
 	}
-	_priority, _priorityErr := CEMIPriorityParse(readBuffer)
+	_priority, _priorityErr := CEMIPriorityParseWithBuffer(readBuffer)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of GroupObjectDescriptorRealisationType1")
 	}
@@ -257,7 +261,7 @@ func GroupObjectDescriptorRealisationType1Parse(readBuffer utils.ReadBuffer) (Gr
 	if pullErr := readBuffer.PullContext("valueType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for valueType")
 	}
-	_valueType, _valueTypeErr := ComObjectValueTypeParse(readBuffer)
+	_valueType, _valueTypeErr := ComObjectValueTypeParseWithBuffer(readBuffer)
 	if _valueTypeErr != nil {
 		return nil, errors.Wrap(_valueTypeErr, "Error parsing 'valueType' field of GroupObjectDescriptorRealisationType1")
 	}
@@ -284,7 +288,15 @@ func GroupObjectDescriptorRealisationType1Parse(readBuffer utils.ReadBuffer) (Gr
 	}, nil
 }
 
-func (m *_GroupObjectDescriptorRealisationType1) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_GroupObjectDescriptorRealisationType1) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_GroupObjectDescriptorRealisationType1) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("GroupObjectDescriptorRealisationType1"); pushErr != nil {

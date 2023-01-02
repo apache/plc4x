@@ -135,7 +135,11 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeByTime, error) {
+func BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(theBytes []byte) (BACnetConfirmedServiceRequestReadRangeRangeByTime, error) {
+	return BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeByTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRangeByTime"); pullErr != nil {
@@ -148,7 +152,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("referenceTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for referenceTime")
 	}
-	_referenceTime, _referenceTimeErr := BACnetDateTimeParse(readBuffer)
+	_referenceTime, _referenceTimeErr := BACnetDateTimeParseWithBuffer(readBuffer)
 	if _referenceTimeErr != nil {
 		return nil, errors.Wrap(_referenceTimeErr, "Error parsing 'referenceTime' field of BACnetConfirmedServiceRequestReadRangeRangeByTime")
 	}
@@ -161,7 +165,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("count"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for count")
 	}
-	_count, _countErr := BACnetApplicationTagParse(readBuffer)
+	_count, _countErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _countErr != nil {
 		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of BACnetConfirmedServiceRequestReadRangeRangeByTime")
 	}
@@ -184,7 +188,15 @@ func BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(readBuffer utils.Rea
 	return _child, nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

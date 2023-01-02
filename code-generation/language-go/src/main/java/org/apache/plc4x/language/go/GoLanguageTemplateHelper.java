@@ -20,6 +20,7 @@ package org.apache.plc4x.language.go;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.text.CaseUtils;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultArgument;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultBooleanTypeReference;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultFloatTypeReference;
@@ -59,9 +60,18 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             String.join("", languageFlavorName.split("\\-"));
     }
 
+    public String getSanitizedPackageName() {
+        String sanitizedName = getProtocolName().replaceAll("-", "");
+        sanitizedName = sanitizedName.replaceAll("\\.", "/");
+        sanitizedName = sanitizedName.toLowerCase();
+        return sanitizedName;
+    }
+
     // TODO: check if protocol name can be enforced to only contain valid chars
     public String getSanitizedProtocolName() {
-        return getProtocolName().replaceAll("-", "");
+        String sanitizedName = getProtocolName().replaceAll("-", "");
+        sanitizedName = CaseUtils.toCamelCase(sanitizedName, false, '.');
+        return sanitizedName;
     }
 
     public String packageName(String languageFlavorName) {
@@ -712,6 +722,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return tracer + "\"" + ((StringLiteral) term).getValue() + "\"";
         } else if (term instanceof VariableLiteral) {
             tracer = tracer.dive("variable literal instanceOf");
+            VariableLiteral variableLiteral = (VariableLiteral) term;
+            if ("curPos".equals(((VariableLiteral) term).getName())) {
+                return "(positionAware.GetPos() - startPos)";
+            }
             return tracer + toVariableExpression(field, fieldType, (VariableLiteral) term, parserArguments, serializerArguments, serialize, suppressPointerAccess);
         } else {
             throw new RuntimeException("Unsupported Literal type " + term.getClass().getName());
@@ -1540,4 +1554,21 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         String cleanedString = dummyTracer.removeTraces(str);
         return extractedTrace + StringUtils.capitalize(cleanedString);
     }
+
+    public String getEndiannessOptions(boolean read, boolean separatorPrefix) {
+        Optional<Term> byteOrder = thisType.getAttribute("byteOrder");
+        if (byteOrder.isPresent()) {
+            emitRequiredImport("encoding/binary");
+
+            String functionName = read ? "WithByteOrderForReadBufferByteBased" : "WithByteOrderForByteBasedBuffer";
+            String byteOrderValue = ((VariableLiteral) byteOrder.get()).getName();
+            if("BIG_ENDIAN".equals(byteOrderValue)) {
+                return (separatorPrefix ? ", " : "") + "utils." + functionName + "(binary.BigEndian)";
+            } else if ("LITTLE_ENDIAN".equals(byteOrderValue)) {
+                return (separatorPrefix ? ", " : "") + "utils." + functionName + "(binary.LittleEndian)";
+            }
+        }
+        return "";
+    }
+
 }

@@ -161,7 +161,11 @@ func (m *_SecurityDataStatusReport1) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataStatusReport1Parse(readBuffer utils.ReadBuffer) (SecurityDataStatusReport1, error) {
+func SecurityDataStatusReport1Parse(theBytes []byte) (SecurityDataStatusReport1, error) {
+	return SecurityDataStatusReport1ParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SecurityDataStatusReport1ParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataStatusReport1, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataStatusReport1"); pullErr != nil {
@@ -174,7 +178,7 @@ func SecurityDataStatusReport1Parse(readBuffer utils.ReadBuffer) (SecurityDataSt
 	if pullErr := readBuffer.PullContext("armCodeType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for armCodeType")
 	}
-	_armCodeType, _armCodeTypeErr := SecurityArmCodeParse(readBuffer)
+	_armCodeType, _armCodeTypeErr := SecurityArmCodeParseWithBuffer(readBuffer)
 	if _armCodeTypeErr != nil {
 		return nil, errors.Wrap(_armCodeTypeErr, "Error parsing 'armCodeType' field of SecurityDataStatusReport1")
 	}
@@ -187,7 +191,7 @@ func SecurityDataStatusReport1Parse(readBuffer utils.ReadBuffer) (SecurityDataSt
 	if pullErr := readBuffer.PullContext("tamperStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for tamperStatus")
 	}
-	_tamperStatus, _tamperStatusErr := TamperStatusParse(readBuffer)
+	_tamperStatus, _tamperStatusErr := TamperStatusParseWithBuffer(readBuffer)
 	if _tamperStatusErr != nil {
 		return nil, errors.Wrap(_tamperStatusErr, "Error parsing 'tamperStatus' field of SecurityDataStatusReport1")
 	}
@@ -200,7 +204,7 @@ func SecurityDataStatusReport1Parse(readBuffer utils.ReadBuffer) (SecurityDataSt
 	if pullErr := readBuffer.PullContext("panicStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for panicStatus")
 	}
-	_panicStatus, _panicStatusErr := PanicStatusParse(readBuffer)
+	_panicStatus, _panicStatusErr := PanicStatusParseWithBuffer(readBuffer)
 	if _panicStatusErr != nil {
 		return nil, errors.Wrap(_panicStatusErr, "Error parsing 'panicStatus' field of SecurityDataStatusReport1")
 	}
@@ -221,7 +225,7 @@ func SecurityDataStatusReport1Parse(readBuffer utils.ReadBuffer) (SecurityDataSt
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(32)); curItem++ {
-			_item, _err := ZoneStatusParse(readBuffer)
+			_item, _err := ZoneStatusParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'zoneStatus' field of SecurityDataStatusReport1")
 			}
@@ -248,7 +252,15 @@ func SecurityDataStatusReport1Parse(readBuffer utils.ReadBuffer) (SecurityDataSt
 	return _child, nil
 }
 
-func (m *_SecurityDataStatusReport1) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataStatusReport1) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataStatusReport1) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

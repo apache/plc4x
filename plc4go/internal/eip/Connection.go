@@ -45,7 +45,7 @@ type Connection struct {
 	tracer        *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, fieldHandler spi.PlcFieldHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
+func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
 	connection := &Connection{
 		messageCodec:  messageCodec,
 		configuration: configuration,
@@ -58,7 +58,7 @@ func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, d
 		}
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
-		_default.WithPlcFieldHandler(fieldHandler),
+		_default.WithPlcTagHandler(tagHandler),
 		_default.WithPlcValueHandler(NewValueHandler()),
 	)
 	return connection
@@ -188,12 +188,12 @@ func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 }
 
 func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilder(m.GetPlcFieldHandler(), NewReader(m.messageCodec, m.tm, m.configuration, &m.sessionHandle))
+	return internalModel.NewDefaultPlcReadRequestBuilder(m.GetPlcTagHandler(), NewReader(m.messageCodec, m.tm, m.configuration, &m.sessionHandle))
 }
 
 func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 	return internalModel.NewDefaultPlcWriteRequestBuilder(
-		m.GetPlcFieldHandler(), m.GetPlcValueHandler(), NewWriter(m.messageCodec, m.tm, m.configuration, &m.sessionHandle, &m.senderContext))
+		m.GetPlcTagHandler(), m.GetPlcValueHandler(), NewWriter(m.messageCodec, m.tm, m.configuration, &m.sessionHandle, &m.senderContext))
 }
 
 func (m *Connection) String() string {

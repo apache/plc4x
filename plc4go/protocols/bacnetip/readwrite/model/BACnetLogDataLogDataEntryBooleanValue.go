@@ -122,7 +122,11 @@ func (m *_BACnetLogDataLogDataEntryBooleanValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogDataLogDataEntryBooleanValueParse(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryBooleanValue, error) {
+func BACnetLogDataLogDataEntryBooleanValueParse(theBytes []byte) (BACnetLogDataLogDataEntryBooleanValue, error) {
+	return BACnetLogDataLogDataEntryBooleanValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLogDataLogDataEntryBooleanValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryBooleanValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryBooleanValue"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetLogDataLogDataEntryBooleanValueParse(readBuffer utils.ReadBuffer) (BA
 	if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
 	}
-	_booleanValue, _booleanValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BOOLEAN))
+	_booleanValue, _booleanValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _booleanValueErr != nil {
 		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field of BACnetLogDataLogDataEntryBooleanValue")
 	}
@@ -157,7 +161,15 @@ func BACnetLogDataLogDataEntryBooleanValueParse(readBuffer utils.ReadBuffer) (BA
 	return _child, nil
 }
 
-func (m *_BACnetLogDataLogDataEntryBooleanValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogDataLogDataEntryBooleanValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLogDataLogDataEntryBooleanValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

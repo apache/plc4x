@@ -122,7 +122,11 @@ func (m *_CBusCommandPointToMultiPoint) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusCommandPointToMultiPointParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandPointToMultiPoint, error) {
+func CBusCommandPointToMultiPointParse(theBytes []byte, cBusOptions CBusOptions) (CBusCommandPointToMultiPoint, error) {
+	return CBusCommandPointToMultiPointParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+}
+
+func CBusCommandPointToMultiPointParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandPointToMultiPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandPointToMultiPoint"); pullErr != nil {
@@ -135,7 +139,7 @@ func CBusCommandPointToMultiPointParse(readBuffer utils.ReadBuffer, cBusOptions 
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
-	_command, _commandErr := CBusPointToMultiPointCommandParse(readBuffer, cBusOptions)
+	_command, _commandErr := CBusPointToMultiPointCommandParseWithBuffer(readBuffer, cBusOptions)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of CBusCommandPointToMultiPoint")
 	}
@@ -159,7 +163,15 @@ func CBusCommandPointToMultiPointParse(readBuffer utils.ReadBuffer, cBusOptions 
 	return _child, nil
 }
 
-func (m *_CBusCommandPointToMultiPoint) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusCommandPointToMultiPoint) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CBusCommandPointToMultiPoint) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

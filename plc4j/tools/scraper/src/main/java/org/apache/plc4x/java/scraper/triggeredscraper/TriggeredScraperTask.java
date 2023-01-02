@@ -53,7 +53,7 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
     private final String jobName;
     private final String connectionAlias;
     private final String connectionString;
-    private final Map<String, String> fields;
+    private final Map<String, String> tags;
     private final long requestTimeoutMs;
     private final ExecutorService executorService;
     private final ResultHandler resultHandler;
@@ -69,7 +69,7 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
                                 String jobName,
                                 String connectionAlias,
                                 String connectionString,
-                                Map<String, String> fields,
+                                Map<String, String> tags,
                                 long requestTimeoutMs,
                                 ExecutorService executorService,
                                 ResultHandler resultHandler,
@@ -79,7 +79,7 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
         this.jobName = jobName;
         this.connectionAlias = connectionAlias;
         this.connectionString = connectionString;
-        this.fields = fields;
+        this.tags = tags;
         this.requestTimeoutMs = requestTimeoutMs;
         this.executorService = executorService;
         this.resultHandler = resultHandler;
@@ -117,11 +117,11 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
                 PlcReadResponse plcReadResponse;
                 try {
                     PlcReadRequest.Builder readRequestBuilder = connection.readRequestBuilder();
-                    for(Map.Entry<String,String> entry:fields.entrySet()){
+                    for(Map.Entry<String,String> entry: tags.entrySet()){
                         if(LOGGER.isTraceEnabled()) {
                             LOGGER.trace("Requesting: {} -> {}", entry.getKey(), entry.getValue());
                         }
-                        readRequestBuilder.addItem(entry.getKey(),entry.getValue());
+                        readRequestBuilder.addTagAddress(entry.getKey(),entry.getValue());
                     }
                     //build and send request and store result in read response
                     plcReadResponse = readRequestBuilder
@@ -164,14 +164,14 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
      * @param response the {@link PlcReadResponse} that should be validated
      */
     private void validateResponse(PlcReadResponse response) {
-        Map<String, PlcResponseCode> failedFields = response.getFieldNames().stream()
+        Map<String, PlcResponseCode> failedTags = response.getTagNames().stream()
             .filter(name -> !PlcResponseCode.OK.equals(response.getResponseCode(name)))
             .collect(Collectors.toMap(
                 Function.identity(),
                 response::getResponseCode
             ));
-        if (failedFields.size() > 0) {
-            handleErrorResponse(failedFields);
+        if (failedTags.size() > 0) {
+            handleErrorResponse(failedTags);
         }
     }
 

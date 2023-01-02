@@ -102,7 +102,11 @@ func (m *_ConnectionResponseDataBlock) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ConnectionResponseDataBlockParse(readBuffer utils.ReadBuffer) (ConnectionResponseDataBlock, error) {
+func ConnectionResponseDataBlockParse(theBytes []byte) (ConnectionResponseDataBlock, error) {
+	return ConnectionResponseDataBlockParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ConnectionResponseDataBlockParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionResponseDataBlock, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlock"); pullErr != nil {
@@ -135,9 +139,9 @@ func ConnectionResponseDataBlockParse(readBuffer utils.ReadBuffer) (ConnectionRe
 	var typeSwitchError error
 	switch {
 	case connectionType == 0x03: // ConnectionResponseDataBlockDeviceManagement
-		_childTemp, typeSwitchError = ConnectionResponseDataBlockDeviceManagementParse(readBuffer)
+		_childTemp, typeSwitchError = ConnectionResponseDataBlockDeviceManagementParseWithBuffer(readBuffer)
 	case connectionType == 0x04: // ConnectionResponseDataBlockTunnelConnection
-		_childTemp, typeSwitchError = ConnectionResponseDataBlockTunnelConnectionParse(readBuffer)
+		_childTemp, typeSwitchError = ConnectionResponseDataBlockTunnelConnectionParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [connectionType=%v]", connectionType)
 	}

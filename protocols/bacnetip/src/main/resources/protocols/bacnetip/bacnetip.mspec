@@ -17,6 +17,10 @@
  * under the License.
  */
 
+[type BacnetConstants
+    [const    uint 16     bacnetUdpDefaultPort 47808]
+]
+
 [discriminatedType BVLC byteOrder='BIG_ENDIAN'
     [const         uint 8   bacnetType   0x81                   ]
     [discriminator uint 8   bvlcFunction                        ]
@@ -129,48 +133,119 @@
 
 [discriminatedType NLM(uint 16 apduLength)
     [discriminator uint 8   messageType                   ]
-    [optional      BACnetVendorId
-                            vendorId '(messageType >= 128) && (messageType <= 255)']
-    [typeSwitch messageType
-        ['0x00' *WhoIsRouterToNetwork(uint 8 messageType)
-            [array      uint 16     destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
+    [virtual       bit      isVendorProprietaryMessage 'messageType >= 128']
+    [typeSwitch messageType, isVendorProprietaryMessage
+        ['0x00' *WhoIsRouterToNetwork
+            [optional   uint 16     destinationNetworkAddress]
         ]
-        ['0x01' *IAmRouterToNetwork(uint 8 messageType)
-            [array      uint 16     destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
+        ['0x01' *IAmRouterToNetwork
+            [array      uint 16     destinationNetworkAddresses length 'apduLength - 1']
         ]
-        ['0x02' *ICouldBeRouterToNetwork(uint 8 messageType)
+        ['0x02' *ICouldBeRouterToNetwork
             [simple   uint 16     destinationNetworkAddress   ]
             [simple   uint 8      performanceIndex            ]
         ]
-        ['0x03' *RejectRouterToNetwork(uint 8 messageType)
+        ['0x03' *RejectRouterToNetwork
             [simple   NLMRejectRouterToNetworkRejectReason
                                     rejectReason              ]
             [simple   uint 16     destinationNetworkAddress   ]
         ]
-        ['0x04' *RouterBusyToNetwork(uint 8 messageType)
-            [array      uint 16     destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
+        ['0x04' *RouterBusyToNetwork
+            [array    uint 16     destinationNetworkAddresses length 'apduLength - 1']
         ]
-        ['0x05' *RouterAvailableToNetwork(uint 8 messageType)
-            [array      uint 16     destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
+        ['0x05' *RouterAvailableToNetwork
+            [array    uint 16     destinationNetworkAddresses length 'apduLength - 1']
         ]
-        ['0x06' *InitalizeRoutingTable(uint 8 messageType)
+        ['0x06' *InitalizeRoutingTable
             [simple   uint 8      numberOfPorts               ]
-            [array      NLMInitalizeRoutingTablePortMapping
+            [array    NLMInitalizeRoutingTablePortMapping
                                     portMappings
                         count 'numberOfPorts'                 ]
         ]
-        ['0x07' *InitalizeRoutingTableAck(uint 8 messageType)
+        ['0x07' *InitalizeRoutingTableAck
             [simple   uint 8      numberOfPorts               ]
-            [array      NLMInitalizeRoutingTablePortMapping
+            [array    NLMInitalizeRoutingTablePortMapping
                                     portMappings
                         count 'numberOfPorts'                 ]
         ]
-        ['0x08' *EstablishConnectionToNetwork(uint 8 messageType)
+        ['0x08' *EstablishConnectionToNetwork
             [simple   uint 16     destinationNetworkAddress   ]
             [simple   uint 8      terminationTime             ]
         ]
-        ['0x09' *DisconnectConnectionToNetwork(uint 8 messageType)
+        ['0x09' *DisconnectConnectionToNetwork
             [simple   uint 16     destinationNetworkAddress   ]
+        ]
+        ['0x0A' *ChallengeRequest
+            [simple   byte        messageChallenge            ]
+            [simple   uint 32     originalMessageId           ]
+            [simple   uint 32     originalTimestamp           ]
+        ]
+        ['0x0B' *SecurityPayload
+            [simple   uint 16     payloadLength               ]
+            [array    byte        payload length 'payloadLength']
+        ]
+        ['0x0C' *SecurityResponse
+            [simple   SecurityResponseCode
+                                  responseCode                ]
+            [simple   uint 32     originalMessageId           ]
+            [simple   uint 32     originalTimestamp           ]
+            // TODO: type out variable parameters
+            [array    byte      variableParameters length 'apduLength-(1+1+4+4)'            ]
+        ]
+        ['0x0D' *RequestKeyUpdate
+            [simple   byte      set1KeyRevision              ]
+            [simple   uint 32   set1ActivationTime           ]
+            [simple   uint 32   set1ExpirationTime           ]
+            [simple   byte      set2KeyRevision              ]
+            [simple   uint 32   set2ActivationTime           ]
+            [simple   uint 32   set2ExpirationTime           ]
+            [simple   byte      distributionKeyRevision      ]
+        ]
+        ['0x0E' *UpdateKeyUpdate
+            [simple   NLMUpdateKeyUpdateControlFlags
+                                controlFlags                 ]
+            [optional byte      set1KeyRevision     'controlFlags.set1KeyRevisionActivationTimeExpirationTimePresent'   ]
+            [optional uint 32   set1ActivationTime  'controlFlags.set1KeyRevisionActivationTimeExpirationTimePresent'   ]
+            [optional uint 32   set1ExpirationTime  'controlFlags.set1KeyCountKeyParametersPresent'                     ]
+            [optional uint 8    set1KeyCount        'controlFlags.set1KeyCountKeyParametersPresent'                     ]
+            [array    NLMUpdateKeyUpdateKeyEntry
+                                set1Keys count 'set1KeyCount!=null?set1KeyCount:0'                                      ]
+            [optional byte      set2KeyRevision     'controlFlags.set1KeyRevisionActivationTimeExpirationTimePresent'   ]
+            [optional uint 32   set2ActivationTime  'controlFlags.set1KeyRevisionActivationTimeExpirationTimePresent'   ]
+            [optional uint 32   set2ExpirationTime  'controlFlags.set1KeyCountKeyParametersPresent'                     ]
+            [optional uint 8    set2KeyCount        'controlFlags.set1KeyCountKeyParametersPresent'                     ]
+            [array    NLMUpdateKeyUpdateKeyEntry
+                                set2Keys count 'set1KeyCount!=null?set1KeyCount:0'                                      ]
+        ]
+        ['0x0F' *UpdateKeyDistributionKey
+            [simple   byte      keyRevision                 ]
+            [simple   NLMUpdateKeyUpdateKeyEntry
+                                key                         ]
+        ]
+        ['0x10' *RequestMasterKey
+            [simple   uint 8    numberOfSupportedKeyAlgorithms  ]
+            [array    byte      encryptionAndSignatureAlgorithms
+                                    length  'apduLength-2'      ] // TODO: type those
+        ]
+        ['0x11' *SetMasterKey
+            [simple   NLMUpdateKeyUpdateKeyEntry
+                                key                         ]
+        ]
+        ['0x12' *WhatIsNetworkNumber
+            // No content
+        ]
+        ['0x13' *NetworkNumberIs
+            [simple   uint 16   networkNumber               ]
+            [reserved uint 7    '0'                         ]
+            [simple   bit       networkNumberConfigured     ]
+        ]
+        [*,'false' *Reserved
+            [array    byte      unknownBytes length '(apduLength>0)?(apduLength-1):0'       ]
+        ]
+        [* *VendorProprietaryMessage
+            [simple   BACnetVendorId
+                                vendorId]
+            [array    byte      proprietaryMessage length '(apduLength>0)?(apduLength-3):0' ]
         ]
     ]
 ]
@@ -179,7 +254,24 @@
     [simple   uint 16     destinationNetworkAddress       ]
     [simple   uint 8      portId                          ]
     [simple   uint 8      portInfoLength                  ]
-    [array      byte        portInfo count 'portInfoLength' ]
+    [array    byte        portInfo count 'portInfoLength' ]
+]
+
+[type NLMUpdateKeyUpdateControlFlags
+    [simple   bit       set1KeyRevisionActivationTimeExpirationTimePresent  ]
+    [simple   bit       set1KeyCountKeyParametersPresent                    ]
+    [simple   bit       set1ShouldBeCleared                                 ]
+    [simple   bit       set2KeyRevisionActivationTimeExpirationTimePresent  ]
+    [simple   bit       set2KeyCountKeyParametersPresent                    ]
+    [simple   bit       set2ShouldBeCleared                                 ]
+    [simple   bit       moreMessagesToBeExpected                            ]
+    [simple   bit       removeAllKeys                                       ]
+]
+
+[type NLMUpdateKeyUpdateKeyEntry
+    [simple   uint 16   keyIdentifier                   ]
+    [simple   uint 8    keySize                         ]
+    [array    byte      key length 'keySize'            ]
 ]
 
 [discriminatedType APDU(uint 16 apduLength)
@@ -205,7 +297,8 @@
             [validation '(!segmentedMessage && serviceRequest != null) || segmentedMessage'
                         "service request should be set"                     ]
             // When we read the first segment we want the service choice to be part of the bytes so we only read it > 0
-            [optional uint 8    segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
+            [optional BACnetConfirmedServiceChoice
+                                segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
             [virtual  uint 16   segmentReduction
                                     '(segmentServiceChoice != null)?(apduHeaderReduction+1):apduHeaderReduction'       ]
             [array    byte      segment
@@ -220,7 +313,8 @@
         ['SIMPLE_ACK_PDU' *SimpleAck
             [reserved uint 4    '0'                                     ]
             [simple   uint 8    originalInvokeId                        ]
-            [simple   uint 8    serviceChoice                           ]
+            [simple   BACnetConfirmedServiceChoice
+                                serviceChoice                           ]
         ]
         ['COMPLEX_ACK_PDU' *ComplexAck
             [simple   bit       segmentedMessage                        ]
@@ -237,7 +331,8 @@
             [validation '(!segmentedMessage && serviceAck != null) || segmentedMessage'
                         "service ack should be set"                     ]
             // When we read the first segment we want the service choice to be part of the bytes so we only read it > 0
-            [optional uint 8    segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
+            [optional BACnetConfirmedServiceChoice
+                                segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
             [virtual  uint 16   segmentReduction
                                     '(segmentServiceChoice != null)?(apduHeaderReduction+1):apduHeaderReduction'
                                                                         ]
@@ -252,7 +347,7 @@
             [simple   bit       server                                  ]
             [simple   uint 8    originalInvokeId                        ]
             [simple   uint 8    sequenceNumber                          ]
-            [simple   uint 8    proposedWindowSize                      ]
+            [simple   uint 8    actualWindowSize                        ]
         ]
         ['ERROR_PDU' *Error
             [reserved uint 4    '0x00'                                  ]

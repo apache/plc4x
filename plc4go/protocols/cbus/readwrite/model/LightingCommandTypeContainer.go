@@ -30,9 +30,9 @@ import (
 type LightingCommandTypeContainer uint8
 
 type ILightingCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() LightingCommandType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -834,7 +834,11 @@ func (m LightingCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LightingCommandTypeContainerParse(readBuffer utils.ReadBuffer) (LightingCommandTypeContainer, error) {
+func LightingCommandTypeContainerParse(theBytes []byte) (LightingCommandTypeContainer, error) {
+	return LightingCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func LightingCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (LightingCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("LightingCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading LightingCommandTypeContainer")
@@ -847,7 +851,15 @@ func LightingCommandTypeContainerParse(readBuffer utils.ReadBuffer) (LightingCom
 	}
 }
 
-func (e LightingCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e LightingCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e LightingCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("LightingCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

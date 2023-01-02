@@ -92,6 +92,8 @@ func main() {
 	generator.Printf("package %s", generator.pkg.name)
 	generator.Printf("\n")
 	generator.Printf("import (\n")
+	generator.Printf("\t\"encoding/binary\"\n")
+	generator.Printf("")
 	generator.Printf("\t\"github.com/apache/plc4x/plc4go/spi/utils\"\n")
 	generator.Printf("\t\"fmt\"\n")
 	generator.Printf(")\n")
@@ -208,13 +210,20 @@ func (g *Generator) generate(typeName string) {
 	logicalTypeName := "\"" + strings.TrimPrefix(typeName, "Default") + "\""
 
 	// Generate code that will fail if the constants change value.
-	g.Printf("func (d *%s) Serialize(writeBuffer utils.WriteBuffer) error {\n", typeName)
+	g.Printf("func (d *%s) Serialize() ([]byte, error) {\n", typeName)
+	g.Printf("wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))\n")
+	g.Printf("\tif err := d.SerializeWithWriteBuffer(wb); err != nil {\n")
+	g.Printf("\t\treturn nil, err\n")
+	g.Printf("\t}\n")
+	g.Printf("\treturn wb.GetBytes(), nil\n")
+	g.Printf("}\n\n")
+	g.Printf("func (d *%s) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {\n", typeName)
 	g.Printf("\tif err := writeBuffer.PushContext(%s); err != nil {\n", logicalTypeName)
 	g.Printf("\t\treturn err\n")
 	g.Printf("\t}\n")
 	for _, field := range fields {
 		if field.isDelegate {
-			g.Printf("\t\t\tif err := d.%s.Serialize(writeBuffer); err != nil {\n", field.fieldType.(*ast.Ident).Name)
+			g.Printf("\t\t\tif err := d.%s.SerializeWithWriteBuffer(writeBuffer); err != nil {\n", field.fieldType.(*ast.Ident).Name)
 			g.Printf("\t\t\t\treturn err\n")
 			g.Printf("\t\t\t}\n")
 			continue
@@ -274,7 +283,7 @@ func (g *Generator) generate(typeName string) {
 				g.Printf("\t\t\tif err := writeBuffer.PushContext(name); err != nil {\n")
 				g.Printf("\t\t\t\treturn err\n")
 				g.Printf("\t\t\t}\n")
-				g.Printf("\t\t\tif err := serializable.Serialize(writeBuffer); err != nil {\n")
+				g.Printf("\t\t\tif err := serializable.SerializeWithWriteBuffer(writeBuffer); err != nil {\n")
 				g.Printf("\t\t\t\treturn err\n")
 				g.Printf("\t\t\t}\n")
 				g.Printf("\t\t\tif err := writeBuffer.PopContext(name); err != nil {\n")
@@ -430,7 +439,7 @@ var serializableFieldTemplate = `
 			if err := writeBuffer.PushContext(%[2]s); err != nil {
 				return err
 			}
-			if err := serializableField.Serialize(writeBuffer); err != nil {
+			if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext(%[2]s); err != nil {

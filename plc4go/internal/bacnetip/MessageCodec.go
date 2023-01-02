@@ -20,14 +20,118 @@
 package bacnetip
 
 import (
+	"context"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/local"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
+	"net"
+	"net/url"
+	"time"
 )
+
+// ApplicationLayerMessageCodec is a wrapper for MessageCodec which takes care of segmentation, retries etc.
+type ApplicationLayerMessageCodec struct {
+	bipSimpleApplication *BIPSimpleApplication
+	messageCode          *MessageCodec
+	deviceInfoCache      DeviceInfoCache
+
+	localAddress  *net.UDPAddr
+	remoteAddress *net.UDPAddr
+}
+
+func NewApplicationLayerMessageCodec(udpTransport *udp.Transport, transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr, remoteAddress *net.UDPAddr) (*ApplicationLayerMessageCodec, error) {
+	// Have the transport create a new transport-instance.
+	transportInstance, err := udpTransport.CreateTransportInstanceForLocalAddress(transportUrl, options, localAddress)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating transport instance")
+	}
+	_ = transportInstance
+	a := &ApplicationLayerMessageCodec{
+		localAddress:  localAddress,
+		remoteAddress: remoteAddress,
+	}
+	address, err := NewAddress(localAddress)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating address")
+	}
+	application, err := NewBIPSimpleApplication(&local.LocalDeviceObject{}, *address, &a.deviceInfoCache, nil)
+	if err != nil {
+		return nil, err
+	}
+	a.bipSimpleApplication = application
+	a.messageCode = NewMessageCodec(transportInstance)
+	return a, nil
+}
+
+func (m *ApplicationLayerMessageCodec) GetCodec() spi.MessageCodec {
+	return m
+}
+
+func (m *ApplicationLayerMessageCodec) Connect() error {
+	return m.messageCode.Connect()
+}
+
+func (m *ApplicationLayerMessageCodec) ConnectWithContext(ctx context.Context) error {
+	return m.messageCode.ConnectWithContext(ctx)
+}
+
+func (m *ApplicationLayerMessageCodec) Disconnect() error {
+	if err := m.bipSimpleApplication.Close(); err != nil {
+		log.Error().Err(err).Msg("error closing application")
+	}
+	return m.messageCode.Disconnect()
+}
+
+func (m *ApplicationLayerMessageCodec) IsRunning() bool {
+	return m.messageCode.IsRunning()
+}
+
+func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
+	address, err2 := NewAddress(m.remoteAddress)
+	if err2 != nil {
+		panic(err2)
+	}
+	iocb, err := NewIOCB(NewPDU(message, WithPDUDestination(address)), m.remoteAddress)
+	if err != nil {
+		return errors.Wrap(err, "error creating IOCB")
+	}
+	go func() {
+		go m.bipSimpleApplication.RequestIO(iocb)
+		iocb.Wait()
+		if iocb.ioError != nil {
+			// TODO: handle error
+			println(iocb.ioError)
+		} else if iocb.ioResponse != nil {
+			// TODO: response?
+			println(iocb.ioResponse)
+		} else {
+			// TODO: what now?
+		}
+	}()
+	return nil
+}
+
+func (m *ApplicationLayerMessageCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+	// TODO: implement me
+	return nil
+}
+
+func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+
+	// TODO: implement me
+	m.Send(message)
+
+	return nil
+}
+
+func (m *ApplicationLayerMessageCodec) GetDefaultIncomingMessageChannel() chan spi.Message {
+	return m.messageCode.GetDefaultIncomingMessageChannel()
+}
 
 type MessageCodec struct {
 	_default.DefaultCodec
@@ -48,14 +152,13 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	// Cast the message to the correct type of struct
 	bvlcPacket := message.(model.BVLC)
 	// Serialize the request
-	wb := utils.NewWriteBufferByteBased()
-	err := bvlcPacket.Serialize(wb)
+	theBytes, err := bvlcPacket.Serialize()
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(wb.GetBytes())
+	err = m.GetTransportInstance().Write(theBytes)
 	if err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
@@ -83,8 +186,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		rb := utils.NewReadBufferByteBased(data)
-		bvlcPacket, err := model.BVLCParse(rb)
+		bvlcPacket, err := model.BVLCParse(data)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

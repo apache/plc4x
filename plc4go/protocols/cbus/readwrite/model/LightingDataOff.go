@@ -122,7 +122,11 @@ func (m *_LightingDataOff) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LightingDataOffParse(readBuffer utils.ReadBuffer) (LightingDataOff, error) {
+func LightingDataOffParse(theBytes []byte) (LightingDataOff, error) {
+	return LightingDataOffParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func LightingDataOffParseWithBuffer(readBuffer utils.ReadBuffer) (LightingDataOff, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LightingDataOff"); pullErr != nil {
@@ -151,7 +155,15 @@ func LightingDataOffParse(readBuffer utils.ReadBuffer) (LightingDataOff, error) 
 	return _child, nil
 }
 
-func (m *_LightingDataOff) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_LightingDataOff) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_LightingDataOff) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

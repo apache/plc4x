@@ -30,7 +30,7 @@ import (
 type SzlModuleTypeClass uint8
 
 type ISzlModuleTypeClass interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +107,11 @@ func (m SzlModuleTypeClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SzlModuleTypeClassParse(readBuffer utils.ReadBuffer) (SzlModuleTypeClass, error) {
+func SzlModuleTypeClassParse(theBytes []byte) (SzlModuleTypeClass, error) {
+	return SzlModuleTypeClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SzlModuleTypeClassParseWithBuffer(readBuffer utils.ReadBuffer) (SzlModuleTypeClass, error) {
 	val, err := readBuffer.ReadUint8("SzlModuleTypeClass", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SzlModuleTypeClass")
@@ -120,7 +124,15 @@ func SzlModuleTypeClassParse(readBuffer utils.ReadBuffer) (SzlModuleTypeClass, e
 	}
 }
 
-func (e SzlModuleTypeClass) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e SzlModuleTypeClass) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e SzlModuleTypeClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("SzlModuleTypeClass", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

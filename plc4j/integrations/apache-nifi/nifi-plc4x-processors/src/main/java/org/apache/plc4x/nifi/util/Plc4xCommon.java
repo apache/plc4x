@@ -139,7 +139,7 @@ public class Plc4xCommon {
 			}
 		}
 		
-		//add timestamp field to schema
+		//add timestamp tag to schema
 		builder.name(PLC4X_RECORD_TIMESTAMP_FIELD_NAME).type().longType().noDefault();
 		
 		

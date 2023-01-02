@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataLockStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLockStatusParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockStatus, error) {
+func BACnetConstructedDataLockStatusParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockStatus, error) {
+	return BACnetConstructedDataLockStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataLockStatusParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLockStatus"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataLockStatusParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("lockStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lockStatus")
 	}
-	_lockStatus, _lockStatusErr := BACnetLockStatusTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_lockStatus, _lockStatusErr := BACnetLockStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _lockStatusErr != nil {
 		return nil, errors.Wrap(_lockStatusErr, "Error parsing 'lockStatus' field of BACnetConstructedDataLockStatus")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataLockStatusParse(readBuffer utils.ReadBuffer, tagNumber
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataLockStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLockStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataLockStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

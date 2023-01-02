@@ -30,8 +30,8 @@ import (
 type MemoryArea uint8
 
 type IMemoryArea interface {
+	utils.Serializable
 	ShortName() string
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -191,7 +191,11 @@ func (m MemoryArea) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MemoryAreaParse(readBuffer utils.ReadBuffer) (MemoryArea, error) {
+func MemoryAreaParse(theBytes []byte) (MemoryArea, error) {
+	return MemoryAreaParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func MemoryAreaParseWithBuffer(readBuffer utils.ReadBuffer) (MemoryArea, error) {
 	val, err := readBuffer.ReadUint8("MemoryArea", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MemoryArea")
@@ -204,7 +208,15 @@ func MemoryAreaParse(readBuffer utils.ReadBuffer) (MemoryArea, error) {
 	}
 }
 
-func (e MemoryArea) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e MemoryArea) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e MemoryArea) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("MemoryArea", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

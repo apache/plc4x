@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -304,7 +305,11 @@ func (m *_AdsDataTypeTableEntry) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDataTypeTableEntryParse(readBuffer utils.ReadBuffer) (AdsDataTypeTableEntry, error) {
+func AdsDataTypeTableEntryParse(theBytes []byte) (AdsDataTypeTableEntry, error) {
+	return AdsDataTypeTableEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+}
+
+func AdsDataTypeTableEntryParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDataTypeTableEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDataTypeTableEntry"); pullErr != nil {
@@ -314,7 +319,6 @@ func AdsDataTypeTableEntryParse(readBuffer utils.ReadBuffer) (AdsDataTypeTableEn
 	_ = currentPos
 	var startPos = positionAware.GetPos()
 	_ = startPos
-	var curPos uint16
 
 	// Simple Field (entryLength)
 	_entryLength, _entryLengthErr := readBuffer.ReadUint32("entryLength", 32)
@@ -467,7 +471,7 @@ func AdsDataTypeTableEntryParse(readBuffer utils.ReadBuffer) (AdsDataTypeTableEn
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(arrayDimensions); curItem++ {
-			_item, _err := AdsDataTypeArrayInfoParse(readBuffer)
+			_item, _err := AdsDataTypeArrayInfoParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'arrayInfo' field of AdsDataTypeTableEntry")
 			}
@@ -490,7 +494,7 @@ func AdsDataTypeTableEntryParse(readBuffer utils.ReadBuffer) (AdsDataTypeTableEn
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numChildren); curItem++ {
-			_item, _err := AdsDataTypeTableChildEntryParse(readBuffer)
+			_item, _err := AdsDataTypeTableChildEntryParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'children' field of AdsDataTypeTableEntry")
 			}
@@ -501,7 +505,7 @@ func AdsDataTypeTableEntryParse(readBuffer utils.ReadBuffer) (AdsDataTypeTableEn
 		return nil, errors.Wrap(closeErr, "Error closing for children")
 	}
 	// Byte Array field (rest)
-	numberOfBytesrest := int(uint16(entryLength) - uint16(curPos))
+	numberOfBytesrest := int(uint16(entryLength) - uint16((positionAware.GetPos() - startPos)))
 	rest, _readArrayErr := readBuffer.ReadByteArray("rest", numberOfBytesrest)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'rest' field of AdsDataTypeTableEntry")
@@ -532,7 +536,15 @@ func AdsDataTypeTableEntryParse(readBuffer utils.ReadBuffer) (AdsDataTypeTableEn
 	}, nil
 }
 
-func (m *_AdsDataTypeTableEntry) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDataTypeTableEntry) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsDataTypeTableEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsDataTypeTableEntry"); pushErr != nil {

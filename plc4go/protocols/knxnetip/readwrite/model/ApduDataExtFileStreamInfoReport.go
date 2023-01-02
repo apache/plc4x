@@ -103,7 +103,11 @@ func (m *_ApduDataExtFileStreamInfoReport) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtFileStreamInfoReportParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtFileStreamInfoReport, error) {
+func ApduDataExtFileStreamInfoReportParse(theBytes []byte, length uint8) (ApduDataExtFileStreamInfoReport, error) {
+	return ApduDataExtFileStreamInfoReportParseWithBuffer(utils.NewReadBufferByteBased(theBytes), length)
+}
+
+func ApduDataExtFileStreamInfoReportParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtFileStreamInfoReport, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtFileStreamInfoReport"); pullErr != nil {
@@ -126,7 +130,15 @@ func ApduDataExtFileStreamInfoReportParse(readBuffer utils.ReadBuffer, length ui
 	return _child, nil
 }
 
-func (m *_ApduDataExtFileStreamInfoReport) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataExtFileStreamInfoReport) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApduDataExtFileStreamInfoReport) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -138,7 +138,11 @@ func (m *_BACnetLifeSafetyOperationTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLifeSafetyOperationTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLifeSafetyOperationTagged, error) {
+func BACnetLifeSafetyOperationTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetLifeSafetyOperationTagged, error) {
+	return BACnetLifeSafetyOperationTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+}
+
+func BACnetLifeSafetyOperationTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLifeSafetyOperationTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLifeSafetyOperationTagged"); pullErr != nil {
@@ -151,7 +155,7 @@ func BACnetLifeSafetyOperationTaggedParse(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetLifeSafetyOperationTagged")
 	}
@@ -209,7 +213,15 @@ func BACnetLifeSafetyOperationTaggedParse(readBuffer utils.ReadBuffer, tagNumber
 	}, nil
 }
 
-func (m *_BACnetLifeSafetyOperationTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLifeSafetyOperationTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLifeSafetyOperationTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLifeSafetyOperationTagged"); pushErr != nil {

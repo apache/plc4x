@@ -30,7 +30,7 @@ import (
 type BACnetAuthenticationFactorType uint8
 
 type IBACnetAuthenticationFactorType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -233,7 +233,11 @@ func (m BACnetAuthenticationFactorType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAuthenticationFactorTypeParse(readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorType, error) {
+func BACnetAuthenticationFactorTypeParse(theBytes []byte) (BACnetAuthenticationFactorType, error) {
+	return BACnetAuthenticationFactorTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetAuthenticationFactorTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorType, error) {
 	val, err := readBuffer.ReadUint8("BACnetAuthenticationFactorType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAuthenticationFactorType")
@@ -246,7 +250,15 @@ func BACnetAuthenticationFactorTypeParse(readBuffer utils.ReadBuffer) (BACnetAut
 	}
 }
 
-func (e BACnetAuthenticationFactorType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAuthenticationFactorType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetAuthenticationFactorType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetAuthenticationFactorType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

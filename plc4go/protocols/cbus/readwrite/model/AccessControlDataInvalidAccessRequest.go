@@ -137,7 +137,11 @@ func (m *_AccessControlDataInvalidAccessRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AccessControlDataInvalidAccessRequestParse(readBuffer utils.ReadBuffer, commandTypeContainer AccessControlCommandTypeContainer) (AccessControlDataInvalidAccessRequest, error) {
+func AccessControlDataInvalidAccessRequestParse(theBytes []byte, commandTypeContainer AccessControlCommandTypeContainer) (AccessControlDataInvalidAccessRequest, error) {
+	return AccessControlDataInvalidAccessRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
+}
+
+func AccessControlDataInvalidAccessRequestParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer AccessControlCommandTypeContainer) (AccessControlDataInvalidAccessRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AccessControlDataInvalidAccessRequest"); pullErr != nil {
@@ -150,7 +154,7 @@ func AccessControlDataInvalidAccessRequestParse(readBuffer utils.ReadBuffer, com
 	if pullErr := readBuffer.PullContext("accessControlDirection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessControlDirection")
 	}
-	_accessControlDirection, _accessControlDirectionErr := AccessControlDirectionParse(readBuffer)
+	_accessControlDirection, _accessControlDirectionErr := AccessControlDirectionParseWithBuffer(readBuffer)
 	if _accessControlDirectionErr != nil {
 		return nil, errors.Wrap(_accessControlDirectionErr, "Error parsing 'accessControlDirection' field of AccessControlDataInvalidAccessRequest")
 	}
@@ -179,7 +183,15 @@ func AccessControlDataInvalidAccessRequestParse(readBuffer utils.ReadBuffer, com
 	return _child, nil
 }
 
-func (m *_AccessControlDataInvalidAccessRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AccessControlDataInvalidAccessRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AccessControlDataInvalidAccessRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

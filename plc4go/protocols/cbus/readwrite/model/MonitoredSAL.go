@@ -114,7 +114,11 @@ func (m *_MonitoredSAL) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MonitoredSALParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSAL, error) {
+func MonitoredSALParse(theBytes []byte, cBusOptions CBusOptions) (MonitoredSAL, error) {
+	return MonitoredSALParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+}
+
+func MonitoredSALParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSAL, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSAL"); pullErr != nil {
@@ -143,9 +147,9 @@ func MonitoredSALParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Mo
 	var typeSwitchError error
 	switch {
 	case salType == 0x05: // MonitoredSALLongFormSmartMode
-		_childTemp, typeSwitchError = MonitoredSALLongFormSmartModeParse(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = MonitoredSALLongFormSmartModeParseWithBuffer(readBuffer, cBusOptions)
 	case 0 == 0: // MonitoredSALShortFormBasicMode
-		_childTemp, typeSwitchError = MonitoredSALShortFormBasicModeParse(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = MonitoredSALShortFormBasicModeParseWithBuffer(readBuffer, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [salType=%v]", salType)
 	}

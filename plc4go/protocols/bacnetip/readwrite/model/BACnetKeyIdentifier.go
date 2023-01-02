@@ -107,7 +107,11 @@ func (m *_BACnetKeyIdentifier) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetKeyIdentifierParse(readBuffer utils.ReadBuffer) (BACnetKeyIdentifier, error) {
+func BACnetKeyIdentifierParse(theBytes []byte) (BACnetKeyIdentifier, error) {
+	return BACnetKeyIdentifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetKeyIdentifierParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetKeyIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetKeyIdentifier"); pullErr != nil {
@@ -120,7 +124,7 @@ func BACnetKeyIdentifierParse(readBuffer utils.ReadBuffer) (BACnetKeyIdentifier,
 	if pullErr := readBuffer.PullContext("algorithm"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for algorithm")
 	}
-	_algorithm, _algorithmErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_algorithm, _algorithmErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _algorithmErr != nil {
 		return nil, errors.Wrap(_algorithmErr, "Error parsing 'algorithm' field of BACnetKeyIdentifier")
 	}
@@ -133,7 +137,7 @@ func BACnetKeyIdentifierParse(readBuffer utils.ReadBuffer) (BACnetKeyIdentifier,
 	if pullErr := readBuffer.PullContext("keyId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for keyId")
 	}
-	_keyId, _keyIdErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_keyId, _keyIdErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _keyIdErr != nil {
 		return nil, errors.Wrap(_keyIdErr, "Error parsing 'keyId' field of BACnetKeyIdentifier")
 	}
@@ -153,7 +157,15 @@ func BACnetKeyIdentifierParse(readBuffer utils.ReadBuffer) (BACnetKeyIdentifier,
 	}, nil
 }
 
-func (m *_BACnetKeyIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetKeyIdentifier) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetKeyIdentifier) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetKeyIdentifier"); pushErr != nil {

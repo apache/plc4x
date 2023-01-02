@@ -30,7 +30,7 @@ import (
 type ConfirmationType byte
 
 type IConfirmationType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -119,7 +119,11 @@ func (m ConfirmationType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ConfirmationTypeParse(readBuffer utils.ReadBuffer) (ConfirmationType, error) {
+func ConfirmationTypeParse(theBytes []byte) (ConfirmationType, error) {
+	return ConfirmationTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ConfirmationTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ConfirmationType, error) {
 	val, err := readBuffer.ReadByte("ConfirmationType")
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ConfirmationType")
@@ -132,7 +136,15 @@ func ConfirmationTypeParse(readBuffer utils.ReadBuffer) (ConfirmationType, error
 	}
 }
 
-func (e ConfirmationType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ConfirmationType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ConfirmationType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteByte("ConfirmationType", byte(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

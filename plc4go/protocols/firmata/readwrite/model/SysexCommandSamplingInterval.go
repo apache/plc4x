@@ -107,7 +107,11 @@ func (m *_SysexCommandSamplingInterval) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandSamplingIntervalParse(readBuffer utils.ReadBuffer, response bool) (SysexCommandSamplingInterval, error) {
+func SysexCommandSamplingIntervalParse(theBytes []byte, response bool) (SysexCommandSamplingInterval, error) {
+	return SysexCommandSamplingIntervalParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+}
+
+func SysexCommandSamplingIntervalParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandSamplingInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandSamplingInterval"); pullErr != nil {
@@ -128,7 +132,15 @@ func SysexCommandSamplingIntervalParse(readBuffer utils.ReadBuffer, response boo
 	return _child, nil
 }
 
-func (m *_SysexCommandSamplingInterval) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SysexCommandSamplingInterval) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SysexCommandSamplingInterval) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

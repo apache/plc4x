@@ -122,7 +122,11 @@ func (m *_BACnetFaultParameterNone) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterNoneParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterNone, error) {
+func BACnetFaultParameterNoneParse(theBytes []byte) (BACnetFaultParameterNone, error) {
+	return BACnetFaultParameterNoneParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetFaultParameterNoneParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterNone, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterNone"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetFaultParameterNoneParse(readBuffer utils.ReadBuffer) (BACnetFaultPara
 	if pullErr := readBuffer.PullContext("none"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for none")
 	}
-	_none, _noneErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_NULL))
+	_none, _noneErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_NULL))
 	if _noneErr != nil {
 		return nil, errors.Wrap(_noneErr, "Error parsing 'none' field of BACnetFaultParameterNone")
 	}
@@ -157,7 +161,15 @@ func BACnetFaultParameterNoneParse(readBuffer utils.ReadBuffer) (BACnetFaultPara
 	return _child, nil
 }
 
-func (m *_BACnetFaultParameterNone) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFaultParameterNone) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetFaultParameterNone) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

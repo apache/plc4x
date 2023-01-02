@@ -30,7 +30,7 @@ import (
 type BACnetAccumulatorRecordAccumulatorStatus uint8
 
 type IBACnetAccumulatorRecordAccumulatorStatus interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -113,7 +113,11 @@ func (m BACnetAccumulatorRecordAccumulatorStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccumulatorRecordAccumulatorStatusParse(readBuffer utils.ReadBuffer) (BACnetAccumulatorRecordAccumulatorStatus, error) {
+func BACnetAccumulatorRecordAccumulatorStatusParse(theBytes []byte) (BACnetAccumulatorRecordAccumulatorStatus, error) {
+	return BACnetAccumulatorRecordAccumulatorStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetAccumulatorRecordAccumulatorStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccumulatorRecordAccumulatorStatus, error) {
 	val, err := readBuffer.ReadUint8("BACnetAccumulatorRecordAccumulatorStatus", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccumulatorRecordAccumulatorStatus")
@@ -126,7 +130,15 @@ func BACnetAccumulatorRecordAccumulatorStatusParse(readBuffer utils.ReadBuffer) 
 	}
 }
 
-func (e BACnetAccumulatorRecordAccumulatorStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAccumulatorRecordAccumulatorStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetAccumulatorRecordAccumulatorStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetAccumulatorRecordAccumulatorStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

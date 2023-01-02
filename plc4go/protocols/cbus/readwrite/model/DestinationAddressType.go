@@ -30,7 +30,7 @@ import (
 type DestinationAddressType uint8
 
 type IDestinationAddressType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -101,7 +101,11 @@ func (m DestinationAddressType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DestinationAddressTypeParse(readBuffer utils.ReadBuffer) (DestinationAddressType, error) {
+func DestinationAddressTypeParse(theBytes []byte) (DestinationAddressType, error) {
+	return DestinationAddressTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func DestinationAddressTypeParseWithBuffer(readBuffer utils.ReadBuffer) (DestinationAddressType, error) {
 	val, err := readBuffer.ReadUint8("DestinationAddressType", 3)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DestinationAddressType")
@@ -114,7 +118,15 @@ func DestinationAddressTypeParse(readBuffer utils.ReadBuffer) (DestinationAddres
 	}
 }
 
-func (e DestinationAddressType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e DestinationAddressType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e DestinationAddressType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("DestinationAddressType", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

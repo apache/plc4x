@@ -28,12 +28,12 @@ import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
-import org.apache.plc4x.java.api.model.PlcSubscriptionField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.simulated.field.SimulatedField;
-import org.apache.plc4x.java.simulated.field.SimulatedFieldHandler;
+import org.apache.plc4x.java.simulated.tag.SimulatedTag;
+import org.apache.plc4x.java.simulated.tag.SimulatedTagHandler;
 import org.apache.plc4x.java.spi.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
@@ -46,7 +46,7 @@ import org.apache.plc4x.java.spi.messages.PlcWriter;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +79,7 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
 
     public SimulatedConnection(SimulatedDevice device) {
         super(true, true, true, false,
-            new SimulatedFieldHandler(), new IEC61131ValueHandler(), null, null);
+            new SimulatedTagHandler(), new PlcValueHandler(), null, null);
         this.device = device;
     }
 
@@ -100,31 +100,31 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
 
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        Map<String, ResponseItem<PlcValue>> fields = new HashMap<>();
-        for (String fieldName : readRequest.getFieldNames()) {
-            SimulatedField field = (SimulatedField) readRequest.getField(fieldName);
-            Optional<PlcValue> valueOptional = device.get(field);
-            ResponseItem<PlcValue> fieldPair;
+        Map<String, ResponseItem<PlcValue>> tags = new HashMap<>();
+        for (String tagName : readRequest.getTagNames()) {
+            SimulatedTag tag = (SimulatedTag) readRequest.getTag(tagName);
+            Optional<PlcValue> valueOptional = device.get(tag);
+            ResponseItem<PlcValue> tagPair;
             boolean present = valueOptional.isPresent();
-            fieldPair = present
+            tagPair = present
                 ? new ResponseItem<>(PlcResponseCode.OK, valueOptional.get())
                 : new ResponseItem<>(PlcResponseCode.NOT_FOUND, null);
-            fields.put(fieldName, fieldPair);
+            tags.put(tagName, tagPair);
         }
-        PlcReadResponse response = new DefaultPlcReadResponse(readRequest, fields);
+        PlcReadResponse response = new DefaultPlcReadResponse(readRequest, tags);
         return CompletableFuture.completedFuture(response);
     }
 
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
-        Map<String, PlcResponseCode> fields = new HashMap<>();
-        for (String fieldName : writeRequest.getFieldNames()) {
-            SimulatedField field = (SimulatedField) writeRequest.getField(fieldName);
-            PlcValue value = writeRequest.getPlcValue(fieldName);
-            device.set(field, value);
-            fields.put(fieldName, PlcResponseCode.OK);
+        Map<String, PlcResponseCode> tags = new HashMap<>();
+        for (String tagName : writeRequest.getTagNames()) {
+            SimulatedTag tag = (SimulatedTag) writeRequest.getTag(tagName);
+            PlcValue value = writeRequest.getPlcValue(tagName);
+            device.set(tag, value);
+            tags.put(tagName, PlcResponseCode.OK);
         }
-        PlcWriteResponse response = new DefaultPlcWriteResponse(writeRequest, fields);
+        PlcWriteResponse response = new DefaultPlcWriteResponse(writeRequest, tags);
         return CompletableFuture.completedFuture(response);
     }
 
@@ -143,22 +143,22 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         LOGGER.info("subscribing {}", subscriptionRequest);
         Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
-        subscriptionRequest.getFieldNames().forEach(name -> {
-            LOGGER.info("creating handle for field name {}", name);
+        subscriptionRequest.getTagNames().forEach(name -> {
+            LOGGER.info("creating handle for tag name {}", name);
             PlcSubscriptionHandle handle = new DefaultPlcSubscriptionHandle(this);
-            final PlcSubscriptionField subscriptionPlcField = subscriptionRequest.getField(name);
-            switch (subscriptionPlcField.getPlcSubscriptionType()) {
+            final PlcSubscriptionTag subscriptionTag = subscriptionRequest.getTag(name);
+            switch (subscriptionTag.getPlcSubscriptionType()) {
                 case CYCLIC:
-                    LOGGER.info("Adding cyclic subscription for field name {}", name);
-                    device.addCyclicSubscription(dispatchSubscriptionEvent(name, handle), handle, subscriptionPlcField, subscriptionPlcField.getDuration().orElseThrow(RuntimeException::new));
+                    LOGGER.info("Adding cyclic subscription for tag name {}", name);
+                    device.addCyclicSubscription(dispatchSubscriptionEvent(name, handle), handle, subscriptionTag, subscriptionTag.getDuration().orElseThrow(RuntimeException::new));
                     break;
                 case CHANGE_OF_STATE:
-                    LOGGER.info("Adding change of state subscription for field name {}", name);
-                    device.addChangeOfStateSubscription(dispatchSubscriptionEvent(name, handle), handle, subscriptionPlcField);
+                    LOGGER.info("Adding change of state subscription for tag name {}", name);
+                    device.addChangeOfStateSubscription(dispatchSubscriptionEvent(name, handle), handle, subscriptionTag);
                     break;
                 case EVENT:
-                    LOGGER.info("Adding event subscription for field name {}", name);
-                    device.addEventSubscription(dispatchSubscriptionEvent(name, handle), handle, subscriptionPlcField);
+                    LOGGER.info("Adding event subscription for tag name {}", name);
+                    device.addEventSubscription(dispatchSubscriptionEvent(name, handle), handle, subscriptionTag);
                     break;
             }
             values.put(name, new ResponseItem<>(PlcResponseCode.OK, handle));

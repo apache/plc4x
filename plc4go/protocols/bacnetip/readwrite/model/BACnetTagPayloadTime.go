@@ -176,7 +176,11 @@ func (m *_BACnetTagPayloadTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTagPayloadTimeParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadTime, error) {
+func BACnetTagPayloadTimeParse(theBytes []byte) (BACnetTagPayloadTime, error) {
+	return BACnetTagPayloadTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetTagPayloadTimeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTagPayloadTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadTime"); pullErr != nil {
@@ -251,7 +255,15 @@ func BACnetTagPayloadTimeParse(readBuffer utils.ReadBuffer) (BACnetTagPayloadTim
 	}, nil
 }
 
-func (m *_BACnetTagPayloadTime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTagPayloadTime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagPayloadTime"); pushErr != nil {

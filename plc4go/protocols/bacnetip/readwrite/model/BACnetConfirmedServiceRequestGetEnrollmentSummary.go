@@ -191,7 +191,11 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestGetEnrollmentSummary, error) {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestGetEnrollmentSummary, error) {
+	return BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+}
+
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestGetEnrollmentSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestGetEnrollmentSummary"); pullErr != nil {
@@ -204,7 +208,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("acknowledgmentFilter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for acknowledgmentFilter")
 	}
-	_acknowledgmentFilter, _acknowledgmentFilterErr := BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_acknowledgmentFilter, _acknowledgmentFilterErr := BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _acknowledgmentFilterErr != nil {
 		return nil, errors.Wrap(_acknowledgmentFilterErr, "Error parsing 'acknowledgmentFilter' field of BACnetConfirmedServiceRequestGetEnrollmentSummary")
 	}
@@ -220,7 +224,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 		if pullErr := readBuffer.PullContext("enrollmentFilter"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for enrollmentFilter")
 		}
-		_val, _err := BACnetRecipientProcessEnclosedParse(readBuffer, uint8(1))
+		_val, _err := BACnetRecipientProcessEnclosedParseWithBuffer(readBuffer, uint8(1))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -242,7 +246,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 		if pullErr := readBuffer.PullContext("eventStateFilter"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for eventStateFilter")
 		}
-		_val, _err := BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedParse(readBuffer, uint8(2), TagClass_CONTEXT_SPECIFIC_TAGS)
+		_val, _err := BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedParseWithBuffer(readBuffer, uint8(2), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -264,7 +268,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 		if pullErr := readBuffer.PullContext("eventTypeFilter"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for eventTypeFilter")
 		}
-		_val, _err := BACnetEventTypeTaggedParse(readBuffer, uint8(3), TagClass_CONTEXT_SPECIFIC_TAGS)
+		_val, _err := BACnetEventTypeTaggedParseWithBuffer(readBuffer, uint8(3), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -286,7 +290,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 		if pullErr := readBuffer.PullContext("priorityFilter"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for priorityFilter")
 		}
-		_val, _err := BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParse(readBuffer, uint8(4))
+		_val, _err := BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBuffer(readBuffer, uint8(4))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -308,7 +312,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 		if pullErr := readBuffer.PullContext("notificationClassFilter"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for notificationClassFilter")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(5), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(5), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -343,7 +347,15 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(readBuffer utils.Rea
 	return _child, nil
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

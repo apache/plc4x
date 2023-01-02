@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataEgressActive) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEgressActiveParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEgressActive, error) {
+func BACnetConstructedDataEgressActiveParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEgressActive, error) {
+	return BACnetConstructedDataEgressActiveParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataEgressActiveParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEgressActive, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEgressActive"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataEgressActiveParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("egressActive"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for egressActive")
 	}
-	_egressActive, _egressActiveErr := BACnetApplicationTagParse(readBuffer)
+	_egressActive, _egressActiveErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _egressActiveErr != nil {
 		return nil, errors.Wrap(_egressActiveErr, "Error parsing 'egressActive' field of BACnetConstructedDataEgressActive")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataEgressActiveParse(readBuffer utils.ReadBuffer, tagNumb
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataEgressActive) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataEgressActive) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataEgressActive) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

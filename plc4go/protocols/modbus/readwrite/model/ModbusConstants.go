@@ -98,7 +98,11 @@ func (m *_ModbusConstants) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusConstantsParse(readBuffer utils.ReadBuffer) (ModbusConstants, error) {
+func ModbusConstantsParse(theBytes []byte) (ModbusConstants, error) {
+	return ModbusConstantsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ModbusConstantsParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusConstants"); pullErr != nil {
@@ -124,7 +128,15 @@ func ModbusConstantsParse(readBuffer utils.ReadBuffer) (ModbusConstants, error) 
 	return &_ModbusConstants{}, nil
 }
 
-func (m *_ModbusConstants) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusConstants) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ModbusConstants) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ModbusConstants"); pushErr != nil {

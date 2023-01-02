@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSecurityTimeWindowParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecurityTimeWindow, error) {
+func BACnetConstructedDataSecurityTimeWindowParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecurityTimeWindow, error) {
+	return BACnetConstructedDataSecurityTimeWindowParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataSecurityTimeWindowParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecurityTimeWindow, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSecurityTimeWindow"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataSecurityTimeWindowParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("securityTimeWindow"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for securityTimeWindow")
 	}
-	_securityTimeWindow, _securityTimeWindowErr := BACnetApplicationTagParse(readBuffer)
+	_securityTimeWindow, _securityTimeWindowErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _securityTimeWindowErr != nil {
 		return nil, errors.Wrap(_securityTimeWindowErr, "Error parsing 'securityTimeWindow' field of BACnetConstructedDataSecurityTimeWindow")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataSecurityTimeWindowParse(readBuffer utils.ReadBuffer, t
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataSecurityTimeWindow) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataSecurityTimeWindow) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataSecurityTimeWindow) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

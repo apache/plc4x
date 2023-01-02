@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataProgramLocation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataProgramLocationParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProgramLocation, error) {
+func BACnetConstructedDataProgramLocationParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProgramLocation, error) {
+	return BACnetConstructedDataProgramLocationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataProgramLocationParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProgramLocation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProgramLocation"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataProgramLocationParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("programLocation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for programLocation")
 	}
-	_programLocation, _programLocationErr := BACnetApplicationTagParse(readBuffer)
+	_programLocation, _programLocationErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _programLocationErr != nil {
 		return nil, errors.Wrap(_programLocationErr, "Error parsing 'programLocation' field of BACnetConstructedDataProgramLocation")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataProgramLocationParse(readBuffer utils.ReadBuffer, tagN
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataProgramLocation) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataProgramLocation) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataProgramLocation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

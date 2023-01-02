@@ -169,7 +169,11 @@ func (m *_BACnetConstructedDataFaultValues) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFaultValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFaultValues, error) {
+func BACnetConstructedDataFaultValuesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFaultValues, error) {
+	return BACnetConstructedDataFaultValuesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataFaultValuesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFaultValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFaultValues"); pullErr != nil {
@@ -190,7 +194,7 @@ func BACnetConstructedDataFaultValuesParse(readBuffer utils.ReadBuffer, tagNumbe
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
-		_val, _err := BACnetApplicationTagParse(readBuffer)
+		_val, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -213,12 +217,11 @@ func BACnetConstructedDataFaultValuesParse(readBuffer utils.ReadBuffer, tagNumbe
 	var faultValues []BACnetLifeSafetyStateTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetLifeSafetyStateTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
+			_item, _err := BACnetLifeSafetyStateTaggedParseWithBuffer(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'faultValues' field of BACnetConstructedDataFaultValues")
 			}
 			faultValues = append(faultValues, _item.(BACnetLifeSafetyStateTagged))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("faultValues", utils.WithRenderAsList(true)); closeErr != nil {
@@ -242,7 +245,15 @@ func BACnetConstructedDataFaultValuesParse(readBuffer utils.ReadBuffer, tagNumbe
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataFaultValues) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataFaultValues) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataFaultValues) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

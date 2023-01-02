@@ -126,7 +126,11 @@ func (m *_SALDataTelephonyStatusAndControl) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataTelephonyStatusAndControlParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTelephonyStatusAndControl, error) {
+func SALDataTelephonyStatusAndControlParse(theBytes []byte, applicationId ApplicationId) (SALDataTelephonyStatusAndControl, error) {
+	return SALDataTelephonyStatusAndControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+}
+
+func SALDataTelephonyStatusAndControlParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTelephonyStatusAndControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataTelephonyStatusAndControl"); pullErr != nil {
@@ -139,7 +143,7 @@ func SALDataTelephonyStatusAndControlParse(readBuffer utils.ReadBuffer, applicat
 	if pullErr := readBuffer.PullContext("telephonyData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for telephonyData")
 	}
-	_telephonyData, _telephonyDataErr := TelephonyDataParse(readBuffer)
+	_telephonyData, _telephonyDataErr := TelephonyDataParseWithBuffer(readBuffer)
 	if _telephonyDataErr != nil {
 		return nil, errors.Wrap(_telephonyDataErr, "Error parsing 'telephonyData' field of SALDataTelephonyStatusAndControl")
 	}
@@ -161,7 +165,15 @@ func SALDataTelephonyStatusAndControlParse(readBuffer utils.ReadBuffer, applicat
 	return _child, nil
 }
 
-func (m *_SALDataTelephonyStatusAndControl) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataTelephonyStatusAndControl) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SALDataTelephonyStatusAndControl) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

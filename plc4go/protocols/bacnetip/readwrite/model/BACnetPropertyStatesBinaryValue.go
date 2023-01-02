@@ -122,7 +122,11 @@ func (m *_BACnetPropertyStatesBinaryValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesBinaryValueParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBinaryValue, error) {
+func BACnetPropertyStatesBinaryValueParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesBinaryValue, error) {
+	return BACnetPropertyStatesBinaryValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+}
+
+func BACnetPropertyStatesBinaryValueParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBinaryValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBinaryValue"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPropertyStatesBinaryValueParse(readBuffer utils.ReadBuffer, peekedTag
 	if pullErr := readBuffer.PullContext("binaryValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for binaryValue")
 	}
-	_binaryValue, _binaryValueErr := BACnetBinaryPVTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_binaryValue, _binaryValueErr := BACnetBinaryPVTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _binaryValueErr != nil {
 		return nil, errors.Wrap(_binaryValueErr, "Error parsing 'binaryValue' field of BACnetPropertyStatesBinaryValue")
 	}
@@ -157,7 +161,15 @@ func BACnetPropertyStatesBinaryValueParse(readBuffer utils.ReadBuffer, peekedTag
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesBinaryValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesBinaryValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesBinaryValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

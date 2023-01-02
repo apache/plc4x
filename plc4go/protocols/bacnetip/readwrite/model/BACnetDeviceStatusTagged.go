@@ -138,7 +138,11 @@ func (m *_BACnetDeviceStatusTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDeviceStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetDeviceStatusTagged, error) {
+func BACnetDeviceStatusTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetDeviceStatusTagged, error) {
+	return BACnetDeviceStatusTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+}
+
+func BACnetDeviceStatusTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetDeviceStatusTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetDeviceStatusTagged"); pullErr != nil {
@@ -151,7 +155,7 @@ func BACnetDeviceStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8,
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetDeviceStatusTagged")
 	}
@@ -209,7 +213,15 @@ func BACnetDeviceStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8,
 	}, nil
 }
 
-func (m *_BACnetDeviceStatusTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetDeviceStatusTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetDeviceStatusTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetDeviceStatusTagged"); pushErr != nil {

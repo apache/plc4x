@@ -43,7 +43,7 @@ import static net.bytebuddy.matcher.ElementMatchers.not;
  * Plc4x equivalent of Jpas EntityManager for implementing Object-Plc-Mapping.
  * This means that calls to a plc can be done by using plain POJOs with Annotations.
  * <p>
- * First, the necessary annotations are {@link PlcEntity} and {@link PlcField}.
+ * First, the necessary annotations are {@link PlcEntity} and {@link PlcTag}.
  * For a class to be usable as PlcEntity it needs
  * <ul>
  * <li>be non-final (as proxiing has to be used in case of {@link #connect(Class, String)}</li>
@@ -54,18 +54,18 @@ import static net.bytebuddy.matcher.ElementMatchers.not;
  * Basically, the {@link PlcEntityManager} has to operation "modes" represented by the methods {@link #read(Class, String)} and
  * {@link #connect(Class, String)}.
  * <p>
- * For a field to get Values from the Plc Injected it needs to be annotated with the {@link PlcField} annotation.
- * The value has to be the plc fields string (which is inserted in the {@link PlcReadRequest}).
+ * For a tag to get Values from the Plc Injected it needs to be annotated with the {@link PlcTag} annotation.
+ * The value has to be the plc tags string (which is inserted in the {@link PlcReadRequest}).
  * The connection string is taken from the value of the {@link PlcEntity} annotation on the class.
  * <p>
  * The {@link #read(Class, String)} method has no direkt equivalent in JPA (as far as I know) as it only returns a "detached"
- * entity. This means it fetches all values from the plc that are annotated wiht the {@link PlcField} annotations.
+ * entity. This means it fetches all values from the plc that are annotated wiht the {@link PlcTag} annotations.
  * <p>
  * The {@link #connect(Class, String)} method is more JPA-like as it returns a "connected" entity. This means, that each
- * time one of the getters on the returned entity is called a call is made to the plc (and the field value is changed
- * for this specific field).
- * Furthermore, if a method which is no getter is called, then all {@link PlcField}s are refreshed before doing the call.
- * Thus, all operations on fields that are annotated with {@link PlcField} are always done against the "live" values
+ * time one of the getters on the returned entity is called a call is made to the plc (and the tag value is changed
+ * for this specific tag).
+ * Furthermore, if a method which is no getter is called, then all {@link PlcTag}s are refreshed before doing the call.
+ * Thus, all operations on tags that are annotated with {@link PlcTag} are always done against the "live" values
  * from the PLC.
  * <p>
  * A connected @{@link PlcEntity} can be disconnected calling {@link #disconnect(Object)}, then it behaves like the

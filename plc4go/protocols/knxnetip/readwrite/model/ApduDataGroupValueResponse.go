@@ -137,7 +137,11 @@ func (m *_ApduDataGroupValueResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataGroupValueResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataGroupValueResponse, error) {
+func ApduDataGroupValueResponseParse(theBytes []byte, dataLength uint8) (ApduDataGroupValueResponse, error) {
+	return ApduDataGroupValueResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), dataLength)
+}
+
+func ApduDataGroupValueResponseParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataGroupValueResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataGroupValueResponse"); pullErr != nil {
@@ -175,7 +179,15 @@ func ApduDataGroupValueResponseParse(readBuffer utils.ReadBuffer, dataLength uin
 	return _child, nil
 }
 
-func (m *_ApduDataGroupValueResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataGroupValueResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApduDataGroupValueResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

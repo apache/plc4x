@@ -130,7 +130,11 @@ func (m *_PanicStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func PanicStatusParse(readBuffer utils.ReadBuffer) (PanicStatus, error) {
+func PanicStatusParse(theBytes []byte) (PanicStatus, error) {
+	return PanicStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func PanicStatusParseWithBuffer(readBuffer utils.ReadBuffer) (PanicStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PanicStatus"); pullErr != nil {
@@ -171,7 +175,15 @@ func PanicStatusParse(readBuffer utils.ReadBuffer) (PanicStatus, error) {
 	}, nil
 }
 
-func (m *_PanicStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_PanicStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_PanicStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("PanicStatus"); pushErr != nil {

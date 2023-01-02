@@ -169,7 +169,11 @@ func (m *_BACnetConstructedDataSubordinateTags) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSubordinateTagsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSubordinateTags, error) {
+func BACnetConstructedDataSubordinateTagsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSubordinateTags, error) {
+	return BACnetConstructedDataSubordinateTagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataSubordinateTagsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSubordinateTags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSubordinateTags"); pullErr != nil {
@@ -190,7 +194,7 @@ func BACnetConstructedDataSubordinateTagsParse(readBuffer utils.ReadBuffer, tagN
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
-		_val, _err := BACnetApplicationTagParse(readBuffer)
+		_val, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -213,12 +217,11 @@ func BACnetConstructedDataSubordinateTagsParse(readBuffer utils.ReadBuffer, tagN
 	var subordinateList []BACnetNameValueCollection
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetNameValueCollectionParse(readBuffer, uint8(0))
+			_item, _err := BACnetNameValueCollectionParseWithBuffer(readBuffer, uint8(0))
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'subordinateList' field of BACnetConstructedDataSubordinateTags")
 			}
 			subordinateList = append(subordinateList, _item.(BACnetNameValueCollection))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("subordinateList", utils.WithRenderAsList(true)); closeErr != nil {
@@ -242,7 +245,15 @@ func BACnetConstructedDataSubordinateTagsParse(readBuffer utils.ReadBuffer, tagN
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataSubordinateTags) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataSubordinateTags) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataSubordinateTags) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

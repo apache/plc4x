@@ -111,7 +111,11 @@ func (m *_BACnetConstructedDataNotificationForwarderAll) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNotificationForwarderAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationForwarderAll, error) {
+func BACnetConstructedDataNotificationForwarderAllParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationForwarderAll, error) {
+	return BACnetConstructedDataNotificationForwarderAllParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataNotificationForwarderAllParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationForwarderAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNotificationForwarderAll"); pullErr != nil {
@@ -140,7 +144,15 @@ func BACnetConstructedDataNotificationForwarderAllParse(readBuffer utils.ReadBuf
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataNotificationForwarderAll) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataNotificationForwarderAll) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataNotificationForwarderAll) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

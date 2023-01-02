@@ -152,7 +152,11 @@ func (m *_MultipleServiceRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (MultipleServiceRequest, error) {
+func MultipleServiceRequestParse(theBytes []byte, serviceLen uint16) (MultipleServiceRequest, error) {
+	return MultipleServiceRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceLen)
+}
+
+func MultipleServiceRequestParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint16) (MultipleServiceRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MultipleServiceRequest"); pullErr != nil {
@@ -183,7 +187,7 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 	if pullErr := readBuffer.PullContext("data"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
-	_data, _dataErr := ServicesParse(readBuffer, uint16(uint16(serviceLen)-uint16(uint16(6))))
+	_data, _dataErr := ServicesParseWithBuffer(readBuffer, uint16(uint16(serviceLen)-uint16(uint16(6))))
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field of MultipleServiceRequest")
 	}
@@ -207,7 +211,15 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 	return _child, nil
 }
 
-func (m *_MultipleServiceRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MultipleServiceRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_MultipleServiceRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

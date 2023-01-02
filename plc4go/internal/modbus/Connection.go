@@ -22,6 +22,8 @@ package modbus
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
@@ -31,7 +33,6 @@ import (
 	internalModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"time"
 )
 
 type Connection struct {
@@ -45,7 +46,7 @@ type Connection struct {
 	tracer       *spi.Tracer
 }
 
-func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options map[string][]string, fieldHandler spi.PlcFieldHandler) *Connection {
+func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options map[string][]string, tagHandler spi.PlcTagHandler) *Connection {
 	connection := &Connection{
 		unitIdentifier: unitIdentifier,
 		messageCodec:   messageCodec,
@@ -64,7 +65,7 @@ func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options 
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
 		_default.WithDefaultTtl(time.Second*5),
-		_default.WithPlcFieldHandler(fieldHandler),
+		_default.WithPlcTagHandler(tagHandler),
 		_default.WithPlcValueHandler(NewValueHandler()),
 	)
 	return connection
@@ -140,7 +141,7 @@ func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 
 func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 	return internalModel.NewDefaultPlcReadRequestBuilderWithInterceptor(
-		m.GetPlcFieldHandler(),
+		m.GetPlcTagHandler(),
 		NewReader(m.unitIdentifier, m.messageCodec),
 		m.requestInterceptor,
 	)
@@ -148,7 +149,7 @@ func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 
 func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 	return internalModel.NewDefaultPlcWriteRequestBuilderWithInterceptor(
-		m.GetPlcFieldHandler(),
+		m.GetPlcTagHandler(),
 		m.GetPlcValueHandler(),
 		NewWriter(m.unitIdentifier, m.messageCodec),
 		m.requestInterceptor,

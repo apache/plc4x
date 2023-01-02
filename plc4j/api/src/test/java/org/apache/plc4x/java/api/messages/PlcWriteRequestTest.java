@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.model.PlcField;
-
-import java.util.Collections;
-
 import static org.mockito.Mockito.mock;
 
 public class PlcWriteRequestTest {
@@ -53,30 +49,30 @@ public class PlcWriteRequestTest {
         }
         { // one item implicit type
             PlcWriteRequest.builder()
-                .addItem(dummyField, "")
+                .addField(dummyField, "")
                 .build();
         }
         { // one item
             PlcWriteRequest.builder()
-                .addItem(String.class, dummyField)
+                .addField(String.class, dummyField)
                 .build();
         }
         { // one item prebuild
             PlcWriteRequest.builder()
-                .addItem(new PlcWriteRequestItem<>(String.class, dummyField))
+                .addField(new PlcWriteRequestItem<>(String.class, dummyField))
                 .build();
         }
         { // two different item
             PlcWriteRequest.builder()
-                .addItem(String.class, dummyField)
-                .addItem(Byte.class, dummyField)
+                .addField(String.class, dummyField)
+                .addField(Byte.class, dummyField)
                 .build();
         }
         { // two different item typeSafe
             try {
                 PlcWriteRequest.builder()
-                    .addItem(String.class, dummyField)
-                    .addItem(Byte.class, dummyField)
+                    .addField(String.class, dummyField)
+                    .addField(Byte.class, dummyField)
                     .build(String.class);
                 fail("Mixed types build should fail.");
             } catch (IllegalStateException e) {
@@ -86,8 +82,8 @@ public class PlcWriteRequestTest {
         { // two different item typeSafe
             try {
                 PlcWriteRequest.builder()
-                    .addItem(String.class, dummyField)
-                    .addItem(Byte.class, dummyField)
+                    .addField(String.class, dummyField)
+                    .addField(Byte.class, dummyField)
                     .build(Byte.class);
                 fail("Mismatch of types should have failed.");
             } catch (ClassCastException e) {
@@ -96,8 +92,8 @@ public class PlcWriteRequestTest {
         }
         { // two equal item typeSafe
             PlcWriteRequest.builder()
-                .addItem(Byte.class, dummyField)
-                .addItem(Byte.class, dummyField)
+                .addField(Byte.class, dummyField)
+                .addField(Byte.class, dummyField)
                 .build(Byte.class);
         }
     }

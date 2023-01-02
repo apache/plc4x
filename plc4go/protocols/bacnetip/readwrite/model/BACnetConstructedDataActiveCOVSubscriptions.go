@@ -136,7 +136,11 @@ func (m *_BACnetConstructedDataActiveCOVSubscriptions) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataActiveCOVSubscriptionsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveCOVSubscriptions, error) {
+func BACnetConstructedDataActiveCOVSubscriptionsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveCOVSubscriptions, error) {
+	return BACnetConstructedDataActiveCOVSubscriptionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataActiveCOVSubscriptionsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveCOVSubscriptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveCOVSubscriptions"); pullErr != nil {
@@ -153,12 +157,11 @@ func BACnetConstructedDataActiveCOVSubscriptionsParse(readBuffer utils.ReadBuffe
 	var activeCOVSubscriptions []BACnetCOVSubscription
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetCOVSubscriptionParse(readBuffer)
+			_item, _err := BACnetCOVSubscriptionParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'activeCOVSubscriptions' field of BACnetConstructedDataActiveCOVSubscriptions")
 			}
 			activeCOVSubscriptions = append(activeCOVSubscriptions, _item.(BACnetCOVSubscription))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("activeCOVSubscriptions", utils.WithRenderAsList(true)); closeErr != nil {
@@ -181,7 +184,15 @@ func BACnetConstructedDataActiveCOVSubscriptionsParse(readBuffer utils.ReadBuffe
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataActiveCOVSubscriptions) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataActiveCOVSubscriptions) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataActiveCOVSubscriptions) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

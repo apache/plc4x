@@ -135,7 +135,11 @@ func (m *_FirmataCommandProtocolVersion) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer, response bool) (FirmataCommandProtocolVersion, error) {
+func FirmataCommandProtocolVersionParse(theBytes []byte, response bool) (FirmataCommandProtocolVersion, error) {
+	return FirmataCommandProtocolVersionParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+}
+
+func FirmataCommandProtocolVersionParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataCommandProtocolVersion, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandProtocolVersion"); pullErr != nil {
@@ -174,7 +178,15 @@ func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer, response bo
 	return _child, nil
 }
 
-func (m *_FirmataCommandProtocolVersion) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_FirmataCommandProtocolVersion) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_FirmataCommandProtocolVersion) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -177,7 +177,11 @@ func (m *_BACnetEventParameterSignedOutOfRange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventParameterSignedOutOfRangeParse(readBuffer utils.ReadBuffer) (BACnetEventParameterSignedOutOfRange, error) {
+func BACnetEventParameterSignedOutOfRangeParse(theBytes []byte) (BACnetEventParameterSignedOutOfRange, error) {
+	return BACnetEventParameterSignedOutOfRangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetEventParameterSignedOutOfRangeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterSignedOutOfRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterSignedOutOfRange"); pullErr != nil {
@@ -190,7 +194,7 @@ func BACnetEventParameterSignedOutOfRangeParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(15)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(15)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterSignedOutOfRange")
 	}
@@ -203,7 +207,7 @@ func BACnetEventParameterSignedOutOfRangeParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
 	}
-	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
 		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterSignedOutOfRange")
 	}
@@ -216,7 +220,7 @@ func BACnetEventParameterSignedOutOfRangeParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("lowLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lowLimit")
 	}
-	_lowLimit, _lowLimitErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
+	_lowLimit, _lowLimitErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _lowLimitErr != nil {
 		return nil, errors.Wrap(_lowLimitErr, "Error parsing 'lowLimit' field of BACnetEventParameterSignedOutOfRange")
 	}
@@ -229,7 +233,7 @@ func BACnetEventParameterSignedOutOfRangeParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("highLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for highLimit")
 	}
-	_highLimit, _highLimitErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
+	_highLimit, _highLimitErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _highLimitErr != nil {
 		return nil, errors.Wrap(_highLimitErr, "Error parsing 'highLimit' field of BACnetEventParameterSignedOutOfRange")
 	}
@@ -242,7 +246,7 @@ func BACnetEventParameterSignedOutOfRangeParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("deadband"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deadband")
 	}
-	_deadband, _deadbandErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_deadband, _deadbandErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _deadbandErr != nil {
 		return nil, errors.Wrap(_deadbandErr, "Error parsing 'deadband' field of BACnetEventParameterSignedOutOfRange")
 	}
@@ -255,7 +259,7 @@ func BACnetEventParameterSignedOutOfRangeParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(15)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(15)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterSignedOutOfRange")
 	}
@@ -282,7 +286,15 @@ func BACnetEventParameterSignedOutOfRangeParse(readBuffer utils.ReadBuffer) (BAC
 	return _child, nil
 }
 
-func (m *_BACnetEventParameterSignedOutOfRange) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventParameterSignedOutOfRange) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetEventParameterSignedOutOfRange) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

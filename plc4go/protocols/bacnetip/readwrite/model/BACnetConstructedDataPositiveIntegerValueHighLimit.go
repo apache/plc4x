@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPositiveIntegerValueHighLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueHighLimit, error) {
+func BACnetConstructedDataPositiveIntegerValueHighLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueHighLimit, error) {
+	return BACnetConstructedDataPositiveIntegerValueHighLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataPositiveIntegerValueHighLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueHighLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueHighLimit"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataPositiveIntegerValueHighLimitParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("highLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for highLimit")
 	}
-	_highLimit, _highLimitErr := BACnetApplicationTagParse(readBuffer)
+	_highLimit, _highLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _highLimitErr != nil {
 		return nil, errors.Wrap(_highLimitErr, "Error parsing 'highLimit' field of BACnetConstructedDataPositiveIntegerValueHighLimit")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataPositiveIntegerValueHighLimitParse(readBuffer utils.Re
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

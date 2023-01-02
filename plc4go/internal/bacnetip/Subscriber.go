@@ -21,6 +21,7 @@ package bacnetip
 
 import (
 	"context"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
@@ -50,9 +51,9 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 		// Just populate all requests with an OK
 		responseCodes := map[string]apiModel.PlcResponseCode{}
 		subscriptionValues := make(map[string]apiModel.PlcSubscriptionHandle)
-		for _, fieldName := range internalPlcSubscriptionRequest.GetFieldNames() {
-			responseCodes[fieldName] = apiModel.PlcResponseCode_OK
-			subscriptionValues[fieldName] = spiModel.NewDefaultPlcSubscriptionHandle(m)
+		for _, tagName := range internalPlcSubscriptionRequest.GetTagNames() {
+			responseCodes[tagName] = apiModel.PlcResponseCode_OK
+			subscriptionValues[tagName] = spiModel.NewDefaultPlcSubscriptionHandle(m)
 		}
 
 		result <- &plc4goModel.DefaultPlcSubscriptionRequestResult{

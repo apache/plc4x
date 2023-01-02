@@ -136,7 +136,11 @@ func (m *_BACnetConstructedDataCredentials) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCredentialsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCredentials, error) {
+func BACnetConstructedDataCredentialsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCredentials, error) {
+	return BACnetConstructedDataCredentialsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataCredentialsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCredentials, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCredentials"); pullErr != nil {
@@ -153,12 +157,11 @@ func BACnetConstructedDataCredentialsParse(readBuffer utils.ReadBuffer, tagNumbe
 	var credentials []BACnetDeviceObjectReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
+			_item, _err := BACnetDeviceObjectReferenceParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'credentials' field of BACnetConstructedDataCredentials")
 			}
 			credentials = append(credentials, _item.(BACnetDeviceObjectReference))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("credentials", utils.WithRenderAsList(true)); closeErr != nil {
@@ -181,7 +184,15 @@ func BACnetConstructedDataCredentialsParse(readBuffer utils.ReadBuffer, tagNumbe
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataCredentials) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataCredentials) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataCredentials) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

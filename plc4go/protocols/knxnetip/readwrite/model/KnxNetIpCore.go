@@ -124,7 +124,11 @@ func (m *_KnxNetIpCore) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxNetIpCoreParse(readBuffer utils.ReadBuffer) (KnxNetIpCore, error) {
+func KnxNetIpCoreParse(theBytes []byte) (KnxNetIpCore, error) {
+	return KnxNetIpCoreParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func KnxNetIpCoreParseWithBuffer(readBuffer utils.ReadBuffer) (KnxNetIpCore, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpCore"); pullErr != nil {
@@ -153,7 +157,15 @@ func KnxNetIpCoreParse(readBuffer utils.ReadBuffer) (KnxNetIpCore, error) {
 	return _child, nil
 }
 
-func (m *_KnxNetIpCore) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_KnxNetIpCore) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_KnxNetIpCore) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

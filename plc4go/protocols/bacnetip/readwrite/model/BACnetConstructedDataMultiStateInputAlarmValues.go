@@ -136,7 +136,11 @@ func (m *_BACnetConstructedDataMultiStateInputAlarmValues) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMultiStateInputAlarmValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMultiStateInputAlarmValues, error) {
+func BACnetConstructedDataMultiStateInputAlarmValuesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMultiStateInputAlarmValues, error) {
+	return BACnetConstructedDataMultiStateInputAlarmValuesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataMultiStateInputAlarmValuesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMultiStateInputAlarmValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMultiStateInputAlarmValues"); pullErr != nil {
@@ -153,12 +157,11 @@ func BACnetConstructedDataMultiStateInputAlarmValuesParse(readBuffer utils.ReadB
 	var alarmValues []BACnetApplicationTagUnsignedInteger
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetApplicationTagParse(readBuffer)
+			_item, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'alarmValues' field of BACnetConstructedDataMultiStateInputAlarmValues")
 			}
 			alarmValues = append(alarmValues, _item.(BACnetApplicationTagUnsignedInteger))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("alarmValues", utils.WithRenderAsList(true)); closeErr != nil {
@@ -181,7 +184,15 @@ func BACnetConstructedDataMultiStateInputAlarmValuesParse(readBuffer utils.ReadB
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataMultiStateInputAlarmValues) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMultiStateInputAlarmValues) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataMultiStateInputAlarmValues) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

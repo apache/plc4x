@@ -131,7 +131,11 @@ func (m *_ListOfCovNotifications) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ListOfCovNotificationsParse(readBuffer utils.ReadBuffer) (ListOfCovNotifications, error) {
+func ListOfCovNotificationsParse(theBytes []byte) (ListOfCovNotifications, error) {
+	return ListOfCovNotificationsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ListOfCovNotificationsParseWithBuffer(readBuffer utils.ReadBuffer) (ListOfCovNotifications, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ListOfCovNotifications"); pullErr != nil {
@@ -144,7 +148,7 @@ func ListOfCovNotificationsParse(readBuffer utils.ReadBuffer) (ListOfCovNotifica
 	if pullErr := readBuffer.PullContext("monitoredObjectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for monitoredObjectIdentifier")
 	}
-	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _monitoredObjectIdentifierErr != nil {
 		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field of ListOfCovNotifications")
 	}
@@ -157,7 +161,7 @@ func ListOfCovNotificationsParse(readBuffer utils.ReadBuffer) (ListOfCovNotifica
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(1)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of ListOfCovNotifications")
 	}
@@ -174,12 +178,11 @@ func ListOfCovNotificationsParse(readBuffer utils.ReadBuffer) (ListOfCovNotifica
 	var listOfValues []ListOfCovNotificationsValue
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 1)) {
-			_item, _err := ListOfCovNotificationsValueParse(readBuffer, monitoredObjectIdentifier.GetObjectType())
+			_item, _err := ListOfCovNotificationsValueParseWithBuffer(readBuffer, monitoredObjectIdentifier.GetObjectType())
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field of ListOfCovNotifications")
 			}
 			listOfValues = append(listOfValues, _item.(ListOfCovNotificationsValue))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("listOfValues", utils.WithRenderAsList(true)); closeErr != nil {
@@ -190,7 +193,7 @@ func ListOfCovNotificationsParse(readBuffer utils.ReadBuffer) (ListOfCovNotifica
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(1)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of ListOfCovNotifications")
 	}
@@ -212,7 +215,15 @@ func ListOfCovNotificationsParse(readBuffer utils.ReadBuffer) (ListOfCovNotifica
 	}, nil
 }
 
-func (m *_ListOfCovNotifications) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ListOfCovNotifications) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ListOfCovNotifications) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ListOfCovNotifications"); pushErr != nil {

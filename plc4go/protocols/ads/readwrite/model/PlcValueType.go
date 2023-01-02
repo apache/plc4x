@@ -30,7 +30,7 @@ import (
 type PlcValueType uint8
 
 type IPlcValueType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -269,7 +269,11 @@ func (m PlcValueType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func PlcValueTypeParse(readBuffer utils.ReadBuffer) (PlcValueType, error) {
+func PlcValueTypeParse(theBytes []byte) (PlcValueType, error) {
+	return PlcValueTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func PlcValueTypeParseWithBuffer(readBuffer utils.ReadBuffer) (PlcValueType, error) {
 	val, err := readBuffer.ReadUint8("PlcValueType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading PlcValueType")
@@ -282,7 +286,15 @@ func PlcValueTypeParse(readBuffer utils.ReadBuffer) (PlcValueType, error) {
 	}
 }
 
-func (e PlcValueType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e PlcValueType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e PlcValueType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("PlcValueType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -107,7 +107,11 @@ func (m *_BACnetDateTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDateTimeParse(readBuffer utils.ReadBuffer) (BACnetDateTime, error) {
+func BACnetDateTimeParse(theBytes []byte) (BACnetDateTime, error) {
+	return BACnetDateTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetDateTimeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDateTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetDateTime"); pullErr != nil {
@@ -120,7 +124,7 @@ func BACnetDateTimeParse(readBuffer utils.ReadBuffer) (BACnetDateTime, error) {
 	if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateValue")
 	}
-	_dateValue, _dateValueErr := BACnetApplicationTagParse(readBuffer)
+	_dateValue, _dateValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _dateValueErr != nil {
 		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetDateTime")
 	}
@@ -133,7 +137,7 @@ func BACnetDateTimeParse(readBuffer utils.ReadBuffer) (BACnetDateTime, error) {
 	if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeValue")
 	}
-	_timeValue, _timeValueErr := BACnetApplicationTagParse(readBuffer)
+	_timeValue, _timeValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _timeValueErr != nil {
 		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field of BACnetDateTime")
 	}
@@ -153,7 +157,15 @@ func BACnetDateTimeParse(readBuffer utils.ReadBuffer) (BACnetDateTime, error) {
 	}, nil
 }
 
-func (m *_BACnetDateTime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetDateTime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetDateTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetDateTime"); pushErr != nil {

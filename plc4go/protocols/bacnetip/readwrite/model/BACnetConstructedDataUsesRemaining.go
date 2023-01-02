@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataUsesRemaining) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataUsesRemainingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUsesRemaining, error) {
+func BACnetConstructedDataUsesRemainingParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUsesRemaining, error) {
+	return BACnetConstructedDataUsesRemainingParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataUsesRemainingParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUsesRemaining, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUsesRemaining"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataUsesRemainingParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("usesRemaining"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for usesRemaining")
 	}
-	_usesRemaining, _usesRemainingErr := BACnetApplicationTagParse(readBuffer)
+	_usesRemaining, _usesRemainingErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _usesRemainingErr != nil {
 		return nil, errors.Wrap(_usesRemainingErr, "Error parsing 'usesRemaining' field of BACnetConstructedDataUsesRemaining")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataUsesRemainingParse(readBuffer utils.ReadBuffer, tagNum
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataUsesRemaining) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataUsesRemaining) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataUsesRemaining) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

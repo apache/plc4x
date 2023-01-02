@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataFileAccessMethod) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFileAccessMethodParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileAccessMethod, error) {
+func BACnetConstructedDataFileAccessMethodParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileAccessMethod, error) {
+	return BACnetConstructedDataFileAccessMethodParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataFileAccessMethodParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileAccessMethod, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFileAccessMethod"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataFileAccessMethodParse(readBuffer utils.ReadBuffer, tag
 	if pullErr := readBuffer.PullContext("fileAccessMethod"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileAccessMethod")
 	}
-	_fileAccessMethod, _fileAccessMethodErr := BACnetFileAccessMethodTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_fileAccessMethod, _fileAccessMethodErr := BACnetFileAccessMethodTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _fileAccessMethodErr != nil {
 		return nil, errors.Wrap(_fileAccessMethodErr, "Error parsing 'fileAccessMethod' field of BACnetConstructedDataFileAccessMethod")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataFileAccessMethodParse(readBuffer utils.ReadBuffer, tag
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataFileAccessMethod) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataFileAccessMethod) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataFileAccessMethod) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -131,7 +131,11 @@ func (m *_AirConditioningData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AirConditioningDataParse(readBuffer utils.ReadBuffer) (AirConditioningData, error) {
+func AirConditioningDataParse(theBytes []byte) (AirConditioningData, error) {
+	return AirConditioningDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AirConditioningDataParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningData"); pullErr != nil {
@@ -149,7 +153,7 @@ func AirConditioningDataParse(readBuffer utils.ReadBuffer) (AirConditioningData,
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := AirConditioningCommandTypeContainerParse(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := AirConditioningCommandTypeContainerParseWithBuffer(readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of AirConditioningData")
 	}
@@ -174,43 +178,43 @@ func AirConditioningDataParse(readBuffer utils.ReadBuffer) (AirConditioningData,
 	var typeSwitchError error
 	switch {
 	case commandType == AirConditioningCommandType_HVAC_SCHEDULE_ENTRY: // AirConditioningDataHvacScheduleEntry
-		_childTemp, typeSwitchError = AirConditioningDataHvacScheduleEntryParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataHvacScheduleEntryParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_HUMIDITY_SCHEDULE_ENTRY: // AirConditioningDataHumidityScheduleEntry
-		_childTemp, typeSwitchError = AirConditioningDataHumidityScheduleEntryParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataHumidityScheduleEntryParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_REFRESH: // AirConditioningDataRefresh
-		_childTemp, typeSwitchError = AirConditioningDataRefreshParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataRefreshParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_ZONE_HVAC_PLANT_STATUS: // AirConditioningDataZoneHvacPlantStatus
-		_childTemp, typeSwitchError = AirConditioningDataZoneHvacPlantStatusParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataZoneHvacPlantStatusParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_ZONE_HUMIDITY_PLANT_STATUS: // AirConditioningDataZoneHumidityPlantStatus
-		_childTemp, typeSwitchError = AirConditioningDataZoneHumidityPlantStatusParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataZoneHumidityPlantStatusParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_ZONE_TEMPERATURE: // AirConditioningDataZoneTemperature
-		_childTemp, typeSwitchError = AirConditioningDataZoneTemperatureParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataZoneTemperatureParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_ZONE_HUMIDITY: // AirConditioningDataZoneHumidity
-		_childTemp, typeSwitchError = AirConditioningDataZoneHumidityParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataZoneHumidityParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_SET_ZONE_GROUP_OFF: // AirConditioningDataSetZoneGroupOff
-		_childTemp, typeSwitchError = AirConditioningDataSetZoneGroupOffParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetZoneGroupOffParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_SET_ZONE_GROUP_ON: // AirConditioningDataSetZoneGroupOn
-		_childTemp, typeSwitchError = AirConditioningDataSetZoneGroupOnParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetZoneGroupOnParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_SET_ZONE_HVAC_MODE: // AirConditioningDataSetZoneHvacMode
-		_childTemp, typeSwitchError = AirConditioningDataSetZoneHvacModeParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetZoneHvacModeParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_SET_PLANT_HVAC_LEVEL: // AirConditioningDataSetPlantHvacLevel
-		_childTemp, typeSwitchError = AirConditioningDataSetPlantHvacLevelParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetPlantHvacLevelParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_SET_ZONE_HUMIDITY_MODE: // AirConditioningDataSetZoneHumidityMode
-		_childTemp, typeSwitchError = AirConditioningDataSetZoneHumidityModeParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetZoneHumidityModeParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_SET_PLANT_HUMIDITY_LEVEL: // AirConditioningDataSetPlantHumidityLevel
-		_childTemp, typeSwitchError = AirConditioningDataSetPlantHumidityLevelParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetPlantHumidityLevelParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_SET_HVAC_UPPER_GUARD_LIMIT: // AirConditioningDataSetHvacUpperGuardLimit
-		_childTemp, typeSwitchError = AirConditioningDataSetHvacUpperGuardLimitParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetHvacUpperGuardLimitParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_SET_HVAC_LOWER_GUARD_LIMIT: // AirConditioningDataSetHvacLowerGuardLimit
-		_childTemp, typeSwitchError = AirConditioningDataSetHvacLowerGuardLimitParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetHvacLowerGuardLimitParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_SET_HVAC_SETBACK_LIMIT: // AirConditioningDataSetHvacSetbackLimit
-		_childTemp, typeSwitchError = AirConditioningDataSetHvacSetbackLimitParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetHvacSetbackLimitParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_SET_HUMIDITY_UPPER_GUARD_LIMIT: // AirConditioningDataSetHumidityUpperGuardLimit
-		_childTemp, typeSwitchError = AirConditioningDataSetHumidityUpperGuardLimitParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetHumidityUpperGuardLimitParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_SET_HUMIDITY_LOWER_GUARD_LIMIT: // AirConditioningDataSetHumidityLowerGuardLimit
-		_childTemp, typeSwitchError = AirConditioningDataSetHumidityLowerGuardLimitParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetHumidityLowerGuardLimitParseWithBuffer(readBuffer)
 	case commandType == AirConditioningCommandType_SET_HUMIDITY_SETBACK_LIMIT: // AirConditioningDataSetHumiditySetbackLimit
-		_childTemp, typeSwitchError = AirConditioningDataSetHumiditySetbackLimitParse(readBuffer)
+		_childTemp, typeSwitchError = AirConditioningDataSetHumiditySetbackLimitParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}

@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataFileSize) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFileSizeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileSize, error) {
+func BACnetConstructedDataFileSizeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileSize, error) {
+	return BACnetConstructedDataFileSizeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataFileSizeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileSize, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFileSize"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataFileSizeParse(readBuffer utils.ReadBuffer, tagNumber u
 	if pullErr := readBuffer.PullContext("fileSize"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileSize")
 	}
-	_fileSize, _fileSizeErr := BACnetApplicationTagParse(readBuffer)
+	_fileSize, _fileSizeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _fileSizeErr != nil {
 		return nil, errors.Wrap(_fileSizeErr, "Error parsing 'fileSize' field of BACnetConstructedDataFileSize")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataFileSizeParse(readBuffer utils.ReadBuffer, tagNumber u
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataFileSize) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataFileSize) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataFileSize) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

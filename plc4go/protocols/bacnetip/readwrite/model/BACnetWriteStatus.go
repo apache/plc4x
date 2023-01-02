@@ -30,7 +30,7 @@ import (
 type BACnetWriteStatus uint8
 
 type IBACnetWriteStatus interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +107,11 @@ func (m BACnetWriteStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetWriteStatusParse(readBuffer utils.ReadBuffer) (BACnetWriteStatus, error) {
+func BACnetWriteStatusParse(theBytes []byte) (BACnetWriteStatus, error) {
+	return BACnetWriteStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetWriteStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetWriteStatus, error) {
 	val, err := readBuffer.ReadUint8("BACnetWriteStatus", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetWriteStatus")
@@ -120,7 +124,15 @@ func BACnetWriteStatusParse(readBuffer utils.ReadBuffer) (BACnetWriteStatus, err
 	}
 }
 
-func (e BACnetWriteStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetWriteStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetWriteStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetWriteStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

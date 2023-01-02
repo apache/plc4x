@@ -122,7 +122,11 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) GetLengthIn
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyAccessResultAccessResultPropertyAccessErrorParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPropertyAccessResultAccessResultPropertyAccessError, error) {
+func BACnetPropertyAccessResultAccessResultPropertyAccessErrorParse(theBytes []byte, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPropertyAccessResultAccessResultPropertyAccessError, error) {
+	return BACnetPropertyAccessResultAccessResultPropertyAccessErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
+}
+
+func BACnetPropertyAccessResultAccessResultPropertyAccessErrorParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPropertyAccessResultAccessResultPropertyAccessError, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyAccessResultAccessResultPropertyAccessError"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPropertyAccessResultAccessResultPropertyAccessErrorParse(readBuffer u
 	if pullErr := readBuffer.PullContext("propertyAccessError"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyAccessError")
 	}
-	_propertyAccessError, _propertyAccessErrorErr := ErrorEnclosedParse(readBuffer, uint8(uint8(5)))
+	_propertyAccessError, _propertyAccessErrorErr := ErrorEnclosedParseWithBuffer(readBuffer, uint8(uint8(5)))
 	if _propertyAccessErrorErr != nil {
 		return nil, errors.Wrap(_propertyAccessErrorErr, "Error parsing 'propertyAccessError' field of BACnetPropertyAccessResultAccessResultPropertyAccessError")
 	}
@@ -161,7 +165,15 @@ func BACnetPropertyAccessResultAccessResultPropertyAccessErrorParse(readBuffer u
 	return _child, nil
 }
 
-func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

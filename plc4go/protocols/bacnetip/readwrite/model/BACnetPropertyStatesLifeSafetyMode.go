@@ -122,7 +122,11 @@ func (m *_BACnetPropertyStatesLifeSafetyMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesLifeSafetyModeParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyMode, error) {
+func BACnetPropertyStatesLifeSafetyModeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyMode, error) {
+	return BACnetPropertyStatesLifeSafetyModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+}
+
+func BACnetPropertyStatesLifeSafetyModeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLifeSafetyMode"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPropertyStatesLifeSafetyModeParse(readBuffer utils.ReadBuffer, peeked
 	if pullErr := readBuffer.PullContext("lifeSafetyMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lifeSafetyMode")
 	}
-	_lifeSafetyMode, _lifeSafetyModeErr := BACnetLifeSafetyModeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_lifeSafetyMode, _lifeSafetyModeErr := BACnetLifeSafetyModeTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lifeSafetyModeErr != nil {
 		return nil, errors.Wrap(_lifeSafetyModeErr, "Error parsing 'lifeSafetyMode' field of BACnetPropertyStatesLifeSafetyMode")
 	}
@@ -157,7 +161,15 @@ func BACnetPropertyStatesLifeSafetyModeParse(readBuffer utils.ReadBuffer, peeked
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesLifeSafetyMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesLifeSafetyMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesLifeSafetyMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

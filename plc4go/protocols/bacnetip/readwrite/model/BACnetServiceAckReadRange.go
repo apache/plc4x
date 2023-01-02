@@ -197,7 +197,11 @@ func (m *_BACnetServiceAckReadRange) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckReadRange, error) {
+func BACnetServiceAckReadRangeParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckReadRange, error) {
+	return BACnetServiceAckReadRangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckLength)
+}
+
+func BACnetServiceAckReadRangeParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckReadRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadRange"); pullErr != nil {
@@ -210,7 +214,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetServiceAckReadRange")
 	}
@@ -223,7 +227,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field of BACnetServiceAckReadRange")
 	}
@@ -239,7 +243,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 		if pullErr := readBuffer.PullContext("propertyArrayIndex"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for propertyArrayIndex")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -258,7 +262,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	if pullErr := readBuffer.PullContext("resultFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for resultFlags")
 	}
-	_resultFlags, _resultFlagsErr := BACnetResultFlagsTaggedParse(readBuffer, uint8(uint8(3)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_resultFlags, _resultFlagsErr := BACnetResultFlagsTaggedParseWithBuffer(readBuffer, uint8(uint8(3)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _resultFlagsErr != nil {
 		return nil, errors.Wrap(_resultFlagsErr, "Error parsing 'resultFlags' field of BACnetServiceAckReadRange")
 	}
@@ -271,7 +275,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	if pullErr := readBuffer.PullContext("itemCount"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for itemCount")
 	}
-	_itemCount, _itemCountErr := BACnetContextTagParse(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_itemCount, _itemCountErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _itemCountErr != nil {
 		return nil, errors.Wrap(_itemCountErr, "Error parsing 'itemCount' field of BACnetServiceAckReadRange")
 	}
@@ -287,7 +291,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 		if pullErr := readBuffer.PullContext("itemData"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for itemData")
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(5), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((propertyArrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((propertyArrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
+		_val, _err := BACnetConstructedDataParseWithBuffer(readBuffer, uint8(5), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((propertyArrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((propertyArrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -309,7 +313,7 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 		if pullErr := readBuffer.PullContext("firstSequenceNumber"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for firstSequenceNumber")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(6), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(6), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -345,7 +349,15 @@ func BACnetServiceAckReadRangeParse(readBuffer utils.ReadBuffer, serviceAckLengt
 	return _child, nil
 }
 
-func (m *_BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetServiceAckReadRange) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetServiceAckReadRange) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

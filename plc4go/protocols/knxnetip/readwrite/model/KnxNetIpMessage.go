@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -126,7 +127,11 @@ func (m *_KnxNetIpMessage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (KnxNetIpMessage, error) {
+func KnxNetIpMessageParse(theBytes []byte) (KnxNetIpMessage, error) {
+	return KnxNetIpMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+}
+
+func KnxNetIpMessageParseWithBuffer(readBuffer utils.ReadBuffer) (KnxNetIpMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpMessage"); pullErr != nil {
@@ -175,37 +180,37 @@ func KnxNetIpMessageParse(readBuffer utils.ReadBuffer) (KnxNetIpMessage, error) 
 	var typeSwitchError error
 	switch {
 	case msgType == 0x0201: // SearchRequest
-		_childTemp, typeSwitchError = SearchRequestParse(readBuffer)
+		_childTemp, typeSwitchError = SearchRequestParseWithBuffer(readBuffer)
 	case msgType == 0x0202: // SearchResponse
-		_childTemp, typeSwitchError = SearchResponseParse(readBuffer)
+		_childTemp, typeSwitchError = SearchResponseParseWithBuffer(readBuffer)
 	case msgType == 0x0203: // DescriptionRequest
-		_childTemp, typeSwitchError = DescriptionRequestParse(readBuffer)
+		_childTemp, typeSwitchError = DescriptionRequestParseWithBuffer(readBuffer)
 	case msgType == 0x0204: // DescriptionResponse
-		_childTemp, typeSwitchError = DescriptionResponseParse(readBuffer)
+		_childTemp, typeSwitchError = DescriptionResponseParseWithBuffer(readBuffer)
 	case msgType == 0x0205: // ConnectionRequest
-		_childTemp, typeSwitchError = ConnectionRequestParse(readBuffer)
+		_childTemp, typeSwitchError = ConnectionRequestParseWithBuffer(readBuffer)
 	case msgType == 0x0206: // ConnectionResponse
-		_childTemp, typeSwitchError = ConnectionResponseParse(readBuffer)
+		_childTemp, typeSwitchError = ConnectionResponseParseWithBuffer(readBuffer)
 	case msgType == 0x0207: // ConnectionStateRequest
-		_childTemp, typeSwitchError = ConnectionStateRequestParse(readBuffer)
+		_childTemp, typeSwitchError = ConnectionStateRequestParseWithBuffer(readBuffer)
 	case msgType == 0x0208: // ConnectionStateResponse
-		_childTemp, typeSwitchError = ConnectionStateResponseParse(readBuffer)
+		_childTemp, typeSwitchError = ConnectionStateResponseParseWithBuffer(readBuffer)
 	case msgType == 0x0209: // DisconnectRequest
-		_childTemp, typeSwitchError = DisconnectRequestParse(readBuffer)
+		_childTemp, typeSwitchError = DisconnectRequestParseWithBuffer(readBuffer)
 	case msgType == 0x020A: // DisconnectResponse
-		_childTemp, typeSwitchError = DisconnectResponseParse(readBuffer)
+		_childTemp, typeSwitchError = DisconnectResponseParseWithBuffer(readBuffer)
 	case msgType == 0x020B: // UnknownMessage
-		_childTemp, typeSwitchError = UnknownMessageParse(readBuffer, totalLength)
+		_childTemp, typeSwitchError = UnknownMessageParseWithBuffer(readBuffer, totalLength)
 	case msgType == 0x0310: // DeviceConfigurationRequest
-		_childTemp, typeSwitchError = DeviceConfigurationRequestParse(readBuffer, totalLength)
+		_childTemp, typeSwitchError = DeviceConfigurationRequestParseWithBuffer(readBuffer, totalLength)
 	case msgType == 0x0311: // DeviceConfigurationAck
-		_childTemp, typeSwitchError = DeviceConfigurationAckParse(readBuffer)
+		_childTemp, typeSwitchError = DeviceConfigurationAckParseWithBuffer(readBuffer)
 	case msgType == 0x0420: // TunnelingRequest
-		_childTemp, typeSwitchError = TunnelingRequestParse(readBuffer, totalLength)
+		_childTemp, typeSwitchError = TunnelingRequestParseWithBuffer(readBuffer, totalLength)
 	case msgType == 0x0421: // TunnelingResponse
-		_childTemp, typeSwitchError = TunnelingResponseParse(readBuffer)
+		_childTemp, typeSwitchError = TunnelingResponseParseWithBuffer(readBuffer)
 	case msgType == 0x0530: // RoutingIndication
-		_childTemp, typeSwitchError = RoutingIndicationParse(readBuffer)
+		_childTemp, typeSwitchError = RoutingIndicationParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [msgType=%v]", msgType)
 	}

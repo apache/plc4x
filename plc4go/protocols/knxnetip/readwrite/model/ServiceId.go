@@ -99,7 +99,11 @@ func (m *_ServiceId) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ServiceIdParse(readBuffer utils.ReadBuffer) (ServiceId, error) {
+func ServiceIdParse(theBytes []byte) (ServiceId, error) {
+	return ServiceIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ServiceIdParseWithBuffer(readBuffer utils.ReadBuffer) (ServiceId, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ServiceId"); pullErr != nil {
@@ -125,19 +129,19 @@ func ServiceIdParse(readBuffer utils.ReadBuffer) (ServiceId, error) {
 	var typeSwitchError error
 	switch {
 	case serviceType == 0x02: // KnxNetIpCore
-		_childTemp, typeSwitchError = KnxNetIpCoreParse(readBuffer)
+		_childTemp, typeSwitchError = KnxNetIpCoreParseWithBuffer(readBuffer)
 	case serviceType == 0x03: // KnxNetIpDeviceManagement
-		_childTemp, typeSwitchError = KnxNetIpDeviceManagementParse(readBuffer)
+		_childTemp, typeSwitchError = KnxNetIpDeviceManagementParseWithBuffer(readBuffer)
 	case serviceType == 0x04: // KnxNetIpTunneling
-		_childTemp, typeSwitchError = KnxNetIpTunnelingParse(readBuffer)
+		_childTemp, typeSwitchError = KnxNetIpTunnelingParseWithBuffer(readBuffer)
 	case serviceType == 0x05: // KnxNetIpRouting
-		_childTemp, typeSwitchError = KnxNetIpRoutingParse(readBuffer)
+		_childTemp, typeSwitchError = KnxNetIpRoutingParseWithBuffer(readBuffer)
 	case serviceType == 0x06: // KnxNetRemoteLogging
-		_childTemp, typeSwitchError = KnxNetRemoteLoggingParse(readBuffer)
+		_childTemp, typeSwitchError = KnxNetRemoteLoggingParseWithBuffer(readBuffer)
 	case serviceType == 0x07: // KnxNetRemoteConfigurationAndDiagnosis
-		_childTemp, typeSwitchError = KnxNetRemoteConfigurationAndDiagnosisParse(readBuffer)
+		_childTemp, typeSwitchError = KnxNetRemoteConfigurationAndDiagnosisParseWithBuffer(readBuffer)
 	case serviceType == 0x08: // KnxNetObjectServer
-		_childTemp, typeSwitchError = KnxNetObjectServerParse(readBuffer)
+		_childTemp, typeSwitchError = KnxNetObjectServerParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [serviceType=%v]", serviceType)
 	}

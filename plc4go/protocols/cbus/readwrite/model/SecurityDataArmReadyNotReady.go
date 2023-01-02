@@ -123,7 +123,11 @@ func (m *_SecurityDataArmReadyNotReady) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataArmReadyNotReadyParse(readBuffer utils.ReadBuffer) (SecurityDataArmReadyNotReady, error) {
+func SecurityDataArmReadyNotReadyParse(theBytes []byte) (SecurityDataArmReadyNotReady, error) {
+	return SecurityDataArmReadyNotReadyParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SecurityDataArmReadyNotReadyParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataArmReadyNotReady, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataArmReadyNotReady"); pullErr != nil {
@@ -152,7 +156,15 @@ func SecurityDataArmReadyNotReadyParse(readBuffer utils.ReadBuffer) (SecurityDat
 	return _child, nil
 }
 
-func (m *_SecurityDataArmReadyNotReady) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataArmReadyNotReady) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataArmReadyNotReady) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

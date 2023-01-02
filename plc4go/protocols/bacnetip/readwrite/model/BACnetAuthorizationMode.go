@@ -30,7 +30,7 @@ import (
 type BACnetAuthorizationMode uint16
 
 type IBACnetAuthorizationMode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -125,7 +125,11 @@ func (m BACnetAuthorizationMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAuthorizationModeParse(readBuffer utils.ReadBuffer) (BACnetAuthorizationMode, error) {
+func BACnetAuthorizationModeParse(theBytes []byte) (BACnetAuthorizationMode, error) {
+	return BACnetAuthorizationModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetAuthorizationModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthorizationMode, error) {
 	val, err := readBuffer.ReadUint16("BACnetAuthorizationMode", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAuthorizationMode")
@@ -138,7 +142,15 @@ func BACnetAuthorizationModeParse(readBuffer utils.ReadBuffer) (BACnetAuthorizat
 	}
 }
 
-func (e BACnetAuthorizationMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAuthorizationMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetAuthorizationMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetAuthorizationMode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

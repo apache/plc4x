@@ -135,7 +135,11 @@ func (m *_S7PayloadAlarmS) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadAlarmSParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadAlarmS, error) {
+func S7PayloadAlarmSParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadAlarmS, error) {
+	return S7PayloadAlarmSParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
+}
+
+func S7PayloadAlarmSParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadAlarmS, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadAlarmS"); pullErr != nil {
@@ -148,7 +152,7 @@ func S7PayloadAlarmSParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cp
 	if pullErr := readBuffer.PullContext("alarmMessage"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for alarmMessage")
 	}
-	_alarmMessage, _alarmMessageErr := AlarmMessagePushTypeParse(readBuffer)
+	_alarmMessage, _alarmMessageErr := AlarmMessagePushTypeParseWithBuffer(readBuffer)
 	if _alarmMessageErr != nil {
 		return nil, errors.Wrap(_alarmMessageErr, "Error parsing 'alarmMessage' field of S7PayloadAlarmS")
 	}
@@ -170,7 +174,15 @@ func S7PayloadAlarmSParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cp
 	return _child, nil
 }
 
-func (m *_S7PayloadAlarmS) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7PayloadAlarmS) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7PayloadAlarmS) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -30,7 +30,7 @@ import (
 type DataTransportErrorCode uint8
 
 type IDataTransportErrorCode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -119,7 +119,11 @@ func (m DataTransportErrorCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DataTransportErrorCodeParse(readBuffer utils.ReadBuffer) (DataTransportErrorCode, error) {
+func DataTransportErrorCodeParse(theBytes []byte) (DataTransportErrorCode, error) {
+	return DataTransportErrorCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func DataTransportErrorCodeParseWithBuffer(readBuffer utils.ReadBuffer) (DataTransportErrorCode, error) {
 	val, err := readBuffer.ReadUint8("DataTransportErrorCode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DataTransportErrorCode")
@@ -132,7 +136,15 @@ func DataTransportErrorCodeParse(readBuffer utils.ReadBuffer) (DataTransportErro
 	}
 }
 
-func (e DataTransportErrorCode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e DataTransportErrorCode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e DataTransportErrorCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("DataTransportErrorCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

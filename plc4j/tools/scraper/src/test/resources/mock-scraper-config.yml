@@ -27,7 +27,7 @@ jobs:
     sources:
       - MOCK_1
       - MOCK_2
-    fields:
+    tags:
       test1: '%DB810:DBB0:USINT'
 
   - name: scheduled-demo-job2
@@ -35,7 +35,7 @@ jobs:
     sources:
       - MOCK_1
       - MOCK_2
-    fields:
+    tags:
       test1: '%DB810:DBB0:USINT'
 
 
@@ -44,7 +44,7 @@ jobs:
     sources:
       - MOCK_1
       - MOCK_2
-    fields:
+    tags:
       test1: '%DB810:DBW0:INT'
 
 
@@ -53,5 +53,5 @@ jobs:
     sources:
       - MOCK_1
       - MOCK_2
-    fields:
+    tags:
       test1: '%DB810:DBW0:INT'

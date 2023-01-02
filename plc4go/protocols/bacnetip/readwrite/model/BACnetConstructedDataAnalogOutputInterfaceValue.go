@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataAnalogOutputInterfaceValue) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAnalogOutputInterfaceValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogOutputInterfaceValue, error) {
+func BACnetConstructedDataAnalogOutputInterfaceValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogOutputInterfaceValue, error) {
+	return BACnetConstructedDataAnalogOutputInterfaceValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataAnalogOutputInterfaceValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogOutputInterfaceValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAnalogOutputInterfaceValue"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataAnalogOutputInterfaceValueParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("interfaceValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for interfaceValue")
 	}
-	_interfaceValue, _interfaceValueErr := BACnetOptionalREALParse(readBuffer)
+	_interfaceValue, _interfaceValueErr := BACnetOptionalREALParseWithBuffer(readBuffer)
 	if _interfaceValueErr != nil {
 		return nil, errors.Wrap(_interfaceValueErr, "Error parsing 'interfaceValue' field of BACnetConstructedDataAnalogOutputInterfaceValue")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataAnalogOutputInterfaceValueParse(readBuffer utils.ReadB
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataAnalogOutputInterfaceValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAnalogOutputInterfaceValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataAnalogOutputInterfaceValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -122,7 +122,11 @@ func (m *_BACnetLandingCallStatusCommandDestination) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLandingCallStatusCommandDestinationParse(readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommandDestination, error) {
+func BACnetLandingCallStatusCommandDestinationParse(theBytes []byte) (BACnetLandingCallStatusCommandDestination, error) {
+	return BACnetLandingCallStatusCommandDestinationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLandingCallStatusCommandDestinationParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommandDestination, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLandingCallStatusCommandDestination"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetLandingCallStatusCommandDestinationParse(readBuffer utils.ReadBuffer)
 	if pullErr := readBuffer.PullContext("destination"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for destination")
 	}
-	_destination, _destinationErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_destination, _destinationErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _destinationErr != nil {
 		return nil, errors.Wrap(_destinationErr, "Error parsing 'destination' field of BACnetLandingCallStatusCommandDestination")
 	}
@@ -157,7 +161,15 @@ func BACnetLandingCallStatusCommandDestinationParse(readBuffer utils.ReadBuffer)
 	return _child, nil
 }
 
-func (m *_BACnetLandingCallStatusCommandDestination) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLandingCallStatusCommandDestination) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLandingCallStatusCommandDestination) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

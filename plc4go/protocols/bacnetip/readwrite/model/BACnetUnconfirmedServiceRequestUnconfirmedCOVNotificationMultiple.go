@@ -172,7 +172,11 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Get
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple, error) {
+	return BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+}
+
+func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple"); pullErr != nil {
@@ -185,7 +189,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(read
 	if pullErr := readBuffer.PullContext("subscriberProcessIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for subscriberProcessIdentifier")
 	}
-	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _subscriberProcessIdentifierErr != nil {
 		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple")
 	}
@@ -198,7 +202,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(read
 	if pullErr := readBuffer.PullContext("initiatingDeviceIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for initiatingDeviceIdentifier")
 	}
-	_initiatingDeviceIdentifier, _initiatingDeviceIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_initiatingDeviceIdentifier, _initiatingDeviceIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _initiatingDeviceIdentifierErr != nil {
 		return nil, errors.Wrap(_initiatingDeviceIdentifierErr, "Error parsing 'initiatingDeviceIdentifier' field of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple")
 	}
@@ -211,7 +215,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(read
 	if pullErr := readBuffer.PullContext("timeRemaining"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeRemaining")
 	}
-	_timeRemaining, _timeRemainingErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeRemaining, _timeRemainingErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeRemainingErr != nil {
 		return nil, errors.Wrap(_timeRemainingErr, "Error parsing 'timeRemaining' field of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple")
 	}
@@ -227,7 +231,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(read
 		if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for timestamp")
 		}
-		_val, _err := BACnetTimeStampEnclosedParse(readBuffer, uint8(3))
+		_val, _err := BACnetTimeStampEnclosedParseWithBuffer(readBuffer, uint8(3))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -246,7 +250,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(read
 	if pullErr := readBuffer.PullContext("listOfCovNotifications"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfCovNotifications")
 	}
-	_listOfCovNotifications, _listOfCovNotificationsErr := ListOfCovNotificationsListParse(readBuffer, uint8(uint8(4)))
+	_listOfCovNotifications, _listOfCovNotificationsErr := ListOfCovNotificationsListParseWithBuffer(readBuffer, uint8(uint8(4)))
 	if _listOfCovNotificationsErr != nil {
 		return nil, errors.Wrap(_listOfCovNotificationsErr, "Error parsing 'listOfCovNotifications' field of BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple")
 	}
@@ -274,7 +278,15 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(read
 	return _child, nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

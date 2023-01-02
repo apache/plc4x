@@ -122,7 +122,11 @@ func (m *_BACnetPropertyStatesLiftCarDirection) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesLiftCarDirectionParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDirection, error) {
+func BACnetPropertyStatesLiftCarDirectionParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDirection, error) {
+	return BACnetPropertyStatesLiftCarDirectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+}
+
+func BACnetPropertyStatesLiftCarDirectionParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDirection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftCarDirection"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPropertyStatesLiftCarDirectionParse(readBuffer utils.ReadBuffer, peek
 	if pullErr := readBuffer.PullContext("liftCarDirection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for liftCarDirection")
 	}
-	_liftCarDirection, _liftCarDirectionErr := BACnetLiftCarDirectionTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_liftCarDirection, _liftCarDirectionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _liftCarDirectionErr != nil {
 		return nil, errors.Wrap(_liftCarDirectionErr, "Error parsing 'liftCarDirection' field of BACnetPropertyStatesLiftCarDirection")
 	}
@@ -157,7 +161,15 @@ func BACnetPropertyStatesLiftCarDirectionParse(readBuffer utils.ReadBuffer, peek
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesLiftCarDirection) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesLiftCarDirection) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesLiftCarDirection) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

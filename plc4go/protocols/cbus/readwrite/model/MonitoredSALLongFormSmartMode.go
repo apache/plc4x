@@ -228,7 +228,11 @@ func (m *_MonitoredSALLongFormSmartMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSALLongFormSmartMode, error) {
+func MonitoredSALLongFormSmartModeParse(theBytes []byte, cBusOptions CBusOptions) (MonitoredSALLongFormSmartMode, error) {
+	return MonitoredSALLongFormSmartModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+}
+
+func MonitoredSALLongFormSmartModeParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSALLongFormSmartMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSALLongFormSmartMode"); pullErr != nil {
@@ -275,7 +279,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer, cBusOptions
 		if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for unitAddress")
 		}
-		_val, _err := UnitAddressParse(readBuffer)
+		_val, _err := UnitAddressParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -297,7 +301,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer, cBusOptions
 		if pullErr := readBuffer.PullContext("bridgeAddress"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for bridgeAddress")
 		}
-		_val, _err := BridgeAddressParse(readBuffer)
+		_val, _err := BridgeAddressParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -316,7 +320,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer, cBusOptions
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
-	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of MonitoredSALLongFormSmartMode")
 	}
@@ -347,7 +351,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer, cBusOptions
 		if pullErr := readBuffer.PullContext("replyNetwork"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for replyNetwork")
 		}
-		_val, _err := ReplyNetworkParse(readBuffer)
+		_val, _err := ReplyNetworkParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -369,7 +373,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer, cBusOptions
 		if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for salData")
 		}
-		_val, _err := SALDataParse(readBuffer, application.ApplicationId())
+		_val, _err := SALDataParseWithBuffer(readBuffer, application.ApplicationId())
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -406,7 +410,15 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer, cBusOptions
 	return _child, nil
 }
 
-func (m *_MonitoredSALLongFormSmartMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MonitoredSALLongFormSmartMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_MonitoredSALLongFormSmartMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

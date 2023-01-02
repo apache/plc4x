@@ -129,7 +129,11 @@ func (m *_DF1Command) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DF1CommandParse(readBuffer utils.ReadBuffer) (DF1Command, error) {
+func DF1CommandParse(theBytes []byte) (DF1Command, error) {
+	return DF1CommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func DF1CommandParseWithBuffer(readBuffer utils.ReadBuffer) (DF1Command, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1Command"); pullErr != nil {
@@ -169,9 +173,9 @@ func DF1CommandParse(readBuffer utils.ReadBuffer) (DF1Command, error) {
 	var typeSwitchError error
 	switch {
 	case commandCode == 0x01: // DF1UnprotectedReadRequest
-		_childTemp, typeSwitchError = DF1UnprotectedReadRequestParse(readBuffer)
+		_childTemp, typeSwitchError = DF1UnprotectedReadRequestParseWithBuffer(readBuffer)
 	case commandCode == 0x41: // DF1UnprotectedReadResponse
-		_childTemp, typeSwitchError = DF1UnprotectedReadResponseParse(readBuffer)
+		_childTemp, typeSwitchError = DF1UnprotectedReadResponseParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandCode=%v]", commandCode)
 	}

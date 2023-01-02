@@ -29,7 +29,7 @@ public class CliOptions {
     private static Options options;
 
     private final String connectionString;
-    private final String fieldAddress;
+    private final String tagAddress;
     private final int pollingInterval;
     private final String iotdbIpPort;
     private final String user;
@@ -53,9 +53,9 @@ public class CliOptions {
         options.addOption(
             Option.builder()
                 .type(String.class)
-                .longOpt("field-address")
+                .longOpt("tag-address")
                 .hasArg()
-                .desc("Field Address.")
+                .desc("Tag Address.")
                 .required()
                 .build());
         options.addOption(
@@ -111,7 +111,7 @@ public class CliOptions {
                 .type(Integer.class)
                 .longOpt("iotdb-datatype")
                 .hasArg()
-                .desc("The data type of the field")
+                .desc("The data type of the tag")
                 .required()
                 .build());
         options.addOption(
@@ -128,7 +128,7 @@ public class CliOptions {
             commandLine = parser.parse(options, args);
 
             String connectionString = commandLine.getOptionValue("connection-string");
-            String fieldAddress = commandLine.getOptionValue("field-address");
+            String tagAddress = commandLine.getOptionValue("tag-address");
             int pollingInterval = Integer.parseInt(commandLine.getOptionValue("polling-interval"));
             String iotdbIpPort = commandLine.getOptionValue("iotdb-address");
             String user = commandLine.getOptionValue("iotdb-user-name");
@@ -138,7 +138,7 @@ public class CliOptions {
             String datatype = commandLine.getOptionValue("iotdb-datatype");
             boolean useJDBC = Boolean.valueOf(commandLine.getOptionValue("use-jdbc", "false"));
 
-            return new CliOptions(connectionString, fieldAddress, pollingInterval, iotdbIpPort, user, password, storageGroup, device, datatype, useJDBC);
+            return new CliOptions(connectionString, tagAddress, pollingInterval, iotdbIpPort, user, password, storageGroup, device, datatype, useJDBC);
         } catch (ParseException e) {
             LOGGER.error(e.getMessage());
             return null;
@@ -150,9 +150,9 @@ public class CliOptions {
         formatter.printHelp("PlcLogger", options);
     }
 
-    public CliOptions(String connectionString, String fieldAddress, int pollingInterval, String iotdbIpPort, String user, String password, String storageGroup, String device, String datatype, boolean useJDBC) {
+    public CliOptions(String connectionString, String tagAddress, int pollingInterval, String iotdbIpPort, String user, String password, String storageGroup, String device, String datatype, boolean useJDBC) {
         this.connectionString = connectionString;
-        this.fieldAddress = fieldAddress;
+        this.tagAddress = tagAddress;
         this.pollingInterval = pollingInterval;
         this.iotdbIpPort = iotdbIpPort;
         this.user = user;
@@ -167,8 +167,8 @@ public class CliOptions {
         return connectionString;
     }
 
-    public String getFieldAddress() {
-        return fieldAddress;
+    public String getTagAddress() {
+        return tagAddress;
     }
 
     public int getPollingInterval() {

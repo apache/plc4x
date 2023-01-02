@@ -106,7 +106,11 @@ func (m *_ResponseTermination) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ResponseTerminationParse(readBuffer utils.ReadBuffer) (ResponseTermination, error) {
+func ResponseTerminationParse(theBytes []byte) (ResponseTermination, error) {
+	return ResponseTerminationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ResponseTerminationParseWithBuffer(readBuffer utils.ReadBuffer) (ResponseTermination, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ResponseTermination"); pullErr != nil {
@@ -141,7 +145,15 @@ func ResponseTerminationParse(readBuffer utils.ReadBuffer) (ResponseTermination,
 	return &_ResponseTermination{}, nil
 }
 
-func (m *_ResponseTermination) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ResponseTermination) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ResponseTermination) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ResponseTermination"); pushErr != nil {

@@ -124,7 +124,11 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) Get
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime, error) {
+func BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParse(theBytes []byte, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime, error) {
+	return BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+}
+
+func BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime"); pullErr != nil {
@@ -137,7 +141,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParse(read
 	if pullErr := readBuffer.PullContext("dateTimeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateTimeValue")
 	}
-	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(0)))
+	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _dateTimeValueErr != nil {
 		return nil, errors.Wrap(_dateTimeValueErr, "Error parsing 'dateTimeValue' field of BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime")
 	}
@@ -161,7 +165,15 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParse(read
 	return _child, nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

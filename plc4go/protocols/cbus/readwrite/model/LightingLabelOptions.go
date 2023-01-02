@@ -124,7 +124,11 @@ func (m *_LightingLabelOptions) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LightingLabelOptionsParse(readBuffer utils.ReadBuffer) (LightingLabelOptions, error) {
+func LightingLabelOptionsParse(theBytes []byte) (LightingLabelOptions, error) {
+	return LightingLabelOptionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func LightingLabelOptionsParseWithBuffer(readBuffer utils.ReadBuffer) (LightingLabelOptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LightingLabelOptions"); pullErr != nil {
@@ -154,7 +158,7 @@ func LightingLabelOptionsParse(readBuffer utils.ReadBuffer) (LightingLabelOption
 	if pullErr := readBuffer.PullContext("labelFlavour"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for labelFlavour")
 	}
-	_labelFlavour, _labelFlavourErr := LightingLabelFlavourParse(readBuffer)
+	_labelFlavour, _labelFlavourErr := LightingLabelFlavourParseWithBuffer(readBuffer)
 	if _labelFlavourErr != nil {
 		return nil, errors.Wrap(_labelFlavourErr, "Error parsing 'labelFlavour' field of LightingLabelOptions")
 	}
@@ -201,7 +205,7 @@ func LightingLabelOptionsParse(readBuffer utils.ReadBuffer) (LightingLabelOption
 	if pullErr := readBuffer.PullContext("labelType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for labelType")
 	}
-	_labelType, _labelTypeErr := LightingLabelTypeParse(readBuffer)
+	_labelType, _labelTypeErr := LightingLabelTypeParseWithBuffer(readBuffer)
 	if _labelTypeErr != nil {
 		return nil, errors.Wrap(_labelTypeErr, "Error parsing 'labelType' field of LightingLabelOptions")
 	}
@@ -242,7 +246,15 @@ func LightingLabelOptionsParse(readBuffer utils.ReadBuffer) (LightingLabelOption
 	}, nil
 }
 
-func (m *_LightingLabelOptions) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_LightingLabelOptions) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_LightingLabelOptions) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("LightingLabelOptions"); pushErr != nil {

@@ -194,7 +194,11 @@ func (m *_CipUnconnectedRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipUnconnectedRequest, error) {
+func CipUnconnectedRequestParse(theBytes []byte, serviceLen uint16) (CipUnconnectedRequest, error) {
+	return CipUnconnectedRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceLen)
+}
+
+func CipUnconnectedRequestParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint16) (CipUnconnectedRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipUnconnectedRequest"); pullErr != nil {
@@ -316,7 +320,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	if pullErr := readBuffer.PullContext("unconnectedService"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unconnectedService")
 	}
-	_unconnectedService, _unconnectedServiceErr := CipServiceParse(readBuffer, uint16(messageSize))
+	_unconnectedService, _unconnectedServiceErr := CipServiceParseWithBuffer(readBuffer, uint16(messageSize))
 	if _unconnectedServiceErr != nil {
 		return nil, errors.Wrap(_unconnectedServiceErr, "Error parsing 'unconnectedService' field of CipUnconnectedRequest")
 	}
@@ -371,7 +375,15 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) 
 	return _child, nil
 }
 
-func (m *_CipUnconnectedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CipUnconnectedRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CipUnconnectedRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

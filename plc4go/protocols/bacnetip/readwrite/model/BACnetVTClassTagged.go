@@ -138,7 +138,11 @@ func (m *_BACnetVTClassTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetVTClassTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetVTClassTagged, error) {
+func BACnetVTClassTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetVTClassTagged, error) {
+	return BACnetVTClassTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+}
+
+func BACnetVTClassTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetVTClassTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetVTClassTagged"); pullErr != nil {
@@ -151,7 +155,7 @@ func BACnetVTClassTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagC
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetVTClassTagged")
 	}
@@ -209,7 +213,15 @@ func BACnetVTClassTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagC
 	}, nil
 }
 
-func (m *_BACnetVTClassTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetVTClassTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetVTClassTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetVTClassTagged"); pushErr != nil {

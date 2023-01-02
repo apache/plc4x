@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataLastAccessEvent) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLastAccessEventParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastAccessEvent, error) {
+func BACnetConstructedDataLastAccessEventParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastAccessEvent, error) {
+	return BACnetConstructedDataLastAccessEventParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataLastAccessEventParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastAccessEvent, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastAccessEvent"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataLastAccessEventParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("lastAccessEvent"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastAccessEvent")
 	}
-	_lastAccessEvent, _lastAccessEventErr := BACnetAccessEventTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_lastAccessEvent, _lastAccessEventErr := BACnetAccessEventTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _lastAccessEventErr != nil {
 		return nil, errors.Wrap(_lastAccessEventErr, "Error parsing 'lastAccessEvent' field of BACnetConstructedDataLastAccessEvent")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataLastAccessEventParse(readBuffer utils.ReadBuffer, tagN
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataLastAccessEvent) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLastAccessEvent) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataLastAccessEvent) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

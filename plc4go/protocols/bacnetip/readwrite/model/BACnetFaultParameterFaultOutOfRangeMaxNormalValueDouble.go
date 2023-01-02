@@ -124,7 +124,11 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble) GetLengthInBy
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble, error) {
+func BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleParse(theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble, error) {
+	return BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+}
+
+func BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble"); pullErr != nil {
@@ -137,7 +141,7 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("doubleValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doubleValue")
 	}
-	_doubleValue, _doubleValueErr := BACnetApplicationTagParse(readBuffer)
+	_doubleValue, _doubleValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _doubleValueErr != nil {
 		return nil, errors.Wrap(_doubleValueErr, "Error parsing 'doubleValue' field of BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble")
 	}
@@ -161,7 +165,15 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleParse(readBuffer uti
 	return _child, nil
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

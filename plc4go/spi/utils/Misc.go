@@ -19,7 +19,10 @@
 
 package utils
 
-import "time"
+import (
+	"golang.org/x/exp/constraints"
+	"time"
+)
 
 // InlineIf is basically a inline if like construct for golang
 func InlineIf(test bool, a func() interface{}, b func() interface{}) interface{} {
@@ -38,5 +41,13 @@ func CleanupTimer(timer *time.Timer) {
 		case <-timer.C:
 		default:
 		}
+	}
+}
+
+func Min[T constraints.Ordered](left, right T) T {
+	if left < right {
+		return left
+	} else {
+		return right
 	}
 }

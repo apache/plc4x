@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataAccessDoorPresentValue) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessDoorPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessDoorPresentValue, error) {
+func BACnetConstructedDataAccessDoorPresentValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessDoorPresentValue, error) {
+	return BACnetConstructedDataAccessDoorPresentValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataAccessDoorPresentValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessDoorPresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessDoorPresentValue"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataAccessDoorPresentValueParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("presentValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for presentValue")
 	}
-	_presentValue, _presentValueErr := BACnetDoorValueTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_presentValue, _presentValueErr := BACnetDoorValueTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _presentValueErr != nil {
 		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetConstructedDataAccessDoorPresentValue")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataAccessDoorPresentValueParse(readBuffer utils.ReadBuffe
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataAccessDoorPresentValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAccessDoorPresentValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataAccessDoorPresentValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

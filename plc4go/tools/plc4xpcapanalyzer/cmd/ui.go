@@ -59,10 +59,10 @@ TODO: document me
 			}()
 		}
 
+		defer ui.Shutdown()
 		if err := application.Run(); err != nil {
 			panic(err)
 		}
-		ui.Shutdown()
 	},
 }
 

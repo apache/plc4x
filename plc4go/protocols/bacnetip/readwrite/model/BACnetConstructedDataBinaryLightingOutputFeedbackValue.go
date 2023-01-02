@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) GetLengthInByt
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBinaryLightingOutputFeedbackValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryLightingOutputFeedbackValue, error) {
+func BACnetConstructedDataBinaryLightingOutputFeedbackValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryLightingOutputFeedbackValue, error) {
+	return BACnetConstructedDataBinaryLightingOutputFeedbackValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataBinaryLightingOutputFeedbackValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryLightingOutputFeedbackValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBinaryLightingOutputFeedbackValue"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataBinaryLightingOutputFeedbackValueParse(readBuffer util
 	if pullErr := readBuffer.PullContext("feedbackValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for feedbackValue")
 	}
-	_feedbackValue, _feedbackValueErr := BACnetBinaryLightingPVTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_feedbackValue, _feedbackValueErr := BACnetBinaryLightingPVTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _feedbackValueErr != nil {
 		return nil, errors.Wrap(_feedbackValueErr, "Error parsing 'feedbackValue' field of BACnetConstructedDataBinaryLightingOutputFeedbackValue")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataBinaryLightingOutputFeedbackValueParse(readBuffer util
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

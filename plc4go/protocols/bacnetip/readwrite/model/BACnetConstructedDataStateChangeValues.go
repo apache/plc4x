@@ -169,7 +169,11 @@ func (m *_BACnetConstructedDataStateChangeValues) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataStateChangeValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStateChangeValues, error) {
+func BACnetConstructedDataStateChangeValuesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStateChangeValues, error) {
+	return BACnetConstructedDataStateChangeValuesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataStateChangeValuesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStateChangeValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStateChangeValues"); pullErr != nil {
@@ -190,7 +194,7 @@ func BACnetConstructedDataStateChangeValuesParse(readBuffer utils.ReadBuffer, ta
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
-		_val, _err := BACnetApplicationTagParse(readBuffer)
+		_val, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -213,12 +217,11 @@ func BACnetConstructedDataStateChangeValuesParse(readBuffer utils.ReadBuffer, ta
 	var stateChangeValues []BACnetTimerStateChangeValue
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetTimerStateChangeValueParse(readBuffer, objectTypeArgument)
+			_item, _err := BACnetTimerStateChangeValueParseWithBuffer(readBuffer, objectTypeArgument)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'stateChangeValues' field of BACnetConstructedDataStateChangeValues")
 			}
 			stateChangeValues = append(stateChangeValues, _item.(BACnetTimerStateChangeValue))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("stateChangeValues", utils.WithRenderAsList(true)); closeErr != nil {
@@ -247,7 +250,15 @@ func BACnetConstructedDataStateChangeValuesParse(readBuffer utils.ReadBuffer, ta
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataStateChangeValues) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataStateChangeValues) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataStateChangeValues) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

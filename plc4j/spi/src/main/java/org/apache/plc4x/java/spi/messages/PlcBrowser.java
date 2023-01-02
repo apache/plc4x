@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.spi.messages;
 
 import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
+import org.apache.plc4x.java.api.messages.PlcBrowseRequestInterceptor;
 import org.apache.plc4x.java.api.messages.PlcBrowseResponse;
 
 import java.util.concurrent.CompletableFuture;
@@ -35,5 +36,7 @@ public interface PlcBrowser {
      * @return a {@link CompletableFuture} giving async access to the returned value.
      */
     CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest);
+
+    CompletableFuture<PlcBrowseResponse> browseWithInterceptor(PlcBrowseRequest browseRequest, PlcBrowseRequestInterceptor interceptor);
 
 }

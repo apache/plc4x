@@ -148,7 +148,11 @@ func (m *_MediaTransportControlDataNextPreviousCategory) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlDataNextPreviousCategoryParse(readBuffer utils.ReadBuffer) (MediaTransportControlDataNextPreviousCategory, error) {
+func MediaTransportControlDataNextPreviousCategoryParse(theBytes []byte) (MediaTransportControlDataNextPreviousCategory, error) {
+	return MediaTransportControlDataNextPreviousCategoryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func MediaTransportControlDataNextPreviousCategoryParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataNextPreviousCategory, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataNextPreviousCategory"); pullErr != nil {
@@ -187,7 +191,15 @@ func MediaTransportControlDataNextPreviousCategoryParse(readBuffer utils.ReadBuf
 	return _child, nil
 }
 
-func (m *_MediaTransportControlDataNextPreviousCategory) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataNextPreviousCategory) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_MediaTransportControlDataNextPreviousCategory) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

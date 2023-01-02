@@ -136,7 +136,11 @@ func (m *_BACnetConstructedDataAccessTransactionEvents) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessTransactionEventsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessTransactionEvents, error) {
+func BACnetConstructedDataAccessTransactionEventsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessTransactionEvents, error) {
+	return BACnetConstructedDataAccessTransactionEventsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataAccessTransactionEventsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessTransactionEvents, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessTransactionEvents"); pullErr != nil {
@@ -153,12 +157,11 @@ func BACnetConstructedDataAccessTransactionEventsParse(readBuffer utils.ReadBuff
 	var accessTransactionEvents []BACnetAccessEventTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetAccessEventTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
+			_item, _err := BACnetAccessEventTaggedParseWithBuffer(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'accessTransactionEvents' field of BACnetConstructedDataAccessTransactionEvents")
 			}
 			accessTransactionEvents = append(accessTransactionEvents, _item.(BACnetAccessEventTagged))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("accessTransactionEvents", utils.WithRenderAsList(true)); closeErr != nil {
@@ -181,7 +184,15 @@ func BACnetConstructedDataAccessTransactionEventsParse(readBuffer utils.ReadBuff
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataAccessTransactionEvents) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAccessTransactionEvents) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataAccessTransactionEvents) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

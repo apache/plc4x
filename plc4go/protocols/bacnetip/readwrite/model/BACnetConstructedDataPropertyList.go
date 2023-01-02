@@ -169,7 +169,11 @@ func (m *_BACnetConstructedDataPropertyList) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPropertyListParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPropertyList, error) {
+func BACnetConstructedDataPropertyListParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPropertyList, error) {
+	return BACnetConstructedDataPropertyListParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataPropertyListParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPropertyList, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPropertyList"); pullErr != nil {
@@ -190,7 +194,7 @@ func BACnetConstructedDataPropertyListParse(readBuffer utils.ReadBuffer, tagNumb
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
-		_val, _err := BACnetApplicationTagParse(readBuffer)
+		_val, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -213,12 +217,11 @@ func BACnetConstructedDataPropertyListParse(readBuffer utils.ReadBuffer, tagNumb
 	var propertyList []BACnetPropertyIdentifierTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
+			_item, _err := BACnetPropertyIdentifierTaggedParseWithBuffer(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'propertyList' field of BACnetConstructedDataPropertyList")
 			}
 			propertyList = append(propertyList, _item.(BACnetPropertyIdentifierTagged))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("propertyList", utils.WithRenderAsList(true)); closeErr != nil {
@@ -242,7 +245,15 @@ func BACnetConstructedDataPropertyListParse(readBuffer utils.ReadBuffer, tagNumb
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataPropertyList) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataPropertyList) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataPropertyList) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

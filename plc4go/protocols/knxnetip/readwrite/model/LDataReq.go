@@ -150,7 +150,11 @@ func (m *_LDataReq) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (LDataReq, error) {
+func LDataReqParse(theBytes []byte, size uint16) (LDataReq, error) {
+	return LDataReqParseWithBuffer(utils.NewReadBufferByteBased(theBytes), size)
+}
+
+func LDataReqParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (LDataReq, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataReq"); pullErr != nil {
@@ -176,7 +180,7 @@ func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (LDataReq, error) {
 		_additionalInformationLength := additionalInformationLength
 		_additionalInformationEndPos := positionAware.GetPos() + uint16(_additionalInformationLength)
 		for positionAware.GetPos() < _additionalInformationEndPos {
-			_item, _err := CEMIAdditionalInformationParse(readBuffer)
+			_item, _err := CEMIAdditionalInformationParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field of LDataReq")
 			}
@@ -191,7 +195,7 @@ func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (LDataReq, error) {
 	if pullErr := readBuffer.PullContext("dataFrame"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dataFrame")
 	}
-	_dataFrame, _dataFrameErr := LDataFrameParse(readBuffer)
+	_dataFrame, _dataFrameErr := LDataFrameParseWithBuffer(readBuffer)
 	if _dataFrameErr != nil {
 		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field of LDataReq")
 	}
@@ -217,7 +221,15 @@ func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (LDataReq, error) {
 	return _child, nil
 }
 
-func (m *_LDataReq) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_LDataReq) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_LDataReq) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

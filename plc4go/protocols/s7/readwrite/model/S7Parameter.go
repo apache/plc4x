@@ -102,7 +102,11 @@ func (m *_S7Parameter) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (S7Parameter, error) {
+func S7ParameterParse(theBytes []byte, messageType uint8) (S7Parameter, error) {
+	return S7ParameterParseWithBuffer(utils.NewReadBufferByteBased(theBytes), messageType)
+}
+
+func S7ParameterParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8) (S7Parameter, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7Parameter"); pullErr != nil {
@@ -128,19 +132,19 @@ func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (S7Paramet
 	var typeSwitchError error
 	switch {
 	case parameterType == 0xF0: // S7ParameterSetupCommunication
-		_childTemp, typeSwitchError = S7ParameterSetupCommunicationParse(readBuffer, messageType)
+		_childTemp, typeSwitchError = S7ParameterSetupCommunicationParseWithBuffer(readBuffer, messageType)
 	case parameterType == 0x04 && messageType == 0x01: // S7ParameterReadVarRequest
-		_childTemp, typeSwitchError = S7ParameterReadVarRequestParse(readBuffer, messageType)
+		_childTemp, typeSwitchError = S7ParameterReadVarRequestParseWithBuffer(readBuffer, messageType)
 	case parameterType == 0x04 && messageType == 0x03: // S7ParameterReadVarResponse
-		_childTemp, typeSwitchError = S7ParameterReadVarResponseParse(readBuffer, messageType)
+		_childTemp, typeSwitchError = S7ParameterReadVarResponseParseWithBuffer(readBuffer, messageType)
 	case parameterType == 0x05 && messageType == 0x01: // S7ParameterWriteVarRequest
-		_childTemp, typeSwitchError = S7ParameterWriteVarRequestParse(readBuffer, messageType)
+		_childTemp, typeSwitchError = S7ParameterWriteVarRequestParseWithBuffer(readBuffer, messageType)
 	case parameterType == 0x05 && messageType == 0x03: // S7ParameterWriteVarResponse
-		_childTemp, typeSwitchError = S7ParameterWriteVarResponseParse(readBuffer, messageType)
+		_childTemp, typeSwitchError = S7ParameterWriteVarResponseParseWithBuffer(readBuffer, messageType)
 	case parameterType == 0x00 && messageType == 0x07: // S7ParameterUserData
-		_childTemp, typeSwitchError = S7ParameterUserDataParse(readBuffer, messageType)
+		_childTemp, typeSwitchError = S7ParameterUserDataParseWithBuffer(readBuffer, messageType)
 	case parameterType == 0x01 && messageType == 0x07: // S7ParameterModeTransition
-		_childTemp, typeSwitchError = S7ParameterModeTransitionParse(readBuffer, messageType)
+		_childTemp, typeSwitchError = S7ParameterModeTransitionParseWithBuffer(readBuffer, messageType)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [parameterType=%v, messageType=%v]", parameterType, messageType)
 	}

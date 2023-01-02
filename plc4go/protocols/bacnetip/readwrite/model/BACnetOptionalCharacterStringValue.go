@@ -122,7 +122,11 @@ func (m *_BACnetOptionalCharacterStringValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetOptionalCharacterStringValueParse(readBuffer utils.ReadBuffer) (BACnetOptionalCharacterStringValue, error) {
+func BACnetOptionalCharacterStringValueParse(theBytes []byte) (BACnetOptionalCharacterStringValue, error) {
+	return BACnetOptionalCharacterStringValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetOptionalCharacterStringValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetOptionalCharacterStringValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalCharacterStringValue"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetOptionalCharacterStringValueParse(readBuffer utils.ReadBuffer) (BACne
 	if pullErr := readBuffer.PullContext("characterstring"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for characterstring")
 	}
-	_characterstring, _characterstringErr := BACnetApplicationTagParse(readBuffer)
+	_characterstring, _characterstringErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _characterstringErr != nil {
 		return nil, errors.Wrap(_characterstringErr, "Error parsing 'characterstring' field of BACnetOptionalCharacterStringValue")
 	}
@@ -157,7 +161,15 @@ func BACnetOptionalCharacterStringValueParse(readBuffer utils.ReadBuffer) (BACne
 	return _child, nil
 }
 
-func (m *_BACnetOptionalCharacterStringValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetOptionalCharacterStringValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetOptionalCharacterStringValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

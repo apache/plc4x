@@ -30,7 +30,7 @@ import (
 type BACnetPolarity uint8
 
 type IBACnetPolarity interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -95,7 +95,11 @@ func (m BACnetPolarity) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPolarityParse(readBuffer utils.ReadBuffer) (BACnetPolarity, error) {
+func BACnetPolarityParse(theBytes []byte) (BACnetPolarity, error) {
+	return BACnetPolarityParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetPolarityParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetPolarity, error) {
 	val, err := readBuffer.ReadUint8("BACnetPolarity", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetPolarity")
@@ -108,7 +112,15 @@ func BACnetPolarityParse(readBuffer utils.ReadBuffer) (BACnetPolarity, error) {
 	}
 }
 
-func (e BACnetPolarity) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetPolarity) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetPolarity) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetPolarity", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCurrentCommandPriorityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCurrentCommandPriority, error) {
+func BACnetConstructedDataCurrentCommandPriorityParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCurrentCommandPriority, error) {
+	return BACnetConstructedDataCurrentCommandPriorityParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataCurrentCommandPriorityParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCurrentCommandPriority, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCurrentCommandPriority"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataCurrentCommandPriorityParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("currentCommandPriority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for currentCommandPriority")
 	}
-	_currentCommandPriority, _currentCommandPriorityErr := BACnetOptionalUnsignedParse(readBuffer)
+	_currentCommandPriority, _currentCommandPriorityErr := BACnetOptionalUnsignedParseWithBuffer(readBuffer)
 	if _currentCommandPriorityErr != nil {
 		return nil, errors.Wrap(_currentCommandPriorityErr, "Error parsing 'currentCommandPriority' field of BACnetConstructedDataCurrentCommandPriority")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataCurrentCommandPriorityParse(readBuffer utils.ReadBuffe
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataCurrentCommandPriority) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataCurrentCommandPriority) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataCurrentCommandPriority) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

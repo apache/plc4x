@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -131,7 +132,11 @@ func (m *_BVLCWriteBroadcastDistributionTable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCWriteBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCWriteBroadcastDistributionTable, error) {
+func BVLCWriteBroadcastDistributionTableParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCWriteBroadcastDistributionTable, error) {
+	return BVLCWriteBroadcastDistributionTableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
+}
+
+func BVLCWriteBroadcastDistributionTableParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCWriteBroadcastDistributionTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCWriteBroadcastDistributionTable"); pullErr != nil {
@@ -150,7 +155,7 @@ func BVLCWriteBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, bvlcP
 		_tableLength := bvlcPayloadLength
 		_tableEndPos := positionAware.GetPos() + uint16(_tableLength)
 		for positionAware.GetPos() < _tableEndPos {
-			_item, _err := BVLCBroadcastDistributionTableEntryParse(readBuffer)
+			_item, _err := BVLCBroadcastDistributionTableEntryParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'table' field of BVLCWriteBroadcastDistributionTable")
 			}
@@ -174,7 +179,15 @@ func BVLCWriteBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, bvlcP
 	return _child, nil
 }
 
-func (m *_BVLCWriteBroadcastDistributionTable) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BVLCWriteBroadcastDistributionTable) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BVLCWriteBroadcastDistributionTable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

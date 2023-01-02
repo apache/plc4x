@@ -21,69 +21,70 @@ package cbus
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/pkg/errors"
-	"strings"
 )
 
-func FieldToCBusMessage(field model.PlcField, value values.PlcValue, alphaGenerator *AlphaGenerator, messageCodec *MessageCodec) (cBusMessage readWriteModel.CBusMessage, supportsRead, supportsWrite, supportsSubscribe bool, err error) {
+func TagToCBusMessage(tag model.PlcTag, value values.PlcValue, alphaGenerator *AlphaGenerator, messageCodec *MessageCodec) (cBusMessage readWriteModel.CBusMessage, supportsRead, supportsWrite, supportsSubscribe bool, err error) {
 	cbusOptions := messageCodec.cbusOptions
 	requestContext := messageCodec.requestContext
-	switch field := field.(type) {
-	case *statusField:
+	switch tagType := tag.(type) {
+	case *statusTag:
 		var statusRequest readWriteModel.StatusRequest
-		switch field.statusRequestType {
+		switch tagType.statusRequestType {
 		case StatusRequestTypeBinaryState:
-			statusRequest = readWriteModel.NewStatusRequestBinaryState(field.application, 0x7A)
+			statusRequest = readWriteModel.NewStatusRequestBinaryState(tagType.application, 0x7A)
 		case StatusRequestTypeLevel:
-			statusRequest = readWriteModel.NewStatusRequestLevel(field.application, *field.startingGroupAddressLabel, 0x73)
+			statusRequest = readWriteModel.NewStatusRequestLevel(tagType.application, *tagType.startingGroupAddressLabel, 0x73)
 		}
-		command := readWriteModel.NewCBusPointToMultiPointCommandStatus(statusRequest, byte(field.application), cbusOptions)
+		command := readWriteModel.NewCBusPointToMultiPointCommandStatus(statusRequest, byte(tagType.application), cbusOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint)
 		cbusCommand := readWriteModel.NewCBusCommandPointToMultiPoint(command, header, cbusOptions)
 		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
 
 		cBusMessage, supportsRead, supportsSubscribe = readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), true, true
 		return
-	case *calRecallField:
-		calData := readWriteModel.NewCALDataRecall(field.parameter, field.count, readWriteModel.CALCommandTypeContainer_CALCommandRecall, nil, requestContext)
+	case *calRecallTag:
+		calData := readWriteModel.NewCALDataRecall(tagType.parameter, tagType.count, readWriteModel.CALCommandTypeContainer_CALCommandRecall, nil, requestContext)
 		//TODO: we need support for bridged commands
-		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, cbusOptions)
+		command := readWriteModel.NewCBusPointToPointCommandDirect(tagType.unitAddress, 0x0000, calData, cbusOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
 		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, cbusOptions)
 		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
 
 		cBusMessage, supportsRead = readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), true
 		return
-	case *calIdentifyField:
-		calData := readWriteModel.NewCALDataIdentify(field.attribute, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, requestContext)
+	case *calIdentifyTag:
+		calData := readWriteModel.NewCALDataIdentify(tagType.attribute, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, requestContext)
 		//TODO: we need support for bridged commands
-		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, cbusOptions)
+		command := readWriteModel.NewCBusPointToPointCommandDirect(tagType.unitAddress, 0x0000, calData, cbusOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
 		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, cbusOptions)
 		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
 
 		cBusMessage, supportsRead = readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), true
 		return
-	case *calGetstatusField:
-		calData := readWriteModel.NewCALDataGetStatus(field.parameter, field.count, readWriteModel.CALCommandTypeContainer_CALCommandGetStatus, nil, requestContext)
+	case *calGetstatusTag:
+		calData := readWriteModel.NewCALDataGetStatus(tagType.parameter, tagType.count, readWriteModel.CALCommandTypeContainer_CALCommandGetStatus, nil, requestContext)
 		//TODO: we need support for bridged commands
-		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, cbusOptions)
+		command := readWriteModel.NewCBusPointToPointCommandDirect(tagType.unitAddress, 0x0000, calData, cbusOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
 		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, cbusOptions)
 		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
 
 		cBusMessage, supportsRead = readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), true
 		return
-	case *salField:
-		var salCommand = field.salCommand
+	case *salTag:
+		var salCommand = tagType.salCommand
 		if salCommand == "" {
 			return nil, false, false, false, errors.New("Empty sal command not supported")
 		}
 		var salData readWriteModel.SALData
-		switch field.application.ApplicationId() {
+		switch tagType.application.ApplicationId() {
 		case readWriteModel.ApplicationId_FREE_USAGE:
 			panic("Not yet implemented") // TODO: implement
 		case readWriteModel.ApplicationId_TEMPERATURE_BROADCAST:
@@ -99,7 +100,7 @@ func FieldToCBusMessage(field model.PlcField, value values.PlcValue, alphaGenera
 				temperatureBroadcastData = readWriteModel.NewTemperatureBroadcastData(commandTypeContainer, temperatureGroup, temperatureByte)
 				supportsWrite = true
 			default:
-				return nil, false, false, false, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+				return nil, false, false, false, errors.Errorf("Unsupported command %s for %s", salCommand, tagType.application.ApplicationId())
 			}
 			salData = readWriteModel.NewSALDataTemperatureBroadcast(temperatureBroadcastData, nil)
 		case readWriteModel.ApplicationId_ROOM_CONTROL_SYSTEM:
@@ -157,7 +158,7 @@ func FieldToCBusMessage(field model.PlcField, value values.PlcValue, alphaGenera
 			case readWriteModel.LightingCommandType_LABEL.PLC4XEnumName():
 				panic("Implement me")
 			default:
-				return nil, false, false, false, errors.Errorf("Unsupported command %s for %s", salCommand, field.application.ApplicationId())
+				return nil, false, false, false, errors.Errorf("Unsupported command %s for %s", salCommand, tagType.application.ApplicationId())
 			}
 			salData = readWriteModel.NewSALDataLighting(lightingData, nil)
 		case readWriteModel.ApplicationId_AIR_CONDITIONING:
@@ -185,16 +186,16 @@ func FieldToCBusMessage(field model.PlcField, value values.PlcValue, alphaGenera
 		case readWriteModel.ApplicationId_ERROR_REPORTING:
 			panic("Implement me")
 		default:
-			return nil, false, false, false, errors.Errorf("No support for %s", field.application)
+			return nil, false, false, false, errors.Errorf("No support for %s", tagType.application)
 		}
 		//TODO: we need support for bridged commands
-		command := readWriteModel.NewCBusPointToMultiPointCommandNormal(field.application, salData, 0x00, cbusOptions)
+		command := readWriteModel.NewCBusPointToMultiPointCommandNormal(tagType.application, salData, 0x00, cbusOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
 		cbusCommand := readWriteModel.NewCBusCommandPointToMultiPoint(command, header, cbusOptions)
 		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
 		cBusMessage = readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions)
 		return
 	default:
-		return nil, false, false, false, errors.Errorf("Unsupported type %T", field)
+		return nil, false, false, false, errors.Errorf("Unsupported type %T", tagType)
 	}
 }

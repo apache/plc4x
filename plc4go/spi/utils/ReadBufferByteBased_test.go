@@ -28,26 +28,6 @@ import (
 	"testing"
 )
 
-func TestNewLittleEndianReadBuffer(t *testing.T) {
-	type args struct {
-		data []uint8
-	}
-	tests := []struct {
-		name string
-		args args
-		want *ReadBuffer
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewLittleEndianReadBufferByteBased(tt.args.data); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewLittleEndianReadBufferByteBased() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestNewReadBuffer(t *testing.T) {
 	type args struct {
 		data []uint8
@@ -422,7 +402,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 			fields: func() fields {
 				rawData := make([]byte, 8)
 				binary.LittleEndian.PutUint64(rawData, 0b0_01111111111_0000000000000000000000000000000000000000000000000000)
-				buffer := NewLittleEndianReadBufferByteBased(rawData)
+				buffer := NewReadBufferByteBased(rawData, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -460,7 +440,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 			fields: func() fields {
 				rawData := make([]byte, 8)
 				binary.LittleEndian.PutUint64(rawData, 0b0_01111111111_0000000000000000000000000000000000000000000000000001)
-				buffer := NewLittleEndianReadBufferByteBased(rawData)
+				buffer := NewReadBufferByteBased(rawData, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -494,7 +474,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "+2^0 × (1 + 2^−51) ≈ 1.0000000000000004 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF0, 0x3F})
+				buffer := NewReadBufferByteBased([]byte{0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF0, 0x3F}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -528,7 +508,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "−2^1 × 1 = 2 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40})
+				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -562,7 +542,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "−2^1 × 1 = −2 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xC0})
+				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xC0}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -605,7 +585,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "+2^1 × 1.12 = 112 = 3 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x40})
+				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x40}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -639,7 +619,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "+2^2 × 1 = 1002 = 4 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x40})
+				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x40}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -673,7 +653,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "+2^2 × 1.012 = 1012 = 5 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x14, 0x40})
+				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x14, 0x40}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -707,7 +687,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "+2^2 × 1.12 = 1102 = 6 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x40})
+				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x40}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -741,7 +721,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "+2^4 × 1.01112 = 101112 = 23 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x37, 0x40})
+				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x37, 0x40}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -775,7 +755,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "+2^−7 × 1.12 = 0.000000112 = 0.01171875 (3/256) LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x3F})
+				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x3F}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -816,7 +796,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "+2^−1022 × 2^−52 = 2^−1074 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
+				buffer := NewReadBufferByteBased([]byte{0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -850,7 +830,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "+2^−1022 × (1 − 2^−52) ≈ 2.2250738585072009 × 10^−308 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x0F, 0x00})
+				buffer := NewReadBufferByteBased([]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x0F, 0x00}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -884,7 +864,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "+2^−1022 × 1 ≈ 2.2250738585072014 × 10^−308 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00})
+				buffer := NewReadBufferByteBased([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -918,7 +898,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "+2^1023 × (1 + (1 − 2^−52)) ≈ 1.7976931348623157 × 10^308 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xEF, 0x7F})
+				buffer := NewReadBufferByteBased([]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xEF, 0x7F}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -963,7 +943,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "+0 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x00, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
+				buffer := NewReadBufferByteBased([]byte{0x00, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -997,7 +977,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "−0 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x00, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80})
+				buffer := NewReadBufferByteBased([]byte{0x00, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -1031,7 +1011,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "−∞ (positive infinity) LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x00, 0xF8, 0x00, 0x00, 0x00, 0x00, 0xF0, 0x7F})
+				buffer := NewReadBufferByteBased([]byte{0x00, 0xF8, 0x00, 0x00, 0x00, 0x00, 0xF0, 0x7F}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -1065,7 +1045,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "−∞ (negative infinity) LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x00, 0xF8, 0x00, 0x00, 0x00, 0x00, 0xF0, 0xFF})
+				buffer := NewReadBufferByteBased([]byte{0x00, 0xF8, 0x00, 0x00, 0x00, 0x00, 0xF0, 0xFF}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -1099,7 +1079,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "NaN (sNaN on most processors, such as x86 and ARM) LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x01, 0xF8, 0x00, 0x00, 0x00, 0x00, 0xF0, 0x7F})
+				buffer := NewReadBufferByteBased([]byte{0x01, 0xF8, 0x00, 0x00, 0x00, 0x00, 0xF0, 0x7F}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -1133,7 +1113,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "NaN (qNaN on most processors, such as x86 and ARM) LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x01, 0xF8, 0x00, 0x00, 0x00, 0x00, 0xF8, 0x7F})
+				buffer := NewReadBufferByteBased([]byte{0x01, 0xF8, 0x00, 0x00, 0x00, 0x00, 0xF8, 0x7F}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -1167,7 +1147,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "NaN (an alternative encoding of NaN) LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F})
+				buffer := NewReadBufferByteBased([]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -1204,7 +1184,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "+2−2 × (1 + 2−2 + 2−4 + ... + 2−52) ≈ 1/3 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x16, 0x55, 0x55, 0x55, 0x55, 0x55, 0xD5, 0x3F})
+				buffer := NewReadBufferByteBased([]byte{0x16, 0x55, 0x55, 0x55, 0x55, 0x55, 0xD5, 0x3F}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -1242,7 +1222,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		{
 			name: "pi LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]byte{0x18, 0x2D, 0x44, 0x54, 0xFB, 0x21, 0x09, 0x40})
+				buffer := NewReadBufferByteBased([]byte{0x18, 0x2D, 0x44, 0x54, 0xFB, 0x21, 0x09, 0x40}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -1607,7 +1587,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 		{
 			name: "1 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]uint8{0x1, 0x0, 0x0, 0x0})
+				buffer := NewReadBufferByteBased([]uint8{0x1, 0x0, 0x0, 0x0}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -1622,7 +1602,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 		{
 			name: "16 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]uint8{0x10, 0x0, 0x0, 0x0})
+				buffer := NewReadBufferByteBased([]uint8{0x10, 0x0, 0x0, 0x0}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -1637,7 +1617,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 		{
 			name: "256 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]uint8{0x0, 0x1, 0x0, 0x0})
+				buffer := NewReadBufferByteBased([]uint8{0x0, 0x1, 0x0, 0x0}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -1652,7 +1632,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 		{
 			name: "65536 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]uint8{0x0, 0x0, 0x1, 0x0})
+				buffer := NewReadBufferByteBased([]uint8{0x0, 0x0, 0x1, 0x0}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,
@@ -1667,7 +1647,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 		{
 			name: "16777216 LE",
 			fields: func() fields {
-				buffer := NewLittleEndianReadBufferByteBased([]uint8{0x0, 0x0, 0x0, 0x1})
+				buffer := NewReadBufferByteBased([]uint8{0x0, 0x0, 0x0, 0x1}, WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				return fields{
 					data:      buffer.(*byteReadBuffer).data,
 					reader:    buffer.(*byteReadBuffer).reader,

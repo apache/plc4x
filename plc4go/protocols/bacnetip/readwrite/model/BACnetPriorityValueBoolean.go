@@ -122,7 +122,11 @@ func (m *_BACnetPriorityValueBoolean) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueBooleanParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueBoolean, error) {
+func BACnetPriorityValueBooleanParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueBoolean, error) {
+	return BACnetPriorityValueBooleanParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+}
+
+func BACnetPriorityValueBooleanParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueBoolean"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPriorityValueBooleanParse(readBuffer utils.ReadBuffer, objectTypeArgu
 	if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
 	}
-	_booleanValue, _booleanValueErr := BACnetApplicationTagParse(readBuffer)
+	_booleanValue, _booleanValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _booleanValueErr != nil {
 		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field of BACnetPriorityValueBoolean")
 	}
@@ -159,7 +163,15 @@ func BACnetPriorityValueBooleanParse(readBuffer utils.ReadBuffer, objectTypeArgu
 	return _child, nil
 }
 
-func (m *_BACnetPriorityValueBoolean) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPriorityValueBoolean) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPriorityValueBoolean) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

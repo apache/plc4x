@@ -23,6 +23,13 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"os"
+	"runtime/debug"
+	"strconv"
+	"strings"
+	"testing"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	api "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -32,12 +39,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/subchen/go-xmldom"
-	"os"
-	"runtime/debug"
-	"strconv"
-	"strings"
-	"testing"
-	"time"
 )
 
 type DriverTestsuite struct {
@@ -159,10 +160,10 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			// Assemble a read-request according to the information in the test xml
 			log.Trace().Msg("Assemble read request")
 			rrb := connection.ReadRequestBuilder()
-			for _, fieldNode := range step.payload.GetChild("fields").GetChildren("field") {
-				fieldName := fieldNode.GetChild("name").Text
-				fieldAddress := fieldNode.GetChild("address").Text
-				rrb.AddQuery(fieldName, fieldAddress)
+			for _, tagNode := range step.payload.GetChild("tags").GetChildren("tag") {
+				tagName := tagNode.GetChild("name").Text
+				tagAddress := tagNode.GetChild("address").Text
+				rrb.AddTagAddress(tagName, tagAddress)
 			}
 			readRequest, err := rrb.Build()
 			if err != nil {
@@ -178,27 +179,27 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		case "TestWriteRequest":
 			log.Trace().Msg("Assemble write request")
 			wrb := connection.WriteRequestBuilder()
-			for _, fieldNode := range step.payload.GetChild("fields").GetChildren("field") {
-				fieldName := fieldNode.GetChild("name").Text
-				fieldAddress := fieldNode.GetChild("address").Text
+			for _, tagNode := range step.payload.GetChild("tags").GetChildren("tag") {
+				tagName := tagNode.GetChild("name").Text
+				tagAddress := tagNode.GetChild("address").Text
 
 				he, ok := connection.(spi.HandlerExposer)
 				if !ok {
 					return errors.New("connection is not a HandlerExposer")
 				}
-				field, err := he.GetPlcFieldHandler().ParseQuery(fieldAddress)
+				tag, err := he.GetPlcTagHandler().ParseTag(tagAddress)
 				if err != nil {
-					return errors.Wrapf(err, "error parsing address: %s", fieldAddress)
+					return errors.Wrapf(err, "error parsing address: %s", tagAddress)
 				}
-				if field.GetQuantity() > 1 {
-					var fieldValue []string
-					for _, valueChild := range fieldNode.GetChildren("value") {
-						fieldValue = append(fieldValue, valueChild.Text)
+				if len(tag.GetArrayInfo()) > 0 {
+					var tagValue []string
+					for _, valueChild := range tagNode.GetChildren("value") {
+						tagValue = append(tagValue, valueChild.Text)
 					}
-					wrb.AddQuery(fieldName, fieldAddress, fieldValue)
+					wrb.AddTagAddress(tagName, tagAddress, tagValue)
 				} else {
-					fieldValue := fieldNode.GetChild("value").Text
-					wrb.AddQuery(fieldName, fieldAddress, fieldValue)
+					tagValue := tagNode.GetChild("value").Text
+					wrb.AddTagAddress(tagName, tagAddress, tagValue)
 				}
 			}
 			writeRequest, err := wrb.Build()
@@ -224,7 +225,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			}
 			// Serialize the response to XML
 			xmlWriteBuffer := utils.NewXmlWriteBuffer()
-			err := readRequestResult.GetResponse().(utils.Serializable).Serialize(xmlWriteBuffer)
+			err := readRequestResult.GetResponse().(utils.Serializable).SerializeWithWriteBuffer(xmlWriteBuffer)
 			if err != nil {
 				return errors.Wrap(err, "error serializing response")
 			}
@@ -249,7 +250,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			}
 			// Serialize the response to XML
 			xmlWriteBuffer := utils.NewXmlWriteBuffer()
-			err := writeResponseResult.GetResponse().(utils.Serializable).Serialize(xmlWriteBuffer)
+			err := writeResponseResult.GetResponse().(utils.Serializable).SerializeWithWriteBuffer(xmlWriteBuffer)
 			if err != nil {
 				return errors.Wrap(err, "error serializing response")
 			}
@@ -285,9 +286,9 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		if m.byteOrder == binary.BigEndian {
 			expectedWriteBuffer = utils.NewWriteBufferByteBased()
 		} else {
-			expectedWriteBuffer = utils.NewLittleEndianWriteBufferByteBased()
+			expectedWriteBuffer = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 		}
-		err = expectedSerializable.Serialize(expectedWriteBuffer)
+		err = expectedSerializable.SerializeWithWriteBuffer(expectedWriteBuffer)
 		if err != nil {
 			return errors.Wrap(err, "error serializing expectedMessage")
 		}
@@ -311,11 +312,13 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			return errors.Wrap(err, "error getting bytes from transport")
 		}
 
-		var bufferFactory func([]byte) utils.ReadBufferByteBased
+		var bufferFactory func([]byte, ...utils.ReadBufferByteBasedOptions) utils.ReadBufferByteBased
 		if m.byteOrder == binary.BigEndian {
 			bufferFactory = utils.NewReadBufferByteBased
 		} else {
-			bufferFactory = utils.NewLittleEndianReadBufferByteBased
+			bufferFactory = func(bytes []byte, options ...utils.ReadBufferByteBasedOptions) utils.ReadBufferByteBased {
+				return utils.NewReadBufferByteBased(bytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+			}
 		}
 		// Compare the bytes read with the ones we expect
 		log.Trace().Msg("Comparing outputs")
@@ -371,9 +374,9 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		if m.byteOrder == binary.BigEndian {
 			wb = utils.NewWriteBufferByteBased()
 		} else {
-			wb = utils.NewLittleEndianWriteBufferByteBased()
+			wb = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 		}
-		err = expectedSerializable.Serialize(wb)
+		err = expectedSerializable.SerializeWithWriteBuffer(wb)
 		if err != nil {
 			return errors.Wrap(err, "error serializing expectedMessage")
 		}

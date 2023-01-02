@@ -21,26 +21,26 @@ package knxnetip
 
 import (
 	"fmt"
-	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"strconv"
+
+	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 )
 
-func NumericGroupAddressToString(numericAddress uint16, groupAddress GroupAddressField) string {
+func NumericGroupAddressToString(numericAddress uint16, groupAddress GroupAddressTag) string {
 	if groupAddress == nil {
 		return ""
 	}
 	switch groupAddress.(type) {
-	case GroupAddress3LevelPlcField:
+	case GroupAddress3LevelPlcTag:
 		main := numericAddress >> 11
 		middle := (numericAddress >> 8) & 0x07
 		sub := numericAddress & 0xFF
 		return strconv.Itoa(int(main)) + "/" + strconv.Itoa(int(middle)) + "/" + strconv.Itoa(int(sub))
-	case GroupAddress2LevelPlcField:
+	case GroupAddress2LevelPlcTag:
 		main := numericAddress >> 11
 		sub := numericAddress & 0x07FF
 		return strconv.Itoa(int(main)) + "/" + strconv.Itoa(int(sub))
-	case GroupAddress1LevelPlcField:
+	case GroupAddress1LevelPlcTag:
 		return strconv.Itoa(int(numericAddress))
 	default:
 		panic(fmt.Sprintf("Unmapped %T", groupAddress))
@@ -67,8 +67,7 @@ func GroupAddressToString(groupAddress driverModel.KnxGroupAddress) string {
 }
 
 func ByteArrayToKnxAddress(data []byte) driverModel.KnxAddress {
-	readBuffer := utils.NewReadBufferByteBased(data)
-	knxAddress, err := driverModel.KnxAddressParse(readBuffer)
+	knxAddress, err := driverModel.KnxAddressParse(data)
 	if err != nil {
 		return nil
 	}
@@ -98,8 +97,7 @@ func Uint16ToKnxGroupAddress(data uint16, numLevels uint8) driverModel.KnxGroupA
 	rawData := make([]uint8, 2)
 	rawData[0] = uint8(data >> 8)
 	rawData[1] = uint8(data & 0xFF)
-	readBuffer := utils.NewReadBufferByteBased(rawData)
-	knxGroupAddress, err := driverModel.KnxGroupAddressParse(readBuffer, numLevels)
+	knxGroupAddress, err := driverModel.KnxGroupAddressParse(rawData, numLevels)
 	if err != nil {
 		return nil
 	}

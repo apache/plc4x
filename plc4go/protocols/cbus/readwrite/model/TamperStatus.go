@@ -130,7 +130,11 @@ func (m *_TamperStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TamperStatusParse(readBuffer utils.ReadBuffer) (TamperStatus, error) {
+func TamperStatusParse(theBytes []byte) (TamperStatus, error) {
+	return TamperStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TamperStatusParseWithBuffer(readBuffer utils.ReadBuffer) (TamperStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TamperStatus"); pullErr != nil {
@@ -171,7 +175,15 @@ func TamperStatusParse(readBuffer utils.ReadBuffer) (TamperStatus, error) {
 	}, nil
 }
 
-func (m *_TamperStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TamperStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TamperStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("TamperStatus"); pushErr != nil {

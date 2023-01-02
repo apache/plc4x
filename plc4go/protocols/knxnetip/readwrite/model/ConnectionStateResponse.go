@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -135,7 +136,11 @@ func (m *_ConnectionStateResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ConnectionStateResponseParse(readBuffer utils.ReadBuffer) (ConnectionStateResponse, error) {
+func ConnectionStateResponseParse(theBytes []byte) (ConnectionStateResponse, error) {
+	return ConnectionStateResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+}
+
+func ConnectionStateResponseParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionStateResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionStateResponse"); pullErr != nil {
@@ -155,7 +160,7 @@ func ConnectionStateResponseParse(readBuffer utils.ReadBuffer) (ConnectionStateR
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for status")
 	}
-	_status, _statusErr := StatusParse(readBuffer)
+	_status, _statusErr := StatusParseWithBuffer(readBuffer)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of ConnectionStateResponse")
 	}
@@ -178,7 +183,15 @@ func ConnectionStateResponseParse(readBuffer utils.ReadBuffer) (ConnectionStateR
 	return _child, nil
 }
 
-func (m *_ConnectionStateResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ConnectionStateResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ConnectionStateResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

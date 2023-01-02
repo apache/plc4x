@@ -150,7 +150,11 @@ func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) GetLengthInByte
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestConfirmedPrivateTransfer, error) {
+func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestConfirmedPrivateTransfer, error) {
+	return BACnetConfirmedServiceRequestConfirmedPrivateTransferParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+}
+
+func BACnetConfirmedServiceRequestConfirmedPrivateTransferParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestConfirmedPrivateTransfer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedPrivateTransfer"); pullErr != nil {
@@ -163,7 +167,7 @@ func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(readBuffer utils
 	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for vendorId")
 	}
-	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field of BACnetConfirmedServiceRequestConfirmedPrivateTransfer")
 	}
@@ -176,7 +180,7 @@ func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(readBuffer utils
 	if pullErr := readBuffer.PullContext("serviceNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for serviceNumber")
 	}
-	_serviceNumber, _serviceNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_serviceNumber, _serviceNumberErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _serviceNumberErr != nil {
 		return nil, errors.Wrap(_serviceNumberErr, "Error parsing 'serviceNumber' field of BACnetConfirmedServiceRequestConfirmedPrivateTransfer")
 	}
@@ -192,7 +196,7 @@ func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(readBuffer utils
 		if pullErr := readBuffer.PullContext("serviceParameters"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for serviceParameters")
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(2), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
+		_val, _err := BACnetConstructedDataParseWithBuffer(readBuffer, uint8(2), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -224,7 +228,15 @@ func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(readBuffer utils
 	return _child, nil
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

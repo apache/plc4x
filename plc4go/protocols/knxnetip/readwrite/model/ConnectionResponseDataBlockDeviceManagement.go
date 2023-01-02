@@ -104,7 +104,11 @@ func (m *_ConnectionResponseDataBlockDeviceManagement) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func ConnectionResponseDataBlockDeviceManagementParse(readBuffer utils.ReadBuffer) (ConnectionResponseDataBlockDeviceManagement, error) {
+func ConnectionResponseDataBlockDeviceManagementParse(theBytes []byte) (ConnectionResponseDataBlockDeviceManagement, error) {
+	return ConnectionResponseDataBlockDeviceManagementParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ConnectionResponseDataBlockDeviceManagementParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionResponseDataBlockDeviceManagement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlockDeviceManagement"); pullErr != nil {
@@ -125,7 +129,15 @@ func ConnectionResponseDataBlockDeviceManagementParse(readBuffer utils.ReadBuffe
 	return _child, nil
 }
 
-func (m *_ConnectionResponseDataBlockDeviceManagement) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ConnectionResponseDataBlockDeviceManagement) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ConnectionResponseDataBlockDeviceManagement) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

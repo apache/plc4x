@@ -136,7 +136,11 @@ func (m *_BACnetConstructedDataAcceptedModes) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAcceptedModesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAcceptedModes, error) {
+func BACnetConstructedDataAcceptedModesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAcceptedModes, error) {
+	return BACnetConstructedDataAcceptedModesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataAcceptedModesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAcceptedModes, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAcceptedModes"); pullErr != nil {
@@ -153,12 +157,11 @@ func BACnetConstructedDataAcceptedModesParse(readBuffer utils.ReadBuffer, tagNum
 	var acceptedModes []BACnetLifeSafetyModeTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetLifeSafetyModeTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
+			_item, _err := BACnetLifeSafetyModeTaggedParseWithBuffer(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'acceptedModes' field of BACnetConstructedDataAcceptedModes")
 			}
 			acceptedModes = append(acceptedModes, _item.(BACnetLifeSafetyModeTagged))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("acceptedModes", utils.WithRenderAsList(true)); closeErr != nil {
@@ -181,7 +184,15 @@ func BACnetConstructedDataAcceptedModesParse(readBuffer utils.ReadBuffer, tagNum
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataAcceptedModes) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAcceptedModes) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataAcceptedModes) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

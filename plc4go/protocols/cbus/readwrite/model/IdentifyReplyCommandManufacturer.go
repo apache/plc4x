@@ -124,7 +124,11 @@ func (m *_IdentifyReplyCommandManufacturer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandManufacturerParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandManufacturer, error) {
+func IdentifyReplyCommandManufacturerParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandManufacturer, error) {
+	return IdentifyReplyCommandManufacturerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+}
+
+func IdentifyReplyCommandManufacturerParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandManufacturer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandManufacturer"); pullErr != nil {
@@ -155,7 +159,15 @@ func IdentifyReplyCommandManufacturerParse(readBuffer utils.ReadBuffer, attribut
 	return _child, nil
 }
 
-func (m *_IdentifyReplyCommandManufacturer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_IdentifyReplyCommandManufacturer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_IdentifyReplyCommandManufacturer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

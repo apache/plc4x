@@ -97,7 +97,11 @@ func (m *_S7VarPayloadStatusItem) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7VarPayloadStatusItemParse(readBuffer utils.ReadBuffer) (S7VarPayloadStatusItem, error) {
+func S7VarPayloadStatusItemParse(theBytes []byte) (S7VarPayloadStatusItem, error) {
+	return S7VarPayloadStatusItemParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func S7VarPayloadStatusItemParseWithBuffer(readBuffer utils.ReadBuffer) (S7VarPayloadStatusItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7VarPayloadStatusItem"); pullErr != nil {
@@ -110,7 +114,7 @@ func S7VarPayloadStatusItemParse(readBuffer utils.ReadBuffer) (S7VarPayloadStatu
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
 	}
-	_returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
+	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(readBuffer)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of S7VarPayloadStatusItem")
 	}
@@ -129,7 +133,15 @@ func S7VarPayloadStatusItemParse(readBuffer utils.ReadBuffer) (S7VarPayloadStatu
 	}, nil
 }
 
-func (m *_S7VarPayloadStatusItem) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7VarPayloadStatusItem) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7VarPayloadStatusItem) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("S7VarPayloadStatusItem"); pushErr != nil {

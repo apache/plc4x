@@ -126,7 +126,11 @@ func (m *_SALDataLighting) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataLightingParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataLighting, error) {
+func SALDataLightingParse(theBytes []byte, applicationId ApplicationId) (SALDataLighting, error) {
+	return SALDataLightingParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+}
+
+func SALDataLightingParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataLighting, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataLighting"); pullErr != nil {
@@ -139,7 +143,7 @@ func SALDataLightingParse(readBuffer utils.ReadBuffer, applicationId Application
 	if pullErr := readBuffer.PullContext("lightingData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lightingData")
 	}
-	_lightingData, _lightingDataErr := LightingDataParse(readBuffer)
+	_lightingData, _lightingDataErr := LightingDataParseWithBuffer(readBuffer)
 	if _lightingDataErr != nil {
 		return nil, errors.Wrap(_lightingDataErr, "Error parsing 'lightingData' field of SALDataLighting")
 	}
@@ -161,7 +165,15 @@ func SALDataLightingParse(readBuffer utils.ReadBuffer, applicationId Application
 	return _child, nil
 }
 
-func (m *_SALDataLighting) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataLighting) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SALDataLighting) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

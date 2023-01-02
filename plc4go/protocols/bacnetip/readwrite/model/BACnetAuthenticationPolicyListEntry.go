@@ -107,7 +107,11 @@ func (m *_BACnetAuthenticationPolicyListEntry) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAuthenticationPolicyListEntryParse(readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicyListEntry, error) {
+func BACnetAuthenticationPolicyListEntryParse(theBytes []byte) (BACnetAuthenticationPolicyListEntry, error) {
+	return BACnetAuthenticationPolicyListEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetAuthenticationPolicyListEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicyListEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAuthenticationPolicyListEntry"); pullErr != nil {
@@ -120,7 +124,7 @@ func BACnetAuthenticationPolicyListEntryParse(readBuffer utils.ReadBuffer) (BACn
 	if pullErr := readBuffer.PullContext("credentialDataInput"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for credentialDataInput")
 	}
-	_credentialDataInput, _credentialDataInputErr := BACnetDeviceObjectReferenceEnclosedParse(readBuffer, uint8(uint8(0)))
+	_credentialDataInput, _credentialDataInputErr := BACnetDeviceObjectReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _credentialDataInputErr != nil {
 		return nil, errors.Wrap(_credentialDataInputErr, "Error parsing 'credentialDataInput' field of BACnetAuthenticationPolicyListEntry")
 	}
@@ -133,7 +137,7 @@ func BACnetAuthenticationPolicyListEntryParse(readBuffer utils.ReadBuffer) (BACn
 	if pullErr := readBuffer.PullContext("index"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for index")
 	}
-	_index, _indexErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_index, _indexErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _indexErr != nil {
 		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field of BACnetAuthenticationPolicyListEntry")
 	}
@@ -153,7 +157,15 @@ func BACnetAuthenticationPolicyListEntryParse(readBuffer utils.ReadBuffer) (BACn
 	}, nil
 }
 
-func (m *_BACnetAuthenticationPolicyListEntry) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAuthenticationPolicyListEntry) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetAuthenticationPolicyListEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAuthenticationPolicyListEntry"); pushErr != nil {

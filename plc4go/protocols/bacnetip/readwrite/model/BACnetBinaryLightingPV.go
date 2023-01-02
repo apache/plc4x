@@ -30,7 +30,7 @@ import (
 type BACnetBinaryLightingPV uint8
 
 type IBACnetBinaryLightingPV interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -125,7 +125,11 @@ func (m BACnetBinaryLightingPV) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetBinaryLightingPVParse(readBuffer utils.ReadBuffer) (BACnetBinaryLightingPV, error) {
+func BACnetBinaryLightingPVParse(theBytes []byte) (BACnetBinaryLightingPV, error) {
+	return BACnetBinaryLightingPVParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetBinaryLightingPVParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetBinaryLightingPV, error) {
 	val, err := readBuffer.ReadUint8("BACnetBinaryLightingPV", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetBinaryLightingPV")
@@ -138,7 +142,15 @@ func BACnetBinaryLightingPVParse(readBuffer utils.ReadBuffer) (BACnetBinaryLight
 	}
 }
 
-func (e BACnetBinaryLightingPV) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetBinaryLightingPV) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetBinaryLightingPV) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetBinaryLightingPV", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

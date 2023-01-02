@@ -20,8 +20,8 @@ package org.apache.plc4x.java.opcua.optimizer;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcRequest;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.opcua.field.OpcuaField;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
@@ -37,17 +37,17 @@ public class OpcuaOptimizer extends BaseOptimizer{
         List<PlcRequest> processedRequests = new LinkedList<>();
 
         // List of all items in the current request.
-        LinkedHashMap<String, PlcField> curFields = new LinkedHashMap<>();
+        LinkedHashMap<String, PlcTag> curTags = new LinkedHashMap<>();
 
-        for (String fieldName : readRequest.getFieldNames()) {
-            OpcuaField field = (OpcuaField) readRequest.getField(fieldName);
-            curFields.put(fieldName, field);
+        for (String tagName : readRequest.getTagNames()) {
+            OpcuaTag tag = (OpcuaTag) readRequest.getTag(tagName);
+            curTags.put(tagName, tag);
         }
 
-        // Create a new PlcReadRequest from the remaining field items.
-        if(!curFields.isEmpty()) {
+        // Create a new PlcReadRequest from the remaining tag items.
+        if(!curTags.isEmpty()) {
             processedRequests.add(new DefaultPlcReadRequest(
-                ((DefaultPlcReadRequest) readRequest).getReader(), curFields));
+                ((DefaultPlcReadRequest) readRequest).getReader(), curTags));
         }
 
         return processedRequests;

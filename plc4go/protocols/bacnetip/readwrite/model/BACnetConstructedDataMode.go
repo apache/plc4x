@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMode, error) {
+func BACnetConstructedDataModeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMode, error) {
+	return BACnetConstructedDataModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataModeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMode"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataModeParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if pullErr := readBuffer.PullContext("mode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for mode")
 	}
-	_mode, _modeErr := BACnetLifeSafetyModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_mode, _modeErr := BACnetLifeSafetyModeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _modeErr != nil {
 		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field of BACnetConstructedDataMode")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataModeParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

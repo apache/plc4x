@@ -30,9 +30,9 @@ import (
 type MeasurementCommandTypeContainer uint8
 
 type IMeasurementCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() MeasurementCommandType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -134,7 +134,11 @@ func (m MeasurementCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MeasurementCommandTypeContainerParse(readBuffer utils.ReadBuffer) (MeasurementCommandTypeContainer, error) {
+func MeasurementCommandTypeContainerParse(theBytes []byte) (MeasurementCommandTypeContainer, error) {
+	return MeasurementCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func MeasurementCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (MeasurementCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("MeasurementCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MeasurementCommandTypeContainer")
@@ -147,7 +151,15 @@ func MeasurementCommandTypeContainerParse(readBuffer utils.ReadBuffer) (Measurem
 	}
 }
 
-func (e MeasurementCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e MeasurementCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e MeasurementCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("MeasurementCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

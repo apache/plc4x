@@ -23,7 +23,6 @@ import (
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/analyzer"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -48,14 +47,6 @@ TODO: document me
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		pcapFile := args[0]
-		if !config.CBusConfigInstance.NoFilter {
-			if config.CBusConfigInstance.Filter == "" && config.CBusConfigInstance.CBusFilter != "" {
-				log.Debug().Str("filter", config.CBusConfigInstance.Filter).Msg("Setting cbus filter")
-				config.CBusConfigInstance.Filter = config.CBusConfigInstance.CBusFilter
-			}
-		} else {
-			log.Info().Msg("All filtering disabled")
-		}
 		if err := analyzer.Analyze(pcapFile, "c-bus"); err != nil {
 			panic(err)
 		}

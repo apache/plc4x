@@ -192,7 +192,11 @@ func (m *_AlarmMessageObjectQueryType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageObjectQueryType, error) {
+func AlarmMessageObjectQueryTypeParse(theBytes []byte) (AlarmMessageObjectQueryType, error) {
+	return AlarmMessageObjectQueryTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AlarmMessageObjectQueryTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmMessageObjectQueryType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageObjectQueryType"); pullErr != nil {
@@ -238,7 +242,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessage
 	if pullErr := readBuffer.PullContext("eventState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventState")
 	}
-	_eventState, _eventStateErr := StateParse(readBuffer)
+	_eventState, _eventStateErr := StateParseWithBuffer(readBuffer)
 	if _eventStateErr != nil {
 		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field of AlarmMessageObjectQueryType")
 	}
@@ -251,7 +255,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessage
 	if pullErr := readBuffer.PullContext("ackStateGoing"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ackStateGoing")
 	}
-	_ackStateGoing, _ackStateGoingErr := StateParse(readBuffer)
+	_ackStateGoing, _ackStateGoingErr := StateParseWithBuffer(readBuffer)
 	if _ackStateGoingErr != nil {
 		return nil, errors.Wrap(_ackStateGoingErr, "Error parsing 'ackStateGoing' field of AlarmMessageObjectQueryType")
 	}
@@ -264,7 +268,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessage
 	if pullErr := readBuffer.PullContext("ackStateComing"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ackStateComing")
 	}
-	_ackStateComing, _ackStateComingErr := StateParse(readBuffer)
+	_ackStateComing, _ackStateComingErr := StateParseWithBuffer(readBuffer)
 	if _ackStateComingErr != nil {
 		return nil, errors.Wrap(_ackStateComingErr, "Error parsing 'ackStateComing' field of AlarmMessageObjectQueryType")
 	}
@@ -277,7 +281,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessage
 	if pullErr := readBuffer.PullContext("timeComing"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeComing")
 	}
-	_timeComing, _timeComingErr := DateAndTimeParse(readBuffer)
+	_timeComing, _timeComingErr := DateAndTimeParseWithBuffer(readBuffer)
 	if _timeComingErr != nil {
 		return nil, errors.Wrap(_timeComingErr, "Error parsing 'timeComing' field of AlarmMessageObjectQueryType")
 	}
@@ -290,7 +294,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessage
 	if pullErr := readBuffer.PullContext("valueComing"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for valueComing")
 	}
-	_valueComing, _valueComingErr := AssociatedValueTypeParse(readBuffer)
+	_valueComing, _valueComingErr := AssociatedValueTypeParseWithBuffer(readBuffer)
 	if _valueComingErr != nil {
 		return nil, errors.Wrap(_valueComingErr, "Error parsing 'valueComing' field of AlarmMessageObjectQueryType")
 	}
@@ -303,7 +307,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessage
 	if pullErr := readBuffer.PullContext("timeGoing"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeGoing")
 	}
-	_timeGoing, _timeGoingErr := DateAndTimeParse(readBuffer)
+	_timeGoing, _timeGoingErr := DateAndTimeParseWithBuffer(readBuffer)
 	if _timeGoingErr != nil {
 		return nil, errors.Wrap(_timeGoingErr, "Error parsing 'timeGoing' field of AlarmMessageObjectQueryType")
 	}
@@ -316,7 +320,7 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessage
 	if pullErr := readBuffer.PullContext("valueGoing"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for valueGoing")
 	}
-	_valueGoing, _valueGoingErr := AssociatedValueTypeParse(readBuffer)
+	_valueGoing, _valueGoingErr := AssociatedValueTypeParseWithBuffer(readBuffer)
 	if _valueGoingErr != nil {
 		return nil, errors.Wrap(_valueGoingErr, "Error parsing 'valueGoing' field of AlarmMessageObjectQueryType")
 	}
@@ -343,7 +347,15 @@ func AlarmMessageObjectQueryTypeParse(readBuffer utils.ReadBuffer) (AlarmMessage
 	}, nil
 }
 
-func (m *_AlarmMessageObjectQueryType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AlarmMessageObjectQueryType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AlarmMessageObjectQueryType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessageObjectQueryType"); pushErr != nil {

@@ -122,7 +122,11 @@ func (m *_BACnetPriorityValueDouble) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueDoubleParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDouble, error) {
+func BACnetPriorityValueDoubleParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDouble, error) {
+	return BACnetPriorityValueDoubleParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+}
+
+func BACnetPriorityValueDoubleParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDouble, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueDouble"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPriorityValueDoubleParse(readBuffer utils.ReadBuffer, objectTypeArgum
 	if pullErr := readBuffer.PullContext("doubleValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doubleValue")
 	}
-	_doubleValue, _doubleValueErr := BACnetApplicationTagParse(readBuffer)
+	_doubleValue, _doubleValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _doubleValueErr != nil {
 		return nil, errors.Wrap(_doubleValueErr, "Error parsing 'doubleValue' field of BACnetPriorityValueDouble")
 	}
@@ -159,7 +163,15 @@ func BACnetPriorityValueDoubleParse(readBuffer utils.ReadBuffer, objectTypeArgum
 	return _child, nil
 }
 
-func (m *_BACnetPriorityValueDouble) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPriorityValueDouble) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPriorityValueDouble) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

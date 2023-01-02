@@ -122,7 +122,11 @@ func (m *_BACnetPropertyStatesReasonForHalt) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesReasonForHaltParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesReasonForHalt, error) {
+func BACnetPropertyStatesReasonForHaltParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesReasonForHalt, error) {
+	return BACnetPropertyStatesReasonForHaltParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+}
+
+func BACnetPropertyStatesReasonForHaltParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesReasonForHalt, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesReasonForHalt"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPropertyStatesReasonForHaltParse(readBuffer utils.ReadBuffer, peekedT
 	if pullErr := readBuffer.PullContext("reasonForHalt"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reasonForHalt")
 	}
-	_reasonForHalt, _reasonForHaltErr := BACnetProgramErrorTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_reasonForHalt, _reasonForHaltErr := BACnetProgramErrorTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _reasonForHaltErr != nil {
 		return nil, errors.Wrap(_reasonForHaltErr, "Error parsing 'reasonForHalt' field of BACnetPropertyStatesReasonForHalt")
 	}
@@ -157,7 +161,15 @@ func BACnetPropertyStatesReasonForHaltParse(readBuffer utils.ReadBuffer, peekedT
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesReasonForHalt) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesReasonForHalt) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesReasonForHalt) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

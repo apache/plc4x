@@ -22,6 +22,9 @@ package cbus
 import (
 	"context"
 	"fmt"
+	"sync"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
@@ -31,8 +34,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"sync"
-	"time"
 )
 
 type AlphaGenerator struct {
@@ -66,7 +67,7 @@ type Connection struct {
 	tracer       *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, fieldHandler spi.PlcFieldHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
+func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
 	connection := &Connection{
 		alphaGenerator: AlphaGenerator{currentAlpha: 'g'},
 		messageCodec:   messageCodec,
@@ -80,7 +81,7 @@ func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, d
 		}
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
-		_default.WithPlcFieldHandler(fieldHandler),
+		_default.WithPlcTagHandler(tagHandler),
 		_default.WithPlcValueHandler(NewValueHandler()),
 	)
 	return connection
@@ -143,15 +144,15 @@ func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 }
 
 func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilder(c.GetPlcFieldHandler(), NewReader(&c.alphaGenerator, c.messageCodec, c.tm))
+	return internalModel.NewDefaultPlcReadRequestBuilder(c.GetPlcTagHandler(), NewReader(&c.alphaGenerator, c.messageCodec, c.tm))
 }
 
 func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
-	return internalModel.NewDefaultPlcWriteRequestBuilder(c.GetPlcFieldHandler(), c.GetPlcValueHandler(), NewWriter(&c.alphaGenerator, c.messageCodec, c.tm))
+	return internalModel.NewDefaultPlcWriteRequestBuilder(c.GetPlcTagHandler(), c.GetPlcValueHandler(), NewWriter(&c.alphaGenerator, c.messageCodec, c.tm))
 }
 
 func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
-	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(c.GetPlcFieldHandler(), c.GetPlcValueHandler(), NewSubscriber(c))
+	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(c.GetPlcTagHandler(), c.GetPlcValueHandler(), NewSubscriber(c))
 }
 
 func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
@@ -160,7 +161,7 @@ func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRe
 }
 
 func (c *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	return internalModel.NewDefaultPlcBrowseRequestBuilder(c.GetPlcFieldHandler(), NewBrowser(c, c.messageCodec))
+	return internalModel.NewDefaultPlcBrowseRequestBuilder(c.GetPlcTagHandler(), NewBrowser(c, c.messageCodec))
 }
 
 func (c *Connection) addSubscriber(subscriber *Subscriber) {

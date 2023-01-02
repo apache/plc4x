@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -363,7 +364,11 @@ func (m *_AdsSymbolTableEntry) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsSymbolTableEntryParse(readBuffer utils.ReadBuffer) (AdsSymbolTableEntry, error) {
+func AdsSymbolTableEntryParse(theBytes []byte) (AdsSymbolTableEntry, error) {
+	return AdsSymbolTableEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+}
+
+func AdsSymbolTableEntryParseWithBuffer(readBuffer utils.ReadBuffer) (AdsSymbolTableEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsSymbolTableEntry"); pullErr != nil {
@@ -373,7 +378,6 @@ func AdsSymbolTableEntryParse(readBuffer utils.ReadBuffer) (AdsSymbolTableEntry,
 	_ = currentPos
 	var startPos = positionAware.GetPos()
 	_ = startPos
-	var curPos uint16
 
 	// Simple Field (entryLength)
 	_entryLength, _entryLengthErr := readBuffer.ReadUint32("entryLength", 32)
@@ -604,7 +608,7 @@ func AdsSymbolTableEntryParse(readBuffer utils.ReadBuffer) (AdsSymbolTableEntry,
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AdsSymbolTableEntry_COMMENTTERMINATOR) + " but got " + fmt.Sprintf("%d", commentTerminator))
 	}
 	// Byte Array field (rest)
-	numberOfBytesrest := int(uint16(entryLength) - uint16(curPos))
+	numberOfBytesrest := int(uint16(entryLength) - uint16((positionAware.GetPos() - startPos)))
 	rest, _readArrayErr := readBuffer.ReadByteArray("rest", numberOfBytesrest)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'rest' field of AdsSymbolTableEntry")
@@ -643,7 +647,15 @@ func AdsSymbolTableEntryParse(readBuffer utils.ReadBuffer) (AdsSymbolTableEntry,
 	}, nil
 }
 
-func (m *_AdsSymbolTableEntry) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsSymbolTableEntry) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsSymbolTableEntry"); pushErr != nil {

@@ -122,7 +122,11 @@ func (m *_BACnetPropertyStatesDoorValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesDoorValueParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorValue, error) {
+func BACnetPropertyStatesDoorValueParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesDoorValue, error) {
+	return BACnetPropertyStatesDoorValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+}
+
+func BACnetPropertyStatesDoorValueParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesDoorValue"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPropertyStatesDoorValueParse(readBuffer utils.ReadBuffer, peekedTagNu
 	if pullErr := readBuffer.PullContext("doorValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doorValue")
 	}
-	_doorValue, _doorValueErr := BACnetDoorValueTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_doorValue, _doorValueErr := BACnetDoorValueTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _doorValueErr != nil {
 		return nil, errors.Wrap(_doorValueErr, "Error parsing 'doorValue' field of BACnetPropertyStatesDoorValue")
 	}
@@ -157,7 +161,15 @@ func BACnetPropertyStatesDoorValueParse(readBuffer utils.ReadBuffer, peekedTagNu
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesDoorValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesDoorValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesDoorValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

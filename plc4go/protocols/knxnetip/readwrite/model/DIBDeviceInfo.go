@@ -184,7 +184,11 @@ func (m *_DIBDeviceInfo) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (DIBDeviceInfo, error) {
+func DIBDeviceInfoParse(theBytes []byte) (DIBDeviceInfo, error) {
+	return DIBDeviceInfoParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func DIBDeviceInfoParseWithBuffer(readBuffer utils.ReadBuffer) (DIBDeviceInfo, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DIBDeviceInfo"); pullErr != nil {
@@ -211,7 +215,7 @@ func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (DIBDeviceInfo, error) {
 	if pullErr := readBuffer.PullContext("knxMedium"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for knxMedium")
 	}
-	_knxMedium, _knxMediumErr := KnxMediumParse(readBuffer)
+	_knxMedium, _knxMediumErr := KnxMediumParseWithBuffer(readBuffer)
 	if _knxMediumErr != nil {
 		return nil, errors.Wrap(_knxMediumErr, "Error parsing 'knxMedium' field of DIBDeviceInfo")
 	}
@@ -224,7 +228,7 @@ func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (DIBDeviceInfo, error) {
 	if pullErr := readBuffer.PullContext("deviceStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceStatus")
 	}
-	_deviceStatus, _deviceStatusErr := DeviceStatusParse(readBuffer)
+	_deviceStatus, _deviceStatusErr := DeviceStatusParseWithBuffer(readBuffer)
 	if _deviceStatusErr != nil {
 		return nil, errors.Wrap(_deviceStatusErr, "Error parsing 'deviceStatus' field of DIBDeviceInfo")
 	}
@@ -237,7 +241,7 @@ func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (DIBDeviceInfo, error) {
 	if pullErr := readBuffer.PullContext("knxAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for knxAddress")
 	}
-	_knxAddress, _knxAddressErr := KnxAddressParse(readBuffer)
+	_knxAddress, _knxAddressErr := KnxAddressParseWithBuffer(readBuffer)
 	if _knxAddressErr != nil {
 		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field of DIBDeviceInfo")
 	}
@@ -250,7 +254,7 @@ func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (DIBDeviceInfo, error) {
 	if pullErr := readBuffer.PullContext("projectInstallationIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for projectInstallationIdentifier")
 	}
-	_projectInstallationIdentifier, _projectInstallationIdentifierErr := ProjectInstallationIdentifierParse(readBuffer)
+	_projectInstallationIdentifier, _projectInstallationIdentifierErr := ProjectInstallationIdentifierParseWithBuffer(readBuffer)
 	if _projectInstallationIdentifierErr != nil {
 		return nil, errors.Wrap(_projectInstallationIdentifierErr, "Error parsing 'projectInstallationIdentifier' field of DIBDeviceInfo")
 	}
@@ -269,7 +273,7 @@ func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (DIBDeviceInfo, error) {
 	if pullErr := readBuffer.PullContext("knxNetIpDeviceMulticastAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for knxNetIpDeviceMulticastAddress")
 	}
-	_knxNetIpDeviceMulticastAddress, _knxNetIpDeviceMulticastAddressErr := IPAddressParse(readBuffer)
+	_knxNetIpDeviceMulticastAddress, _knxNetIpDeviceMulticastAddressErr := IPAddressParseWithBuffer(readBuffer)
 	if _knxNetIpDeviceMulticastAddressErr != nil {
 		return nil, errors.Wrap(_knxNetIpDeviceMulticastAddressErr, "Error parsing 'knxNetIpDeviceMulticastAddress' field of DIBDeviceInfo")
 	}
@@ -282,7 +286,7 @@ func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (DIBDeviceInfo, error) {
 	if pullErr := readBuffer.PullContext("knxNetIpDeviceMacAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for knxNetIpDeviceMacAddress")
 	}
-	_knxNetIpDeviceMacAddress, _knxNetIpDeviceMacAddressErr := MACAddressParse(readBuffer)
+	_knxNetIpDeviceMacAddress, _knxNetIpDeviceMacAddressErr := MACAddressParseWithBuffer(readBuffer)
 	if _knxNetIpDeviceMacAddressErr != nil {
 		return nil, errors.Wrap(_knxNetIpDeviceMacAddressErr, "Error parsing 'knxNetIpDeviceMacAddress' field of DIBDeviceInfo")
 	}
@@ -315,7 +319,15 @@ func DIBDeviceInfoParse(readBuffer utils.ReadBuffer) (DIBDeviceInfo, error) {
 	}, nil
 }
 
-func (m *_DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_DIBDeviceInfo) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_DIBDeviceInfo) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DIBDeviceInfo"); pushErr != nil {

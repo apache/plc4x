@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCredentialDataInputUpdateTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCredentialDataInputUpdateTime, error) {
+func BACnetConstructedDataCredentialDataInputUpdateTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCredentialDataInputUpdateTime, error) {
+	return BACnetConstructedDataCredentialDataInputUpdateTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataCredentialDataInputUpdateTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCredentialDataInputUpdateTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCredentialDataInputUpdateTime"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataCredentialDataInputUpdateTimeParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("updateTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for updateTime")
 	}
-	_updateTime, _updateTimeErr := BACnetTimeStampParse(readBuffer)
+	_updateTime, _updateTimeErr := BACnetTimeStampParseWithBuffer(readBuffer)
 	if _updateTimeErr != nil {
 		return nil, errors.Wrap(_updateTimeErr, "Error parsing 'updateTime' field of BACnetConstructedDataCredentialDataInputUpdateTime")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataCredentialDataInputUpdateTimeParse(readBuffer utils.Re
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

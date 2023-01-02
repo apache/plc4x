@@ -106,24 +106,24 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
 
         logger.debug("creating record.");
 
-        for (final RecordField field : getSchema().getFields()) {
-            final String fieldName = field.getFieldName();
+        for (final RecordField tag : getSchema().getFields()) {
+            final String tagName = tag.getFieldName();
 
             final Object value;
             
-            if (rsColumnNames.contains(fieldName)) {
-            	value = normalizeValue(readResponse.getAsPlcValue().getValue(fieldName));
+            if (rsColumnNames.contains(tagName)) {
+            	value = normalizeValue(readResponse.getAsPlcValue().getValue(tagName));
             } else {
                 value = null;
             }
             
-            logger.trace(String.format("Adding %s field value to record.", fieldName));
-            values.put(fieldName, value);
+            logger.trace(String.format("Adding %s tag value to record.", tagName));
+            values.put(tagName, value);
         }
 
-        //add timestamp field to schema
+        //add timestamp tag to schema
         values.put(Plc4xCommon.PLC4X_RECORD_TIMESTAMP_FIELD_NAME, System.currentTimeMillis());
-        logger.debug("added timestamp field to record.");
+        logger.debug("added timestamp tag to record.");
 
         	
         return new MapRecord(getSchema(), values);

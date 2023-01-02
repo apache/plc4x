@@ -146,7 +146,11 @@ func (m *_HVACStartTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACStartTimeParse(readBuffer utils.ReadBuffer) (HVACStartTime, error) {
+func HVACStartTimeParse(theBytes []byte) (HVACStartTime, error) {
+	return HVACStartTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func HVACStartTimeParseWithBuffer(readBuffer utils.ReadBuffer) (HVACStartTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACStartTime"); pullErr != nil {
@@ -197,7 +201,15 @@ func HVACStartTimeParse(readBuffer utils.ReadBuffer) (HVACStartTime, error) {
 	}, nil
 }
 
-func (m *_HVACStartTime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_HVACStartTime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_HVACStartTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HVACStartTime"); pushErr != nil {

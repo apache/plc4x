@@ -21,7 +21,7 @@ package org.apache.plc4x.java.opm;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.apache.plc4x.java.mock.connection.MockConnection;
@@ -52,18 +52,18 @@ public class PlcEntityManagerTest implements WithAssertions {
         PlcDriverManager driverManager;
 
         @Test
-        public void throwsInvalidFieldException_rethrows() throws PlcConnectionException {
+        public void throwsInvalidTagException_rethrows() throws PlcConnectionException {
             // Prepare the Mock
             when(driverManager.getConnection(any()).readRequestBuilder().build())
-                .thenThrow(new PlcInvalidFieldException("field1"));
+                .thenThrow(new PlcInvalidTagException("tag1"));
 
             // Create Entity Manager
             PlcEntityManager entityManager = new PlcEntityManager(driverManager);
 
             // Issue Call to trigger interception
             assertThatThrownBy(() -> entityManager.read(BadEntity.class, "mock:test"))
-                .hasCauseInstanceOf(PlcInvalidFieldException.class)
-                .hasStackTraceContaining("field1 invalid");
+                .hasCauseInstanceOf(PlcInvalidTagException.class)
+                .hasStackTraceContaining("tag1 invalid");
         }
 
         @Test
@@ -113,7 +113,7 @@ public class PlcEntityManagerTest implements WithAssertions {
         @Test
         public void resolveAlias_works() throws OPMException, PlcConnectionException {
             SimpleAliasRegistry registry = new SimpleAliasRegistry();
-            registry.register("alias", "real_field");
+            registry.register("alias", "real_tag");
 
             // Mock
             PlcDriverManager driverManager = new PlcDriverManager();
@@ -125,8 +125,8 @@ public class PlcEntityManagerTest implements WithAssertions {
             PlcEntityManager entityManager = new PlcEntityManager(driverManager, registry);
             entityManager.read(AliasEntity.class, "mock:test");
 
-            // Assert that "field" was queried
-            verify(mockDevice).read(eq("real_field"));
+            // Assert that "tag" was queried
+            verify(mockDevice).read(eq("real_tag"));
         }
 
 
@@ -152,7 +152,7 @@ public class PlcEntityManagerTest implements WithAssertions {
             }
 
             assertNotNull(message);
-            assertTrue(message.contains("Invalid Syntax, either use field address (no starting $) or an alias with Syntax ${xxx}. But given was"));
+            assertTrue(message.contains("Invalid Syntax, either use tag address (no starting $) or an alias with Syntax ${xxx}. But given was"));
         }
     }
 
@@ -162,7 +162,7 @@ public class PlcEntityManagerTest implements WithAssertions {
         @Test
         void simpleWrite() throws Exception {
             SimpleAliasRegistry registry = new SimpleAliasRegistry();
-            registry.register("alias", "real_field");
+            registry.register("alias", "real_tag");
 
             // Mock
             PlcDriverManager driverManager = new PlcDriverManager();
@@ -174,22 +174,22 @@ public class PlcEntityManagerTest implements WithAssertions {
 
             PlcEntityManager entityManager = new PlcEntityManager(driverManager, registry);
             AliasEntity object = new AliasEntity();
-            object.setAliasedField("changed");
+            object.setAliasedTag("changed");
             AliasEntity connected = entityManager.write(AliasEntity.class, "mock:test", object);
-            connected.setAliasedField("changed2");
-            connected.getAliasedField();
-            verify(mockDevice, times(0)).read(eq("real_field"));
-            verify(mockDevice, times(1)).write(eq("real_field"), any());
+            connected.setAliasedTag("changed2");
+            connected.getAliasedTag();
+            verify(mockDevice, times(0)).read(eq("real_tag"));
+            verify(mockDevice, times(1)).write(eq("real_tag"), any());
             AliasEntity merge = entityManager.merge(AliasEntity.class, "mock:test", connected);
-            merge.setAliasedField("changed2");
-            merge.getAliasedField();
+            merge.setAliasedTag("changed2");
+            merge.getAliasedTag();
 
-            // Assert that "field" was queried
-            verify(mockDevice, times(1)).read(eq("real_field"));
-            verify(mockDevice, times(3)).write(eq("real_field"), any());
+            // Assert that "tag" was queried
+            verify(mockDevice, times(1)).read(eq("real_tag"));
+            verify(mockDevice, times(3)).write(eq("real_tag"), any());
 
             entityManager.disconnect(merge);
-            assertThat(merge.getAliasedField()).isEqualTo("value");
+            assertThat(merge.getAliasedTag()).isEqualTo("value");
         }
 
         @Test
@@ -225,7 +225,7 @@ public class PlcEntityManagerTest implements WithAssertions {
         @Test
         public void connect_resolveAlias_works() throws PlcConnectionException, OPMException {
             SimpleAliasRegistry registry = new SimpleAliasRegistry();
-            registry.register("alias", "real_field");
+            registry.register("alias", "real_tag");
 
             // Mock
             PlcDriverManager driverManager = new PlcDriverManager();
@@ -237,8 +237,8 @@ public class PlcEntityManagerTest implements WithAssertions {
             PlcEntityManager entityManager = new PlcEntityManager(driverManager, registry);
             entityManager.connect(AliasEntity.class, "mock:test");
 
-            // Assert that "field" was queried
-            verify(mockDevice, times(1)).read(eq("real_field"));
+            // Assert that "tag" was queried
+            verify(mockDevice, times(1)).read(eq("real_tag"));
         }
     }
 
@@ -254,56 +254,56 @@ public class PlcEntityManagerTest implements WithAssertions {
     @PlcEntity
     public static class BadEntity {
 
-        @PlcField("field1")
-        private String field1;
+        @PlcTag("tag1")
+        private String tag1;
 
         public BadEntity() {
             // for OPM
         }
 
         public String getField1() {
-            return field1;
+            return tag1;
         }
     }
 
     @PlcEntity
     public static class AliasEntity {
 
-        @PlcField("${alias}")
-        private String aliasedField;
+        @PlcTag("${alias}")
+        private String aliasedTag;
 
         public AliasEntity() {
             // for OPM
         }
 
-        public String getAliasedField() {
-            return aliasedField;
+        public String getAliasedTag() {
+            return aliasedTag;
         }
 
-        public void setAliasedField(String aliasedField) {
-            this.aliasedField = aliasedField;
+        public void setAliasedTag(String aliasedTag) {
+            this.aliasedTag = aliasedTag;
         }
     }
 
     @PlcEntity
     public static class BadAliasEntity {
 
-        @PlcField("${alias")
-        private String aliasedField;
+        @PlcTag("${alias")
+        private String aliasedTag;
 
         public BadAliasEntity() {
             // for OPM
         }
 
-        public String getAliasedField() {
-            return aliasedField;
+        public String getAliasedTag() {
+            return aliasedTag;
         }
     }
 
     @PlcEntity
     public static class CustomGetterEntity {
 
-        @PlcField("asd")
+        @PlcTag("asd")
         private String asd;
 
         public CustomGetterEntity() {

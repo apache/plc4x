@@ -136,7 +136,11 @@ func (m *_BACnetConstructedDataFaultSignals) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFaultSignalsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFaultSignals, error) {
+func BACnetConstructedDataFaultSignalsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFaultSignals, error) {
+	return BACnetConstructedDataFaultSignalsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataFaultSignalsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFaultSignals, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFaultSignals"); pullErr != nil {
@@ -153,12 +157,11 @@ func BACnetConstructedDataFaultSignalsParse(readBuffer utils.ReadBuffer, tagNumb
 	var faultSignals []BACnetLiftFaultTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetLiftFaultTaggedParse(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
+			_item, _err := BACnetLiftFaultTaggedParseWithBuffer(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'faultSignals' field of BACnetConstructedDataFaultSignals")
 			}
 			faultSignals = append(faultSignals, _item.(BACnetLiftFaultTagged))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("faultSignals", utils.WithRenderAsList(true)); closeErr != nil {
@@ -181,7 +184,15 @@ func BACnetConstructedDataFaultSignalsParse(readBuffer utils.ReadBuffer, tagNumb
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataFaultSignals) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataFaultSignals) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataFaultSignals) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

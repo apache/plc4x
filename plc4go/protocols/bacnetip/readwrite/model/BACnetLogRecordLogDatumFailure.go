@@ -124,7 +124,11 @@ func (m *_BACnetLogRecordLogDatumFailure) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogRecordLogDatumFailureParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumFailure, error) {
+func BACnetLogRecordLogDatumFailureParse(theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumFailure, error) {
+	return BACnetLogRecordLogDatumFailureParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+}
+
+func BACnetLogRecordLogDatumFailureParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumFailure, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumFailure"); pullErr != nil {
@@ -137,7 +141,7 @@ func BACnetLogRecordLogDatumFailureParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("failure"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for failure")
 	}
-	_failure, _failureErr := ErrorEnclosedParse(readBuffer, uint8(uint8(8)))
+	_failure, _failureErr := ErrorEnclosedParseWithBuffer(readBuffer, uint8(uint8(8)))
 	if _failureErr != nil {
 		return nil, errors.Wrap(_failureErr, "Error parsing 'failure' field of BACnetLogRecordLogDatumFailure")
 	}
@@ -161,7 +165,15 @@ func BACnetLogRecordLogDatumFailureParse(readBuffer utils.ReadBuffer, tagNumber 
 	return _child, nil
 }
 
-func (m *_BACnetLogRecordLogDatumFailure) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogRecordLogDatumFailure) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLogRecordLogDatumFailure) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

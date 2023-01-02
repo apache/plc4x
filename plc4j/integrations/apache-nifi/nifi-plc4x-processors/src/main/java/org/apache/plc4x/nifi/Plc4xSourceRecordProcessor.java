@@ -151,10 +151,10 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			}
 
 			PlcReadRequest.Builder builder = connection.readRequestBuilder();
-			getFields().forEach(field -> {
-				String address = getAddress(field);
+			getTags().forEach(tagName -> {
+				String address = getAddress(tagName);
 				if (address != null) {
-					builder.addItem(field, address);
+					builder.addTagAddress(tagName, address);
 				}
 			});
 			PlcReadRequest readRequest = builder.build();

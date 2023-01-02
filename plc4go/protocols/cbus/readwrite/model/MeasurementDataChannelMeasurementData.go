@@ -202,7 +202,11 @@ func (m *_MeasurementDataChannelMeasurementData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MeasurementDataChannelMeasurementDataParse(readBuffer utils.ReadBuffer) (MeasurementDataChannelMeasurementData, error) {
+func MeasurementDataChannelMeasurementDataParse(theBytes []byte) (MeasurementDataChannelMeasurementData, error) {
+	return MeasurementDataChannelMeasurementDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func MeasurementDataChannelMeasurementDataParseWithBuffer(readBuffer utils.ReadBuffer) (MeasurementDataChannelMeasurementData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeasurementDataChannelMeasurementData"); pullErr != nil {
@@ -229,7 +233,7 @@ func MeasurementDataChannelMeasurementDataParse(readBuffer utils.ReadBuffer) (Me
 	if pullErr := readBuffer.PullContext("units"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for units")
 	}
-	_units, _unitsErr := MeasurementUnitsParse(readBuffer)
+	_units, _unitsErr := MeasurementUnitsParseWithBuffer(readBuffer)
 	if _unitsErr != nil {
 		return nil, errors.Wrap(_unitsErr, "Error parsing 'units' field of MeasurementDataChannelMeasurementData")
 	}
@@ -287,7 +291,15 @@ func MeasurementDataChannelMeasurementDataParse(readBuffer utils.ReadBuffer) (Me
 	return _child, nil
 }
 
-func (m *_MeasurementDataChannelMeasurementData) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MeasurementDataChannelMeasurementData) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_MeasurementDataChannelMeasurementData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -50,9 +50,9 @@ func (m SimulatedXmlParserHelper) Parse(typeName string, xmlString string, parse
 			return nil, err
 		}
 		numberOfValues := uint16(parsedUint1)
-		return model.DataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataType, numberOfValues)
+		return model.DataItemParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataType, numberOfValues)
 	case "Dummy":
-		return model.DummyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.DummyParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

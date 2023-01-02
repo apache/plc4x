@@ -106,7 +106,11 @@ func (m *_LevelInformationAbsent) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LevelInformationAbsentParse(readBuffer utils.ReadBuffer) (LevelInformationAbsent, error) {
+func LevelInformationAbsentParse(theBytes []byte) (LevelInformationAbsent, error) {
+	return LevelInformationAbsentParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func LevelInformationAbsentParseWithBuffer(readBuffer utils.ReadBuffer) (LevelInformationAbsent, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LevelInformationAbsent"); pullErr != nil {
@@ -145,7 +149,15 @@ func LevelInformationAbsentParse(readBuffer utils.ReadBuffer) (LevelInformationA
 	return _child, nil
 }
 
-func (m *_LevelInformationAbsent) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_LevelInformationAbsent) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_LevelInformationAbsent) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

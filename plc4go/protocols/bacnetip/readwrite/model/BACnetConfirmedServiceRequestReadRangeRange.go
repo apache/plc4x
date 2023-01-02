@@ -148,7 +148,11 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReadRangeRangeParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRange, error) {
+func BACnetConfirmedServiceRequestReadRangeRangeParse(theBytes []byte) (BACnetConfirmedServiceRequestReadRangeRange, error) {
+	return BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRange"); pullErr != nil {
@@ -162,14 +166,14 @@ func BACnetConfirmedServiceRequestReadRangeRangeParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Simple Field (openingTag)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetConfirmedServiceRequestReadRangeRange")
 	}
@@ -194,11 +198,11 @@ func BACnetConfirmedServiceRequestReadRangeRangeParse(readBuffer utils.ReadBuffe
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == 0x3: // BACnetConfirmedServiceRequestReadRangeRangeByPosition
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeRangeByPositionParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x6: // BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x7: // BACnetConfirmedServiceRequestReadRangeRangeByTime
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
@@ -211,7 +215,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(peekedTagHeader.GetActualTagNumber()))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetConfirmedServiceRequestReadRangeRange")
 	}

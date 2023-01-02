@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.spi.values;
 
 import com.fasterxml.jackson.annotation.*;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -85,7 +85,7 @@ public class PlcREAL extends PlcIECValue<Float> {
 
     public PlcREAL(Double value) {
         if ((value < minValue) || (value > maxValue)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.floatValue();
         this.isNullable = false;
@@ -94,7 +94,7 @@ public class PlcREAL extends PlcIECValue<Float> {
     public PlcREAL(BigInteger value) {
         BigDecimal val = new BigDecimal(value);
         if ((val.compareTo(BigDecimal.valueOf(minValue)) < 0) || (val.compareTo(BigDecimal.valueOf(maxValue)) > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = val.floatValue();
         this.isNullable = true;
@@ -102,7 +102,7 @@ public class PlcREAL extends PlcIECValue<Float> {
 
     public PlcREAL(BigDecimal value) {
         if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.floatValue();
         this.isNullable = true;
@@ -113,7 +113,7 @@ public class PlcREAL extends PlcIECValue<Float> {
             this.value = Float.parseFloat(value.trim());
             this.isNullable = false;
         } catch (Exception e) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
         }
     }
 

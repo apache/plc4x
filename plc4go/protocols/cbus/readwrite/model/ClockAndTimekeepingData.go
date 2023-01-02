@@ -141,7 +141,11 @@ func (m *_ClockAndTimekeepingData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ClockAndTimekeepingDataParse(readBuffer utils.ReadBuffer) (ClockAndTimekeepingData, error) {
+func ClockAndTimekeepingDataParse(theBytes []byte) (ClockAndTimekeepingData, error) {
+	return ClockAndTimekeepingDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ClockAndTimekeepingDataParseWithBuffer(readBuffer utils.ReadBuffer) (ClockAndTimekeepingData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ClockAndTimekeepingData"); pullErr != nil {
@@ -159,7 +163,7 @@ func ClockAndTimekeepingDataParse(readBuffer utils.ReadBuffer) (ClockAndTimekeep
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := ClockAndTimekeepingCommandTypeContainerParse(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := ClockAndTimekeepingCommandTypeContainerParseWithBuffer(readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of ClockAndTimekeepingData")
 	}
@@ -191,11 +195,11 @@ func ClockAndTimekeepingDataParse(readBuffer utils.ReadBuffer) (ClockAndTimekeep
 	var typeSwitchError error
 	switch {
 	case commandType == ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE && argument == 0x01: // ClockAndTimekeepingDataUpdateTime
-		_childTemp, typeSwitchError = ClockAndTimekeepingDataUpdateTimeParse(readBuffer)
+		_childTemp, typeSwitchError = ClockAndTimekeepingDataUpdateTimeParseWithBuffer(readBuffer)
 	case commandType == ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE && argument == 0x02: // ClockAndTimekeepingDataUpdateDate
-		_childTemp, typeSwitchError = ClockAndTimekeepingDataUpdateDateParse(readBuffer)
+		_childTemp, typeSwitchError = ClockAndTimekeepingDataUpdateDateParseWithBuffer(readBuffer)
 	case commandType == ClockAndTimekeepingCommandType_REQUEST_REFRESH && argument == 0x03: // ClockAndTimekeepingDataRequestRefresh
-		_childTemp, typeSwitchError = ClockAndTimekeepingDataRequestRefreshParse(readBuffer)
+		_childTemp, typeSwitchError = ClockAndTimekeepingDataRequestRefreshParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v, argument=%v]", commandType, argument)
 	}

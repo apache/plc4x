@@ -126,7 +126,11 @@ func (m *_SALDataHvacActuator) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataHvacActuatorParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataHvacActuator, error) {
+func SALDataHvacActuatorParse(theBytes []byte, applicationId ApplicationId) (SALDataHvacActuator, error) {
+	return SALDataHvacActuatorParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+}
+
+func SALDataHvacActuatorParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataHvacActuator, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataHvacActuator"); pullErr != nil {
@@ -139,7 +143,7 @@ func SALDataHvacActuatorParse(readBuffer utils.ReadBuffer, applicationId Applica
 	if pullErr := readBuffer.PullContext("hvacActuatorData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hvacActuatorData")
 	}
-	_hvacActuatorData, _hvacActuatorDataErr := LightingDataParse(readBuffer)
+	_hvacActuatorData, _hvacActuatorDataErr := LightingDataParseWithBuffer(readBuffer)
 	if _hvacActuatorDataErr != nil {
 		return nil, errors.Wrap(_hvacActuatorDataErr, "Error parsing 'hvacActuatorData' field of SALDataHvacActuator")
 	}
@@ -161,7 +165,15 @@ func SALDataHvacActuatorParse(readBuffer utils.ReadBuffer, applicationId Applica
 	return _child, nil
 }
 
-func (m *_SALDataHvacActuator) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataHvacActuator) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SALDataHvacActuator) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

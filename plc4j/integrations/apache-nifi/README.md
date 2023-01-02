@@ -32,7 +32,7 @@ The Plc4xSourceRecord Processor can be configured using the following **properti
 - *Record Writer:* Specifies the Controller Service to use for writing results to a FlowFile. The Record Writer may use Inherit Schema to emulate the inferred schema behavior, i.e. an explicit schema need not be defined in the writer, and will be supplied by the same logic used to infer the schema from the column types.
 - *Read timeout (miliseconds):* Specifies the time in milliseconds for the connection to return a timeout
 
-Then, the PLC variables to be accessed are specificied using Nifi processor **Dynamic Properties**. For each variable, add a new property to the processor where the property name matches the variable name, and the variable value corresponds to the address field. 
+Then, the PLC variables to be accessed are specificied using Nifi processor **Dynamic Properties**. For each variable, add a new property to the processor where the property name matches the variable name, and the variable value corresponds to the address tag. 
 
 An *example* of these properties for reading values from a S7-1200:
 
@@ -68,7 +68,7 @@ For the **Record Writer** property, any writer included in NiFi could be used, s
 - *Encoder Pool Size:* 32
 
 
-The output flowfile will contain the PLC read values. This information is included in the flowfile content, following the Record Oriented presentation using a **schema** and the configuration specified in the Record Writer (format, schema inclusion, etc). In the schema, one field will be included for each of the variables defined taking into account the specified datatype. Also, a *ts* (timestamp) field is additionally included containing the read date. An example of the content of a flowfile for the previously defined properties:
+The output flowfile will contain the PLC read values. This information is included in the flowfile content, following the Record Oriented presentation using a **schema** and the configuration specified in the Record Writer (format, schema inclusion, etc). In the schema, one tag will be included for each of the variables defined taking into account the specified datatype. Also, a *ts* (timestamp) field is additionally included containing the read date. An example of the content of a flowfile for the previously defined properties:
 
 ```
 [ {

@@ -122,7 +122,11 @@ func (m *_BACnetPriorityValueReal) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueRealParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueReal, error) {
+func BACnetPriorityValueRealParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueReal, error) {
+	return BACnetPriorityValueRealParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+}
+
+func BACnetPriorityValueRealParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueReal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueReal"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPriorityValueRealParse(readBuffer utils.ReadBuffer, objectTypeArgumen
 	if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for realValue")
 	}
-	_realValue, _realValueErr := BACnetApplicationTagParse(readBuffer)
+	_realValue, _realValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _realValueErr != nil {
 		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field of BACnetPriorityValueReal")
 	}
@@ -159,7 +163,15 @@ func BACnetPriorityValueRealParse(readBuffer utils.ReadBuffer, objectTypeArgumen
 	return _child, nil
 }
 
-func (m *_BACnetPriorityValueReal) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPriorityValueReal) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPriorityValueReal) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

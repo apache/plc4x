@@ -122,7 +122,11 @@ func (m *_BACnetValueSourceObject) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetValueSourceObjectParse(readBuffer utils.ReadBuffer) (BACnetValueSourceObject, error) {
+func BACnetValueSourceObjectParse(theBytes []byte) (BACnetValueSourceObject, error) {
+	return BACnetValueSourceObjectParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetValueSourceObjectParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetValueSourceObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetValueSourceObject"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetValueSourceObjectParse(readBuffer utils.ReadBuffer) (BACnetValueSourc
 	if pullErr := readBuffer.PullContext("object"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for object")
 	}
-	_object, _objectErr := BACnetDeviceObjectReferenceEnclosedParse(readBuffer, uint8(uint8(1)))
+	_object, _objectErr := BACnetDeviceObjectReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _objectErr != nil {
 		return nil, errors.Wrap(_objectErr, "Error parsing 'object' field of BACnetValueSourceObject")
 	}
@@ -157,7 +161,15 @@ func BACnetValueSourceObjectParse(readBuffer utils.ReadBuffer) (BACnetValueSourc
 	return _child, nil
 }
 
-func (m *_BACnetValueSourceObject) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetValueSourceObject) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetValueSourceObject) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

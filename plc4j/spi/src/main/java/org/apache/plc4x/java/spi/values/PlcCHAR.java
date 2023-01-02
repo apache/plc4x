@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -75,7 +75,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = val.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -85,7 +85,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -95,7 +95,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value;
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -105,7 +105,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -115,7 +115,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -125,7 +125,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -135,7 +135,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -145,7 +145,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value.shortValue();
             this.isNullable = true;
         } else {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -155,7 +155,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value.shortValue();
             this.isNullable = true;
         } else {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -172,10 +172,10 @@ public class PlcCHAR extends PlcIECValue<Short> {
                 this.value = val;
                 this.isNullable = false;
             } else {
-                throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+                throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
             }
         } catch (Exception e) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -186,7 +186,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value;
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 

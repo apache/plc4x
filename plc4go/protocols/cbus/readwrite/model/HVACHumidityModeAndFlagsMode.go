@@ -30,7 +30,7 @@ import (
 type HVACHumidityModeAndFlagsMode uint8
 
 type IHVACHumidityModeAndFlagsMode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +107,11 @@ func (m HVACHumidityModeAndFlagsMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACHumidityModeAndFlagsModeParse(readBuffer utils.ReadBuffer) (HVACHumidityModeAndFlagsMode, error) {
+func HVACHumidityModeAndFlagsModeParse(theBytes []byte) (HVACHumidityModeAndFlagsMode, error) {
+	return HVACHumidityModeAndFlagsModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func HVACHumidityModeAndFlagsModeParseWithBuffer(readBuffer utils.ReadBuffer) (HVACHumidityModeAndFlagsMode, error) {
 	val, err := readBuffer.ReadUint8("HVACHumidityModeAndFlagsMode", 3)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading HVACHumidityModeAndFlagsMode")
@@ -120,7 +124,15 @@ func HVACHumidityModeAndFlagsModeParse(readBuffer utils.ReadBuffer) (HVACHumidit
 	}
 }
 
-func (e HVACHumidityModeAndFlagsMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e HVACHumidityModeAndFlagsMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e HVACHumidityModeAndFlagsMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("HVACHumidityModeAndFlagsMode", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -122,7 +122,11 @@ func (m *_BACnetPriorityValueDate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueDateParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDate, error) {
+func BACnetPriorityValueDateParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDate, error) {
+	return BACnetPriorityValueDateParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+}
+
+func BACnetPriorityValueDateParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueDate"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPriorityValueDateParse(readBuffer utils.ReadBuffer, objectTypeArgumen
 	if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateValue")
 	}
-	_dateValue, _dateValueErr := BACnetApplicationTagParse(readBuffer)
+	_dateValue, _dateValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _dateValueErr != nil {
 		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetPriorityValueDate")
 	}
@@ -159,7 +163,15 @@ func BACnetPriorityValueDateParse(readBuffer utils.ReadBuffer, objectTypeArgumen
 	return _child, nil
 }
 
-func (m *_BACnetPriorityValueDate) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPriorityValueDate) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPriorityValueDate) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

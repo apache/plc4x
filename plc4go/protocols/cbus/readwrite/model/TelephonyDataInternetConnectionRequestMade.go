@@ -102,7 +102,11 @@ func (m *_TelephonyDataInternetConnectionRequestMade) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyDataInternetConnectionRequestMadeParse(readBuffer utils.ReadBuffer) (TelephonyDataInternetConnectionRequestMade, error) {
+func TelephonyDataInternetConnectionRequestMadeParse(theBytes []byte) (TelephonyDataInternetConnectionRequestMade, error) {
+	return TelephonyDataInternetConnectionRequestMadeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TelephonyDataInternetConnectionRequestMadeParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyDataInternetConnectionRequestMade, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataInternetConnectionRequestMade"); pullErr != nil {
@@ -123,7 +127,15 @@ func TelephonyDataInternetConnectionRequestMadeParse(readBuffer utils.ReadBuffer
 	return _child, nil
 }
 
-func (m *_TelephonyDataInternetConnectionRequestMade) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TelephonyDataInternetConnectionRequestMade) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TelephonyDataInternetConnectionRequestMade) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

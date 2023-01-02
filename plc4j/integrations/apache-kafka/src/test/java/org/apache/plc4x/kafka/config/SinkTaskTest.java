@@ -95,7 +95,7 @@ public class SinkTaskTest {
             List<SinkRecord> records = new ArrayList<>(1);
 
             // Build the Schema for the result struct.
-            Schema fieldSchema = SchemaBuilder.struct()
+            Schema tagSchema = SchemaBuilder.struct()
                 .name("org.apache.plc4x.kafka.schema.Field")
                 .field("running", Schema.BOOLEAN_SCHEMA)
                 .field("numLargeBoxes", Schema.INT32_SCHEMA)
@@ -104,17 +104,17 @@ public class SinkTaskTest {
 
             Schema schema = SchemaBuilder.struct()
                             .name("org.apache.plc4x.kafka.schema.JobResult")
-                            .field(Constants.FIELDS_CONFIG, fieldSchema)
+                            .field(Constants.TAGS_CONFIG, tagSchema)
                             .field(Constants.TIMESTAMP_CONFIG, Schema.INT64_SCHEMA)
                             .field("expires", Schema.OPTIONAL_INT64_SCHEMA)
                             .build();
 
-            Struct fieldsStruct = new Struct(fieldSchema)
+            Struct tagsStruct = new Struct(tagSchema)
                                     .put("running", false)
                                     .put("numLargeBoxes", 765);
 
             Struct struct = new Struct(schema)
-                                    .put("fields", fieldsStruct)
+                                    .put("tags", tagsStruct)
                                     .put(Constants.TIMESTAMP_CONFIG, System.currentTimeMillis())
                                     .put("expires", 0L);
 

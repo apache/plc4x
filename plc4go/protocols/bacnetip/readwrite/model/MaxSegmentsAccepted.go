@@ -30,7 +30,8 @@ import (
 type MaxSegmentsAccepted uint8
 
 type IMaxSegmentsAccepted interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
+	MaxSegments() uint8
 }
 
 const (
@@ -60,6 +61,55 @@ func init() {
 	}
 }
 
+func (e MaxSegmentsAccepted) MaxSegments() uint8 {
+	switch e {
+	case 0x0:
+		{ /* '0x0' */
+			return 255
+		}
+	case 0x1:
+		{ /* '0x1' */
+			return 2
+		}
+	case 0x2:
+		{ /* '0x2' */
+			return 4
+		}
+	case 0x3:
+		{ /* '0x3' */
+			return 8
+		}
+	case 0x4:
+		{ /* '0x4' */
+			return 16
+		}
+	case 0x5:
+		{ /* '0x5' */
+			return 32
+		}
+	case 0x6:
+		{ /* '0x6' */
+			return 64
+		}
+	case 0x7:
+		{ /* '0x7' */
+			return 255
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func MaxSegmentsAcceptedFirstEnumForFieldMaxSegments(value uint8) (MaxSegmentsAccepted, error) {
+	for _, sizeValue := range MaxSegmentsAcceptedValues {
+		if sizeValue.MaxSegments() == value {
+			return sizeValue, nil
+		}
+	}
+	return 0, errors.Errorf("enum for %v describing MaxSegments not found", value)
+}
 func MaxSegmentsAcceptedByValue(value uint8) (enum MaxSegmentsAccepted, ok bool) {
 	switch value {
 	case 0x0:
@@ -131,7 +181,11 @@ func (m MaxSegmentsAccepted) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MaxSegmentsAcceptedParse(readBuffer utils.ReadBuffer) (MaxSegmentsAccepted, error) {
+func MaxSegmentsAcceptedParse(theBytes []byte) (MaxSegmentsAccepted, error) {
+	return MaxSegmentsAcceptedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func MaxSegmentsAcceptedParseWithBuffer(readBuffer utils.ReadBuffer) (MaxSegmentsAccepted, error) {
 	val, err := readBuffer.ReadUint8("MaxSegmentsAccepted", 3)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MaxSegmentsAccepted")
@@ -144,7 +198,15 @@ func MaxSegmentsAcceptedParse(readBuffer utils.ReadBuffer) (MaxSegmentsAccepted,
 	}
 }
 
-func (e MaxSegmentsAccepted) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e MaxSegmentsAccepted) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e MaxSegmentsAccepted) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("MaxSegmentsAccepted", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

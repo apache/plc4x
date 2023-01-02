@@ -137,7 +137,11 @@ func (m *_BACnetCOVMultipleSubscription) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscription, error) {
+func BACnetCOVMultipleSubscriptionParse(theBytes []byte) (BACnetCOVMultipleSubscription, error) {
+	return BACnetCOVMultipleSubscriptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetCOVMultipleSubscriptionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscription, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCOVMultipleSubscription"); pullErr != nil {
@@ -150,7 +154,7 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVM
 	if pullErr := readBuffer.PullContext("recipient"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for recipient")
 	}
-	_recipient, _recipientErr := BACnetRecipientProcessEnclosedParse(readBuffer, uint8(uint8(0)))
+	_recipient, _recipientErr := BACnetRecipientProcessEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _recipientErr != nil {
 		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field of BACnetCOVMultipleSubscription")
 	}
@@ -163,7 +167,7 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVM
 	if pullErr := readBuffer.PullContext("issueConfirmedNotifications"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for issueConfirmedNotifications")
 	}
-	_issueConfirmedNotifications, _issueConfirmedNotificationsErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
+	_issueConfirmedNotifications, _issueConfirmedNotificationsErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
 	if _issueConfirmedNotificationsErr != nil {
 		return nil, errors.Wrap(_issueConfirmedNotificationsErr, "Error parsing 'issueConfirmedNotifications' field of BACnetCOVMultipleSubscription")
 	}
@@ -176,7 +180,7 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVM
 	if pullErr := readBuffer.PullContext("timeRemaining"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeRemaining")
 	}
-	_timeRemaining, _timeRemainingErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeRemaining, _timeRemainingErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeRemainingErr != nil {
 		return nil, errors.Wrap(_timeRemainingErr, "Error parsing 'timeRemaining' field of BACnetCOVMultipleSubscription")
 	}
@@ -189,7 +193,7 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVM
 	if pullErr := readBuffer.PullContext("maxNotificationDelay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxNotificationDelay")
 	}
-	_maxNotificationDelay, _maxNotificationDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_maxNotificationDelay, _maxNotificationDelayErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _maxNotificationDelayErr != nil {
 		return nil, errors.Wrap(_maxNotificationDelayErr, "Error parsing 'maxNotificationDelay' field of BACnetCOVMultipleSubscription")
 	}
@@ -202,7 +206,7 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVM
 	if pullErr := readBuffer.PullContext("listOfCovSubscriptionSpecification"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfCovSubscriptionSpecification")
 	}
-	_listOfCovSubscriptionSpecification, _listOfCovSubscriptionSpecificationErr := BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParse(readBuffer, uint8(uint8(4)))
+	_listOfCovSubscriptionSpecification, _listOfCovSubscriptionSpecificationErr := BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParseWithBuffer(readBuffer, uint8(uint8(4)))
 	if _listOfCovSubscriptionSpecificationErr != nil {
 		return nil, errors.Wrap(_listOfCovSubscriptionSpecificationErr, "Error parsing 'listOfCovSubscriptionSpecification' field of BACnetCOVMultipleSubscription")
 	}
@@ -225,7 +229,15 @@ func BACnetCOVMultipleSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetCOVM
 	}, nil
 }
 
-func (m *_BACnetCOVMultipleSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetCOVMultipleSubscription) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetCOVMultipleSubscription) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetCOVMultipleSubscription"); pushErr != nil {

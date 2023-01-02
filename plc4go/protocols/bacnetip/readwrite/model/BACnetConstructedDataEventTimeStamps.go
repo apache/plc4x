@@ -199,7 +199,11 @@ func (m *_BACnetConstructedDataEventTimeStamps) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEventTimeStampsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventTimeStamps, error) {
+func BACnetConstructedDataEventTimeStampsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventTimeStamps, error) {
+	return BACnetConstructedDataEventTimeStampsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataEventTimeStampsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventTimeStamps, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventTimeStamps"); pullErr != nil {
@@ -220,7 +224,7 @@ func BACnetConstructedDataEventTimeStampsParse(readBuffer utils.ReadBuffer, tagN
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
-		_val, _err := BACnetApplicationTagParse(readBuffer)
+		_val, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -243,12 +247,11 @@ func BACnetConstructedDataEventTimeStampsParse(readBuffer utils.ReadBuffer, tagN
 	var eventTimeStamps []BACnetTimeStamp
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetTimeStampParse(readBuffer)
+			_item, _err := BACnetTimeStampParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'eventTimeStamps' field of BACnetConstructedDataEventTimeStamps")
 			}
 			eventTimeStamps = append(eventTimeStamps, _item.(BACnetTimeStamp))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("eventTimeStamps", utils.WithRenderAsList(true)); closeErr != nil {
@@ -292,7 +295,15 @@ func BACnetConstructedDataEventTimeStampsParse(readBuffer utils.ReadBuffer, tagN
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataEventTimeStamps) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataEventTimeStamps) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataEventTimeStamps) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

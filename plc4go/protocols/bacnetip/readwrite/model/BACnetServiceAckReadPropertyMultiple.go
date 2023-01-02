@@ -131,7 +131,11 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyMultiple, error) {
+func BACnetServiceAckReadPropertyMultipleParse(theBytes []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyMultiple, error) {
+	return BACnetServiceAckReadPropertyMultipleParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckLength, serviceAckPayloadLength)
+}
+
+func BACnetServiceAckReadPropertyMultipleParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyMultiple"); pullErr != nil {
@@ -150,7 +154,7 @@ func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serv
 		_dataLength := serviceAckPayloadLength
 		_dataEndPos := positionAware.GetPos() + uint16(_dataLength)
 		for positionAware.GetPos() < _dataEndPos {
-			_item, _err := BACnetReadAccessResultParse(readBuffer)
+			_item, _err := BACnetReadAccessResultParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetServiceAckReadPropertyMultiple")
 			}
@@ -176,7 +180,15 @@ func BACnetServiceAckReadPropertyMultipleParse(readBuffer utils.ReadBuffer, serv
 	return _child, nil
 }
 
-func (m *_BACnetServiceAckReadPropertyMultiple) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetServiceAckReadPropertyMultiple) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetServiceAckReadPropertyMultiple) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

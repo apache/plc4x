@@ -126,7 +126,11 @@ func (m *_SALDataVentilation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataVentilationParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataVentilation, error) {
+func SALDataVentilationParse(theBytes []byte, applicationId ApplicationId) (SALDataVentilation, error) {
+	return SALDataVentilationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+}
+
+func SALDataVentilationParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataVentilation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataVentilation"); pullErr != nil {
@@ -139,7 +143,7 @@ func SALDataVentilationParse(readBuffer utils.ReadBuffer, applicationId Applicat
 	if pullErr := readBuffer.PullContext("ventilationData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ventilationData")
 	}
-	_ventilationData, _ventilationDataErr := LightingDataParse(readBuffer)
+	_ventilationData, _ventilationDataErr := LightingDataParseWithBuffer(readBuffer)
 	if _ventilationDataErr != nil {
 		return nil, errors.Wrap(_ventilationDataErr, "Error parsing 'ventilationData' field of SALDataVentilation")
 	}
@@ -161,7 +165,15 @@ func SALDataVentilationParse(readBuffer utils.ReadBuffer, applicationId Applicat
 	return _child, nil
 }
 
-func (m *_SALDataVentilation) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataVentilation) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SALDataVentilation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

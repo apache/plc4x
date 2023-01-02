@@ -125,7 +125,7 @@ public class ScraperImpl implements Scraper {
                         tuple.getLeft().getJobName(), tuple.getMiddle(), tuple.getRight(), tuple.getLeft().getScrapeRate());
                     ScraperTask task = new ScraperTaskImpl(driverManager,
                         tuple.getLeft().getJobName(), tuple.getMiddle(), tuple.getRight(),
-                        tuple.getLeft().getFields(),
+                        tuple.getLeft().getTags(),
                         1_000,
                         handlerPool, resultHandler);
                     // Add task to internal list

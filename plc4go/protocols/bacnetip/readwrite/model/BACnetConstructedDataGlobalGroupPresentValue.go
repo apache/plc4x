@@ -169,7 +169,11 @@ func (m *_BACnetConstructedDataGlobalGroupPresentValue) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataGlobalGroupPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGlobalGroupPresentValue, error) {
+func BACnetConstructedDataGlobalGroupPresentValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGlobalGroupPresentValue, error) {
+	return BACnetConstructedDataGlobalGroupPresentValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataGlobalGroupPresentValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGlobalGroupPresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGlobalGroupPresentValue"); pullErr != nil {
@@ -190,7 +194,7 @@ func BACnetConstructedDataGlobalGroupPresentValueParse(readBuffer utils.ReadBuff
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
-		_val, _err := BACnetApplicationTagParse(readBuffer)
+		_val, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -213,12 +217,11 @@ func BACnetConstructedDataGlobalGroupPresentValueParse(readBuffer utils.ReadBuff
 	var presentValue []BACnetPropertyAccessResult
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetPropertyAccessResultParse(readBuffer)
+			_item, _err := BACnetPropertyAccessResultParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'presentValue' field of BACnetConstructedDataGlobalGroupPresentValue")
 			}
 			presentValue = append(presentValue, _item.(BACnetPropertyAccessResult))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("presentValue", utils.WithRenderAsList(true)); closeErr != nil {
@@ -242,7 +245,15 @@ func BACnetConstructedDataGlobalGroupPresentValueParse(readBuffer utils.ReadBuff
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataGlobalGroupPresentValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataGlobalGroupPresentValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataGlobalGroupPresentValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

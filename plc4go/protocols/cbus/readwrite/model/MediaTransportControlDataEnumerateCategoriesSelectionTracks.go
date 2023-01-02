@@ -175,7 +175,11 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetLength
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlDataEnumerateCategoriesSelectionTracksParse(readBuffer utils.ReadBuffer) (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
+func MediaTransportControlDataEnumerateCategoriesSelectionTracksParse(theBytes []byte) (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
+	return MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataEnumerateCategoriesSelectionTracks"); pullErr != nil {
@@ -232,7 +236,15 @@ func MediaTransportControlDataEnumerateCategoriesSelectionTracksParse(readBuffer
 	return _child, nil
 }
 
-func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

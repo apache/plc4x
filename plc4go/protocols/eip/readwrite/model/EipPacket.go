@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -154,7 +155,11 @@ func (m *_EipPacket) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func EipPacketParse(readBuffer utils.ReadBuffer) (EipPacket, error) {
+func EipPacketParse(theBytes []byte) (EipPacket, error) {
+	return EipPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+}
+
+func EipPacketParseWithBuffer(readBuffer utils.ReadBuffer) (EipPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EipPacket"); pullErr != nil {
@@ -231,11 +236,11 @@ func EipPacketParse(readBuffer utils.ReadBuffer) (EipPacket, error) {
 	var typeSwitchError error
 	switch {
 	case command == 0x0065: // EipConnectionRequest
-		_childTemp, typeSwitchError = EipConnectionRequestParse(readBuffer)
+		_childTemp, typeSwitchError = EipConnectionRequestParseWithBuffer(readBuffer)
 	case command == 0x0066: // EipDisconnectRequest
-		_childTemp, typeSwitchError = EipDisconnectRequestParse(readBuffer)
+		_childTemp, typeSwitchError = EipDisconnectRequestParseWithBuffer(readBuffer)
 	case command == 0x006F: // CipRRData
-		_childTemp, typeSwitchError = CipRRDataParse(readBuffer, packetLength)
+		_childTemp, typeSwitchError = CipRRDataParseWithBuffer(readBuffer, packetLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [command=%v]", command)
 	}

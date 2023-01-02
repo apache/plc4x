@@ -136,7 +136,11 @@ func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestTimeSynchronization, error) {
+func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestTimeSynchronization, error) {
+	return BACnetUnconfirmedServiceRequestTimeSynchronizationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+}
+
+func BACnetUnconfirmedServiceRequestTimeSynchronizationParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestTimeSynchronization, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestTimeSynchronization"); pullErr != nil {
@@ -149,7 +153,7 @@ func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("synchronizedDate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for synchronizedDate")
 	}
-	_synchronizedDate, _synchronizedDateErr := BACnetApplicationTagParse(readBuffer)
+	_synchronizedDate, _synchronizedDateErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _synchronizedDateErr != nil {
 		return nil, errors.Wrap(_synchronizedDateErr, "Error parsing 'synchronizedDate' field of BACnetUnconfirmedServiceRequestTimeSynchronization")
 	}
@@ -162,7 +166,7 @@ func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("synchronizedTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for synchronizedTime")
 	}
-	_synchronizedTime, _synchronizedTimeErr := BACnetApplicationTagParse(readBuffer)
+	_synchronizedTime, _synchronizedTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _synchronizedTimeErr != nil {
 		return nil, errors.Wrap(_synchronizedTimeErr, "Error parsing 'synchronizedTime' field of BACnetUnconfirmedServiceRequestTimeSynchronization")
 	}
@@ -187,7 +191,15 @@ func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(readBuffer utils.Re
 	return _child, nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

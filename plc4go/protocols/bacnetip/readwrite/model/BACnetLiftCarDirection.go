@@ -30,7 +30,7 @@ import (
 type BACnetLiftCarDirection uint16
 
 type IBACnetLiftCarDirection interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -125,7 +125,11 @@ func (m BACnetLiftCarDirection) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLiftCarDirectionParse(readBuffer utils.ReadBuffer) (BACnetLiftCarDirection, error) {
+func BACnetLiftCarDirectionParse(theBytes []byte) (BACnetLiftCarDirection, error) {
+	return BACnetLiftCarDirectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLiftCarDirectionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLiftCarDirection, error) {
 	val, err := readBuffer.ReadUint16("BACnetLiftCarDirection", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLiftCarDirection")
@@ -138,7 +142,15 @@ func BACnetLiftCarDirectionParse(readBuffer utils.ReadBuffer) (BACnetLiftCarDire
 	}
 }
 
-func (e BACnetLiftCarDirection) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLiftCarDirection) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetLiftCarDirection) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetLiftCarDirection", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

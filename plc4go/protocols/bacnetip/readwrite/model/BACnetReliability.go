@@ -30,7 +30,7 @@ import (
 type BACnetReliability uint16
 
 type IBACnetReliability interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -233,7 +233,11 @@ func (m BACnetReliability) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetReliabilityParse(readBuffer utils.ReadBuffer) (BACnetReliability, error) {
+func BACnetReliabilityParse(theBytes []byte) (BACnetReliability, error) {
+	return BACnetReliabilityParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetReliabilityParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetReliability, error) {
 	val, err := readBuffer.ReadUint16("BACnetReliability", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetReliability")
@@ -246,7 +250,15 @@ func BACnetReliabilityParse(readBuffer utils.ReadBuffer) (BACnetReliability, err
 	}
 }
 
-func (e BACnetReliability) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetReliability) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetReliability) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetReliability", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

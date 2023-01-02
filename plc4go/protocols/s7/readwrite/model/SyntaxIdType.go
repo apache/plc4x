@@ -30,7 +30,7 @@ import (
 type SyntaxIdType uint8
 
 type ISyntaxIdType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -161,7 +161,11 @@ func (m SyntaxIdType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SyntaxIdTypeParse(readBuffer utils.ReadBuffer) (SyntaxIdType, error) {
+func SyntaxIdTypeParse(theBytes []byte) (SyntaxIdType, error) {
+	return SyntaxIdTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SyntaxIdTypeParseWithBuffer(readBuffer utils.ReadBuffer) (SyntaxIdType, error) {
 	val, err := readBuffer.ReadUint8("SyntaxIdType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SyntaxIdType")
@@ -174,7 +178,15 @@ func SyntaxIdTypeParse(readBuffer utils.ReadBuffer) (SyntaxIdType, error) {
 	}
 }
 
-func (e SyntaxIdType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e SyntaxIdType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e SyntaxIdType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("SyntaxIdType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

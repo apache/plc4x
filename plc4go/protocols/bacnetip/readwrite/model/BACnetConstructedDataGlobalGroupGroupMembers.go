@@ -169,7 +169,11 @@ func (m *_BACnetConstructedDataGlobalGroupGroupMembers) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataGlobalGroupGroupMembersParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGlobalGroupGroupMembers, error) {
+func BACnetConstructedDataGlobalGroupGroupMembersParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGlobalGroupGroupMembers, error) {
+	return BACnetConstructedDataGlobalGroupGroupMembersParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataGlobalGroupGroupMembersParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGlobalGroupGroupMembers, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGlobalGroupGroupMembers"); pullErr != nil {
@@ -190,7 +194,7 @@ func BACnetConstructedDataGlobalGroupGroupMembersParse(readBuffer utils.ReadBuff
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
-		_val, _err := BACnetApplicationTagParse(readBuffer)
+		_val, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -213,12 +217,11 @@ func BACnetConstructedDataGlobalGroupGroupMembersParse(readBuffer utils.ReadBuff
 	var groupMembers []BACnetDeviceObjectPropertyReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetDeviceObjectPropertyReferenceParse(readBuffer)
+			_item, _err := BACnetDeviceObjectPropertyReferenceParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'groupMembers' field of BACnetConstructedDataGlobalGroupGroupMembers")
 			}
 			groupMembers = append(groupMembers, _item.(BACnetDeviceObjectPropertyReference))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("groupMembers", utils.WithRenderAsList(true)); closeErr != nil {
@@ -242,7 +245,15 @@ func BACnetConstructedDataGlobalGroupGroupMembersParse(readBuffer utils.ReadBuff
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataGlobalGroupGroupMembers) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataGlobalGroupGroupMembers) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataGlobalGroupGroupMembers) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

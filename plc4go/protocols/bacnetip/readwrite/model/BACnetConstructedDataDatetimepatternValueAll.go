@@ -111,7 +111,11 @@ func (m *_BACnetConstructedDataDatetimepatternValueAll) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDatetimepatternValueAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDatetimepatternValueAll, error) {
+func BACnetConstructedDataDatetimepatternValueAllParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDatetimepatternValueAll, error) {
+	return BACnetConstructedDataDatetimepatternValueAllParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataDatetimepatternValueAllParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDatetimepatternValueAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDatetimepatternValueAll"); pullErr != nil {
@@ -140,7 +144,15 @@ func BACnetConstructedDataDatetimepatternValueAllParse(readBuffer utils.ReadBuff
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataDatetimepatternValueAll) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDatetimepatternValueAll) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataDatetimepatternValueAll) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

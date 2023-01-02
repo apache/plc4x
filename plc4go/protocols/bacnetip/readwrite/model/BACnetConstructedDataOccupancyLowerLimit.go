@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataOccupancyLowerLimit) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOccupancyLowerLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyLowerLimit, error) {
+func BACnetConstructedDataOccupancyLowerLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyLowerLimit, error) {
+	return BACnetConstructedDataOccupancyLowerLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataOccupancyLowerLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyLowerLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyLowerLimit"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataOccupancyLowerLimitParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("occupancyLowerLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for occupancyLowerLimit")
 	}
-	_occupancyLowerLimit, _occupancyLowerLimitErr := BACnetApplicationTagParse(readBuffer)
+	_occupancyLowerLimit, _occupancyLowerLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _occupancyLowerLimitErr != nil {
 		return nil, errors.Wrap(_occupancyLowerLimitErr, "Error parsing 'occupancyLowerLimit' field of BACnetConstructedDataOccupancyLowerLimit")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataOccupancyLowerLimitParse(readBuffer utils.ReadBuffer, 
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataOccupancyLowerLimit) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataOccupancyLowerLimit) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataOccupancyLowerLimit) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

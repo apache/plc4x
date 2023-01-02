@@ -102,7 +102,11 @@ func (m *_SecurityDataTamperOn) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataTamperOnParse(readBuffer utils.ReadBuffer) (SecurityDataTamperOn, error) {
+func SecurityDataTamperOnParse(theBytes []byte) (SecurityDataTamperOn, error) {
+	return SecurityDataTamperOnParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SecurityDataTamperOnParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataTamperOn, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataTamperOn"); pullErr != nil {
@@ -123,7 +127,15 @@ func SecurityDataTamperOnParse(readBuffer utils.ReadBuffer) (SecurityDataTamperO
 	return _child, nil
 }
 
-func (m *_SecurityDataTamperOn) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataTamperOn) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataTamperOn) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

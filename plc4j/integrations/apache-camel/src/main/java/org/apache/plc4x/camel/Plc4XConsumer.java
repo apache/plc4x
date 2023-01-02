@@ -86,7 +86,7 @@ public class Plc4XConsumer extends DefaultConsumer {
         PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
         for (Map.Entry<String, Object> tag : tags.entrySet()) {
             try {
-                builder.addItem(tag.getKey(), (String) tag.getValue());
+                builder.addTagAddress(tag.getKey(), (String) tag.getValue());
             } catch (PlcIncompatibleDatatypeException e) {
                 LOGGER.error("For consumer, please use Map<String,String>, currently using {}", tags.getClass().getSimpleName());
             }
@@ -97,8 +97,8 @@ public class Plc4XConsumer extends DefaultConsumer {
                     try {
                         Exchange exchange = plc4XEndpoint.createExchange();
                         Map<String, Object> rsp = new HashMap<>();
-                        for (String field : response.getFieldNames()) {
-                            rsp.put(field, response.getObject(field));
+                        for (String tagName : response.getTagNames()) {
+                            rsp.put(tagName, response.getObject(tagName));
                         }
                         exchange.getIn().setBody(rsp);
                         getProcessor().process(exchange);

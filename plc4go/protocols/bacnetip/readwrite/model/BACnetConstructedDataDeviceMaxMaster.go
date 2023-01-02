@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataDeviceMaxMaster) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDeviceMaxMasterParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeviceMaxMaster, error) {
+func BACnetConstructedDataDeviceMaxMasterParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeviceMaxMaster, error) {
+	return BACnetConstructedDataDeviceMaxMasterParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataDeviceMaxMasterParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeviceMaxMaster, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDeviceMaxMaster"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataDeviceMaxMasterParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("maxMaster"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxMaster")
 	}
-	_maxMaster, _maxMasterErr := BACnetApplicationTagParse(readBuffer)
+	_maxMaster, _maxMasterErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _maxMasterErr != nil {
 		return nil, errors.Wrap(_maxMasterErr, "Error parsing 'maxMaster' field of BACnetConstructedDataDeviceMaxMaster")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataDeviceMaxMasterParse(readBuffer utils.ReadBuffer, tagN
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataDeviceMaxMaster) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDeviceMaxMaster) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataDeviceMaxMaster) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

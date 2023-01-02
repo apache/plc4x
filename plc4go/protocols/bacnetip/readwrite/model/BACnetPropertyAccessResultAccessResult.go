@@ -133,7 +133,11 @@ func (m *_BACnetPropertyAccessResultAccessResult) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyAccessResultAccessResultParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPropertyAccessResultAccessResult, error) {
+func BACnetPropertyAccessResultAccessResultParse(theBytes []byte, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPropertyAccessResultAccessResult, error) {
+	return BACnetPropertyAccessResultAccessResultParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
+}
+
+func BACnetPropertyAccessResultAccessResultParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPropertyAccessResultAccessResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyAccessResultAccessResult"); pullErr != nil {
@@ -147,7 +151,7 @@ func BACnetPropertyAccessResultAccessResultParse(readBuffer utils.ReadBuffer, ob
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -166,9 +170,9 @@ func BACnetPropertyAccessResultAccessResultParse(readBuffer utils.ReadBuffer, ob
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(4): // BACnetPropertyAccessResultAccessResultPropertyValue
-		_childTemp, typeSwitchError = BACnetPropertyAccessResultAccessResultPropertyValueParse(readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
+		_childTemp, typeSwitchError = BACnetPropertyAccessResultAccessResultPropertyValueParseWithBuffer(readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
 	case peekedTagNumber == uint8(5): // BACnetPropertyAccessResultAccessResultPropertyAccessError
-		_childTemp, typeSwitchError = BACnetPropertyAccessResultAccessResultPropertyAccessErrorParse(readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
+		_childTemp, typeSwitchError = BACnetPropertyAccessResultAccessResultPropertyAccessErrorParseWithBuffer(readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}

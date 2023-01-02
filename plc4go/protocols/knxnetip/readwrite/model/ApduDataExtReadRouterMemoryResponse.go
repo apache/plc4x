@@ -103,7 +103,11 @@ func (m *_ApduDataExtReadRouterMemoryResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtReadRouterMemoryResponseParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtReadRouterMemoryResponse, error) {
+func ApduDataExtReadRouterMemoryResponseParse(theBytes []byte, length uint8) (ApduDataExtReadRouterMemoryResponse, error) {
+	return ApduDataExtReadRouterMemoryResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), length)
+}
+
+func ApduDataExtReadRouterMemoryResponseParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtReadRouterMemoryResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtReadRouterMemoryResponse"); pullErr != nil {
@@ -126,7 +130,15 @@ func ApduDataExtReadRouterMemoryResponseParse(readBuffer utils.ReadBuffer, lengt
 	return _child, nil
 }
 
-func (m *_ApduDataExtReadRouterMemoryResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataExtReadRouterMemoryResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApduDataExtReadRouterMemoryResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

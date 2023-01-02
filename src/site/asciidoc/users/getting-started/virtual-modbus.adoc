@@ -94,7 +94,7 @@ In general Modbus only knows two types of data: `Coils` and `Registers`.
 
 Coils are always simple `bits` or `boolean` values and Registers are always `16 bit short values`.
 
-However there are different types of these and they have different names:
+However, there are different types of these and they have different names:
 
 - `Discrete Inputs` (Boolean values) (read-only)
 - `Coils` (Boolean values) (read-write)
@@ -135,7 +135,7 @@ For Modbus the typical transports are:
 * tcp (transport-config is the ip or host-name of the slave and can be suffixed by a port separated from the ip/host with `:`)
 * serial (transport-config is the device name of the serial interface)
 
-If we have setup ModbusPal as described above and are running this on the same computer, the connection string to connect to this should be:
+If we have set up ModbusPal as described above and are running this on the same computer, the connection string to connect to this should be:
 
     modbus-tcp://localhost
 
@@ -160,7 +160,7 @@ When using Maven, all you need to do is add this dependency:
 ----
 
 This will allow you to write a valid application, that compiles fine.
-However in order to actually connect to a device using a given protocol, you need to add this protocol implementation to the classpath.
+However, in order to actually connect to a device using a given protocol, you need to add this protocol implementation to the classpath.
 
 For example in order to communicate using the `Modbus` protocol, you would need to add the following dependency:
 
@@ -199,15 +199,15 @@ The basic functions supported by PLCs and therefore supported by PLC4X are:
 * Execute functions in the PLC
 * List resources in the PLC
 
-In general we will try to offer as many features as possible.
-So if a protocol doesn't support subscription based communication it is our goal to simulate this by polling in the background so it is transparent for the users.
+In general, we will try to offer as many features as possible.
+So if a protocol doesn't support subscription based communication it is our goal to simulate this by polling in the background, so it is transparent for the users.
 
 But there are some cases in which we can't simulate or features are simply disabled intentionally:
 
 * If a PLC and/or protocol don't support executing of functions, we simply can't provide this functionality.
 * We will be providing stripped down versions of drivers, that for example intentionally don't support any writing of data and executing of functions.
 
-Therefore we use metadata to check programmatically, if a given feature is available:
+Therefore, we use metadata to check programmatically, if a given feature is available:
 
 === Reading Data
 
@@ -251,7 +251,7 @@ asyncResponse.whenComplete((response, throwable) -> {
 In general all requests are executed asynchronously.
 So as soon as the request is fully processed, the callback gets called and will contain a `readResponse`, if everything went right or a `throwable` if there were problems.
 
-However if you want to write your code in a more synchronous fashion, the following alternative will provide this:
+However, if you want to write your code in a more synchronous fashion, the following alternative will provide this:
 
 ----
 PlcReadResponse response = readRequest.execute().get();
@@ -260,6 +260,7 @@ PlcReadResponse response = readRequest.execute().get();
 Processing of the responses is identical in both cases.
 The following example will demonstrate some of the options you have:
 
+.Up to version 0.10.0
 ----
 for (String fieldName : response.getFieldNames()) {
     if(response.getResponseCode(fieldName) == PlcResponseCode.OK) {
@@ -279,6 +280,30 @@ for (String fieldName : response.getFieldNames()) {
     // Something went wrong, to output an error message instead.
     else {
         logger.error("Error[" + fieldName + "]: " + response.getResponseCode(fieldName).name());
+    }
+}
+----
+
+.SNAPSHOT version
+----
+for (String tagName : response.getTagNames()) {
+    if(response.getResponseCode(tagName) == PlcResponseCode.OK) {
+        int numValues = response.getNumberOfValues(tagName);
+        // If it's just one element, output just one single line.
+        if(numValues == 1) {
+            logger.info("Value[" + tagName + "]: " + response.getObject(tagName));
+        }
+        // If it's more than one element, output each in a single row.
+        else {
+            logger.info("Value[" + tagName + "]:");
+            for(int i = 0; i < numValues; i++) {
+                logger.info(" - " + response.getObject(tagName, i));
+            }
+        }
+    }
+    // Something went wrong, to output an error message instead.
+    else {
+        logger.error("Error[" + tagName + "]: " + response.getResponseCode(tagName).name());
     }
 }
 ----
@@ -309,14 +334,14 @@ If you want to access a given element number, please use the two-argument versio
     response.getObject(fieldName, 42)
 
 PLC4X provides getters and setters for a wide variety of Java types and automatically handles the type conversion.
-However when for example trying to get a long-value as a byte and the long-value exceeds the range supported by the smaller type, a `RuntimeException` of type `PlcIncompatibleDatatypeException`.
+However, when for example trying to get a long-value as a byte and the long-value exceeds the range supported by the smaller type, a `RuntimeException` of type `PlcIncompatibleDatatypeException`.
 In order to avoid causing this exception to be thrown, however there are `isValid{TypeName}` methods that you can use to check if the value is compatible.
 
 === Writing Data
 
 The code for writing is very similar to the code for reading, however when creating the write request, we have to pass in the data alongside the field definitions.
 
-While all of the 4 field types support reading from, only the `coil` and `holding-register` field types support writing to.
+While all 4 field types support reading from, only the `coil` and `holding-register` field types support writing to.
 If you attempt to write to these, this will result in errors.
 
 So again, we first check if this driver supports writing (Some drivers such as passive-mode drivers or read-only versions might generally not support writing):

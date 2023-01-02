@@ -136,7 +136,11 @@ func (m *_BACnetConstructedDataGroupPresentValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataGroupPresentValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGroupPresentValue, error) {
+func BACnetConstructedDataGroupPresentValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGroupPresentValue, error) {
+	return BACnetConstructedDataGroupPresentValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataGroupPresentValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGroupPresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGroupPresentValue"); pullErr != nil {
@@ -153,12 +157,11 @@ func BACnetConstructedDataGroupPresentValueParse(readBuffer utils.ReadBuffer, ta
 	var presentValue []BACnetReadAccessResult
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetReadAccessResultParse(readBuffer)
+			_item, _err := BACnetReadAccessResultParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'presentValue' field of BACnetConstructedDataGroupPresentValue")
 			}
 			presentValue = append(presentValue, _item.(BACnetReadAccessResult))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("presentValue", utils.WithRenderAsList(true)); closeErr != nil {
@@ -181,7 +184,15 @@ func BACnetConstructedDataGroupPresentValueParse(readBuffer utils.ReadBuffer, ta
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataGroupPresentValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataGroupPresentValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataGroupPresentValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

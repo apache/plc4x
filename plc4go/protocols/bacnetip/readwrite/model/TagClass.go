@@ -30,7 +30,7 @@ import (
 type TagClass uint8
 
 type ITagClass interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -95,7 +95,11 @@ func (m TagClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TagClassParse(readBuffer utils.ReadBuffer) (TagClass, error) {
+func TagClassParse(theBytes []byte) (TagClass, error) {
+	return TagClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TagClassParseWithBuffer(readBuffer utils.ReadBuffer) (TagClass, error) {
 	val, err := readBuffer.ReadUint8("TagClass", 1)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TagClass")
@@ -108,7 +112,15 @@ func TagClassParse(readBuffer utils.ReadBuffer) (TagClass, error) {
 	}
 }
 
-func (e TagClass) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e TagClass) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e TagClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("TagClass", 1, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -124,7 +124,11 @@ func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogRecordLogDatumEnumeratedValueParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumEnumeratedValue, error) {
+func BACnetLogRecordLogDatumEnumeratedValueParse(theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumEnumeratedValue, error) {
+	return BACnetLogRecordLogDatumEnumeratedValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+}
+
+func BACnetLogRecordLogDatumEnumeratedValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumEnumeratedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumEnumeratedValue"); pullErr != nil {
@@ -137,7 +141,7 @@ func BACnetLogRecordLogDatumEnumeratedValueParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("enumeratedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for enumeratedValue")
 	}
-	_enumeratedValue, _enumeratedValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_ENUMERATED))
+	_enumeratedValue, _enumeratedValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_ENUMERATED))
 	if _enumeratedValueErr != nil {
 		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field of BACnetLogRecordLogDatumEnumeratedValue")
 	}
@@ -161,7 +165,15 @@ func BACnetLogRecordLogDatumEnumeratedValueParse(readBuffer utils.ReadBuffer, ta
 	return _child, nil
 }
 
-func (m *_BACnetLogRecordLogDatumEnumeratedValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogRecordLogDatumEnumeratedValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLogRecordLogDatumEnumeratedValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

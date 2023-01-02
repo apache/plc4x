@@ -20,6 +20,9 @@
 package ads
 
 import (
+	"bufio"
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
@@ -35,7 +38,13 @@ type MessageCodec struct {
 
 func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCodec {
 	codec := &MessageCodec{}
-	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance)
+	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, _default.WithCustomMessageHandler(
+		// This just prevents the loop from aborting in the start and by returning false,
+		// it makes the message go to the default channel, as this means:
+		// The handler hasn't handled the message
+		func(codec _default.DefaultCodecRequirements, message spi.Message) bool {
+			return false
+		}))
 	return codec
 }
 
@@ -48,8 +57,8 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	// Cast the message to the correct type of struct
 	tcpPaket := message.(model.AmsTCPPacket)
 	// Serialize the request
-	wb := utils.NewLittleEndianWriteBufferByteBased()
-	err := tcpPaket.Serialize(wb)
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	err := tcpPaket.SerializeWithWriteBuffer(wb)
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}
@@ -63,10 +72,23 @@ func (m *MessageCodec) Send(message spi.Message) error {
 }
 
 func (m *MessageCodec) Receive() (spi.Message, error) {
+	transportInstance := m.GetTransportInstance()
+
+	if err := transportInstance.FillBuffer(
+		func(pos uint, currentByte byte, reader *bufio.Reader) bool {
+			numBytesAvailable, err := transportInstance.GetNumBytesAvailableInBuffer()
+			if err != nil {
+				return false
+			}
+			return numBytesAvailable < 6
+		}); err != nil {
+		log.Warn().Err(err).Msg("error filling buffer")
+	}
+
 	// We need at least 6 bytes in order to know how big the packet is in total
-	if num, err := m.GetTransportInstance().GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 6) {
+	if num, err := transportInstance.GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 6) {
 		log.Debug().Msgf("we got %d readable bytes", num)
-		data, err := m.GetTransportInstance().PeekReadableBytes(6)
+		data, err := transportInstance.PeekReadableBytes(6)
 		if err != nil {
 			log.Warn().Err(err).Msg("error peeking")
 			// TODO: Possibly clean up ...
@@ -75,16 +97,24 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 		// Get the size of the entire packet little endian plus size of header
 		packetSize := (uint32(data[5]) << 24) + (uint32(data[4]) << 16) + (uint32(data[3]) << 8) + (uint32(data[2])) + 6
 		if num < packetSize {
-			log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
-			return nil, nil
+			if err := transportInstance.FillBuffer(
+				func(pos uint, currentByte byte, reader *bufio.Reader) bool {
+					numBytesAvailalbe, err := transportInstance.GetNumBytesAvailableInBuffer()
+					if err != nil {
+						return false
+					}
+					return numBytesAvailalbe < packetSize
+				}); err != nil {
+				log.Warn().Err(err).Msg("error filling buffer")
+			}
 		}
-		data, err = m.GetTransportInstance().Read(packetSize)
+		data, err = transportInstance.Read(packetSize)
 		if err != nil {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		rb := utils.NewLittleEndianReadBufferByteBased(data)
-		tcpPacket, err := model.AmsTCPPacketParse(rb)
+		rb := utils.NewReadBufferByteBased(data, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+		tcpPacket, err := model.AmsTCPPacketParseWithBuffer(rb)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

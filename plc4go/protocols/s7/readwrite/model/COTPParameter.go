@@ -105,7 +105,11 @@ func (m *_COTPParameter) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (COTPParameter, error) {
+func COTPParameterParse(theBytes []byte, rest uint8) (COTPParameter, error) {
+	return COTPParameterParseWithBuffer(utils.NewReadBufferByteBased(theBytes), rest)
+}
+
+func COTPParameterParseWithBuffer(readBuffer utils.ReadBuffer, rest uint8) (COTPParameter, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameter"); pullErr != nil {
@@ -138,15 +142,15 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (COTPParameter,
 	var typeSwitchError error
 	switch {
 	case parameterType == 0xC0: // COTPParameterTpduSize
-		_childTemp, typeSwitchError = COTPParameterTpduSizeParse(readBuffer, rest)
+		_childTemp, typeSwitchError = COTPParameterTpduSizeParseWithBuffer(readBuffer, rest)
 	case parameterType == 0xC1: // COTPParameterCallingTsap
-		_childTemp, typeSwitchError = COTPParameterCallingTsapParse(readBuffer, rest)
+		_childTemp, typeSwitchError = COTPParameterCallingTsapParseWithBuffer(readBuffer, rest)
 	case parameterType == 0xC2: // COTPParameterCalledTsap
-		_childTemp, typeSwitchError = COTPParameterCalledTsapParse(readBuffer, rest)
+		_childTemp, typeSwitchError = COTPParameterCalledTsapParseWithBuffer(readBuffer, rest)
 	case parameterType == 0xC3: // COTPParameterChecksum
-		_childTemp, typeSwitchError = COTPParameterChecksumParse(readBuffer, rest)
+		_childTemp, typeSwitchError = COTPParameterChecksumParseWithBuffer(readBuffer, rest)
 	case parameterType == 0xE0: // COTPParameterDisconnectAdditionalInformation
-		_childTemp, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(readBuffer, rest)
+		_childTemp, typeSwitchError = COTPParameterDisconnectAdditionalInformationParseWithBuffer(readBuffer, rest)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [parameterType=%v]", parameterType)
 	}

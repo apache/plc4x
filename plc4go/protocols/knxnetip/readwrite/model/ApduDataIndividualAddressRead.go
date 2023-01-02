@@ -103,7 +103,11 @@ func (m *_ApduDataIndividualAddressRead) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataIndividualAddressReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataIndividualAddressRead, error) {
+func ApduDataIndividualAddressReadParse(theBytes []byte, dataLength uint8) (ApduDataIndividualAddressRead, error) {
+	return ApduDataIndividualAddressReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes), dataLength)
+}
+
+func ApduDataIndividualAddressReadParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataIndividualAddressRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataIndividualAddressRead"); pullErr != nil {
@@ -126,7 +130,15 @@ func ApduDataIndividualAddressReadParse(readBuffer utils.ReadBuffer, dataLength 
 	return _child, nil
 }
 
-func (m *_ApduDataIndividualAddressRead) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataIndividualAddressRead) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApduDataIndividualAddressRead) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

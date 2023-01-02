@@ -21,7 +21,7 @@
 from plc4py.PlcDriverManager import PlcDriverManager
 
 
-async def test_plc_driver_modbus_connect():
+async def manual_test_plc_driver_modbus_connect():
     driver_manager = PlcDriverManager()
     async with driver_manager.connection("modbus://127.0.0.1:502") as connection:
         assert connection.is_connected()

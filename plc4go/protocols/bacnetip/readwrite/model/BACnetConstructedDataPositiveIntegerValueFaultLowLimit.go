@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataPositiveIntegerValueFaultLowLimit) GetLengthInByt
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPositiveIntegerValueFaultLowLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueFaultLowLimit, error) {
+func BACnetConstructedDataPositiveIntegerValueFaultLowLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueFaultLowLimit, error) {
+	return BACnetConstructedDataPositiveIntegerValueFaultLowLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataPositiveIntegerValueFaultLowLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueFaultLowLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueFaultLowLimit"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataPositiveIntegerValueFaultLowLimitParse(readBuffer util
 	if pullErr := readBuffer.PullContext("faultLowLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for faultLowLimit")
 	}
-	_faultLowLimit, _faultLowLimitErr := BACnetApplicationTagParse(readBuffer)
+	_faultLowLimit, _faultLowLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _faultLowLimitErr != nil {
 		return nil, errors.Wrap(_faultLowLimitErr, "Error parsing 'faultLowLimit' field of BACnetConstructedDataPositiveIntegerValueFaultLowLimit")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataPositiveIntegerValueFaultLowLimitParse(readBuffer util
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueFaultLowLimit) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataPositiveIntegerValueFaultLowLimit) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueFaultLowLimit) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -134,7 +134,11 @@ func (m *_CBusPointToPointToMultiPointCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusPointToPointToMultiPointCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommand, error) {
+func CBusPointToPointToMultiPointCommandParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommand, error) {
+	return CBusPointToPointToMultiPointCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+}
+
+func CBusPointToPointToMultiPointCommandParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointToMultiPointCommand"); pullErr != nil {
@@ -147,7 +151,7 @@ func CBusPointToPointToMultiPointCommandParse(readBuffer utils.ReadBuffer, cBusO
 	if pullErr := readBuffer.PullContext("bridgeAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bridgeAddress")
 	}
-	_bridgeAddress, _bridgeAddressErr := BridgeAddressParse(readBuffer)
+	_bridgeAddress, _bridgeAddressErr := BridgeAddressParseWithBuffer(readBuffer)
 	if _bridgeAddressErr != nil {
 		return nil, errors.Wrap(_bridgeAddressErr, "Error parsing 'bridgeAddress' field of CBusPointToPointToMultiPointCommand")
 	}
@@ -160,7 +164,7 @@ func CBusPointToPointToMultiPointCommandParse(readBuffer utils.ReadBuffer, cBusO
 	if pullErr := readBuffer.PullContext("networkRoute"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkRoute")
 	}
-	_networkRoute, _networkRouteErr := NetworkRouteParse(readBuffer)
+	_networkRoute, _networkRouteErr := NetworkRouteParseWithBuffer(readBuffer)
 	if _networkRouteErr != nil {
 		return nil, errors.Wrap(_networkRouteErr, "Error parsing 'networkRoute' field of CBusPointToPointToMultiPointCommand")
 	}
@@ -189,9 +193,9 @@ func CBusPointToPointToMultiPointCommandParse(readBuffer utils.ReadBuffer, cBusO
 	var typeSwitchError error
 	switch {
 	case peekedApplication == 0xFF: // CBusPointToPointToMultiPointCommandStatus
-		_childTemp, typeSwitchError = CBusPointToPointToMultiPointCommandStatusParse(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = CBusPointToPointToMultiPointCommandStatusParseWithBuffer(readBuffer, cBusOptions)
 	case 0 == 0: // CBusPointToPointToMultiPointCommandNormal
-		_childTemp, typeSwitchError = CBusPointToPointToMultiPointCommandNormalParse(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = CBusPointToPointToMultiPointCommandNormalParseWithBuffer(readBuffer, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedApplication=%v]", peekedApplication)
 	}

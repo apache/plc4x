@@ -20,6 +20,13 @@
 package tests
 
 import (
+	"io"
+	"net/http"
+	"os"
+	"path"
+	"testing"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
@@ -29,12 +36,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports/pcap"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/require"
-	"io"
-	"net/http"
-	"os"
-	"path"
-	"testing"
-	"time"
 )
 
 func TestBacnetDriverWithPcap(t *testing.T) {
@@ -62,7 +63,7 @@ func TestBacnetDriverWithPcap(t *testing.T) {
 	connection := result.GetConnection()
 	defer connection.Close()
 	build, err := connection.SubscriptionRequestBuilder().
-		AddEventQuery("furz", "*/*/*").
+		AddEventTagAddress("furz", "*/*/*").
 		AddPreRegisteredConsumer("furz", func(event model.PlcSubscriptionEvent) {
 			println(event)
 		}).

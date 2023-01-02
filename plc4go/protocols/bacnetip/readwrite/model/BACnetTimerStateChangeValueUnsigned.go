@@ -122,7 +122,11 @@ func (m *_BACnetTimerStateChangeValueUnsigned) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimerStateChangeValueUnsignedParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueUnsigned, error) {
+func BACnetTimerStateChangeValueUnsignedParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueUnsigned, error) {
+	return BACnetTimerStateChangeValueUnsignedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+}
+
+func BACnetTimerStateChangeValueUnsignedParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueUnsigned, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueUnsigned"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetTimerStateChangeValueUnsignedParse(readBuffer utils.ReadBuffer, objec
 	if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unsignedValue")
 	}
-	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParse(readBuffer)
+	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _unsignedValueErr != nil {
 		return nil, errors.Wrap(_unsignedValueErr, "Error parsing 'unsignedValue' field of BACnetTimerStateChangeValueUnsigned")
 	}
@@ -159,7 +163,15 @@ func BACnetTimerStateChangeValueUnsignedParse(readBuffer utils.ReadBuffer, objec
 	return _child, nil
 }
 
-func (m *_BACnetTimerStateChangeValueUnsigned) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTimerStateChangeValueUnsigned) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetTimerStateChangeValueUnsigned) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

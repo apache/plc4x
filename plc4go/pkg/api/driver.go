@@ -21,10 +21,11 @@ package plc4go
 
 import (
 	"context"
+	"net/url"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"net/url"
 )
 
 type PlcDriver interface {
@@ -37,6 +38,8 @@ type PlcDriver interface {
 	// providing the transport code optional in the connection string
 	GetDefaultTransport() string
 
+	// CheckTagAddress Have the driver parse the query string and provide feedback if it's not a valid one
+	CheckTagAddress(tagAddress string) error
 	// CheckQuery Have the driver parse the query string and provide feedback if it's not a valid one
 	CheckQuery(query string) error
 

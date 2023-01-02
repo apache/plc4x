@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataOutOfService) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOutOfServiceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOutOfService, error) {
+func BACnetConstructedDataOutOfServiceParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOutOfService, error) {
+	return BACnetConstructedDataOutOfServiceParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataOutOfServiceParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOutOfService, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOutOfService"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataOutOfServiceParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("outOfService"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for outOfService")
 	}
-	_outOfService, _outOfServiceErr := BACnetApplicationTagParse(readBuffer)
+	_outOfService, _outOfServiceErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _outOfServiceErr != nil {
 		return nil, errors.Wrap(_outOfServiceErr, "Error parsing 'outOfService' field of BACnetConstructedDataOutOfService")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataOutOfServiceParse(readBuffer utils.ReadBuffer, tagNumb
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataOutOfService) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataOutOfService) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataOutOfService) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

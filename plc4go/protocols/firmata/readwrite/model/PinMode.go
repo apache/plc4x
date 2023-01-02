@@ -30,7 +30,7 @@ import (
 type PinMode uint8
 
 type IPinMode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -155,7 +155,11 @@ func (m PinMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func PinModeParse(readBuffer utils.ReadBuffer) (PinMode, error) {
+func PinModeParse(theBytes []byte) (PinMode, error) {
+	return PinModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func PinModeParseWithBuffer(readBuffer utils.ReadBuffer) (PinMode, error) {
 	val, err := readBuffer.ReadUint8("PinMode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading PinMode")
@@ -168,7 +172,15 @@ func PinModeParse(readBuffer utils.ReadBuffer) (PinMode, error) {
 	}
 }
 
-func (e PinMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e PinMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e PinMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("PinMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

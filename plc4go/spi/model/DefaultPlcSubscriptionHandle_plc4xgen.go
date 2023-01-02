@@ -22,13 +22,22 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var _ = fmt.Printf
 
-func (d *DefaultPlcSubscriptionHandle) Serialize(writeBuffer utils.WriteBuffer) error {
+func (d *DefaultPlcSubscriptionHandle) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := d.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (d *DefaultPlcSubscriptionHandle) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("PlcSubscriptionHandle"); err != nil {
 		return err
 	}
@@ -38,7 +47,7 @@ func (d *DefaultPlcSubscriptionHandle) Serialize(writeBuffer utils.WriteBuffer) 
 			if err := writeBuffer.PushContext("plcSubscriber"); err != nil {
 				return err
 			}
-			if err := serializableField.Serialize(writeBuffer); err != nil {
+			if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext("plcSubscriber"); err != nil {

@@ -128,7 +128,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 				}
 				var readBuffer utils.ReadBuffer
 				if byteOrder == binary.LittleEndian {
-					readBuffer = utils.NewLittleEndianReadBufferByteBased(rawInput)
+					readBuffer = utils.NewReadBufferByteBased(rawInput, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 				} else {
 					readBuffer = utils.NewReadBufferByteBased(rawInput)
 				}
@@ -171,7 +171,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 					// First try to use the native xml writer
 					serializable := msg.(utils.Serializable)
 					buffer := utils.NewXmlWriteBuffer()
-					if err := serializable.Serialize(buffer); err == nil {
+					if err := serializable.SerializeWithWriteBuffer(buffer); err == nil {
 						actualXml := buffer.GetXmlString()
 						if err := CompareResults([]byte(actualXml), []byte(referenceSerialized)); err != nil {
 							border := strings.Repeat("=", 100)
@@ -214,11 +214,11 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 				}
 				var writeBuffer utils.WriteBufferByteBased
 				if byteOrder == binary.LittleEndian {
-					writeBuffer = utils.NewLittleEndianWriteBufferByteBased()
+					writeBuffer = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 				} else {
 					writeBuffer = utils.NewWriteBufferByteBased()
 				}
-				err = s.Serialize(writeBuffer)
+				err = s.SerializeWithWriteBuffer(writeBuffer)
 				if !ok {
 					t.Error("Couldn't serialize message back to byte array")
 					return

@@ -122,7 +122,11 @@ func (m *_BACnetPropertyStatesDoorSecuredStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesDoorSecuredStatusParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorSecuredStatus, error) {
+func BACnetPropertyStatesDoorSecuredStatusParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesDoorSecuredStatus, error) {
+	return BACnetPropertyStatesDoorSecuredStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+}
+
+func BACnetPropertyStatesDoorSecuredStatusParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorSecuredStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesDoorSecuredStatus"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPropertyStatesDoorSecuredStatusParse(readBuffer utils.ReadBuffer, pee
 	if pullErr := readBuffer.PullContext("doorSecuredStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doorSecuredStatus")
 	}
-	_doorSecuredStatus, _doorSecuredStatusErr := BACnetDoorSecuredStatusTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_doorSecuredStatus, _doorSecuredStatusErr := BACnetDoorSecuredStatusTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _doorSecuredStatusErr != nil {
 		return nil, errors.Wrap(_doorSecuredStatusErr, "Error parsing 'doorSecuredStatus' field of BACnetPropertyStatesDoorSecuredStatus")
 	}
@@ -157,7 +161,15 @@ func BACnetPropertyStatesDoorSecuredStatusParse(readBuffer utils.ReadBuffer, pee
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesDoorSecuredStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesDoorSecuredStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesDoorSecuredStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

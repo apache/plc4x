@@ -103,7 +103,11 @@ func (m *_TDataIndividualReq) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TDataIndividualReqParse(readBuffer utils.ReadBuffer, size uint16) (TDataIndividualReq, error) {
+func TDataIndividualReqParse(theBytes []byte, size uint16) (TDataIndividualReq, error) {
+	return TDataIndividualReqParseWithBuffer(utils.NewReadBufferByteBased(theBytes), size)
+}
+
+func TDataIndividualReqParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (TDataIndividualReq, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TDataIndividualReq"); pullErr != nil {
@@ -126,7 +130,15 @@ func TDataIndividualReqParse(readBuffer utils.ReadBuffer, size uint16) (TDataInd
 	return _child, nil
 }
 
-func (m *_TDataIndividualReq) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TDataIndividualReq) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TDataIndividualReq) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

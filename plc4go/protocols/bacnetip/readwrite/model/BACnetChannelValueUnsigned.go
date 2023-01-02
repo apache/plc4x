@@ -122,7 +122,11 @@ func (m *_BACnetChannelValueUnsigned) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueUnsignedParse(readBuffer utils.ReadBuffer) (BACnetChannelValueUnsigned, error) {
+func BACnetChannelValueUnsignedParse(theBytes []byte) (BACnetChannelValueUnsigned, error) {
+	return BACnetChannelValueUnsignedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetChannelValueUnsignedParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueUnsigned, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueUnsigned"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetChannelValueUnsignedParse(readBuffer utils.ReadBuffer) (BACnetChannel
 	if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unsignedValue")
 	}
-	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParse(readBuffer)
+	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _unsignedValueErr != nil {
 		return nil, errors.Wrap(_unsignedValueErr, "Error parsing 'unsignedValue' field of BACnetChannelValueUnsigned")
 	}
@@ -157,7 +161,15 @@ func BACnetChannelValueUnsignedParse(readBuffer utils.ReadBuffer) (BACnetChannel
 	return _child, nil
 }
 
-func (m *_BACnetChannelValueUnsigned) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetChannelValueUnsigned) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetChannelValueUnsigned) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

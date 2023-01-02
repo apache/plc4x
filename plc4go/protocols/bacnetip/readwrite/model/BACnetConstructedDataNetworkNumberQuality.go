@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataNetworkNumberQuality) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNetworkNumberQualityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkNumberQuality, error) {
+func BACnetConstructedDataNetworkNumberQualityParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkNumberQuality, error) {
+	return BACnetConstructedDataNetworkNumberQualityParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataNetworkNumberQualityParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkNumberQuality, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkNumberQuality"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataNetworkNumberQualityParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("networkNumberQuality"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkNumberQuality")
 	}
-	_networkNumberQuality, _networkNumberQualityErr := BACnetNetworkNumberQualityTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_networkNumberQuality, _networkNumberQualityErr := BACnetNetworkNumberQualityTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _networkNumberQualityErr != nil {
 		return nil, errors.Wrap(_networkNumberQualityErr, "Error parsing 'networkNumberQuality' field of BACnetConstructedDataNetworkNumberQuality")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataNetworkNumberQualityParse(readBuffer utils.ReadBuffer,
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataNetworkNumberQuality) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataNetworkNumberQuality) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataNetworkNumberQuality) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

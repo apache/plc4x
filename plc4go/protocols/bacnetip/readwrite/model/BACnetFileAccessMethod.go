@@ -30,7 +30,7 @@ import (
 type BACnetFileAccessMethod uint8
 
 type IBACnetFileAccessMethod interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -95,7 +95,11 @@ func (m BACnetFileAccessMethod) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFileAccessMethodParse(readBuffer utils.ReadBuffer) (BACnetFileAccessMethod, error) {
+func BACnetFileAccessMethodParse(theBytes []byte) (BACnetFileAccessMethod, error) {
+	return BACnetFileAccessMethodParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetFileAccessMethodParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFileAccessMethod, error) {
 	val, err := readBuffer.ReadUint8("BACnetFileAccessMethod", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetFileAccessMethod")
@@ -108,7 +112,15 @@ func BACnetFileAccessMethodParse(readBuffer utils.ReadBuffer) (BACnetFileAccessM
 	}
 }
 
-func (e BACnetFileAccessMethod) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetFileAccessMethod) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetFileAccessMethod) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetFileAccessMethod", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

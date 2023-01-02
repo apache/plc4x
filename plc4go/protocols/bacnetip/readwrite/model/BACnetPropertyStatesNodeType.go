@@ -122,7 +122,11 @@ func (m *_BACnetPropertyStatesNodeType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesNodeTypeParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNodeType, error) {
+func BACnetPropertyStatesNodeTypeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesNodeType, error) {
+	return BACnetPropertyStatesNodeTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+}
+
+func BACnetPropertyStatesNodeTypeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNodeType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNodeType"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPropertyStatesNodeTypeParse(readBuffer utils.ReadBuffer, peekedTagNum
 	if pullErr := readBuffer.PullContext("nodeType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for nodeType")
 	}
-	_nodeType, _nodeTypeErr := BACnetNodeTypeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_nodeType, _nodeTypeErr := BACnetNodeTypeTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _nodeTypeErr != nil {
 		return nil, errors.Wrap(_nodeTypeErr, "Error parsing 'nodeType' field of BACnetPropertyStatesNodeType")
 	}
@@ -157,7 +161,15 @@ func BACnetPropertyStatesNodeTypeParse(readBuffer utils.ReadBuffer, peekedTagNum
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesNodeType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesNodeType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesNodeType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

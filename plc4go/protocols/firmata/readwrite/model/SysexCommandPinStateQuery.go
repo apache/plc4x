@@ -128,7 +128,11 @@ func (m *_SysexCommandPinStateQuery) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandPinStateQueryParse(readBuffer utils.ReadBuffer, response bool) (SysexCommandPinStateQuery, error) {
+func SysexCommandPinStateQueryParse(theBytes []byte, response bool) (SysexCommandPinStateQuery, error) {
+	return SysexCommandPinStateQueryParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+}
+
+func SysexCommandPinStateQueryParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandPinStateQuery, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandPinStateQuery"); pullErr != nil {
@@ -157,7 +161,15 @@ func SysexCommandPinStateQueryParse(readBuffer utils.ReadBuffer, response bool) 
 	return _child, nil
 }
 
-func (m *_SysexCommandPinStateQuery) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SysexCommandPinStateQuery) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SysexCommandPinStateQuery) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

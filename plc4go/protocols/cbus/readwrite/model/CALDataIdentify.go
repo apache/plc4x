@@ -123,7 +123,11 @@ func (m *_CALDataIdentify) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALDataIdentifyParse(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataIdentify, error) {
+func CALDataIdentifyParse(theBytes []byte, requestContext RequestContext) (CALDataIdentify, error) {
+	return CALDataIdentifyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), requestContext)
+}
+
+func CALDataIdentifyParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataIdentify, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataIdentify"); pullErr != nil {
@@ -136,7 +140,7 @@ func CALDataIdentifyParse(readBuffer utils.ReadBuffer, requestContext RequestCon
 	if pullErr := readBuffer.PullContext("attribute"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for attribute")
 	}
-	_attribute, _attributeErr := AttributeParse(readBuffer)
+	_attribute, _attributeErr := AttributeParseWithBuffer(readBuffer)
 	if _attributeErr != nil {
 		return nil, errors.Wrap(_attributeErr, "Error parsing 'attribute' field of CALDataIdentify")
 	}
@@ -160,7 +164,15 @@ func CALDataIdentifyParse(readBuffer utils.ReadBuffer, requestContext RequestCon
 	return _child, nil
 }
 
-func (m *_CALDataIdentify) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CALDataIdentify) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CALDataIdentify) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -137,7 +137,11 @@ func (m *_ModbusPDUReadDiscreteInputsResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUReadDiscreteInputsResponseParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadDiscreteInputsResponse, error) {
+func ModbusPDUReadDiscreteInputsResponseParse(theBytes []byte, response bool) (ModbusPDUReadDiscreteInputsResponse, error) {
+	return ModbusPDUReadDiscreteInputsResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+}
+
+func ModbusPDUReadDiscreteInputsResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadDiscreteInputsResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadDiscreteInputsResponse"); pullErr != nil {
@@ -172,7 +176,15 @@ func ModbusPDUReadDiscreteInputsResponseParse(readBuffer utils.ReadBuffer, respo
 	return _child, nil
 }
 
-func (m *_ModbusPDUReadDiscreteInputsResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUReadDiscreteInputsResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ModbusPDUReadDiscreteInputsResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

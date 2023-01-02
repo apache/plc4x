@@ -220,7 +220,11 @@ func (m *_SecurityDataEmulatedKeypad) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataEmulatedKeypadParse(readBuffer utils.ReadBuffer) (SecurityDataEmulatedKeypad, error) {
+func SecurityDataEmulatedKeypadParse(theBytes []byte) (SecurityDataEmulatedKeypad, error) {
+	return SecurityDataEmulatedKeypadParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SecurityDataEmulatedKeypadParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataEmulatedKeypad, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataEmulatedKeypad"); pullErr != nil {
@@ -304,7 +308,15 @@ func SecurityDataEmulatedKeypadParse(readBuffer utils.ReadBuffer) (SecurityDataE
 	return _child, nil
 }
 
-func (m *_SecurityDataEmulatedKeypad) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataEmulatedKeypad) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataEmulatedKeypad) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -122,7 +122,11 @@ func (m *_BACnetCalendarEntryDate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetCalendarEntryDateParse(readBuffer utils.ReadBuffer) (BACnetCalendarEntryDate, error) {
+func BACnetCalendarEntryDateParse(theBytes []byte) (BACnetCalendarEntryDate, error) {
+	return BACnetCalendarEntryDateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetCalendarEntryDateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCalendarEntryDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCalendarEntryDate"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetCalendarEntryDateParse(readBuffer utils.ReadBuffer) (BACnetCalendarEn
 	if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateValue")
 	}
-	_dateValue, _dateValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_DATE))
+	_dateValue, _dateValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_DATE))
 	if _dateValueErr != nil {
 		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetCalendarEntryDate")
 	}
@@ -157,7 +161,15 @@ func BACnetCalendarEntryDateParse(readBuffer utils.ReadBuffer) (BACnetCalendarEn
 	return _child, nil
 }
 
-func (m *_BACnetCalendarEntryDate) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetCalendarEntryDate) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetCalendarEntryDate) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

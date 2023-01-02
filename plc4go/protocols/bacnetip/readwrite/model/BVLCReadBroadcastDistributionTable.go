@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -103,7 +104,11 @@ func (m *_BVLCReadBroadcastDistributionTable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCReadBroadcastDistributionTableParse(readBuffer utils.ReadBuffer) (BVLCReadBroadcastDistributionTable, error) {
+func BVLCReadBroadcastDistributionTableParse(theBytes []byte) (BVLCReadBroadcastDistributionTable, error) {
+	return BVLCReadBroadcastDistributionTableParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+}
+
+func BVLCReadBroadcastDistributionTableParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCReadBroadcastDistributionTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCReadBroadcastDistributionTable"); pullErr != nil {
@@ -124,7 +129,15 @@ func BVLCReadBroadcastDistributionTableParse(readBuffer utils.ReadBuffer) (BVLCR
 	return _child, nil
 }
 
-func (m *_BVLCReadBroadcastDistributionTable) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BVLCReadBroadcastDistributionTable) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BVLCReadBroadcastDistributionTable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

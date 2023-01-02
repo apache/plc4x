@@ -30,7 +30,7 @@ import (
 type KnxLayer uint8
 
 type IKnxLayer interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -101,7 +101,11 @@ func (m KnxLayer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxLayerParse(readBuffer utils.ReadBuffer) (KnxLayer, error) {
+func KnxLayerParse(theBytes []byte) (KnxLayer, error) {
+	return KnxLayerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func KnxLayerParseWithBuffer(readBuffer utils.ReadBuffer) (KnxLayer, error) {
 	val, err := readBuffer.ReadUint8("KnxLayer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxLayer")
@@ -114,7 +118,15 @@ func KnxLayerParse(readBuffer utils.ReadBuffer) (KnxLayer, error) {
 	}
 }
 
-func (e KnxLayer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e KnxLayer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e KnxLayer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("KnxLayer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

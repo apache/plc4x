@@ -203,6 +203,7 @@
             <!-- Pass in to the build, if all tests should be run -->
             <ENABLE_ALL_TESTS>${enable-all-tests}</ENABLE_ALL_TESTS>
           </environmentVariables>
+          <excludedGroups>${excluded-test-groups}</excludedGroups>
         </configuration>
       </plugin>
 

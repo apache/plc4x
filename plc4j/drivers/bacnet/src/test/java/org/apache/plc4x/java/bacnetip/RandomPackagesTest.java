@@ -24,9 +24,11 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.bacnetip.readwrite.*;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.utils.Serializable;
+import org.apache.plc4x.java.spi.utils.ascii.AsciiBox;
+import org.apache.plc4x.java.spi.utils.ascii.AsciiBoxWriter;
 import org.apache.plc4x.java.spi.utils.hex.Hex;
-import org.apache.plc4x.test.RequireAllTestsFlag;
 import org.apache.plc4x.test.RequirePcapNg;
+import org.apache.plc4x.test.hex.HexDiff;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.presentation.HexadecimalRepresentation;
 import org.junit.jupiter.api.*;
@@ -54,7 +56,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 // Tests from http://kargs.net/captures
 @RequirePcapNg
-@RequireAllTestsFlag
+//@RequireAllTestsFlag
 @Tag("require-all-tests")
 @Tag("bacnet-regression")
 public class RandomPackagesTest {
@@ -641,7 +643,7 @@ public class RandomPackagesTest {
                 dump(bvlc);
                 NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                 APDUSimpleAck apduSimpleAck = (APDUSimpleAck) npdu.getApdu();
-                assertEquals(15, apduSimpleAck.getServiceChoice());
+                assertEquals(BACnetConfirmedServiceChoice.WRITE_PROPERTY, apduSimpleAck.getServiceChoice());
             }),
             DynamicTest.dynamicTest("No. 145-200 - Skip to 200 Misc packages",
                 () -> {
@@ -746,7 +748,7 @@ public class RandomPackagesTest {
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUSimpleAck apduSimpleAck = (APDUSimpleAck) npdu.getApdu();
                     assertEquals(119, apduSimpleAck.getOriginalInvokeId());
-                    assertEquals(2, apduSimpleAck.getServiceChoice());
+                    assertEquals(BACnetConfirmedServiceChoice.CONFIRMED_EVENT_NOTIFICATION, apduSimpleAck.getServiceChoice());
                 }),
             DynamicTest.dynamicTest("No. 3 - Confirmed-REQ   confirmedEventNotification[120] event-enrollment,11 analog-input,1",
                 () -> {
@@ -803,7 +805,7 @@ public class RandomPackagesTest {
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUSimpleAck apduSimpleAck = (APDUSimpleAck) npdu.getApdu();
                     assertEquals(120, apduSimpleAck.getOriginalInvokeId());
-                    assertEquals(2, apduSimpleAck.getServiceChoice());
+                    assertEquals(BACnetConfirmedServiceChoice.CONFIRMED_EVENT_NOTIFICATION, apduSimpleAck.getServiceChoice());
                 }),
             DynamicTest.dynamicTest("No. 5 - Unconfirmed-REQ who-Is 140 140",
                 () -> {
@@ -939,7 +941,7 @@ public class RandomPackagesTest {
                     dump(bvlc);
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUSimpleAck apduSimpleAck = (APDUSimpleAck) npdu.getApdu();
-                    assertEquals((short) 5, apduSimpleAck.getServiceChoice());
+                    assertEquals(BACnetConfirmedServiceChoice.SUBSCRIBE_COV, apduSimpleAck.getServiceChoice());
                 }),
             DynamicTest.dynamicTest("No. 3 - Unconfirmed-REQ unconfirmedCOVNotification device,12345 binary-input,0 present-value status-flags",
                 () -> {
@@ -2664,8 +2666,7 @@ public class RandomPackagesTest {
                             .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getMessageText)
                             .extracting(BACnetContextTagCharacterString::getPayload)
                             .extracting(BACnetTagPayloadCharacterString::getValue)
-                            // TODO: check if there is a general problem with bacnet string parsing as we should not read that null byte at the end
-                            .isEqualTo("BO_1\u0000");
+                            .isEqualTo("BO_1");
                         assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
                             .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getNotifyType)
                             .extracting(BACnetNotifyTypeTagged::getValue)
@@ -3604,7 +3605,7 @@ public class RandomPackagesTest {
                     .extracting(BVLCOriginalUnicastNPDU::getNpdu)
                     .extracting(NPDU::getApdu)
                     .asInstanceOf(InstanceOfAssertFactories.type(APDUSegmentAck.class))
-                    .extracting(APDUSegmentAck::getNegativeAck, APDUSegmentAck::getServer, APDUSegmentAck::getOriginalInvokeId, APDUSegmentAck::getSequenceNumber, APDUSegmentAck::getProposedWindowSize)
+                    .extracting(APDUSegmentAck::getNegativeAck, APDUSegmentAck::getServer, APDUSegmentAck::getOriginalInvokeId, APDUSegmentAck::getSequenceNumber, APDUSegmentAck::getActualWindowSize)
                     .containsExactly(false, false, (short) 195, (short) 0, (short) 16)),
             DynamicTest.dynamicTest("No. 6 - Complex-ACK     atomicReadFile[195]  (Message fragment 1)",
                 () -> assertThat(pcapEvaluator.nextBVLC())
@@ -3648,13 +3649,13 @@ public class RandomPackagesTest {
                     .extracting(BVLCOriginalUnicastNPDU::getNpdu)
                     .extracting(NPDU::getApdu)
                     .asInstanceOf(InstanceOfAssertFactories.type(APDUSegmentAck.class))
-                    .extracting(APDUSegmentAck::getNegativeAck, APDUSegmentAck::getServer, APDUSegmentAck::getOriginalInvokeId, APDUSegmentAck::getSequenceNumber, APDUSegmentAck::getProposedWindowSize)
+                    .extracting(APDUSegmentAck::getNegativeAck, APDUSegmentAck::getServer, APDUSegmentAck::getOriginalInvokeId, APDUSegmentAck::getSequenceNumber, APDUSegmentAck::getActualWindowSize)
                     .containsExactly(false, false, (short) 195, (short) 4, (short) 16)),
             DynamicTest.dynamicTest("Manually put together payload",
                 () -> assertThat(baos.toByteArray())
                     .satisfies(bytes -> {
                         LOGGER.info("Trying to parse\n{}", Hex.dump(bytes));
-                        BACnetServiceAckAtomicReadFile baCnetServiceAck = (BACnetServiceAckAtomicReadFile) BACnetServiceAckAtomicReadFile.staticParse(new ReadBufferByteBased(bytes), bytes.length);
+                        BACnetServiceAckAtomicReadFile baCnetServiceAck = (BACnetServiceAckAtomicReadFile) BACnetServiceAckAtomicReadFile.staticParse(new ReadBufferByteBased(bytes), (long) bytes.length);
                         assertThat(baCnetServiceAck)
                             .isNotNull()
                             .extracting(BACnetServiceAckAtomicReadFile::getAccessMethod)
@@ -6055,9 +6056,13 @@ public class RandomPackagesTest {
                         @SuppressWarnings("redundant")
                         byte[] expectedBytes = rawData;
                         byte[] actualBytes = writeBuffer.getBytes();
+                        if (!Arrays.equals(expectedBytes, actualBytes)) {
+                            // This goes to std out on purpose to preserve coloring
+                            System.out.println(HexDiff.diffHex(expectedBytes, actualBytes));
+                        }
                         assertThat(actualBytes)
                             .withRepresentation(HexadecimalRepresentation.HEXA_REPRESENTATION)
-                            .describedAs("re-serialized output doesn't match original bytes:%s", bvlc)
+                            .describedAs("re-serialized output doesn't match original bytes:%s\n", bvlc)
                             .isEqualTo(expectedBytes);
                     }
                 } else {
@@ -6097,7 +6102,7 @@ public class RandomPackagesTest {
             File pcapFile = FileSystems.getDefault().getPath(tempDirectory, RandomPackagesTest.class.getSimpleName(), file).toFile();
             FileUtils.createParentDirectories(pcapFile);
             if (!pcapFile.exists()) {
-                URL source = new URL("http://kargs.net/captures/" + file);
+                URL source = new URL("https://kargs.net/captures/" + file);
                 LOGGER.info("Downloading {}", source);
                 FileUtils.copyURLToFile(source, pcapFile);
             }

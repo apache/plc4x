@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataInactiveText) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataInactiveTextParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInactiveText, error) {
+func BACnetConstructedDataInactiveTextParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInactiveText, error) {
+	return BACnetConstructedDataInactiveTextParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataInactiveTextParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInactiveText, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInactiveText"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataInactiveTextParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("inactiveText"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for inactiveText")
 	}
-	_inactiveText, _inactiveTextErr := BACnetApplicationTagParse(readBuffer)
+	_inactiveText, _inactiveTextErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _inactiveTextErr != nil {
 		return nil, errors.Wrap(_inactiveTextErr, "Error parsing 'inactiveText' field of BACnetConstructedDataInactiveText")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataInactiveTextParse(readBuffer utils.ReadBuffer, tagNumb
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataInactiveText) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataInactiveText) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataInactiveText) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

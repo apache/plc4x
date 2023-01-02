@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataLargeAnalogValueFaultLowLimit) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLargeAnalogValueFaultLowLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueFaultLowLimit, error) {
+func BACnetConstructedDataLargeAnalogValueFaultLowLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueFaultLowLimit, error) {
+	return BACnetConstructedDataLargeAnalogValueFaultLowLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataLargeAnalogValueFaultLowLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueFaultLowLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLargeAnalogValueFaultLowLimit"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataLargeAnalogValueFaultLowLimitParse(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("faultLowLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for faultLowLimit")
 	}
-	_faultLowLimit, _faultLowLimitErr := BACnetApplicationTagParse(readBuffer)
+	_faultLowLimit, _faultLowLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _faultLowLimitErr != nil {
 		return nil, errors.Wrap(_faultLowLimitErr, "Error parsing 'faultLowLimit' field of BACnetConstructedDataLargeAnalogValueFaultLowLimit")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataLargeAnalogValueFaultLowLimitParse(readBuffer utils.Re
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataLargeAnalogValueFaultLowLimit) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLargeAnalogValueFaultLowLimit) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueFaultLowLimit) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

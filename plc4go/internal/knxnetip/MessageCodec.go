@@ -24,7 +24,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -56,14 +55,13 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	// Cast the message to the correct type of struct
 	knxMessage := message.(model.KnxNetIpMessage)
 	// Serialize the request
-	wb := utils.NewWriteBufferByteBased()
-	err := knxMessage.Serialize(wb)
+	theBytes, err := knxMessage.Serialize()
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(wb.GetBytes())
+	err = m.GetTransportInstance().Write(theBytes)
 	if err != nil {
 		return errors.Wrap(err, "error sending request ")
 	}
@@ -92,8 +90,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		rb := utils.NewReadBufferByteBased(data)
-		knxMessage, err := model.KnxNetIpMessageParse(rb)
+		knxMessage, err := model.KnxNetIpMessageParse(data)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing message")
 			// TODO: Possibly clean up ...

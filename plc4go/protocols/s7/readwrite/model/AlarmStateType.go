@@ -30,7 +30,7 @@ import (
 type AlarmStateType uint8
 
 type IAlarmStateType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -119,7 +119,11 @@ func (m AlarmStateType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmStateTypeParse(readBuffer utils.ReadBuffer) (AlarmStateType, error) {
+func AlarmStateTypeParse(theBytes []byte) (AlarmStateType, error) {
+	return AlarmStateTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AlarmStateTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmStateType, error) {
 	val, err := readBuffer.ReadUint8("AlarmStateType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AlarmStateType")
@@ -132,7 +136,15 @@ func AlarmStateTypeParse(readBuffer utils.ReadBuffer) (AlarmStateType, error) {
 	}
 }
 
-func (e AlarmStateType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e AlarmStateType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e AlarmStateType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("AlarmStateType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

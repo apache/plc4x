@@ -126,7 +126,11 @@ func (m *_SALDataIrrigationControl) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataIrrigationControlParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataIrrigationControl, error) {
+func SALDataIrrigationControlParse(theBytes []byte, applicationId ApplicationId) (SALDataIrrigationControl, error) {
+	return SALDataIrrigationControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+}
+
+func SALDataIrrigationControlParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataIrrigationControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataIrrigationControl"); pullErr != nil {
@@ -139,7 +143,7 @@ func SALDataIrrigationControlParse(readBuffer utils.ReadBuffer, applicationId Ap
 	if pullErr := readBuffer.PullContext("irrigationControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for irrigationControlData")
 	}
-	_irrigationControlData, _irrigationControlDataErr := LightingDataParse(readBuffer)
+	_irrigationControlData, _irrigationControlDataErr := LightingDataParseWithBuffer(readBuffer)
 	if _irrigationControlDataErr != nil {
 		return nil, errors.Wrap(_irrigationControlDataErr, "Error parsing 'irrigationControlData' field of SALDataIrrigationControl")
 	}
@@ -161,7 +165,15 @@ func SALDataIrrigationControlParse(readBuffer utils.ReadBuffer, applicationId Ap
 	return _child, nil
 }
 
-func (m *_SALDataIrrigationControl) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataIrrigationControl) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SALDataIrrigationControl) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

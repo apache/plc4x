@@ -122,7 +122,11 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) GetL
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier, error) {
+	return BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParse(readB
 	if pullErr := readBuffer.PullContext("objectidentifierValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectidentifierValue")
 	}
-	_objectidentifierValue, _objectidentifierValueErr := BACnetApplicationTagParse(readBuffer)
+	_objectidentifierValue, _objectidentifierValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _objectidentifierValueErr != nil {
 		return nil, errors.Wrap(_objectidentifierValueErr, "Error parsing 'objectidentifierValue' field of BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier")
 	}
@@ -157,7 +161,15 @@ func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParse(readB
 	return _child, nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

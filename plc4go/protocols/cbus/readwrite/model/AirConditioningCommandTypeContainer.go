@@ -30,9 +30,9 @@ import (
 type AirConditioningCommandTypeContainer uint8
 
 type IAirConditioningCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() AirConditioningCommandType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -386,7 +386,11 @@ func (m AirConditioningCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AirConditioningCommandTypeContainerParse(readBuffer utils.ReadBuffer) (AirConditioningCommandTypeContainer, error) {
+func AirConditioningCommandTypeContainerParse(theBytes []byte) (AirConditioningCommandTypeContainer, error) {
+	return AirConditioningCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AirConditioningCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("AirConditioningCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AirConditioningCommandTypeContainer")
@@ -399,7 +403,15 @@ func AirConditioningCommandTypeContainerParse(readBuffer utils.ReadBuffer) (AirC
 	}
 }
 
-func (e AirConditioningCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e AirConditioningCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e AirConditioningCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("AirConditioningCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

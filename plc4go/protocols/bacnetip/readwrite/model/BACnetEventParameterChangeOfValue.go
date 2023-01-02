@@ -155,7 +155,11 @@ func (m *_BACnetEventParameterChangeOfValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventParameterChangeOfValueParse(readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfValue, error) {
+func BACnetEventParameterChangeOfValueParse(theBytes []byte) (BACnetEventParameterChangeOfValue, error) {
+	return BACnetEventParameterChangeOfValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetEventParameterChangeOfValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfValue"); pullErr != nil {
@@ -168,7 +172,7 @@ func BACnetEventParameterChangeOfValueParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(2)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(2)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfValue")
 	}
@@ -181,7 +185,7 @@ func BACnetEventParameterChangeOfValueParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
 	}
-	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
 		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterChangeOfValue")
 	}
@@ -194,7 +198,7 @@ func BACnetEventParameterChangeOfValueParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("covCriteria"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for covCriteria")
 	}
-	_covCriteria, _covCriteriaErr := BACnetEventParameterChangeOfValueCivCriteriaParse(readBuffer, uint8(uint8(1)))
+	_covCriteria, _covCriteriaErr := BACnetEventParameterChangeOfValueCivCriteriaParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _covCriteriaErr != nil {
 		return nil, errors.Wrap(_covCriteriaErr, "Error parsing 'covCriteria' field of BACnetEventParameterChangeOfValue")
 	}
@@ -207,7 +211,7 @@ func BACnetEventParameterChangeOfValueParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(2)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(2)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfValue")
 	}
@@ -232,7 +236,15 @@ func BACnetEventParameterChangeOfValueParse(readBuffer utils.ReadBuffer) (BACnet
 	return _child, nil
 }
 
-func (m *_BACnetEventParameterChangeOfValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventParameterChangeOfValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetEventParameterChangeOfValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

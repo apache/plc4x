@@ -30,7 +30,7 @@ import (
 type BACnetNodeType uint8
 
 type IBACnetNodeType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -215,7 +215,11 @@ func (m BACnetNodeType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNodeTypeParse(readBuffer utils.ReadBuffer) (BACnetNodeType, error) {
+func BACnetNodeTypeParse(theBytes []byte) (BACnetNodeType, error) {
+	return BACnetNodeTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetNodeTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNodeType, error) {
 	val, err := readBuffer.ReadUint8("BACnetNodeType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetNodeType")
@@ -228,7 +232,15 @@ func BACnetNodeTypeParse(readBuffer utils.ReadBuffer) (BACnetNodeType, error) {
 	}
 }
 
-func (e BACnetNodeType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetNodeType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetNodeType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetNodeType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -103,7 +103,11 @@ func (m *_ApduDataExtLinkRead) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtLinkReadParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtLinkRead, error) {
+func ApduDataExtLinkReadParse(theBytes []byte, length uint8) (ApduDataExtLinkRead, error) {
+	return ApduDataExtLinkReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes), length)
+}
+
+func ApduDataExtLinkReadParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtLinkRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtLinkRead"); pullErr != nil {
@@ -126,7 +130,15 @@ func ApduDataExtLinkReadParse(readBuffer utils.ReadBuffer, length uint8) (ApduDa
 	return _child, nil
 }
 
-func (m *_ApduDataExtLinkRead) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataExtLinkRead) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApduDataExtLinkRead) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

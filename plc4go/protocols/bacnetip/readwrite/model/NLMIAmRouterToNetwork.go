@@ -31,8 +31,8 @@ type NLMIAmRouterToNetwork interface {
 	utils.LengthAware
 	utils.Serializable
 	NLM
-	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
-	GetDestinationNetworkAddress() []uint16
+	// GetDestinationNetworkAddresses returns DestinationNetworkAddresses (property field)
+	GetDestinationNetworkAddresses() []uint16
 }
 
 // NLMIAmRouterToNetworkExactly can be used when we want exactly this type and not a type which fulfills NLMIAmRouterToNetwork.
@@ -45,7 +45,7 @@ type NLMIAmRouterToNetworkExactly interface {
 // _NLMIAmRouterToNetwork is the data-structure of this message
 type _NLMIAmRouterToNetwork struct {
 	*_NLM
-	DestinationNetworkAddress []uint16
+	DestinationNetworkAddresses []uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -62,9 +62,7 @@ func (m *_NLMIAmRouterToNetwork) GetMessageType() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_NLMIAmRouterToNetwork) InitializeParent(parent NLM, vendorId *BACnetVendorId) {
-	m.VendorId = vendorId
-}
+func (m *_NLMIAmRouterToNetwork) InitializeParent(parent NLM) {}
 
 func (m *_NLMIAmRouterToNetwork) GetParent() NLM {
 	return m._NLM
@@ -75,8 +73,8 @@ func (m *_NLMIAmRouterToNetwork) GetParent() NLM {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_NLMIAmRouterToNetwork) GetDestinationNetworkAddress() []uint16 {
-	return m.DestinationNetworkAddress
+func (m *_NLMIAmRouterToNetwork) GetDestinationNetworkAddresses() []uint16 {
+	return m.DestinationNetworkAddresses
 }
 
 ///////////////////////
@@ -85,10 +83,10 @@ func (m *_NLMIAmRouterToNetwork) GetDestinationNetworkAddress() []uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewNLMIAmRouterToNetwork factory function for _NLMIAmRouterToNetwork
-func NewNLMIAmRouterToNetwork(destinationNetworkAddress []uint16, vendorId *BACnetVendorId, apduLength uint16) *_NLMIAmRouterToNetwork {
+func NewNLMIAmRouterToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMIAmRouterToNetwork {
 	_result := &_NLMIAmRouterToNetwork{
-		DestinationNetworkAddress: destinationNetworkAddress,
-		_NLM:                      NewNLM(vendorId, apduLength),
+		DestinationNetworkAddresses: destinationNetworkAddresses,
+		_NLM:                        NewNLM(apduLength),
 	}
 	_result._NLM._NLMChildRequirements = _result
 	return _result
@@ -117,8 +115,8 @@ func (m *_NLMIAmRouterToNetwork) GetLengthInBitsConditional(lastItem bool) uint1
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
-	if len(m.DestinationNetworkAddress) > 0 {
-		lengthInBits += 16 * uint16(len(m.DestinationNetworkAddress))
+	if len(m.DestinationNetworkAddresses) > 0 {
+		lengthInBits += 16 * uint16(len(m.DestinationNetworkAddresses))
 	}
 
 	return lengthInBits
@@ -128,7 +126,11 @@ func (m *_NLMIAmRouterToNetwork) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func NLMIAmRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMIAmRouterToNetwork, error) {
+func NLMIAmRouterToNetworkParse(theBytes []byte, apduLength uint16) (NLMIAmRouterToNetwork, error) {
+	return NLMIAmRouterToNetworkParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+}
+
+func NLMIAmRouterToNetworkParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMIAmRouterToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMIAmRouterToNetwork"); pullErr != nil {
@@ -137,25 +139,25 @@ func NLMIAmRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (destinationNetworkAddress)
-	if pullErr := readBuffer.PullContext("destinationNetworkAddress", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for destinationNetworkAddress")
+	// Array field (destinationNetworkAddresses)
+	if pullErr := readBuffer.PullContext("destinationNetworkAddresses", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for destinationNetworkAddresses")
 	}
 	// Length array
-	var destinationNetworkAddress []uint16
+	var destinationNetworkAddresses []uint16
 	{
-		_destinationNetworkAddressLength := uint16(apduLength) - uint16((utils.InlineIf((bool((bool((messageType) >= (128)))) && bool((bool((messageType) <= (255))))), func() interface{} { return uint16(uint16(3)) }, func() interface{} { return uint16(uint16(1)) }).(uint16)))
-		_destinationNetworkAddressEndPos := positionAware.GetPos() + uint16(_destinationNetworkAddressLength)
-		for positionAware.GetPos() < _destinationNetworkAddressEndPos {
+		_destinationNetworkAddressesLength := uint16(apduLength) - uint16(uint16(1))
+		_destinationNetworkAddressesEndPos := positionAware.GetPos() + uint16(_destinationNetworkAddressesLength)
+		for positionAware.GetPos() < _destinationNetworkAddressesEndPos {
 			_item, _err := readBuffer.ReadUint16("", 16)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field of NLMIAmRouterToNetwork")
+				return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddresses' field of NLMIAmRouterToNetwork")
 			}
-			destinationNetworkAddress = append(destinationNetworkAddress, _item)
+			destinationNetworkAddresses = append(destinationNetworkAddresses, _item)
 		}
 	}
-	if closeErr := readBuffer.CloseContext("destinationNetworkAddress", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for destinationNetworkAddress")
+	if closeErr := readBuffer.CloseContext("destinationNetworkAddresses", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for destinationNetworkAddresses")
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMIAmRouterToNetwork"); closeErr != nil {
@@ -167,13 +169,21 @@ func NLMIAmRouterToNetworkParse(readBuffer utils.ReadBuffer, apduLength uint16, 
 		_NLM: &_NLM{
 			ApduLength: apduLength,
 		},
-		DestinationNetworkAddress: destinationNetworkAddress,
+		DestinationNetworkAddresses: destinationNetworkAddresses,
 	}
 	_child._NLM._NLMChildRequirements = _child
 	return _child, nil
 }
 
-func (m *_NLMIAmRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_NLMIAmRouterToNetwork) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_NLMIAmRouterToNetwork) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,18 +191,18 @@ func (m *_NLMIAmRouterToNetwork) Serialize(writeBuffer utils.WriteBuffer) error 
 			return errors.Wrap(pushErr, "Error pushing for NLMIAmRouterToNetwork")
 		}
 
-		// Array Field (destinationNetworkAddress)
-		if pushErr := writeBuffer.PushContext("destinationNetworkAddress", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for destinationNetworkAddress")
+		// Array Field (destinationNetworkAddresses)
+		if pushErr := writeBuffer.PushContext("destinationNetworkAddresses", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for destinationNetworkAddresses")
 		}
-		for _, _element := range m.GetDestinationNetworkAddress() {
+		for _, _element := range m.GetDestinationNetworkAddresses() {
 			_elementErr := writeBuffer.WriteUint16("", 16, _element)
 			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'destinationNetworkAddress' field")
+				return errors.Wrap(_elementErr, "Error serializing 'destinationNetworkAddresses' field")
 			}
 		}
-		if popErr := writeBuffer.PopContext("destinationNetworkAddress", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for destinationNetworkAddress")
+		if popErr := writeBuffer.PopContext("destinationNetworkAddresses", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for destinationNetworkAddresses")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMIAmRouterToNetwork"); popErr != nil {

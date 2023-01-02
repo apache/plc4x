@@ -127,7 +127,11 @@ func (m *_BACnetLogRecordLogDatumAnyValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogRecordLogDatumAnyValueParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumAnyValue, error) {
+func BACnetLogRecordLogDatumAnyValueParse(theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumAnyValue, error) {
+	return BACnetLogRecordLogDatumAnyValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+}
+
+func BACnetLogRecordLogDatumAnyValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumAnyValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumAnyValue"); pullErr != nil {
@@ -143,7 +147,7 @@ func BACnetLogRecordLogDatumAnyValueParse(readBuffer utils.ReadBuffer, tagNumber
 		if pullErr := readBuffer.PullContext("anyValue"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for anyValue")
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(10), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
+		_val, _err := BACnetConstructedDataParseWithBuffer(readBuffer, uint8(10), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -173,7 +177,15 @@ func BACnetLogRecordLogDatumAnyValueParse(readBuffer utils.ReadBuffer, tagNumber
 	return _child, nil
 }
 
-func (m *_BACnetLogRecordLogDatumAnyValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogRecordLogDatumAnyValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLogRecordLogDatumAnyValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

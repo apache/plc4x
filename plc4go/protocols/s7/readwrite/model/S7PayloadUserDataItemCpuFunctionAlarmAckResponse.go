@@ -151,7 +151,11 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmAckResponse, error) {
+func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmAckResponse, error) {
+	return S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
+}
+
+func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmAckResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmAckResponse"); pullErr != nil {
@@ -211,7 +215,15 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.Read
 	return _child, nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

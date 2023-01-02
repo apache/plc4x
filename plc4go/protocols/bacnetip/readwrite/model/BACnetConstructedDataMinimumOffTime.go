@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataMinimumOffTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMinimumOffTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOffTime, error) {
+func BACnetConstructedDataMinimumOffTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOffTime, error) {
+	return BACnetConstructedDataMinimumOffTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataMinimumOffTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOffTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinimumOffTime"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataMinimumOffTimeParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("minimumOffTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for minimumOffTime")
 	}
-	_minimumOffTime, _minimumOffTimeErr := BACnetApplicationTagParse(readBuffer)
+	_minimumOffTime, _minimumOffTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _minimumOffTimeErr != nil {
 		return nil, errors.Wrap(_minimumOffTimeErr, "Error parsing 'minimumOffTime' field of BACnetConstructedDataMinimumOffTime")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataMinimumOffTimeParse(readBuffer utils.ReadBuffer, tagNu
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataMinimumOffTime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMinimumOffTime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataMinimumOffTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

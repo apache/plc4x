@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataAnalogValueRelinquishDefault) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAnalogValueRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogValueRelinquishDefault, error) {
+func BACnetConstructedDataAnalogValueRelinquishDefaultParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogValueRelinquishDefault, error) {
+	return BACnetConstructedDataAnalogValueRelinquishDefaultParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataAnalogValueRelinquishDefaultParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogValueRelinquishDefault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAnalogValueRelinquishDefault"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataAnalogValueRelinquishDefaultParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("relinquishDefault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for relinquishDefault")
 	}
-	_relinquishDefault, _relinquishDefaultErr := BACnetApplicationTagParse(readBuffer)
+	_relinquishDefault, _relinquishDefaultErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _relinquishDefaultErr != nil {
 		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field of BACnetConstructedDataAnalogValueRelinquishDefault")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataAnalogValueRelinquishDefaultParse(readBuffer utils.Rea
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataAnalogValueRelinquishDefault) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAnalogValueRelinquishDefault) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataAnalogValueRelinquishDefault) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

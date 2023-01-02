@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataNextStoppingFloor) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNextStoppingFloorParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNextStoppingFloor, error) {
+func BACnetConstructedDataNextStoppingFloorParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNextStoppingFloor, error) {
+	return BACnetConstructedDataNextStoppingFloorParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataNextStoppingFloorParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNextStoppingFloor, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNextStoppingFloor"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataNextStoppingFloorParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("nextStoppingFloor"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for nextStoppingFloor")
 	}
-	_nextStoppingFloor, _nextStoppingFloorErr := BACnetApplicationTagParse(readBuffer)
+	_nextStoppingFloor, _nextStoppingFloorErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _nextStoppingFloorErr != nil {
 		return nil, errors.Wrap(_nextStoppingFloorErr, "Error parsing 'nextStoppingFloor' field of BACnetConstructedDataNextStoppingFloor")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataNextStoppingFloorParse(readBuffer utils.ReadBuffer, ta
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataNextStoppingFloor) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataNextStoppingFloor) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataNextStoppingFloor) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

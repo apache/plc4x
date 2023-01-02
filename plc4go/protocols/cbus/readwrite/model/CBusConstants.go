@@ -98,7 +98,11 @@ func (m *_CBusConstants) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusConstantsParse(readBuffer utils.ReadBuffer) (CBusConstants, error) {
+func CBusConstantsParse(theBytes []byte) (CBusConstants, error) {
+	return CBusConstantsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func CBusConstantsParseWithBuffer(readBuffer utils.ReadBuffer) (CBusConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusConstants"); pullErr != nil {
@@ -124,7 +128,15 @@ func CBusConstantsParse(readBuffer utils.ReadBuffer) (CBusConstants, error) {
 	return &_CBusConstants{}, nil
 }
 
-func (m *_CBusConstants) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusConstants) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CBusConstants) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CBusConstants"); pushErr != nil {

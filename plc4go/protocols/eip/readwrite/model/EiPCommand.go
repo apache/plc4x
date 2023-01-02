@@ -30,7 +30,7 @@ import (
 type EiPCommand uint16
 
 type IEiPCommand interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -101,7 +101,11 @@ func (m EiPCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func EiPCommandParse(readBuffer utils.ReadBuffer) (EiPCommand, error) {
+func EiPCommandParse(theBytes []byte) (EiPCommand, error) {
+	return EiPCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func EiPCommandParseWithBuffer(readBuffer utils.ReadBuffer) (EiPCommand, error) {
 	val, err := readBuffer.ReadUint16("EiPCommand", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading EiPCommand")
@@ -114,7 +118,15 @@ func EiPCommandParse(readBuffer utils.ReadBuffer) (EiPCommand, error) {
 	}
 }
 
-func (e EiPCommand) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e EiPCommand) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e EiPCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("EiPCommand", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

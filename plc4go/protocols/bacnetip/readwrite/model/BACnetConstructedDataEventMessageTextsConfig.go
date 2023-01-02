@@ -199,7 +199,11 @@ func (m *_BACnetConstructedDataEventMessageTextsConfig) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEventMessageTextsConfigParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventMessageTextsConfig, error) {
+func BACnetConstructedDataEventMessageTextsConfigParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventMessageTextsConfig, error) {
+	return BACnetConstructedDataEventMessageTextsConfigParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataEventMessageTextsConfigParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventMessageTextsConfig, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventMessageTextsConfig"); pullErr != nil {
@@ -220,7 +224,7 @@ func BACnetConstructedDataEventMessageTextsConfigParse(readBuffer utils.ReadBuff
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
-		_val, _err := BACnetApplicationTagParse(readBuffer)
+		_val, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -243,12 +247,11 @@ func BACnetConstructedDataEventMessageTextsConfigParse(readBuffer utils.ReadBuff
 	var eventMessageTextsConfig []BACnetOptionalCharacterString
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetOptionalCharacterStringParse(readBuffer)
+			_item, _err := BACnetOptionalCharacterStringParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'eventMessageTextsConfig' field of BACnetConstructedDataEventMessageTextsConfig")
 			}
 			eventMessageTextsConfig = append(eventMessageTextsConfig, _item.(BACnetOptionalCharacterString))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("eventMessageTextsConfig", utils.WithRenderAsList(true)); closeErr != nil {
@@ -292,7 +295,15 @@ func BACnetConstructedDataEventMessageTextsConfigParse(readBuffer utils.ReadBuff
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataEventMessageTextsConfig) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataEventMessageTextsConfig) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataEventMessageTextsConfig) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

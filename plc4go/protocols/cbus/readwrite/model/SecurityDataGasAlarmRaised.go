@@ -102,7 +102,11 @@ func (m *_SecurityDataGasAlarmRaised) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataGasAlarmRaisedParse(readBuffer utils.ReadBuffer) (SecurityDataGasAlarmRaised, error) {
+func SecurityDataGasAlarmRaisedParse(theBytes []byte) (SecurityDataGasAlarmRaised, error) {
+	return SecurityDataGasAlarmRaisedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SecurityDataGasAlarmRaisedParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataGasAlarmRaised, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataGasAlarmRaised"); pullErr != nil {
@@ -123,7 +127,15 @@ func SecurityDataGasAlarmRaisedParse(readBuffer utils.ReadBuffer) (SecurityDataG
 	return _child, nil
 }
 
-func (m *_SecurityDataGasAlarmRaised) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataGasAlarmRaised) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataGasAlarmRaised) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

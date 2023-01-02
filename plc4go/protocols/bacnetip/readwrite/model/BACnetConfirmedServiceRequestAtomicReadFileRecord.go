@@ -135,7 +135,11 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecord) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAtomicReadFileRecordParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestAtomicReadFileRecord, error) {
+func BACnetConfirmedServiceRequestAtomicReadFileRecordParse(theBytes []byte) (BACnetConfirmedServiceRequestAtomicReadFileRecord, error) {
+	return BACnetConfirmedServiceRequestAtomicReadFileRecordParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetConfirmedServiceRequestAtomicReadFileRecordParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestAtomicReadFileRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicReadFileRecord"); pullErr != nil {
@@ -148,7 +152,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileRecordParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("fileStartRecord"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileStartRecord")
 	}
-	_fileStartRecord, _fileStartRecordErr := BACnetApplicationTagParse(readBuffer)
+	_fileStartRecord, _fileStartRecordErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _fileStartRecordErr != nil {
 		return nil, errors.Wrap(_fileStartRecordErr, "Error parsing 'fileStartRecord' field of BACnetConfirmedServiceRequestAtomicReadFileRecord")
 	}
@@ -161,7 +165,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileRecordParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("requestRecordCount"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for requestRecordCount")
 	}
-	_requestRecordCount, _requestRecordCountErr := BACnetApplicationTagParse(readBuffer)
+	_requestRecordCount, _requestRecordCountErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _requestRecordCountErr != nil {
 		return nil, errors.Wrap(_requestRecordCountErr, "Error parsing 'requestRecordCount' field of BACnetConfirmedServiceRequestAtomicReadFileRecord")
 	}
@@ -184,7 +188,15 @@ func BACnetConfirmedServiceRequestAtomicReadFileRecordParse(readBuffer utils.Rea
 	return _child, nil
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecord) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecord) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecord) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

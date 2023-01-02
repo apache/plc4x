@@ -99,7 +99,11 @@ func (m *_S7ParameterUserDataItem) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterUserDataItemParse(readBuffer utils.ReadBuffer) (S7ParameterUserDataItem, error) {
+func S7ParameterUserDataItemParse(theBytes []byte) (S7ParameterUserDataItem, error) {
+	return S7ParameterUserDataItemParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func S7ParameterUserDataItemParseWithBuffer(readBuffer utils.ReadBuffer) (S7ParameterUserDataItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterUserDataItem"); pullErr != nil {
@@ -125,7 +129,7 @@ func S7ParameterUserDataItemParse(readBuffer utils.ReadBuffer) (S7ParameterUserD
 	var typeSwitchError error
 	switch {
 	case itemType == 0x12: // S7ParameterUserDataItemCPUFunctions
-		_childTemp, typeSwitchError = S7ParameterUserDataItemCPUFunctionsParse(readBuffer)
+		_childTemp, typeSwitchError = S7ParameterUserDataItemCPUFunctionsParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [itemType=%v]", itemType)
 	}

@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataAverageValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAverageValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAverageValue, error) {
+func BACnetConstructedDataAverageValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAverageValue, error) {
+	return BACnetConstructedDataAverageValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataAverageValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAverageValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAverageValue"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataAverageValueParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("averageValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for averageValue")
 	}
-	_averageValue, _averageValueErr := BACnetApplicationTagParse(readBuffer)
+	_averageValue, _averageValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _averageValueErr != nil {
 		return nil, errors.Wrap(_averageValueErr, "Error parsing 'averageValue' field of BACnetConstructedDataAverageValue")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataAverageValueParse(readBuffer utils.ReadBuffer, tagNumb
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataAverageValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAverageValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataAverageValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

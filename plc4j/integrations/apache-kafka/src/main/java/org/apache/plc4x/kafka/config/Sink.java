@@ -26,7 +26,6 @@ import org.apache.kafka.common.config.ConfigException;
 
 import java.util.Map;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class Sink extends AbstractConfig{
@@ -36,7 +35,7 @@ public class Sink extends AbstractConfig{
     private final String topic;
     private final Integer retries;
     private final Integer timeout;
-    private final List<Field> fields;
+    private final List<Tag> tags;
 
     public Sink(String name, Map originals) {
         super(configDef(), originals);
@@ -46,9 +45,9 @@ public class Sink extends AbstractConfig{
         this.retries = getInt(Constants.RETRIES_CONFIG);
         this.timeout = getInt(Constants.TIMEOUT_CONFIG);
 
-        fields = new ArrayList<>(getList(Constants.FIELDS_CONFIG).size());
-        for (String field : getList(Constants.FIELDS_CONFIG)) {
-            fields.add(new Field(field, (String) originals.get(Constants.FIELDS_CONFIG + "." + field)));
+        tags = new ArrayList<>(getList(Constants.TAGS_CONFIG).size());
+        for (String tagName : getList(Constants.TAGS_CONFIG)) {
+            tags.add(new Tag(tagName, (String) originals.get(Constants.TAGS_CONFIG + "." + tagName)));
         }
     }
 
@@ -63,8 +62,8 @@ public class Sink extends AbstractConfig{
             throw new ConfigException(
                 String.format("Connection String format is incorrect %s ", Constants.SINKS_CONFIG + "." + this.name + "." + Constants.CONNECTION_STRING_CONFIG + "=" + connectionString));
         }
-        for (Field field : fields) {
-            field.validate();
+        for (Tag tag : tags) {
+            tag.validate();
         }
     }
 
@@ -88,8 +87,8 @@ public class Sink extends AbstractConfig{
         return timeout;
     }
 
-    public List<Field> getFields() {
-        return fields;
+    public List<Tag> getTags() {
+        return tags;
     }
 
     public static ConfigDef configDef() {
@@ -112,11 +111,11 @@ public class Sink extends AbstractConfig{
                     Constants.TIMEOUT_DEFAULT,
                     ConfigDef.Importance.LOW,
                     Constants.JOBS_DOC)
-            .define(Constants.FIELDS_CONFIG,
+            .define(Constants.TAGS_CONFIG,
                     ConfigDef.Type.LIST,
-                    Constants.FIELDS_DEFAULT,
+                    Constants.TAGS_DEFAULT,
                     ConfigDef.Importance.LOW,
-                    Constants.FIELDS_CONFIG);
+                    Constants.TAGS_CONFIG);
     }
 
     @Override
@@ -126,8 +125,8 @@ public class Sink extends AbstractConfig{
         query.append(Constants.TOPIC_CONFIG + "=" + topic + ",\n");
         query.append(Constants.RETRIES_CONFIG + "=" + retries + ",\n");
         query.append(Constants.TIMEOUT_CONFIG + "=" + timeout + ",\n");
-        for (Field field : fields) {
-            query.append(field.toString());
+        for (Tag tag : tags) {
+            query.append(tag.toString());
         }
         return query.toString();
     }

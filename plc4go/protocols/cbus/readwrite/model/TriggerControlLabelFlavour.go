@@ -30,7 +30,7 @@ import (
 type TriggerControlLabelFlavour uint8
 
 type ITriggerControlLabelFlavour interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +107,11 @@ func (m TriggerControlLabelFlavour) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TriggerControlLabelFlavourParse(readBuffer utils.ReadBuffer) (TriggerControlLabelFlavour, error) {
+func TriggerControlLabelFlavourParse(theBytes []byte) (TriggerControlLabelFlavour, error) {
+	return TriggerControlLabelFlavourParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TriggerControlLabelFlavourParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlLabelFlavour, error) {
 	val, err := readBuffer.ReadUint8("TriggerControlLabelFlavour", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TriggerControlLabelFlavour")
@@ -120,7 +124,15 @@ func TriggerControlLabelFlavourParse(readBuffer utils.ReadBuffer) (TriggerContro
 	}
 }
 
-func (e TriggerControlLabelFlavour) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e TriggerControlLabelFlavour) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e TriggerControlLabelFlavour) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("TriggerControlLabelFlavour", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -138,7 +138,11 @@ func (m *_ErrorClassTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorClassTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (ErrorClassTagged, error) {
+func ErrorClassTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (ErrorClassTagged, error) {
+	return ErrorClassTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+}
+
+func ErrorClassTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (ErrorClassTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorClassTagged"); pullErr != nil {
@@ -151,7 +155,7 @@ func ErrorClassTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClas
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of ErrorClassTagged")
 	}
@@ -209,7 +213,15 @@ func ErrorClassTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClas
 	}, nil
 }
 
-func (m *_ErrorClassTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ErrorClassTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ErrorClassTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ErrorClassTagged"); pushErr != nil {

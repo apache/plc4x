@@ -128,7 +128,11 @@ func (m *_BACnetLandingCallStatusCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLandingCallStatusCommandParse(readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommand, error) {
+func BACnetLandingCallStatusCommandParse(theBytes []byte) (BACnetLandingCallStatusCommand, error) {
+	return BACnetLandingCallStatusCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLandingCallStatusCommandParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLandingCallStatusCommand"); pullErr != nil {
@@ -142,7 +146,7 @@ func BACnetLandingCallStatusCommandParse(readBuffer utils.ReadBuffer) (BACnetLan
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -161,9 +165,9 @@ func BACnetLandingCallStatusCommandParse(readBuffer utils.ReadBuffer) (BACnetLan
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(1): // BACnetLandingCallStatusCommandDirection
-		_childTemp, typeSwitchError = BACnetLandingCallStatusCommandDirectionParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetLandingCallStatusCommandDirectionParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(2): // BACnetLandingCallStatusCommandDestination
-		_childTemp, typeSwitchError = BACnetLandingCallStatusCommandDestinationParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetLandingCallStatusCommandDestinationParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}

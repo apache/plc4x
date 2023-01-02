@@ -121,7 +121,11 @@ func (m *_BVLCBroadcastDistributionTableEntry) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCBroadcastDistributionTableEntryParse(readBuffer utils.ReadBuffer) (BVLCBroadcastDistributionTableEntry, error) {
+func BVLCBroadcastDistributionTableEntryParse(theBytes []byte) (BVLCBroadcastDistributionTableEntry, error) {
+	return BVLCBroadcastDistributionTableEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BVLCBroadcastDistributionTableEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCBroadcastDistributionTableEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCBroadcastDistributionTableEntry"); pullErr != nil {
@@ -195,7 +199,15 @@ func BVLCBroadcastDistributionTableEntryParse(readBuffer utils.ReadBuffer) (BVLC
 	}, nil
 }
 
-func (m *_BVLCBroadcastDistributionTableEntry) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BVLCBroadcastDistributionTableEntry) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BVLCBroadcastDistributionTableEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BVLCBroadcastDistributionTableEntry"); pushErr != nil {

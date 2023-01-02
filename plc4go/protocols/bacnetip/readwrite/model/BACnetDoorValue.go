@@ -30,7 +30,7 @@ import (
 type BACnetDoorValue uint8
 
 type IBACnetDoorValue interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +107,11 @@ func (m BACnetDoorValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDoorValueParse(readBuffer utils.ReadBuffer) (BACnetDoorValue, error) {
+func BACnetDoorValueParse(theBytes []byte) (BACnetDoorValue, error) {
+	return BACnetDoorValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetDoorValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDoorValue, error) {
 	val, err := readBuffer.ReadUint8("BACnetDoorValue", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetDoorValue")
@@ -120,7 +124,15 @@ func BACnetDoorValueParse(readBuffer utils.ReadBuffer) (BACnetDoorValue, error) 
 	}
 }
 
-func (e BACnetDoorValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetDoorValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetDoorValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetDoorValue", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

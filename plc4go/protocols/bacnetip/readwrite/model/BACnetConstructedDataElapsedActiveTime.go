@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataElapsedActiveTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataElapsedActiveTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElapsedActiveTime, error) {
+func BACnetConstructedDataElapsedActiveTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElapsedActiveTime, error) {
+	return BACnetConstructedDataElapsedActiveTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataElapsedActiveTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElapsedActiveTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataElapsedActiveTime"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataElapsedActiveTimeParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("elapsedActiveTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for elapsedActiveTime")
 	}
-	_elapsedActiveTime, _elapsedActiveTimeErr := BACnetApplicationTagParse(readBuffer)
+	_elapsedActiveTime, _elapsedActiveTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _elapsedActiveTimeErr != nil {
 		return nil, errors.Wrap(_elapsedActiveTimeErr, "Error parsing 'elapsedActiveTime' field of BACnetConstructedDataElapsedActiveTime")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataElapsedActiveTimeParse(readBuffer utils.ReadBuffer, ta
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataElapsedActiveTime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataElapsedActiveTime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataElapsedActiveTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

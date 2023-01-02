@@ -151,7 +151,11 @@ func (m *_APDUError) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUError, error) {
+func APDUErrorParse(theBytes []byte, apduLength uint16) (APDUError, error) {
+	return APDUErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+}
+
+func APDUErrorParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDUError, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUError"); pullErr != nil {
@@ -188,7 +192,7 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUError, 
 	if pullErr := readBuffer.PullContext("errorChoice"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorChoice")
 	}
-	_errorChoice, _errorChoiceErr := BACnetConfirmedServiceChoiceParse(readBuffer)
+	_errorChoice, _errorChoiceErr := BACnetConfirmedServiceChoiceParseWithBuffer(readBuffer)
 	if _errorChoiceErr != nil {
 		return nil, errors.Wrap(_errorChoiceErr, "Error parsing 'errorChoice' field of APDUError")
 	}
@@ -201,7 +205,7 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUError, 
 	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for error")
 	}
-	_error, _errorErr := BACnetErrorParse(readBuffer, BACnetConfirmedServiceChoice(errorChoice))
+	_error, _errorErr := BACnetErrorParseWithBuffer(readBuffer, BACnetConfirmedServiceChoice(errorChoice))
 	if _errorErr != nil {
 		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of APDUError")
 	}
@@ -228,7 +232,15 @@ func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUError, 
 	return _child, nil
 }
 
-func (m *_APDUError) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_APDUError) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_APDUError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

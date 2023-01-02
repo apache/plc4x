@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataUserInformationReference) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataUserInformationReferenceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUserInformationReference, error) {
+func BACnetConstructedDataUserInformationReferenceParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUserInformationReference, error) {
+	return BACnetConstructedDataUserInformationReferenceParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataUserInformationReferenceParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUserInformationReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUserInformationReference"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataUserInformationReferenceParse(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("userInformationReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for userInformationReference")
 	}
-	_userInformationReference, _userInformationReferenceErr := BACnetApplicationTagParse(readBuffer)
+	_userInformationReference, _userInformationReferenceErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _userInformationReferenceErr != nil {
 		return nil, errors.Wrap(_userInformationReferenceErr, "Error parsing 'userInformationReference' field of BACnetConstructedDataUserInformationReference")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataUserInformationReferenceParse(readBuffer utils.ReadBuf
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataUserInformationReference) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataUserInformationReference) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataUserInformationReference) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

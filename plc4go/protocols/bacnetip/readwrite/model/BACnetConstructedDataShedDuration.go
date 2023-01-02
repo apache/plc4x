@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataShedDuration) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataShedDurationParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataShedDuration, error) {
+func BACnetConstructedDataShedDurationParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataShedDuration, error) {
+	return BACnetConstructedDataShedDurationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataShedDurationParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataShedDuration, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataShedDuration"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataShedDurationParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("shedDuration"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for shedDuration")
 	}
-	_shedDuration, _shedDurationErr := BACnetApplicationTagParse(readBuffer)
+	_shedDuration, _shedDurationErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _shedDurationErr != nil {
 		return nil, errors.Wrap(_shedDurationErr, "Error parsing 'shedDuration' field of BACnetConstructedDataShedDuration")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataShedDurationParse(readBuffer utils.ReadBuffer, tagNumb
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataShedDuration) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataShedDuration) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataShedDuration) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

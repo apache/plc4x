@@ -111,7 +111,11 @@ func (m *_BACnetFileAccessMethodTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFileAccessMethodTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetFileAccessMethodTagged, error) {
+func BACnetFileAccessMethodTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetFileAccessMethodTagged, error) {
+	return BACnetFileAccessMethodTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+}
+
+func BACnetFileAccessMethodTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetFileAccessMethodTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFileAccessMethodTagged"); pullErr != nil {
@@ -124,7 +128,7 @@ func BACnetFileAccessMethodTaggedParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetFileAccessMethodTagged")
 	}
@@ -166,7 +170,15 @@ func BACnetFileAccessMethodTaggedParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}, nil
 }
 
-func (m *_BACnetFileAccessMethodTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFileAccessMethodTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetFileAccessMethodTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetFileAccessMethodTagged"); pushErr != nil {

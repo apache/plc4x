@@ -102,7 +102,11 @@ func (m *_APDU) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDU, error) {
+func APDUParse(theBytes []byte, apduLength uint16) (APDU, error) {
+	return APDUParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+}
+
+func APDUParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDU"); pullErr != nil {
@@ -115,7 +119,7 @@ func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDU, error) {
 	if pullErr := readBuffer.PullContext("apduType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for apduType")
 	}
-	apduType_temp, _apduTypeErr := ApduTypeParse(readBuffer)
+	apduType_temp, _apduTypeErr := ApduTypeParseWithBuffer(readBuffer)
 	var apduType ApduType = apduType_temp
 	if closeErr := readBuffer.CloseContext("apduType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for apduType")
@@ -135,23 +139,23 @@ func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDU, error) {
 	var typeSwitchError error
 	switch {
 	case apduType == ApduType_CONFIRMED_REQUEST_PDU: // APDUConfirmedRequest
-		_childTemp, typeSwitchError = APDUConfirmedRequestParse(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDUConfirmedRequestParseWithBuffer(readBuffer, apduLength)
 	case apduType == ApduType_UNCONFIRMED_REQUEST_PDU: // APDUUnconfirmedRequest
-		_childTemp, typeSwitchError = APDUUnconfirmedRequestParse(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDUUnconfirmedRequestParseWithBuffer(readBuffer, apduLength)
 	case apduType == ApduType_SIMPLE_ACK_PDU: // APDUSimpleAck
-		_childTemp, typeSwitchError = APDUSimpleAckParse(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDUSimpleAckParseWithBuffer(readBuffer, apduLength)
 	case apduType == ApduType_COMPLEX_ACK_PDU: // APDUComplexAck
-		_childTemp, typeSwitchError = APDUComplexAckParse(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDUComplexAckParseWithBuffer(readBuffer, apduLength)
 	case apduType == ApduType_SEGMENT_ACK_PDU: // APDUSegmentAck
-		_childTemp, typeSwitchError = APDUSegmentAckParse(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDUSegmentAckParseWithBuffer(readBuffer, apduLength)
 	case apduType == ApduType_ERROR_PDU: // APDUError
-		_childTemp, typeSwitchError = APDUErrorParse(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDUErrorParseWithBuffer(readBuffer, apduLength)
 	case apduType == ApduType_REJECT_PDU: // APDUReject
-		_childTemp, typeSwitchError = APDURejectParse(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDURejectParseWithBuffer(readBuffer, apduLength)
 	case apduType == ApduType_ABORT_PDU: // APDUAbort
-		_childTemp, typeSwitchError = APDUAbortParse(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDUAbortParseWithBuffer(readBuffer, apduLength)
 	case 0 == 0: // APDUUnknown
-		_childTemp, typeSwitchError = APDUUnknownParse(readBuffer, apduLength)
+		_childTemp, typeSwitchError = APDUUnknownParseWithBuffer(readBuffer, apduLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [apduType=%v]", apduType)
 	}

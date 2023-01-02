@@ -167,7 +167,11 @@ func (m *_IdentifyReplyCommandUnitSummary) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandUnitSummaryParse(readBuffer utils.ReadBuffer) (IdentifyReplyCommandUnitSummary, error) {
+func IdentifyReplyCommandUnitSummaryParse(theBytes []byte) (IdentifyReplyCommandUnitSummary, error) {
+	return IdentifyReplyCommandUnitSummaryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func IdentifyReplyCommandUnitSummaryParseWithBuffer(readBuffer utils.ReadBuffer) (IdentifyReplyCommandUnitSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandUnitSummary"); pullErr != nil {
@@ -249,7 +253,15 @@ func IdentifyReplyCommandUnitSummaryParse(readBuffer utils.ReadBuffer) (Identify
 	}, nil
 }
 
-func (m *_IdentifyReplyCommandUnitSummary) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_IdentifyReplyCommandUnitSummary) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_IdentifyReplyCommandUnitSummary) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("IdentifyReplyCommandUnitSummary"); pushErr != nil {

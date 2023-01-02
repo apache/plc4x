@@ -136,7 +136,11 @@ func (m *_BACnetConstructedDataActiveVTSessions) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataActiveVTSessionsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveVTSessions, error) {
+func BACnetConstructedDataActiveVTSessionsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveVTSessions, error) {
+	return BACnetConstructedDataActiveVTSessionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataActiveVTSessionsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveVTSessions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveVTSessions"); pullErr != nil {
@@ -153,12 +157,11 @@ func BACnetConstructedDataActiveVTSessionsParse(readBuffer utils.ReadBuffer, tag
 	var activeVTSession []BACnetVTSession
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetVTSessionParse(readBuffer)
+			_item, _err := BACnetVTSessionParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'activeVTSession' field of BACnetConstructedDataActiveVTSessions")
 			}
 			activeVTSession = append(activeVTSession, _item.(BACnetVTSession))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("activeVTSession", utils.WithRenderAsList(true)); closeErr != nil {
@@ -181,7 +184,15 @@ func BACnetConstructedDataActiveVTSessionsParse(readBuffer utils.ReadBuffer, tag
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataActiveVTSessions) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataActiveVTSessions) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataActiveVTSessions) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

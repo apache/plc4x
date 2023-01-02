@@ -149,7 +149,11 @@ func (m *_TriggerControlData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TriggerControlDataParse(readBuffer utils.ReadBuffer) (TriggerControlData, error) {
+func TriggerControlDataParse(theBytes []byte) (TriggerControlData, error) {
+	return TriggerControlDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TriggerControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlData"); pullErr != nil {
@@ -167,7 +171,7 @@ func TriggerControlDataParse(readBuffer utils.ReadBuffer) (TriggerControlData, e
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := TriggerControlCommandTypeContainerParse(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := TriggerControlCommandTypeContainerParseWithBuffer(readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of TriggerControlData")
 	}
@@ -204,15 +208,15 @@ func TriggerControlDataParse(readBuffer utils.ReadBuffer) (TriggerControlData, e
 	var typeSwitchError error
 	switch {
 	case commandType == TriggerControlCommandType_TRIGGER_EVENT: // TriggerControlDataTriggerEvent
-		_childTemp, typeSwitchError = TriggerControlDataTriggerEventParse(readBuffer)
+		_childTemp, typeSwitchError = TriggerControlDataTriggerEventParseWithBuffer(readBuffer)
 	case commandType == TriggerControlCommandType_TRIGGER_MIN: // TriggerControlDataTriggerMin
-		_childTemp, typeSwitchError = TriggerControlDataTriggerMinParse(readBuffer)
+		_childTemp, typeSwitchError = TriggerControlDataTriggerMinParseWithBuffer(readBuffer)
 	case commandType == TriggerControlCommandType_TRIGGER_MAX: // TriggerControlDataTriggerMax
-		_childTemp, typeSwitchError = TriggerControlDataTriggerMaxParse(readBuffer)
+		_childTemp, typeSwitchError = TriggerControlDataTriggerMaxParseWithBuffer(readBuffer)
 	case commandType == TriggerControlCommandType_INDICATOR_KILL: // TriggerControlDataIndicatorKill
-		_childTemp, typeSwitchError = TriggerControlDataIndicatorKillParse(readBuffer)
+		_childTemp, typeSwitchError = TriggerControlDataIndicatorKillParseWithBuffer(readBuffer)
 	case commandType == TriggerControlCommandType_LABEL: // TriggerControlDataLabel
-		_childTemp, typeSwitchError = TriggerControlDataLabelParse(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = TriggerControlDataLabelParseWithBuffer(readBuffer, commandTypeContainer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}

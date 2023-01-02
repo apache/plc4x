@@ -122,7 +122,11 @@ func (m *_BACnetPriorityValueInteger) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueIntegerParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueInteger, error) {
+func BACnetPriorityValueIntegerParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueInteger, error) {
+	return BACnetPriorityValueIntegerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+}
+
+func BACnetPriorityValueIntegerParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueInteger, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueInteger"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPriorityValueIntegerParse(readBuffer utils.ReadBuffer, objectTypeArgu
 	if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for integerValue")
 	}
-	_integerValue, _integerValueErr := BACnetApplicationTagParse(readBuffer)
+	_integerValue, _integerValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _integerValueErr != nil {
 		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field of BACnetPriorityValueInteger")
 	}
@@ -159,7 +163,15 @@ func BACnetPriorityValueIntegerParse(readBuffer utils.ReadBuffer, objectTypeArgu
 	return _child, nil
 }
 
-func (m *_BACnetPriorityValueInteger) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPriorityValueInteger) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPriorityValueInteger) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

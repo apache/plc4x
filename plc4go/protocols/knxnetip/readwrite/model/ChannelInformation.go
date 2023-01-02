@@ -107,7 +107,11 @@ func (m *_ChannelInformation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ChannelInformationParse(readBuffer utils.ReadBuffer) (ChannelInformation, error) {
+func ChannelInformationParse(theBytes []byte) (ChannelInformation, error) {
+	return ChannelInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ChannelInformationParseWithBuffer(readBuffer utils.ReadBuffer) (ChannelInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ChannelInformation"); pullErr != nil {
@@ -141,7 +145,15 @@ func ChannelInformationParse(readBuffer utils.ReadBuffer) (ChannelInformation, e
 	}, nil
 }
 
-func (m *_ChannelInformation) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ChannelInformation) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ChannelInformation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ChannelInformation"); pushErr != nil {

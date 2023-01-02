@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataBinaryLightingOutputRelinquishDefault) GetLengthI
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBinaryLightingOutputRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryLightingOutputRelinquishDefault, error) {
+func BACnetConstructedDataBinaryLightingOutputRelinquishDefaultParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryLightingOutputRelinquishDefault, error) {
+	return BACnetConstructedDataBinaryLightingOutputRelinquishDefaultParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataBinaryLightingOutputRelinquishDefaultParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBinaryLightingOutputRelinquishDefault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBinaryLightingOutputRelinquishDefault"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataBinaryLightingOutputRelinquishDefaultParse(readBuffer 
 	if pullErr := readBuffer.PullContext("relinquishDefault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for relinquishDefault")
 	}
-	_relinquishDefault, _relinquishDefaultErr := BACnetBinaryLightingPVTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_relinquishDefault, _relinquishDefaultErr := BACnetBinaryLightingPVTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _relinquishDefaultErr != nil {
 		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field of BACnetConstructedDataBinaryLightingOutputRelinquishDefault")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataBinaryLightingOutputRelinquishDefaultParse(readBuffer 
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataBinaryLightingOutputRelinquishDefault) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataBinaryLightingOutputRelinquishDefault) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputRelinquishDefault) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

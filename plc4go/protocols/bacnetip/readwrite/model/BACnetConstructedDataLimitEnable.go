@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataLimitEnable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLimitEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLimitEnable, error) {
+func BACnetConstructedDataLimitEnableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLimitEnable, error) {
+	return BACnetConstructedDataLimitEnableParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataLimitEnableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLimitEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLimitEnable"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataLimitEnableParse(readBuffer utils.ReadBuffer, tagNumbe
 	if pullErr := readBuffer.PullContext("limitEnable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for limitEnable")
 	}
-	_limitEnable, _limitEnableErr := BACnetLimitEnableTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_limitEnable, _limitEnableErr := BACnetLimitEnableTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _limitEnableErr != nil {
 		return nil, errors.Wrap(_limitEnableErr, "Error parsing 'limitEnable' field of BACnetConstructedDataLimitEnable")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataLimitEnableParse(readBuffer utils.ReadBuffer, tagNumbe
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataLimitEnable) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLimitEnable) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataLimitEnable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

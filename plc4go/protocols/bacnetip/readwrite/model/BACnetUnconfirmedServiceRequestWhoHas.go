@@ -152,7 +152,11 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestWhoHas, error) {
+func BACnetUnconfirmedServiceRequestWhoHasParse(theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestWhoHas, error) {
+	return BACnetUnconfirmedServiceRequestWhoHasParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+}
+
+func BACnetUnconfirmedServiceRequestWhoHasParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestWhoHas, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWhoHas"); pullErr != nil {
@@ -168,7 +172,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, ser
 		if pullErr := readBuffer.PullContext("deviceInstanceRangeLowLimit"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for deviceInstanceRangeLowLimit")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -190,7 +194,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, ser
 		if pullErr := readBuffer.PullContext("deviceInstanceRangeHighLimit"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for deviceInstanceRangeHighLimit")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -209,7 +213,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, ser
 	if pullErr := readBuffer.PullContext("object"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for object")
 	}
-	_object, _objectErr := BACnetUnconfirmedServiceRequestWhoHasObjectParse(readBuffer)
+	_object, _objectErr := BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(readBuffer)
 	if _objectErr != nil {
 		return nil, errors.Wrap(_objectErr, "Error parsing 'object' field of BACnetUnconfirmedServiceRequestWhoHas")
 	}
@@ -235,7 +239,15 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, ser
 	return _child, nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHas) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetUnconfirmedServiceRequestWhoHas) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHas) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

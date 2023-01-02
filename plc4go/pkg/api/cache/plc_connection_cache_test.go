@@ -20,14 +20,15 @@
 package cache
 
 import (
+	"testing"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/internal/simulated"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/stretchr/testify/assert"
 	"github.com/viney-shih/go-lock"
-	"testing"
-	"time"
 )
 
 var debugTimeout = 1
@@ -203,7 +204,7 @@ func readFromPlc(t *testing.T, cache plcConnectionCache, connectionString string
 		}()
 
 		// Prepare a read request.
-		readRequest, err := connection.ReadRequestBuilder().AddQuery("test", resourceString).Build()
+		readRequest, err := connection.ReadRequestBuilder().AddTagAddress("test", resourceString).Build()
 		if err != nil {
 			t.Errorf("PlcConnectionCache.ReadRequest.Build() error = %v", err)
 			return ch

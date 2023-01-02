@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) GetLengthInBytes
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTrendLogLogDeviceObjectPropertyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrendLogLogDeviceObjectProperty, error) {
+func BACnetConstructedDataTrendLogLogDeviceObjectPropertyParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrendLogLogDeviceObjectProperty, error) {
+	return BACnetConstructedDataTrendLogLogDeviceObjectPropertyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataTrendLogLogDeviceObjectPropertyParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrendLogLogDeviceObjectProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTrendLogLogDeviceObjectProperty"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataTrendLogLogDeviceObjectPropertyParse(readBuffer utils.
 	if pullErr := readBuffer.PullContext("logDeviceObjectProperty"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for logDeviceObjectProperty")
 	}
-	_logDeviceObjectProperty, _logDeviceObjectPropertyErr := BACnetDeviceObjectPropertyReferenceParse(readBuffer)
+	_logDeviceObjectProperty, _logDeviceObjectPropertyErr := BACnetDeviceObjectPropertyReferenceParseWithBuffer(readBuffer)
 	if _logDeviceObjectPropertyErr != nil {
 		return nil, errors.Wrap(_logDeviceObjectPropertyErr, "Error parsing 'logDeviceObjectProperty' field of BACnetConstructedDataTrendLogLogDeviceObjectProperty")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataTrendLogLogDeviceObjectPropertyParse(readBuffer utils.
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

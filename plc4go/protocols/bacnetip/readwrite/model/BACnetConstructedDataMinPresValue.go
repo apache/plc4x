@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataMinPresValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMinPresValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinPresValue, error) {
+func BACnetConstructedDataMinPresValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinPresValue, error) {
+	return BACnetConstructedDataMinPresValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataMinPresValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinPresValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinPresValue"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataMinPresValueParse(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("minPresValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for minPresValue")
 	}
-	_minPresValue, _minPresValueErr := BACnetApplicationTagParse(readBuffer)
+	_minPresValue, _minPresValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _minPresValueErr != nil {
 		return nil, errors.Wrap(_minPresValueErr, "Error parsing 'minPresValue' field of BACnetConstructedDataMinPresValue")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataMinPresValueParse(readBuffer utils.ReadBuffer, tagNumb
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataMinPresValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMinPresValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataMinPresValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

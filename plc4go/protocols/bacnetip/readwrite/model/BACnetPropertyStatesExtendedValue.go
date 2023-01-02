@@ -122,7 +122,11 @@ func (m *_BACnetPropertyStatesExtendedValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesExtendedValueParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesExtendedValue, error) {
+func BACnetPropertyStatesExtendedValueParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesExtendedValue, error) {
+	return BACnetPropertyStatesExtendedValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+}
+
+func BACnetPropertyStatesExtendedValueParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesExtendedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesExtendedValue"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPropertyStatesExtendedValueParse(readBuffer utils.ReadBuffer, peekedT
 	if pullErr := readBuffer.PullContext("extendedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for extendedValue")
 	}
-	_extendedValue, _extendedValueErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_extendedValue, _extendedValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _extendedValueErr != nil {
 		return nil, errors.Wrap(_extendedValueErr, "Error parsing 'extendedValue' field of BACnetPropertyStatesExtendedValue")
 	}
@@ -157,7 +161,15 @@ func BACnetPropertyStatesExtendedValueParse(readBuffer utils.ReadBuffer, peekedT
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesExtendedValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesExtendedValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesExtendedValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -30,7 +30,7 @@ import (
 type BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter uint8
 
 type IBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -113,7 +113,11 @@ func (m BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) GetLe
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, error) {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParse(theBytes []byte) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, error) {
+	return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter")
@@ -126,7 +130,15 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParse(read
 	}
 }
 
-func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

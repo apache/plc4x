@@ -102,7 +102,11 @@ func (m *_MediaTransportControlDataStop) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlDataStopParse(readBuffer utils.ReadBuffer) (MediaTransportControlDataStop, error) {
+func MediaTransportControlDataStopParse(theBytes []byte) (MediaTransportControlDataStop, error) {
+	return MediaTransportControlDataStopParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func MediaTransportControlDataStopParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataStop, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataStop"); pullErr != nil {
@@ -123,7 +127,15 @@ func MediaTransportControlDataStopParse(readBuffer utils.ReadBuffer) (MediaTrans
 	return _child, nil
 }
 
-func (m *_MediaTransportControlDataStop) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataStop) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_MediaTransportControlDataStop) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

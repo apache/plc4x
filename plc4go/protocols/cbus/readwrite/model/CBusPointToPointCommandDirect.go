@@ -128,7 +128,11 @@ func (m *_CBusPointToPointCommandDirect) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusPointToPointCommandDirectParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommandDirect, error) {
+func CBusPointToPointCommandDirectParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointCommandDirect, error) {
+	return CBusPointToPointCommandDirectParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+}
+
+func CBusPointToPointCommandDirectParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommandDirect, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommandDirect"); pullErr != nil {
@@ -141,7 +145,7 @@ func CBusPointToPointCommandDirectParse(readBuffer utils.ReadBuffer, cBusOptions
 	if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unitAddress")
 	}
-	_unitAddress, _unitAddressErr := UnitAddressParse(readBuffer)
+	_unitAddress, _unitAddressErr := UnitAddressParseWithBuffer(readBuffer)
 	if _unitAddressErr != nil {
 		return nil, errors.Wrap(_unitAddressErr, "Error parsing 'unitAddress' field of CBusPointToPointCommandDirect")
 	}
@@ -183,7 +187,15 @@ func CBusPointToPointCommandDirectParse(readBuffer utils.ReadBuffer, cBusOptions
 	return _child, nil
 }
 
-func (m *_CBusPointToPointCommandDirect) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusPointToPointCommandDirect) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CBusPointToPointCommandDirect) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

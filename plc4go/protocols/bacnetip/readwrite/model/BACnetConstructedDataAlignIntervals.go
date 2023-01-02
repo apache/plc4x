@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataAlignIntervals) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAlignIntervalsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAlignIntervals, error) {
+func BACnetConstructedDataAlignIntervalsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAlignIntervals, error) {
+	return BACnetConstructedDataAlignIntervalsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataAlignIntervalsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAlignIntervals, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAlignIntervals"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataAlignIntervalsParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("alignIntervals"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for alignIntervals")
 	}
-	_alignIntervals, _alignIntervalsErr := BACnetApplicationTagParse(readBuffer)
+	_alignIntervals, _alignIntervalsErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _alignIntervalsErr != nil {
 		return nil, errors.Wrap(_alignIntervalsErr, "Error parsing 'alignIntervals' field of BACnetConstructedDataAlignIntervals")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataAlignIntervalsParse(readBuffer utils.ReadBuffer, tagNu
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataAlignIntervals) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAlignIntervals) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataAlignIntervals) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

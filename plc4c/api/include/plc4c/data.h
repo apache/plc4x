@@ -118,17 +118,26 @@ plc4c_data *plc4c_data_create_lreal_array(double *d, int nItems);
 plc4c_data *plc4c_data_create_date_data(uint16_t d);
 plc4c_data *plc4c_data_create_date_array(uint16_t *d, int nItems);
 
+plc4c_data *plc4c_data_create_ldate_data(uint32_t nanosecondsSinceEpoch);
+plc4c_data *plc4c_data_create_ldate_array(uint32_t *nanosecondsSinceEpoch, int nItems);
+
 plc4c_data *plc4c_data_create_time_data(uint32_t t);
 plc4c_data *plc4c_data_create_time_array(uint32_t *t, int nItems);
 
 plc4c_data *plc4c_data_create_ltime_data(uint64_t lt);
 plc4c_data *plc4c_data_create_ltime_array(uint64_t *lt, int nItems);
 
- plc4c_data *plc4c_data_create_time_of_day_data(uint32_t tod);
+plc4c_data *plc4c_data_create_time_of_day_data(uint32_t tod);
 plc4c_data *plc4c_data_create_time_of_day_array(uint32_t *tod, int nItems);
+
+plc4c_data *plc4c_data_create_ltime_of_day_data(uint64_t nanosecondsSinceMidnight);
+plc4c_data *plc4c_data_create_ltime_of_day_array(uint64_t *nanosecondsSinceMidnight, int nItems);
 
 plc4c_data *plc4c_data_create_date_and_time_data(uint32_t tad);
 plc4c_data *plc4c_data_create_date_and_time_array(uint32_t *tad, int nItems);
+
+plc4c_data *plc4c_data_create_ldate_and_time_data(uint64_t nanosecondsSinceEpoch);
+plc4c_data *plc4c_data_create_ldate_and_time_array(uint64_t *nanosecondsSinceEpoch, int nItems);
 
 /**
  * Creates a plc4c_data with char*

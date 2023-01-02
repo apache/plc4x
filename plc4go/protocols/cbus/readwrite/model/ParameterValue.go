@@ -100,7 +100,11 @@ func (m *_ParameterValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterValueParse(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValue, error) {
+func ParameterValueParse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValue, error) {
+	return ParameterValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+}
+
+func ParameterValueParseWithBuffer(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValue"); pullErr != nil {
@@ -120,27 +124,27 @@ func ParameterValueParse(readBuffer utils.ReadBuffer, parameterType ParameterTyp
 	var typeSwitchError error
 	switch {
 	case parameterType == ParameterType_APPLICATION_ADDRESS_1: // ParameterValueApplicationAddress1
-		_childTemp, typeSwitchError = ParameterValueApplicationAddress1Parse(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueApplicationAddress1ParseWithBuffer(readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_APPLICATION_ADDRESS_2: // ParameterValueApplicationAddress2
-		_childTemp, typeSwitchError = ParameterValueApplicationAddress2Parse(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueApplicationAddress2ParseWithBuffer(readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_INTERFACE_OPTIONS_1: // ParameterValueInterfaceOptions1
-		_childTemp, typeSwitchError = ParameterValueInterfaceOptions1Parse(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueInterfaceOptions1ParseWithBuffer(readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_BAUD_RATE_SELECTOR: // ParameterValueBaudRateSelector
-		_childTemp, typeSwitchError = ParameterValueBaudRateSelectorParse(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueBaudRateSelectorParseWithBuffer(readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_INTERFACE_OPTIONS_2: // ParameterValueInterfaceOptions2
-		_childTemp, typeSwitchError = ParameterValueInterfaceOptions2Parse(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueInterfaceOptions2ParseWithBuffer(readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS: // ParameterValueInterfaceOptions1PowerUpSettings
-		_childTemp, typeSwitchError = ParameterValueInterfaceOptions1PowerUpSettingsParse(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueInterfaceOptions1PowerUpSettingsParseWithBuffer(readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_INTERFACE_OPTIONS_3: // ParameterValueInterfaceOptions3
-		_childTemp, typeSwitchError = ParameterValueInterfaceOptions3Parse(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueInterfaceOptions3ParseWithBuffer(readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_CUSTOM_MANUFACTURER: // ParameterValueCustomManufacturer
-		_childTemp, typeSwitchError = ParameterValueCustomManufacturerParse(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueCustomManufacturerParseWithBuffer(readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_SERIAL_NUMBER: // ParameterValueSerialNumber
-		_childTemp, typeSwitchError = ParameterValueSerialNumberParse(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueSerialNumberParseWithBuffer(readBuffer, parameterType, numBytes)
 	case parameterType == ParameterType_CUSTOM_TYPE: // ParameterValueCustomTypes
-		_childTemp, typeSwitchError = ParameterValueCustomTypesParse(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueCustomTypesParseWithBuffer(readBuffer, parameterType, numBytes)
 	case 0 == 0: // ParameterValueRaw
-		_childTemp, typeSwitchError = ParameterValueRawParse(readBuffer, parameterType, numBytes)
+		_childTemp, typeSwitchError = ParameterValueRawParseWithBuffer(readBuffer, parameterType, numBytes)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [parameterType=%v]", parameterType)
 	}

@@ -27,7 +27,7 @@ public class ManualProfinetIoTest {
 
     public static void main(String[] args) throws Exception {
         final PlcConnection connection = new PlcDriverManager().getConnection("profinet://192.168.24.31");
-        final PlcReadRequest readRequest = connection.readRequestBuilder().addItem("test", "").build();
+        final PlcReadRequest readRequest = connection.readRequestBuilder().addTagAddress("test", "").build();
         final PlcReadResponse plcReadResponse = readRequest.execute().get();
         System.out.println(plcReadResponse);
     }

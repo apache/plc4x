@@ -135,7 +135,11 @@ func (m *_ApduDataMemoryRead) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataMemoryReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataMemoryRead, error) {
+func ApduDataMemoryReadParse(theBytes []byte, dataLength uint8) (ApduDataMemoryRead, error) {
+	return ApduDataMemoryReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes), dataLength)
+}
+
+func ApduDataMemoryReadParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataMemoryRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataMemoryRead"); pullErr != nil {
@@ -174,7 +178,15 @@ func ApduDataMemoryReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (Apd
 	return _child, nil
 }
 
-func (m *_ApduDataMemoryRead) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataMemoryRead) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApduDataMemoryRead) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

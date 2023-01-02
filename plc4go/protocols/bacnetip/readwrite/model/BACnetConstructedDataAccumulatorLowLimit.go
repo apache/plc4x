@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataAccumulatorLowLimit) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccumulatorLowLimitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccumulatorLowLimit, error) {
+func BACnetConstructedDataAccumulatorLowLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccumulatorLowLimit, error) {
+	return BACnetConstructedDataAccumulatorLowLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataAccumulatorLowLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccumulatorLowLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccumulatorLowLimit"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataAccumulatorLowLimitParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("lowLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lowLimit")
 	}
-	_lowLimit, _lowLimitErr := BACnetApplicationTagParse(readBuffer)
+	_lowLimit, _lowLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _lowLimitErr != nil {
 		return nil, errors.Wrap(_lowLimitErr, "Error parsing 'lowLimit' field of BACnetConstructedDataAccumulatorLowLimit")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataAccumulatorLowLimitParse(readBuffer utils.ReadBuffer, 
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataAccumulatorLowLimit) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAccumulatorLowLimit) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataAccumulatorLowLimit) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

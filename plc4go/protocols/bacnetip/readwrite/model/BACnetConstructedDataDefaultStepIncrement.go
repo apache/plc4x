@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataDefaultStepIncrement) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDefaultStepIncrementParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultStepIncrement, error) {
+func BACnetConstructedDataDefaultStepIncrementParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultStepIncrement, error) {
+	return BACnetConstructedDataDefaultStepIncrementParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataDefaultStepIncrementParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultStepIncrement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultStepIncrement"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataDefaultStepIncrementParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("defaultStepIncrement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for defaultStepIncrement")
 	}
-	_defaultStepIncrement, _defaultStepIncrementErr := BACnetApplicationTagParse(readBuffer)
+	_defaultStepIncrement, _defaultStepIncrementErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _defaultStepIncrementErr != nil {
 		return nil, errors.Wrap(_defaultStepIncrementErr, "Error parsing 'defaultStepIncrement' field of BACnetConstructedDataDefaultStepIncrement")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataDefaultStepIncrementParse(readBuffer utils.ReadBuffer,
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataDefaultStepIncrement) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDefaultStepIncrement) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataDefaultStepIncrement) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

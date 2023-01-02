@@ -20,6 +20,8 @@
 package model
 
 import (
+	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -28,27 +30,17 @@ import (
 // TODO: use generator once we figured out how to render results with ast
 type DefaultPlcBrowseResponse struct {
 	DefaultResponse
-	request model.PlcBrowseRequest
-	results map[string][]model.PlcBrowseFoundField
+	request      model.PlcBrowseRequest
+	responseCode model.PlcResponseCode
+	results      map[string][]model.PlcBrowseItem
 }
 
-func NewDefaultPlcBrowseResponse(request model.PlcBrowseRequest, results map[string][]model.PlcBrowseFoundField, responseCodes map[string]model.PlcResponseCode) DefaultPlcBrowseResponse {
+func NewDefaultPlcBrowseResponse(request model.PlcBrowseRequest, results map[string][]model.PlcBrowseItem, responseCodes map[string]model.PlcResponseCode) DefaultPlcBrowseResponse {
 	return DefaultPlcBrowseResponse{
 		DefaultResponse: DefaultResponse{responseCodes: responseCodes},
 		request:         request,
 		results:         results,
 	}
-}
-
-func (d DefaultPlcBrowseResponse) GetFieldNames() []string {
-	var fieldNames []string
-	// We take the field names from the request to keep order as map is not ordered
-	for _, name := range d.request.GetFieldNames() {
-		if _, ok := d.results[name]; ok {
-			fieldNames = append(fieldNames, name)
-		}
-	}
-	return fieldNames
 }
 
 func (d DefaultPlcBrowseResponse) GetRequest() model.PlcBrowseRequest {
@@ -63,17 +55,25 @@ func (d DefaultPlcBrowseResponse) GetQueryNames() []string {
 	return queryNames
 }
 
-func (d DefaultPlcBrowseResponse) GetQueryResults(queryName string) []model.PlcBrowseFoundField {
+func (d DefaultPlcBrowseResponse) GetQueryResults(queryName string) []model.PlcBrowseItem {
 	return d.results[queryName]
 }
 
-func (d DefaultPlcBrowseResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (d DefaultPlcBrowseResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := d.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (d DefaultPlcBrowseResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("PlcBrowseResponse"); err != nil {
 		return err
 	}
 
 	if serializableRequest, ok := d.request.(utils.Serializable); ok {
-		if err := serializableRequest.Serialize(writeBuffer); err != nil {
+		if err := serializableRequest.SerializeWithWriteBuffer(writeBuffer); err != nil {
 			return err
 		}
 	} else {
@@ -83,20 +83,20 @@ func (d DefaultPlcBrowseResponse) Serialize(writeBuffer utils.WriteBuffer) error
 	if err := writeBuffer.PushContext("results"); err != nil {
 		return err
 	}
-	for fieldName, foundFields := range d.results {
-		if err := writeBuffer.PushContext(fieldName); err != nil {
+	for tagName, foundTags := range d.results {
+		if err := writeBuffer.PushContext(tagName); err != nil {
 			return err
 		}
-		for _, field := range foundFields {
-			if serializableField, ok := field.(utils.Serializable); ok {
-				if err := serializableField.Serialize(writeBuffer); err != nil {
+		for _, tag := range foundTags {
+			if serializableTag, ok := tag.(utils.Serializable); ok {
+				if err := serializableTag.SerializeWithWriteBuffer(writeBuffer); err != nil {
 					return err
 				}
 			} else {
-				return errors.Errorf("Error serializing. Field %T doesn't implement Serializable", field)
+				return errors.Errorf("Error serializing. Tag %T doesn't implement Serializable", tag)
 			}
 		}
-		if err := writeBuffer.PopContext(fieldName); err != nil {
+		if err := writeBuffer.PopContext(tagName); err != nil {
 			return err
 		}
 	}

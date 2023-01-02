@@ -30,7 +30,7 @@ import (
 type ErrorReportingSystemCategoryTypeForClimateControllers uint8
 
 type IErrorReportingSystemCategoryTypeForClimateControllers interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -179,7 +179,11 @@ func (m ErrorReportingSystemCategoryTypeForClimateControllers) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingSystemCategoryTypeForClimateControllersParse(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeForClimateControllers, error) {
+func ErrorReportingSystemCategoryTypeForClimateControllersParse(theBytes []byte) (ErrorReportingSystemCategoryTypeForClimateControllers, error) {
+	return ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeForClimateControllers, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingSystemCategoryTypeForClimateControllers", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingSystemCategoryTypeForClimateControllers")
@@ -192,7 +196,15 @@ func ErrorReportingSystemCategoryTypeForClimateControllersParse(readBuffer utils
 	}
 }
 
-func (e ErrorReportingSystemCategoryTypeForClimateControllers) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ErrorReportingSystemCategoryTypeForClimateControllers) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ErrorReportingSystemCategoryTypeForClimateControllers) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ErrorReportingSystemCategoryTypeForClimateControllers", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

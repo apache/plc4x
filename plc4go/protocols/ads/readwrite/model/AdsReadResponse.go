@@ -151,7 +151,11 @@ func (m *_AdsReadResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsReadResponseParse(readBuffer utils.ReadBuffer) (AdsReadResponse, error) {
+func AdsReadResponseParse(theBytes []byte) (AdsReadResponse, error) {
+	return AdsReadResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsReadResponseParseWithBuffer(readBuffer utils.ReadBuffer) (AdsReadResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadResponse"); pullErr != nil {
@@ -164,7 +168,7 @@ func AdsReadResponseParse(readBuffer utils.ReadBuffer) (AdsReadResponse, error) 
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for result")
 	}
-	_result, _resultErr := ReturnCodeParse(readBuffer)
+	_result, _resultErr := ReturnCodeParseWithBuffer(readBuffer)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsReadResponse")
 	}
@@ -200,7 +204,15 @@ func AdsReadResponseParse(readBuffer utils.ReadBuffer) (AdsReadResponse, error) 
 	return _child, nil
 }
 
-func (m *_AdsReadResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsReadResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsReadResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

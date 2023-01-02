@@ -122,7 +122,11 @@ func (m *_BACnetPropertyStatesEscalatorMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesEscalatorModeParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorMode, error) {
+func BACnetPropertyStatesEscalatorModeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorMode, error) {
+	return BACnetPropertyStatesEscalatorModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+}
+
+func BACnetPropertyStatesEscalatorModeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEscalatorMode"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPropertyStatesEscalatorModeParse(readBuffer utils.ReadBuffer, peekedT
 	if pullErr := readBuffer.PullContext("escalatorMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for escalatorMode")
 	}
-	_escalatorMode, _escalatorModeErr := BACnetEscalatorModeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_escalatorMode, _escalatorModeErr := BACnetEscalatorModeTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _escalatorModeErr != nil {
 		return nil, errors.Wrap(_escalatorModeErr, "Error parsing 'escalatorMode' field of BACnetPropertyStatesEscalatorMode")
 	}
@@ -157,7 +161,15 @@ func BACnetPropertyStatesEscalatorModeParse(readBuffer utils.ReadBuffer, peekedT
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesEscalatorMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesEscalatorMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesEscalatorMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

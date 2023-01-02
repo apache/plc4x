@@ -20,41 +20,40 @@
 package knxnetip
 
 import (
+	"time"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
-	internalMode "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"time"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type SubscriptionEvent struct {
-	internalMode.DefaultPlcSubscriptionEvent
+	internalModel.DefaultPlcSubscriptionEvent
 	addresses map[string][]byte
 }
 
-func NewSubscriptionEvent(fields map[string]apiModel.PlcField, types map[string]internalMode.SubscriptionType,
+func NewSubscriptionEvent(tags map[string]apiModel.PlcTag, types map[string]internalModel.SubscriptionType,
 	intervals map[string]time.Duration, responseCodes map[string]apiModel.PlcResponseCode,
 	addresses map[string][]byte, values map[string]values.PlcValue) SubscriptionEvent {
 	subscriptionEvent := SubscriptionEvent{addresses: addresses}
-	subscriptionEvent.DefaultPlcSubscriptionEvent = internalMode.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, fields, types, intervals, responseCodes, values)
+	subscriptionEvent.DefaultPlcSubscriptionEvent = internalModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values)
 	return subscriptionEvent
 }
 
-// GetAddress Decode the binary data in the address according to the field requested
+// GetAddress Decode the binary data in the address according to the tag requested
 func (m SubscriptionEvent) GetAddress(name string) string {
 	rawAddress := m.addresses[name]
-	rawAddressReadBuffer := utils.NewReadBufferByteBased(rawAddress)
-	field := m.DefaultPlcSubscriptionEvent.GetField(name)
+	tag := m.DefaultPlcSubscriptionEvent.GetTag(name)
 	var groupAddress driverModel.KnxGroupAddress
 	var err error
-	switch field.(type) {
-	case GroupAddress3LevelPlcField:
-		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddressReadBuffer, 3)
-	case GroupAddress2LevelPlcField:
-		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddressReadBuffer, 2)
-	case GroupAddress1LevelPlcField:
-		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddressReadBuffer, 1)
+	switch tag.(type) {
+	case GroupAddress3LevelPlcTag:
+		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddress, 3)
+	case GroupAddress2LevelPlcTag:
+		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddress, 2)
+	case GroupAddress1LevelPlcTag:
+		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddress, 1)
 	}
 	if err != nil {
 		return ""

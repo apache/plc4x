@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 
@@ -27,27 +28,14 @@ import java.util.Map;
 public interface PlcBrowseItem {
 
     /**
-     * @return returns the address of this item
+     * @return returns the tag
      */
-    String getAddress();
+    PlcTag getTag();
 
     /**
      * @return returns a textual description of this item
      */
     String getName();
-
-    /**
-     * @return returns the data-type of this item
-     */
-    PlcValueType getPlcValueType();
-
-    /**
-     * @return returns the array info for this element
-     * (this is usually null, but for lists, it contains the array sizes)
-     */
-    default List<PlcBrowseItemArrayInfo> getArrayInfo() {
-        return null;
-    }
 
     /**
      * @return returns 'true' if we can read this variable.
@@ -67,7 +55,7 @@ public interface PlcBrowseItem {
     /**
      * @return returns any children this item might have
      */
-    List<PlcBrowseItem> getChildren();
+    Map<String, PlcBrowseItem> getChildren();
 
     /**
      * @return returns a map of additional options the given protocol might provide.

@@ -30,7 +30,7 @@ import (
 type BACnetLightingTransition uint8
 
 type IBACnetLightingTransition interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +107,11 @@ func (m BACnetLightingTransition) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLightingTransitionParse(readBuffer utils.ReadBuffer) (BACnetLightingTransition, error) {
+func BACnetLightingTransitionParse(theBytes []byte) (BACnetLightingTransition, error) {
+	return BACnetLightingTransitionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLightingTransitionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLightingTransition, error) {
 	val, err := readBuffer.ReadUint8("BACnetLightingTransition", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLightingTransition")
@@ -120,7 +124,15 @@ func BACnetLightingTransitionParse(readBuffer utils.ReadBuffer) (BACnetLightingT
 	}
 }
 
-func (e BACnetLightingTransition) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLightingTransition) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetLightingTransition) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetLightingTransition", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

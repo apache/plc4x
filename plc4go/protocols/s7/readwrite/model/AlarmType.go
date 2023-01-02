@@ -30,7 +30,7 @@ import (
 type AlarmType uint8
 
 type IAlarmType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -101,7 +101,11 @@ func (m AlarmType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmTypeParse(readBuffer utils.ReadBuffer) (AlarmType, error) {
+func AlarmTypeParse(theBytes []byte) (AlarmType, error) {
+	return AlarmTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AlarmTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmType, error) {
 	val, err := readBuffer.ReadUint8("AlarmType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AlarmType")
@@ -114,7 +118,15 @@ func AlarmTypeParse(readBuffer utils.ReadBuffer) (AlarmType, error) {
 	}
 }
 
-func (e AlarmType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e AlarmType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e AlarmType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("AlarmType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

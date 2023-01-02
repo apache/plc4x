@@ -30,7 +30,7 @@ import (
 type BACnetObjectTypesSupported uint8
 
 type IBACnetObjectTypesSupported interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -443,7 +443,11 @@ func (m BACnetObjectTypesSupported) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetObjectTypesSupportedParse(readBuffer utils.ReadBuffer) (BACnetObjectTypesSupported, error) {
+func BACnetObjectTypesSupportedParse(theBytes []byte) (BACnetObjectTypesSupported, error) {
+	return BACnetObjectTypesSupportedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetObjectTypesSupportedParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetObjectTypesSupported, error) {
 	val, err := readBuffer.ReadUint8("BACnetObjectTypesSupported", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetObjectTypesSupported")
@@ -456,7 +460,15 @@ func BACnetObjectTypesSupportedParse(readBuffer utils.ReadBuffer) (BACnetObjectT
 	}
 }
 
-func (e BACnetObjectTypesSupported) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetObjectTypesSupported) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetObjectTypesSupported) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetObjectTypesSupported", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

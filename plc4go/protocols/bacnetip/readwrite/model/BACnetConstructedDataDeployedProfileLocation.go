@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDeployedProfileLocationParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeployedProfileLocation, error) {
+func BACnetConstructedDataDeployedProfileLocationParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeployedProfileLocation, error) {
+	return BACnetConstructedDataDeployedProfileLocationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataDeployedProfileLocationParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeployedProfileLocation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDeployedProfileLocation"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataDeployedProfileLocationParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("deployedProfileLocation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deployedProfileLocation")
 	}
-	_deployedProfileLocation, _deployedProfileLocationErr := BACnetApplicationTagParse(readBuffer)
+	_deployedProfileLocation, _deployedProfileLocationErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _deployedProfileLocationErr != nil {
 		return nil, errors.Wrap(_deployedProfileLocationErr, "Error parsing 'deployedProfileLocation' field of BACnetConstructedDataDeployedProfileLocation")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataDeployedProfileLocationParse(readBuffer utils.ReadBuff
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataDeployedProfileLocation) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDeployedProfileLocation) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataDeployedProfileLocation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

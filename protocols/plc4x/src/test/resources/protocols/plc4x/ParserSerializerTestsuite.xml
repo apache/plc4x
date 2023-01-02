@@ -81,19 +81,19 @@
         </requestType>
         <Plc4xReadRequest>
           <connectionId dataType="uint" bitLength="16">1</connectionId>
-          <numFields dataType="uint" bitLength="8">1</numFields>
-          <fields isList="true">
-            <Plc4xFieldRequest>
-              <field>
-                <Plc4xField>
+          <numTags dataType="uint" bitLength="8">1</numTags>
+          <tags isList="true">
+            <Plc4xTagRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">6</nameLen>
                   <name dataType="string" bitLength="48" encoding="UTF-8">lalala</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">14</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="112" encoding="UTF-8">RANDOM/foo:INT</fieldQuery>
-                </Plc4xField>
-              </field>
-            </Plc4xFieldRequest>
-          </fields>
+                  <tagQueryLen dataType="uint" bitLength="8">14</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="112" encoding="UTF-8">RANDOM/foo:INT</tagQuery>
+                </Plc4xTag>
+              </tag>
+            </Plc4xTagRequest>
+          </tags>
         </Plc4xReadRequest>
       </Plc4xMessage>
     </xml>
@@ -116,17 +116,17 @@
           <responseCode>
             <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
           </responseCode>
-          <numFields dataType="uint" bitLength="8">1</numFields>
-          <fields isList="true">
-            <Plc4xFieldValueResponse>
-              <field>
-                <Plc4xField>
+          <numTags dataType="uint" bitLength="8">1</numTags>
+          <tags isList="true">
+            <Plc4xTagValueResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">6</nameLen>
                   <name dataType="string" bitLength="48" encoding="UTF-8">lalala</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">14</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="112" encoding="UTF-8">RANDOM/foo:INT</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">14</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="112" encoding="UTF-8">RANDOM/foo:INT</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
@@ -136,8 +136,8 @@
               <value>
                 <value dataType="int" bitLength="16">15595</value>
               </value>
-            </Plc4xFieldValueResponse>
-          </fields>
+            </Plc4xTagValueResponse>
+          </tags>
         </Plc4xReadResponse>
       </Plc4xMessage>
     </xml>
@@ -157,169 +157,169 @@
         </requestType>
         <Plc4xReadRequest>
           <connectionId dataType="uint" bitLength="16">1</connectionId>
-          <numFields dataType="uint" bitLength="8">16</numFields>
-          <fields isList="true">
-            <Plc4xFieldRequest>
-              <field>
-                <Plc4xField>
+          <numTags dataType="uint" bitLength="8">16</numTags>
+          <tags isList="true">
+            <Plc4xTagRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-BOOL</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:BOOL</fieldQuery>
-                </Plc4xField>
-              </field>
-            </Plc4xFieldRequest>
-            <Plc4xFieldRequest>
-              <field>
-                <Plc4xField>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:BOOL</tagQuery>
+                </Plc4xTag>
+              </tag>
+            </Plc4xTagRequest>
+            <Plc4xTagRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-BYTE</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:BYTE</fieldQuery>
-                </Plc4xField>
-              </field>
-            </Plc4xFieldRequest>
-            <Plc4xFieldRequest>
-              <field>
-                <Plc4xField>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:BYTE</tagQuery>
+                </Plc4xTag>
+              </tag>
+            </Plc4xTagRequest>
+            <Plc4xTagRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-WORD</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:WORD</fieldQuery>
-                </Plc4xField>
-              </field>
-            </Plc4xFieldRequest>
-            <Plc4xFieldRequest>
-              <field>
-                <Plc4xField>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:WORD</tagQuery>
+                </Plc4xTag>
+              </tag>
+            </Plc4xTagRequest>
+            <Plc4xTagRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">10</nameLen>
                   <name dataType="string" bitLength="80" encoding="UTF-8">test-DWORD</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:DWORD</fieldQuery>
-                </Plc4xField>
-              </field>
-            </Plc4xFieldRequest>
-            <Plc4xFieldRequest>
-              <field>
-                <Plc4xField>
+                  <tagQueryLen dataType="uint" bitLength="8">16</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:DWORD</tagQuery>
+                </Plc4xTag>
+              </tag>
+            </Plc4xTagRequest>
+            <Plc4xTagRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">10</nameLen>
                   <name dataType="string" bitLength="80" encoding="UTF-8">test-USINT</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:USINT</fieldQuery>
-                </Plc4xField>
-              </field>
-            </Plc4xFieldRequest>
-            <Plc4xFieldRequest>
-              <field>
-                <Plc4xField>
+                  <tagQueryLen dataType="uint" bitLength="8">16</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:USINT</tagQuery>
+                </Plc4xTag>
+              </tag>
+            </Plc4xTagRequest>
+            <Plc4xTagRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-UINT</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:UINT</fieldQuery>
-                </Plc4xField>
-              </field>
-            </Plc4xFieldRequest>
-            <Plc4xFieldRequest>
-              <field>
-                <Plc4xField>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:UINT</tagQuery>
+                </Plc4xTag>
+              </tag>
+            </Plc4xTagRequest>
+            <Plc4xTagRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">10</nameLen>
                   <name dataType="string" bitLength="80" encoding="UTF-8">test-UDINT</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:UDINT</fieldQuery>
-                </Plc4xField>
-              </field>
-            </Plc4xFieldRequest>
-            <Plc4xFieldRequest>
-              <field>
-                <Plc4xField>
+                  <tagQueryLen dataType="uint" bitLength="8">16</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:UDINT</tagQuery>
+                </Plc4xTag>
+              </tag>
+            </Plc4xTagRequest>
+            <Plc4xTagRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">10</nameLen>
                   <name dataType="string" bitLength="80" encoding="UTF-8">test-ULINT</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:ULINT</fieldQuery>
-                </Plc4xField>
-              </field>
-            </Plc4xFieldRequest>
-            <Plc4xFieldRequest>
-              <field>
-                <Plc4xField>
+                  <tagQueryLen dataType="uint" bitLength="8">16</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:ULINT</tagQuery>
+                </Plc4xTag>
+              </tag>
+            </Plc4xTagRequest>
+            <Plc4xTagRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-SINT</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:SINT</fieldQuery>
-                </Plc4xField>
-              </field>
-            </Plc4xFieldRequest>
-            <Plc4xFieldRequest>
-              <field>
-                <Plc4xField>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:SINT</tagQuery>
+                </Plc4xTag>
+              </tag>
+            </Plc4xTagRequest>
+            <Plc4xTagRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">8</nameLen>
                   <name dataType="string" bitLength="64" encoding="UTF-8">test-INT</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">14</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="112" encoding="UTF-8">RANDOM/foo:INT</fieldQuery>
-                </Plc4xField>
-              </field>
-            </Plc4xFieldRequest>
-            <Plc4xFieldRequest>
-              <field>
-                <Plc4xField>
+                  <tagQueryLen dataType="uint" bitLength="8">14</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="112" encoding="UTF-8">RANDOM/foo:INT</tagQuery>
+                </Plc4xTag>
+              </tag>
+            </Plc4xTagRequest>
+            <Plc4xTagRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-DINT</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:DINT</fieldQuery>
-                </Plc4xField>
-              </field>
-            </Plc4xFieldRequest>
-            <Plc4xFieldRequest>
-              <field>
-                <Plc4xField>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:DINT</tagQuery>
+                </Plc4xTag>
+              </tag>
+            </Plc4xTagRequest>
+            <Plc4xTagRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-LINT</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:LINT</fieldQuery>
-                </Plc4xField>
-              </field>
-            </Plc4xFieldRequest>
-            <Plc4xFieldRequest>
-              <field>
-                <Plc4xField>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:LINT</tagQuery>
+                </Plc4xTag>
+              </tag>
+            </Plc4xTagRequest>
+            <Plc4xTagRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-REAL</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:REAL</fieldQuery>
-                </Plc4xField>
-              </field>
-            </Plc4xFieldRequest>
-            <Plc4xFieldRequest>
-              <field>
-                <Plc4xField>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:REAL</tagQuery>
+                </Plc4xTag>
+              </tag>
+            </Plc4xTagRequest>
+            <Plc4xTagRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">10</nameLen>
                   <name dataType="string" bitLength="80" encoding="UTF-8">test-LREAL</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:LREAL</fieldQuery>
-                </Plc4xField>
-              </field>
-            </Plc4xFieldRequest>
-            <Plc4xFieldRequest>
-              <field>
-                <Plc4xField>
+                  <tagQueryLen dataType="uint" bitLength="8">16</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:LREAL</tagQuery>
+                </Plc4xTag>
+              </tag>
+            </Plc4xTagRequest>
+            <Plc4xTagRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-CHAR</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:CHAR</fieldQuery>
-                </Plc4xField>
-              </field>
-            </Plc4xFieldRequest>
-            <Plc4xFieldRequest>
-              <field>
-                <Plc4xField>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:CHAR</tagQuery>
+                </Plc4xTag>
+              </tag>
+            </Plc4xTagRequest>
+            <Plc4xTagRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">10</nameLen>
                   <name dataType="string" bitLength="80" encoding="UTF-8">test-WCHAR</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:WCHAR</fieldQuery>
-                </Plc4xField>
-              </field>
-            </Plc4xFieldRequest>
-          </fields>
+                  <tagQueryLen dataType="uint" bitLength="8">16</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:WCHAR</tagQuery>
+                </Plc4xTag>
+              </tag>
+            </Plc4xTagRequest>
+          </tags>
         </Plc4xReadRequest>
       </Plc4xMessage>
     </xml>
@@ -342,17 +342,17 @@
           <responseCode>
             <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
           </responseCode>
-          <numFields dataType="uint" bitLength="8">16</numFields>
-          <fields isList="true">
-            <Plc4xFieldValueResponse>
-              <field>
-                <Plc4xField>
+          <numTags dataType="uint" bitLength="8">16</numTags>
+          <tags isList="true">
+            <Plc4xTagValueResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-BOOL</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:BOOL</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:BOOL</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
@@ -363,16 +363,16 @@
                 <value dataType="uint" bitLength="7">0</value>
                 <value dataType="bit" bitLength="1">false</value>
               </value>
-            </Plc4xFieldValueResponse>
-            <Plc4xFieldValueResponse>
-              <field>
-                <Plc4xField>
+            </Plc4xTagValueResponse>
+            <Plc4xTagValueResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-BYTE</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:BYTE</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:BYTE</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
@@ -382,16 +382,16 @@
               <value>
                 <value dataType="uint" bitLength="8">191</value>
               </value>
-            </Plc4xFieldValueResponse>
-            <Plc4xFieldValueResponse>
-              <field>
-                <Plc4xField>
+            </Plc4xTagValueResponse>
+            <Plc4xTagValueResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-WORD</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:WORD</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:WORD</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
@@ -401,16 +401,16 @@
               <value>
                 <value dataType="uint" bitLength="16">10527</value>
               </value>
-            </Plc4xFieldValueResponse>
-            <Plc4xFieldValueResponse>
-              <field>
-                <Plc4xField>
+            </Plc4xTagValueResponse>
+            <Plc4xTagValueResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">10</nameLen>
                   <name dataType="string" bitLength="80" encoding="UTF-8">test-DWORD</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:DWORD</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">16</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:DWORD</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
@@ -420,16 +420,16 @@
               <value>
                 <value dataType="uint" bitLength="32">2015598905</value>
               </value>
-            </Plc4xFieldValueResponse>
-            <Plc4xFieldValueResponse>
-              <field>
-                <Plc4xField>
+            </Plc4xTagValueResponse>
+            <Plc4xTagValueResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">10</nameLen>
                   <name dataType="string" bitLength="80" encoding="UTF-8">test-USINT</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:USINT</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">16</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:USINT</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
@@ -439,16 +439,16 @@
               <value>
                 <value dataType="uint" bitLength="8">175</value>
               </value>
-            </Plc4xFieldValueResponse>
-            <Plc4xFieldValueResponse>
-              <field>
-                <Plc4xField>
+            </Plc4xTagValueResponse>
+            <Plc4xTagValueResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-UINT</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:UINT</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:UINT</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
@@ -458,16 +458,16 @@
               <value>
                 <value dataType="uint" bitLength="16">43752</value>
               </value>
-            </Plc4xFieldValueResponse>
-            <Plc4xFieldValueResponse>
-              <field>
-                <Plc4xField>
+            </Plc4xTagValueResponse>
+            <Plc4xTagValueResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">10</nameLen>
                   <name dataType="string" bitLength="80" encoding="UTF-8">test-UDINT</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:UDINT</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">16</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:UDINT</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
@@ -477,16 +477,16 @@
               <value>
                 <value dataType="uint" bitLength="32">3515517396</value>
               </value>
-            </Plc4xFieldValueResponse>
-            <Plc4xFieldValueResponse>
-              <field>
-                <Plc4xField>
+            </Plc4xTagValueResponse>
+            <Plc4xTagValueResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">10</nameLen>
                   <name dataType="string" bitLength="80" encoding="UTF-8">test-ULINT</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:ULINT</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">16</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:ULINT</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
@@ -496,16 +496,16 @@
               <value>
                 <value dataType="uint" bitLength="64">10898107504583401389</value>
               </value>
-            </Plc4xFieldValueResponse>
-            <Plc4xFieldValueResponse>
-              <field>
-                <Plc4xField>
+            </Plc4xTagValueResponse>
+            <Plc4xTagValueResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-SINT</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:SINT</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:SINT</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
@@ -515,16 +515,16 @@
               <value>
                 <value dataType="int" bitLength="8">96</value>
               </value>
-            </Plc4xFieldValueResponse>
-            <Plc4xFieldValueResponse>
-              <field>
-                <Plc4xField>
+            </Plc4xTagValueResponse>
+            <Plc4xTagValueResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">8</nameLen>
                   <name dataType="string" bitLength="64" encoding="UTF-8">test-INT</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">14</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="112" encoding="UTF-8">RANDOM/foo:INT</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">14</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="112" encoding="UTF-8">RANDOM/foo:INT</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
@@ -534,16 +534,16 @@
               <value>
                 <value dataType="int" bitLength="16">-6528</value>
               </value>
-            </Plc4xFieldValueResponse>
-            <Plc4xFieldValueResponse>
-              <field>
-                <Plc4xField>
+            </Plc4xTagValueResponse>
+            <Plc4xTagValueResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-DINT</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:DINT</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:DINT</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
@@ -553,16 +553,16 @@
               <value>
                 <value dataType="int" bitLength="32">948057774</value>
               </value>
-            </Plc4xFieldValueResponse>
-            <Plc4xFieldValueResponse>
-              <field>
-                <Plc4xField>
+            </Plc4xTagValueResponse>
+            <Plc4xTagValueResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-LINT</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:LINT</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:LINT</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
@@ -572,16 +572,16 @@
               <value>
                 <value dataType="int" bitLength="64">-2043819012400661809</value>
               </value>
-            </Plc4xFieldValueResponse>
-            <Plc4xFieldValueResponse>
-              <field>
-                <Plc4xField>
+            </Plc4xTagValueResponse>
+            <Plc4xTagValueResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-REAL</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:REAL</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:REAL</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
@@ -591,16 +591,16 @@
               <value>
                 <value dataType="float" bitLength="32">-2.0440407E31</value>
               </value>
-            </Plc4xFieldValueResponse>
-            <Plc4xFieldValueResponse>
-              <field>
-                <Plc4xField>
+            </Plc4xTagValueResponse>
+            <Plc4xTagValueResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">10</nameLen>
                   <name dataType="string" bitLength="80" encoding="UTF-8">test-LREAL</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:LREAL</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">16</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:LREAL</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
@@ -610,16 +610,16 @@
               <value>
                 <value dataType="float" bitLength="64">2.281108017618101E-196</value>
               </value>
-            </Plc4xFieldValueResponse>
-            <Plc4xFieldValueResponse>
-              <field>
-                <Plc4xField>
+            </Plc4xTagValueResponse>
+            <Plc4xTagValueResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">9</nameLen>
                   <name dataType="string" bitLength="72" encoding="UTF-8">test-CHAR</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">15</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:CHAR</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">15</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="120" encoding="UTF-8">RANDOM/foo:CHAR</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
@@ -629,16 +629,16 @@
               <value>
                 <value dataType="string" bitLength="8" encoding="UTF-8">P</value>
               </value>
-            </Plc4xFieldValueResponse>
-            <Plc4xFieldValueResponse>
-              <field>
-                <Plc4xField>
+            </Plc4xTagValueResponse>
+            <Plc4xTagValueResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">10</nameLen>
                   <name dataType="string" bitLength="80" encoding="UTF-8">test-WCHAR</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">16</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:WCHAR</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">16</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="128" encoding="UTF-8">RANDOM/foo:WCHAR</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
@@ -648,8 +648,8 @@
               <value>
                 <value dataType="string" bitLength="16" encoding="UTF-16">Ϡ</value>
               </value>
-            </Plc4xFieldValueResponse>
-          </fields>
+            </Plc4xTagValueResponse>
+          </tags>
         </Plc4xReadResponse>
       </Plc4xMessage>
     </xml>
@@ -669,25 +669,25 @@
         </requestType>
         <Plc4xWriteRequest>
           <connectionId dataType="uint" bitLength="16">1</connectionId>
-          <numFields dataType="uint" bitLength="8">1</numFields>
-          <fields isList="true">
-            <Plc4xFieldValueRequest>
-              <field>
-                <Plc4xField>
+          <numTags dataType="uint" bitLength="8">1</numTags>
+          <tags isList="true">
+            <Plc4xTagValueRequest>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">6</nameLen>
                   <name dataType="string" bitLength="48" encoding="UTF-8">lalala</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">14</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="112" encoding="UTF-8">STDOUT/foo:INT</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">14</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="112" encoding="UTF-8">STDOUT/foo:INT</tagQuery>
+                </Plc4xTag>
+              </tag>
               <valueType>
                 <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="INT">34</Plc4xValueType>
               </valueType>
               <value>
                 <value dataType="int" bitLength="16">23</value>
               </value>
-            </Plc4xFieldValueRequest>
-          </fields>
+            </Plc4xTagValueRequest>
+          </tags>
         </Plc4xWriteRequest>
       </Plc4xMessage>
     </xml>
@@ -710,22 +710,22 @@
           <responseCode>
             <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
           </responseCode>
-          <numFields dataType="uint" bitLength="8">1</numFields>
-          <fields isList="true">
-            <Plc4xFieldResponse>
-              <field>
-                <Plc4xField>
+          <numTags dataType="uint" bitLength="8">1</numTags>
+          <tags isList="true">
+            <Plc4xTagResponse>
+              <tag>
+                <Plc4xTag>
                   <nameLen dataType="uint" bitLength="8">6</nameLen>
                   <name dataType="string" bitLength="48" encoding="UTF-8">lalala</name>
-                  <fieldQueryLen dataType="uint" bitLength="8">14</fieldQueryLen>
-                  <fieldQuery dataType="string" bitLength="112" encoding="UTF-8">STDOUT/foo:INT</fieldQuery>
-                </Plc4xField>
-              </field>
+                  <tagQueryLen dataType="uint" bitLength="8">14</tagQueryLen>
+                  <tagQuery dataType="string" bitLength="112" encoding="UTF-8">STDOUT/foo:INT</tagQuery>
+                </Plc4xTag>
+              </tag>
               <responseCode>
                 <Plc4xResponseCode dataType="uint" bitLength="8" stringRepresentation="OK">1</Plc4xResponseCode>
               </responseCode>
-            </Plc4xFieldResponse>
-          </fields>
+            </Plc4xTagResponse>
+          </tags>
         </Plc4xWriteResponse>
       </Plc4xMessage>
     </xml>

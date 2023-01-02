@@ -126,7 +126,11 @@ func (m *_SALDataMediaTransport) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataMediaTransportParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataMediaTransport, error) {
+func SALDataMediaTransportParse(theBytes []byte, applicationId ApplicationId) (SALDataMediaTransport, error) {
+	return SALDataMediaTransportParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+}
+
+func SALDataMediaTransportParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataMediaTransport, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataMediaTransport"); pullErr != nil {
@@ -139,7 +143,7 @@ func SALDataMediaTransportParse(readBuffer utils.ReadBuffer, applicationId Appli
 	if pullErr := readBuffer.PullContext("mediaTransportControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for mediaTransportControlData")
 	}
-	_mediaTransportControlData, _mediaTransportControlDataErr := MediaTransportControlDataParse(readBuffer)
+	_mediaTransportControlData, _mediaTransportControlDataErr := MediaTransportControlDataParseWithBuffer(readBuffer)
 	if _mediaTransportControlDataErr != nil {
 		return nil, errors.Wrap(_mediaTransportControlDataErr, "Error parsing 'mediaTransportControlData' field of SALDataMediaTransport")
 	}
@@ -161,7 +165,15 @@ func SALDataMediaTransportParse(readBuffer utils.ReadBuffer, applicationId Appli
 	return _child, nil
 }
 
-func (m *_SALDataMediaTransport) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataMediaTransport) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SALDataMediaTransport) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

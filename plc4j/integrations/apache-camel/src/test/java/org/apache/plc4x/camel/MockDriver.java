@@ -69,8 +69,8 @@ public class MockDriver implements PlcDriver {
             // TODO: Translate this so it actually does something ...
             /*PlcSubscriptionRequest subscriptionRequest = invocation.getArgument(0);
             List<PlcSubscriptionResponse> responseItems =
-                subscriptionRequest.getFieldNames().stream().map(
-                    fieldName -> subscriptionRequest.getField(fieldName)).map(field -> {
+                subscriptionRequest.getTagNames().stream().map(
+                    tagName -> subscriptionRequest.getTag(tagName)).map(tag -> {
                     Consumer consumer = subscriptionRequestItem.getConsumer();
                     executorService.submit(() -> {
                         while (!Thread.currentThread().isInterrupted()) {

@@ -124,7 +124,11 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) GetLengthInB
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger, error) {
+func BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerParse(theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger, error) {
+	return BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+}
+
+func BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger"); pullErr != nil {
@@ -137,7 +141,7 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerParse(readBuffer ut
 	if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for integerValue")
 	}
-	_integerValue, _integerValueErr := BACnetApplicationTagParse(readBuffer)
+	_integerValue, _integerValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _integerValueErr != nil {
 		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field of BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger")
 	}
@@ -161,7 +165,15 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerParse(readBuffer ut
 	return _child, nil
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

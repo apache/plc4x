@@ -34,7 +34,6 @@ import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
-import org.apache.plc4x.java.utils.connectionpool2.CachedDriverManager;
 import org.apache.plc4x.java.utils.connectionpool2.PooledDriverManager;
 import org.apache.plc4x.kafka.config.Constants;
 import org.apache.plc4x.kafka.util.VersionUtil;
@@ -125,7 +124,7 @@ public class Plc4xSourceTask extends SourceTask {
             if (jobConfigSegments.length < 4) {
                 log.warn("Error in job configuration '{}'. " +
                     "The configuration expects at least 4 segments: " +
-                    "{job-name}|{topic}|{rate}(|{field-alias}#{field-address})+", jobConfig);
+                    "{job-name}|{topic}|{rate}(|{tag-alias}#{tag-address})+", jobConfig);
                 continue;
             }
 
@@ -135,16 +134,16 @@ public class Plc4xSourceTask extends SourceTask {
             JobConfigurationTriggeredImplBuilder jobBuilder = builder.job(
                 jobName, String.format("(SCHEDULED,%s)", rate)).source(connectionName);
             for (int i = 3; i < jobConfigSegments.length; i++) {
-                String[] fieldSegments = jobConfigSegments[i].split("#");
-                if (fieldSegments.length != 2) {
+                String[] tagSegments = jobConfigSegments[i].split("#");
+                if (tagSegments.length != 2) {
                     log.warn("Error in job configuration '{}'. " +
-                            "The field segment expects a format {field-alias}#{field-address}, but got '%s'",
+                            "The tag segment expects a format {tag-alias}#{tag-address}, but got '%s'",
                         jobName, jobConfigSegments[i]);
                     continue;
                 }
-                String fieldAlias = fieldSegments[0];
-                String fieldAddress = fieldSegments[1];
-                jobBuilder.field(fieldAlias, fieldAddress);
+                String tagAlias = tagSegments[0];
+                String tagAddress = tagSegments[1];
+                jobBuilder.tag(tagAlias, tagAddress);
                 topics.put(jobName, topic);
             }
             jobBuilder.build();
@@ -173,47 +172,47 @@ public class Plc4xSourceTask extends SourceTask {
                         .put(Constants.JOB_NAME_FIELD, jobName);
 
                     // Build the Schema for the result struct.
-                    SchemaBuilder fieldSchemaBuilder = SchemaBuilder.struct()
-                        .name("org.apache.plc4x.kafka.schema.Field");
+                    SchemaBuilder tagSchemaBuilder = SchemaBuilder.struct()
+                        .name("org.apache.plc4x.kafka.schema.Tag");
 
 
                     for (Map.Entry<String, Object> result : results.entrySet()) {
-                        // Get field-name and -value from the results.
-                        String fieldName = result.getKey();
-                        Object fieldValue = result.getValue();
+                        // Get tag-name and -value from the results.
+                        String tagName = result.getKey();
+                        Object tagValue = result.getValue();
 
                         // Get the schema for the given value type.
-                        Schema valueSchema = getSchema(fieldValue);
+                        Schema valueSchema = getSchema(tagValue);
 
-                        // Add the schema description for the current field.
-                        fieldSchemaBuilder.field(fieldName, valueSchema);
+                        // Add the schema description for the current tag.
+                        tagSchemaBuilder.field(tagName, valueSchema);
                     }
-                    Schema fieldSchema = fieldSchemaBuilder.build();
+                    Schema tagSchema = tagSchemaBuilder.build();
 
                     Schema recordSchema = SchemaBuilder.struct()
                         .name("org.apache.plc4x.kafka.schema.JobResult")
-                        .doc("PLC Job result. This contains all of the received PLCValues as well as a recieved timestamp")
-                        .field(Constants.FIELDS_CONFIG, fieldSchema)
+                        .doc("PLC Job result. This contains all of the received PLCValues as well as a received timestamp")
+                        .field(Constants.TAGS_CONFIG, tagSchema)
                         .field(Constants.TIMESTAMP_CONFIG, Schema.INT64_SCHEMA)
                         .field(Constants.EXPIRES_CONFIG, Schema.OPTIONAL_INT64_SCHEMA)
                         .build();
 
                     // Build the struct itself.
-                    Struct fieldStruct = new Struct(fieldSchema);
+                    Struct tagStruct = new Struct(tagSchema);
                     for (Map.Entry<String, Object> result : results.entrySet()) {
-                        // Get field-name and -value from the results.
-                        String fieldName = result.getKey();
-                        Object fieldValue = result.getValue();
+                        // Get tag-name and -value from the results.
+                        String tagName = result.getKey();
+                        Object tagValue = result.getValue();
 
-                        if (fieldSchema.field(fieldName).schema().type() == Schema.Type.ARRAY) {
-                            fieldStruct.put(fieldName, ((List) fieldValue).stream().map(p -> ((PlcValue) p).getObject()).collect(Collectors.toList()));
+                        if (tagSchema.field(tagName).schema().type() == Schema.Type.ARRAY) {
+                            tagStruct.put(tagName, ((List) tagValue).stream().map(p -> ((PlcValue) p).getObject()).collect(Collectors.toList()));
                         } else {
-                            fieldStruct.put(fieldName, fieldValue);
+                            tagStruct.put(tagName, tagValue);
                         }
                     }
 
                     Struct recordStruct = new Struct(recordSchema)
-                        .put(Constants.FIELDS_CONFIG, fieldStruct)
+                        .put(Constants.TAGS_CONFIG, tagStruct)
                         .put(Constants.TIMESTAMP_CONFIG, timestamp);
 
                     // Prepare the source-record element.

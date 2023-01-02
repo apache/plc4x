@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBACnetIPv6MulticastAddressParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPv6MulticastAddress, error) {
+func BACnetConstructedDataBACnetIPv6MulticastAddressParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPv6MulticastAddress, error) {
+	return BACnetConstructedDataBACnetIPv6MulticastAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataBACnetIPv6MulticastAddressParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPv6MulticastAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPv6MulticastAddress"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataBACnetIPv6MulticastAddressParse(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("ipv6MulticastAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipv6MulticastAddress")
 	}
-	_ipv6MulticastAddress, _ipv6MulticastAddressErr := BACnetApplicationTagParse(readBuffer)
+	_ipv6MulticastAddress, _ipv6MulticastAddressErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _ipv6MulticastAddressErr != nil {
 		return nil, errors.Wrap(_ipv6MulticastAddressErr, "Error parsing 'ipv6MulticastAddress' field of BACnetConstructedDataBACnetIPv6MulticastAddress")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataBACnetIPv6MulticastAddressParse(readBuffer utils.ReadB
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

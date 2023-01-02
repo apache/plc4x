@@ -122,7 +122,11 @@ func (m *_BACnetApplicationTagTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetApplicationTagTimeParse(readBuffer utils.ReadBuffer) (BACnetApplicationTagTime, error) {
+func BACnetApplicationTagTimeParse(theBytes []byte) (BACnetApplicationTagTime, error) {
+	return BACnetApplicationTagTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetApplicationTagTimeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetApplicationTagTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagTime"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetApplicationTagTimeParse(readBuffer utils.ReadBuffer) (BACnetApplicati
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadTimeParse(readBuffer)
+	_payload, _payloadErr := BACnetTagPayloadTimeParseWithBuffer(readBuffer)
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetApplicationTagTime")
 	}
@@ -157,7 +161,15 @@ func BACnetApplicationTagTimeParse(readBuffer utils.ReadBuffer) (BACnetApplicati
 	return _child, nil
 }
 
-func (m *_BACnetApplicationTagTime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetApplicationTagTime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetApplicationTagTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

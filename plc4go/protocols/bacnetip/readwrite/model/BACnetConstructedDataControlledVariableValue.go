@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataControlledVariableValue) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataControlledVariableValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataControlledVariableValue, error) {
+func BACnetConstructedDataControlledVariableValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataControlledVariableValue, error) {
+	return BACnetConstructedDataControlledVariableValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataControlledVariableValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataControlledVariableValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataControlledVariableValue"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataControlledVariableValueParse(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("controlledVariableValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for controlledVariableValue")
 	}
-	_controlledVariableValue, _controlledVariableValueErr := BACnetApplicationTagParse(readBuffer)
+	_controlledVariableValue, _controlledVariableValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _controlledVariableValueErr != nil {
 		return nil, errors.Wrap(_controlledVariableValueErr, "Error parsing 'controlledVariableValue' field of BACnetConstructedDataControlledVariableValue")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataControlledVariableValueParse(readBuffer utils.ReadBuff
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataControlledVariableValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataControlledVariableValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataControlledVariableValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

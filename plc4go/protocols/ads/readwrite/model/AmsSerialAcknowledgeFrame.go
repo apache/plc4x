@@ -147,7 +147,11 @@ func (m *_AmsSerialAcknowledgeFrame) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AmsSerialAcknowledgeFrameParse(readBuffer utils.ReadBuffer) (AmsSerialAcknowledgeFrame, error) {
+func AmsSerialAcknowledgeFrameParse(theBytes []byte) (AmsSerialAcknowledgeFrame, error) {
+	return AmsSerialAcknowledgeFrameParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AmsSerialAcknowledgeFrameParseWithBuffer(readBuffer utils.ReadBuffer) (AmsSerialAcknowledgeFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsSerialAcknowledgeFrame"); pullErr != nil {
@@ -213,7 +217,15 @@ func AmsSerialAcknowledgeFrameParse(readBuffer utils.ReadBuffer) (AmsSerialAckno
 	}, nil
 }
 
-func (m *_AmsSerialAcknowledgeFrame) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AmsSerialAcknowledgeFrame) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AmsSerialAcknowledgeFrame) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AmsSerialAcknowledgeFrame"); pushErr != nil {

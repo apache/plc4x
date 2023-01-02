@@ -122,7 +122,11 @@ func (m *_BACnetChannelValueObjectidentifier) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueObjectidentifierParse(readBuffer utils.ReadBuffer) (BACnetChannelValueObjectidentifier, error) {
+func BACnetChannelValueObjectidentifierParse(theBytes []byte) (BACnetChannelValueObjectidentifier, error) {
+	return BACnetChannelValueObjectidentifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetChannelValueObjectidentifierParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueObjectidentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueObjectidentifier"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetChannelValueObjectidentifierParse(readBuffer utils.ReadBuffer) (BACne
 	if pullErr := readBuffer.PullContext("objectidentifierValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectidentifierValue")
 	}
-	_objectidentifierValue, _objectidentifierValueErr := BACnetApplicationTagParse(readBuffer)
+	_objectidentifierValue, _objectidentifierValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _objectidentifierValueErr != nil {
 		return nil, errors.Wrap(_objectidentifierValueErr, "Error parsing 'objectidentifierValue' field of BACnetChannelValueObjectidentifier")
 	}
@@ -157,7 +161,15 @@ func BACnetChannelValueObjectidentifierParse(readBuffer utils.ReadBuffer) (BACne
 	return _child, nil
 }
 
-func (m *_BACnetChannelValueObjectidentifier) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetChannelValueObjectidentifier) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetChannelValueObjectidentifier) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

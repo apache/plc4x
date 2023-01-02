@@ -30,8 +30,8 @@ import (
 type ProtectionLevel uint8
 
 type IProtectionLevel interface {
+	utils.Serializable
 	Description() string
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -141,7 +141,11 @@ func (m ProtectionLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ProtectionLevelParse(readBuffer utils.ReadBuffer) (ProtectionLevel, error) {
+func ProtectionLevelParse(theBytes []byte) (ProtectionLevel, error) {
+	return ProtectionLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ProtectionLevelParseWithBuffer(readBuffer utils.ReadBuffer) (ProtectionLevel, error) {
 	val, err := readBuffer.ReadUint8("ProtectionLevel", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ProtectionLevel")
@@ -154,7 +158,15 @@ func ProtectionLevelParse(readBuffer utils.ReadBuffer) (ProtectionLevel, error) 
 	}
 }
 
-func (e ProtectionLevel) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ProtectionLevel) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ProtectionLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ProtectionLevel", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

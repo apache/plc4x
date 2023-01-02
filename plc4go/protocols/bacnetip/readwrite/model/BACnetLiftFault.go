@@ -30,7 +30,7 @@ import (
 type BACnetLiftFault uint16
 
 type IBACnetLiftFault interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -191,7 +191,11 @@ func (m BACnetLiftFault) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLiftFaultParse(readBuffer utils.ReadBuffer) (BACnetLiftFault, error) {
+func BACnetLiftFaultParse(theBytes []byte) (BACnetLiftFault, error) {
+	return BACnetLiftFaultParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLiftFaultParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLiftFault, error) {
 	val, err := readBuffer.ReadUint16("BACnetLiftFault", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLiftFault")
@@ -204,7 +208,15 @@ func BACnetLiftFaultParse(readBuffer utils.ReadBuffer) (BACnetLiftFault, error) 
 	}
 }
 
-func (e BACnetLiftFault) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLiftFault) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetLiftFault) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetLiftFault", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

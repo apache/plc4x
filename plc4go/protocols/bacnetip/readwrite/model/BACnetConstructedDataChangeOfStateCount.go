@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataChangeOfStateCount) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataChangeOfStateCountParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangeOfStateCount, error) {
+func BACnetConstructedDataChangeOfStateCountParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangeOfStateCount, error) {
+	return BACnetConstructedDataChangeOfStateCountParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataChangeOfStateCountParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangeOfStateCount, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataChangeOfStateCount"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataChangeOfStateCountParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("changeIfStateCount"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for changeIfStateCount")
 	}
-	_changeIfStateCount, _changeIfStateCountErr := BACnetApplicationTagParse(readBuffer)
+	_changeIfStateCount, _changeIfStateCountErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _changeIfStateCountErr != nil {
 		return nil, errors.Wrap(_changeIfStateCountErr, "Error parsing 'changeIfStateCount' field of BACnetConstructedDataChangeOfStateCount")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataChangeOfStateCountParse(readBuffer utils.ReadBuffer, t
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataChangeOfStateCount) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataChangeOfStateCount) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataChangeOfStateCount) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -131,7 +131,11 @@ func (m *_LightingData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LightingDataParse(readBuffer utils.ReadBuffer) (LightingData, error) {
+func LightingDataParse(theBytes []byte) (LightingData, error) {
+	return LightingDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func LightingDataParseWithBuffer(readBuffer utils.ReadBuffer) (LightingData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LightingData"); pullErr != nil {
@@ -149,7 +153,7 @@ func LightingDataParse(readBuffer utils.ReadBuffer) (LightingData, error) {
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := LightingCommandTypeContainerParse(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := LightingCommandTypeContainerParseWithBuffer(readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of LightingData")
 	}
@@ -174,15 +178,15 @@ func LightingDataParse(readBuffer utils.ReadBuffer) (LightingData, error) {
 	var typeSwitchError error
 	switch {
 	case commandType == LightingCommandType_OFF: // LightingDataOff
-		_childTemp, typeSwitchError = LightingDataOffParse(readBuffer)
+		_childTemp, typeSwitchError = LightingDataOffParseWithBuffer(readBuffer)
 	case commandType == LightingCommandType_ON: // LightingDataOn
-		_childTemp, typeSwitchError = LightingDataOnParse(readBuffer)
+		_childTemp, typeSwitchError = LightingDataOnParseWithBuffer(readBuffer)
 	case commandType == LightingCommandType_RAMP_TO_LEVEL: // LightingDataRampToLevel
-		_childTemp, typeSwitchError = LightingDataRampToLevelParse(readBuffer)
+		_childTemp, typeSwitchError = LightingDataRampToLevelParseWithBuffer(readBuffer)
 	case commandType == LightingCommandType_TERMINATE_RAMP: // LightingDataTerminateRamp
-		_childTemp, typeSwitchError = LightingDataTerminateRampParse(readBuffer)
+		_childTemp, typeSwitchError = LightingDataTerminateRampParseWithBuffer(readBuffer)
 	case commandType == LightingCommandType_LABEL: // LightingDataLabel
-		_childTemp, typeSwitchError = LightingDataLabelParse(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = LightingDataLabelParseWithBuffer(readBuffer, commandTypeContainer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}

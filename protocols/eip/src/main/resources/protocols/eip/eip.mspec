@@ -358,9 +358,9 @@
     ['0X00C5'   LINT            ['8']]
     ['0X00CA'   REAL            ['4']]
     ['0X00D3'   DWORD           ['4']]
-    ['0X02A0'   STRUCTURED      ['88']]
+    ['0X02A0'   Struct          ['88']]
     ['0X02A0'   STRING          ['88']]
-    ['0X02A0'   STRING36        ['40']]
+    //['0X02A0'   STRING36        ['40']]
     //TODO: -1 is not a valid value for uint
     //['-1'       UNKNOWN         ['-1']]
 ]

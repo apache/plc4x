@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataMultiStateOutputInterfaceValue) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMultiStateOutputInterfaceValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMultiStateOutputInterfaceValue, error) {
+func BACnetConstructedDataMultiStateOutputInterfaceValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMultiStateOutputInterfaceValue, error) {
+	return BACnetConstructedDataMultiStateOutputInterfaceValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataMultiStateOutputInterfaceValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMultiStateOutputInterfaceValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMultiStateOutputInterfaceValue"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataMultiStateOutputInterfaceValueParse(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("interfaceValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for interfaceValue")
 	}
-	_interfaceValue, _interfaceValueErr := BACnetOptionalBinaryPVParse(readBuffer)
+	_interfaceValue, _interfaceValueErr := BACnetOptionalBinaryPVParseWithBuffer(readBuffer)
 	if _interfaceValueErr != nil {
 		return nil, errors.Wrap(_interfaceValueErr, "Error parsing 'interfaceValue' field of BACnetConstructedDataMultiStateOutputInterfaceValue")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataMultiStateOutputInterfaceValueParse(readBuffer utils.R
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataMultiStateOutputInterfaceValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMultiStateOutputInterfaceValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataMultiStateOutputInterfaceValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

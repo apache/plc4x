@@ -30,7 +30,7 @@ import (
 type LightingLabelFlavour uint8
 
 type ILightingLabelFlavour interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +107,11 @@ func (m LightingLabelFlavour) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LightingLabelFlavourParse(readBuffer utils.ReadBuffer) (LightingLabelFlavour, error) {
+func LightingLabelFlavourParse(theBytes []byte) (LightingLabelFlavour, error) {
+	return LightingLabelFlavourParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func LightingLabelFlavourParseWithBuffer(readBuffer utils.ReadBuffer) (LightingLabelFlavour, error) {
 	val, err := readBuffer.ReadUint8("LightingLabelFlavour", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading LightingLabelFlavour")
@@ -120,7 +124,15 @@ func LightingLabelFlavourParse(readBuffer utils.ReadBuffer) (LightingLabelFlavou
 	}
 }
 
-func (e LightingLabelFlavour) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e LightingLabelFlavour) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e LightingLabelFlavour) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("LightingLabelFlavour", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

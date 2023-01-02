@@ -86,6 +86,10 @@ public abstract class Plc4xProtocolBase<T> {
         throw new NotImplementedException("");
     }
 
+    public CompletableFuture<PlcBrowseResponse> browseWithInterceptor(PlcBrowseRequest browseRequest, PlcBrowseRequestInterceptor interceptor) {
+        throw new NotImplementedException("");
+    }
+
     public abstract void close(ConversationContext<T> context);
 
 }

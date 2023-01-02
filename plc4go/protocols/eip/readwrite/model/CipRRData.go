@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -141,7 +142,11 @@ func (m *_CipRRData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CipRRDataParse(readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData, error) {
+func CipRRDataParse(theBytes []byte, packetLength uint16) (CipRRData, error) {
+	return CipRRDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), packetLength)
+}
+
+func CipRRDataParseWithBuffer(readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipRRData"); pullErr != nil {
@@ -188,7 +193,7 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData
 	if pullErr := readBuffer.PullContext("exchange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for exchange")
 	}
-	_exchange, _exchangeErr := CipExchangeParse(readBuffer, uint16(uint16(packetLength)-uint16(uint16(6))))
+	_exchange, _exchangeErr := CipExchangeParseWithBuffer(readBuffer, uint16(uint16(packetLength)-uint16(uint16(6))))
 	if _exchangeErr != nil {
 		return nil, errors.Wrap(_exchangeErr, "Error parsing 'exchange' field of CipRRData")
 	}
@@ -212,7 +217,15 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData
 	return _child, nil
 }
 
-func (m *_CipRRData) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CipRRData) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CipRRData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

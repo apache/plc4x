@@ -18,7 +18,7 @@
 #
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import TypeVar, Generic, Callable, Any
+from typing import TypeVar, Generic, Callable, Any, List
 
 from plc4py.api.listener import EventListener
 from plc4py.spi.Plc4xBaseProtocol import Plc4xBaseProtocol
@@ -49,7 +49,7 @@ class ProtocolStackConfigurator(Generic[T], ABC):
         configuration: Configuration,
         pipeline: ChannelPipeline,
         passive: bool = False,
-        listeners: list[EventListener] = [],
+        listeners: List[EventListener] = [],
     ) -> Plc4xBaseProtocol:
         pass
 
@@ -71,6 +71,6 @@ class SingleProtocolStackConfigurator(ProtocolStackConfigurator[U], ABC):
         configuration: Configuration,
         pipeline: ChannelPipeline,
         passive: bool = False,
-        listeners: list[EventListener] = [],
+        listeners: List[EventListener] = [],
     ) -> Plc4xBaseProtocol:
         pass

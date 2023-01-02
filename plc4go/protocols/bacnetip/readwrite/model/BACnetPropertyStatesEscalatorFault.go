@@ -122,7 +122,11 @@ func (m *_BACnetPropertyStatesEscalatorFault) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesEscalatorFaultParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorFault, error) {
+func BACnetPropertyStatesEscalatorFaultParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorFault, error) {
+	return BACnetPropertyStatesEscalatorFaultParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+}
+
+func BACnetPropertyStatesEscalatorFaultParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorFault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEscalatorFault"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPropertyStatesEscalatorFaultParse(readBuffer utils.ReadBuffer, peeked
 	if pullErr := readBuffer.PullContext("escalatorFault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for escalatorFault")
 	}
-	_escalatorFault, _escalatorFaultErr := BACnetEscalatorFaultTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_escalatorFault, _escalatorFaultErr := BACnetEscalatorFaultTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _escalatorFaultErr != nil {
 		return nil, errors.Wrap(_escalatorFaultErr, "Error parsing 'escalatorFault' field of BACnetPropertyStatesEscalatorFault")
 	}
@@ -157,7 +161,15 @@ func BACnetPropertyStatesEscalatorFaultParse(readBuffer utils.ReadBuffer, peeked
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesEscalatorFault) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesEscalatorFault) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesEscalatorFault) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

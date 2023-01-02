@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  * modified according to hello-integration-edgent
  *
  * arguments example:
- * --connection-string simulated://127.0.0.1 --field-address RANDOM/foo:Integer  --polling-interval 1000
+ * --connection-string simulated://127.0.0.1 --tsg-address RANDOM/foo:Integer  --polling-interval 1000
  * --iotdb-address 127.0.0.1:6667 --iotdb-user-name root --iotdb-user-password root --iotdb-sg mi
  * --iotdb-device d1 --iotdb-datatype INT32
  */
@@ -67,7 +67,7 @@ public class PlcLogger {
         }
         useJDBC = options.isUseJDBC();
         deviceId = String.format("root.%s.%s", options.getStorageGroup(), options.getDevice());
-        sensor = options.getFieldAddress().replace("/", "_").replace(":", "_");
+        sensor = options.getTagAddress().replace("/", "_").replace(":", "_");
         timeSeries = String.format("%s.%s", deviceId, sensor);
         dataType = options.getDevice();
 
@@ -100,7 +100,7 @@ public class PlcLogger {
             // Define the event stream.
             // 1) PLC4X source generating a stream of bytes.
             Supplier<Integer> plcSupplier = PlcFunctions.integerSupplier(plcAdapter,
-                options.getFieldAddress());
+                options.getTagAddress());
             // 2) Use polling to get an item from the byte-stream in regular intervals.
             TStream<Integer> source = top.poll(plcSupplier, options.getPollingInterval(),
                 TimeUnit.MILLISECONDS);

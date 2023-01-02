@@ -129,7 +129,11 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusPointToPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandStatus, error) {
+func CBusPointToPointToMultiPointCommandStatusParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandStatus, error) {
+	return CBusPointToPointToMultiPointCommandStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+}
+
+func CBusPointToPointToMultiPointCommandStatusParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointToMultiPointCommandStatus"); pullErr != nil {
@@ -159,7 +163,7 @@ func CBusPointToPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("statusRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for statusRequest")
 	}
-	_statusRequest, _statusRequestErr := StatusRequestParse(readBuffer)
+	_statusRequest, _statusRequestErr := StatusRequestParseWithBuffer(readBuffer)
 	if _statusRequestErr != nil {
 		return nil, errors.Wrap(_statusRequestErr, "Error parsing 'statusRequest' field of CBusPointToPointToMultiPointCommandStatus")
 	}
@@ -184,7 +188,15 @@ func CBusPointToPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer,
 	return _child, nil
 }
 
-func (m *_CBusPointToPointToMultiPointCommandStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusPointToPointToMultiPointCommandStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CBusPointToPointToMultiPointCommandStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

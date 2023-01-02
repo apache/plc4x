@@ -30,7 +30,7 @@ import (
 type BACnetRelationship uint16
 
 type IBACnetRelationship interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -269,7 +269,11 @@ func (m BACnetRelationship) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRelationshipParse(readBuffer utils.ReadBuffer) (BACnetRelationship, error) {
+func BACnetRelationshipParse(theBytes []byte) (BACnetRelationship, error) {
+	return BACnetRelationshipParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetRelationshipParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRelationship, error) {
 	val, err := readBuffer.ReadUint16("BACnetRelationship", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetRelationship")
@@ -282,7 +286,15 @@ func BACnetRelationshipParse(readBuffer utils.ReadBuffer) (BACnetRelationship, e
 	}
 }
 
-func (e BACnetRelationship) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetRelationship) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetRelationship) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetRelationship", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -129,7 +130,11 @@ func (m *_UnknownMessage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (UnknownMessage, error) {
+func UnknownMessageParse(theBytes []byte, totalLength uint16) (UnknownMessage, error) {
+	return UnknownMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
+}
+
+func UnknownMessageParseWithBuffer(readBuffer utils.ReadBuffer, totalLength uint16) (UnknownMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("UnknownMessage"); pullErr != nil {
@@ -157,7 +162,15 @@ func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (Unkno
 	return _child, nil
 }
 
-func (m *_UnknownMessage) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_UnknownMessage) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_UnknownMessage) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

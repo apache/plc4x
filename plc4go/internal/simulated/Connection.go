@@ -20,6 +20,9 @@
 package simulated
 
 import (
+	"strconv"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -27,13 +30,11 @@ import (
 	internalModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"strconv"
-	"time"
 )
 
 type Connection struct {
 	device       *Device
-	fieldHandler spi.PlcFieldHandler
+	tagHandler   spi.PlcTagHandler
 	valueHandler spi.PlcValueHandler
 	options      map[string][]string
 	connected    bool
@@ -41,10 +42,10 @@ type Connection struct {
 	tracer       *spi.Tracer
 }
 
-func NewConnection(device *Device, fieldHandler spi.PlcFieldHandler, valueHandler spi.PlcValueHandler, options map[string][]string) *Connection {
+func NewConnection(device *Device, tagHandler spi.PlcTagHandler, valueHandler spi.PlcValueHandler, options map[string][]string) *Connection {
 	connection := &Connection{
 		device:       device,
-		fieldHandler: fieldHandler,
+		tagHandler:   tagHandler,
 		valueHandler: valueHandler,
 		options:      options,
 		connected:    false,
@@ -223,11 +224,11 @@ func (c *Connection) GetMetadata() model.PlcConnectionMetadata {
 }
 
 func (c *Connection) ReadRequestBuilder() model.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilder(c.fieldHandler, NewReader(c.device, c.options, c.tracer))
+	return internalModel.NewDefaultPlcReadRequestBuilder(c.tagHandler, NewReader(c.device, c.options, c.tracer))
 }
 
 func (c *Connection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
-	return internalModel.NewDefaultPlcWriteRequestBuilder(c.fieldHandler, c.valueHandler, NewWriter(c.device, c.options, c.tracer))
+	return internalModel.NewDefaultPlcWriteRequestBuilder(c.tagHandler, c.valueHandler, NewWriter(c.device, c.options, c.tracer))
 }
 
 func (c *Connection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {

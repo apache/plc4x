@@ -21,15 +21,16 @@ package ui
 
 import (
 	"fmt"
-	plc4x_config "github.com/apache/plc4x/plc4go/pkg/api/config"
+	"net/url"
+	"strings"
+	"time"
+
+	plc4xConfig "github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/pkg/errors"
 	"github.com/rivo/tview"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"net/url"
-	"strings"
-	"time"
 )
 
 const rootCommandIndicator = "rootCommand"
@@ -158,7 +159,7 @@ var rootCommand = Command{
 				} else {
 					start := time.Now()
 					readRequest, err := connection.ReadRequestBuilder().
-						AddQuery("readField", split[1]).
+						AddTagAddress("readField", split[1]).
 						Build()
 					if err != nil {
 						return errors.Wrapf(err, "%s can't read", connectionsString)
@@ -222,7 +223,7 @@ var rootCommand = Command{
 				} else {
 					start := time.Now()
 					writeRequest, err := connection.WriteRequestBuilder().
-						AddQuery("writeField", split[1], split[2]).
+						AddTagAddress("writeField", split[1], split[2]).
 						Build()
 					if err != nil {
 						return errors.Wrapf(err, "%s can't write", connectionsString)
@@ -291,9 +292,10 @@ var rootCommand = Command{
 					if err != nil {
 						return errors.Wrapf(err, "%s can't browse", connectionsString)
 					}
-					browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseEvent) bool {
-						numberOfMessagesReceived++
-						messageReceived(numberOfMessagesReceived, time.Now(), result)
+					browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseItem) bool {
+						// TODO: Disabled for now ... not quite sure what this is for ...
+						//numberOfMessagesReceived++
+						//messageReceived(numberOfMessagesReceived, time.Now(), result)
 						return true
 					})
 					if err := browseRequestResult.GetErr(); err != nil {
@@ -369,7 +371,7 @@ var rootCommand = Command{
 					return errors.Errorf("%s not connected", connectionsString)
 				} else {
 					subscriptionRequest, err := connection.SubscriptionRequestBuilder().
-						AddEventQuery("subscriptionField", split[1]).
+						AddEventTagAddress("subscriptionField", split[1]).
 						AddPreRegisteredConsumer("subscriptionField", func(event model.PlcSubscriptionEvent) {
 							numberOfMessagesReceived++
 							messageReceived(numberOfMessagesReceived, time.Now(), event)
@@ -460,7 +462,7 @@ var rootCommand = Command{
 							Name:        "on",
 							Description: "trace on",
 							action: func(_ Command, _ string) error {
-								plc4x_config.TraceTransactionManagerWorkers = true
+								plc4xConfig.TraceTransactionManagerWorkers = true
 								return nil
 							},
 						},
@@ -468,7 +470,7 @@ var rootCommand = Command{
 							Name:        "off",
 							Description: "trace off",
 							action: func(_ Command, _ string) error {
-								plc4x_config.TraceTransactionManagerWorkers = false
+								plc4xConfig.TraceTransactionManagerWorkers = false
 								return nil
 							},
 						},
@@ -482,7 +484,7 @@ var rootCommand = Command{
 							Name:        "on",
 							Description: "trace on",
 							action: func(_ Command, _ string) error {
-								plc4x_config.TraceTransactionManagerTransactions = true
+								plc4xConfig.TraceTransactionManagerTransactions = true
 								return nil
 							},
 						},
@@ -490,7 +492,7 @@ var rootCommand = Command{
 							Name:        "off",
 							Description: "trace off",
 							action: func(_ Command, _ string) error {
-								plc4x_config.TraceTransactionManagerTransactions = false
+								plc4xConfig.TraceTransactionManagerTransactions = false
 								return nil
 							},
 						},
@@ -504,7 +506,7 @@ var rootCommand = Command{
 							Name:        "on",
 							Description: "trace on",
 							action: func(_ Command, _ string) error {
-								plc4x_config.TraceDefaultMessageCodecWorker = true
+								plc4xConfig.TraceDefaultMessageCodecWorker = true
 								return nil
 							},
 						},
@@ -512,7 +514,7 @@ var rootCommand = Command{
 							Name:        "off",
 							Description: "trace off",
 							action: func(_ Command, _ string) error {
-								plc4x_config.TraceDefaultMessageCodecWorker = false
+								plc4xConfig.TraceDefaultMessageCodecWorker = false
 								return nil
 							},
 						},

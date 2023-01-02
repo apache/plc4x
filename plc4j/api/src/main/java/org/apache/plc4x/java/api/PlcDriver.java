@@ -23,9 +23,8 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
-import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 
 /**
  * General interface defining the minimal methods required for adding a new type of driver to the PLC4J system.
@@ -77,7 +76,7 @@ public interface PlcDriver {
      */
     PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException;
 
-    default PlcField prepareField(String query) {
+    default PlcTag prepareTag(String tagAddress) {
         throw new PlcNotImplementedException("Not implemented for " + getProtocolName());
     }
 

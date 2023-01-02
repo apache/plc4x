@@ -136,7 +136,11 @@ func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSupportedSecurityAlgorithmsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSupportedSecurityAlgorithms, error) {
+func BACnetConstructedDataSupportedSecurityAlgorithmsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSupportedSecurityAlgorithms, error) {
+	return BACnetConstructedDataSupportedSecurityAlgorithmsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataSupportedSecurityAlgorithmsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSupportedSecurityAlgorithms, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSupportedSecurityAlgorithms"); pullErr != nil {
@@ -153,12 +157,11 @@ func BACnetConstructedDataSupportedSecurityAlgorithmsParse(readBuffer utils.Read
 	var supportedSecurityAlgorithms []BACnetApplicationTagUnsignedInteger
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetApplicationTagParse(readBuffer)
+			_item, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'supportedSecurityAlgorithms' field of BACnetConstructedDataSupportedSecurityAlgorithms")
 			}
 			supportedSecurityAlgorithms = append(supportedSecurityAlgorithms, _item.(BACnetApplicationTagUnsignedInteger))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("supportedSecurityAlgorithms", utils.WithRenderAsList(true)); closeErr != nil {
@@ -181,7 +184,15 @@ func BACnetConstructedDataSupportedSecurityAlgorithmsParse(readBuffer utils.Read
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

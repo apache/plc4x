@@ -124,7 +124,11 @@ func (m *_BACnetLogRecordLogDatumNullValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogRecordLogDatumNullValueParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumNullValue, error) {
+func BACnetLogRecordLogDatumNullValueParse(theBytes []byte, tagNumber uint8) (BACnetLogRecordLogDatumNullValue, error) {
+	return BACnetLogRecordLogDatumNullValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+}
+
+func BACnetLogRecordLogDatumNullValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumNullValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumNullValue"); pullErr != nil {
@@ -137,7 +141,7 @@ func BACnetLogRecordLogDatumNullValueParse(readBuffer utils.ReadBuffer, tagNumbe
 	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
 	}
-	_nullValue, _nullValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(7)), BACnetDataType(BACnetDataType_NULL))
+	_nullValue, _nullValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(7)), BACnetDataType(BACnetDataType_NULL))
 	if _nullValueErr != nil {
 		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetLogRecordLogDatumNullValue")
 	}
@@ -161,7 +165,15 @@ func BACnetLogRecordLogDatumNullValueParse(readBuffer utils.ReadBuffer, tagNumbe
 	return _child, nil
 }
 
-func (m *_BACnetLogRecordLogDatumNullValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogRecordLogDatumNullValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLogRecordLogDatumNullValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

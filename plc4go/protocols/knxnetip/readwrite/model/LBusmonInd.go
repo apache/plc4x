@@ -163,7 +163,11 @@ func (m *_LBusmonInd) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (LBusmonInd, error) {
+func LBusmonIndParse(theBytes []byte, size uint16) (LBusmonInd, error) {
+	return LBusmonIndParseWithBuffer(utils.NewReadBufferByteBased(theBytes), size)
+}
+
+func LBusmonIndParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (LBusmonInd, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LBusmonInd"); pullErr != nil {
@@ -189,7 +193,7 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (LBusmonInd, erro
 		_additionalInformationLength := additionalInformationLength
 		_additionalInformationEndPos := positionAware.GetPos() + uint16(_additionalInformationLength)
 		for positionAware.GetPos() < _additionalInformationEndPos {
-			_item, _err := CEMIAdditionalInformationParse(readBuffer)
+			_item, _err := CEMIAdditionalInformationParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field of LBusmonInd")
 			}
@@ -204,7 +208,7 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (LBusmonInd, erro
 	if pullErr := readBuffer.PullContext("dataFrame"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dataFrame")
 	}
-	_dataFrame, _dataFrameErr := LDataFrameParse(readBuffer)
+	_dataFrame, _dataFrameErr := LDataFrameParseWithBuffer(readBuffer)
 	if _dataFrameErr != nil {
 		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field of LBusmonInd")
 	}
@@ -241,7 +245,15 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (LBusmonInd, erro
 	return _child, nil
 }
 
-func (m *_LBusmonInd) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_LBusmonInd) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_LBusmonInd) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

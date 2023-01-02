@@ -148,7 +148,11 @@ func (m *_MediaTransportControlDataShuffleOnOff) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlDataShuffleOnOffParse(readBuffer utils.ReadBuffer) (MediaTransportControlDataShuffleOnOff, error) {
+func MediaTransportControlDataShuffleOnOffParse(theBytes []byte) (MediaTransportControlDataShuffleOnOff, error) {
+	return MediaTransportControlDataShuffleOnOffParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func MediaTransportControlDataShuffleOnOffParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataShuffleOnOff, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataShuffleOnOff"); pullErr != nil {
@@ -187,7 +191,15 @@ func MediaTransportControlDataShuffleOnOffParse(readBuffer utils.ReadBuffer) (Me
 	return _child, nil
 }
 
-func (m *_MediaTransportControlDataShuffleOnOff) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataShuffleOnOff) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_MediaTransportControlDataShuffleOnOff) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

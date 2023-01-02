@@ -215,7 +215,11 @@ func (m *_HVACModeAndFlags) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACModeAndFlagsParse(readBuffer utils.ReadBuffer) (HVACModeAndFlags, error) {
+func HVACModeAndFlagsParse(theBytes []byte) (HVACModeAndFlags, error) {
+	return HVACModeAndFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func HVACModeAndFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACModeAndFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACModeAndFlags"); pullErr != nil {
@@ -313,7 +317,7 @@ func HVACModeAndFlagsParse(readBuffer utils.ReadBuffer) (HVACModeAndFlags, error
 	if pullErr := readBuffer.PullContext("mode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for mode")
 	}
-	_mode, _modeErr := HVACModeAndFlagsModeParse(readBuffer)
+	_mode, _modeErr := HVACModeAndFlagsModeParseWithBuffer(readBuffer)
 	if _modeErr != nil {
 		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field of HVACModeAndFlags")
 	}
@@ -337,7 +341,15 @@ func HVACModeAndFlagsParse(readBuffer utils.ReadBuffer) (HVACModeAndFlags, error
 	}, nil
 }
 
-func (m *_HVACModeAndFlags) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_HVACModeAndFlags) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_HVACModeAndFlags) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HVACModeAndFlags"); pushErr != nil {

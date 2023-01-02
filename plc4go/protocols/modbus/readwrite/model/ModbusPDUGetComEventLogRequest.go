@@ -111,7 +111,11 @@ func (m *_ModbusPDUGetComEventLogRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUGetComEventLogRequestParse(readBuffer utils.ReadBuffer, response bool) (ModbusPDUGetComEventLogRequest, error) {
+func ModbusPDUGetComEventLogRequestParse(theBytes []byte, response bool) (ModbusPDUGetComEventLogRequest, error) {
+	return ModbusPDUGetComEventLogRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+}
+
+func ModbusPDUGetComEventLogRequestParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUGetComEventLogRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUGetComEventLogRequest"); pullErr != nil {
@@ -132,7 +136,15 @@ func ModbusPDUGetComEventLogRequestParse(readBuffer utils.ReadBuffer, response b
 	return _child, nil
 }
 
-func (m *_ModbusPDUGetComEventLogRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUGetComEventLogRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ModbusPDUGetComEventLogRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

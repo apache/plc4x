@@ -144,7 +144,11 @@ func (m *_InterfaceOptions3) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func InterfaceOptions3Parse(readBuffer utils.ReadBuffer) (InterfaceOptions3, error) {
+func InterfaceOptions3Parse(theBytes []byte) (InterfaceOptions3, error) {
+	return InterfaceOptions3ParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func InterfaceOptions3ParseWithBuffer(readBuffer utils.ReadBuffer) (InterfaceOptions3, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("InterfaceOptions3"); pullErr != nil {
@@ -266,7 +270,15 @@ func InterfaceOptions3Parse(readBuffer utils.ReadBuffer) (InterfaceOptions3, err
 	}, nil
 }
 
-func (m *_InterfaceOptions3) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_InterfaceOptions3) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_InterfaceOptions3) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("InterfaceOptions3"); pushErr != nil {

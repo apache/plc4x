@@ -105,7 +105,6 @@ public class ManualAdsDriverTest extends ManualTest {
         test.addTestCase("MAIN.hurz_DATE", new PlcDATE(LocalDate.parse("1978-03-28")));
         test.addTestCase("MAIN.hurz_TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
         test.addTestCase("MAIN.hurz_DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
-        //test.addTestCase("MAIN.hurz_DT", new PlcDT("1972-03-29T00:00"));
         Map<String, PlcValue> children = new HashMap<>();
         children.put("hurz_BOOL", new PlcBOOL(true));
         children.put("hurz_BYTE", new PlcBYTE(1));
@@ -128,9 +127,7 @@ public class ManualAdsDriverTest extends ManualTest {
         children.put("hurz_LTIME", new PlcLTIME(Duration.parse("PT24015H23M12.034002044S")));
         children.put("hurz_DATE", new PlcDATE(LocalDate.parse("1978-03-28")));
         children.put("hurz_TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
-        children.put("hurz_TOD", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
         children.put("hurz_DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
-        children.put("hurz_DT", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
         test.addTestCase("MAIN.hurz_Struct", new PlcStruct(children));
         test.run();
     }

@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAutoSlaveDiscoveryParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAutoSlaveDiscovery, error) {
+func BACnetConstructedDataAutoSlaveDiscoveryParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAutoSlaveDiscovery, error) {
+	return BACnetConstructedDataAutoSlaveDiscoveryParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataAutoSlaveDiscoveryParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAutoSlaveDiscovery, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAutoSlaveDiscovery"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataAutoSlaveDiscoveryParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("autoSlaveDiscovery"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for autoSlaveDiscovery")
 	}
-	_autoSlaveDiscovery, _autoSlaveDiscoveryErr := BACnetApplicationTagParse(readBuffer)
+	_autoSlaveDiscovery, _autoSlaveDiscoveryErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _autoSlaveDiscoveryErr != nil {
 		return nil, errors.Wrap(_autoSlaveDiscoveryErr, "Error parsing 'autoSlaveDiscovery' field of BACnetConstructedDataAutoSlaveDiscovery")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataAutoSlaveDiscoveryParse(readBuffer utils.ReadBuffer, t
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataAutoSlaveDiscovery) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAutoSlaveDiscovery) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataAutoSlaveDiscovery) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

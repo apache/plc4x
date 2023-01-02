@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataCarMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCarModeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarMode, error) {
+func BACnetConstructedDataCarModeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarMode, error) {
+	return BACnetConstructedDataCarModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataCarModeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarMode"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataCarModeParse(readBuffer utils.ReadBuffer, tagNumber ui
 	if pullErr := readBuffer.PullContext("carMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for carMode")
 	}
-	_carMode, _carModeErr := BACnetLiftCarModeTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_carMode, _carModeErr := BACnetLiftCarModeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _carModeErr != nil {
 		return nil, errors.Wrap(_carModeErr, "Error parsing 'carMode' field of BACnetConstructedDataCarMode")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataCarModeParse(readBuffer utils.ReadBuffer, tagNumber ui
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataCarMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataCarMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataCarMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

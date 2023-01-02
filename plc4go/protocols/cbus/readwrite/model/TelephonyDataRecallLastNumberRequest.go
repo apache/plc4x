@@ -148,7 +148,11 @@ func (m *_TelephonyDataRecallLastNumberRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyDataRecallLastNumberRequestParse(readBuffer utils.ReadBuffer) (TelephonyDataRecallLastNumberRequest, error) {
+func TelephonyDataRecallLastNumberRequestParse(theBytes []byte) (TelephonyDataRecallLastNumberRequest, error) {
+	return TelephonyDataRecallLastNumberRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TelephonyDataRecallLastNumberRequestParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyDataRecallLastNumberRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataRecallLastNumberRequest"); pullErr != nil {
@@ -187,7 +191,15 @@ func TelephonyDataRecallLastNumberRequestParse(readBuffer utils.ReadBuffer) (Tel
 	return _child, nil
 }
 
-func (m *_TelephonyDataRecallLastNumberRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TelephonyDataRecallLastNumberRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TelephonyDataRecallLastNumberRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

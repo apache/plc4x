@@ -137,7 +137,11 @@ func (m *_IdentifyReplyCommandDelays) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandDelaysParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDelays, error) {
+func IdentifyReplyCommandDelaysParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDelays, error) {
+	return IdentifyReplyCommandDelaysParseWithBuffer(utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+}
+
+func IdentifyReplyCommandDelaysParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDelays, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandDelays"); pullErr != nil {
@@ -175,7 +179,15 @@ func IdentifyReplyCommandDelaysParse(readBuffer utils.ReadBuffer, attribute Attr
 	return _child, nil
 }
 
-func (m *_IdentifyReplyCommandDelays) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_IdentifyReplyCommandDelays) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_IdentifyReplyCommandDelays) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

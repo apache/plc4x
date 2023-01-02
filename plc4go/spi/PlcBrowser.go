@@ -21,6 +21,7 @@ package spi
 
 import (
 	"context"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
@@ -34,5 +35,5 @@ type PlcBrowser interface {
 	// and increase throughput. It can also be used for simple filtering.
 	// If the interceptor function returns 'true' the result is added to the overall result
 	// if it's 'false' is is not.
-	BrowseWithInterceptor(ctx context.Context, browseRequest model.PlcBrowseRequest, interceptor func(result model.PlcBrowseEvent) bool) <-chan model.PlcBrowseRequestResult
+	BrowseWithInterceptor(ctx context.Context, browseRequest model.PlcBrowseRequest, interceptor func(result model.PlcBrowseItem) bool) <-chan model.PlcBrowseRequestResult
 }

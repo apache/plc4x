@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessDoorRelinquishDefaultParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessDoorRelinquishDefault, error) {
+func BACnetConstructedDataAccessDoorRelinquishDefaultParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessDoorRelinquishDefault, error) {
+	return BACnetConstructedDataAccessDoorRelinquishDefaultParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataAccessDoorRelinquishDefaultParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessDoorRelinquishDefault, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessDoorRelinquishDefault"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataAccessDoorRelinquishDefaultParse(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("relinquishDefault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for relinquishDefault")
 	}
-	_relinquishDefault, _relinquishDefaultErr := BACnetDoorValueTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_relinquishDefault, _relinquishDefaultErr := BACnetDoorValueTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _relinquishDefaultErr != nil {
 		return nil, errors.Wrap(_relinquishDefaultErr, "Error parsing 'relinquishDefault' field of BACnetConstructedDataAccessDoorRelinquishDefault")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataAccessDoorRelinquishDefaultParse(readBuffer utils.Read
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

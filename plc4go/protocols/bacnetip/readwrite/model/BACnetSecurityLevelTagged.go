@@ -111,7 +111,11 @@ func (m *_BACnetSecurityLevelTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSecurityLevelTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetSecurityLevelTagged, error) {
+func BACnetSecurityLevelTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetSecurityLevelTagged, error) {
+	return BACnetSecurityLevelTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+}
+
+func BACnetSecurityLevelTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetSecurityLevelTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetSecurityLevelTagged"); pullErr != nil {
@@ -124,7 +128,7 @@ func BACnetSecurityLevelTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetSecurityLevelTagged")
 	}
@@ -166,7 +170,15 @@ func BACnetSecurityLevelTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}, nil
 }
 
-func (m *_BACnetSecurityLevelTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetSecurityLevelTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetSecurityLevelTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetSecurityLevelTagged"); pushErr != nil {

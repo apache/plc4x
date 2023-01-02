@@ -27,7 +27,7 @@ const (
 )
 
 type ExtractConfig struct {
-	*PcapConfig
+	*PcapConfig               `json:"-"`
 	ShowDirectionalIndicators bool
 	ExtractType               ExtractType
 }

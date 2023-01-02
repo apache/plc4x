@@ -139,7 +139,11 @@ func (m *_SzlDataTreeItem) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SzlDataTreeItemParse(readBuffer utils.ReadBuffer) (SzlDataTreeItem, error) {
+func SzlDataTreeItemParse(theBytes []byte) (SzlDataTreeItem, error) {
+	return SzlDataTreeItemParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SzlDataTreeItemParseWithBuffer(readBuffer utils.ReadBuffer) (SzlDataTreeItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SzlDataTreeItem"); pullErr != nil {
@@ -196,7 +200,15 @@ func SzlDataTreeItemParse(readBuffer utils.ReadBuffer) (SzlDataTreeItem, error) 
 	}, nil
 }
 
-func (m *_SzlDataTreeItem) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SzlDataTreeItem) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SzlDataTreeItem) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SzlDataTreeItem"); pushErr != nil {

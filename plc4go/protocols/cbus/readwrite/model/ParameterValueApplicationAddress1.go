@@ -137,7 +137,11 @@ func (m *_ParameterValueApplicationAddress1) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterValueApplicationAddress1Parse(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueApplicationAddress1, error) {
+func ParameterValueApplicationAddress1Parse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueApplicationAddress1, error) {
+	return ParameterValueApplicationAddress1ParseWithBuffer(utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+}
+
+func ParameterValueApplicationAddress1ParseWithBuffer(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueApplicationAddress1, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueApplicationAddress1"); pullErr != nil {
@@ -155,7 +159,7 @@ func ParameterValueApplicationAddress1Parse(readBuffer utils.ReadBuffer, paramet
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := ApplicationAddress1Parse(readBuffer)
+	_value, _valueErr := ApplicationAddress1ParseWithBuffer(readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueApplicationAddress1")
 	}
@@ -186,7 +190,15 @@ func ParameterValueApplicationAddress1Parse(readBuffer utils.ReadBuffer, paramet
 	return _child, nil
 }
 
-func (m *_ParameterValueApplicationAddress1) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ParameterValueApplicationAddress1) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ParameterValueApplicationAddress1) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

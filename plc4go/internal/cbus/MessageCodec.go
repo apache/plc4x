@@ -25,7 +25,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"hash/crc32"
@@ -70,14 +69,13 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	log.Debug().Msgf("Created request context\n%s", m.requestContext)
 
 	// Serialize the request
-	wb := utils.NewWriteBufferByteBased()
-	err := cbusMessage.Serialize(wb)
+	theBytes, err := cbusMessage.Serialize()
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(wb.GetBytes())
+	err = m.GetTransportInstance().Write(theBytes)
 	if err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
@@ -134,7 +132,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	if bytes, err := ti.PeekReadableBytes(1); err == nil && (bytes[0] == byte(readWriteModel.ConfirmationType_CHECKSUM_FAILURE)) {
 		_, _ = ti.Read(1)
 		// Report one Error at a time
-		return readWriteModel.CBusMessageParse(utils.NewReadBufferByteBased(bytes), true, m.requestContext, m.cbusOptions)
+		return readWriteModel.CBusMessageParse(bytes, true, m.requestContext, m.cbusOptions)
 	}
 
 	peekedBytes, err := ti.PeekReadableBytes(readableBytes)
@@ -238,7 +236,7 @@ lookingForTheEnd:
 		if foundErrors > m.currentlyReportedServerErrors {
 			log.Debug().Msgf("We found %d errors in the current message. We have %d reported already", foundErrors, m.currentlyReportedServerErrors)
 			m.currentlyReportedServerErrors++
-			return readWriteModel.CBusMessageParse(utils.NewReadBufferByteBased([]byte{'!'}), true, m.requestContext, m.cbusOptions)
+			return readWriteModel.CBusMessageParse([]byte{'!'}, true, m.requestContext, m.cbusOptions)
 		}
 		if foundErrors > 0 {
 			log.Debug().Msgf("We should have reported all errors by now (%d in total which we reported %d), so we resetting the count", foundErrors, m.currentlyReportedServerErrors)
@@ -265,14 +263,12 @@ lookingForTheEnd:
 		}
 	}
 	log.Debug().Msgf("Parsing %q", sanitizedInput)
-	rb := utils.NewReadBufferByteBased(sanitizedInput)
-	cBusMessage, err := readWriteModel.CBusMessageParse(rb, pciResponse, m.requestContext, m.cbusOptions)
+	cBusMessage, err := readWriteModel.CBusMessageParse(sanitizedInput, pciResponse, m.requestContext, m.cbusOptions)
 	if err != nil {
 		log.Debug().Err(err).Msg("First Parse Failed")
 		{ // Try SAL
-			rb := utils.NewReadBufferByteBased(sanitizedInput)
 			requestContext := readWriteModel.NewRequestContext(false)
-			cBusMessage, secondErr := readWriteModel.CBusMessageParse(rb, pciResponse, requestContext, m.cbusOptions)
+			cBusMessage, secondErr := readWriteModel.CBusMessageParse(sanitizedInput, pciResponse, requestContext, m.cbusOptions)
 			if secondErr == nil {
 				return cBusMessage, nil
 			} else {
@@ -280,10 +276,9 @@ lookingForTheEnd:
 			}
 		}
 		{ // Try MMI
-			rb := utils.NewReadBufferByteBased(sanitizedInput)
 			requestContext := readWriteModel.NewRequestContext(false)
 			cbusOptions := readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
-			cBusMessage, secondErr := readWriteModel.CBusMessageParse(rb, true, requestContext, cbusOptions)
+			cBusMessage, secondErr := readWriteModel.CBusMessageParse(sanitizedInput, true, requestContext, cbusOptions)
 			if secondErr == nil {
 				return cBusMessage, nil
 			} else {

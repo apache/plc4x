@@ -20,6 +20,6 @@
 package spi
 
 type HandlerExposer interface {
-	GetPlcFieldHandler() PlcFieldHandler
+	GetPlcTagHandler() PlcTagHandler
 	GetPlcValueHandler() PlcValueHandler
 }

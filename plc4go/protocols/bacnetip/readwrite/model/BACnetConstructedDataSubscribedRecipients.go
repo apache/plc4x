@@ -136,7 +136,11 @@ func (m *_BACnetConstructedDataSubscribedRecipients) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSubscribedRecipientsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSubscribedRecipients, error) {
+func BACnetConstructedDataSubscribedRecipientsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSubscribedRecipients, error) {
+	return BACnetConstructedDataSubscribedRecipientsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataSubscribedRecipientsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSubscribedRecipients, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSubscribedRecipients"); pullErr != nil {
@@ -153,12 +157,11 @@ func BACnetConstructedDataSubscribedRecipientsParse(readBuffer utils.ReadBuffer,
 	var subscribedRecipients []BACnetEventNotificationSubscription
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetEventNotificationSubscriptionParse(readBuffer)
+			_item, _err := BACnetEventNotificationSubscriptionParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'subscribedRecipients' field of BACnetConstructedDataSubscribedRecipients")
 			}
 			subscribedRecipients = append(subscribedRecipients, _item.(BACnetEventNotificationSubscription))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("subscribedRecipients", utils.WithRenderAsList(true)); closeErr != nil {
@@ -181,7 +184,15 @@ func BACnetConstructedDataSubscribedRecipientsParse(readBuffer utils.ReadBuffer,
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataSubscribedRecipients) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataSubscribedRecipients) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataSubscribedRecipients) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

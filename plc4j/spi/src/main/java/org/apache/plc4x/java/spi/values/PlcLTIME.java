@@ -42,8 +42,20 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
             return new PlcLTIME(Duration.of((long) value, ChronoUnit.MILLIS));
         } else if(value instanceof Long) {
             return new PlcLTIME(Duration.of((long) value, ChronoUnit.NANOS));
+        } else if(value instanceof BigInteger) {
+            // TODO: Not 100% correct, we're loosing precision here
+            return new PlcLTIME(Duration.of(((BigInteger) value).longValue(), ChronoUnit.NANOS));
         }
         throw new PlcRuntimeException("Invalid value type");
+    }
+
+    public static PlcLTIME ofNanoseconds(long nanoseconds) {
+        return new PlcLTIME(Duration.ofNanos(nanoseconds));
+    }
+
+    public static PlcLTIME ofNanoseconds(BigInteger nanoseconds) {
+        // TODO: Not 100% correct, we're loosing precision here
+        return new PlcLTIME(Duration.ofNanos(nanoseconds.longValue()));
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -51,21 +63,22 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
         super(value, true);
     }
 
-    public PlcLTIME(@JsonProperty("value") Integer value) {
-        super(Duration.of((long) value, ChronoUnit.NANOS), true);
+    public PlcLTIME(@JsonProperty("value") long nanoseconds) {
+        super(Duration.ofNanos(nanoseconds), true);
     }
 
-    public PlcLTIME(@JsonProperty("value") Long value) {
-        super(Duration.of(value, ChronoUnit.NANOS), true);
-    }
-
-    public PlcLTIME(@JsonProperty("value") BigInteger value) {
-        super(Duration.of(value.longValue(), ChronoUnit.NANOS), true);
+    public PlcLTIME(@JsonProperty("value") BigInteger nanoseconds) {
+        // TODO: Not 100% correct, we're loosing precision here
+        super(Duration.ofNanos(nanoseconds.longValue()), true);
     }
 
     @Override
     public PlcValueType getPlcValueType() {
         return PlcValueType.LTIME;
+    }
+
+    public long getNanoseconds() {
+        return value.toNanos();
     }
 
     @Override

@@ -127,7 +127,11 @@ func (m *_SerialNumber) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SerialNumberParse(readBuffer utils.ReadBuffer) (SerialNumber, error) {
+func SerialNumberParse(theBytes []byte) (SerialNumber, error) {
+	return SerialNumberParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SerialNumberParseWithBuffer(readBuffer utils.ReadBuffer) (SerialNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SerialNumber"); pullErr != nil {
@@ -177,7 +181,15 @@ func SerialNumberParse(readBuffer utils.ReadBuffer) (SerialNumber, error) {
 	}, nil
 }
 
-func (m *_SerialNumber) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SerialNumber) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SerialNumber) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SerialNumber"); pushErr != nil {

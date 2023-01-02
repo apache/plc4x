@@ -128,7 +128,11 @@ func (m *_BACnetHostAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetHostAddressParse(readBuffer utils.ReadBuffer) (BACnetHostAddress, error) {
+func BACnetHostAddressParse(theBytes []byte) (BACnetHostAddress, error) {
+	return BACnetHostAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetHostAddressParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetHostAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetHostAddress"); pullErr != nil {
@@ -142,7 +146,7 @@ func BACnetHostAddressParse(readBuffer utils.ReadBuffer) (BACnetHostAddress, err
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -161,11 +165,11 @@ func BACnetHostAddressParse(readBuffer utils.ReadBuffer) (BACnetHostAddress, err
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetHostAddressNull
-		_childTemp, typeSwitchError = BACnetHostAddressNullParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetHostAddressNullParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(1): // BACnetHostAddressIpAddress
-		_childTemp, typeSwitchError = BACnetHostAddressIpAddressParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetHostAddressIpAddressParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(2): // BACnetHostAddressName
-		_childTemp, typeSwitchError = BACnetHostAddressNameParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetHostAddressNameParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}

@@ -21,17 +21,16 @@ package org.apache.plc4x.java.s7.readwrite;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
-import org.apache.plc4x.java.s7.readwrite.field.S7Field;
+import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
 import org.apache.plc4x.java.s7.readwrite.optimizer.S7Optimizer;
 import org.apache.plc4x.java.s7.readwrite.protocol.S7ProtocolLogic;
-import org.apache.plc4x.java.s7.readwrite.field.S7PlcFieldHandler;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.s7.readwrite.tag.S7PlcTagHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
@@ -82,13 +81,13 @@ public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
     }
 
     @Override
-    protected S7PlcFieldHandler getFieldHandler() {
-        return new S7PlcFieldHandler();
+    protected S7PlcTagHandler getTagHandler() {
+        return new S7PlcTagHandler();
     }
 
     @Override
-    protected PlcValueHandler getValueHandler() {
-        return new IEC61131ValueHandler();
+    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
+        return new PlcValueHandler();
     }
 
     /**
@@ -133,8 +132,8 @@ public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
     }
 
     @Override
-    public S7Field prepareField(String query){
-        return S7Field.of(query);
+    public S7Tag prepareTag(String tagAddress){
+        return S7Tag.of(tagAddress);
     }
 
 }

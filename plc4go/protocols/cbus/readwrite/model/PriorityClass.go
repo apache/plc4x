@@ -30,7 +30,7 @@ import (
 type PriorityClass uint8
 
 type IPriorityClass interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +107,11 @@ func (m PriorityClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func PriorityClassParse(readBuffer utils.ReadBuffer) (PriorityClass, error) {
+func PriorityClassParse(theBytes []byte) (PriorityClass, error) {
+	return PriorityClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func PriorityClassParseWithBuffer(readBuffer utils.ReadBuffer) (PriorityClass, error) {
 	val, err := readBuffer.ReadUint8("PriorityClass", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading PriorityClass")
@@ -120,7 +124,15 @@ func PriorityClassParse(readBuffer utils.ReadBuffer) (PriorityClass, error) {
 	}
 }
 
-func (e PriorityClass) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e PriorityClass) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e PriorityClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("PriorityClass", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

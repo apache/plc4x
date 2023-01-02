@@ -122,7 +122,11 @@ func (m *_BACnetPropertyStateActionUnknown) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStateActionUnknownParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStateActionUnknown, error) {
+func BACnetPropertyStateActionUnknownParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStateActionUnknown, error) {
+	return BACnetPropertyStateActionUnknownParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+}
+
+func BACnetPropertyStateActionUnknownParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStateActionUnknown, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStateActionUnknown"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPropertyStateActionUnknownParse(readBuffer utils.ReadBuffer, peekedTa
 	if pullErr := readBuffer.PullContext("unknownValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unknownValue")
 	}
-	_unknownValue, _unknownValueErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_UNKNOWN))
+	_unknownValue, _unknownValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_UNKNOWN))
 	if _unknownValueErr != nil {
 		return nil, errors.Wrap(_unknownValueErr, "Error parsing 'unknownValue' field of BACnetPropertyStateActionUnknown")
 	}
@@ -157,7 +161,15 @@ func BACnetPropertyStateActionUnknownParse(readBuffer utils.ReadBuffer, peekedTa
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStateActionUnknown) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStateActionUnknown) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStateActionUnknown) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

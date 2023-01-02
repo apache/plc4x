@@ -146,7 +146,11 @@ func (m *_SecurityArmCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityArmCodeParse(readBuffer utils.ReadBuffer) (SecurityArmCode, error) {
+func SecurityArmCodeParse(theBytes []byte) (SecurityArmCode, error) {
+	return SecurityArmCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SecurityArmCodeParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityArmCode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityArmCode"); pullErr != nil {
@@ -197,7 +201,15 @@ func SecurityArmCodeParse(readBuffer utils.ReadBuffer) (SecurityArmCode, error) 
 	}, nil
 }
 
-func (m *_SecurityArmCode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityArmCode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityArmCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("SecurityArmCode"); pushErr != nil {

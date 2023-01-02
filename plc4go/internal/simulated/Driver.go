@@ -20,13 +20,14 @@
 package simulated
 
 import (
+	"net/url"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
-	"net/url"
 )
 
 type Driver struct {
@@ -36,19 +37,19 @@ type Driver struct {
 
 func NewDriver() plc4go.PlcDriver {
 	return &Driver{
-		DefaultDriver: _default.NewDefaultDriver("simulated", "Simulated PLC4X Datasource", "none", NewFieldHandler()),
+		DefaultDriver: _default.NewDefaultDriver("simulated", "Simulated PLC4X Datasource", "none", NewTagHandler()),
 		valueHandler:  NewValueHandler(),
 	}
 }
 
 // GetConnection Establishes a connection to a given PLC using the information in the connectionString
 func (d *Driver) GetConnection(_ url.URL, _ map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	connection := NewConnection(NewDevice("test"), d.GetPlcFieldHandler(), d.valueHandler, options)
+	connection := NewConnection(NewDevice("test"), d.GetPlcTagHandler(), d.valueHandler, options)
 	return connection.Connect()
 }
 
 // SupportsDiscovery returns true if this driver supports discovery
-// TODO: Actually the connection could support discovery to list up all fields in the Device
+// TODO: Actually the connection could support discovery to list up all tags in the Device
 func (d *Driver) SupportsDiscovery() bool {
 	return false
 }

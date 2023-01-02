@@ -30,7 +30,7 @@ import (
 type BACnetSegmentation uint8
 
 type IBACnetSegmentation interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +107,11 @@ func (m BACnetSegmentation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSegmentationParse(readBuffer utils.ReadBuffer) (BACnetSegmentation, error) {
+func BACnetSegmentationParse(theBytes []byte) (BACnetSegmentation, error) {
+	return BACnetSegmentationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetSegmentationParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSegmentation, error) {
 	val, err := readBuffer.ReadUint8("BACnetSegmentation", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetSegmentation")
@@ -120,7 +124,15 @@ func BACnetSegmentationParse(readBuffer utils.ReadBuffer) (BACnetSegmentation, e
 	}
 }
 
-func (e BACnetSegmentation) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetSegmentation) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetSegmentation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetSegmentation", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

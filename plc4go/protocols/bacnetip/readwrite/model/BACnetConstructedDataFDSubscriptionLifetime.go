@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataFDSubscriptionLifetimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDSubscriptionLifetime, error) {
+func BACnetConstructedDataFDSubscriptionLifetimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDSubscriptionLifetime, error) {
+	return BACnetConstructedDataFDSubscriptionLifetimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataFDSubscriptionLifetimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDSubscriptionLifetime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFDSubscriptionLifetime"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataFDSubscriptionLifetimeParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("fdSubscriptionLifetime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fdSubscriptionLifetime")
 	}
-	_fdSubscriptionLifetime, _fdSubscriptionLifetimeErr := BACnetApplicationTagParse(readBuffer)
+	_fdSubscriptionLifetime, _fdSubscriptionLifetimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _fdSubscriptionLifetimeErr != nil {
 		return nil, errors.Wrap(_fdSubscriptionLifetimeErr, "Error parsing 'fdSubscriptionLifetime' field of BACnetConstructedDataFDSubscriptionLifetime")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataFDSubscriptionLifetimeParse(readBuffer utils.ReadBuffe
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataFDSubscriptionLifetime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataFDSubscriptionLifetime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataFDSubscriptionLifetime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

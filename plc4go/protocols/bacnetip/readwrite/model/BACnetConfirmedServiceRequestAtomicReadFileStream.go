@@ -135,7 +135,11 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAtomicReadFileStreamParse(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestAtomicReadFileStream, error) {
+func BACnetConfirmedServiceRequestAtomicReadFileStreamParse(theBytes []byte) (BACnetConfirmedServiceRequestAtomicReadFileStream, error) {
+	return BACnetConfirmedServiceRequestAtomicReadFileStreamParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetConfirmedServiceRequestAtomicReadFileStreamParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestAtomicReadFileStream, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicReadFileStream"); pullErr != nil {
@@ -148,7 +152,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("fileStartPosition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileStartPosition")
 	}
-	_fileStartPosition, _fileStartPositionErr := BACnetApplicationTagParse(readBuffer)
+	_fileStartPosition, _fileStartPositionErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _fileStartPositionErr != nil {
 		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field of BACnetConfirmedServiceRequestAtomicReadFileStream")
 	}
@@ -161,7 +165,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("requestOctetCount"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for requestOctetCount")
 	}
-	_requestOctetCount, _requestOctetCountErr := BACnetApplicationTagParse(readBuffer)
+	_requestOctetCount, _requestOctetCountErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _requestOctetCountErr != nil {
 		return nil, errors.Wrap(_requestOctetCountErr, "Error parsing 'requestOctetCount' field of BACnetConfirmedServiceRequestAtomicReadFileStream")
 	}
@@ -184,7 +188,15 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamParse(readBuffer utils.Rea
 	return _child, nil
 }
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

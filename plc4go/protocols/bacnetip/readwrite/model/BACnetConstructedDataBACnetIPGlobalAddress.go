@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataBACnetIPGlobalAddress) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBACnetIPGlobalAddressParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPGlobalAddress, error) {
+func BACnetConstructedDataBACnetIPGlobalAddressParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPGlobalAddress, error) {
+	return BACnetConstructedDataBACnetIPGlobalAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataBACnetIPGlobalAddressParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPGlobalAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPGlobalAddress"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataBACnetIPGlobalAddressParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("bacnetIpGlobalAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bacnetIpGlobalAddress")
 	}
-	_bacnetIpGlobalAddress, _bacnetIpGlobalAddressErr := BACnetHostNPortParse(readBuffer)
+	_bacnetIpGlobalAddress, _bacnetIpGlobalAddressErr := BACnetHostNPortParseWithBuffer(readBuffer)
 	if _bacnetIpGlobalAddressErr != nil {
 		return nil, errors.Wrap(_bacnetIpGlobalAddressErr, "Error parsing 'bacnetIpGlobalAddress' field of BACnetConstructedDataBACnetIPGlobalAddress")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataBACnetIPGlobalAddressParse(readBuffer utils.ReadBuffer
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataBACnetIPGlobalAddress) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataBACnetIPGlobalAddress) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataBACnetIPGlobalAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

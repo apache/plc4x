@@ -201,7 +201,11 @@ func (m *_BACnetConstructedDataElement) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElement, error) {
+func BACnetConstructedDataElementParse(theBytes []byte, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElement, error) {
+	return BACnetConstructedDataElementParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataElementParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataElement"); pullErr != nil {
@@ -215,7 +219,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -250,7 +254,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 		if pullErr := readBuffer.PullContext("applicationTag"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for applicationTag")
 		}
-		_val, _err := BACnetApplicationTagParse(readBuffer)
+		_val, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -272,7 +276,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 		if pullErr := readBuffer.PullContext("contextTag"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for contextTag")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, peekedTagNumber, BACnetDataType_UNKNOWN)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, peekedTagNumber, BACnetDataType_UNKNOWN)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -294,7 +298,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 		if pullErr := readBuffer.PullContext("constructedData"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for constructedData")
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, peekedTagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+		_val, _err := BACnetConstructedDataParseWithBuffer(readBuffer, peekedTagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -330,7 +334,15 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 	}, nil
 }
 
-func (m *_BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataElement) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataElement) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetConstructedDataElement"); pushErr != nil {

@@ -151,7 +151,11 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetLeng
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, error) {
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(theBytes []byte, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, error) {
+	return BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+}
+
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass"); pullErr != nil {
@@ -164,7 +168,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(readBuff
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
 	}
@@ -178,7 +182,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(readBuff
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -197,9 +201,9 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(readBuff
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParse(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParseWithBuffer(readBuffer, tagNumber)
 	case peekedTagNumber == uint8(1): // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
-		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParse(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParseWithBuffer(readBuffer, tagNumber)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
@@ -212,7 +216,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(readBuff
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
 	}

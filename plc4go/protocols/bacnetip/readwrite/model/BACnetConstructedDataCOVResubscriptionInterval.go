@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCOVResubscriptionIntervalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVResubscriptionInterval, error) {
+func BACnetConstructedDataCOVResubscriptionIntervalParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVResubscriptionInterval, error) {
+	return BACnetConstructedDataCOVResubscriptionIntervalParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataCOVResubscriptionIntervalParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVResubscriptionInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCOVResubscriptionInterval"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataCOVResubscriptionIntervalParse(readBuffer utils.ReadBu
 	if pullErr := readBuffer.PullContext("covResubscriptionInterval"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for covResubscriptionInterval")
 	}
-	_covResubscriptionInterval, _covResubscriptionIntervalErr := BACnetApplicationTagParse(readBuffer)
+	_covResubscriptionInterval, _covResubscriptionIntervalErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _covResubscriptionIntervalErr != nil {
 		return nil, errors.Wrap(_covResubscriptionIntervalErr, "Error parsing 'covResubscriptionInterval' field of BACnetConstructedDataCOVResubscriptionInterval")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataCOVResubscriptionIntervalParse(readBuffer utils.ReadBu
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataCOVResubscriptionInterval) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataCOVResubscriptionInterval) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataCOVResubscriptionInterval) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataAccompanimentTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccompanimentTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccompanimentTime, error) {
+func BACnetConstructedDataAccompanimentTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccompanimentTime, error) {
+	return BACnetConstructedDataAccompanimentTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataAccompanimentTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccompanimentTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccompanimentTime"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataAccompanimentTimeParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("accompanimentTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accompanimentTime")
 	}
-	_accompanimentTime, _accompanimentTimeErr := BACnetApplicationTagParse(readBuffer)
+	_accompanimentTime, _accompanimentTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _accompanimentTimeErr != nil {
 		return nil, errors.Wrap(_accompanimentTimeErr, "Error parsing 'accompanimentTime' field of BACnetConstructedDataAccompanimentTime")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataAccompanimentTimeParse(readBuffer utils.ReadBuffer, ta
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataAccompanimentTime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAccompanimentTime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataAccompanimentTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -100,7 +100,11 @@ func (m *_CustomManufacturer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CustomManufacturerParse(readBuffer utils.ReadBuffer, numBytes uint8) (CustomManufacturer, error) {
+func CustomManufacturerParse(theBytes []byte, numBytes uint8) (CustomManufacturer, error) {
+	return CustomManufacturerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), numBytes)
+}
+
+func CustomManufacturerParseWithBuffer(readBuffer utils.ReadBuffer, numBytes uint8) (CustomManufacturer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CustomManufacturer"); pullErr != nil {
@@ -127,7 +131,15 @@ func CustomManufacturerParse(readBuffer utils.ReadBuffer, numBytes uint8) (Custo
 	}, nil
 }
 
-func (m *_CustomManufacturer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CustomManufacturer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CustomManufacturer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CustomManufacturer"); pushErr != nil {

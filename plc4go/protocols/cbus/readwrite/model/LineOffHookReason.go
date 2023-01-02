@@ -30,7 +30,7 @@ import (
 type LineOffHookReason uint8
 
 type ILineOffHookReason interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -131,7 +131,11 @@ func (m LineOffHookReason) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LineOffHookReasonParse(readBuffer utils.ReadBuffer) (LineOffHookReason, error) {
+func LineOffHookReasonParse(theBytes []byte) (LineOffHookReason, error) {
+	return LineOffHookReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func LineOffHookReasonParseWithBuffer(readBuffer utils.ReadBuffer) (LineOffHookReason, error) {
 	val, err := readBuffer.ReadUint8("LineOffHookReason", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading LineOffHookReason")
@@ -144,7 +148,15 @@ func LineOffHookReasonParse(readBuffer utils.ReadBuffer) (LineOffHookReason, err
 	}
 }
 
-func (e LineOffHookReason) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e LineOffHookReason) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e LineOffHookReason) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("LineOffHookReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

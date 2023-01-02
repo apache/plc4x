@@ -129,7 +129,11 @@ func (m *_BACnetServiceAckRequestKey) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckRequestKeyParse(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckRequestKey, error) {
+func BACnetServiceAckRequestKeyParse(theBytes []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckRequestKey, error) {
+	return BACnetServiceAckRequestKeyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckLength, serviceAckPayloadLength)
+}
+
+func BACnetServiceAckRequestKeyParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckRequestKey, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckRequestKey"); pullErr != nil {
@@ -159,7 +163,15 @@ func BACnetServiceAckRequestKeyParse(readBuffer utils.ReadBuffer, serviceAckLeng
 	return _child, nil
 }
 
-func (m *_BACnetServiceAckRequestKey) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetServiceAckRequestKey) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetServiceAckRequestKey) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

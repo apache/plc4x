@@ -180,6 +180,34 @@ public class CachedPlcConnection implements PlcConnection, PlcConnectionMetadata
         }
     }
 
+    public CompletableFuture<? extends PlcBrowseResponse> executeWithInterceptor(PlcBrowseRequest request, PlcBrowseRequestInterceptor interceptor) {
+        logger.trace("Trying to executing Request with interceptor {}", request);
+        if (closed) {
+            throw new IllegalStateException("Trying to execute a Request on a closed Connection!");
+        }
+        try {
+            logger.trace("Executing Request {}", request);
+            final CompletableFuture<? extends PlcBrowseResponse> responseFuture = wrapBrowseWithTimeout(request.executeWithInterceptor(interceptor), 5_000);
+            // The following code handles the case, that a read fails (which is handled async and thus not really connected
+            // to the connection, yet
+            // Thus, we register our own listener who gets the notification and reports the connection as broken
+            final CompletableFuture<PlcBrowseResponse> handledResponseFuture = responseFuture.handleAsync(new BiFunction<PlcBrowseResponse, Throwable, PlcBrowseResponse>() {
+                @Override
+                public PlcBrowseResponse apply(PlcBrowseResponse plcBrowseResponse, Throwable throwable) {
+                    if (throwable != null) {
+                        // Do something here...
+                        logger.warn("Request finished with exception. Reporting Connection as Broken", throwable);
+                        closeConnectionExceptionally(null);
+                    }
+                    return plcBrowseResponse;
+                }
+            });
+            return handledResponseFuture;
+        } catch (Exception e) {
+            return (CompletableFuture<? extends PlcBrowseResponse>) closeConnectionExceptionally(e);
+        }
+    }
+
     /**
      * Executes the Request.
      */
@@ -309,12 +337,18 @@ public class CachedPlcConnection implements PlcConnection, PlcConnectionMetadata
 
     @Override
     public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
-        throw new UnsupportedOperationException();
+        if (closed) {
+            throw new IllegalStateException("Trying to build a Request on a closed Connection!");
+        }
+        return new CachedSubscriptionRequestBuilder(this, this.getActiveConnection().subscriptionRequestBuilder());
     }
 
     @Override
     public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
-        throw new UnsupportedOperationException();
+        if (closed) {
+            throw new IllegalStateException("Trying to build a Request on a closed Connection!");
+        }
+        return new CachedUnsubscriptionRequestBuilder(this, this.getActiveConnection().unsubscriptionRequestBuilder());
     }
 
     @Override

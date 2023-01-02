@@ -136,7 +136,11 @@ func (m *_BACnetConstructedDataMultiStateValueFaultValues) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMultiStateValueFaultValuesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMultiStateValueFaultValues, error) {
+func BACnetConstructedDataMultiStateValueFaultValuesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMultiStateValueFaultValues, error) {
+	return BACnetConstructedDataMultiStateValueFaultValuesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataMultiStateValueFaultValuesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMultiStateValueFaultValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMultiStateValueFaultValues"); pullErr != nil {
@@ -153,12 +157,11 @@ func BACnetConstructedDataMultiStateValueFaultValuesParse(readBuffer utils.ReadB
 	var faultValues []BACnetApplicationTagUnsignedInteger
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetApplicationTagParse(readBuffer)
+			_item, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'faultValues' field of BACnetConstructedDataMultiStateValueFaultValues")
 			}
 			faultValues = append(faultValues, _item.(BACnetApplicationTagUnsignedInteger))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("faultValues", utils.WithRenderAsList(true)); closeErr != nil {
@@ -181,7 +184,15 @@ func BACnetConstructedDataMultiStateValueFaultValuesParse(readBuffer utils.ReadB
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataMultiStateValueFaultValues) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMultiStateValueFaultValues) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataMultiStateValueFaultValues) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

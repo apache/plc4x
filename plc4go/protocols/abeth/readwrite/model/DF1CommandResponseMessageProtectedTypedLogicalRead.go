@@ -131,7 +131,11 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer utils.ReadBuffer, payloadLength uint16) (DF1CommandResponseMessageProtectedTypedLogicalRead, error) {
+func DF1CommandResponseMessageProtectedTypedLogicalReadParse(theBytes []byte, payloadLength uint16) (DF1CommandResponseMessageProtectedTypedLogicalRead, error) {
+	return DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes), payloadLength)
+}
+
+func DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(readBuffer utils.ReadBuffer, payloadLength uint16) (DF1CommandResponseMessageProtectedTypedLogicalRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1CommandResponseMessageProtectedTypedLogicalRead"); pullErr != nil {
@@ -176,7 +180,15 @@ func DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer utils.Re
 	return _child, nil
 }
 
-func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

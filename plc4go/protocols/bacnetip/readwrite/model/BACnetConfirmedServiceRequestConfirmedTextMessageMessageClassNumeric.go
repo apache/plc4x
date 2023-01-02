@@ -124,7 +124,11 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric, error) {
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParse(theBytes []byte, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric, error) {
+	return BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+}
+
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric"); pullErr != nil {
@@ -137,7 +141,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParse(r
 	if pullErr := readBuffer.PullContext("numericValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for numericValue")
 	}
-	_numericValue, _numericValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_numericValue, _numericValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _numericValueErr != nil {
 		return nil, errors.Wrap(_numericValueErr, "Error parsing 'numericValue' field of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric")
 	}
@@ -161,7 +165,15 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParse(r
 	return _child, nil
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

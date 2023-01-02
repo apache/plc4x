@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataOperationExpected) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOperationExpectedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOperationExpected, error) {
+func BACnetConstructedDataOperationExpectedParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOperationExpected, error) {
+	return BACnetConstructedDataOperationExpectedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataOperationExpectedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOperationExpected, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOperationExpected"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataOperationExpectedParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("lifeSafetyOperations"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lifeSafetyOperations")
 	}
-	_lifeSafetyOperations, _lifeSafetyOperationsErr := BACnetLifeSafetyOperationTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_lifeSafetyOperations, _lifeSafetyOperationsErr := BACnetLifeSafetyOperationTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _lifeSafetyOperationsErr != nil {
 		return nil, errors.Wrap(_lifeSafetyOperationsErr, "Error parsing 'lifeSafetyOperations' field of BACnetConstructedDataOperationExpected")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataOperationExpectedParse(readBuffer utils.ReadBuffer, ta
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataOperationExpected) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataOperationExpected) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataOperationExpected) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

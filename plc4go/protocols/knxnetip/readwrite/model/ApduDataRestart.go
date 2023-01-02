@@ -103,7 +103,11 @@ func (m *_ApduDataRestart) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataRestartParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataRestart, error) {
+func ApduDataRestartParse(theBytes []byte, dataLength uint8) (ApduDataRestart, error) {
+	return ApduDataRestartParseWithBuffer(utils.NewReadBufferByteBased(theBytes), dataLength)
+}
+
+func ApduDataRestartParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataRestart, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataRestart"); pullErr != nil {
@@ -126,7 +130,15 @@ func ApduDataRestartParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDa
 	return _child, nil
 }
 
-func (m *_ApduDataRestart) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataRestart) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApduDataRestart) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

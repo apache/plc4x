@@ -102,7 +102,11 @@ func (m *_CALDataReset) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALDataResetParse(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataReset, error) {
+func CALDataResetParse(theBytes []byte, requestContext RequestContext) (CALDataReset, error) {
+	return CALDataResetParseWithBuffer(utils.NewReadBufferByteBased(theBytes), requestContext)
+}
+
+func CALDataResetParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataReset, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataReset"); pullErr != nil {
@@ -125,7 +129,15 @@ func CALDataResetParse(readBuffer utils.ReadBuffer, requestContext RequestContex
 	return _child, nil
 }
 
-func (m *_CALDataReset) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CALDataReset) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CALDataReset) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

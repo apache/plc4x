@@ -30,8 +30,8 @@ import (
 type ClockAndTimekeepingCommandType uint8
 
 type IClockAndTimekeepingCommandType interface {
+	utils.Serializable
 	NumberOfArguments() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -121,7 +121,11 @@ func (m ClockAndTimekeepingCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ClockAndTimekeepingCommandTypeParse(readBuffer utils.ReadBuffer) (ClockAndTimekeepingCommandType, error) {
+func ClockAndTimekeepingCommandTypeParse(theBytes []byte) (ClockAndTimekeepingCommandType, error) {
+	return ClockAndTimekeepingCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ClockAndTimekeepingCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ClockAndTimekeepingCommandType, error) {
 	val, err := readBuffer.ReadUint8("ClockAndTimekeepingCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ClockAndTimekeepingCommandType")
@@ -134,7 +138,15 @@ func ClockAndTimekeepingCommandTypeParse(readBuffer utils.ReadBuffer) (ClockAndT
 	}
 }
 
-func (e ClockAndTimekeepingCommandType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ClockAndTimekeepingCommandType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ClockAndTimekeepingCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ClockAndTimekeepingCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

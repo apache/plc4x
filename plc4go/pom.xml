@@ -198,6 +198,19 @@
             </configuration>
           </execution>
           <execution>
+            <id>generate-driver-ads-discovery</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>ads.discovery</protocolName>
+              <languageName>go</languageName>
+              <outputFlavor>read-write</outputFlavor>
+              <outputDir>${project.basedir}/protocols</outputDir>
+            </configuration>
+          </execution>
+          <execution>
             <id>generate-driver-bacnetip</id>
             <phase>generate-sources</phase>
             <goals>
@@ -395,7 +408,7 @@
             TODO: The licenser adds a version of the Apache Header with http url
           -->
           <execution>
-            <id>add-license</id>
+            <id>add-license-modbus</id>
             <phase>process-sources</phase>
             <goals>
               <goal>custom</goal>
@@ -407,12 +420,12 @@
                 <flag>Apache Software Foundation (ASF)</flag>
               </buildFlags>
               <packages>
-                <package>internal/modbus/fieldtype_string.go</package>
+                <package>internal/modbus/tagtype_string.go</package>
               </packages>
             </configuration>
           </execution>
           <execution>
-            <id>add-license2</id>
+            <id>add-license-cbus</id>
             <phase>process-sources</phase>
             <goals>
               <goal>custom</goal>
@@ -424,12 +437,12 @@
                 <flag>Apache Software Foundation (ASF)</flag>
               </buildFlags>
               <packages>
-                <package>internal/ads/fieldtype_string.go</package>
+                <package>internal/cbus/tagtype_string.go</package>
               </packages>
             </configuration>
           </execution>
           <execution>
-            <id>add-license3</id>
+            <id>add-license-s7</id>
             <phase>process-sources</phase>
             <goals>
               <goal>custom</goal>
@@ -441,29 +454,12 @@
                 <flag>Apache Software Foundation (ASF)</flag>
               </buildFlags>
               <packages>
-                <package>internal/cbus/fieldtype_string.go</package>
+                <package>internal/s7/tagtype_string.go</package>
               </packages>
             </configuration>
           </execution>
           <execution>
-            <id>add-license4</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>custom</goal>
-            </goals>
-            <configuration>
-              <exec>go-licenser</exec>
-              <customCommand>-licensor</customCommand>
-              <buildFlags>
-                <flag>Apache Software Foundation (ASF)</flag>
-              </buildFlags>
-              <packages>
-                <package>internal/s7/fieldtype_string.go</package>
-              </packages>
-            </configuration>
-          </execution>
-          <execution>
-            <id>add-license5</id>
+            <id>add-license-spi-testutils</id>
             <phase>process-sources</phase>
             <goals>
               <goal>custom</goal>

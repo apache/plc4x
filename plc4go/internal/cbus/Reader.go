@@ -55,24 +55,24 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 	log.Trace().Msg("Reading")
 	result := make(chan apiModel.PlcReadRequestResult)
 	go func() {
-		numFields := len(readRequest.GetFieldNames())
-		if numFields > 20 { // letters g-z
+		numTags := len(readRequest.GetTagNames())
+		if numTags > 20 { // letters g-z
 			result <- &spiModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
-				Err:      errors.New("Only 20 fields can be handled at once"),
+				Err:      errors.New("Only 20 tags can be handled at once"),
 			}
 			return
 		}
 		messages := make(map[string]readWriteModel.CBusMessage)
-		for _, fieldName := range readRequest.GetFieldNames() {
-			field := readRequest.GetField(fieldName)
-			message, supportsRead, _, _, err := FieldToCBusMessage(field, nil, m.alphaGenerator, m.messageCodec.(*MessageCodec))
+		for _, tagName := range readRequest.GetTagNames() {
+			tag := readRequest.GetTag(tagName)
+			message, supportsRead, _, _, err := TagToCBusMessage(tag, nil, m.alphaGenerator, m.messageCodec.(*MessageCodec))
 			if !supportsRead {
 				result <- &spiModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding cbus message for field %s. Field is not meant to be read.", fieldName),
+					Err:      errors.Wrapf(err, "Error encoding cbus message for tag %s. Tag is not meant to be read.", tagName),
 				}
 				return
 			}
@@ -80,11 +80,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				result <- &spiModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding cbus message for field %s", fieldName),
+					Err:      errors.Wrapf(err, "Error encoding cbus message for tag %s", tagName),
 				}
 				return
 			}
-			messages[fieldName] = message
+			messages[tagName] = message
 		}
 		responseMu := sync.Mutex{}
 		responseCodes := map[string]apiModel.PlcResponseCode{}
@@ -100,7 +100,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			defer valueMu.Unlock()
 			plcValues[name] = plcValue
 		}
-		for fieldName, messageToSend := range messages {
+		for tagName, messageToSend := range messages {
 			if err := ctx.Err(); err != nil {
 				result <- &spiModel.DefaultPlcReadRequestResult{
 					Request: readRequest,
@@ -108,7 +108,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				}
 				return
 			}
-			fieldNameCopy := fieldName
+			tagNameCopy := tagName
 			// Start a new request-transaction (Is ended in the response-handler)
 			transaction := m.tm.StartTransaction()
 			transaction.Submit(func() {
@@ -145,7 +145,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 					messageToClient := cbusMessage.(readWriteModel.CBusMessageToClient)
 					if _, ok := messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
 						log.Trace().Msg("We got a server failure")
-						addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_INVALID_DATA)
+						addResponseCode(tagNameCopy, apiModel.PlcResponseCode_INVALID_DATA)
 						return transaction.EndRequest()
 					}
 					replyOrConfirmationConfirmation := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmationExactly)
@@ -163,8 +163,8 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 						default:
 							return transaction.FailRequest(errors.Errorf("Every code should be mapped here: %v", replyOrConfirmationConfirmation.GetConfirmation().GetConfirmationType()))
 						}
-						log.Trace().Msgf("Was no success %s:%v", fieldNameCopy, responseCode)
-						addResponseCode(fieldNameCopy, responseCode)
+						log.Trace().Msgf("Was no success %s:%v", tagNameCopy, responseCode)
+						addResponseCode(tagNameCopy, responseCode)
 						return transaction.EndRequest()
 					}
 
@@ -173,7 +173,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 					embeddedReply, ok := replyOrConfirmationConfirmation.GetEmbeddedReply().(readWriteModel.ReplyOrConfirmationReplyExactly)
 					if !ok {
 						log.Trace().Msgf("Is a confirm only, no data. Alpha: %c", alpha.GetCharacter())
-						addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_NOT_FOUND)
+						addResponseCode(tagNameCopy, apiModel.PlcResponseCode_NOT_FOUND)
 						return transaction.EndRequest()
 					}
 
@@ -182,7 +182,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 					switch reply := embeddedReply.GetReply().(readWriteModel.ReplyEncodedReply).GetEncodedReply().(type) {
 					case readWriteModel.EncodedReplyCALReplyExactly:
 						calData := reply.GetCalReply().GetCalData()
-						addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_OK)
+						addResponseCode(tagNameCopy, apiModel.PlcResponseCode_OK)
 						switch calData := calData.(type) {
 						case readWriteModel.CALDataStatusExactly:
 							application := calData.GetApplication()
@@ -192,7 +192,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 							// TODO: verify application... this should be the same
 							_ = blockStart
 							statusBytes := calData.GetStatusBytes()
-							addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_OK)
+							addResponseCode(tagNameCopy, apiModel.PlcResponseCode_OK)
 							plcListValues := make([]apiValues.PlcValue, len(statusBytes)*4)
 							for i, statusByte := range statusBytes {
 								plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
@@ -200,7 +200,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 								plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
 								plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
 							}
-							addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
+							addPlcValue(tagNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 								"application": spiValues.NewPlcSTRING(application.PLC4XEnumName()),
 								"blockStart":  spiValues.NewPlcBYTE(blockStart),
 								"values":      spiValues.NewPlcList(plcListValues),
@@ -220,7 +220,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 								fallthrough
 							case readWriteModel.StatusCoding_BINARY_BY_ELSEWHERE:
 								statusBytes := calData.GetStatusBytes()
-								addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_OK)
+								addResponseCode(tagNameCopy, apiModel.PlcResponseCode_OK)
 								plcListValues := make([]apiValues.PlcValue, len(statusBytes)*4)
 								for i, statusByte := range statusBytes {
 									plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
@@ -228,7 +228,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 									plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
 									plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
 								}
-								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
+								addPlcValue(tagNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 									"application": spiValues.NewPlcSTRING(application.PLC4XEnumName()),
 									"blockStart":  spiValues.NewPlcBYTE(blockStart),
 									"values":      spiValues.NewPlcList(plcListValues),
@@ -237,7 +237,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 								fallthrough
 							case readWriteModel.StatusCoding_LEVEL_BY_ELSEWHERE:
 								levelInformation := calData.GetLevelInformation()
-								addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_OK)
+								addResponseCode(tagNameCopy, apiModel.PlcResponseCode_OK)
 								plcListValues := make([]apiValues.PlcValue, len(levelInformation))
 								for i, levelInformation := range levelInformation {
 									switch levelInformation := levelInformation.(type) {
@@ -251,19 +251,19 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 										return transaction.FailRequest(errors.Errorf("Impossible case %v", levelInformation))
 									}
 								}
-								addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
+								addPlcValue(tagNameCopy, spiValues.NewPlcList(plcListValues))
 							}
 						case readWriteModel.CALDataIdentifyReplyExactly:
 							switch identifyReplyCommand := calData.GetIdentifyReplyCommand().(type) {
 							case readWriteModel.IdentifyReplyCommandCurrentSenseLevelsExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetCurrentSenseLevels()))
+								addPlcValue(tagNameCopy, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetCurrentSenseLevels()))
 							case readWriteModel.IdentifyReplyCommandDelaysExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
+								addPlcValue(tagNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 									"ReStrikeDelay": spiValues.NewPlcUSINT(identifyReplyCommand.GetReStrikeDelay()),
-									"TerminalLevel": spiValues.NewPlcByteArray(identifyReplyCommand.GetTerminalLevels()),
+									"TerminalLevel": spiValues.NewPlcRawByteArray(identifyReplyCommand.GetTerminalLevels()),
 								}))
 							case readWriteModel.IdentifyReplyCommandDSIStatusExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
+								addPlcValue(tagNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 									"ChannelStatus1":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus1().String()),
 									"ChannelStatus2":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus2().String()),
 									"ChannelStatus3":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus3().String()),
@@ -276,7 +276,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 									"DimmingUCRevisionNumber": spiValues.NewPlcUSINT(identifyReplyCommand.GetDimmingUCRevisionNumber()),
 								}))
 							case readWriteModel.IdentifyReplyCommandExtendedDiagnosticSummaryExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
+								addPlcValue(tagNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 									"LowApplication":         spiValues.NewPlcSTRING(identifyReplyCommand.GetLowApplication().String()),
 									"HighApplication":        spiValues.NewPlcSTRING(identifyReplyCommand.GetHighApplication().String()),
 									"Area":                   spiValues.NewPlcUSINT(identifyReplyCommand.GetArea()),
@@ -298,19 +298,19 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 									"MicroPowerReset":        spiValues.NewPlcBOOL(identifyReplyCommand.GetMicroPowerReset()),
 								}))
 							case readWriteModel.IdentifyReplyCommandSummaryExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
+								addPlcValue(tagNameCopy, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 									"PartName":        spiValues.NewPlcSTRING(identifyReplyCommand.GetPartName()),
 									"UnitServiceType": spiValues.NewPlcUSINT(identifyReplyCommand.GetUnitServiceType()),
 									"Version":         spiValues.NewPlcSTRING(identifyReplyCommand.GetVersion()),
 								}))
 							case readWriteModel.IdentifyReplyCommandFirmwareVersionExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcSTRING(identifyReplyCommand.GetFirmwareVersion()))
+								addPlcValue(tagNameCopy, spiValues.NewPlcSTRING(identifyReplyCommand.GetFirmwareVersion()))
 							case readWriteModel.IdentifyReplyCommandGAVPhysicalAddressesExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetValues()))
+								addPlcValue(tagNameCopy, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetValues()))
 							case readWriteModel.IdentifyReplyCommandGAVValuesCurrentExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetValues()))
+								addPlcValue(tagNameCopy, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetValues()))
 							case readWriteModel.IdentifyReplyCommandGAVValuesStoredExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetValues()))
+								addPlcValue(tagNameCopy, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetValues()))
 							case readWriteModel.IdentifyReplyCommandLogicalAssignmentExactly:
 								var plcValues []apiValues.PlcValue
 								for _, logicAssigment := range identifyReplyCommand.GetLogicAssigment() {
@@ -323,30 +323,30 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 										"AssignedToGav13":  spiValues.NewPlcBOOL(logicAssigment.GetAssignedToGav13()),
 									}))
 								}
-								addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcValues))
+								addPlcValue(tagNameCopy, spiValues.NewPlcList(plcValues))
 							case readWriteModel.IdentifyReplyCommandManufacturerExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcSTRING(identifyReplyCommand.GetManufacturerName()))
+								addPlcValue(tagNameCopy, spiValues.NewPlcSTRING(identifyReplyCommand.GetManufacturerName()))
 							case readWriteModel.IdentifyReplyCommandMaximumLevelsExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetMaximumLevels()))
+								addPlcValue(tagNameCopy, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetMaximumLevels()))
 							case readWriteModel.IdentifyReplyCommandMinimumLevelsExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetMinimumLevels()))
+								addPlcValue(tagNameCopy, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetMinimumLevels()))
 							case readWriteModel.IdentifyReplyCommandNetworkTerminalLevelsExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetNetworkTerminalLevels()))
+								addPlcValue(tagNameCopy, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetNetworkTerminalLevels()))
 							case readWriteModel.IdentifyReplyCommandNetworkVoltageExactly:
 								volts := identifyReplyCommand.GetVolts()
 								voltsFloat, err := strconv.ParseFloat(volts, 0)
 								if err != nil {
-									addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_INTERNAL_ERROR)
+									addResponseCode(tagNameCopy, apiModel.PlcResponseCode_INTERNAL_ERROR)
 									return transaction.FailRequest(errors.Wrap(err, "Error parsing volts"))
 								}
 								voltsDecimalPlace := identifyReplyCommand.GetVoltsDecimalPlace()
 								voltsDecimalPlaceFloat, err := strconv.ParseFloat(voltsDecimalPlace, 0)
 								if err != nil {
-									addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_INTERNAL_ERROR)
+									addResponseCode(tagNameCopy, apiModel.PlcResponseCode_INTERNAL_ERROR)
 									return transaction.FailRequest(errors.Wrap(err, "Error parsing volts decimal place"))
 								}
 								voltsFloat += voltsDecimalPlaceFloat / 10
-								addPlcValue(fieldNameCopy, spiValues.NewPlcLREAL(voltsFloat))
+								addPlcValue(tagNameCopy, spiValues.NewPlcLREAL(voltsFloat))
 							case readWriteModel.IdentifyReplyCommandOutputUnitSummaryExactly:
 								unitFlags := identifyReplyCommand.GetUnitFlags()
 								structContent := map[string]apiValues.PlcValue{
@@ -368,22 +368,22 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 								if gavStoreEnabledByte2 := identifyReplyCommand.GetGavStoreEnabledByte2(); gavStoreEnabledByte2 != nil {
 									structContent["GavStoreEnabledByte2"] = spiValues.NewPlcUSINT(*gavStoreEnabledByte2)
 								}
-								addPlcValue(fieldNameCopy, spiValues.NewPlcStruct(structContent))
+								addPlcValue(tagNameCopy, spiValues.NewPlcStruct(structContent))
 							case readWriteModel.IdentifyReplyCommandTerminalLevelsExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcByteArray(identifyReplyCommand.GetTerminalLevels()))
+								addPlcValue(tagNameCopy, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetTerminalLevels()))
 							case readWriteModel.IdentifyReplyCommandTypeExactly:
-								addPlcValue(fieldNameCopy, spiValues.NewPlcSTRING(identifyReplyCommand.GetUnitType()))
+								addPlcValue(tagNameCopy, spiValues.NewPlcSTRING(identifyReplyCommand.GetUnitType()))
 							default:
-								addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_INVALID_DATA)
+								addResponseCode(tagNameCopy, apiModel.PlcResponseCode_INVALID_DATA)
 								return transaction.FailRequest(errors.Errorf("Unmapped type %T", identifyReplyCommand))
 							}
 						default:
 							wbpcb := spiValues.NewWriteBufferPlcValueBased()
-							if err := calData.Serialize(wbpcb); err != nil {
+							if err := calData.SerializeWithWriteBuffer(wbpcb); err != nil {
 								log.Warn().Err(err).Msgf("Unmapped cal data type %T. Returning raw to string", calData)
-								addPlcValue(fieldNameCopy, spiValues.NewPlcSTRING(fmt.Sprintf("%s", calData)))
+								addPlcValue(tagNameCopy, spiValues.NewPlcSTRING(fmt.Sprintf("%s", calData)))
 							} else {
-								addPlcValue(fieldNameCopy, wbpcb.GetPlcValue())
+								addPlcValue(tagNameCopy, wbpcb.GetPlcValue())
 							}
 						}
 					default:
@@ -391,11 +391,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 					}
 					return transaction.EndRequest()
 				}, func(err error) error {
-					addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_REQUEST_TIMEOUT)
+					addResponseCode(tagNameCopy, apiModel.PlcResponseCode_REQUEST_TIMEOUT)
 					return transaction.FailRequest(err)
 				}, time.Second*1); err != nil {
-					log.Debug().Err(err).Msgf("Error sending message for field %s", fieldNameCopy)
-					addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_INTERNAL_ERROR)
+					log.Debug().Err(err).Msgf("Error sending message for tag %s", tagNameCopy)
+					addResponseCode(tagNameCopy, apiModel.PlcResponseCode_INTERNAL_ERROR)
 					_ = transaction.FailRequest(errors.Errorf("timeout after %ss", time.Second*1))
 				}
 			})

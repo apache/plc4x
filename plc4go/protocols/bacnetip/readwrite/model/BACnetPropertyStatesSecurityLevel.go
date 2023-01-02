@@ -122,7 +122,11 @@ func (m *_BACnetPropertyStatesSecurityLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesSecurityLevelParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesSecurityLevel, error) {
+func BACnetPropertyStatesSecurityLevelParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesSecurityLevel, error) {
+	return BACnetPropertyStatesSecurityLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+}
+
+func BACnetPropertyStatesSecurityLevelParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesSecurityLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesSecurityLevel"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPropertyStatesSecurityLevelParse(readBuffer utils.ReadBuffer, peekedT
 	if pullErr := readBuffer.PullContext("securityLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for securityLevel")
 	}
-	_securityLevel, _securityLevelErr := BACnetSecurityLevelTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_securityLevel, _securityLevelErr := BACnetSecurityLevelTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _securityLevelErr != nil {
 		return nil, errors.Wrap(_securityLevelErr, "Error parsing 'securityLevel' field of BACnetPropertyStatesSecurityLevel")
 	}
@@ -157,7 +161,15 @@ func BACnetPropertyStatesSecurityLevelParse(readBuffer utils.ReadBuffer, peekedT
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesSecurityLevel) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesSecurityLevel) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesSecurityLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

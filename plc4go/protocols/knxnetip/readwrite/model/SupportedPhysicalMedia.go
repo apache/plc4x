@@ -30,9 +30,9 @@ import (
 type SupportedPhysicalMedia uint8
 
 type ISupportedPhysicalMedia interface {
+	utils.Serializable
 	KnxSupport() bool
 	Description() string
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -414,7 +414,11 @@ func (m SupportedPhysicalMedia) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SupportedPhysicalMediaParse(readBuffer utils.ReadBuffer) (SupportedPhysicalMedia, error) {
+func SupportedPhysicalMediaParse(theBytes []byte) (SupportedPhysicalMedia, error) {
+	return SupportedPhysicalMediaParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SupportedPhysicalMediaParseWithBuffer(readBuffer utils.ReadBuffer) (SupportedPhysicalMedia, error) {
 	val, err := readBuffer.ReadUint8("SupportedPhysicalMedia", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SupportedPhysicalMedia")
@@ -427,7 +431,15 @@ func SupportedPhysicalMediaParse(readBuffer utils.ReadBuffer) (SupportedPhysical
 	}
 }
 
-func (e SupportedPhysicalMedia) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e SupportedPhysicalMedia) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e SupportedPhysicalMedia) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("SupportedPhysicalMedia", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

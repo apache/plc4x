@@ -134,7 +134,11 @@ func (m *_CALDataIdentifyReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALDataIdentifyReplyParse(readBuffer utils.ReadBuffer, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataIdentifyReply, error) {
+func CALDataIdentifyReplyParse(theBytes []byte, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataIdentifyReply, error) {
+	return CALDataIdentifyReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), requestContext, commandTypeContainer)
+}
+
+func CALDataIdentifyReplyParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataIdentifyReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataIdentifyReply"); pullErr != nil {
@@ -147,7 +151,7 @@ func CALDataIdentifyReplyParse(readBuffer utils.ReadBuffer, requestContext Reque
 	if pullErr := readBuffer.PullContext("attribute"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for attribute")
 	}
-	_attribute, _attributeErr := AttributeParse(readBuffer)
+	_attribute, _attributeErr := AttributeParseWithBuffer(readBuffer)
 	if _attributeErr != nil {
 		return nil, errors.Wrap(_attributeErr, "Error parsing 'attribute' field of CALDataIdentifyReply")
 	}
@@ -160,7 +164,7 @@ func CALDataIdentifyReplyParse(readBuffer utils.ReadBuffer, requestContext Reque
 	if pullErr := readBuffer.PullContext("identifyReplyCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for identifyReplyCommand")
 	}
-	_identifyReplyCommand, _identifyReplyCommandErr := IdentifyReplyCommandParse(readBuffer, Attribute(attribute), uint8(uint8(commandTypeContainer.NumBytes())-uint8(uint8(1))))
+	_identifyReplyCommand, _identifyReplyCommandErr := IdentifyReplyCommandParseWithBuffer(readBuffer, Attribute(attribute), uint8(uint8(commandTypeContainer.NumBytes())-uint8(uint8(1))))
 	if _identifyReplyCommandErr != nil {
 		return nil, errors.Wrap(_identifyReplyCommandErr, "Error parsing 'identifyReplyCommand' field of CALDataIdentifyReply")
 	}
@@ -185,7 +189,15 @@ func CALDataIdentifyReplyParse(readBuffer utils.ReadBuffer, requestContext Reque
 	return _child, nil
 }
 
-func (m *_CALDataIdentifyReply) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CALDataIdentifyReply) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CALDataIdentifyReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

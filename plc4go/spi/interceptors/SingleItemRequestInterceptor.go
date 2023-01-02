@@ -22,6 +22,7 @@ package interceptors
 import (
 	"context"
 	"errors"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -45,8 +46,8 @@ type WriteRequestInterceptorExposer interface {
 	GetWriteRequestInterceptor() WriteRequestInterceptor
 }
 
-type readRequestFactory func(fields map[string]model.PlcField, fieldNames []string, reader spi.PlcReader, readRequestInterceptor ReadRequestInterceptor) model.PlcReadRequest
-type writeRequestFactory func(fields map[string]model.PlcField, fieldNames []string, values map[string]values.PlcValue, writer spi.PlcWriter, writeRequestInterceptor WriteRequestInterceptor) model.PlcWriteRequest
+type readRequestFactory func(tags map[string]model.PlcTag, tagNames []string, reader spi.PlcReader, readRequestInterceptor ReadRequestInterceptor) model.PlcReadRequest
+type writeRequestFactory func(tags map[string]model.PlcTag, tagNames []string, values map[string]values.PlcValue, writer spi.PlcWriter, writeRequestInterceptor WriteRequestInterceptor) model.PlcWriteRequest
 
 type readResponseFactory func(request model.PlcReadRequest, responseCodes map[string]model.PlcResponseCode, values map[string]values.PlcValue) model.PlcReadResponse
 type writeResponseFactory func(request model.PlcWriteRequest, responseCodes map[string]model.PlcResponseCode) model.PlcWriteResponse
@@ -112,20 +113,20 @@ func (d *interceptedPlcWriteRequestResult) GetErr() error {
 
 func (m SingleItemRequestInterceptor) InterceptReadRequest(ctx context.Context, readRequest model.PlcReadRequest) []model.PlcReadRequest {
 	// TODO: handle ctx
-	// If this request just has one field, go the shortcut
-	if len(readRequest.GetFieldNames()) == 1 {
+	// If this request just has one tag, go the shortcut
+	if len(readRequest.GetTagNames()) == 1 {
 		log.Debug().Msg("We got only one request, no splitting required")
 		return []model.PlcReadRequest{readRequest}
 	}
 	log.Trace().Msg("Splitting requests")
 	// In all other cases, create a new read request containing only one item
 	var readRequests []model.PlcReadRequest
-	for _, fieldName := range readRequest.GetFieldNames() {
-		log.Debug().Str("fieldName", fieldName).Msg("Splitting into own request")
-		field := readRequest.GetField(fieldName)
+	for _, tagName := range readRequest.GetTagNames() {
+		log.Debug().Str("tagName", tagName).Msg("Splitting into own request")
+		tag := readRequest.GetTag(tagName)
 		subReadRequest := m.readRequestFactory(
-			map[string]model.PlcField{fieldName: field},
-			[]string{fieldName},
+			map[string]model.PlcTag{tagName: tag},
+			[]string{tagName},
 			readRequest.(ReaderExposer).GetReader(),
 			readRequest.(ReadRequestInterceptorExposer).GetReadRequestInterceptor(),
 		)
@@ -155,12 +156,12 @@ func (m SingleItemRequestInterceptor) ProcessReadResponses(ctx context.Context, 
 				multiError.Errors = append(multiError.Errors, readResult.GetErr())
 			}
 		} else if readResult.GetResponse() != nil {
-			if len(readResult.GetResponse().GetRequest().GetFieldNames()) > 1 {
-				log.Error().Int("numberOfFields", len(readResult.GetResponse().GetRequest().GetFieldNames())).Msg("We should only get 1")
+			if len(readResult.GetResponse().GetRequest().GetTagNames()) > 1 {
+				log.Error().Int("numberOfTags", len(readResult.GetResponse().GetRequest().GetTagNames())).Msg("We should only get 1")
 			}
-			for _, fieldName := range readResult.GetResponse().GetRequest().GetFieldNames() {
-				responseCodes[fieldName] = readResult.GetResponse().GetResponseCode(fieldName)
-				val[fieldName] = readResult.GetResponse().GetValue(fieldName)
+			for _, tagName := range readResult.GetResponse().GetRequest().GetTagNames() {
+				responseCodes[tagName] = readResult.GetResponse().GetResponseCode(tagName)
+				val[tagName] = readResult.GetResponse().GetValue(tagName)
 			}
 		}
 	}
@@ -173,21 +174,21 @@ func (m SingleItemRequestInterceptor) ProcessReadResponses(ctx context.Context, 
 
 func (m SingleItemRequestInterceptor) InterceptWriteRequest(ctx context.Context, writeRequest model.PlcWriteRequest) []model.PlcWriteRequest {
 	// TODO: handle ctx
-	// If this request just has one field, go the shortcut
-	if len(writeRequest.GetFieldNames()) == 1 {
+	// If this request just has one tag, go the shortcut
+	if len(writeRequest.GetTagNames()) == 1 {
 		log.Debug().Msg("We got only one request, no splitting required")
 		return []model.PlcWriteRequest{writeRequest}
 	}
 	log.Trace().Msg("Splitting requests")
 	// In all other cases, create a new write request containing only one item
 	var writeRequests []model.PlcWriteRequest
-	for _, fieldName := range writeRequest.GetFieldNames() {
-		log.Debug().Str("fieldName", fieldName).Msg("Splitting into own request")
-		field := writeRequest.GetField(fieldName)
+	for _, tagName := range writeRequest.GetTagNames() {
+		log.Debug().Str("tagName", tagName).Msg("Splitting into own request")
+		tag := writeRequest.GetTag(tagName)
 		subWriteRequest := m.writeRequestFactory(
-			map[string]model.PlcField{fieldName: field},
-			[]string{fieldName},
-			map[string]values.PlcValue{fieldName: writeRequest.GetValue(fieldName)},
+			map[string]model.PlcTag{tagName: tag},
+			[]string{tagName},
+			map[string]values.PlcValue{tagName: writeRequest.GetValue(tagName)},
 			writeRequest.(WriterExposer).GetWriter(),
 			writeRequest.(WriteRequestInterceptorExposer).GetWriteRequestInterceptor(),
 		)
@@ -216,11 +217,11 @@ func (m SingleItemRequestInterceptor) ProcessWriteResponses(ctx context.Context,
 				multiError.Errors = append(multiError.Errors, writeResult.GetErr())
 			}
 		} else if writeResult.GetResponse() != nil {
-			if len(writeResult.GetResponse().GetRequest().GetFieldNames()) > 1 {
-				log.Error().Int("numberOfFields", len(writeResult.GetResponse().GetRequest().GetFieldNames())).Msg("We should only get 1")
+			if len(writeResult.GetResponse().GetRequest().GetTagNames()) > 1 {
+				log.Error().Int("numberOfTags", len(writeResult.GetResponse().GetRequest().GetTagNames())).Msg("We should only get 1")
 			}
-			for _, fieldName := range writeResult.GetResponse().GetRequest().GetFieldNames() {
-				responseCodes[fieldName] = writeResult.GetResponse().GetResponseCode(fieldName)
+			for _, tagName := range writeResult.GetResponse().GetRequest().GetTagNames() {
+				responseCodes[tagName] = writeResult.GetResponse().GetResponseCode(tagName)
 			}
 		}
 	}

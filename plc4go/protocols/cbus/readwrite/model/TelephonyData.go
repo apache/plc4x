@@ -141,7 +141,11 @@ func (m *_TelephonyData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyDataParse(readBuffer utils.ReadBuffer) (TelephonyData, error) {
+func TelephonyDataParse(theBytes []byte) (TelephonyData, error) {
+	return TelephonyDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TelephonyDataParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyData"); pullErr != nil {
@@ -159,7 +163,7 @@ func TelephonyDataParse(readBuffer utils.ReadBuffer) (TelephonyData, error) {
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := TelephonyCommandTypeContainerParse(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := TelephonyCommandTypeContainerParseWithBuffer(readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of TelephonyData")
 	}
@@ -191,29 +195,29 @@ func TelephonyDataParse(readBuffer utils.ReadBuffer) (TelephonyData, error) {
 	var typeSwitchError error
 	switch {
 	case commandType == TelephonyCommandType_EVENT && argument == 0x01: // TelephonyDataLineOnHook
-		_childTemp, typeSwitchError = TelephonyDataLineOnHookParse(readBuffer)
+		_childTemp, typeSwitchError = TelephonyDataLineOnHookParseWithBuffer(readBuffer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x02: // TelephonyDataLineOffHook
-		_childTemp, typeSwitchError = TelephonyDataLineOffHookParse(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = TelephonyDataLineOffHookParseWithBuffer(readBuffer, commandTypeContainer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x03: // TelephonyDataDialOutFailure
-		_childTemp, typeSwitchError = TelephonyDataDialOutFailureParse(readBuffer)
+		_childTemp, typeSwitchError = TelephonyDataDialOutFailureParseWithBuffer(readBuffer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x04: // TelephonyDataDialInFailure
-		_childTemp, typeSwitchError = TelephonyDataDialInFailureParse(readBuffer)
+		_childTemp, typeSwitchError = TelephonyDataDialInFailureParseWithBuffer(readBuffer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x05: // TelephonyDataRinging
-		_childTemp, typeSwitchError = TelephonyDataRingingParse(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = TelephonyDataRingingParseWithBuffer(readBuffer, commandTypeContainer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x06: // TelephonyDataRecallLastNumber
-		_childTemp, typeSwitchError = TelephonyDataRecallLastNumberParse(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = TelephonyDataRecallLastNumberParseWithBuffer(readBuffer, commandTypeContainer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x07: // TelephonyDataInternetConnectionRequestMade
-		_childTemp, typeSwitchError = TelephonyDataInternetConnectionRequestMadeParse(readBuffer)
+		_childTemp, typeSwitchError = TelephonyDataInternetConnectionRequestMadeParseWithBuffer(readBuffer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x80: // TelephonyDataIsolateSecondaryOutlet
-		_childTemp, typeSwitchError = TelephonyDataIsolateSecondaryOutletParse(readBuffer)
+		_childTemp, typeSwitchError = TelephonyDataIsolateSecondaryOutletParseWithBuffer(readBuffer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x81: // TelephonyDataRecallLastNumberRequest
-		_childTemp, typeSwitchError = TelephonyDataRecallLastNumberRequestParse(readBuffer)
+		_childTemp, typeSwitchError = TelephonyDataRecallLastNumberRequestParseWithBuffer(readBuffer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x82: // TelephonyDataRejectIncomingCall
-		_childTemp, typeSwitchError = TelephonyDataRejectIncomingCallParse(readBuffer)
+		_childTemp, typeSwitchError = TelephonyDataRejectIncomingCallParseWithBuffer(readBuffer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x83: // TelephonyDataDivert
-		_childTemp, typeSwitchError = TelephonyDataDivertParse(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = TelephonyDataDivertParseWithBuffer(readBuffer, commandTypeContainer)
 	case commandType == TelephonyCommandType_EVENT && argument == 0x84: // TelephonyDataClearDiversion
-		_childTemp, typeSwitchError = TelephonyDataClearDiversionParse(readBuffer)
+		_childTemp, typeSwitchError = TelephonyDataClearDiversionParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v, argument=%v]", commandType, argument)
 	}

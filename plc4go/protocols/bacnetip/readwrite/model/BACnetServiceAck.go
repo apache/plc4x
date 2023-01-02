@@ -120,7 +120,11 @@ func (m *_BACnetServiceAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckParse(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAck, error) {
+func BACnetServiceAckParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAck, error) {
+	return BACnetServiceAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckLength)
+}
+
+func BACnetServiceAckParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAck"); pullErr != nil {
@@ -133,7 +137,7 @@ func BACnetServiceAckParse(readBuffer utils.ReadBuffer, serviceAckLength uint32)
 	if pullErr := readBuffer.PullContext("serviceChoice"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for serviceChoice")
 	}
-	serviceChoice_temp, _serviceChoiceErr := BACnetConfirmedServiceChoiceParse(readBuffer)
+	serviceChoice_temp, _serviceChoiceErr := BACnetConfirmedServiceChoiceParseWithBuffer(readBuffer)
 	var serviceChoice BACnetConfirmedServiceChoice = serviceChoice_temp
 	if closeErr := readBuffer.CloseContext("serviceChoice"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for serviceChoice")
@@ -158,35 +162,35 @@ func BACnetServiceAckParse(readBuffer utils.ReadBuffer, serviceAckLength uint32)
 	var typeSwitchError error
 	switch {
 	case serviceChoice == BACnetConfirmedServiceChoice_GET_ALARM_SUMMARY: // BACnetServiceAckGetAlarmSummary
-		_childTemp, typeSwitchError = BACnetServiceAckGetAlarmSummaryParse(readBuffer, serviceAckLength)
+		_childTemp, typeSwitchError = BACnetServiceAckGetAlarmSummaryParseWithBuffer(readBuffer, serviceAckLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_GET_ENROLLMENT_SUMMARY: // BACnetServiceAckGetEnrollmentSummary
-		_childTemp, typeSwitchError = BACnetServiceAckGetEnrollmentSummaryParse(readBuffer, serviceAckLength)
+		_childTemp, typeSwitchError = BACnetServiceAckGetEnrollmentSummaryParseWithBuffer(readBuffer, serviceAckLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_GET_EVENT_INFORMATION: // BACnetServiceAckGetEventInformation
-		_childTemp, typeSwitchError = BACnetServiceAckGetEventInformationParse(readBuffer, serviceAckLength)
+		_childTemp, typeSwitchError = BACnetServiceAckGetEventInformationParseWithBuffer(readBuffer, serviceAckLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_ATOMIC_READ_FILE: // BACnetServiceAckAtomicReadFile
-		_childTemp, typeSwitchError = BACnetServiceAckAtomicReadFileParse(readBuffer, serviceAckLength)
+		_childTemp, typeSwitchError = BACnetServiceAckAtomicReadFileParseWithBuffer(readBuffer, serviceAckLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_ATOMIC_WRITE_FILE: // BACnetServiceAckAtomicWriteFile
-		_childTemp, typeSwitchError = BACnetServiceAckAtomicWriteFileParse(readBuffer, serviceAckLength)
+		_childTemp, typeSwitchError = BACnetServiceAckAtomicWriteFileParseWithBuffer(readBuffer, serviceAckLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_CREATE_OBJECT: // BACnetServiceAckCreateObject
-		_childTemp, typeSwitchError = BACnetServiceAckCreateObjectParse(readBuffer, serviceAckLength)
+		_childTemp, typeSwitchError = BACnetServiceAckCreateObjectParseWithBuffer(readBuffer, serviceAckLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY: // BACnetServiceAckReadProperty
-		_childTemp, typeSwitchError = BACnetServiceAckReadPropertyParse(readBuffer, serviceAckLength)
+		_childTemp, typeSwitchError = BACnetServiceAckReadPropertyParseWithBuffer(readBuffer, serviceAckLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY_MULTIPLE: // BACnetServiceAckReadPropertyMultiple
-		_childTemp, typeSwitchError = BACnetServiceAckReadPropertyMultipleParse(readBuffer, serviceAckLength, serviceAckPayloadLength)
+		_childTemp, typeSwitchError = BACnetServiceAckReadPropertyMultipleParseWithBuffer(readBuffer, serviceAckLength, serviceAckPayloadLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_RANGE: // BACnetServiceAckReadRange
-		_childTemp, typeSwitchError = BACnetServiceAckReadRangeParse(readBuffer, serviceAckLength)
+		_childTemp, typeSwitchError = BACnetServiceAckReadRangeParseWithBuffer(readBuffer, serviceAckLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER: // BACnetServiceAckConfirmedPrivateTransfer
-		_childTemp, typeSwitchError = BACnetServiceAckConfirmedPrivateTransferParse(readBuffer, serviceAckLength)
+		_childTemp, typeSwitchError = BACnetServiceAckConfirmedPrivateTransferParseWithBuffer(readBuffer, serviceAckLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_VT_OPEN: // BACnetServiceAckVTOpen
-		_childTemp, typeSwitchError = BACnetServiceAckVTOpenParse(readBuffer, serviceAckLength)
+		_childTemp, typeSwitchError = BACnetServiceAckVTOpenParseWithBuffer(readBuffer, serviceAckLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_VT_DATA: // BACnetServiceAckVTData
-		_childTemp, typeSwitchError = BACnetServiceAckVTDataParse(readBuffer, serviceAckLength)
+		_childTemp, typeSwitchError = BACnetServiceAckVTDataParseWithBuffer(readBuffer, serviceAckLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_AUTHENTICATE: // BACnetServiceAckAuthenticate
-		_childTemp, typeSwitchError = BACnetServiceAckAuthenticateParse(readBuffer, serviceAckLength, serviceAckPayloadLength)
+		_childTemp, typeSwitchError = BACnetServiceAckAuthenticateParseWithBuffer(readBuffer, serviceAckLength, serviceAckPayloadLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_REQUEST_KEY: // BACnetServiceAckRequestKey
-		_childTemp, typeSwitchError = BACnetServiceAckRequestKeyParse(readBuffer, serviceAckLength, serviceAckPayloadLength)
+		_childTemp, typeSwitchError = BACnetServiceAckRequestKeyParseWithBuffer(readBuffer, serviceAckLength, serviceAckPayloadLength)
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY_CONDITIONAL: // BACnetServiceAckReadPropertyConditional
-		_childTemp, typeSwitchError = BACnetServiceAckReadPropertyConditionalParse(readBuffer, serviceAckLength, serviceAckPayloadLength)
+		_childTemp, typeSwitchError = BACnetServiceAckReadPropertyConditionalParseWithBuffer(readBuffer, serviceAckLength, serviceAckPayloadLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [serviceChoice=%v]", serviceChoice)
 	}

@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataSetpointReference) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataSetpointReferenceParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetpointReference, error) {
+func BACnetConstructedDataSetpointReferenceParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetpointReference, error) {
+	return BACnetConstructedDataSetpointReferenceParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataSetpointReferenceParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetpointReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSetpointReference"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataSetpointReferenceParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("setpointReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for setpointReference")
 	}
-	_setpointReference, _setpointReferenceErr := BACnetSetpointReferenceParse(readBuffer)
+	_setpointReference, _setpointReferenceErr := BACnetSetpointReferenceParseWithBuffer(readBuffer)
 	if _setpointReferenceErr != nil {
 		return nil, errors.Wrap(_setpointReferenceErr, "Error parsing 'setpointReference' field of BACnetConstructedDataSetpointReference")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataSetpointReferenceParse(readBuffer utils.ReadBuffer, ta
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataSetpointReference) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataSetpointReference) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataSetpointReference) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

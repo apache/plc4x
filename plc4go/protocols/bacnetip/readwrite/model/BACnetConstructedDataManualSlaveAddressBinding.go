@@ -136,7 +136,11 @@ func (m *_BACnetConstructedDataManualSlaveAddressBinding) GetLengthInBytes() uin
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataManualSlaveAddressBindingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataManualSlaveAddressBinding, error) {
+func BACnetConstructedDataManualSlaveAddressBindingParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataManualSlaveAddressBinding, error) {
+	return BACnetConstructedDataManualSlaveAddressBindingParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataManualSlaveAddressBindingParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataManualSlaveAddressBinding, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataManualSlaveAddressBinding"); pullErr != nil {
@@ -153,12 +157,11 @@ func BACnetConstructedDataManualSlaveAddressBindingParse(readBuffer utils.ReadBu
 	var manualSlaveAddressBinding []BACnetAddressBinding
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetAddressBindingParse(readBuffer)
+			_item, _err := BACnetAddressBindingParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'manualSlaveAddressBinding' field of BACnetConstructedDataManualSlaveAddressBinding")
 			}
 			manualSlaveAddressBinding = append(manualSlaveAddressBinding, _item.(BACnetAddressBinding))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("manualSlaveAddressBinding", utils.WithRenderAsList(true)); closeErr != nil {
@@ -181,7 +184,15 @@ func BACnetConstructedDataManualSlaveAddressBindingParse(readBuffer utils.ReadBu
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataManualSlaveAddressBinding) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataManualSlaveAddressBinding) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataManualSlaveAddressBinding) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
