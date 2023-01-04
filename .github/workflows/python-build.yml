@@ -26,6 +26,7 @@ on:
       - protocols/**
       - sandbox/plc4py**
   pull_request:
+    branches: [ "develop", "plc4py" ]
     paths:
       - code-generation/**
       - protocols/**
