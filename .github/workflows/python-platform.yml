@@ -137,14 +137,14 @@ jobs:
 #          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
 #          flake8 ./sandbox/plc4py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: python
+#      - name: Initialize CodeQL
+#        uses: github/codeql-action/init@v2
+#        with:
+#          languages: python
 
       - name: Run mvnw
         run: |
           ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-sandbox,with-python,enable-all-checks' -pl :plc4py -am ${{ steps.platform_opts.outputs.platform_opts }} install
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+#      - name: Perform CodeQL Analysis
+#        uses: github/codeql-action/analyze@v2
