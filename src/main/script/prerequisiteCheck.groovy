@@ -187,9 +187,7 @@ def checkPython() {
         def process = (python + " --version").execute()
         def stdOut = new StringBuilder()
         def stdErr = new StringBuilder()
-        process.consumeProcessOutput(stdOut, stdErr)
-        process.waitForOrKill(5000)
-        process.waitForProcessOutput()
+        process.waitForProcessOutput(stdOut, stdErr)
         Matcher matcher = extractVersion(stdOut + stdErr)
         if (matcher.size() > 0) {
             String curVersion = matcher[0][1]
@@ -218,9 +216,7 @@ def checkPythonVenv() {
         def process = cmdArray.execute()
         def stdOut = new StringBuilder()
         def stdErr = new StringBuilder()
-        process.consumeProcessOutput(stdOut, stdErr)
-        process.waitForOrKill(500)
-        process.waitForProcessOutput()
+        process.waitForProcessOutput(stdOut, stdErr)
         if (stdErr.contains("No module named")) {
             println "missing"
             allConditionsMet = false
