@@ -189,8 +189,8 @@ def checkPython() {
         def stdErr = new StringBuilder()
         process.consumeProcessOutput(stdOut, stdErr)
         process.waitForOrKill(5000)
+        process.waitForProcessOutput()
         Matcher matcher = extractVersion(stdOut + stdErr)
-        println stdOut
         if (matcher.size() > 0) {
             String curVersion = matcher[0][1]
             def result = checkVersionAtLeast(curVersion, "3.7.0")
@@ -220,6 +220,7 @@ def checkPythonVenv() {
         def stdErr = new StringBuilder()
         process.consumeProcessOutput(stdOut, stdErr)
         process.waitForOrKill(500)
+        process.waitForProcessOutput()
         if (stdErr.contains("No module named")) {
             println "missing"
             allConditionsMet = false
