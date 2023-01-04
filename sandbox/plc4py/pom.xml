@@ -124,7 +124,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>python3</executable>
+              <executable>${python.exe.bin}</executable>
               <arguments>
                 <argument>-m</argument>
                 <argument>venv</argument>
@@ -155,7 +155,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${python.venv.bin}python3</executable>
+              <executable>${python.venv.bin}${python.exe.bin}</executable>
               <arguments>
                 <argument>-m</argument>
                 <argument>black</argument>
@@ -186,7 +186,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${python.venv.bin}python3</executable>
+              <executable>${python.venv.bin}${python.exe.bin}</executable>
               <arguments>
                 <argument>-m</argument>
                 <argument>pytest</argument>

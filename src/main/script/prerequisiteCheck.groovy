@@ -180,9 +180,11 @@ def checkGit() {
 // Remark: We're using venv, which was introduced with python 3.3,
 // that's why this is the baseline for python.
 def checkPython() {
+    def python = project.properties['python.exe.bin']
+    println "Using python executable:   " + python + "        OK"
     print "Detecting Python version:  "
     try {
-        def process = ("python3 --version").execute()
+        def process = (python + " --version").execute()
         def stdOut = new StringBuilder()
         def stdErr = new StringBuilder()
         process.consumeProcessOutput(stdOut, stdErr)
@@ -210,7 +212,8 @@ def checkPython() {
 def checkPythonVenv() {
     print "Detecting venv:            "
     try {
-        def cmdArray = ["python3", "-Im", "ensurepip"]
+        def python = project.properties['python.exe.bin']
+        def cmdArray = [python, "-Im", "ensurepip"]
         def process = cmdArray.execute()
         def stdOut = new StringBuilder()
         def stdErr = new StringBuilder()
