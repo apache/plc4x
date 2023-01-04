@@ -190,6 +190,7 @@ def checkPython() {
         process.consumeProcessOutput(stdOut, stdErr)
         process.waitForOrKill(5000)
         Matcher matcher = extractVersion(stdOut + stdErr)
+        println stdOut
         if (matcher.size() > 0) {
             String curVersion = matcher[0][1]
             def result = checkVersionAtLeast(curVersion, "3.7.0")
