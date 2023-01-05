@@ -27,8 +27,14 @@ import java.util.List;
 
 public class ProfinetTag implements PlcTag {
 
+    private String addressString;
+
+    public ProfinetTag(String addressString) {
+        this.addressString = addressString;
+    }
+
     public static ProfinetTag of(String addressString) {
-        throw new PlcInvalidTagException("Unable to parse address: " + addressString);
+        return new ProfinetTag(addressString);
     }
 
     @Override

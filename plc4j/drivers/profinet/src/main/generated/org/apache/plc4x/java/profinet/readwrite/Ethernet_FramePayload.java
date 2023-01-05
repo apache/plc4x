@@ -101,6 +101,8 @@ public abstract class Ethernet_FramePayload implements Message {
       builder = Ethernet_FramePayload_VirtualLan.staticParseBuilder(readBuffer);
     } else if (EvaluationHelper.equals(packetType, (int) 0x8892)) {
       builder = Ethernet_FramePayload_PnDcp.staticParseBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(packetType, (int) 0x88cc)) {
+      builder = Ethernet_FramePayload_LLDP.staticParseBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(

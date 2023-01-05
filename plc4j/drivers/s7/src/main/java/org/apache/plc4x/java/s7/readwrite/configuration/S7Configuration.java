@@ -19,13 +19,12 @@
 package org.apache.plc4x.java.s7.readwrite.configuration;
 
 import org.apache.plc4x.java.s7.readwrite.S7Driver;
-import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
-public class S7Configuration extends BaseConfiguration implements TcpTransportConfiguration {
+public class S7Configuration implements Configuration, TcpTransportConfiguration {
 
     @ConfigurationParameter("local-rack")
     @IntDefaultValue(1)

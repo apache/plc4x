@@ -220,6 +220,10 @@ public abstract class PnIoCm_Submodule implements Message {
     PnIoCm_SubmoduleBuilder builder = null;
     if (EvaluationHelper.equals(submoduleType, PnIoCm_SubmoduleType.NO_INPUT_NO_OUTPUT_DATA)) {
       builder = PnIoCm_Submodule_NoInputNoOutputData.staticParseBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(submoduleType, PnIoCm_SubmoduleType.INPUT_DATA)) {
+      builder = PnIoCm_Submodule_InputData.staticParseBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(submoduleType, PnIoCm_SubmoduleType.OUTPUT_DATA)) {
+      builder = PnIoCm_Submodule_OutputData.staticParseBuilder(readBuffer);
     } else if (EvaluationHelper.equals(submoduleType, PnIoCm_SubmoduleType.INPUT_AND_OUTPUT_DATA)) {
       builder = PnIoCm_Submodule_InputAndOutputData.staticParseBuilder(readBuffer);
     }

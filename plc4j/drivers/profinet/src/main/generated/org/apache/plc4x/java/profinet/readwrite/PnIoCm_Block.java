@@ -40,22 +40,8 @@ public abstract class PnIoCm_Block implements Message {
   // Abstract accessors for discriminator values.
   public abstract PnIoCm_BlockType getBlockType();
 
-  // Properties.
-  protected final short blockVersionHigh;
-  protected final short blockVersionLow;
-
-  public PnIoCm_Block(short blockVersionHigh, short blockVersionLow) {
+  public PnIoCm_Block() {
     super();
-    this.blockVersionHigh = blockVersionHigh;
-    this.blockVersionLow = blockVersionLow;
-  }
-
-  public short getBlockVersionHigh() {
-    return blockVersionHigh;
-  }
-
-  public short getBlockVersionLow() {
-    return blockVersionLow;
   }
 
   protected abstract void serializePnIoCm_BlockChild(WriteBuffer writeBuffer)
@@ -73,25 +59,6 @@ public abstract class PnIoCm_Block implements Message {
         getBlockType(),
         new DataWriterEnumDefault<>(
             PnIoCm_BlockType::getValue, PnIoCm_BlockType::name, writeUnsignedInt(writeBuffer, 16)));
-
-    // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
-    // implicitly given by the objects content)
-    int blockLength = (int) ((getLengthInBytes()) - (4));
-    writeImplicitField("blockLength", blockLength, writeUnsignedInt(writeBuffer, 16));
-
-    // Simple Field (blockVersionHigh)
-    writeSimpleField(
-        "blockVersionHigh",
-        blockVersionHigh,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
-
-    // Simple Field (blockVersionLow)
-    writeSimpleField(
-        "blockVersionLow",
-        blockVersionLow,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializePnIoCm_BlockChild(writeBuffer);
@@ -111,15 +78,6 @@ public abstract class PnIoCm_Block implements Message {
 
     // Discriminator Field (blockType)
     lengthInBits += 16;
-
-    // Implicit Field (blockLength)
-    lengthInBits += 16;
-
-    // Simple field (blockVersionHigh)
-    lengthInBits += 8;
-
-    // Simple field (blockVersionLow)
-    lengthInBits += 8;
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -145,30 +103,30 @@ public abstract class PnIoCm_Block implements Message {
                 PnIoCm_BlockType::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int blockLength =
-        readImplicitField(
-            "blockLength",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
-
-    short blockVersionHigh =
-        readSimpleField(
-            "blockVersionHigh",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
-
-    short blockVersionLow =
-        readSimpleField(
-            "blockVersionLow",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
-
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PnIoCm_BlockBuilder builder = null;
-    if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.AR_BLOCK_REQ)) {
+    if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IOD_WRITE_REQUEST_HEADER)) {
+      builder = IODWriteRequestHeader.staticParseBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IOD_WRITE_RESPONSE_HEADER)) {
+      builder = IODWriteResponseHeader.staticParseBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.PD_INTERFACE_ADJUST)) {
+      builder = PDInterfaceAdjust.staticParseBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.PD_PORT_DATA_CHECK)) {
+      builder = PDPortDataCheck.staticParseBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.CHECK_PEERS)) {
+      builder = CheckPeers.staticParseBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.AR_BLOCK_REQ)) {
       builder = PnIoCm_Block_ArReq.staticParseBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.AR_BLOCK_RES)) {
       builder = PnIoCm_Block_ArRes.staticParseBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IOD_CONTROL_REQ)) {
+      builder = PnIoCm_Control_Request.staticParseBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IOX_BLOCK_REQ)) {
+      builder = PnIoCM_Block_Request.staticParseBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IOX_BLOCK_RES)) {
+      builder = PnIoCM_Block_Response.staticParseBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IOD_CONTROL_RES)) {
+      builder = PnIoCm_Control_Response.staticParseBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IO_CR_BLOCK_REQ)) {
       builder = PnIoCm_Block_IoCrReq.staticParseBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IO_CR_BLOCK_RES)) {
@@ -195,12 +153,12 @@ public abstract class PnIoCm_Block implements Message {
 
     readBuffer.closeContext("PnIoCm_Block");
     // Create the instance
-    PnIoCm_Block _pnIoCm_Block = builder.build(blockVersionHigh, blockVersionLow);
+    PnIoCm_Block _pnIoCm_Block = builder.build();
     return _pnIoCm_Block;
   }
 
   public static interface PnIoCm_BlockBuilder {
-    PnIoCm_Block build(short blockVersionHigh, short blockVersionLow);
+    PnIoCm_Block build();
   }
 
   @Override
@@ -212,14 +170,12 @@ public abstract class PnIoCm_Block implements Message {
       return false;
     }
     PnIoCm_Block that = (PnIoCm_Block) o;
-    return (getBlockVersionHigh() == that.getBlockVersionHigh())
-        && (getBlockVersionLow() == that.getBlockVersionLow())
-        && true;
+    return true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getBlockVersionHigh(), getBlockVersionLow());
+    return Objects.hash();
   }
 
   @Override

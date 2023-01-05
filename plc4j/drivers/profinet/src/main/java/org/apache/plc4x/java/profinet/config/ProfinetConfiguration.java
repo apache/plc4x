@@ -26,7 +26,7 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.apache.plc4x.java.profinet.readwrite.MacAddress;
-import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
+import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
@@ -49,7 +49,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ProfinetConfiguration extends BaseConfiguration implements RawSocketTransportConfiguration {
+public class ProfinetConfiguration implements Configuration, RawSocketTransportConfiguration {
 
     @Override
     public boolean getSupportVlans() {
@@ -137,7 +137,7 @@ public class ProfinetConfiguration extends BaseConfiguration implements RawSocke
 
     public InetAddress getIpAddress() {
         try {
-            return InetAddress.getByName(getTransportConfig().split(":")[0]);
+            return InetAddress.getByName("127.0.0.1");
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }

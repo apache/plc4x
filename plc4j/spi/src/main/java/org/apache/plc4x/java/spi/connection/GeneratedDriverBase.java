@@ -24,7 +24,6 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
@@ -45,7 +44,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
     private static final Pattern URI_PATTERN = Pattern.compile(
         "^(?<protocolCode>[a-z0-9\\-]*)(:(?<transportCode>[a-z0-9]*))?://(?<transportConfig>[^?]*)(\\?(?<paramString>.*))?");
 
-    protected abstract Class<? extends BaseConfiguration> getConfigurationType();
+    protected abstract Class<? extends Configuration> getConfigurationType();
 
     protected boolean canRead() {
         return false;
@@ -122,13 +121,13 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         }
 
         // Create the configuration object.
-        BaseConfiguration configuration = new ConfigurationFactory().createConfiguration(
+        Configuration configuration = new ConfigurationFactory().createConfiguration(
             getConfigurationType(), paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }
 
-        configuration.setTransportConfig(transportConfig);
+        //configuration.setTransportConfig(transportConfig);
 
         // Try to find a suitable transport-type for creating the communication channel.
         Transport transport = null;

@@ -35,16 +35,16 @@ import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.device.ProfinetChannel;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
-import org.apache.plc4x.java.profinet.field.ProfinetField;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.apache.plc4x.java.profinet.readwrite.*;
+import org.apache.plc4x.java.profinet.tag.ProfinetTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.pcap4j.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,10 +88,10 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         }
         driverContext.getHandler().setConfiguredDevices(configuredDevices);
         try {
-            PcapNetworkInterface devByAddress = Pcaps.getDevByAddress(InetAddress.getByName(driverContext.getConfiguration().transportConfig.split(":")[0]));
+            PcapNetworkInterface devByAddress = Pcaps.getDevByAddress(driverContext.getSocket().getLocalAddress());
             driverContext.setChannel(new ProfinetChannel(Collections.singletonList(devByAddress)));
             driverContext.getChannel().setConfiguredDevices(this.configuredDevices);
-        } catch (UnknownHostException | PcapNativeException e) {
+        } catch (PcapNativeException e) {
             throw new RuntimeException(e);
         }
         for (Map.Entry<String, ProfinetDevice> device : configuredDevices.entrySet()) {
@@ -204,12 +204,17 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     @Override
     public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
         CompletableFuture<PlcBrowseResponse> future = new CompletableFuture<>();
-        List<PlcBrowseItem> values = new LinkedList<>();
+        Map<String, List<PlcBrowseItem>> values = new HashMap<>();
+        Map<String, PlcResponseCode> codes = new HashMap<>();
+
         for (Map.Entry<String, ProfinetDevice> device : this.configuredDevices.entrySet()) {
-            values.add(device.getValue().browseTags());
+            List<PlcBrowseItem> items = new LinkedList<>();
+            items.add(device.getValue().browseTags());
+            values.put(device.getKey(), items);
+            codes.put(device.getKey(), PlcResponseCode.OK);
         }
 
-        DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, values);
+        DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, codes, values);
         future.complete(response);
         return future;
     }
@@ -257,12 +262,12 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         return CompletableFuture.supplyAsync(() -> {
             Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
             long subscriptionId = 0;
-            ArrayList<String> fields = new ArrayList<>(subscriptionRequest.getFieldNames());
-            long cycleTime = (subscriptionRequest.getField(fields.get(0))).getDuration().orElse(Duration.ofMillis(1000)).toMillis();
+            ArrayList<String> fields = new ArrayList<>(subscriptionRequest.getTagNames());
+            long cycleTime = (subscriptionRequest.getTag(fields.get(0))).getDuration().orElse(Duration.ofMillis(1000)).toMillis();
 
-            for (String fieldName : subscriptionRequest.getFieldNames()) {
-                final DefaultPlcSubscriptionField fieldDefaultPlcSubscription = (DefaultPlcSubscriptionField) subscriptionRequest.getField(fieldName);
-                if (!(fieldDefaultPlcSubscription.getPlcField() instanceof ProfinetField)) {
+            for (String fieldName : subscriptionRequest.getTagNames()) {
+                final DefaultPlcSubscriptionTag fieldDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(fieldName);
+                if (!(fieldDefaultPlcSubscription.getTag() instanceof ProfinetTag)) {
                     values.put(fieldName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
                 } else {
                     values.put(fieldName, new ResponseItem<>(PlcResponseCode.OK, driverContext.getSubscriptions().get(subscriptionId)));

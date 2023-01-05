@@ -18,13 +18,12 @@
  */
 package org.apache.plc4x.java.can.generic.configuration;
 
-import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.transport.can.CANTransportConfiguration;
 
-public class GenericCANConfiguration extends BaseConfiguration implements CANTransportConfiguration {
+public class GenericCANConfiguration implements Configuration, CANTransportConfiguration {
 
     @ConfigurationParameter
     private int nodeId;

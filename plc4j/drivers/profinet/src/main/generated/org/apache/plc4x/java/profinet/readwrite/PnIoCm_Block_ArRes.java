@@ -43,6 +43,8 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
   }
 
   // Properties.
+  protected final short blockVersionHigh;
+  protected final short blockVersionLow;
   protected final PnIoCm_ArType arType;
   protected final Uuid arUuid;
   protected final int sessionKey;
@@ -57,12 +59,22 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
       int sessionKey,
       MacAddress cmResponderMacAddr,
       int responderUDPRTPort) {
-    super(blockVersionHigh, blockVersionLow);
+    super();
+    this.blockVersionHigh = blockVersionHigh;
+    this.blockVersionLow = blockVersionLow;
     this.arType = arType;
     this.arUuid = arUuid;
     this.sessionKey = sessionKey;
     this.cmResponderMacAddr = cmResponderMacAddr;
     this.responderUDPRTPort = responderUDPRTPort;
+  }
+
+  public short getBlockVersionHigh() {
+    return blockVersionHigh;
+  }
+
+  public short getBlockVersionLow() {
+    return blockVersionLow;
   }
 
   public PnIoCm_ArType getArType() {
@@ -90,6 +102,25 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
     PositionAware positionAware = writeBuffer;
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Block_ArRes");
+
+    // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int blockLength = (int) ((getLengthInBytes()) - (4));
+    writeImplicitField("blockLength", blockLength, writeUnsignedInt(writeBuffer, 16));
+
+    // Simple Field (blockVersionHigh)
+    writeSimpleField(
+        "blockVersionHigh",
+        blockVersionHigh,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    // Simple Field (blockVersionLow)
+    writeSimpleField(
+        "blockVersionLow",
+        blockVersionLow,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (arType)
     writeSimpleEnumField(
@@ -140,6 +171,15 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
     int lengthInBits = super.getLengthInBits();
     PnIoCm_Block_ArRes _value = this;
 
+    // Implicit Field (blockLength)
+    lengthInBits += 16;
+
+    // Simple field (blockVersionHigh)
+    lengthInBits += 8;
+
+    // Simple field (blockVersionLow)
+    lengthInBits += 8;
+
     // Simple field (arType)
     lengthInBits += 16;
 
@@ -164,6 +204,24 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+
+    int blockLength =
+        readImplicitField(
+            "blockLength",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    short blockVersionHigh =
+        readSimpleField(
+            "blockVersionHigh",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    short blockVersionLow =
+        readSimpleField(
+            "blockVersionLow",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PnIoCm_ArType arType =
         readEnumField(
@@ -200,10 +258,18 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
     readBuffer.closeContext("PnIoCm_Block_ArRes");
     // Create the instance
     return new PnIoCm_Block_ArResBuilder(
-        arType, arUuid, sessionKey, cmResponderMacAddr, responderUDPRTPort);
+        blockVersionHigh,
+        blockVersionLow,
+        arType,
+        arUuid,
+        sessionKey,
+        cmResponderMacAddr,
+        responderUDPRTPort);
   }
 
   public static class PnIoCm_Block_ArResBuilder implements PnIoCm_Block.PnIoCm_BlockBuilder {
+    private final short blockVersionHigh;
+    private final short blockVersionLow;
     private final PnIoCm_ArType arType;
     private final Uuid arUuid;
     private final int sessionKey;
@@ -211,12 +277,16 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
     private final int responderUDPRTPort;
 
     public PnIoCm_Block_ArResBuilder(
+        short blockVersionHigh,
+        short blockVersionLow,
         PnIoCm_ArType arType,
         Uuid arUuid,
         int sessionKey,
         MacAddress cmResponderMacAddr,
         int responderUDPRTPort) {
 
+      this.blockVersionHigh = blockVersionHigh;
+      this.blockVersionLow = blockVersionLow;
       this.arType = arType;
       this.arUuid = arUuid;
       this.sessionKey = sessionKey;
@@ -224,7 +294,7 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
       this.responderUDPRTPort = responderUDPRTPort;
     }
 
-    public PnIoCm_Block_ArRes build(short blockVersionHigh, short blockVersionLow) {
+    public PnIoCm_Block_ArRes build() {
       PnIoCm_Block_ArRes pnIoCm_Block_ArRes =
           new PnIoCm_Block_ArRes(
               blockVersionHigh,
@@ -247,7 +317,9 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
       return false;
     }
     PnIoCm_Block_ArRes that = (PnIoCm_Block_ArRes) o;
-    return (getArType() == that.getArType())
+    return (getBlockVersionHigh() == that.getBlockVersionHigh())
+        && (getBlockVersionLow() == that.getBlockVersionLow())
+        && (getArType() == that.getArType())
         && (getArUuid() == that.getArUuid())
         && (getSessionKey() == that.getSessionKey())
         && (getCmResponderMacAddr() == that.getCmResponderMacAddr())
@@ -260,6 +332,8 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
   public int hashCode() {
     return Objects.hash(
         super.hashCode(),
+        getBlockVersionHigh(),
+        getBlockVersionLow(),
         getArType(),
         getArUuid(),
         getSessionKey(),

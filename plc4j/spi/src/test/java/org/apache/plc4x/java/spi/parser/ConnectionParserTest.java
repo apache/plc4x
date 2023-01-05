@@ -21,7 +21,6 @@ package org.apache.plc4x.java.spi.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
@@ -40,7 +39,7 @@ class ConnectionParserTest {
         assertEquals(1, properties.getSlotId());
     }
 
-    public static class PropertiesDescriptor extends BaseConfiguration {
+    public static class PropertiesDescriptor implements Configuration {
 
         @ConfigurationParameter("rackId")
         @IntDefaultValue(1)

@@ -19,13 +19,12 @@
 package org.apache.plc4x.java.plc4x.config;
 
 import org.apache.plc4x.java.plc4x.readwrite.Plc4xConstants;
-import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
-public class Plc4xConfiguration extends BaseConfiguration implements TcpTransportConfiguration {
+public class Plc4xConfiguration implements Configuration, TcpTransportConfiguration {
 
     @ConfigurationParameter("remote-connection-string")
     private String remoteConnectionString;

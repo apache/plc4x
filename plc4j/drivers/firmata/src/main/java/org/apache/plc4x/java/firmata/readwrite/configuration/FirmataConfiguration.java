@@ -18,11 +18,10 @@
  */
 package org.apache.plc4x.java.firmata.readwrite.configuration;
 
-import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.transport.serial.SerialTransportConfiguration;
 
-public class FirmataConfiguration extends BaseConfiguration implements SerialTransportConfiguration {
+public class FirmataConfiguration implements Configuration, SerialTransportConfiguration {
 
     /**
      * The StandardFirmata sketch uses 57600 baud per default.

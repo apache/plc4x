@@ -19,12 +19,11 @@
 package org.apache.plc4x.java.eip.readwrite.configuration;
 
 import org.apache.plc4x.java.eip.readwrite.EIPDriver;
-import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
-public class EIPConfiguration extends BaseConfiguration implements TcpTransportConfiguration {
+public class EIPConfiguration implements Configuration, TcpTransportConfiguration {
 
     @ConfigurationParameter
     private int backplane;

@@ -22,7 +22,7 @@ import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.transport.serial.SerialTransportConfiguration;
 
-public class Df1Configuration extends BaseConfiguration implements SerialTransportConfiguration {
+public class Df1Configuration implements Configuration, SerialTransportConfiguration {
 
     @ConfigurationParameter("local-addr")
     private short localAddr;

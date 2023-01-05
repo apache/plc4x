@@ -25,7 +25,7 @@ import org.apache.plc4x.java.can.generic.context.GenericCANDriverContext;
 import org.apache.plc4x.java.can.generic.tag.GenericCANTagHandler;
 import org.apache.plc4x.java.can.generic.protocol.GenericCANProtocolLogic;
 import org.apache.plc4x.java.can.generic.transport.GenericCANFrameDataHandler;
-import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
+import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.CustomProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
@@ -54,7 +54,7 @@ public class GenericCANDriver extends GeneratedDriverBase<Message> {
     }
 
     @Override
-    protected Class<? extends BaseConfiguration> getConfigurationType() {
+    protected Class<? extends Configuration> getConfigurationType() {
         return GenericCANConfiguration.class;
     }
 

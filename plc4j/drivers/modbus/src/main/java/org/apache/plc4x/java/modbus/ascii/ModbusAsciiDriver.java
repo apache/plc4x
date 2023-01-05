@@ -27,7 +27,7 @@ import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.readwrite.DriverType;
 import org.apache.plc4x.java.modbus.readwrite.ModbusAsciiADU;
-import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
+import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
@@ -52,7 +52,7 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
     }
 
     @Override
-    protected Class<? extends BaseConfiguration> getConfigurationType() {
+    protected Class<? extends Configuration> getConfigurationType() {
         return ModbusAsciiConfiguration.class;
     }
 

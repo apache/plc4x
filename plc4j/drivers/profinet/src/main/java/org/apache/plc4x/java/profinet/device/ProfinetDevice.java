@@ -25,12 +25,14 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.gsdml.*;
 import org.apache.plc4x.java.profinet.readwrite.*;
+import org.apache.plc4x.java.profinet.tag.ProfinetTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcBrowseItem;
@@ -194,7 +196,7 @@ public class ProfinetDevice {
      */
     public PlcBrowseItem browseTags() {
         // If this type has children, add entries for its children.
-        List<PlcBrowseItem> children = getChildTags();
+        Map<String, PlcBrowseItem> children = getChildTags();
 
         // Populate a map of protocol-dependent options.
         Map<String, PlcValue> options = new HashMap<>();
@@ -202,9 +204,8 @@ public class ProfinetDevice {
             options.put(entry.getKey(), entry.getValue());
         }
         return new DefaultPlcBrowseItem(
-            Hex.encodeHexString(this.deviceContext.getMacAddress().getAddress()),
+            ProfinetTag.of(Hex.encodeHexString(this.deviceContext.getMacAddress().getAddress())),
             this.deviceContext.getDeviceName(),
-            PlcValueType.List,
             false,
             false,
             true,
@@ -216,20 +217,20 @@ public class ProfinetDevice {
         Loop through each configured submodule and return a list of child tags.
         Each child in itself can also contain configued submodules.
      */
-    public List<PlcBrowseItem> getChildTags() {
-        List<PlcBrowseItem> children = new ArrayList<>();
+    public Map<String, PlcBrowseItem> getChildTags() {
+        Map<String, PlcBrowseItem> children = new HashMap<>();
 
         for (PnIoCm_Block_ExpectedSubmoduleReq ioData : deviceContext.getExpectedSubmoduleReq()) {
             for (PnIoCm_ExpectedSubmoduleBlockReqApi api : ioData.getApis()) {
                 ProfinetDeviceAccessPointItem accessPointItem = findDeviceAccessPoint(api.getModuleIdentNumber());
                 // Add Module to list of Children
                 if (accessPointItem != null) {
-                    List<PlcBrowseItem> moduleChildren = getSubModules(accessPointItem);
+                    Map<String, PlcBrowseItem> moduleChildren = getSubModules(accessPointItem);
                     // Populate a map of protocol-dependent options.
                     Map<String, PlcValue> options = new HashMap<>();
                     options.put("name", new PlcSTRING(accessPointItem.getModuleInfo().getName().getTextId()));
                     options.put("infotext", new PlcSTRING(accessPointItem.getModuleInfo().getInfoText().getTextId()));
-                    children.add(new DefaultPlcBrowseItem(accessPointItem.getModuleInfo().getName().getTextId(), accessPointItem.getModuleInfo().getName().getTextId(), PlcValueType.List, false, false, true, moduleChildren, options));
+                    children.put(accessPointItem.getModuleInfo().getName().getTextId(), new DefaultPlcBrowseItem(ProfinetTag.of(accessPointItem.getModuleInfo().getName().getTextId()), accessPointItem.getModuleInfo().getName().getTextId(), false, false, true, moduleChildren, options));
                 }
             }
         }
@@ -239,8 +240,8 @@ public class ProfinetDevice {
     /*
         Loop through an Access Point Item and return the configured submodules
      */
-    public List<PlcBrowseItem> getSubModules(ProfinetDeviceAccessPointItem module) {
-        List<PlcBrowseItem> children = new ArrayList<>();
+    public Map<String, PlcBrowseItem> getSubModules(ProfinetDeviceAccessPointItem module) {
+        Map<String, PlcBrowseItem> children = new HashMap<>();
 
         for (ProfinetVirtualSubmoduleItem virtualSubModuleItem : module.getVirtualSubmoduleList()) {
             // Populate a map of protocol-dependent options.
@@ -248,7 +249,7 @@ public class ProfinetDevice {
             options.put("name", new PlcSTRING(virtualSubModuleItem.getModuleInfo().getName().getTextId()));
             options.put("infotext", new PlcSTRING(virtualSubModuleItem.getModuleInfo().getInfoText().getTextId()));
             String childName = deviceContext.getDeviceName() + "." + virtualSubModuleItem.getModuleInfo().getName().getTextId();
-            children.add(new DefaultPlcBrowseItem(childName, childName, PlcValueType.Struct, false, false, true, null, options));
+            children.put(childName, new DefaultPlcBrowseItem(ProfinetTag.of(childName), childName,false, false, true, null, options));
         }
         return children;
     }

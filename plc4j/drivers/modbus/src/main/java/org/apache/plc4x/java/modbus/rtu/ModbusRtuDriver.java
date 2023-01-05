@@ -25,7 +25,7 @@ import org.apache.plc4x.java.modbus.readwrite.DriverType;
 import org.apache.plc4x.java.modbus.readwrite.ModbusRtuADU;
 import org.apache.plc4x.java.modbus.rtu.config.ModbusRtuConfiguration;
 import org.apache.plc4x.java.modbus.rtu.protocol.ModbusRtuProtocolLogic;
-import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
+import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
@@ -48,7 +48,7 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
     }
 
     @Override
-    protected Class<? extends BaseConfiguration> getConfigurationType() {
+    protected Class<? extends Configuration> getConfigurationType() {
         return ModbusRtuConfiguration.class;
     }
 
