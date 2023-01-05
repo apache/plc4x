@@ -121,7 +121,7 @@ asyncResponse.whenComplete((response, throwable) -> {
 In general all requests are executed asynchronously.
 So as soon as the request is fully processed, the callback gets called and will contain a `readResponse`, if everything went right or a `throwable` if there were problems.
 
-However if you want to write your code in a more synchronous fashion, the following alternative will provide this:
+However, if you want to write your code in a more synchronous fashion, the following alternative will provide this:
 
 ----
 PlcReadResponse response = readRequest.execute().get(5000, TimeUnit.MILLISECONDS);
@@ -130,6 +130,7 @@ PlcReadResponse response = readRequest.execute().get(5000, TimeUnit.MILLISECONDS
 Processing of the responses is identical in both cases.
 The following example will demonstrate some of the options you have:
 
+.Up to version 0.10.0
 ----
 for (String fieldName : response.getFieldNames()) {
     if(response.getResponseCode(fieldName) == PlcResponseCode.OK) {
@@ -149,6 +150,30 @@ for (String fieldName : response.getFieldNames()) {
     // Something went wrong, to output an error message instead.
     else {
         logger.error("Error[" + fieldName + "]: " + response.getResponseCode(fieldName).name());
+    }
+}
+----
+
+.SNAPSHOT version
+----
+for (String tagName : response.getTagNames()) {
+    if(response.getResponseCode(tagName) == PlcResponseCode.OK) {
+        int numValues = response.getNumberOfValues(tagName);
+        // If it's just one element, output just one single line.
+        if(numValues == 1) {
+            logger.info("Value[" + tagName + "]: " + response.getObject(tagName));
+        }
+        // If it's more than one element, output each in a single row.
+        else {
+            logger.info("Value[" + tagName + "]:");
+            for(int i = 0; i < numValues; i++) {
+                logger.info(" - " + response.getObject(tagName, i));
+            }
+        }
+    }
+    // Something went wrong, to output an error message instead.
+    else {
+        logger.error("Error[" + tagName + "]: " + response.getResponseCode(tagName).name());
     }
 }
 ----
@@ -179,7 +204,7 @@ If you want to access a given element number, please use the two-argument versio
     response.getObject(fieldName, 42)
 
 PLC4X provides getters and setters for a wide variety of Java types and automatically handles the type conversion.
-However when for example trying to get a long-value as a byte and the long-value exceeds the range supported by the smaller type, a `RuntimeException` of type `PlcIncompatibleDatatypeException`.
+However, when for example trying to get a long-value as a byte and the long-value exceeds the range supported by the smaller type, a `RuntimeException` of type `PlcIncompatibleDatatypeException`.
 In order to avoid causing this exception to be thrown, however there are `isValid{TypeName}` methods that you can use to check if the value is compatible.
 
 ==== Writing Data
@@ -198,6 +223,7 @@ if (!plcConnection.getMetadata().canWrite()) {
 
 As soon as we are sure that we can write, we create a new `PlcWriteRequest.Builder`:
 
+.Up to version 0.10.0
 ----
 // Create a new write request:
 // - Give the single item requested an alias name
@@ -206,6 +232,18 @@ PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
 builder.addItem("value-1", "%Q0.4:BOOL", true);
 builder.addItem("value-2", "%Q0:BYTE", (byte) 0xFF);
 builder.addItem("value-4", "%DB.DB1.4:INT[3]", 7, 23, 42);
+PlcWriteRequest writeRequest = builder.build();
+----
+
+.SNAPSHOT version
+----
+// Create a new write request:
+// - Give the single item requested an alias name
+// - Pass in the data you want to write (for arrays, pass in one value for every element)
+PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
+builder.addTagAddress("value-1", "%Q0.4:BOOL", true);
+builder.addTagAddress("value-2", "%Q0:BYTE", (byte) 0xFF);
+builder.addTagAddress("value-4", "%DB.DB1.4:INT[3]", 7, 23, 42);
 PlcWriteRequest writeRequest = builder.build();
 ----
 
@@ -226,6 +264,7 @@ PlcWriteResponse response = writeRequest.execute().get();
 
 As we don't have to process the data itself, for the write request, it's enough to simply check the return code for each field.
 
+.Up to version 0.10.0
 ----
 for (String fieldName : response.getFieldNames()) {
     if(response.getResponseCode(fieldName) == PlcResponseCode.OK) {
@@ -234,6 +273,19 @@ for (String fieldName : response.getFieldNames()) {
     // Something went wrong, to output an error message instead.
     else {
         logger.error("Error[" + fieldName + "]: " + response.getResponseCode(fieldName).name());
+    }
+}
+----
+
+.SNAPSHOT version
+----
+for (String tagName : response.getTagNames()) {
+    if(response.getResponseCode(tagName) == PlcResponseCode.OK) {
+        logger.info("Value[" + tagName + "]: updated");
+    }
+    // Something went wrong, to output an error message instead.
+    else {
+        logger.error("Error[" + tagName + "]: " + response.getResponseCode(tagName).name());
     }
 }
 ----
@@ -254,7 +306,7 @@ if (!plcConnection.getMetadata().canSubscribe()) {
 
 Now we'll create the subscription request.
 
-The main difference is that while reading there is only one form how you could read, with subscriptions there are different forms of subscriptons:
+The main difference is that while reading there is only one form how you could read, with subscriptions there are different forms of subscriptions:
 
 - Change of state (Event is sent as soon as a value changes)
 - Cyclic (The Event is sent in regular cyclic intervals)
@@ -262,6 +314,7 @@ The main difference is that while reading there is only one form how you could r
 
 Therefore instead of using a normal `addItem`, there are tree different methods as you can see in the following examples.
 
+.Up to version 0.10.0
 ----
 // Create a new subscription request:
 // - Give the single item requested an alias name
@@ -272,7 +325,18 @@ builder.addEventField("value-3", "{some alarm address}");
 PlcSubscriptionRequest subscriptionRequest = builder.build();
 ----
 
-NOTE: The `addCyclicField` method requires a third parameter `duration`.
+.SNAPSHOT version
+----
+// Create a new subscription request:
+// - Give the single tag requested an alias name
+PlcSubscriptionRequest.Builder builder = plcConnection.subscriptionRequestBuilder();
+builder.addChangeOfStateTagAddress("value-1", "{some address}");
+builder.addCyclicTagAddress("value-2", "{some address}", Duration.ofMillis(1000));
+builder.addEventTagAddress("value-3", "{some alarm address}");
+PlcSubscriptionRequest subscriptionRequest = builder.build();
+----
+
+NOTE: The `addCyclicField`/`addCyclicTagAddress` method requires a third parameter `duration`.
 
 The request itself is executed exactly the same way the read and write operations are executed, using the `execute` method, therefore just the short synchronous version here (The async version works just as good)
 
@@ -284,12 +348,25 @@ Now comes the little more tricky part, as subscriptions are always asynchronous,
 
 In general you can't say how many of your subscribed fields will be available in every callback so it is double important to check or iterate over the field names.
 
+.Up to version 0.10.0
 ----
 for (String subscriptionName : response.getFieldNames()) {
     final PlcSubscriptionHandle subscriptionHandle = response.getSubscriptionHandle(subscriptionName);
     subscriptionHandle.register(plcSubscriptionEvent -> {
         for (String fieldName : plcSubscriptionEvent.getFieldNames()) {
             System.out.println(plcSubscriptionEvent.getPlcValue(fieldName));
+        }
+    });
+}
+----
+
+.SNAPSHOT version
+----
+for (String subscriptionName : response.getFieldNames()) {
+    final PlcSubscriptionHandle subscriptionHandle = response.getSubscriptionHandle(subscriptionName);
+    subscriptionHandle.register(plcSubscriptionEvent -> {
+        for (String tagName : plcSubscriptionEvent.getTagNames()) {
+            System.out.println(plcSubscriptionEvent.getPlcValue(tagName));
         }
     });
 }

@@ -122,7 +122,11 @@ func (m *_BACnetApplicationTagOctetString) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetApplicationTagOctetStringParse(readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagOctetString, error) {
+func BACnetApplicationTagOctetStringParse(theBytes []byte, header BACnetTagHeader) (BACnetApplicationTagOctetString, error) {
+	return BACnetApplicationTagOctetStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes), header)
+}
+
+func BACnetApplicationTagOctetStringParseWithBuffer(readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagOctetString"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetApplicationTagOctetStringParse(readBuffer utils.ReadBuffer, header BA
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadOctetStringParse(readBuffer, uint32(header.GetActualLength()))
+	_payload, _payloadErr := BACnetTagPayloadOctetStringParseWithBuffer(readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetApplicationTagOctetString")
 	}
@@ -157,7 +161,15 @@ func BACnetApplicationTagOctetStringParse(readBuffer utils.ReadBuffer, header BA
 	return _child, nil
 }
 
-func (m *_BACnetApplicationTagOctetString) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetApplicationTagOctetString) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetApplicationTagOctetString) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

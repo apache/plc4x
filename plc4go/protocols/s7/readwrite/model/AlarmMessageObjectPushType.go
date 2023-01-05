@@ -202,7 +202,11 @@ func (m *_AlarmMessageObjectPushType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageObjectPushType, error) {
+func AlarmMessageObjectPushTypeParse(theBytes []byte) (AlarmMessageObjectPushType, error) {
+	return AlarmMessageObjectPushTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AlarmMessageObjectPushTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmMessageObjectPushType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessageObjectPushType"); pullErr != nil {
@@ -231,7 +235,7 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageO
 	if pullErr := readBuffer.PullContext("syntaxId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for syntaxId")
 	}
-	_syntaxId, _syntaxIdErr := SyntaxIdTypeParse(readBuffer)
+	_syntaxId, _syntaxIdErr := SyntaxIdTypeParseWithBuffer(readBuffer)
 	if _syntaxIdErr != nil {
 		return nil, errors.Wrap(_syntaxIdErr, "Error parsing 'syntaxId' field of AlarmMessageObjectPushType")
 	}
@@ -258,7 +262,7 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageO
 	if pullErr := readBuffer.PullContext("eventState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventState")
 	}
-	_eventState, _eventStateErr := StateParse(readBuffer)
+	_eventState, _eventStateErr := StateParseWithBuffer(readBuffer)
 	if _eventStateErr != nil {
 		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field of AlarmMessageObjectPushType")
 	}
@@ -271,7 +275,7 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageO
 	if pullErr := readBuffer.PullContext("localState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for localState")
 	}
-	_localState, _localStateErr := StateParse(readBuffer)
+	_localState, _localStateErr := StateParseWithBuffer(readBuffer)
 	if _localStateErr != nil {
 		return nil, errors.Wrap(_localStateErr, "Error parsing 'localState' field of AlarmMessageObjectPushType")
 	}
@@ -284,7 +288,7 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageO
 	if pullErr := readBuffer.PullContext("ackStateGoing"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ackStateGoing")
 	}
-	_ackStateGoing, _ackStateGoingErr := StateParse(readBuffer)
+	_ackStateGoing, _ackStateGoingErr := StateParseWithBuffer(readBuffer)
 	if _ackStateGoingErr != nil {
 		return nil, errors.Wrap(_ackStateGoingErr, "Error parsing 'ackStateGoing' field of AlarmMessageObjectPushType")
 	}
@@ -297,7 +301,7 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageO
 	if pullErr := readBuffer.PullContext("ackStateComing"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ackStateComing")
 	}
-	_ackStateComing, _ackStateComingErr := StateParse(readBuffer)
+	_ackStateComing, _ackStateComingErr := StateParseWithBuffer(readBuffer)
 	if _ackStateComingErr != nil {
 		return nil, errors.Wrap(_ackStateComingErr, "Error parsing 'ackStateComing' field of AlarmMessageObjectPushType")
 	}
@@ -318,7 +322,7 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageO
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numberOfValues); curItem++ {
-			_item, _err := AssociatedValueTypeParse(readBuffer)
+			_item, _err := AssociatedValueTypeParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'AssociatedValues' field of AlarmMessageObjectPushType")
 			}
@@ -347,7 +351,15 @@ func AlarmMessageObjectPushTypeParse(readBuffer utils.ReadBuffer) (AlarmMessageO
 	}, nil
 }
 
-func (m *_AlarmMessageObjectPushType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AlarmMessageObjectPushType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AlarmMessageObjectPushType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessageObjectPushType"); pushErr != nil {

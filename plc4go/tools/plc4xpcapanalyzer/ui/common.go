@@ -20,6 +20,7 @@
 package ui
 
 import (
+	"context"
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	plc4goModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -67,6 +68,9 @@ var currentDir = func() string {
 	dir, _ := os.Getwd()
 	return dir
 }()
+
+var rootContext = context.Background()
+var cancelFunctions = make(map[uint32]context.CancelFunc)
 
 var shutdownMutex sync.Mutex
 var hasShutdown bool

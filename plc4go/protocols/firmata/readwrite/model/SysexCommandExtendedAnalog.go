@@ -107,7 +107,11 @@ func (m *_SysexCommandExtendedAnalog) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandExtendedAnalogParse(readBuffer utils.ReadBuffer, response bool) (SysexCommandExtendedAnalog, error) {
+func SysexCommandExtendedAnalogParse(theBytes []byte, response bool) (SysexCommandExtendedAnalog, error) {
+	return SysexCommandExtendedAnalogParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+}
+
+func SysexCommandExtendedAnalogParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandExtendedAnalog, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandExtendedAnalog"); pullErr != nil {
@@ -128,7 +132,15 @@ func SysexCommandExtendedAnalogParse(readBuffer utils.ReadBuffer, response bool)
 	return _child, nil
 }
 
-func (m *_SysexCommandExtendedAnalog) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SysexCommandExtendedAnalog) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SysexCommandExtendedAnalog) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

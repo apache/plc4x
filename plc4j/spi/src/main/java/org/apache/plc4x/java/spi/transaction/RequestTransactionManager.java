@@ -48,7 +48,7 @@ public class RequestTransactionManager {
     private static final Logger logger = LoggerFactory.getLogger(RequestTransactionManager.class);
 
     /** Executor that performs all operations */
-    static final ExecutorService executor = Executors.newFixedThreadPool(4);
+    static final ExecutorService executor = Executors.newScheduledThreadPool(4);
     private final Set<RequestTransaction> runningRequests;
     /** How many Transactions are allowed to run at the same time? */
     private int numberOfConcurrentRequests;
@@ -94,27 +94,29 @@ public class RequestTransactionManager {
         assert handle.operation != null;
         // Add this Request with this handle i the Worklog
         // Put Transaction into Worklog
-        this.workLog.add(handle);
+        workLog.add(handle);
         // Try to Process the Worklog
         processWorklog();
     }
 
     private void processWorklog() {
         while (runningRequests.size() < getNumberOfConcurrentRequests() && !workLog.isEmpty()) {
-            RequestTransaction next = workLog.remove();
-            this.runningRequests.add(next);
-            Future<?> completionFuture = executor.submit(next.operation);
-            next.setCompletionFuture(completionFuture);
+            RequestTransaction next = workLog.poll();
+            if (next != null) {
+                runningRequests.add(next);
+                Future<?> completionFuture = executor.submit(next.operation);
+                next.setCompletionFuture(completionFuture);
+            }
         }
     }
 
 
     public RequestTransaction startRequest() {
-        return new RequestTransaction(this, this.transactionId.getAndIncrement());
+        return new RequestTransaction(this, transactionId.getAndIncrement());
     }
 
     public int getNumberOfActiveRequests() {
-        return this.runningRequests.size();
+        return runningRequests.size();
     }
 
     private void failRequest(RequestTransaction transaction) {
@@ -125,10 +127,10 @@ public class RequestTransactionManager {
     }
 
     private void endRequest(RequestTransaction transaction) {
-        if (!this.runningRequests.contains(transaction)) {
+        if (!runningRequests.contains(transaction)) {
             throw new IllegalArgumentException("Unknown Transaction or Transaction already finished!");
         }
-        this.runningRequests.remove(transaction);
+        runningRequests.remove(transaction);
         // Process the worklog, a slot should be free now
         processWorklog();
     }
@@ -152,12 +154,12 @@ public class RequestTransactionManager {
         }
 
         public void failRequest(Throwable t) {
-            this.parent.failRequest(this);
+            parent.failRequest(this);
         }
 
         public void endRequest() {
             // Remove it from Running Requests
-            this.parent.endRequest(this);
+            parent.endRequest(this);
         }
 
         public void setOperation(Runnable operation) {
@@ -174,8 +176,8 @@ public class RequestTransactionManager {
 
         public void submit(Runnable operation) {
             logger.trace("Submission of transaction {}", transactionId);
-            this.setOperation(new TransactionOperation(transactionId, operation));
-            this.parent.submit(this);
+            setOperation(new TransactionOperation(transactionId, operation));
+            parent.submit(this);
         }
 
         @Override

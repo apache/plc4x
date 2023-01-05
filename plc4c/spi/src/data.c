@@ -266,6 +266,16 @@ plc4c_data *plc4c_data_create_date_array(uint16_t *d, int nItems) {
   return NULL;
 }
 
+plc4c_data *plc4c_data_create_ldate_data(uint32_t nanosecondsSinceEpoch) {
+  // TODO: Implement
+  return NULL;
+}
+
+plc4c_data *plc4c_data_create_ldate_array(uint32_t *nanosecondsSinceEpoch, int nItems) {
+  // TODO: Implement
+  return NULL;
+}
+
 plc4c_data *plc4c_data_create_time_data(uint32_t t) {
   // TODO: Implement
   return NULL;
@@ -296,12 +306,32 @@ plc4c_data *plc4c_data_create_time_of_day_array(uint32_t *tod, int nItems) {
   return NULL;
 }
 
+plc4c_data *plc4c_data_create_ltime_of_day_data(uint64_t nanosecondsSinceMidnight) {
+  // TODO: Implement
+  return NULL;
+}
+
+plc4c_data *plc4c_data_create_ltime_of_day_array(uint64_t *nanosecondsSinceMidnight, int nItems) {
+  // TODO: Implement
+  return NULL;
+}
+
 plc4c_data *plc4c_data_create_date_and_time_data(uint32_t tad) {
   // TODO: Implement
   return NULL;
 }
 
 plc4c_data *plc4c_data_create_date_and_time_array(uint32_t *tad, int nItems) {
+  // TODO: Implement
+  return NULL;
+}
+
+plc4c_data *plc4c_data_create_ldate_and_time_data(uint64_t nanosecondsSinceEpoch) {
+  // TODO: Implement
+  return NULL;
+}
+
+plc4c_data *plc4c_data_create_ldate_and_time_array(uint64_t *nanosecondsSinceEpoch, int nItems) {
   // TODO: Implement
   return NULL;
 }

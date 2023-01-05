@@ -184,7 +184,11 @@ func (m *_S7AddressAny) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7AddressAnyParse(readBuffer utils.ReadBuffer) (S7AddressAny, error) {
+func S7AddressAnyParse(theBytes []byte) (S7AddressAny, error) {
+	return S7AddressAnyParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func S7AddressAnyParseWithBuffer(readBuffer utils.ReadBuffer) (S7AddressAny, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7AddressAny"); pullErr != nil {
@@ -227,7 +231,7 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (S7AddressAny, error) {
 	if pullErr := readBuffer.PullContext("area"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for area")
 	}
-	_area, _areaErr := MemoryAreaParse(readBuffer)
+	_area, _areaErr := MemoryAreaParseWithBuffer(readBuffer)
 	if _areaErr != nil {
 		return nil, errors.Wrap(_areaErr, "Error parsing 'area' field of S7AddressAny")
 	}
@@ -286,7 +290,15 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (S7AddressAny, error) {
 	return _child, nil
 }
 
-func (m *_S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7AddressAny) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7AddressAny) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

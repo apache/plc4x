@@ -151,7 +151,11 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) GetLengthInBytes() 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultOutOfRangeMinNormalValueParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValue, error) {
+func BACnetFaultParameterFaultOutOfRangeMinNormalValueParse(theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValue, error) {
+	return BACnetFaultParameterFaultOutOfRangeMinNormalValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+}
+
+func BACnetFaultParameterFaultOutOfRangeMinNormalValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultOutOfRangeMinNormalValue"); pullErr != nil {
@@ -164,7 +168,7 @@ func BACnetFaultParameterFaultOutOfRangeMinNormalValueParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetFaultParameterFaultOutOfRangeMinNormalValue")
 	}
@@ -178,7 +182,7 @@ func BACnetFaultParameterFaultOutOfRangeMinNormalValueParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -202,13 +206,13 @@ func BACnetFaultParameterFaultOutOfRangeMinNormalValueParse(readBuffer utils.Rea
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == 0x4: // BACnetFaultParameterFaultOutOfRangeMinNormalValueReal
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultOutOfRangeMinNormalValueRealParse(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultOutOfRangeMinNormalValueRealParseWithBuffer(readBuffer, tagNumber)
 	case peekedTagNumber == 0x2: // BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedParse(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedParseWithBuffer(readBuffer, tagNumber)
 	case peekedTagNumber == 0x5: // BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleParse(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleParseWithBuffer(readBuffer, tagNumber)
 	case peekedTagNumber == 0x3: // BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger
-		_childTemp, typeSwitchError = BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerParse(readBuffer, tagNumber)
+		_childTemp, typeSwitchError = BACnetFaultParameterFaultOutOfRangeMinNormalValueIntegerParseWithBuffer(readBuffer, tagNumber)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
@@ -221,7 +225,7 @@ func BACnetFaultParameterFaultOutOfRangeMinNormalValueParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetFaultParameterFaultOutOfRangeMinNormalValue")
 	}

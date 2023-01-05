@@ -157,7 +157,11 @@ func (m *_BACnetDestination) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDestinationParse(readBuffer utils.ReadBuffer) (BACnetDestination, error) {
+func BACnetDestinationParse(theBytes []byte) (BACnetDestination, error) {
+	return BACnetDestinationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetDestinationParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDestination, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetDestination"); pullErr != nil {
@@ -170,7 +174,7 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (BACnetDestination, err
 	if pullErr := readBuffer.PullContext("validDays"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for validDays")
 	}
-	_validDays, _validDaysErr := BACnetDaysOfWeekTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_validDays, _validDaysErr := BACnetDaysOfWeekTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _validDaysErr != nil {
 		return nil, errors.Wrap(_validDaysErr, "Error parsing 'validDays' field of BACnetDestination")
 	}
@@ -183,7 +187,7 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (BACnetDestination, err
 	if pullErr := readBuffer.PullContext("fromTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fromTime")
 	}
-	_fromTime, _fromTimeErr := BACnetApplicationTagParse(readBuffer)
+	_fromTime, _fromTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _fromTimeErr != nil {
 		return nil, errors.Wrap(_fromTimeErr, "Error parsing 'fromTime' field of BACnetDestination")
 	}
@@ -196,7 +200,7 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (BACnetDestination, err
 	if pullErr := readBuffer.PullContext("toTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for toTime")
 	}
-	_toTime, _toTimeErr := BACnetApplicationTagParse(readBuffer)
+	_toTime, _toTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _toTimeErr != nil {
 		return nil, errors.Wrap(_toTimeErr, "Error parsing 'toTime' field of BACnetDestination")
 	}
@@ -209,7 +213,7 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (BACnetDestination, err
 	if pullErr := readBuffer.PullContext("recipient"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for recipient")
 	}
-	_recipient, _recipientErr := BACnetRecipientParse(readBuffer)
+	_recipient, _recipientErr := BACnetRecipientParseWithBuffer(readBuffer)
 	if _recipientErr != nil {
 		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field of BACnetDestination")
 	}
@@ -222,7 +226,7 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (BACnetDestination, err
 	if pullErr := readBuffer.PullContext("processIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for processIdentifier")
 	}
-	_processIdentifier, _processIdentifierErr := BACnetApplicationTagParse(readBuffer)
+	_processIdentifier, _processIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _processIdentifierErr != nil {
 		return nil, errors.Wrap(_processIdentifierErr, "Error parsing 'processIdentifier' field of BACnetDestination")
 	}
@@ -235,7 +239,7 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (BACnetDestination, err
 	if pullErr := readBuffer.PullContext("issueConfirmedNotifications"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for issueConfirmedNotifications")
 	}
-	_issueConfirmedNotifications, _issueConfirmedNotificationsErr := BACnetApplicationTagParse(readBuffer)
+	_issueConfirmedNotifications, _issueConfirmedNotificationsErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _issueConfirmedNotificationsErr != nil {
 		return nil, errors.Wrap(_issueConfirmedNotificationsErr, "Error parsing 'issueConfirmedNotifications' field of BACnetDestination")
 	}
@@ -248,7 +252,7 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (BACnetDestination, err
 	if pullErr := readBuffer.PullContext("transitions"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for transitions")
 	}
-	_transitions, _transitionsErr := BACnetEventTransitionBitsTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_transitions, _transitionsErr := BACnetEventTransitionBitsTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _transitionsErr != nil {
 		return nil, errors.Wrap(_transitionsErr, "Error parsing 'transitions' field of BACnetDestination")
 	}
@@ -273,7 +277,15 @@ func BACnetDestinationParse(readBuffer utils.ReadBuffer) (BACnetDestination, err
 	}, nil
 }
 
-func (m *_BACnetDestination) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetDestination) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetDestination) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetDestination"); pushErr != nil {

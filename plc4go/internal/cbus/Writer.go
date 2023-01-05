@@ -21,14 +21,15 @@ package cbus
 
 import (
 	"context"
+	"sync"
+	"time"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"sync"
-	"time"
 )
 
 type Writer struct {
@@ -49,26 +50,26 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 	log.Trace().Msg("Writing")
 	result := make(chan apiModel.PlcWriteRequestResult)
 	go func() {
-		numFields := len(writeRequest.GetFieldNames())
-		if numFields > 20 { // letters g-z
+		numTags := len(writeRequest.GetTagNames())
+		if numTags > 20 { // letters g-z
 			result <- &spiModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
-				Err:      errors.New("Only 20 fields can be handled at once"),
+				Err:      errors.New("Only 20 tags can be handled at once"),
 			}
 			return
 		}
 
 		messages := make(map[string]readWriteModel.CBusMessage)
-		for _, fieldName := range writeRequest.GetFieldNames() {
-			field := writeRequest.GetField(fieldName)
-			plcValue := writeRequest.GetValue(fieldName)
-			message, _, supportsWrite, _, err := FieldToCBusMessage(field, plcValue, m.alphaGenerator, m.messageCodec.(*MessageCodec))
+		for _, tagName := range writeRequest.GetTagNames() {
+			tag := writeRequest.GetTag(tagName)
+			plcValue := writeRequest.GetValue(tagName)
+			message, _, supportsWrite, _, err := TagToCBusMessage(tag, plcValue, m.alphaGenerator, m.messageCodec.(*MessageCodec))
 			if !supportsWrite {
 				result <- &spiModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding cbus message for field %s. Field is not meant to be written.", fieldName),
+					Err:      errors.Wrapf(err, "Error encoding cbus message for tag %s. Tag is not meant to be written.", tagName),
 				}
 				return
 			}
@@ -76,11 +77,11 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 				result <- &spiModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
-					Err:      errors.Wrapf(err, "Error encoding cbus message for field %s", fieldName),
+					Err:      errors.Wrapf(err, "Error encoding cbus message for tag %s", tagName),
 				}
 				return
 			}
-			messages[fieldName] = message
+			messages[tagName] = message
 		}
 		responseMu := sync.Mutex{}
 		responseCodes := map[string]apiModel.PlcResponseCode{}
@@ -89,7 +90,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 			defer responseMu.Unlock()
 			responseCodes[name] = responseCode
 		}
-		for fieldName, messageToSend := range messages {
+		for tagName, messageToSend := range messages {
 			if err := ctx.Err(); err != nil {
 				result <- &spiModel.DefaultPlcWriteRequestResult{
 					Request: writeRequest,
@@ -97,7 +98,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 				}
 				return
 			}
-			fieldNameCopy := fieldName
+			tagNameCopy := tagName
 			// Start a new request-transaction (Is ended in the response-handler)
 			transaction := m.tm.StartTransaction()
 			transaction.Submit(func() {
@@ -125,16 +126,16 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 					return confirmation.GetConfirmation().GetAlpha().GetCharacter() == messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(readWriteModel.RequestCommand).GetAlpha().GetCharacter()
 				}, func(receivedMessage spi.Message) error {
 					// Convert the response into an
-					addResponseCode(fieldName, apiModel.PlcResponseCode_OK)
+					addResponseCode(tagName, apiModel.PlcResponseCode_OK)
 					return transaction.EndRequest()
 				}, func(err error) error {
-					log.Debug().Msgf("Error waiting for field %s", fieldNameCopy)
-					addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_REQUEST_TIMEOUT)
+					log.Debug().Msgf("Error waiting for tag %s", tagNameCopy)
+					addResponseCode(tagNameCopy, apiModel.PlcResponseCode_REQUEST_TIMEOUT)
 					// TODO: ok or not ok?
 					return transaction.EndRequest()
 				}, time.Second*1); err != nil {
-					log.Debug().Err(err).Msgf("Error sending message for field %s", fieldNameCopy)
-					addResponseCode(fieldNameCopy, apiModel.PlcResponseCode_INTERNAL_ERROR)
+					log.Debug().Err(err).Msgf("Error sending message for tag %s", tagNameCopy)
+					addResponseCode(tagNameCopy, apiModel.PlcResponseCode_INTERNAL_ERROR)
 					_ = transaction.EndRequest()
 				}
 			})

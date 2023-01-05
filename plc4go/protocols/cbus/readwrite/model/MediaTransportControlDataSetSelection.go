@@ -134,7 +134,11 @@ func (m *_MediaTransportControlDataSetSelection) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlDataSetSelectionParse(readBuffer utils.ReadBuffer) (MediaTransportControlDataSetSelection, error) {
+func MediaTransportControlDataSetSelectionParse(theBytes []byte) (MediaTransportControlDataSetSelection, error) {
+	return MediaTransportControlDataSetSelectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func MediaTransportControlDataSetSelectionParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataSetSelection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataSetSelection"); pullErr != nil {
@@ -171,7 +175,15 @@ func MediaTransportControlDataSetSelectionParse(readBuffer utils.ReadBuffer) (Me
 	return _child, nil
 }
 
-func (m *_MediaTransportControlDataSetSelection) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataSetSelection) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_MediaTransportControlDataSetSelection) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

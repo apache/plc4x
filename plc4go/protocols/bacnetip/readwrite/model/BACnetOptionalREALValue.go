@@ -122,7 +122,11 @@ func (m *_BACnetOptionalREALValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetOptionalREALValueParse(readBuffer utils.ReadBuffer) (BACnetOptionalREALValue, error) {
+func BACnetOptionalREALValueParse(theBytes []byte) (BACnetOptionalREALValue, error) {
+	return BACnetOptionalREALValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetOptionalREALValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetOptionalREALValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalREALValue"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetOptionalREALValueParse(readBuffer utils.ReadBuffer) (BACnetOptionalRE
 	if pullErr := readBuffer.PullContext("realValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for realValue")
 	}
-	_realValue, _realValueErr := BACnetApplicationTagParse(readBuffer)
+	_realValue, _realValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _realValueErr != nil {
 		return nil, errors.Wrap(_realValueErr, "Error parsing 'realValue' field of BACnetOptionalREALValue")
 	}
@@ -157,7 +161,15 @@ func BACnetOptionalREALValueParse(readBuffer utils.ReadBuffer) (BACnetOptionalRE
 	return _child, nil
 }
 
-func (m *_BACnetOptionalREALValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetOptionalREALValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetOptionalREALValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

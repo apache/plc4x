@@ -30,7 +30,7 @@ import (
 type HVACHumidityType uint8
 
 type IHVACHumidityType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +107,11 @@ func (m HVACHumidityType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACHumidityTypeParse(readBuffer utils.ReadBuffer) (HVACHumidityType, error) {
+func HVACHumidityTypeParse(theBytes []byte) (HVACHumidityType, error) {
+	return HVACHumidityTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func HVACHumidityTypeParseWithBuffer(readBuffer utils.ReadBuffer) (HVACHumidityType, error) {
 	val, err := readBuffer.ReadUint8("HVACHumidityType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading HVACHumidityType")
@@ -120,7 +124,15 @@ func HVACHumidityTypeParse(readBuffer utils.ReadBuffer) (HVACHumidityType, error
 	}
 }
 
-func (e HVACHumidityType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e HVACHumidityType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e HVACHumidityType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("HVACHumidityType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

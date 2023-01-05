@@ -135,7 +135,11 @@ func (m *_SubscribeCOVPropertyMultipleError) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SubscribeCOVPropertyMultipleErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (SubscribeCOVPropertyMultipleError, error) {
+func SubscribeCOVPropertyMultipleErrorParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (SubscribeCOVPropertyMultipleError, error) {
+	return SubscribeCOVPropertyMultipleErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes), errorChoice)
+}
+
+func SubscribeCOVPropertyMultipleErrorParseWithBuffer(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (SubscribeCOVPropertyMultipleError, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SubscribeCOVPropertyMultipleError"); pullErr != nil {
@@ -148,7 +152,7 @@ func SubscribeCOVPropertyMultipleErrorParse(readBuffer utils.ReadBuffer, errorCh
 	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
 	}
-	_errorType, _errorTypeErr := ErrorEnclosedParse(readBuffer, uint8(uint8(0)))
+	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _errorTypeErr != nil {
 		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of SubscribeCOVPropertyMultipleError")
 	}
@@ -161,7 +165,7 @@ func SubscribeCOVPropertyMultipleErrorParse(readBuffer utils.ReadBuffer, errorCh
 	if pullErr := readBuffer.PullContext("firstFailedSubscription"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for firstFailedSubscription")
 	}
-	_firstFailedSubscription, _firstFailedSubscriptionErr := SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(readBuffer, uint8(uint8(1)))
+	_firstFailedSubscription, _firstFailedSubscriptionErr := SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _firstFailedSubscriptionErr != nil {
 		return nil, errors.Wrap(_firstFailedSubscriptionErr, "Error parsing 'firstFailedSubscription' field of SubscribeCOVPropertyMultipleError")
 	}
@@ -184,7 +188,15 @@ func SubscribeCOVPropertyMultipleErrorParse(readBuffer utils.ReadBuffer, errorCh
 	return _child, nil
 }
 
-func (m *_SubscribeCOVPropertyMultipleError) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SubscribeCOVPropertyMultipleError) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SubscribeCOVPropertyMultipleError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -100,7 +100,11 @@ func (m *_BACnetOpeningTag) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetOpeningTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8) (BACnetOpeningTag, error) {
+func BACnetOpeningTagParse(theBytes []byte, tagNumberArgument uint8) (BACnetOpeningTag, error) {
+	return BACnetOpeningTagParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumberArgument)
+}
+
+func BACnetOpeningTagParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8) (BACnetOpeningTag, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOpeningTag"); pullErr != nil {
@@ -113,7 +117,7 @@ func BACnetOpeningTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8)
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetOpeningTag")
 	}
@@ -148,7 +152,15 @@ func BACnetOpeningTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8)
 	}, nil
 }
 
-func (m *_BACnetOpeningTag) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetOpeningTag) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetOpeningTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetOpeningTag"); pushErr != nil {

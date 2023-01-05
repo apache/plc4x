@@ -30,7 +30,7 @@ import (
 type CpuSubscribeEvents uint8
 
 type ICpuSubscribeEvents interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +107,11 @@ func (m CpuSubscribeEvents) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CpuSubscribeEventsParse(readBuffer utils.ReadBuffer) (CpuSubscribeEvents, error) {
+func CpuSubscribeEventsParse(theBytes []byte) (CpuSubscribeEvents, error) {
+	return CpuSubscribeEventsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func CpuSubscribeEventsParseWithBuffer(readBuffer utils.ReadBuffer) (CpuSubscribeEvents, error) {
 	val, err := readBuffer.ReadUint8("CpuSubscribeEvents", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CpuSubscribeEvents")
@@ -120,7 +124,15 @@ func CpuSubscribeEventsParse(readBuffer utils.ReadBuffer) (CpuSubscribeEvents, e
 	}
 }
 
-func (e CpuSubscribeEvents) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e CpuSubscribeEvents) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e CpuSubscribeEvents) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("CpuSubscribeEvents", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

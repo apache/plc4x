@@ -43,7 +43,7 @@ func init() {
 func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "AmsSerialFrame":
-		return model.AmsSerialFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AmsSerialFrameParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DataItem":
 		plcValueType, _ := model.PlcValueTypeByName(parserArguments[0])
 		parsedInt1, err := strconv.ParseInt(parserArguments[1], 10, 32)
@@ -51,40 +51,40 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 			return nil, err
 		}
 		stringLength := int32(parsedInt1)
-		return model.DataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), plcValueType, stringLength)
+		return model.DataItemParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), plcValueType, stringLength)
 	case "AdsTableSizes":
-		return model.AdsTableSizesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AdsTableSizesParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsMultiRequestItem":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 32)
 		if err != nil {
 			return nil, err
 		}
 		indexGroup := uint32(parsedUint0)
-		return model.AdsMultiRequestItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), indexGroup)
+		return model.AdsMultiRequestItemParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), indexGroup)
 	case "AmsSerialAcknowledgeFrame":
-		return model.AmsSerialAcknowledgeFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AmsSerialAcknowledgeFrameParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsDataTypeArrayInfo":
-		return model.AdsDataTypeArrayInfoParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AdsDataTypeArrayInfoParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsDataTypeTableEntry":
-		return model.AdsDataTypeTableEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AdsDataTypeTableEntryParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsNetId":
-		return model.AmsNetIdParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AmsNetIdParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsStampHeader":
-		return model.AdsStampHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AdsStampHeaderParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsSerialResetFrame":
-		return model.AmsSerialResetFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AmsSerialResetFrameParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsDataTypeTableChildEntry":
-		return model.AdsDataTypeTableChildEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AdsDataTypeTableChildEntryParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsConstants":
-		return model.AdsConstantsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AdsConstantsParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsNotificationSample":
-		return model.AdsNotificationSampleParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AdsNotificationSampleParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsSymbolTableEntry":
-		return model.AdsSymbolTableEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AdsSymbolTableEntryParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsTCPPacket":
-		return model.AmsTCPPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AmsTCPPacketParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AmsPacket":
-		return model.AmsPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.AmsPacketParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

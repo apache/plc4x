@@ -122,7 +122,11 @@ func (m *_EncodedReplyCALReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func EncodedReplyCALReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReplyCALReply, error) {
+func EncodedReplyCALReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReplyCALReply, error) {
+	return EncodedReplyCALReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+}
+
+func EncodedReplyCALReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReplyCALReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EncodedReplyCALReply"); pullErr != nil {
@@ -135,7 +139,7 @@ func EncodedReplyCALReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOpti
 	if pullErr := readBuffer.PullContext("calReply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for calReply")
 	}
-	_calReply, _calReplyErr := CALReplyParse(readBuffer, cBusOptions, requestContext)
+	_calReply, _calReplyErr := CALReplyParseWithBuffer(readBuffer, cBusOptions, requestContext)
 	if _calReplyErr != nil {
 		return nil, errors.Wrap(_calReplyErr, "Error parsing 'calReply' field of EncodedReplyCALReply")
 	}
@@ -160,7 +164,15 @@ func EncodedReplyCALReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOpti
 	return _child, nil
 }
 
-func (m *_EncodedReplyCALReply) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_EncodedReplyCALReply) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_EncodedReplyCALReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

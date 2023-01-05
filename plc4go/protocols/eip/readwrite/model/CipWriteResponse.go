@@ -140,7 +140,11 @@ func (m *_CipWriteResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CipWriteResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipWriteResponse, error) {
+func CipWriteResponseParse(theBytes []byte, serviceLen uint16) (CipWriteResponse, error) {
+	return CipWriteResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceLen)
+}
+
+func CipWriteResponseParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint16) (CipWriteResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipWriteResponse"); pullErr != nil {
@@ -197,7 +201,15 @@ func CipWriteResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipW
 	return _child, nil
 }
 
-func (m *_CipWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CipWriteResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CipWriteResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -30,7 +30,7 @@ import (
 type BACnetLimitEnable uint8
 
 type IBACnetLimitEnable interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -95,7 +95,11 @@ func (m BACnetLimitEnable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLimitEnableParse(readBuffer utils.ReadBuffer) (BACnetLimitEnable, error) {
+func BACnetLimitEnableParse(theBytes []byte) (BACnetLimitEnable, error) {
+	return BACnetLimitEnableParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLimitEnableParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLimitEnable, error) {
 	val, err := readBuffer.ReadUint8("BACnetLimitEnable", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLimitEnable")
@@ -108,7 +112,15 @@ func BACnetLimitEnableParse(readBuffer utils.ReadBuffer) (BACnetLimitEnable, err
 	}
 }
 
-func (e BACnetLimitEnable) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLimitEnable) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetLimitEnable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetLimitEnable", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -30,8 +30,8 @@ import (
 type TelephonyCommandType uint8
 
 type ITelephonyCommandType interface {
+	utils.Serializable
 	NumberOfArguments() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -111,7 +111,11 @@ func (m TelephonyCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyCommandTypeParse(readBuffer utils.ReadBuffer) (TelephonyCommandType, error) {
+func TelephonyCommandTypeParse(theBytes []byte) (TelephonyCommandType, error) {
+	return TelephonyCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TelephonyCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyCommandType, error) {
 	val, err := readBuffer.ReadUint8("TelephonyCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TelephonyCommandType")
@@ -124,7 +128,15 @@ func TelephonyCommandTypeParse(readBuffer utils.ReadBuffer) (TelephonyCommandTyp
 	}
 }
 
-func (e TelephonyCommandType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e TelephonyCommandType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e TelephonyCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("TelephonyCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

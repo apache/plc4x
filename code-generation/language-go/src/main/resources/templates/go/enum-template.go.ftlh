@@ -60,12 +60,12 @@ import (
 type ${type.name} ${baseType}
 
 type I${type.name} interface {
+	utils.Serializable
 <#if type.constantNames?has_content>
 	<#list type.constantNames as constantName>
 	${constantName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}
 	</#list>
 </#if>
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const(
@@ -177,7 +177,11 @@ func (m ${type.name}) GetLengthInBytes() uint16 {
 <#if type.type?has_content && type.type.orElseThrow().isSimpleTypeReference()>
 	<#assign simpleTypeReference = type.type.orElseThrow().asSimpleTypeReference().orElseThrow()>
 	<#if simpleTypeReference.getSizeInBits() != -1>
-func ${type.name}Parse(readBuffer utils.ReadBuffer) (${type.name}, error) {
+func ${type.name}Parse(theBytes []byte) (${type.name}, error) {
+	return ${type.name}ParseWithBuffer(utils.NewReadBufferByteBased(theBytes${helper.getEndiannessOptions(true, true)}))
+}
+
+func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer) (${type.name}, error) {
 	val, err := ${helper.getReadBufferReadMethodCall(type.name, type.type.orElseThrow(), null)}
 	if err != nil {
 		return <#if type.type.orElseThrow().isStringTypeReference() || type.type.orElseThrow().isVstringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, errors.Wrap(err, "error reading ${type.name}")
@@ -190,7 +194,15 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer) (${type.name}, error) {
 	}
 }
 
-func (e ${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ${type.name}) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(${helper.getEndiannessOptions(false, false)})
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ${type.name}) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return ${helper.getWriteBufferWriteMethodCall(type.name, type.type.orElseThrow(), helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow()) + "(e)", null, "utils.WithAdditionalStringRepresentation(e.PLC4XEnumName())")}
 }
 	</#if>

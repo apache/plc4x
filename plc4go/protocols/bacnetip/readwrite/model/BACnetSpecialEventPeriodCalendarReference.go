@@ -122,7 +122,11 @@ func (m *_BACnetSpecialEventPeriodCalendarReference) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSpecialEventPeriodCalendarReferenceParse(readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriodCalendarReference, error) {
+func BACnetSpecialEventPeriodCalendarReferenceParse(theBytes []byte) (BACnetSpecialEventPeriodCalendarReference, error) {
+	return BACnetSpecialEventPeriodCalendarReferenceParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetSpecialEventPeriodCalendarReferenceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriodCalendarReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetSpecialEventPeriodCalendarReference"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetSpecialEventPeriodCalendarReferenceParse(readBuffer utils.ReadBuffer)
 	if pullErr := readBuffer.PullContext("calendarReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for calendarReference")
 	}
-	_calendarReference, _calendarReferenceErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_calendarReference, _calendarReferenceErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _calendarReferenceErr != nil {
 		return nil, errors.Wrap(_calendarReferenceErr, "Error parsing 'calendarReference' field of BACnetSpecialEventPeriodCalendarReference")
 	}
@@ -157,7 +161,15 @@ func BACnetSpecialEventPeriodCalendarReferenceParse(readBuffer utils.ReadBuffer)
 	return _child, nil
 }
 
-func (m *_BACnetSpecialEventPeriodCalendarReference) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetSpecialEventPeriodCalendarReference) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetSpecialEventPeriodCalendarReference) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

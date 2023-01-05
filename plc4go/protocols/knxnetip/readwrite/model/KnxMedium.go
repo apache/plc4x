@@ -30,7 +30,7 @@ import (
 type KnxMedium uint8
 
 type IKnxMedium interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -119,7 +119,11 @@ func (m KnxMedium) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxMediumParse(readBuffer utils.ReadBuffer) (KnxMedium, error) {
+func KnxMediumParse(theBytes []byte) (KnxMedium, error) {
+	return KnxMediumParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func KnxMediumParseWithBuffer(readBuffer utils.ReadBuffer) (KnxMedium, error) {
 	val, err := readBuffer.ReadUint8("KnxMedium", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxMedium")
@@ -132,7 +136,15 @@ func KnxMediumParse(readBuffer utils.ReadBuffer) (KnxMedium, error) {
 	}
 }
 
-func (e KnxMedium) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e KnxMedium) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e KnxMedium) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("KnxMedium", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

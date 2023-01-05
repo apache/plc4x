@@ -151,7 +151,11 @@ func (m *_ComObjectTableRealisationType1) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ComObjectTableRealisationType1Parse(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTableRealisationType1, error) {
+func ComObjectTableRealisationType1Parse(theBytes []byte, firmwareType FirmwareType) (ComObjectTableRealisationType1, error) {
+	return ComObjectTableRealisationType1ParseWithBuffer(utils.NewReadBufferByteBased(theBytes), firmwareType)
+}
+
+func ComObjectTableRealisationType1ParseWithBuffer(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTableRealisationType1, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ComObjectTableRealisationType1"); pullErr != nil {
@@ -186,7 +190,7 @@ func ComObjectTableRealisationType1Parse(readBuffer utils.ReadBuffer, firmwareTy
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numEntries); curItem++ {
-			_item, _err := GroupObjectDescriptorRealisationType1Parse(readBuffer)
+			_item, _err := GroupObjectDescriptorRealisationType1ParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'comObjectDescriptors' field of ComObjectTableRealisationType1")
 			}
@@ -212,7 +216,15 @@ func ComObjectTableRealisationType1Parse(readBuffer utils.ReadBuffer, firmwareTy
 	return _child, nil
 }
 
-func (m *_ComObjectTableRealisationType1) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ComObjectTableRealisationType1) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ComObjectTableRealisationType1) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

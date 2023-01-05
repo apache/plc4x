@@ -134,7 +134,11 @@ func (m *_TelephonyDataLineOffHook) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyDataLineOffHookParse(readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataLineOffHook, error) {
+func TelephonyDataLineOffHookParse(theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataLineOffHook, error) {
+	return TelephonyDataLineOffHookParseWithBuffer(utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
+}
+
+func TelephonyDataLineOffHookParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataLineOffHook, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataLineOffHook"); pullErr != nil {
@@ -147,7 +151,7 @@ func TelephonyDataLineOffHookParse(readBuffer utils.ReadBuffer, commandTypeConta
 	if pullErr := readBuffer.PullContext("reason"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reason")
 	}
-	_reason, _reasonErr := LineOffHookReasonParse(readBuffer)
+	_reason, _reasonErr := LineOffHookReasonParseWithBuffer(readBuffer)
 	if _reasonErr != nil {
 		return nil, errors.Wrap(_reasonErr, "Error parsing 'reason' field of TelephonyDataLineOffHook")
 	}
@@ -177,7 +181,15 @@ func TelephonyDataLineOffHookParse(readBuffer utils.ReadBuffer, commandTypeConta
 	return _child, nil
 }
 
-func (m *_TelephonyDataLineOffHook) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TelephonyDataLineOffHook) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TelephonyDataLineOffHook) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

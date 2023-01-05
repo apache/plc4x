@@ -87,7 +87,7 @@ class TriggerConfigurationTest {
 
     @ParameterizedTest
     @MethodSource("validTriggerPattern")
-    void testValidFieldQueryParsing(String triggerConfig,
+    void testValidTagQueryParsing(String triggerConfig,
                                     TriggerConfiguration.TriggerType triggerType,
                                     long scrapeInterval,
                                     TriggerConfiguration.Comparator comparator1,
@@ -128,7 +128,7 @@ class TriggerConfigurationTest {
 /*    @ParameterizedTest
     @Category(FastTests.class)
     @MethodSource("invalidTriggerPattern")
-    void testInvalidFieldQueryParsing(String triggerConfig) {
+    void testInvalidTagQueryParsing(String triggerConfig) {
         TriggeredScrapeJobImpl triggeredScrapeJob = Mockito.mock(TriggeredScrapeJobImpl.class);
         TriggerConfiguration triggerConfiguration = null;
         try {

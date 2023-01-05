@@ -30,7 +30,7 @@ import (
 type HVACError uint8
 
 type IHVACError interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -923,7 +923,11 @@ func (m HVACError) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACErrorParse(readBuffer utils.ReadBuffer) (HVACError, error) {
+func HVACErrorParse(theBytes []byte) (HVACError, error) {
+	return HVACErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func HVACErrorParseWithBuffer(readBuffer utils.ReadBuffer) (HVACError, error) {
 	val, err := readBuffer.ReadUint8("HVACError", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading HVACError")
@@ -936,7 +940,15 @@ func HVACErrorParse(readBuffer utils.ReadBuffer) (HVACError, error) {
 	}
 }
 
-func (e HVACError) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e HVACError) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e HVACError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("HVACError", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

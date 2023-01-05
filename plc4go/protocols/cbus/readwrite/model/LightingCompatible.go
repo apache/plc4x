@@ -30,7 +30,7 @@ import (
 type LightingCompatible uint8
 
 type ILightingCompatible interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +107,11 @@ func (m LightingCompatible) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LightingCompatibleParse(readBuffer utils.ReadBuffer) (LightingCompatible, error) {
+func LightingCompatibleParse(theBytes []byte) (LightingCompatible, error) {
+	return LightingCompatibleParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func LightingCompatibleParseWithBuffer(readBuffer utils.ReadBuffer) (LightingCompatible, error) {
 	val, err := readBuffer.ReadUint8("LightingCompatible", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading LightingCompatible")
@@ -120,7 +124,15 @@ func LightingCompatibleParse(readBuffer utils.ReadBuffer) (LightingCompatible, e
 	}
 }
 
-func (e LightingCompatible) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e LightingCompatible) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e LightingCompatible) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("LightingCompatible", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

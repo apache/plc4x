@@ -68,7 +68,11 @@ import (
 	
 <#-- TODO: the code below implies that parserArguments will be null if not present... not pretty  -->
 <#if type.parserArguments.isPresent()><#assign parserArguments=type.parserArguments.orElseThrow()></#if>
-func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (api.PlcValue, error) {
+func ${type.name}Parse(theBytes []byte<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (api.PlcValue, error) {
+	return ${type.name}ParseWithBuffer(utils.NewReadBufferByteBased(theBytes${helper.getEndiannessOptions(true, true)})<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)
+}
+
+func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (api.PlcValue, error) {
 	readBuffer.PullContext("${type.name}")
 	switch {
 	<#list type.switchField.orElseThrow().cases as case>
@@ -148,7 +152,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_conte
 					<#assign simpleField = field.asSimpleField().orElseThrow()>
 
 			// Simple Field (${simpleField.name})
-			<#if case.name == "Struct" || ((case.name == "DATE_AND_TIME") && ((simpleField.name == "year") || (simpleField.name == "month") || (simpleField.name == "day") || (simpleField.name == "hour") || (simpleField.name == "minutes") || (simpleField.name == "seconds") || (simpleField.name == "secondsSinceEpoch"))) || ((case.name == "DATE") && ((simpleField.name == "year") || (simpleField.name == "month") || (simpleField.name == "day"))) || ((case.name == "TIME_OF_DAY") && ((simpleField.name == "hour") || (simpleField.name == "minutes") || (simpleField.name == "seconds"))) || simpleField.name == "value">${simpleField.name}<#else>_</#if>, _${simpleField.name}Err := <#if simpleField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(simpleField.name, simpleField.type.asSimpleTypeReference().orElseThrow(), simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}Parse(io<#if simpleField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}) (${helper.toParseExpression(simpleField, helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>
+			<#if (case.name == "Struct") || ((case.name == "TIME") && (simpleField.name == "milliseconds")) || ((case.name == "LTIME") && (simpleField.name == "nanoseconds")) || ((case.name == "DATE") && ((simpleField.name == "secondsSinceEpoch") || (simpleField.name == "daysSinceSiemensEpoch"))) || ((case.name == "LDATE") && (simpleField.name == "nanosecondsSinceEpoch")) || ((case.name == "TIME_OF_DAY") && (simpleField.name == "millisecondsSinceMidnight")) || ((case.name == "LTIME_OF_DAY") && (simpleField.name == "nanosecondsSinceMidnight")) || ((case.name == "DATE_AND_TIME") && (simpleField.name == "secondsSinceEpoch")) || ((case.name == "LDATE_AND_TIME") && (simpleField.name == "nanosecondsSinceEpoch")) || ((case.name == "DATE_AND_TIME") && ((simpleField.name == "year") || (simpleField.name == "month") || (simpleField.name == "day") || (simpleField.name == "hour") || (simpleField.name == "minutes") || (simpleField.name == "seconds") || (simpleField.name == "nanoseconds"))) || (simpleField.name == "value")>${simpleField.name}<#else>_</#if>, _${simpleField.name}Err := <#if simpleField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(simpleField.name, simpleField.type.asSimpleTypeReference().orElseThrow(), simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}Parse(io<#if simpleField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}) (${helper.toParseExpression(simpleField, helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>
 			if _${simpleField.name}Err != nil {
 				return nil, errors.Wrap(_${simpleField.name}Err, "Error parsing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			}
@@ -159,52 +163,88 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_conte
 					<#break>
 			</#switch>
 		</#list>
-		<#if valueDefined>
-			<#switch case.name>
-				<#case "TIME_OF_DAY">
-					<#if helper.hasFieldsWithNames(case.fields, "hour", "minutes", "seconds")>
-			value := time.Date(0,0,0, int(hour), int(minutes), int(seconds), 0, nil)<@emitImport import="time" />
-					</#if>
+        <#switch case.name>
+            <#case "TIME">
 			readBuffer.CloseContext("${type.name}")
-			return values.NewPlcTIME_OF_DAY(value), nil
-					<#break>
-				<#case "DATE">
-					<#if helper.hasFieldsWithNames(case.fields, "year", "month", "day")>
-			value := time.Date(int(year), time.Month(month), int(day), 0, 0, 0, 0, nil)<@emitImport import="time" />
-					</#if>
+                <#if helper.hasFieldsWithNames(case.fields, "milliseconds")>
+			return values.NewPlcTIMEFromMilliseconds(milliseconds), nil
+                </#if>
+                <#break>
+            <#case "LTIME">
 			readBuffer.CloseContext("${type.name}")
-			return values.NewPlcDATE(value), nil
-					<#break>
-				<#case "DATE_AND_TIME">
-					<#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds")>
-			value := time.Date(int(year), time.Month(month), int(day), int(hour), int(minutes), int(seconds), 0, nil)<@emitImport import="time" />
-                    <#elseif helper.hasFieldsWithNames(case.fields, "secondsSinceEpoch")>
-            value := time.Unix(int64(secondsSinceEpoch), 0)<@emitImport import="time" />
-					</#if>
+                <#if helper.hasFieldsWithNames(case.fields, "nanoseconds")>
+			return values.NewPlcLTIMEFromNanoseconds(nanoseconds), nil
+                </#if>
+                <#break>
+            <#case "DATE">
+ 			readBuffer.CloseContext("${type.name}")
+                <#if helper.hasFieldsWithNames(case.fields, "secondsSinceEpoch")>
+			return values.NewPlcDATEFromSecondsSinceEpoch(uint32(secondsSinceEpoch)), nil
+                <#elseif helper.hasFieldsWithNames(case.fields, "daysSinceEpoch")>
+			return values.NewPlcDATEFromDaysSinceEpoch(daysSinceEpoch), nil
+                <#elseif helper.hasFieldsWithNames(case.fields, "daysSinceSiemensEpoch")>
+			return values.NewPlcDATEFromDaysSinceSiemensEpoch(daysSinceSiemensEpoch), nil
+                </#if>
+                <#break>
+            <#case "LDATE">
 			readBuffer.CloseContext("${type.name}")
-			return values.NewPlcDATE_AND_TIME(value), nil
-					<#break>
+                <#if helper.hasFieldsWithNames(case.fields, "nanosecondsSinceEpoch")>
+			return values.NewPlcLDATEFromNanosecondsSinceEpoch(uint64(nanosecondsSinceEpoch)), nil
+                </#if>
+                <#break>
+            <#case "TIME_OF_DAY">
 			readBuffer.CloseContext("${type.name}")
-				<#case "Struct">
+                <#if helper.hasFieldsWithNames(case.fields, "millisecondsSinceMidnight")>
+			return values.NewPlcTIME_OF_DAYFromMillisecondsSinceMidnight(millisecondsSinceMidnight), nil
+                </#if>
+                <#break>
+            <#case "LTIME_OF_DAY">
+			readBuffer.CloseContext("${type.name}")
+                <#if helper.hasFieldsWithNames(case.fields, "nanosecondsSinceMidnight")>
+			return values.NewPlcLTIME_OF_DAYFromNanosecondsSinceMidnight(nanosecondsSinceMidnight), nil
+                </#if>
+                <#break>
+            <#case "DATE_AND_TIME">
+			readBuffer.CloseContext("${type.name}")
+                <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "nanoseconds")>
+			return values.NewPlcDATA_AND_TIMEFromSegments(uint32(year), uint32(month), uint32(day), uint32(hour), uint32(minutes), uint32(seconds), uint32(nanoseconds)), nil
+                <#elseif helper.hasFieldsWithNames(case.fields, "secondsSinceEpoch")>
+			return values.NewPlcDATA_AND_TIMEFromSecondsSinceEpoch(secondsSinceEpoch), nil
+                </#if>
+                <#break>
+            <#case "LDATE_AND_TIME">
+			readBuffer.CloseContext("${type.name}")
+                <#if helper.hasFieldsWithNames(case.fields, "nanosecondsSinceEpoch")>
+			return values.NewPlcLDATE_AND_TIMEFromNanosecondsSinceEpoch(uint64(nanosecondsSinceEpoch)), nil
+                </#if>
+                <#break>
+			<#case "Struct">
 			readBuffer.CloseContext("${type.name}")
 			return values.NewPlcStruct(_map), nil
-					<#break>
-				<#case "List">
+				<#break>
+			<#case "List">
 			readBuffer.CloseContext("${type.name}")
 			return values.NewPlcList(value), nil
-					<#break>
-				<#default>
+				<#break>
+			<#default>
 			readBuffer.CloseContext("${type.name}")
 			return values.NewPlc${case.name}(value), nil
-			</#switch>
-		</#if>
+		</#switch>
 	</#list>
 	}
     // TODO: add more info which type it is actually
 	return nil, errors.New("unsupported type")<@emitImport import="github.com/pkg/errors" />
 }
 
-func ${type.name}Serialize(writeBuffer utils.WriteBuffer, value api.PlcValue<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
+func ${type.name}Serialize(value api.PlcValue<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(${helper.getEndiannessOptions(false, false)})
+	if err := ${type.name}SerializeWithWriteBuffer(wb, value<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func ${type.name}SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer, value api.PlcValue<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
 	<#if parserArguments?has_content>
 	m := struct {
     	<#list parserArguments as parserArgument>
@@ -286,9 +326,15 @@ func ${type.name}Serialize(writeBuffer utils.WriteBuffer, value api.PlcValue<#if
 					<#assign simpleField = field.asSimpleField().orElseThrow()>
 
 			// Simple Field (${simpleField.name})
+					<#if (case.name == "TIME") || (case.name == "LTIME") || (case.name == "DATE") || (case.name == "LDATE") || (case.name == "TIME_OF_DAY") || (case.name == "LTIME_OF_DAY") || (case.name == "DATE_AND_TIME") || (case.name == "LDATE_AND_TIME")>
+			if _err := ${helper.getWriteBufferWriteMethodCall(simpleField.name, simpleField.type.asSimpleTypeReference().orElseThrow(), "value.(values.Plc${case.name}).Get${simpleField.name?cap_first}()", simpleField)}; _err != nil {
+				return errors.Wrap(_err, "Error serializing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
+			}
+					<#else>
 			if _err := <#if simpleField.type.isSimpleTypeReference()>${helper.getWriteBufferWriteMethodCall(simpleField.name, simpleField.type.asSimpleTypeReference().orElseThrow(), "value.Get" + helper.getLanguageTypeNameForTypeReference(simpleField.type)?cap_first + "()", simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}Serialize(io, <#if simpleField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}) (${helper.toParseExpression(simpleField, helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>; _err != nil {
 				return errors.Wrap(_err, "Error serializing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			}
+					</#if>
 					<#break>
 			</#switch>
 		</#list>

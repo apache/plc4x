@@ -20,13 +20,15 @@
 package values
 
 import (
+	"encoding/binary"
 	"fmt"
+	"strings"
+	"time"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"strings"
-	"time"
 )
 
 type PlcList struct {
@@ -147,12 +149,12 @@ func (m PlcList) GetDateTime() time.Time { return singleOrAdapter(m, apiValues.P
 // Raw Access
 
 func (m PlcList) GetRaw() []byte {
-	buf := utils.NewWriteBufferByteBased()
-	if err := m.Serialize(buf); err != nil {
+	if theBytes, err := m.Serialize(); err != nil {
 		log.Error().Err(err).Msg("Error getting raw")
 		return nil
+	} else {
+		return theBytes
 	}
-	return buf.GetBytes()
 }
 
 //
@@ -203,16 +205,24 @@ func (m PlcList) GetStruct() map[string]apiValues.PlcValue {
 ///
 
 func (m PlcList) GetPlcValueType() apiValues.PlcValueType {
-	return apiValues.LIST
+	return apiValues.List
 }
 
-func (m PlcList) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m PlcList) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m PlcList) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("PlcList"); err != nil {
 		return err
 	}
 	for _, listItem := range m.GetList() {
 		if listItemSerializable, ok := listItem.(utils.Serializable); ok {
-			if err := listItemSerializable.Serialize(writeBuffer); err != nil {
+			if err := listItemSerializable.SerializeWithWriteBuffer(writeBuffer); err != nil {
 				return err
 			}
 		} else {

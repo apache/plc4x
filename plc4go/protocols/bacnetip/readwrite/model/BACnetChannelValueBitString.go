@@ -122,7 +122,11 @@ func (m *_BACnetChannelValueBitString) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueBitStringParse(readBuffer utils.ReadBuffer) (BACnetChannelValueBitString, error) {
+func BACnetChannelValueBitStringParse(theBytes []byte) (BACnetChannelValueBitString, error) {
+	return BACnetChannelValueBitStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetChannelValueBitStringParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueBitString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueBitString"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetChannelValueBitStringParse(readBuffer utils.ReadBuffer) (BACnetChanne
 	if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bitStringValue")
 	}
-	_bitStringValue, _bitStringValueErr := BACnetApplicationTagParse(readBuffer)
+	_bitStringValue, _bitStringValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _bitStringValueErr != nil {
 		return nil, errors.Wrap(_bitStringValueErr, "Error parsing 'bitStringValue' field of BACnetChannelValueBitString")
 	}
@@ -157,7 +161,15 @@ func BACnetChannelValueBitStringParse(readBuffer utils.ReadBuffer) (BACnetChanne
 	return _child, nil
 }
 
-func (m *_BACnetChannelValueBitString) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetChannelValueBitString) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetChannelValueBitString) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

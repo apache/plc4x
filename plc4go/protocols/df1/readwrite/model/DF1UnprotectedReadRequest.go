@@ -138,7 +138,11 @@ func (m *_DF1UnprotectedReadRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DF1UnprotectedReadRequestParse(readBuffer utils.ReadBuffer) (DF1UnprotectedReadRequest, error) {
+func DF1UnprotectedReadRequestParse(theBytes []byte) (DF1UnprotectedReadRequest, error) {
+	return DF1UnprotectedReadRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func DF1UnprotectedReadRequestParseWithBuffer(readBuffer utils.ReadBuffer) (DF1UnprotectedReadRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1UnprotectedReadRequest"); pullErr != nil {
@@ -175,7 +179,15 @@ func DF1UnprotectedReadRequestParse(readBuffer utils.ReadBuffer) (DF1Unprotected
 	return _child, nil
 }
 
-func (m *_DF1UnprotectedReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_DF1UnprotectedReadRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_DF1UnprotectedReadRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

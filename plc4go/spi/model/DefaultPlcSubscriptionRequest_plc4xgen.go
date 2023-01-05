@@ -22,17 +22,26 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var _ = fmt.Printf
 
-func (d *DefaultPlcSubscriptionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (d *DefaultPlcSubscriptionRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := d.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (d *DefaultPlcSubscriptionRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("PlcSubscriptionRequest"); err != nil {
 		return err
 	}
-	if err := d.DefaultRequest.Serialize(writeBuffer); err != nil {
+	if err := d.DefaultPlcTagRequest.SerializeWithWriteBuffer(writeBuffer); err != nil {
 		return err
 	}
 	if err := writeBuffer.PushContext("types", utils.WithRenderAsList(true)); err != nil {
@@ -58,7 +67,7 @@ func (d *DefaultPlcSubscriptionRequest) Serialize(writeBuffer utils.WriteBuffer)
 			if err := writeBuffer.PushContext(name); err != nil {
 				return err
 			}
-			if err := serializable.Serialize(writeBuffer); err != nil {
+			if err := serializable.SerializeWithWriteBuffer(writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext(name); err != nil {
@@ -80,7 +89,7 @@ func (d *DefaultPlcSubscriptionRequest) Serialize(writeBuffer utils.WriteBuffer)
 			if err := writeBuffer.PushContext("subscriber"); err != nil {
 				return err
 			}
-			if err := serializableField.Serialize(writeBuffer); err != nil {
+			if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext("subscriber"); err != nil {

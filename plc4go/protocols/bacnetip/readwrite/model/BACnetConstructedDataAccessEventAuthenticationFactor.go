@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetLengthInBytes
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessEventAuthenticationFactorParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessEventAuthenticationFactor, error) {
+func BACnetConstructedDataAccessEventAuthenticationFactorParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessEventAuthenticationFactor, error) {
+	return BACnetConstructedDataAccessEventAuthenticationFactorParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataAccessEventAuthenticationFactorParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessEventAuthenticationFactor, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessEventAuthenticationFactor"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataAccessEventAuthenticationFactorParse(readBuffer utils.
 	if pullErr := readBuffer.PullContext("accessEventAuthenticationFactor"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessEventAuthenticationFactor")
 	}
-	_accessEventAuthenticationFactor, _accessEventAuthenticationFactorErr := BACnetAuthenticationFactorParse(readBuffer)
+	_accessEventAuthenticationFactor, _accessEventAuthenticationFactorErr := BACnetAuthenticationFactorParseWithBuffer(readBuffer)
 	if _accessEventAuthenticationFactorErr != nil {
 		return nil, errors.Wrap(_accessEventAuthenticationFactorErr, "Error parsing 'accessEventAuthenticationFactor' field of BACnetConstructedDataAccessEventAuthenticationFactor")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataAccessEventAuthenticationFactorParse(readBuffer utils.
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

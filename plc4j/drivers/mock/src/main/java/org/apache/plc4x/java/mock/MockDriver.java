@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.mock.connection.MockConnection;
-import org.apache.plc4x.java.mock.field.MockField;
+import org.apache.plc4x.java.mock.tag.MockTag;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,8 +62,8 @@ public class MockDriver implements PlcDriver {
     }
 
     @Override
-    public MockField prepareField(String query){
-        return MockField.of(query);
+    public MockTag prepareTag(String tagAddress){
+        return MockTag.of(tagAddress);
     }
 
 }

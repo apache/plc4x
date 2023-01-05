@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataUTCOffset) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataUTCOffsetParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUTCOffset, error) {
+func BACnetConstructedDataUTCOffsetParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUTCOffset, error) {
+	return BACnetConstructedDataUTCOffsetParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataUTCOffsetParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUTCOffset, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUTCOffset"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataUTCOffsetParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("utcOffset"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for utcOffset")
 	}
-	_utcOffset, _utcOffsetErr := BACnetApplicationTagParse(readBuffer)
+	_utcOffset, _utcOffsetErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _utcOffsetErr != nil {
 		return nil, errors.Wrap(_utcOffsetErr, "Error parsing 'utcOffset' field of BACnetConstructedDataUTCOffset")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataUTCOffsetParse(readBuffer utils.ReadBuffer, tagNumber 
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataUTCOffset) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataUTCOffset) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataUTCOffset) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

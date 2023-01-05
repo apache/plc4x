@@ -107,7 +107,11 @@ func (m *_BACnetCredentialAuthenticationFactor) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetCredentialAuthenticationFactorParse(readBuffer utils.ReadBuffer) (BACnetCredentialAuthenticationFactor, error) {
+func BACnetCredentialAuthenticationFactorParse(theBytes []byte) (BACnetCredentialAuthenticationFactor, error) {
+	return BACnetCredentialAuthenticationFactorParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetCredentialAuthenticationFactorParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCredentialAuthenticationFactor, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCredentialAuthenticationFactor"); pullErr != nil {
@@ -120,7 +124,7 @@ func BACnetCredentialAuthenticationFactorParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("disable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for disable")
 	}
-	_disable, _disableErr := BACnetAccessAuthenticationFactorDisableTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_disable, _disableErr := BACnetAccessAuthenticationFactorDisableTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _disableErr != nil {
 		return nil, errors.Wrap(_disableErr, "Error parsing 'disable' field of BACnetCredentialAuthenticationFactor")
 	}
@@ -133,7 +137,7 @@ func BACnetCredentialAuthenticationFactorParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("authenticationFactor"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for authenticationFactor")
 	}
-	_authenticationFactor, _authenticationFactorErr := BACnetAuthenticationFactorEnclosedParse(readBuffer, uint8(uint8(1)))
+	_authenticationFactor, _authenticationFactorErr := BACnetAuthenticationFactorEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _authenticationFactorErr != nil {
 		return nil, errors.Wrap(_authenticationFactorErr, "Error parsing 'authenticationFactor' field of BACnetCredentialAuthenticationFactor")
 	}
@@ -153,7 +157,15 @@ func BACnetCredentialAuthenticationFactorParse(readBuffer utils.ReadBuffer) (BAC
 	}, nil
 }
 
-func (m *_BACnetCredentialAuthenticationFactor) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetCredentialAuthenticationFactor) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetCredentialAuthenticationFactor) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetCredentialAuthenticationFactor"); pushErr != nil {

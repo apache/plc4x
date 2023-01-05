@@ -30,8 +30,8 @@ import (
 type ComObjectValueType uint8
 
 type IComObjectValueType interface {
+	utils.Serializable
 	SizeInBytes() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -251,7 +251,11 @@ func (m ComObjectValueType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ComObjectValueTypeParse(readBuffer utils.ReadBuffer) (ComObjectValueType, error) {
+func ComObjectValueTypeParse(theBytes []byte) (ComObjectValueType, error) {
+	return ComObjectValueTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ComObjectValueTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ComObjectValueType, error) {
 	val, err := readBuffer.ReadUint8("ComObjectValueType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ComObjectValueType")
@@ -264,7 +268,15 @@ func ComObjectValueTypeParse(readBuffer utils.ReadBuffer) (ComObjectValueType, e
 	}
 }
 
-func (e ComObjectValueType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ComObjectValueType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ComObjectValueType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ComObjectValueType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

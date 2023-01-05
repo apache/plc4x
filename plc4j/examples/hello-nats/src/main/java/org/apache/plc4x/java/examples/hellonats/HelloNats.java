@@ -65,7 +65,7 @@ public class HelloNats {
             final Dispatcher dispatcher = natsConnection.createDispatcher();
             final JetStreamSubscription jetStreamSubscription = jetStream.subscribe(options.getNatsTopic(), dispatcher, msg -> {
                 final String connectionUrl = msg.getHeaders().getFirst("connection-url");
-                final List<String> fields = msg.getHeaders().get("fields");
+                final List<String> tags = msg.getHeaders().get("tags");
 
                 // Establish a connection to the plc using the url provided as first argument
                 try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionUrl)) {
@@ -79,25 +79,25 @@ public class HelloNats {
                     // Create a new read request:
                     // - Give the single item requested the alias name "value"
                     PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-                    for (int i = 0; i < fields.size(); i++) {
-                        builder.addItem("value-" + i, fields.get(i));
+                    for (int i = 0; i < tags.size(); i++) {
+                        builder.addItem("value-" + i, tags.get(i));
                     }
                     PlcReadRequest readRequest = builder.build();
 
                     // Actually execute the read request (synchronously)
                     PlcReadResponse response = readRequest.execute().get();
 
-                    for (String fieldName : response.getFieldNames()) {
-                        if (response.getResponseCode(fieldName) == PlcResponseCode.OK) {
-                            final PlcValue plcValue = response.getPlcValue(fieldName);
+                    for (String tagName : response.getTagNames()) {
+                        if (response.getResponseCode(tagName) == PlcResponseCode.OK) {
+                            final PlcValue plcValue = response.getPlcValue(tagName);
                         }
                         // Something went wrong, to output an error message instead.
                         else {
-                            logger.error("Error[{}]: {}", fieldName, response.getResponseCode(fieldName).name());
+                            logger.error("Error[{}]: {}", tagName, response.getResponseCode(tagName).name());
                         }
                     }
                 } catch (ExecutionException e) {
-                    logger.error("Error[{}]: {}", fieldName, response.getResponseCode(fieldName).name());
+                    logger.error("Error[{}]: {}", tagName, response.getResponseCode(tagName).name());
                 }
             }, false);
             natsConnection.flush(Duration.ofSeconds(1));

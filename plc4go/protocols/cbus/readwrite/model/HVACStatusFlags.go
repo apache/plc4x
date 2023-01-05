@@ -187,7 +187,11 @@ func (m *_HVACStatusFlags) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACStatusFlagsParse(readBuffer utils.ReadBuffer) (HVACStatusFlags, error) {
+func HVACStatusFlagsParse(theBytes []byte) (HVACStatusFlags, error) {
+	return HVACStatusFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func HVACStatusFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACStatusFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACStatusFlags"); pullErr != nil {
@@ -289,7 +293,15 @@ func HVACStatusFlagsParse(readBuffer utils.ReadBuffer) (HVACStatusFlags, error) 
 	}, nil
 }
 
-func (m *_HVACStatusFlags) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_HVACStatusFlags) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_HVACStatusFlags) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HVACStatusFlags"); pushErr != nil {

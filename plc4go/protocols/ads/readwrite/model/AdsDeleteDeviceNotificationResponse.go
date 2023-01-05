@@ -135,7 +135,11 @@ func (m *_AdsDeleteDeviceNotificationResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDeleteDeviceNotificationResponseParse(readBuffer utils.ReadBuffer) (AdsDeleteDeviceNotificationResponse, error) {
+func AdsDeleteDeviceNotificationResponseParse(theBytes []byte) (AdsDeleteDeviceNotificationResponse, error) {
+	return AdsDeleteDeviceNotificationResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsDeleteDeviceNotificationResponseParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDeleteDeviceNotificationResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDeleteDeviceNotificationResponse"); pullErr != nil {
@@ -148,7 +152,7 @@ func AdsDeleteDeviceNotificationResponseParse(readBuffer utils.ReadBuffer) (AdsD
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for result")
 	}
-	_result, _resultErr := ReturnCodeParse(readBuffer)
+	_result, _resultErr := ReturnCodeParseWithBuffer(readBuffer)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsDeleteDeviceNotificationResponse")
 	}
@@ -170,7 +174,15 @@ func AdsDeleteDeviceNotificationResponseParse(readBuffer utils.ReadBuffer) (AdsD
 	return _child, nil
 }
 
-func (m *_AdsDeleteDeviceNotificationResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDeleteDeviceNotificationResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsDeleteDeviceNotificationResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

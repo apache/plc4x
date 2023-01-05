@@ -47,6 +47,7 @@
                 <protocolName>opcua</protocolName>
                 <languageName>java</languageName>
                 <outputFlavor>read-write</outputFlavor>
+                <outputDir>src/main/generated</outputDir>
               </configuration>
             </execution>
           </executions>
@@ -120,14 +121,6 @@
             <usedDependency>org.apache.plc4x:plc4x-code-generation-language-java</usedDependency>
             <usedDependency>org.apache.plc4x:plc4x-protocols-opcua</usedDependency>
           </usedDependencies>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.owasp</groupId>
-        <artifactId>dependency-check-maven</artifactId>
-        <configuration>
-          <skip>true</skip>
-          <suppressionFiles>${project.basedir}/false-positives.xml</suppressionFiles>
         </configuration>
       </plugin>
     </plugins>

@@ -122,7 +122,11 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetLengthInBy
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryBooleanParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryBoolean, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryBooleanParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryBoolean, error) {
+	return BACnetFaultParameterFaultExtendedParametersEntryBooleanParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetFaultParameterFaultExtendedParametersEntryBooleanParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryBoolean"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryBooleanParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
 	}
-	_booleanValue, _booleanValueErr := BACnetApplicationTagParse(readBuffer)
+	_booleanValue, _booleanValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _booleanValueErr != nil {
 		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field of BACnetFaultParameterFaultExtendedParametersEntryBoolean")
 	}
@@ -157,7 +161,15 @@ func BACnetFaultParameterFaultExtendedParametersEntryBooleanParse(readBuffer uti
 	return _child, nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

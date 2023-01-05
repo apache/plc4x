@@ -127,7 +127,11 @@ func (m *_ApduControlContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduControlContainer, error) {
+func ApduControlContainerParse(theBytes []byte, dataLength uint8) (ApduControlContainer, error) {
+	return ApduControlContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), dataLength)
+}
+
+func ApduControlContainerParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduControlContainer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControlContainer"); pullErr != nil {
@@ -140,7 +144,7 @@ func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (A
 	if pullErr := readBuffer.PullContext("controlApdu"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for controlApdu")
 	}
-	_controlApdu, _controlApduErr := ApduControlParse(readBuffer)
+	_controlApdu, _controlApduErr := ApduControlParseWithBuffer(readBuffer)
 	if _controlApduErr != nil {
 		return nil, errors.Wrap(_controlApduErr, "Error parsing 'controlApdu' field of ApduControlContainer")
 	}
@@ -164,7 +168,15 @@ func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (A
 	return _child, nil
 }
 
-func (m *_ApduControlContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduControlContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApduControlContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

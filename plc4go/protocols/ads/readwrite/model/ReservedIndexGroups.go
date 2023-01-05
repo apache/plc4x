@@ -30,7 +30,7 @@ import (
 type ReservedIndexGroups uint32
 
 type IReservedIndexGroups interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -299,7 +299,11 @@ func (m ReservedIndexGroups) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReservedIndexGroupsParse(readBuffer utils.ReadBuffer) (ReservedIndexGroups, error) {
+func ReservedIndexGroupsParse(theBytes []byte) (ReservedIndexGroups, error) {
+	return ReservedIndexGroupsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ReservedIndexGroupsParseWithBuffer(readBuffer utils.ReadBuffer) (ReservedIndexGroups, error) {
 	val, err := readBuffer.ReadUint32("ReservedIndexGroups", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ReservedIndexGroups")
@@ -312,7 +316,15 @@ func ReservedIndexGroupsParse(readBuffer utils.ReadBuffer) (ReservedIndexGroups,
 	}
 }
 
-func (e ReservedIndexGroups) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ReservedIndexGroups) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ReservedIndexGroups) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint32("ReservedIndexGroups", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -30,7 +30,7 @@ import (
 type BACnetCharacterEncoding byte
 
 type IBACnetCharacterEncoding interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -119,7 +119,11 @@ func (m BACnetCharacterEncoding) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetCharacterEncodingParse(readBuffer utils.ReadBuffer) (BACnetCharacterEncoding, error) {
+func BACnetCharacterEncodingParse(theBytes []byte) (BACnetCharacterEncoding, error) {
+	return BACnetCharacterEncodingParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetCharacterEncodingParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetCharacterEncoding, error) {
 	val, err := readBuffer.ReadByte("BACnetCharacterEncoding")
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetCharacterEncoding")
@@ -132,7 +136,15 @@ func BACnetCharacterEncodingParse(readBuffer utils.ReadBuffer) (BACnetCharacterE
 	}
 }
 
-func (e BACnetCharacterEncoding) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetCharacterEncoding) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetCharacterEncoding) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteByte("BACnetCharacterEncoding", byte(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

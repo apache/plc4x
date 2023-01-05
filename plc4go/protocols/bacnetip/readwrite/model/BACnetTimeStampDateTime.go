@@ -122,7 +122,11 @@ func (m *_BACnetTimeStampDateTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetTimeStampDateTimeParse(readBuffer utils.ReadBuffer) (BACnetTimeStampDateTime, error) {
+func BACnetTimeStampDateTimeParse(theBytes []byte) (BACnetTimeStampDateTime, error) {
+	return BACnetTimeStampDateTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetTimeStampDateTimeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTimeStampDateTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeStampDateTime"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetTimeStampDateTimeParse(readBuffer utils.ReadBuffer) (BACnetTimeStampD
 	if pullErr := readBuffer.PullContext("dateTimeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateTimeValue")
 	}
-	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(2)))
+	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParseWithBuffer(readBuffer, uint8(uint8(2)))
 	if _dateTimeValueErr != nil {
 		return nil, errors.Wrap(_dateTimeValueErr, "Error parsing 'dateTimeValue' field of BACnetTimeStampDateTime")
 	}
@@ -157,7 +161,15 @@ func BACnetTimeStampDateTimeParse(readBuffer utils.ReadBuffer) (BACnetTimeStampD
 	return _child, nil
 }
 
-func (m *_BACnetTimeStampDateTime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTimeStampDateTime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetTimeStampDateTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

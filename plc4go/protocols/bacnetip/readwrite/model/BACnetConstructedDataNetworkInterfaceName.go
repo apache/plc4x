@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataNetworkInterfaceName) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNetworkInterfaceNameParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkInterfaceName, error) {
+func BACnetConstructedDataNetworkInterfaceNameParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkInterfaceName, error) {
+	return BACnetConstructedDataNetworkInterfaceNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataNetworkInterfaceNameParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkInterfaceName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkInterfaceName"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataNetworkInterfaceNameParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("networkInterfaceName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkInterfaceName")
 	}
-	_networkInterfaceName, _networkInterfaceNameErr := BACnetApplicationTagParse(readBuffer)
+	_networkInterfaceName, _networkInterfaceNameErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _networkInterfaceNameErr != nil {
 		return nil, errors.Wrap(_networkInterfaceNameErr, "Error parsing 'networkInterfaceName' field of BACnetConstructedDataNetworkInterfaceName")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataNetworkInterfaceNameParse(readBuffer utils.ReadBuffer,
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataNetworkInterfaceName) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataNetworkInterfaceName) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataNetworkInterfaceName) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

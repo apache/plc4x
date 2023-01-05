@@ -184,7 +184,11 @@ func (m *_LevelInformation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LevelInformationParse(readBuffer utils.ReadBuffer) (LevelInformation, error) {
+func LevelInformationParse(theBytes []byte) (LevelInformation, error) {
+	return LevelInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func LevelInformationParseWithBuffer(readBuffer utils.ReadBuffer) (LevelInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LevelInformation"); pullErr != nil {
@@ -253,11 +257,11 @@ func LevelInformationParse(readBuffer utils.ReadBuffer) (LevelInformation, error
 	var typeSwitchError error
 	switch {
 	case isAbsent == bool(true): // LevelInformationAbsent
-		_childTemp, typeSwitchError = LevelInformationAbsentParse(readBuffer)
+		_childTemp, typeSwitchError = LevelInformationAbsentParseWithBuffer(readBuffer)
 	case 0 == 0 && isCorrupted == bool(true): // LevelInformationCorrupted
-		_childTemp, typeSwitchError = LevelInformationCorruptedParse(readBuffer)
+		_childTemp, typeSwitchError = LevelInformationCorruptedParseWithBuffer(readBuffer)
 	case 0 == 0: // LevelInformationNormal
-		_childTemp, typeSwitchError = LevelInformationNormalParse(readBuffer)
+		_childTemp, typeSwitchError = LevelInformationNormalParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [isAbsent=%v, isCorrupted=%v]", isAbsent, isCorrupted)
 	}

@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataLinkSpeed) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLinkSpeedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLinkSpeed, error) {
+func BACnetConstructedDataLinkSpeedParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLinkSpeed, error) {
+	return BACnetConstructedDataLinkSpeedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataLinkSpeedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLinkSpeed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLinkSpeed"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataLinkSpeedParse(readBuffer utils.ReadBuffer, tagNumber 
 	if pullErr := readBuffer.PullContext("linkSpeed"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for linkSpeed")
 	}
-	_linkSpeed, _linkSpeedErr := BACnetApplicationTagParse(readBuffer)
+	_linkSpeed, _linkSpeedErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _linkSpeedErr != nil {
 		return nil, errors.Wrap(_linkSpeedErr, "Error parsing 'linkSpeed' field of BACnetConstructedDataLinkSpeed")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataLinkSpeedParse(readBuffer utils.ReadBuffer, tagNumber 
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataLinkSpeed) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLinkSpeed) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataLinkSpeed) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

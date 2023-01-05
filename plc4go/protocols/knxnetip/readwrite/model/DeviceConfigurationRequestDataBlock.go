@@ -115,7 +115,11 @@ func (m *_DeviceConfigurationRequestDataBlock) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DeviceConfigurationRequestDataBlockParse(readBuffer utils.ReadBuffer) (DeviceConfigurationRequestDataBlock, error) {
+func DeviceConfigurationRequestDataBlockParse(theBytes []byte) (DeviceConfigurationRequestDataBlock, error) {
+	return DeviceConfigurationRequestDataBlockParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func DeviceConfigurationRequestDataBlockParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceConfigurationRequestDataBlock, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationRequestDataBlock"); pullErr != nil {
@@ -174,7 +178,15 @@ func DeviceConfigurationRequestDataBlockParse(readBuffer utils.ReadBuffer) (Devi
 	}, nil
 }
 
-func (m *_DeviceConfigurationRequestDataBlock) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_DeviceConfigurationRequestDataBlock) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_DeviceConfigurationRequestDataBlock) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("DeviceConfigurationRequestDataBlock"); pushErr != nil {

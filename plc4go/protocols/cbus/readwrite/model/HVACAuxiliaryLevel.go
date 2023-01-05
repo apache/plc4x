@@ -153,7 +153,11 @@ func (m *_HVACAuxiliaryLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACAuxiliaryLevelParse(readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, error) {
+func HVACAuxiliaryLevelParse(theBytes []byte) (HVACAuxiliaryLevel, error) {
+	return HVACAuxiliaryLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func HVACAuxiliaryLevelParseWithBuffer(readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACAuxiliaryLevel"); pullErr != nil {
@@ -225,7 +229,15 @@ func HVACAuxiliaryLevelParse(readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, e
 	}, nil
 }
 
-func (m *_HVACAuxiliaryLevel) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_HVACAuxiliaryLevel) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HVACAuxiliaryLevel"); pushErr != nil {

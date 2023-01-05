@@ -20,7 +20,7 @@ package org.apache.plc4x.java.examples.integration.iotdb;
 
 public interface IIoTDBWriter {
     void initStorageGroup(String storageGroup);
-    void writeData(String deviceId, String field, long timestamp, Integer value);
+    void writeData(String deviceId, String tag, long timestamp, Integer value);
     void close();
     void createTimeseries(String timeseries, String dataType);
 }

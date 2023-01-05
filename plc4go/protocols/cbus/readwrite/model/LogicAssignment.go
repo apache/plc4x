@@ -156,7 +156,11 @@ func (m *_LogicAssignment) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LogicAssignmentParse(readBuffer utils.ReadBuffer) (LogicAssignment, error) {
+func LogicAssignmentParse(theBytes []byte) (LogicAssignment, error) {
+	return LogicAssignmentParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func LogicAssignmentParseWithBuffer(readBuffer utils.ReadBuffer) (LogicAssignment, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LogicAssignment"); pullErr != nil {
@@ -258,7 +262,15 @@ func LogicAssignmentParse(readBuffer utils.ReadBuffer) (LogicAssignment, error) 
 	}, nil
 }
 
-func (m *_LogicAssignment) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_LogicAssignment) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_LogicAssignment) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("LogicAssignment"); pushErr != nil {

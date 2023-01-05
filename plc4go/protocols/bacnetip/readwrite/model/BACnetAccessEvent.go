@@ -30,7 +30,7 @@ import (
 type BACnetAccessEvent uint16
 
 type IBACnetAccessEvent interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -413,7 +413,11 @@ func (m BACnetAccessEvent) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessEventParse(readBuffer utils.ReadBuffer) (BACnetAccessEvent, error) {
+func BACnetAccessEventParse(theBytes []byte) (BACnetAccessEvent, error) {
+	return BACnetAccessEventParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetAccessEventParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessEvent, error) {
 	val, err := readBuffer.ReadUint16("BACnetAccessEvent", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessEvent")
@@ -426,7 +430,15 @@ func BACnetAccessEventParse(readBuffer utils.ReadBuffer) (BACnetAccessEvent, err
 	}
 }
 
-func (e BACnetAccessEvent) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAccessEvent) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetAccessEvent) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetAccessEvent", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -101,7 +101,11 @@ func (m *_CBusMessage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusMessageParse(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessage, error) {
+func CBusMessageParse(theBytes []byte, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessage, error) {
+	return CBusMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes), isResponse, requestContext, cBusOptions)
+}
+
+func CBusMessageParseWithBuffer(readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusMessage"); pullErr != nil {
@@ -131,9 +135,9 @@ func CBusMessageParse(readBuffer utils.ReadBuffer, isResponse bool, requestConte
 	var typeSwitchError error
 	switch {
 	case isResponse == bool(false): // CBusMessageToServer
-		_childTemp, typeSwitchError = CBusMessageToServerParse(readBuffer, isResponse, requestContext, cBusOptions)
+		_childTemp, typeSwitchError = CBusMessageToServerParseWithBuffer(readBuffer, isResponse, requestContext, cBusOptions)
 	case isResponse == bool(true): // CBusMessageToClient
-		_childTemp, typeSwitchError = CBusMessageToClientParse(readBuffer, isResponse, requestContext, cBusOptions)
+		_childTemp, typeSwitchError = CBusMessageToClientParseWithBuffer(readBuffer, isResponse, requestContext, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [isResponse=%v]", isResponse)
 	}

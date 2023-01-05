@@ -30,7 +30,7 @@ import (
 type ErrorReportingSeverity uint8
 
 type IErrorReportingSeverity interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -131,7 +131,11 @@ func (m ErrorReportingSeverity) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingSeverityParse(readBuffer utils.ReadBuffer) (ErrorReportingSeverity, error) {
+func ErrorReportingSeverityParse(theBytes []byte) (ErrorReportingSeverity, error) {
+	return ErrorReportingSeverityParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ErrorReportingSeverityParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingSeverity, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingSeverity", 3)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingSeverity")
@@ -144,7 +148,15 @@ func ErrorReportingSeverityParse(readBuffer utils.ReadBuffer) (ErrorReportingSev
 	}
 }
 
-func (e ErrorReportingSeverity) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ErrorReportingSeverity) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ErrorReportingSeverity) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ErrorReportingSeverity", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

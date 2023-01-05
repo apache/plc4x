@@ -141,7 +141,11 @@ func (m *_MeteringData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MeteringDataParse(readBuffer utils.ReadBuffer) (MeteringData, error) {
+func MeteringDataParse(theBytes []byte) (MeteringData, error) {
+	return MeteringDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func MeteringDataParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeteringData"); pullErr != nil {
@@ -159,7 +163,7 @@ func MeteringDataParse(readBuffer utils.ReadBuffer) (MeteringData, error) {
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := MeteringCommandTypeContainerParse(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := MeteringCommandTypeContainerParseWithBuffer(readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of MeteringData")
 	}
@@ -191,25 +195,25 @@ func MeteringDataParse(readBuffer utils.ReadBuffer) (MeteringData, error) {
 	var typeSwitchError error
 	switch {
 	case commandType == MeteringCommandType_EVENT && argument == 0x01: // MeteringDataMeasureElectricity
-		_childTemp, typeSwitchError = MeteringDataMeasureElectricityParse(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataMeasureElectricityParseWithBuffer(readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x02: // MeteringDataMeasureGas
-		_childTemp, typeSwitchError = MeteringDataMeasureGasParse(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataMeasureGasParseWithBuffer(readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x03: // MeteringDataMeasureDrinkingWater
-		_childTemp, typeSwitchError = MeteringDataMeasureDrinkingWaterParse(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataMeasureDrinkingWaterParseWithBuffer(readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x04: // MeteringDataMeasureOtherWater
-		_childTemp, typeSwitchError = MeteringDataMeasureOtherWaterParse(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataMeasureOtherWaterParseWithBuffer(readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x05: // MeteringDataMeasureOil
-		_childTemp, typeSwitchError = MeteringDataMeasureOilParse(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataMeasureOilParseWithBuffer(readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x81: // MeteringDataElectricityConsumption
-		_childTemp, typeSwitchError = MeteringDataElectricityConsumptionParse(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataElectricityConsumptionParseWithBuffer(readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x82: // MeteringDataGasConsumption
-		_childTemp, typeSwitchError = MeteringDataGasConsumptionParse(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataGasConsumptionParseWithBuffer(readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x83: // MeteringDataDrinkingWaterConsumption
-		_childTemp, typeSwitchError = MeteringDataDrinkingWaterConsumptionParse(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataDrinkingWaterConsumptionParseWithBuffer(readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x84: // MeteringDataOtherWaterConsumption
-		_childTemp, typeSwitchError = MeteringDataOtherWaterConsumptionParse(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataOtherWaterConsumptionParseWithBuffer(readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x85: // MeteringDataOilConsumption
-		_childTemp, typeSwitchError = MeteringDataOilConsumptionParse(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataOilConsumptionParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v, argument=%v]", commandType, argument)
 	}

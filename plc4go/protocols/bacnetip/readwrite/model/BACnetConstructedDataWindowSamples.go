@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataWindowSamples) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataWindowSamplesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWindowSamples, error) {
+func BACnetConstructedDataWindowSamplesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWindowSamples, error) {
+	return BACnetConstructedDataWindowSamplesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataWindowSamplesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWindowSamples, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataWindowSamples"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataWindowSamplesParse(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("windowSamples"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for windowSamples")
 	}
-	_windowSamples, _windowSamplesErr := BACnetApplicationTagParse(readBuffer)
+	_windowSamples, _windowSamplesErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _windowSamplesErr != nil {
 		return nil, errors.Wrap(_windowSamplesErr, "Error parsing 'windowSamples' field of BACnetConstructedDataWindowSamples")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataWindowSamplesParse(readBuffer utils.ReadBuffer, tagNum
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataWindowSamples) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataWindowSamples) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataWindowSamples) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

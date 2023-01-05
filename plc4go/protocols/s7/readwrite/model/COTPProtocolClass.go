@@ -30,7 +30,7 @@ import (
 type COTPProtocolClass uint8
 
 type ICOTPProtocolClass interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -113,7 +113,11 @@ func (m COTPProtocolClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPProtocolClassParse(readBuffer utils.ReadBuffer) (COTPProtocolClass, error) {
+func COTPProtocolClassParse(theBytes []byte) (COTPProtocolClass, error) {
+	return COTPProtocolClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func COTPProtocolClassParseWithBuffer(readBuffer utils.ReadBuffer) (COTPProtocolClass, error) {
 	val, err := readBuffer.ReadUint8("COTPProtocolClass", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading COTPProtocolClass")
@@ -126,7 +130,15 @@ func COTPProtocolClassParse(readBuffer utils.ReadBuffer) (COTPProtocolClass, err
 	}
 }
 
-func (e COTPProtocolClass) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e COTPProtocolClass) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e COTPProtocolClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("COTPProtocolClass", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

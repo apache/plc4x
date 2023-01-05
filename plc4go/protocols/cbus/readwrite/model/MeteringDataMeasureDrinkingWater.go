@@ -102,7 +102,11 @@ func (m *_MeteringDataMeasureDrinkingWater) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MeteringDataMeasureDrinkingWaterParse(readBuffer utils.ReadBuffer) (MeteringDataMeasureDrinkingWater, error) {
+func MeteringDataMeasureDrinkingWaterParse(theBytes []byte) (MeteringDataMeasureDrinkingWater, error) {
+	return MeteringDataMeasureDrinkingWaterParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func MeteringDataMeasureDrinkingWaterParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringDataMeasureDrinkingWater, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeteringDataMeasureDrinkingWater"); pullErr != nil {
@@ -123,7 +127,15 @@ func MeteringDataMeasureDrinkingWaterParse(readBuffer utils.ReadBuffer) (Meterin
 	return _child, nil
 }
 
-func (m *_MeteringDataMeasureDrinkingWater) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MeteringDataMeasureDrinkingWater) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_MeteringDataMeasureDrinkingWater) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

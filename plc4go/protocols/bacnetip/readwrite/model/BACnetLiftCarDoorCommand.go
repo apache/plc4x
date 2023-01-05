@@ -30,7 +30,7 @@ import (
 type BACnetLiftCarDoorCommand uint8
 
 type IBACnetLiftCarDoorCommand interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -101,7 +101,11 @@ func (m BACnetLiftCarDoorCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLiftCarDoorCommandParse(readBuffer utils.ReadBuffer) (BACnetLiftCarDoorCommand, error) {
+func BACnetLiftCarDoorCommandParse(theBytes []byte) (BACnetLiftCarDoorCommand, error) {
+	return BACnetLiftCarDoorCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLiftCarDoorCommandParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLiftCarDoorCommand, error) {
 	val, err := readBuffer.ReadUint8("BACnetLiftCarDoorCommand", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLiftCarDoorCommand")
@@ -114,7 +118,15 @@ func BACnetLiftCarDoorCommandParse(readBuffer utils.ReadBuffer) (BACnetLiftCarDo
 	}
 }
 
-func (e BACnetLiftCarDoorCommand) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLiftCarDoorCommand) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetLiftCarDoorCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetLiftCarDoorCommand", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

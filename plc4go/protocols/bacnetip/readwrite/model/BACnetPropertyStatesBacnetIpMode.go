@@ -122,7 +122,11 @@ func (m *_BACnetPropertyStatesBacnetIpMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesBacnetIpModeParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBacnetIpMode, error) {
+func BACnetPropertyStatesBacnetIpModeParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesBacnetIpMode, error) {
+	return BACnetPropertyStatesBacnetIpModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+}
+
+func BACnetPropertyStatesBacnetIpModeParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBacnetIpMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBacnetIpMode"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPropertyStatesBacnetIpModeParse(readBuffer utils.ReadBuffer, peekedTa
 	if pullErr := readBuffer.PullContext("bacnetIpMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bacnetIpMode")
 	}
-	_bacnetIpMode, _bacnetIpModeErr := BACnetIPModeTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_bacnetIpMode, _bacnetIpModeErr := BACnetIPModeTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _bacnetIpModeErr != nil {
 		return nil, errors.Wrap(_bacnetIpModeErr, "Error parsing 'bacnetIpMode' field of BACnetPropertyStatesBacnetIpMode")
 	}
@@ -157,7 +161,15 @@ func BACnetPropertyStatesBacnetIpModeParse(readBuffer utils.ReadBuffer, peekedTa
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesBacnetIpMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesBacnetIpMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesBacnetIpMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

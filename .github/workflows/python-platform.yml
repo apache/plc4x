@@ -1,0 +1,150 @@
+# ----------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#    https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+# ----------------------------------------------------------------------------
+name: "Python Platform Compatibility"
+
+on:
+  push:
+    branches: [ "develop", "plc4py" ]
+    paths:
+      - code-generation/**
+      - protocols/**
+      - sandbox/plc4py**
+  pull_request:
+    branches: [ "develop", "plc4py" ]
+    paths:
+      - code-generation/**
+      - protocols/**
+      - sandbox/plc4py**
+  workflow_dispatch:
+    inputs:
+      forceUpdates:
+        description: "Forces a snapshot update"
+        required: false
+        default: 'false'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        python-version: [ '3.7', '3.8', '3.9', '3.10', '3.11' ]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Install libpcap for Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install libpcap-dev
+
+      - name: Install libpcap for macos
+        if: matrix.os == 'macos-latest'
+        run: brew install libpcap
+
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '${{ matrix.python-version }}'
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-package: jdk
+          java-version: 17
+
+      - name: Set Platform options
+        id: platform_opts
+        uses: actions/github-script@v6.3.3
+        env:
+          OS: ${{ matrix.os }}
+        with:
+          script: |
+            const { OS } = process.env
+            if (OS.includes("windows")) {
+              core.setOutput('platform_opts', ``)
+            } else if (OS.includes("macos")) {
+              core.setOutput('platform_opts', `-Djna.library.path="$(find /usr/local/Cellar/libpcap/ -name lib)"`)
+            } else if (OS.includes("ubuntu")) {
+              core.setOutput('platform_opts', ``)
+            } else {
+              core.setOutput('platform_opts', ``)
+            }
+
+      - name: Calculate platform suffix
+        id: platform_suffix
+        uses: actions/github-script@v6.3.3
+        env:
+          OS: ${{ matrix.os }}
+        with:
+          script: |
+            const { OS } = process.env
+            if (OS.includes("windows")) {
+              core.setOutput('platform_suffix', `.cmd`)
+            } else {
+              core.setOutput('platform_suffix', ``)
+            }
+
+      - name: Set extra options
+        id: extra_options
+        uses: actions/github-script@v6.3.3
+        env:
+          FORCE_UPDATE: ${{ github.event.inputs.forceUpdates }}
+        with:
+          script: |
+            const { FORCE_UPDATE } = process.env
+            if (FORCE_UPDATE.includes("true")) {
+              core.setOutput('extra_options', `-U`)
+            } else {
+              core.setOutput('extra_options', ``)
+            }
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-   
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest          
+
+#      - name: Lint with flake8
+#        run: |
+#          # stop the build if there are Python syntax errors or undefined names
+#          flake8 ./sandbox/plc4py --count --select=E9,F63,F7,F82 --show-source --statistics
+#          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+#          flake8 ./sandbox/plc4py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+#      - name: Initialize CodeQL
+#        uses: github/codeql-action/init@v2
+#        with:
+#          languages: python
+
+      - name: Run mvnw
+        run: |
+          ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-sandbox,with-python,enable-all-checks' -pl :plc4py -am ${{ steps.platform_opts.outputs.platform_opts }} install
+
+#      - name: Perform CodeQL Analysis
+#        uses: github/codeql-action/analyze@v2

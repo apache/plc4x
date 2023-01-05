@@ -122,7 +122,11 @@ func (m *_BACnetChannelValueLightingCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetChannelValueLightingCommand, error) {
+func BACnetChannelValueLightingCommandParse(theBytes []byte) (BACnetChannelValueLightingCommand, error) {
+	return BACnetChannelValueLightingCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetChannelValueLightingCommandParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueLightingCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueLightingCommand"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetChannelValueLightingCommandParse(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("ligthingCommandValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ligthingCommandValue")
 	}
-	_ligthingCommandValue, _ligthingCommandValueErr := BACnetLightingCommandEnclosedParse(readBuffer, uint8(uint8(0)))
+	_ligthingCommandValue, _ligthingCommandValueErr := BACnetLightingCommandEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _ligthingCommandValueErr != nil {
 		return nil, errors.Wrap(_ligthingCommandValueErr, "Error parsing 'ligthingCommandValue' field of BACnetChannelValueLightingCommand")
 	}
@@ -157,7 +161,15 @@ func BACnetChannelValueLightingCommandParse(readBuffer utils.ReadBuffer) (BACnet
 	return _child, nil
 }
 
-func (m *_BACnetChannelValueLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetChannelValueLightingCommand) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetChannelValueLightingCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

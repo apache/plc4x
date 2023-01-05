@@ -134,7 +134,11 @@ func (m *_CALDataAcknowledge) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALDataAcknowledgeParse(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataAcknowledge, error) {
+func CALDataAcknowledgeParse(theBytes []byte, requestContext RequestContext) (CALDataAcknowledge, error) {
+	return CALDataAcknowledgeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), requestContext)
+}
+
+func CALDataAcknowledgeParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataAcknowledge, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataAcknowledge"); pullErr != nil {
@@ -147,7 +151,7 @@ func CALDataAcknowledgeParse(readBuffer utils.ReadBuffer, requestContext Request
 	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
 	}
-	_paramNo, _paramNoErr := ParameterParse(readBuffer)
+	_paramNo, _paramNoErr := ParameterParseWithBuffer(readBuffer)
 	if _paramNoErr != nil {
 		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataAcknowledge")
 	}
@@ -179,7 +183,15 @@ func CALDataAcknowledgeParse(readBuffer utils.ReadBuffer, requestContext Request
 	return _child, nil
 }
 
-func (m *_CALDataAcknowledge) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CALDataAcknowledge) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CALDataAcknowledge) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

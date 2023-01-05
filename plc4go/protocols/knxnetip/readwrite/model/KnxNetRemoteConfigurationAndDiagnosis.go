@@ -124,7 +124,11 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxNetRemoteConfigurationAndDiagnosisParse(readBuffer utils.ReadBuffer) (KnxNetRemoteConfigurationAndDiagnosis, error) {
+func KnxNetRemoteConfigurationAndDiagnosisParse(theBytes []byte) (KnxNetRemoteConfigurationAndDiagnosis, error) {
+	return KnxNetRemoteConfigurationAndDiagnosisParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func KnxNetRemoteConfigurationAndDiagnosisParseWithBuffer(readBuffer utils.ReadBuffer) (KnxNetRemoteConfigurationAndDiagnosis, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetRemoteConfigurationAndDiagnosis"); pullErr != nil {
@@ -153,7 +157,15 @@ func KnxNetRemoteConfigurationAndDiagnosisParse(readBuffer utils.ReadBuffer) (Kn
 	return _child, nil
 }
 
-func (m *_KnxNetRemoteConfigurationAndDiagnosis) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_KnxNetRemoteConfigurationAndDiagnosis) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_KnxNetRemoteConfigurationAndDiagnosis) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

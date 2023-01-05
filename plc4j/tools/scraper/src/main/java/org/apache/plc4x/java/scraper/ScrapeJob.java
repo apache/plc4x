@@ -40,8 +40,8 @@ public interface ScrapeJob {
     Map<String, String> getSourceConnections();
 
     /**
-     * alias -&gt; field-query
+     * alias -&gt; tag-query
      * @return something...
      */
-    Map<String, String> getFields();
+    Map<String, String> getTags();
 }

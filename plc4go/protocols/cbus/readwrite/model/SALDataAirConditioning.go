@@ -126,7 +126,11 @@ func (m *_SALDataAirConditioning) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataAirConditioningParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAirConditioning, error) {
+func SALDataAirConditioningParse(theBytes []byte, applicationId ApplicationId) (SALDataAirConditioning, error) {
+	return SALDataAirConditioningParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+}
+
+func SALDataAirConditioningParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAirConditioning, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataAirConditioning"); pullErr != nil {
@@ -139,7 +143,7 @@ func SALDataAirConditioningParse(readBuffer utils.ReadBuffer, applicationId Appl
 	if pullErr := readBuffer.PullContext("airConditioningData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for airConditioningData")
 	}
-	_airConditioningData, _airConditioningDataErr := AirConditioningDataParse(readBuffer)
+	_airConditioningData, _airConditioningDataErr := AirConditioningDataParseWithBuffer(readBuffer)
 	if _airConditioningDataErr != nil {
 		return nil, errors.Wrap(_airConditioningDataErr, "Error parsing 'airConditioningData' field of SALDataAirConditioning")
 	}
@@ -161,7 +165,15 @@ func SALDataAirConditioningParse(readBuffer utils.ReadBuffer, applicationId Appl
 	return _child, nil
 }
 
-func (m *_SALDataAirConditioning) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataAirConditioning) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SALDataAirConditioning) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

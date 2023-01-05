@@ -22,7 +22,6 @@ import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigException;
 
-import java.time.Duration;
 import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,13 +32,13 @@ public class Job extends AbstractConfig{
 
     private final String name;
     private final int interval;
-    private final List<Field> fields;
+    private final List<Tag> tags;
 
     private static final String INTERVAL_CONFIG = "interval";
     private static final String INTERVAL_DOC = "Polling Interval";
 
-    private static final String FIELDS_CONFIG = "fields";
-    private static final String FIELDS_DOC = "List of fields assigned to Job";
+    private static final String TAGS_CONFIG = "tags";
+    private static final String TAGS_DOC = "List of tags assigned to Job";
 
     public Job(String name, Map originals) {
         super(configDef(), originals);
@@ -47,15 +46,15 @@ public class Job extends AbstractConfig{
         this.name = name;
         this.interval = getInt(INTERVAL_CONFIG);
 
-        fields = new ArrayList<>(getList(FIELDS_CONFIG).size());
-        for (String field : getList(FIELDS_CONFIG)) {
-            fields.add(new Field(field, (String) originals.get(FIELDS_CONFIG + "." + field)));
+        tags = new ArrayList<>(getList(TAGS_CONFIG).size());
+        for (String tagName : getList(TAGS_CONFIG)) {
+            tags.add(new Tag(tagName, (String) originals.get(TAGS_CONFIG + "." + tagName)));
         }
     }
 
     public void validate() throws ConfigException {
-        for (Field field : fields) {
-            field.validate();
+        for (Tag tag : tags) {
+            tag.validate();
         }
     }
 
@@ -67,8 +66,8 @@ public class Job extends AbstractConfig{
         return interval;
     }
 
-    public List<Field> getFields() {
-        return fields;
+    public List<Tag> getTags() {
+        return tags;
     }
 
     protected static ConfigDef configDef() {
@@ -77,18 +76,18 @@ public class Job extends AbstractConfig{
                     ConfigDef.Type.INT,
                     ConfigDef.Importance.LOW,
                     INTERVAL_DOC)
-            .define(FIELDS_CONFIG,
+            .define(TAGS_CONFIG,
                     ConfigDef.Type.LIST,
                     ConfigDef.Importance.LOW,
-                    FIELDS_DOC);
+                TAGS_DOC);
     }
 
     @Override
     public String toString() {
         StringBuilder query = new StringBuilder();
         query.append("\t\t" + name + "." + INTERVAL_CONFIG + "=" + interval + ",\n");
-        for (Field field : fields) {
-            query.append(field.toString());
+        for (Tag tag : tags) {
+            query.append(tag.toString());
         }
         return query.toString();
     }

@@ -124,7 +124,11 @@ func (m *_KnxNetObjectServer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxNetObjectServerParse(readBuffer utils.ReadBuffer) (KnxNetObjectServer, error) {
+func KnxNetObjectServerParse(theBytes []byte) (KnxNetObjectServer, error) {
+	return KnxNetObjectServerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func KnxNetObjectServerParseWithBuffer(readBuffer utils.ReadBuffer) (KnxNetObjectServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetObjectServer"); pullErr != nil {
@@ -153,7 +157,15 @@ func KnxNetObjectServerParse(readBuffer utils.ReadBuffer) (KnxNetObjectServer, e
 	return _child, nil
 }
 
-func (m *_KnxNetObjectServer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_KnxNetObjectServer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_KnxNetObjectServer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

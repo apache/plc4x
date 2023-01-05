@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataBias) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBiasParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBias, error) {
+func BACnetConstructedDataBiasParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBias, error) {
+	return BACnetConstructedDataBiasParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataBiasParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBias, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBias"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataBiasParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if pullErr := readBuffer.PullContext("bias"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bias")
 	}
-	_bias, _biasErr := BACnetApplicationTagParse(readBuffer)
+	_bias, _biasErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _biasErr != nil {
 		return nil, errors.Wrap(_biasErr, "Error parsing 'bias' field of BACnetConstructedDataBias")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataBiasParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataBias) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataBias) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataBias) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

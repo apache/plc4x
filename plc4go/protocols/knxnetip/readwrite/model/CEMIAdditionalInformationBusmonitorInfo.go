@@ -200,7 +200,11 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (CEMIAdditionalInformationBusmonitorInfo, error) {
+func CEMIAdditionalInformationBusmonitorInfoParse(theBytes []byte) (CEMIAdditionalInformationBusmonitorInfo, error) {
+	return CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(readBuffer utils.ReadBuffer) (CEMIAdditionalInformationBusmonitorInfo, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformationBusmonitorInfo"); pullErr != nil {
@@ -278,7 +282,15 @@ func CEMIAdditionalInformationBusmonitorInfoParse(readBuffer utils.ReadBuffer) (
 	return _child, nil
 }
 
-func (m *_CEMIAdditionalInformationBusmonitorInfo) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CEMIAdditionalInformationBusmonitorInfo) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CEMIAdditionalInformationBusmonitorInfo) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

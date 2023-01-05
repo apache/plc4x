@@ -102,7 +102,11 @@ func (m *_TelephonyDataRejectIncomingCall) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyDataRejectIncomingCallParse(readBuffer utils.ReadBuffer) (TelephonyDataRejectIncomingCall, error) {
+func TelephonyDataRejectIncomingCallParse(theBytes []byte) (TelephonyDataRejectIncomingCall, error) {
+	return TelephonyDataRejectIncomingCallParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TelephonyDataRejectIncomingCallParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyDataRejectIncomingCall, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataRejectIncomingCall"); pullErr != nil {
@@ -123,7 +127,15 @@ func TelephonyDataRejectIncomingCallParse(readBuffer utils.ReadBuffer) (Telephon
 	return _child, nil
 }
 
-func (m *_TelephonyDataRejectIncomingCall) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TelephonyDataRejectIncomingCall) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TelephonyDataRejectIncomingCall) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

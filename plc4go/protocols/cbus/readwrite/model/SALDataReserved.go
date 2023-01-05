@@ -105,7 +105,11 @@ func (m *_SALDataReserved) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataReservedParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataReserved, error) {
+func SALDataReservedParse(theBytes []byte, applicationId ApplicationId) (SALDataReserved, error) {
+	return SALDataReservedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+}
+
+func SALDataReservedParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataReserved, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataReserved"); pullErr != nil {
@@ -131,7 +135,15 @@ func SALDataReservedParse(readBuffer utils.ReadBuffer, applicationId Application
 	return _child, nil
 }
 
-func (m *_SALDataReserved) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataReserved) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SALDataReserved) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

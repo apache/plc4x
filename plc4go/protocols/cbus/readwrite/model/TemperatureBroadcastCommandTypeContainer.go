@@ -30,9 +30,9 @@ import (
 type TemperatureBroadcastCommandTypeContainer uint8
 
 type ITemperatureBroadcastCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() TemperatureBroadcastCommandType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -344,7 +344,11 @@ func (m TemperatureBroadcastCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TemperatureBroadcastCommandTypeContainerParse(readBuffer utils.ReadBuffer) (TemperatureBroadcastCommandTypeContainer, error) {
+func TemperatureBroadcastCommandTypeContainerParse(theBytes []byte) (TemperatureBroadcastCommandTypeContainer, error) {
+	return TemperatureBroadcastCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TemperatureBroadcastCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (TemperatureBroadcastCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("TemperatureBroadcastCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TemperatureBroadcastCommandTypeContainer")
@@ -357,7 +361,15 @@ func TemperatureBroadcastCommandTypeContainerParse(readBuffer utils.ReadBuffer) 
 	}
 }
 
-func (e TemperatureBroadcastCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e TemperatureBroadcastCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e TemperatureBroadcastCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("TemperatureBroadcastCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

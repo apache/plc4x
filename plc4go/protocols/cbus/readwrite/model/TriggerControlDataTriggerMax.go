@@ -102,7 +102,11 @@ func (m *_TriggerControlDataTriggerMax) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TriggerControlDataTriggerMaxParse(readBuffer utils.ReadBuffer) (TriggerControlDataTriggerMax, error) {
+func TriggerControlDataTriggerMaxParse(theBytes []byte) (TriggerControlDataTriggerMax, error) {
+	return TriggerControlDataTriggerMaxParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TriggerControlDataTriggerMaxParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlDataTriggerMax, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlDataTriggerMax"); pullErr != nil {
@@ -123,7 +127,15 @@ func TriggerControlDataTriggerMaxParse(readBuffer utils.ReadBuffer) (TriggerCont
 	return _child, nil
 }
 
-func (m *_TriggerControlDataTriggerMax) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TriggerControlDataTriggerMax) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TriggerControlDataTriggerMax) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

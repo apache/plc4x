@@ -30,9 +30,9 @@ import (
 type DeviceDescriptor uint16
 
 type IDeviceDescriptor interface {
+	utils.Serializable
 	FirmwareType() FirmwareType
 	MediumType() DeviceDescriptorMediumType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -526,7 +526,11 @@ func (m DeviceDescriptor) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DeviceDescriptorParse(readBuffer utils.ReadBuffer) (DeviceDescriptor, error) {
+func DeviceDescriptorParse(theBytes []byte) (DeviceDescriptor, error) {
+	return DeviceDescriptorParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func DeviceDescriptorParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceDescriptor, error) {
 	val, err := readBuffer.ReadUint16("DeviceDescriptor", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DeviceDescriptor")
@@ -539,7 +543,15 @@ func DeviceDescriptorParse(readBuffer utils.ReadBuffer) (DeviceDescriptor, error
 	}
 }
 
-func (e DeviceDescriptor) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e DeviceDescriptor) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e DeviceDescriptor) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("DeviceDescriptor", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

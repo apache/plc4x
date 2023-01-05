@@ -30,7 +30,7 @@ import (
 type AccessControlCategory uint8
 
 type IAccessControlCategory interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -95,7 +95,11 @@ func (m AccessControlCategory) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AccessControlCategoryParse(readBuffer utils.ReadBuffer) (AccessControlCategory, error) {
+func AccessControlCategoryParse(theBytes []byte) (AccessControlCategory, error) {
+	return AccessControlCategoryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AccessControlCategoryParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlCategory, error) {
 	val, err := readBuffer.ReadUint8("AccessControlCategory", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AccessControlCategory")
@@ -108,7 +112,15 @@ func AccessControlCategoryParse(readBuffer utils.ReadBuffer) (AccessControlCateg
 	}
 }
 
-func (e AccessControlCategory) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e AccessControlCategory) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e AccessControlCategory) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("AccessControlCategory", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

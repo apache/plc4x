@@ -189,7 +189,11 @@ func (m *_AdsReadWriteRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer) (AdsReadWriteRequest, error) {
+func AdsReadWriteRequestParse(theBytes []byte) (AdsReadWriteRequest, error) {
+	return AdsReadWriteRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsReadWriteRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsReadWriteRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadWriteRequest"); pullErr != nil {
@@ -238,7 +242,7 @@ func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer) (AdsReadWriteRequest,
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() interface{} { return uint16(indexOffset) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
-			_item, _err := AdsMultiRequestItemParse(readBuffer, indexGroup)
+			_item, _err := AdsMultiRequestItemParseWithBuffer(readBuffer, indexGroup)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field of AdsReadWriteRequest")
 			}
@@ -272,7 +276,15 @@ func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer) (AdsReadWriteRequest,
 	return _child, nil
 }
 
-func (m *_AdsReadWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsReadWriteRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsReadWriteRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -103,7 +103,11 @@ func (m *_ApduDataExtKeyResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtKeyResponseParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtKeyResponse, error) {
+func ApduDataExtKeyResponseParse(theBytes []byte, length uint8) (ApduDataExtKeyResponse, error) {
+	return ApduDataExtKeyResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), length)
+}
+
+func ApduDataExtKeyResponseParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtKeyResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtKeyResponse"); pullErr != nil {
@@ -126,7 +130,15 @@ func ApduDataExtKeyResponseParse(readBuffer utils.ReadBuffer, length uint8) (Apd
 	return _child, nil
 }
 
-func (m *_ApduDataExtKeyResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataExtKeyResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApduDataExtKeyResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

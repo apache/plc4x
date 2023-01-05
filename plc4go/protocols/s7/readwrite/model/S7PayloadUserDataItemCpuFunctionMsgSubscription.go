@@ -177,7 +177,11 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscription, error) {
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscription, error) {
+	return S7PayloadUserDataItemCpuFunctionMsgSubscriptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cpuFunctionType, cpuSubfunction)
+}
+
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscription, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionMsgSubscription"); pullErr != nil {
@@ -223,7 +227,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 		if pullErr := readBuffer.PullContext("Alarmtype"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for Alarmtype")
 		}
-		_val, _err := AlarmStateTypeParse(readBuffer)
+		_val, _err := AlarmStateTypeParseWithBuffer(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'Alarmtype' field of S7PayloadUserDataItemCpuFunctionMsgSubscription")
 		}
@@ -260,7 +264,15 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 	return _child, nil
 }
 
-func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

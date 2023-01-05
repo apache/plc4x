@@ -158,34 +158,34 @@ if( requestType == plc4c_plc4x_read_write_plc4x_request_type_READ_REQUEST ) { /*
   (*_message)->plc4x_read_request_connection_id = connectionId;
 
 
-  // Implicit Field (numFields) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  uint8_t numFields = 0;
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &numFields);
+  // Implicit Field (numTags) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+  uint8_t numTags = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &numTags);
   if(_res != OK) {
     return _res;
   }
 
 
-  // Array field (fields)
-  plc4c_list* fields = NULL;
-  plc4c_utils_list_create(&fields);
-  if(fields == NULL) {
+  // Array field (tags)
+  plc4c_list* tags = NULL;
+  plc4c_utils_list_create(&tags);
+  if(tags == NULL) {
     return NO_MEMORY;
   }
   {
     // Count array
-    uint16_t itemCount = (uint16_t) numFields;
+    uint16_t itemCount = (uint16_t) numTags;
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
-      plc4c_plc4x_read_write_plc4x_field_request* _value = NULL;
-      _res = plc4c_plc4x_read_write_plc4x_field_request_parse(readBuffer, (void*) &_value);
+      plc4c_plc4x_read_write_plc4x_tag_request* _value = NULL;
+      _res = plc4c_plc4x_read_write_plc4x_tag_request_parse(readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
-      plc4c_utils_list_insert_head_value(fields, _value);
+      plc4c_utils_list_insert_head_value(tags, _value);
     }
   }
-  (*_message)->plc4x_read_request_fields = fields;
+  (*_message)->plc4x_read_request_tags = tags;
   } else 
 if( requestType == plc4c_plc4x_read_write_plc4x_request_type_READ_RESPONSE ) { /* Plc4xReadResponse */
     (*_message)->_type = plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_read_response;
@@ -208,34 +208,34 @@ if( requestType == plc4c_plc4x_read_write_plc4x_request_type_READ_RESPONSE ) { /
   (*_message)->plc4x_read_response_response_code = responseCode;
 
 
-  // Implicit Field (numFields) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  uint8_t numFields = 0;
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &numFields);
+  // Implicit Field (numTags) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+  uint8_t numTags = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &numTags);
   if(_res != OK) {
     return _res;
   }
 
 
-  // Array field (fields)
-  plc4c_list* fields = NULL;
-  plc4c_utils_list_create(&fields);
-  if(fields == NULL) {
+  // Array field (tags)
+  plc4c_list* tags = NULL;
+  plc4c_utils_list_create(&tags);
+  if(tags == NULL) {
     return NO_MEMORY;
   }
   {
     // Count array
-    uint16_t itemCount = (uint16_t) numFields;
+    uint16_t itemCount = (uint16_t) numTags;
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
-      plc4c_plc4x_read_write_plc4x_field_value_response* _value = NULL;
-      _res = plc4c_plc4x_read_write_plc4x_field_value_response_parse(readBuffer, (void*) &_value);
+      plc4c_plc4x_read_write_plc4x_tag_value_response* _value = NULL;
+      _res = plc4c_plc4x_read_write_plc4x_tag_value_response_parse(readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
-      plc4c_utils_list_insert_head_value(fields, _value);
+      plc4c_utils_list_insert_head_value(tags, _value);
     }
   }
-  (*_message)->plc4x_read_response_fields = fields;
+  (*_message)->plc4x_read_response_tags = tags;
   } else 
 if( requestType == plc4c_plc4x_read_write_plc4x_request_type_WRITE_REQUEST ) { /* Plc4xWriteRequest */
     (*_message)->_type = plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_write_request;
@@ -249,34 +249,34 @@ if( requestType == plc4c_plc4x_read_write_plc4x_request_type_WRITE_REQUEST ) { /
   (*_message)->plc4x_write_request_connection_id = connectionId;
 
 
-  // Implicit Field (numFields) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  uint8_t numFields = 0;
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &numFields);
+  // Implicit Field (numTags) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+  uint8_t numTags = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &numTags);
   if(_res != OK) {
     return _res;
   }
 
 
-  // Array field (fields)
-  plc4c_list* fields = NULL;
-  plc4c_utils_list_create(&fields);
-  if(fields == NULL) {
+  // Array field (tags)
+  plc4c_list* tags = NULL;
+  plc4c_utils_list_create(&tags);
+  if(tags == NULL) {
     return NO_MEMORY;
   }
   {
     // Count array
-    uint16_t itemCount = (uint16_t) numFields;
+    uint16_t itemCount = (uint16_t) numTags;
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
-      plc4c_plc4x_read_write_plc4x_field_value_request* _value = NULL;
-      _res = plc4c_plc4x_read_write_plc4x_field_value_request_parse(readBuffer, (void*) &_value);
+      plc4c_plc4x_read_write_plc4x_tag_value_request* _value = NULL;
+      _res = plc4c_plc4x_read_write_plc4x_tag_value_request_parse(readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
-      plc4c_utils_list_insert_head_value(fields, _value);
+      plc4c_utils_list_insert_head_value(tags, _value);
     }
   }
-  (*_message)->plc4x_write_request_fields = fields;
+  (*_message)->plc4x_write_request_tags = tags;
   } else 
 if( requestType == plc4c_plc4x_read_write_plc4x_request_type_WRITE_RESPONSE ) { /* Plc4xWriteResponse */
     (*_message)->_type = plc4c_plc4x_read_write_plc4x_message_type_plc4c_plc4x_read_write_plc4x_write_response;
@@ -299,34 +299,34 @@ if( requestType == plc4c_plc4x_read_write_plc4x_request_type_WRITE_RESPONSE ) { 
   (*_message)->plc4x_write_response_response_code = responseCode;
 
 
-  // Implicit Field (numFields) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  uint8_t numFields = 0;
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &numFields);
+  // Implicit Field (numTags) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+  uint8_t numTags = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &numTags);
   if(_res != OK) {
     return _res;
   }
 
 
-  // Array field (fields)
-  plc4c_list* fields = NULL;
-  plc4c_utils_list_create(&fields);
-  if(fields == NULL) {
+  // Array field (tags)
+  plc4c_list* tags = NULL;
+  plc4c_utils_list_create(&tags);
+  if(tags == NULL) {
     return NO_MEMORY;
   }
   {
     // Count array
-    uint16_t itemCount = (uint16_t) numFields;
+    uint16_t itemCount = (uint16_t) numTags;
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
-      plc4c_plc4x_read_write_plc4x_field_response* _value = NULL;
-      _res = plc4c_plc4x_read_write_plc4x_field_response_parse(readBuffer, (void*) &_value);
+      plc4c_plc4x_read_write_plc4x_tag_response* _value = NULL;
+      _res = plc4c_plc4x_read_write_plc4x_tag_response_parse(readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
-      plc4c_utils_list_insert_head_value(fields, _value);
+      plc4c_utils_list_insert_head_value(tags, _value);
     }
   }
-  (*_message)->plc4x_write_response_fields = fields;
+  (*_message)->plc4x_write_response_tags = tags;
   }
 
   return OK;
@@ -399,19 +399,19 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
     return _res;
   }
 
-  // Implicit Field (numFields) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->plc4x_read_request_fields));
+  // Implicit Field (numTags) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->plc4x_read_request_tags));
   if(_res != OK) {
     return _res;
   }
 
-  // Array field (fields)
+  // Array field (tags)
   {
-    uint8_t itemCount = plc4c_utils_list_size(_message->plc4x_read_request_fields);
+    uint8_t itemCount = plc4c_utils_list_size(_message->plc4x_read_request_tags);
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
-      plc4c_plc4x_read_write_plc4x_field_request* _value = (plc4c_plc4x_read_write_plc4x_field_request*) plc4c_utils_list_get_value(_message->plc4x_read_request_fields, curItem);
-      _res = plc4c_plc4x_read_write_plc4x_field_request_serialize(writeBuffer, (void*) _value);
+      plc4c_plc4x_read_write_plc4x_tag_request* _value = (plc4c_plc4x_read_write_plc4x_tag_request*) plc4c_utils_list_get_value(_message->plc4x_read_request_tags, curItem);
+      _res = plc4c_plc4x_read_write_plc4x_tag_request_serialize(writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -434,19 +434,19 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
     return _res;
   }
 
-  // Implicit Field (numFields) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->plc4x_read_response_fields));
+  // Implicit Field (numTags) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->plc4x_read_response_tags));
   if(_res != OK) {
     return _res;
   }
 
-  // Array field (fields)
+  // Array field (tags)
   {
-    uint8_t itemCount = plc4c_utils_list_size(_message->plc4x_read_response_fields);
+    uint8_t itemCount = plc4c_utils_list_size(_message->plc4x_read_response_tags);
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
-      plc4c_plc4x_read_write_plc4x_field_value_response* _value = (plc4c_plc4x_read_write_plc4x_field_value_response*) plc4c_utils_list_get_value(_message->plc4x_read_response_fields, curItem);
-      _res = plc4c_plc4x_read_write_plc4x_field_value_response_serialize(writeBuffer, (void*) _value);
+      plc4c_plc4x_read_write_plc4x_tag_value_response* _value = (plc4c_plc4x_read_write_plc4x_tag_value_response*) plc4c_utils_list_get_value(_message->plc4x_read_response_tags, curItem);
+      _res = plc4c_plc4x_read_write_plc4x_tag_value_response_serialize(writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -463,19 +463,19 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
     return _res;
   }
 
-  // Implicit Field (numFields) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->plc4x_write_request_fields));
+  // Implicit Field (numTags) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->plc4x_write_request_tags));
   if(_res != OK) {
     return _res;
   }
 
-  // Array field (fields)
+  // Array field (tags)
   {
-    uint8_t itemCount = plc4c_utils_list_size(_message->plc4x_write_request_fields);
+    uint8_t itemCount = plc4c_utils_list_size(_message->plc4x_write_request_tags);
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
-      plc4c_plc4x_read_write_plc4x_field_value_request* _value = (plc4c_plc4x_read_write_plc4x_field_value_request*) plc4c_utils_list_get_value(_message->plc4x_write_request_fields, curItem);
-      _res = plc4c_plc4x_read_write_plc4x_field_value_request_serialize(writeBuffer, (void*) _value);
+      plc4c_plc4x_read_write_plc4x_tag_value_request* _value = (plc4c_plc4x_read_write_plc4x_tag_value_request*) plc4c_utils_list_get_value(_message->plc4x_write_request_tags, curItem);
+      _res = plc4c_plc4x_read_write_plc4x_tag_value_request_serialize(writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -498,19 +498,19 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_message_serialize(plc4c_spi_write
     return _res;
   }
 
-  // Implicit Field (numFields) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->plc4x_write_response_fields));
+  // Implicit Field (numTags) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->plc4x_write_response_tags));
   if(_res != OK) {
     return _res;
   }
 
-  // Array field (fields)
+  // Array field (tags)
   {
-    uint8_t itemCount = plc4c_utils_list_size(_message->plc4x_write_response_fields);
+    uint8_t itemCount = plc4c_utils_list_size(_message->plc4x_write_response_tags);
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
-      plc4c_plc4x_read_write_plc4x_field_response* _value = (plc4c_plc4x_read_write_plc4x_field_response*) plc4c_utils_list_get_value(_message->plc4x_write_response_fields, curItem);
-      _res = plc4c_plc4x_read_write_plc4x_field_response_serialize(writeBuffer, (void*) _value);
+      plc4c_plc4x_read_write_plc4x_tag_response* _value = (plc4c_plc4x_read_write_plc4x_tag_response*) plc4c_utils_list_get_value(_message->plc4x_write_response_tags, curItem);
+      _res = plc4c_plc4x_read_write_plc4x_tag_response_serialize(writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -573,15 +573,15 @@ uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bits(plc4c_plc4x_read_wr
   lengthInBits += 16;
 
 
-  // Implicit Field (numFields)
+  // Implicit Field (numTags)
   lengthInBits += 8;
 
 
   // Array field
-  if(_message->plc4x_read_request_fields != NULL) {
-    plc4c_list_element* curElement = _message->plc4x_read_request_fields->tail;
+  if(_message->plc4x_read_request_tags != NULL) {
+    plc4c_list_element* curElement = _message->plc4x_read_request_tags->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_plc4x_read_write_plc4x_field_request_length_in_bits((plc4c_plc4x_read_write_plc4x_field_request*) curElement->value);
+      lengthInBits += plc4c_plc4x_read_write_plc4x_tag_request_length_in_bits((plc4c_plc4x_read_write_plc4x_tag_request*) curElement->value);
       curElement = curElement->next;
     }
   }
@@ -598,15 +598,15 @@ uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bits(plc4c_plc4x_read_wr
   lengthInBits += plc4c_plc4x_read_write_plc4x_response_code_length_in_bits(&_message->plc4x_read_response_response_code);
 
 
-  // Implicit Field (numFields)
+  // Implicit Field (numTags)
   lengthInBits += 8;
 
 
   // Array field
-  if(_message->plc4x_read_response_fields != NULL) {
-    plc4c_list_element* curElement = _message->plc4x_read_response_fields->tail;
+  if(_message->plc4x_read_response_tags != NULL) {
+    plc4c_list_element* curElement = _message->plc4x_read_response_tags->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_plc4x_read_write_plc4x_field_value_response_length_in_bits((plc4c_plc4x_read_write_plc4x_field_value_response*) curElement->value);
+      lengthInBits += plc4c_plc4x_read_write_plc4x_tag_value_response_length_in_bits((plc4c_plc4x_read_write_plc4x_tag_value_response*) curElement->value);
       curElement = curElement->next;
     }
   }
@@ -619,15 +619,15 @@ uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bits(plc4c_plc4x_read_wr
   lengthInBits += 16;
 
 
-  // Implicit Field (numFields)
+  // Implicit Field (numTags)
   lengthInBits += 8;
 
 
   // Array field
-  if(_message->plc4x_write_request_fields != NULL) {
-    plc4c_list_element* curElement = _message->plc4x_write_request_fields->tail;
+  if(_message->plc4x_write_request_tags != NULL) {
+    plc4c_list_element* curElement = _message->plc4x_write_request_tags->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_plc4x_read_write_plc4x_field_value_request_length_in_bits((plc4c_plc4x_read_write_plc4x_field_value_request*) curElement->value);
+      lengthInBits += plc4c_plc4x_read_write_plc4x_tag_value_request_length_in_bits((plc4c_plc4x_read_write_plc4x_tag_value_request*) curElement->value);
       curElement = curElement->next;
     }
   }
@@ -644,15 +644,15 @@ uint16_t plc4c_plc4x_read_write_plc4x_message_length_in_bits(plc4c_plc4x_read_wr
   lengthInBits += plc4c_plc4x_read_write_plc4x_response_code_length_in_bits(&_message->plc4x_write_response_response_code);
 
 
-  // Implicit Field (numFields)
+  // Implicit Field (numTags)
   lengthInBits += 8;
 
 
   // Array field
-  if(_message->plc4x_write_response_fields != NULL) {
-    plc4c_list_element* curElement = _message->plc4x_write_response_fields->tail;
+  if(_message->plc4x_write_response_tags != NULL) {
+    plc4c_list_element* curElement = _message->plc4x_write_response_tags->tail;
     while (curElement != NULL) {
-      lengthInBits += plc4c_plc4x_read_write_plc4x_field_response_length_in_bits((plc4c_plc4x_read_write_plc4x_field_response*) curElement->value);
+      lengthInBits += plc4c_plc4x_read_write_plc4x_tag_response_length_in_bits((plc4c_plc4x_read_write_plc4x_tag_response*) curElement->value);
       curElement = curElement->next;
     }
   }

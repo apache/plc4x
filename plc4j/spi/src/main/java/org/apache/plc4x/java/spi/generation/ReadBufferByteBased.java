@@ -388,6 +388,11 @@ public class ReadBufferByteBased implements ReadBuffer {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
+    /*
+     * When encoding strings we currently implement a sort of 0-terminated string. If the string is shorter than the
+     * max bit-length, we fill it up with 0x00, which makes it 0-terminated. If it exactly fits, then there is no
+     * 0-termination.
+     */
     @Override
     public String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs) throws ParseException {
         encoding = encoding.replaceAll("[^a-zA-Z0-9]", "");
@@ -399,7 +404,7 @@ public class ReadBufferByteBased implements ReadBuffer {
                 for (int i = 0; (i < (bitLength / 8)) && hasMore(8); i++) {
                     try {
                         byte b = readByte(logicalName);
-                        if (b == 0x00) {
+                        if (!disable0Termination() && (b == 0x00)) {
                             finishedReading = true;
                         } else if (!finishedReading) {
                             strBytes[i] = b;
@@ -421,7 +426,7 @@ public class ReadBufferByteBased implements ReadBuffer {
                     try {
                         byte b1 = readByte(logicalName);
                         byte b2 = readByte(logicalName);
-                        if ((b1 == 0x00) && (b2 == 0x00)) {
+                        if (!disable0Termination() && (b1 == 0x00) && (b2 == 0x00)) {
                             finishedReading = true;
                         } else if (!finishedReading){
                             strBytes[(i * 2)] = b1;
@@ -454,6 +459,10 @@ public class ReadBufferByteBased implements ReadBuffer {
     @Override
     public void closeContext(String logicalName, WithReaderArgs... readerArgs) {
         // byte buffer need no context handling
+    }
+
+    private boolean disable0Termination() {
+        return Boolean.parseBoolean(System.getProperty("disable-string-0-termination", "false"));
     }
 
 }

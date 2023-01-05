@@ -102,7 +102,11 @@ func (m *_SecurityDataMainsRestoredOrApplied) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataMainsRestoredOrAppliedParse(readBuffer utils.ReadBuffer) (SecurityDataMainsRestoredOrApplied, error) {
+func SecurityDataMainsRestoredOrAppliedParse(theBytes []byte) (SecurityDataMainsRestoredOrApplied, error) {
+	return SecurityDataMainsRestoredOrAppliedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SecurityDataMainsRestoredOrAppliedParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataMainsRestoredOrApplied, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataMainsRestoredOrApplied"); pullErr != nil {
@@ -123,7 +127,15 @@ func SecurityDataMainsRestoredOrAppliedParse(readBuffer utils.ReadBuffer) (Secur
 	return _child, nil
 }
 
-func (m *_SecurityDataMainsRestoredOrApplied) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataMainsRestoredOrApplied) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataMainsRestoredOrApplied) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

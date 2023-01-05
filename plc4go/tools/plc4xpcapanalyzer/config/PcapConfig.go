@@ -20,7 +20,7 @@
 package config
 
 type PcapConfig struct {
-	*RootConfig
+	*RootConfig        `json:"-"`
 	Filter             string
 	Client             string
 	StartPackageNumber uint

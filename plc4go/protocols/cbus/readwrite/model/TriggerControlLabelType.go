@@ -30,7 +30,7 @@ import (
 type TriggerControlLabelType uint8
 
 type ITriggerControlLabelType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +107,11 @@ func (m TriggerControlLabelType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TriggerControlLabelTypeParse(readBuffer utils.ReadBuffer) (TriggerControlLabelType, error) {
+func TriggerControlLabelTypeParse(theBytes []byte) (TriggerControlLabelType, error) {
+	return TriggerControlLabelTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TriggerControlLabelTypeParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlLabelType, error) {
 	val, err := readBuffer.ReadUint8("TriggerControlLabelType", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TriggerControlLabelType")
@@ -120,7 +124,15 @@ func TriggerControlLabelTypeParse(readBuffer utils.ReadBuffer) (TriggerControlLa
 	}
 }
 
-func (e TriggerControlLabelType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e TriggerControlLabelType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e TriggerControlLabelType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("TriggerControlLabelType", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

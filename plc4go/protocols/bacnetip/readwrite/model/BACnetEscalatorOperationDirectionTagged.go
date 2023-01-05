@@ -138,7 +138,11 @@ func (m *_BACnetEscalatorOperationDirectionTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEscalatorOperationDirectionTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetEscalatorOperationDirectionTagged, error) {
+func BACnetEscalatorOperationDirectionTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetEscalatorOperationDirectionTagged, error) {
+	return BACnetEscalatorOperationDirectionTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+}
+
+func BACnetEscalatorOperationDirectionTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetEscalatorOperationDirectionTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEscalatorOperationDirectionTagged"); pullErr != nil {
@@ -151,7 +155,7 @@ func BACnetEscalatorOperationDirectionTaggedParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetEscalatorOperationDirectionTagged")
 	}
@@ -209,7 +213,15 @@ func BACnetEscalatorOperationDirectionTaggedParse(readBuffer utils.ReadBuffer, t
 	}, nil
 }
 
-func (m *_BACnetEscalatorOperationDirectionTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEscalatorOperationDirectionTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetEscalatorOperationDirectionTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEscalatorOperationDirectionTagged"); pushErr != nil {

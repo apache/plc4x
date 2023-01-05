@@ -18,10 +18,13 @@
   -->
 [![Maven central](https://img.shields.io/maven-central/v/org.apache.plc4x/plc4j-api.svg)](https://img.shields.io/maven-central/v/org.apache.plc4x/plc4j-api.svg)
 [![License](https://img.shields.io/github/license/apache/plc4x.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Jenkins Build Status](https://ci-builds.apache.org/job/PLC4X/job/PLC4X/job/develop/badge/icon)](https://ci-builds.apache.org/job/PLC4X/job/PLC4X/job/develop/)
 [![Last commit](https://img.shields.io/github/last-commit/apache/plc4x.svg)]()
-[![Platform compatibility](https://img.shields.io/github/workflow/status/apache/plc4x/Platform%20compatibility?label=Platform%20compatibility)](https://github.com/apache/plc4x/actions/workflows/ensure-platforms.yml)
 [![Twitter](https://img.shields.io/twitter/follow/ApachePLC4X.svg?label=Follow&style=social)](https://twitter.com/ApachePLC4X)
-
+[![Java Platform compatibility](https://github.com/apache/plc4x/actions/workflows/java-platform.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/java-platform.yml)
+[![Go Platform compatibility](https://github.com/apache/plc4x/actions/workflows/go-platform.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/go-platform.yml)
+[![C Platform compatibility](https://github.com/apache/plc4x/actions/workflows/c-platform.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/c-platform.yml)
+[![Python Platform Compatibility](https://github.com/apache/plc4x/actions/workflows/python-build.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/python-build.yml)
 
 <h1 align="center">
   <br>

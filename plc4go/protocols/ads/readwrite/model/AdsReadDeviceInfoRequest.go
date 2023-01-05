@@ -114,7 +114,11 @@ func (m *_AdsReadDeviceInfoRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsReadDeviceInfoRequestParse(readBuffer utils.ReadBuffer) (AdsReadDeviceInfoRequest, error) {
+func AdsReadDeviceInfoRequestParse(theBytes []byte) (AdsReadDeviceInfoRequest, error) {
+	return AdsReadDeviceInfoRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsReadDeviceInfoRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsReadDeviceInfoRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadDeviceInfoRequest"); pullErr != nil {
@@ -135,7 +139,15 @@ func AdsReadDeviceInfoRequestParse(readBuffer utils.ReadBuffer) (AdsReadDeviceIn
 	return _child, nil
 }
 
-func (m *_AdsReadDeviceInfoRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsReadDeviceInfoRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsReadDeviceInfoRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

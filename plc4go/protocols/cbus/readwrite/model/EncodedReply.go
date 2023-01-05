@@ -132,7 +132,11 @@ func (m *_EncodedReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func EncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReply, error) {
+func EncodedReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReply, error) {
+	return EncodedReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+}
+
+func EncodedReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EncodedReply"); pullErr != nil {
@@ -166,9 +170,9 @@ func EncodedReplyParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 	var typeSwitchError error
 	switch {
 	case isMonitoredSAL == bool(true): // MonitoredSALReply
-		_childTemp, typeSwitchError = MonitoredSALReplyParse(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = MonitoredSALReplyParseWithBuffer(readBuffer, cBusOptions, requestContext)
 	case 0 == 0: // EncodedReplyCALReply
-		_childTemp, typeSwitchError = EncodedReplyCALReplyParse(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = EncodedReplyCALReplyParseWithBuffer(readBuffer, cBusOptions, requestContext)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [isMonitoredSAL=%v]", isMonitoredSAL)
 	}

@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataNotificationClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNotificationClassParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationClass, error) {
+func BACnetConstructedDataNotificationClassParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationClass, error) {
+	return BACnetConstructedDataNotificationClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataNotificationClassParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationClass, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNotificationClass"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataNotificationClassParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("notificationClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for notificationClass")
 	}
-	_notificationClass, _notificationClassErr := BACnetApplicationTagParse(readBuffer)
+	_notificationClass, _notificationClassErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _notificationClassErr != nil {
 		return nil, errors.Wrap(_notificationClassErr, "Error parsing 'notificationClass' field of BACnetConstructedDataNotificationClass")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataNotificationClassParse(readBuffer utils.ReadBuffer, ta
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataNotificationClass) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataNotificationClass) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataNotificationClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

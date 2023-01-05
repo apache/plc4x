@@ -30,7 +30,7 @@ import (
 type BACnetAction uint8
 
 type IBACnetAction interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -95,7 +95,11 @@ func (m BACnetAction) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetActionParse(readBuffer utils.ReadBuffer) (BACnetAction, error) {
+func BACnetActionParse(theBytes []byte) (BACnetAction, error) {
+	return BACnetActionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetActionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAction, error) {
 	val, err := readBuffer.ReadUint8("BACnetAction", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAction")
@@ -108,7 +112,15 @@ func BACnetActionParse(readBuffer utils.ReadBuffer) (BACnetAction, error) {
 	}
 }
 
-func (e BACnetAction) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAction) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetAction) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetAction", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

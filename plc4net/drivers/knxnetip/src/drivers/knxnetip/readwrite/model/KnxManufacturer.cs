@@ -624,8 +624,17 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_PHOENIX_CONTACT_2 = 597,
         M_RAMIREZ_ENGINEERING_GMBH = 598,
         M_ZHONGSHAN_TAIYANG_IMPANDEXP__CO_LTD = 599,
-        M_ABB___RESERVED = 600,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 601,
+        M_VIHAN_ELECTRIC_PVT_LTD = 600,
+        M_SPLENDID_MINDS_GMBH = 601,
+        M_ESTADA = 602,
+        M_ZHONGYUNXINZHIKONGGUJITUANYOUXIANGONGSI = 603,
+        M_STUHL_REGELSYSTEME_GMBH = 604,
+        M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD = 605,
+        M_GAIMEX = 606,
+        M_B3_INTERNATIONAL_S_R_L = 607,
+        M_MM_ELECTRO = 608,
+        M_ABB___RESERVED = 609,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 610,
     }
 
     public static class KnxManufacturerInfo
@@ -2309,14 +2318,41 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_TECHEM: { /* '60' */
                     return 99;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '600' */
-                    return 43954;
+                case KnxManufacturer.M_VIHAN_ELECTRIC_PVT_LTD: { /* '600' */
+                    return 658;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '601' */
-                    return 43959;
+                case KnxManufacturer.M_SPLENDID_MINDS_GMBH: { /* '601' */
+                    return 659;
+                }
+                case KnxManufacturer.M_ESTADA: { /* '602' */
+                    return 660;
+                }
+                case KnxManufacturer.M_ZHONGYUNXINZHIKONGGUJITUANYOUXIANGONGSI: { /* '603' */
+                    return 661;
+                }
+                case KnxManufacturer.M_STUHL_REGELSYSTEME_GMBH: { /* '604' */
+                    return 662;
+                }
+                case KnxManufacturer.M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD: { /* '605' */
+                    return 663;
+                }
+                case KnxManufacturer.M_GAIMEX: { /* '606' */
+                    return 664;
+                }
+                case KnxManufacturer.M_B3_INTERNATIONAL_S_R_L: { /* '607' */
+                    return 665;
+                }
+                case KnxManufacturer.M_MM_ELECTRO: { /* '608' */
+                    return 666;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '609' */
+                    return 43954;
                 }
                 case KnxManufacturer.M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS: { /* '61' */
                     return 100;
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '610' */
+                    return 43959;
                 }
                 case KnxManufacturer.M_WHD_WILHELM_HUBER_Plus_SOEHNE: { /* '62' */
                     return 101;
@@ -4125,14 +4161,41 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_TECHEM: { /* '60' */
                     return "Techem";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '600' */
-                    return "ABB - reserved";
+                case KnxManufacturer.M_VIHAN_ELECTRIC_PVT_LTD: { /* '600' */
+                    return "Vihan electric pvt ltd";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '601' */
-                    return "Busch-Jaeger Elektro - reserved";
+                case KnxManufacturer.M_SPLENDID_MINDS_GMBH: { /* '601' */
+                    return "Splendid Minds GmbH";
+                }
+                case KnxManufacturer.M_ESTADA: { /* '602' */
+                    return "Estada";
+                }
+                case KnxManufacturer.M_ZHONGYUNXINZHIKONGGUJITUANYOUXIANGONGSI: { /* '603' */
+                    return "zhongyunxinzhikonggujituanyouxiangongsi";
+                }
+                case KnxManufacturer.M_STUHL_REGELSYSTEME_GMBH: { /* '604' */
+                    return "Stuhl Regelsysteme GmbH";
+                }
+                case KnxManufacturer.M_SHENZHEN_GLUCK_TECHNOLOGY_CO___LTD: { /* '605' */
+                    return "Shenzhen Gluck Technology Co., LTD";
+                }
+                case KnxManufacturer.M_GAIMEX: { /* '606' */
+                    return "Gaimex";
+                }
+                case KnxManufacturer.M_B3_INTERNATIONAL_S_R_L: { /* '607' */
+                    return "B3 International S.R.L";
+                }
+                case KnxManufacturer.M_MM_ELECTRO: { /* '608' */
+                    return "MM Electro";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '609' */
+                    return "ABB - reserved";
                 }
                 case KnxManufacturer.M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS: { /* '61' */
                     return "Schneider Electric Industries SAS";
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '610' */
+                    return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_WHD_WILHELM_HUBER_Plus_SOEHNE: { /* '62' */
                     return "WHD Wilhelm Huber + Söhne";

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -103,7 +104,11 @@ func (m *_RoutingIndication) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RoutingIndicationParse(readBuffer utils.ReadBuffer) (RoutingIndication, error) {
+func RoutingIndicationParse(theBytes []byte) (RoutingIndication, error) {
+	return RoutingIndicationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+}
+
+func RoutingIndicationParseWithBuffer(readBuffer utils.ReadBuffer) (RoutingIndication, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RoutingIndication"); pullErr != nil {
@@ -124,7 +129,15 @@ func RoutingIndicationParse(readBuffer utils.ReadBuffer) (RoutingIndication, err
 	return _child, nil
 }
 
-func (m *_RoutingIndication) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_RoutingIndication) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_RoutingIndication) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

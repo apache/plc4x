@@ -124,7 +124,11 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) GetLengthIn
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned, error) {
+func BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedParse(theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned, error) {
+	return BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+}
+
+func BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned"); pullErr != nil {
@@ -137,7 +141,7 @@ func BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedParse(readBuffer u
 	if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unsignedValue")
 	}
-	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParse(readBuffer)
+	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _unsignedValueErr != nil {
 		return nil, errors.Wrap(_unsignedValueErr, "Error parsing 'unsignedValue' field of BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned")
 	}
@@ -161,7 +165,15 @@ func BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedParse(readBuffer u
 	return _child, nil
 }
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

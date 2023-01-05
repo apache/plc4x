@@ -163,7 +163,11 @@ func (m *_LPollData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LPollDataParse(readBuffer utils.ReadBuffer) (LPollData, error) {
+func LPollDataParse(theBytes []byte) (LPollData, error) {
+	return LPollDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func LPollDataParseWithBuffer(readBuffer utils.ReadBuffer) (LPollData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LPollData"); pullErr != nil {
@@ -176,7 +180,7 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (LPollData, error) {
 	if pullErr := readBuffer.PullContext("sourceAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for sourceAddress")
 	}
-	_sourceAddress, _sourceAddressErr := KnxAddressParse(readBuffer)
+	_sourceAddress, _sourceAddressErr := KnxAddressParseWithBuffer(readBuffer)
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field of LPollData")
 	}
@@ -231,7 +235,15 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (LPollData, error) {
 	return _child, nil
 }
 
-func (m *_LPollData) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_LPollData) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_LPollData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

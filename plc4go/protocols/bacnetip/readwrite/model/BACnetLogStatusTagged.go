@@ -144,7 +144,11 @@ func (m *_BACnetLogStatusTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLogStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLogStatusTagged, error) {
+func BACnetLogStatusTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetLogStatusTagged, error) {
+	return BACnetLogStatusTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+}
+
+func BACnetLogStatusTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLogStatusTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogStatusTagged"); pullErr != nil {
@@ -157,7 +161,7 @@ func BACnetLogStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, ta
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetLogStatusTagged")
 	}
@@ -180,7 +184,7 @@ func BACnetLogStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, ta
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadBitStringParse(readBuffer, uint32(header.GetActualLength()))
+	_payload, _payloadErr := BACnetTagPayloadBitStringParseWithBuffer(readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetLogStatusTagged")
 	}
@@ -217,7 +221,15 @@ func BACnetLogStatusTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, ta
 	}, nil
 }
 
-func (m *_BACnetLogStatusTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogStatusTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLogStatusTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLogStatusTagged"); pushErr != nil {

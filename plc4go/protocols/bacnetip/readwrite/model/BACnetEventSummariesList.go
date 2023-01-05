@@ -124,7 +124,11 @@ func (m *_BACnetEventSummariesList) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventSummariesListParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventSummariesList, error) {
+func BACnetEventSummariesListParse(theBytes []byte, tagNumber uint8) (BACnetEventSummariesList, error) {
+	return BACnetEventSummariesListParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+}
+
+func BACnetEventSummariesListParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventSummariesList, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventSummariesList"); pullErr != nil {
@@ -137,7 +141,7 @@ func BACnetEventSummariesListParse(readBuffer utils.ReadBuffer, tagNumber uint8)
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventSummariesList")
 	}
@@ -154,12 +158,11 @@ func BACnetEventSummariesListParse(readBuffer utils.ReadBuffer, tagNumber uint8)
 	var listOfEventSummaries []BACnetEventSummary
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetEventSummaryParse(readBuffer)
+			_item, _err := BACnetEventSummaryParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listOfEventSummaries' field of BACnetEventSummariesList")
 			}
 			listOfEventSummaries = append(listOfEventSummaries, _item.(BACnetEventSummary))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("listOfEventSummaries", utils.WithRenderAsList(true)); closeErr != nil {
@@ -170,7 +173,7 @@ func BACnetEventSummariesListParse(readBuffer utils.ReadBuffer, tagNumber uint8)
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventSummariesList")
 	}
@@ -192,7 +195,15 @@ func BACnetEventSummariesListParse(readBuffer utils.ReadBuffer, tagNumber uint8)
 	}, nil
 }
 
-func (m *_BACnetEventSummariesList) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventSummariesList) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetEventSummariesList) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEventSummariesList"); pushErr != nil {

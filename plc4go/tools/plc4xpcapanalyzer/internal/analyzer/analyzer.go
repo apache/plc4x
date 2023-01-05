@@ -21,6 +21,7 @@ package analyzer
 
 import (
 	"bytes"
+	"context"
 	"encoding/hex"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -29,8 +30,8 @@ import (
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/cbusanalyzer"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/pcaphandler"
-	"github.com/google/gopacket"
-	"github.com/google/gopacket/layers"
+	"github.com/gopacket/gopacket"
+	"github.com/gopacket/gopacket/layers"
 	"github.com/k0kubun/go-ansi"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -46,20 +47,14 @@ func Analyze(pcapFile, protocolType string) error {
 }
 
 func AnalyzeWithOutput(pcapFile, protocolType string, stdout, stderr io.Writer) error {
-	return AnalyzeWithOutputAndCallback(pcapFile, protocolType, stdout, stderr, nil)
+	return AnalyzeWithOutputAndCallback(context.TODO(), pcapFile, protocolType, stdout, stderr, nil)
 }
 
-func AnalyzeWithOutputAndCallback(pcapFile, protocolType string, stdout, stderr io.Writer, messageCallback func(parsed spi.Message)) error {
-	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, config.AnalyzeConfigInstance.Filter)
-
-	handle, numberOfPackage, timestampToIndexMap, err := pcaphandler.GetIndexedPcapHandle(pcapFile, config.AnalyzeConfigInstance.Filter)
-	if err != nil {
-		return errors.Wrap(err, "Error getting handle")
+func AnalyzeWithOutputAndCallback(ctx context.Context, pcapFile, protocolType string, stdout, stderr io.Writer, messageCallback func(parsed spi.Message)) error {
+	var filterExpression = config.AnalyzeConfigInstance.Filter
+	if filterExpression != "" {
+		log.Info().Msgf("Using global filter %s", filterExpression)
 	}
-	log.Info().Msgf("Starting to analyze %d packages", numberOfPackage)
-	defer handle.Close()
-	log.Debug().Interface("handle", handle).Int("numberOfPackage", numberOfPackage).Msg("got handle")
-	source := pcaphandler.GetPacketSource(handle)
 	var mapPackets = func(in chan gopacket.Packet, packetInformationCreator func(packet gopacket.Packet) common.PacketInformation) chan gopacket.Packet {
 		return in
 	}
@@ -70,10 +65,26 @@ func AnalyzeWithOutputAndCallback(pcapFile, protocolType string, stdout, stderr 
 	}
 	var byteOutput = hex.Dump
 	switch protocolType {
-	case "bacnet":
+	case "bacnetip":
+		if !config.AnalyzeConfigInstance.NoFilter {
+			if config.AnalyzeConfigInstance.Filter == "" && config.BacnetConfigInstance.BacnetFilter != "" {
+				log.Debug().Str("filter", config.BacnetConfigInstance.Filter).Msg("Setting bacnet filter")
+				filterExpression = config.BacnetConfigInstance.BacnetFilter
+			}
+		} else {
+			log.Info().Msg("All filtering disabled")
+		}
 		packageParse = bacnetanalyzer.PackageParse
 		serializePackage = bacnetanalyzer.SerializePackage
 	case "c-bus":
+		if !config.AnalyzeConfigInstance.NoFilter {
+			if config.AnalyzeConfigInstance.Filter == "" && config.CBusConfigInstance.CBusFilter != "" {
+				log.Debug().Str("filter", config.CBusConfigInstance.Filter).Msg("Setting cbus filter")
+				filterExpression = config.CBusConfigInstance.CBusFilter
+			}
+		} else {
+			log.Info().Msg("All filtering disabled")
+		}
 		analyzer := cbusanalyzer.Analyzer{Client: net.ParseIP(config.AnalyzeConfigInstance.Client)}
 		analyzer.Init()
 		packageParse = analyzer.PackageParse
@@ -84,7 +95,19 @@ func AnalyzeWithOutputAndCallback(pcapFile, protocolType string, stdout, stderr 
 		} else {
 			log.Info().Msg("Custom mapping disabled")
 		}
+	default:
+		return errors.Errorf("Unsupported protocol type %s", protocolType)
 	}
+
+	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, filterExpression)
+	handle, numberOfPackage, timestampToIndexMap, err := pcaphandler.GetIndexedPcapHandle(pcapFile, filterExpression)
+	if err != nil {
+		return errors.Wrap(err, "Error getting handle")
+	}
+	log.Info().Msgf("Starting to analyze %d packages", numberOfPackage)
+	defer handle.Close()
+	log.Debug().Interface("handle", handle).Int("numberOfPackage", numberOfPackage).Msg("got handle")
+	source := pcaphandler.GetPacketSource(handle)
 	bar := progressbar.NewOptions(numberOfPackage, progressbar.OptionSetWriter(ansi.NewAnsiStderr()),
 		progressbar.OptionSetVisibility(!config.RootConfigInstance.HideProgressBar),
 		progressbar.OptionEnableColorCodes(true),
@@ -105,6 +128,10 @@ func AnalyzeWithOutputAndCallback(pcapFile, protocolType string, stdout, stderr 
 	for packet := range mapPackets(source.Packets(), func(packet gopacket.Packet) common.PacketInformation {
 		return createPacketInformation(pcapFile, packet, timestampToIndexMap)
 	}) {
+		if ctx.Err() == context.Canceled {
+			log.Info().Msgf("Aborted after %d packages", currentPackageNum)
+			break
+		}
 		currentPackageNum++
 		if currentPackageNum < config.AnalyzeConfigInstance.StartPackageNumber {
 			log.Debug().Msgf("Skipping package number %d (till no. %d)", currentPackageNum, config.AnalyzeConfigInstance.StartPackageNumber)

@@ -48,7 +48,7 @@ type _BACnetServiceAckAuthenticate struct {
 	BytesOfRemovedService []byte
 
 	// Arguments.
-	ServiceAckPayloadLength uint16
+	ServiceAckPayloadLength uint32
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ func (m *_BACnetServiceAckAuthenticate) GetBytesOfRemovedService() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckAuthenticate factory function for _BACnetServiceAckAuthenticate
-func NewBACnetServiceAckAuthenticate(bytesOfRemovedService []byte, serviceAckLength uint16, serviceAckPayloadLength uint16) *_BACnetServiceAckAuthenticate {
+func NewBACnetServiceAckAuthenticate(bytesOfRemovedService []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) *_BACnetServiceAckAuthenticate {
 	_result := &_BACnetServiceAckAuthenticate{
 		BytesOfRemovedService: bytesOfRemovedService,
 		_BACnetServiceAck:     NewBACnetServiceAck(serviceAckLength),
@@ -129,7 +129,11 @@ func (m *_BACnetServiceAckAuthenticate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckAuthenticateParse(readBuffer utils.ReadBuffer, serviceAckLength uint16, serviceAckPayloadLength uint16) (BACnetServiceAckAuthenticate, error) {
+func BACnetServiceAckAuthenticateParse(theBytes []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckAuthenticate, error) {
+	return BACnetServiceAckAuthenticateParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckLength, serviceAckPayloadLength)
+}
+
+func BACnetServiceAckAuthenticateParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckAuthenticate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAuthenticate"); pullErr != nil {
@@ -159,7 +163,15 @@ func BACnetServiceAckAuthenticateParse(readBuffer utils.ReadBuffer, serviceAckLe
 	return _child, nil
 }
 
-func (m *_BACnetServiceAckAuthenticate) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetServiceAckAuthenticate) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetServiceAckAuthenticate) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +196,7 @@ func (m *_BACnetServiceAckAuthenticate) Serialize(writeBuffer utils.WriteBuffer)
 ////
 // Arguments Getter
 
-func (m *_BACnetServiceAckAuthenticate) GetServiceAckPayloadLength() uint16 {
+func (m *_BACnetServiceAckAuthenticate) GetServiceAckPayloadLength() uint32 {
 	return m.ServiceAckPayloadLength
 }
 

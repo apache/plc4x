@@ -114,7 +114,11 @@ func (m *_AdsInvalidResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsInvalidResponseParse(readBuffer utils.ReadBuffer) (AdsInvalidResponse, error) {
+func AdsInvalidResponseParse(theBytes []byte) (AdsInvalidResponse, error) {
+	return AdsInvalidResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsInvalidResponseParseWithBuffer(readBuffer utils.ReadBuffer) (AdsInvalidResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsInvalidResponse"); pullErr != nil {
@@ -135,7 +139,15 @@ func AdsInvalidResponseParse(readBuffer utils.ReadBuffer) (AdsInvalidResponse, e
 	return _child, nil
 }
 
-func (m *_AdsInvalidResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsInvalidResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsInvalidResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

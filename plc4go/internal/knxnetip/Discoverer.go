@@ -23,11 +23,12 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/pkg/errors"
 	"net"
 	"net/url"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/pkg/errors"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
@@ -78,7 +79,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		interfaces = allInterfaces
 	}
 
-	var tranportInstances []transports.TransportInstance
+	var transportInstances []transports.TransportInstance
 	// Iterate over all network devices of this system.
 	for _, interf := range interfaces {
 		addrs, err := interf.Addrs()
@@ -116,16 +117,16 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 					continue
 				}
 
-				tranportInstances = append(tranportInstances, transportInstance)
+				transportInstances = append(transportInstances, transportInstance)
 			}
 		}
 	}
 
-	if len(tranportInstances) <= 0 {
+	if len(transportInstances) <= 0 {
 		return nil
 	}
 
-	for _, transportInstance := range tranportInstances {
+	for _, transportInstance := range transportInstances {
 		// Create a codec for sending and receiving messages.
 		codec := NewMessageCodec(transportInstance, nil)
 		// Explicitly start the worker
@@ -133,7 +134,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 			return errors.Wrap(err, "Error connecting")
 		}
 
-		// Cast to the UDP transport instance so we can access information on the local port.
+		// Cast to the UDP transport instance, so we can access information on the local port.
 		udpTransportInstance, ok := transportInstance.(*udp.TransportInstance)
 		if !ok {
 			return errors.New("couldn't cast transport instance to UDP transport instance")

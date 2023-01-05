@@ -105,7 +105,11 @@ func (m *_SALDataTesting) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataTestingParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTesting, error) {
+func SALDataTestingParse(theBytes []byte, applicationId ApplicationId) (SALDataTesting, error) {
+	return SALDataTestingParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+}
+
+func SALDataTestingParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTesting, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataTesting"); pullErr != nil {
@@ -131,7 +135,15 @@ func SALDataTestingParse(readBuffer utils.ReadBuffer, applicationId ApplicationI
 	return _child, nil
 }
 
-func (m *_SALDataTesting) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataTesting) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SALDataTesting) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -30,7 +30,7 @@ import (
 type BACnetNetworkNumberQuality uint8
 
 type IBACnetNetworkNumberQuality interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +107,11 @@ func (m BACnetNetworkNumberQuality) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNetworkNumberQualityParse(readBuffer utils.ReadBuffer) (BACnetNetworkNumberQuality, error) {
+func BACnetNetworkNumberQualityParse(theBytes []byte) (BACnetNetworkNumberQuality, error) {
+	return BACnetNetworkNumberQualityParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetNetworkNumberQualityParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNetworkNumberQuality, error) {
 	val, err := readBuffer.ReadUint8("BACnetNetworkNumberQuality", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetNetworkNumberQuality")
@@ -120,7 +124,15 @@ func BACnetNetworkNumberQualityParse(readBuffer utils.ReadBuffer) (BACnetNetwork
 	}
 }
 
-func (e BACnetNetworkNumberQuality) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetNetworkNumberQuality) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetNetworkNumberQuality) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetNetworkNumberQuality", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

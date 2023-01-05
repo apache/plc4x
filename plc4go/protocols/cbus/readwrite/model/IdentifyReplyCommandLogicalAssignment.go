@@ -129,7 +129,11 @@ func (m *_IdentifyReplyCommandLogicalAssignment) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func IdentifyReplyCommandLogicalAssignmentParse(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandLogicalAssignment, error) {
+func IdentifyReplyCommandLogicalAssignmentParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandLogicalAssignment, error) {
+	return IdentifyReplyCommandLogicalAssignmentParseWithBuffer(utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+}
+
+func IdentifyReplyCommandLogicalAssignmentParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandLogicalAssignment, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandLogicalAssignment"); pullErr != nil {
@@ -150,7 +154,7 @@ func IdentifyReplyCommandLogicalAssignmentParse(readBuffer utils.ReadBuffer, att
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(numBytes); curItem++ {
-			_item, _err := LogicAssignmentParse(readBuffer)
+			_item, _err := LogicAssignmentParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'logicAssigment' field of IdentifyReplyCommandLogicalAssignment")
 			}
@@ -176,7 +180,15 @@ func IdentifyReplyCommandLogicalAssignmentParse(readBuffer utils.ReadBuffer, att
 	return _child, nil
 }
 
-func (m *_IdentifyReplyCommandLogicalAssignment) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_IdentifyReplyCommandLogicalAssignment) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_IdentifyReplyCommandLogicalAssignment) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

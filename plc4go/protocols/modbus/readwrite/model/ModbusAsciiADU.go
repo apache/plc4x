@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -138,7 +139,11 @@ func (m *_ModbusAsciiADU) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusAsciiADUParse(readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusAsciiADU, error) {
+func ModbusAsciiADUParse(theBytes []byte, driverType DriverType, response bool) (ModbusAsciiADU, error) {
+	return ModbusAsciiADUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response)
+}
+
+func ModbusAsciiADUParseWithBuffer(readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusAsciiADU, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusAsciiADU"); pullErr != nil {
@@ -158,7 +163,7 @@ func ModbusAsciiADUParse(readBuffer utils.ReadBuffer, driverType DriverType, res
 	if pullErr := readBuffer.PullContext("pdu"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for pdu")
 	}
-	_pdu, _pduErr := ModbusPDUParse(readBuffer, bool(response))
+	_pdu, _pduErr := ModbusPDUParseWithBuffer(readBuffer, bool(response))
 	if _pduErr != nil {
 		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field of ModbusAsciiADU")
 	}
@@ -198,7 +203,15 @@ func ModbusAsciiADUParse(readBuffer utils.ReadBuffer, driverType DriverType, res
 	return _child, nil
 }
 
-func (m *_ModbusAsciiADU) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusAsciiADU) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ModbusAsciiADU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

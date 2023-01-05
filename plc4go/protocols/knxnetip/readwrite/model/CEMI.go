@@ -102,7 +102,11 @@ func (m *_CEMI) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CEMIParse(readBuffer utils.ReadBuffer, size uint16) (CEMI, error) {
+func CEMIParse(theBytes []byte, size uint16) (CEMI, error) {
+	return CEMIParseWithBuffer(utils.NewReadBufferByteBased(theBytes), size)
+}
+
+func CEMIParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (CEMI, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CEMI"); pullErr != nil {
@@ -128,51 +132,51 @@ func CEMIParse(readBuffer utils.ReadBuffer, size uint16) (CEMI, error) {
 	var typeSwitchError error
 	switch {
 	case messageCode == 0x2B: // LBusmonInd
-		_childTemp, typeSwitchError = LBusmonIndParse(readBuffer, size)
+		_childTemp, typeSwitchError = LBusmonIndParseWithBuffer(readBuffer, size)
 	case messageCode == 0x11: // LDataReq
-		_childTemp, typeSwitchError = LDataReqParse(readBuffer, size)
+		_childTemp, typeSwitchError = LDataReqParseWithBuffer(readBuffer, size)
 	case messageCode == 0x29: // LDataInd
-		_childTemp, typeSwitchError = LDataIndParse(readBuffer, size)
+		_childTemp, typeSwitchError = LDataIndParseWithBuffer(readBuffer, size)
 	case messageCode == 0x2E: // LDataCon
-		_childTemp, typeSwitchError = LDataConParse(readBuffer, size)
+		_childTemp, typeSwitchError = LDataConParseWithBuffer(readBuffer, size)
 	case messageCode == 0x10: // LRawReq
-		_childTemp, typeSwitchError = LRawReqParse(readBuffer, size)
+		_childTemp, typeSwitchError = LRawReqParseWithBuffer(readBuffer, size)
 	case messageCode == 0x2D: // LRawInd
-		_childTemp, typeSwitchError = LRawIndParse(readBuffer, size)
+		_childTemp, typeSwitchError = LRawIndParseWithBuffer(readBuffer, size)
 	case messageCode == 0x2F: // LRawCon
-		_childTemp, typeSwitchError = LRawConParse(readBuffer, size)
+		_childTemp, typeSwitchError = LRawConParseWithBuffer(readBuffer, size)
 	case messageCode == 0x13: // LPollDataReq
-		_childTemp, typeSwitchError = LPollDataReqParse(readBuffer, size)
+		_childTemp, typeSwitchError = LPollDataReqParseWithBuffer(readBuffer, size)
 	case messageCode == 0x25: // LPollDataCon
-		_childTemp, typeSwitchError = LPollDataConParse(readBuffer, size)
+		_childTemp, typeSwitchError = LPollDataConParseWithBuffer(readBuffer, size)
 	case messageCode == 0x41: // TDataConnectedReq
-		_childTemp, typeSwitchError = TDataConnectedReqParse(readBuffer, size)
+		_childTemp, typeSwitchError = TDataConnectedReqParseWithBuffer(readBuffer, size)
 	case messageCode == 0x89: // TDataConnectedInd
-		_childTemp, typeSwitchError = TDataConnectedIndParse(readBuffer, size)
+		_childTemp, typeSwitchError = TDataConnectedIndParseWithBuffer(readBuffer, size)
 	case messageCode == 0x4A: // TDataIndividualReq
-		_childTemp, typeSwitchError = TDataIndividualReqParse(readBuffer, size)
+		_childTemp, typeSwitchError = TDataIndividualReqParseWithBuffer(readBuffer, size)
 	case messageCode == 0x94: // TDataIndividualInd
-		_childTemp, typeSwitchError = TDataIndividualIndParse(readBuffer, size)
+		_childTemp, typeSwitchError = TDataIndividualIndParseWithBuffer(readBuffer, size)
 	case messageCode == 0xFC: // MPropReadReq
-		_childTemp, typeSwitchError = MPropReadReqParse(readBuffer, size)
+		_childTemp, typeSwitchError = MPropReadReqParseWithBuffer(readBuffer, size)
 	case messageCode == 0xFB: // MPropReadCon
-		_childTemp, typeSwitchError = MPropReadConParse(readBuffer, size)
+		_childTemp, typeSwitchError = MPropReadConParseWithBuffer(readBuffer, size)
 	case messageCode == 0xF6: // MPropWriteReq
-		_childTemp, typeSwitchError = MPropWriteReqParse(readBuffer, size)
+		_childTemp, typeSwitchError = MPropWriteReqParseWithBuffer(readBuffer, size)
 	case messageCode == 0xF5: // MPropWriteCon
-		_childTemp, typeSwitchError = MPropWriteConParse(readBuffer, size)
+		_childTemp, typeSwitchError = MPropWriteConParseWithBuffer(readBuffer, size)
 	case messageCode == 0xF7: // MPropInfoInd
-		_childTemp, typeSwitchError = MPropInfoIndParse(readBuffer, size)
+		_childTemp, typeSwitchError = MPropInfoIndParseWithBuffer(readBuffer, size)
 	case messageCode == 0xF8: // MFuncPropCommandReq
-		_childTemp, typeSwitchError = MFuncPropCommandReqParse(readBuffer, size)
+		_childTemp, typeSwitchError = MFuncPropCommandReqParseWithBuffer(readBuffer, size)
 	case messageCode == 0xF9: // MFuncPropStateReadReq
-		_childTemp, typeSwitchError = MFuncPropStateReadReqParse(readBuffer, size)
+		_childTemp, typeSwitchError = MFuncPropStateReadReqParseWithBuffer(readBuffer, size)
 	case messageCode == 0xFA: // MFuncPropCon
-		_childTemp, typeSwitchError = MFuncPropConParse(readBuffer, size)
+		_childTemp, typeSwitchError = MFuncPropConParseWithBuffer(readBuffer, size)
 	case messageCode == 0xF1: // MResetReq
-		_childTemp, typeSwitchError = MResetReqParse(readBuffer, size)
+		_childTemp, typeSwitchError = MResetReqParseWithBuffer(readBuffer, size)
 	case messageCode == 0xF0: // MResetInd
-		_childTemp, typeSwitchError = MResetIndParse(readBuffer, size)
+		_childTemp, typeSwitchError = MResetIndParseWithBuffer(readBuffer, size)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [messageCode=%v]", messageCode)
 	}

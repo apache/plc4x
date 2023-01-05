@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -102,7 +103,11 @@ func (m *_FirmataMessage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataMessageParse(readBuffer utils.ReadBuffer, response bool) (FirmataMessage, error) {
+func FirmataMessageParse(theBytes []byte, response bool) (FirmataMessage, error) {
+	return FirmataMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
+}
+
+func FirmataMessageParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataMessage"); pullErr != nil {
@@ -128,15 +133,15 @@ func FirmataMessageParse(readBuffer utils.ReadBuffer, response bool) (FirmataMes
 	var typeSwitchError error
 	switch {
 	case messageType == 0xE: // FirmataMessageAnalogIO
-		_childTemp, typeSwitchError = FirmataMessageAnalogIOParse(readBuffer, response)
+		_childTemp, typeSwitchError = FirmataMessageAnalogIOParseWithBuffer(readBuffer, response)
 	case messageType == 0x9: // FirmataMessageDigitalIO
-		_childTemp, typeSwitchError = FirmataMessageDigitalIOParse(readBuffer, response)
+		_childTemp, typeSwitchError = FirmataMessageDigitalIOParseWithBuffer(readBuffer, response)
 	case messageType == 0xC: // FirmataMessageSubscribeAnalogPinValue
-		_childTemp, typeSwitchError = FirmataMessageSubscribeAnalogPinValueParse(readBuffer, response)
+		_childTemp, typeSwitchError = FirmataMessageSubscribeAnalogPinValueParseWithBuffer(readBuffer, response)
 	case messageType == 0xD: // FirmataMessageSubscribeDigitalPinValue
-		_childTemp, typeSwitchError = FirmataMessageSubscribeDigitalPinValueParse(readBuffer, response)
+		_childTemp, typeSwitchError = FirmataMessageSubscribeDigitalPinValueParseWithBuffer(readBuffer, response)
 	case messageType == 0xF: // FirmataMessageCommand
-		_childTemp, typeSwitchError = FirmataMessageCommandParse(readBuffer, response)
+		_childTemp, typeSwitchError = FirmataMessageCommandParseWithBuffer(readBuffer, response)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [messageType=%v]", messageType)
 	}

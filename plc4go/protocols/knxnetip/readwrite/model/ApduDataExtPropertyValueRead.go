@@ -157,7 +157,11 @@ func (m *_ApduDataExtPropertyValueRead) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataExtPropertyValueReadParse(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtPropertyValueRead, error) {
+func ApduDataExtPropertyValueReadParse(theBytes []byte, length uint8) (ApduDataExtPropertyValueRead, error) {
+	return ApduDataExtPropertyValueReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes), length)
+}
+
+func ApduDataExtPropertyValueReadParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtPropertyValueRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyValueRead"); pullErr != nil {
@@ -212,7 +216,15 @@ func ApduDataExtPropertyValueReadParse(readBuffer utils.ReadBuffer, length uint8
 	return _child, nil
 }
 
-func (m *_ApduDataExtPropertyValueRead) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataExtPropertyValueRead) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApduDataExtPropertyValueRead) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

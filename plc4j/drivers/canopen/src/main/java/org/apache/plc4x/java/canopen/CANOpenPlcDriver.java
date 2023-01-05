@@ -19,13 +19,12 @@
 package org.apache.plc4x.java.canopen;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.can.adapter.CANDriverAdapter;
 import org.apache.plc4x.java.canopen.configuration.CANOpenConfiguration;
 import org.apache.plc4x.java.canopen.context.CANOpenDriverContext;
-import org.apache.plc4x.java.canopen.field.CANOpenFieldHandler;
+import org.apache.plc4x.java.canopen.tag.CANOpenTagHandler;
 import org.apache.plc4x.java.canopen.protocol.CANOpenProtocolLogic;
 import org.apache.plc4x.java.canopen.transport.CANOpenFrameDataHandler;
 import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
@@ -35,9 +34,9 @@ import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
+import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.transport.can.CANTransport;
 
@@ -81,19 +80,19 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<Message> {
     }
 
     @Override
-    protected CANOpenFieldHandler getFieldHandler() {
-        return new CANOpenFieldHandler();
+    protected CANOpenTagHandler getTagHandler() {
+        return new CANOpenTagHandler();
     }
 
     @Override
-    protected PlcValueHandler getValueHandler() {
-        return new IEC61131ValueHandler() {
+    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
+        return new PlcValueHandler() {
             @Override
-            public PlcValue newPlcValue(PlcField field, Object[] values) {
+            public PlcValue newPlcValue(PlcTag tag, Object[] values) {
                 if (values[0] instanceof PlcList) {
                     return (PlcList) values[0];
                 }
-                return super.newPlcValue(field, values);
+                return super.newPlcValue(tag, values);
             }
         };
     }
@@ -109,7 +108,7 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<Message> {
 
     @Override
     protected BaseOptimizer getOptimizer() {
-        return new SingleFieldOptimizer();
+        return new SingleTagOptimizer();
     }
 
     @Override

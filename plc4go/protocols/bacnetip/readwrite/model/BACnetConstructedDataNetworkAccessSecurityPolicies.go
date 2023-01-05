@@ -169,7 +169,11 @@ func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNetworkAccessSecurityPoliciesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkAccessSecurityPolicies, error) {
+func BACnetConstructedDataNetworkAccessSecurityPoliciesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkAccessSecurityPolicies, error) {
+	return BACnetConstructedDataNetworkAccessSecurityPoliciesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataNetworkAccessSecurityPoliciesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkAccessSecurityPolicies, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkAccessSecurityPolicies"); pullErr != nil {
@@ -190,7 +194,7 @@ func BACnetConstructedDataNetworkAccessSecurityPoliciesParse(readBuffer utils.Re
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
-		_val, _err := BACnetApplicationTagParse(readBuffer)
+		_val, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -213,12 +217,11 @@ func BACnetConstructedDataNetworkAccessSecurityPoliciesParse(readBuffer utils.Re
 	var networkAccessSecurityPolicies []BACnetNetworkSecurityPolicy
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetNetworkSecurityPolicyParse(readBuffer)
+			_item, _err := BACnetNetworkSecurityPolicyParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'networkAccessSecurityPolicies' field of BACnetConstructedDataNetworkAccessSecurityPolicies")
 			}
 			networkAccessSecurityPolicies = append(networkAccessSecurityPolicies, _item.(BACnetNetworkSecurityPolicy))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("networkAccessSecurityPolicies", utils.WithRenderAsList(true)); closeErr != nil {
@@ -242,7 +245,15 @@ func BACnetConstructedDataNetworkAccessSecurityPoliciesParse(readBuffer utils.Re
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

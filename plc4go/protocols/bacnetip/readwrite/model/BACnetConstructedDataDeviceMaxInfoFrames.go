@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDeviceMaxInfoFramesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeviceMaxInfoFrames, error) {
+func BACnetConstructedDataDeviceMaxInfoFramesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeviceMaxInfoFrames, error) {
+	return BACnetConstructedDataDeviceMaxInfoFramesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataDeviceMaxInfoFramesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeviceMaxInfoFrames, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDeviceMaxInfoFrames"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataDeviceMaxInfoFramesParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("maxInfoFrames"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxInfoFrames")
 	}
-	_maxInfoFrames, _maxInfoFramesErr := BACnetApplicationTagParse(readBuffer)
+	_maxInfoFrames, _maxInfoFramesErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _maxInfoFramesErr != nil {
 		return nil, errors.Wrap(_maxInfoFramesErr, "Error parsing 'maxInfoFrames' field of BACnetConstructedDataDeviceMaxInfoFrames")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataDeviceMaxInfoFramesParse(readBuffer utils.ReadBuffer, 
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataDeviceMaxInfoFrames) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDeviceMaxInfoFrames) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataDeviceMaxInfoFrames) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

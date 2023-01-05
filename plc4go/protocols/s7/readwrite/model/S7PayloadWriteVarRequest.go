@@ -133,7 +133,11 @@ func (m *_S7PayloadWriteVarRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (S7PayloadWriteVarRequest, error) {
+func S7PayloadWriteVarRequestParse(theBytes []byte, messageType uint8, parameter S7Parameter) (S7PayloadWriteVarRequest, error) {
+	return S7PayloadWriteVarRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), messageType, parameter)
+}
+
+func S7PayloadWriteVarRequestParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (S7PayloadWriteVarRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadWriteVarRequest"); pullErr != nil {
@@ -154,7 +158,7 @@ func S7PayloadWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType uint
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterWriteVarRequest(parameter).GetItems()))); curItem++ {
-			_item, _err := S7VarPayloadDataItemParse(readBuffer)
+			_item, _err := S7VarPayloadDataItemParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field of S7PayloadWriteVarRequest")
 			}
@@ -180,7 +184,15 @@ func S7PayloadWriteVarRequestParse(readBuffer utils.ReadBuffer, messageType uint
 	return _child, nil
 }
 
-func (m *_S7PayloadWriteVarRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7PayloadWriteVarRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7PayloadWriteVarRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

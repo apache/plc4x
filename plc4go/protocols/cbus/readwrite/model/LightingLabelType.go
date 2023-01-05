@@ -30,7 +30,7 @@ import (
 type LightingLabelType uint8
 
 type ILightingLabelType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -107,7 +107,11 @@ func (m LightingLabelType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LightingLabelTypeParse(readBuffer utils.ReadBuffer) (LightingLabelType, error) {
+func LightingLabelTypeParse(theBytes []byte) (LightingLabelType, error) {
+	return LightingLabelTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func LightingLabelTypeParseWithBuffer(readBuffer utils.ReadBuffer) (LightingLabelType, error) {
 	val, err := readBuffer.ReadUint8("LightingLabelType", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading LightingLabelType")
@@ -120,7 +124,15 @@ func LightingLabelTypeParse(readBuffer utils.ReadBuffer) (LightingLabelType, err
 	}
 }
 
-func (e LightingLabelType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e LightingLabelType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e LightingLabelType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("LightingLabelType", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

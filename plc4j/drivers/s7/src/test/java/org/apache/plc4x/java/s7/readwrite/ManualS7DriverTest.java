@@ -23,7 +23,6 @@ import org.apache.plc4x.test.manual.ManualTest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
 
 public class ManualS7DriverTest extends ManualTest {
 

@@ -97,7 +97,11 @@ func (m *_BACnetLiftCarCallList) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLiftCarCallListParse(readBuffer utils.ReadBuffer) (BACnetLiftCarCallList, error) {
+func BACnetLiftCarCallListParse(theBytes []byte) (BACnetLiftCarCallList, error) {
+	return BACnetLiftCarCallListParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLiftCarCallListParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLiftCarCallList, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLiftCarCallList"); pullErr != nil {
@@ -110,7 +114,7 @@ func BACnetLiftCarCallListParse(readBuffer utils.ReadBuffer) (BACnetLiftCarCallL
 	if pullErr := readBuffer.PullContext("floorNumbers"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for floorNumbers")
 	}
-	_floorNumbers, _floorNumbersErr := BACnetLiftCarCallListFloorListParse(readBuffer, uint8(uint8(0)))
+	_floorNumbers, _floorNumbersErr := BACnetLiftCarCallListFloorListParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _floorNumbersErr != nil {
 		return nil, errors.Wrap(_floorNumbersErr, "Error parsing 'floorNumbers' field of BACnetLiftCarCallList")
 	}
@@ -129,7 +133,15 @@ func BACnetLiftCarCallListParse(readBuffer utils.ReadBuffer) (BACnetLiftCarCallL
 	}, nil
 }
 
-func (m *_BACnetLiftCarCallList) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLiftCarCallList) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLiftCarCallList) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLiftCarCallList"); pushErr != nil {

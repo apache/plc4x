@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataLastRestoreTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLastRestoreTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastRestoreTime, error) {
+func BACnetConstructedDataLastRestoreTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastRestoreTime, error) {
+	return BACnetConstructedDataLastRestoreTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataLastRestoreTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastRestoreTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastRestoreTime"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataLastRestoreTimeParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("lastRestoreTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastRestoreTime")
 	}
-	_lastRestoreTime, _lastRestoreTimeErr := BACnetTimeStampParse(readBuffer)
+	_lastRestoreTime, _lastRestoreTimeErr := BACnetTimeStampParseWithBuffer(readBuffer)
 	if _lastRestoreTimeErr != nil {
 		return nil, errors.Wrap(_lastRestoreTimeErr, "Error parsing 'lastRestoreTime' field of BACnetConstructedDataLastRestoreTime")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataLastRestoreTimeParse(readBuffer utils.ReadBuffer, tagN
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataLastRestoreTime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLastRestoreTime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataLastRestoreTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

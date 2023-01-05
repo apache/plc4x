@@ -881,7 +881,7 @@ func TestS7MessageBytes(t *testing.T) {
 			})
 			t.Run("Simple 2 Box", func(t *testing.T) {
 				boxWriter := utils.NewWriteBufferBoxBased()
-				if err := tt.args.debuggable.Serialize(boxWriter); err != nil {
+				if err := tt.args.debuggable.SerializeWithWriteBuffer(boxWriter); err != nil {
 					t.Error(err)
 				}
 				tt.wantStringSerialized = strings.Trim(tt.wantStringSerialized, "\n")
@@ -891,7 +891,7 @@ func TestS7MessageBytes(t *testing.T) {
 			})
 			t.Run("Simple 2 Compact Box", func(t *testing.T) {
 				boxWriter := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-				if err := tt.args.debuggable.Serialize(boxWriter); err != nil {
+				if err := tt.args.debuggable.SerializeWithWriteBuffer(boxWriter); err != nil {
 					t.Error(err)
 				}
 				tt.wantStringSerializedCompact = strings.Trim(tt.wantStringSerializedCompact, "\n")
@@ -901,7 +901,7 @@ func TestS7MessageBytes(t *testing.T) {
 			})
 			t.Run("Simple 2 Xml", func(t *testing.T) {
 				xmlWriteBuffer := utils.NewXmlWriteBuffer()
-				if err := tt.args.debuggable.Serialize(xmlWriteBuffer); err != nil {
+				if err := tt.args.debuggable.SerializeWithWriteBuffer(xmlWriteBuffer); err != nil {
 					t.Error(err)
 				}
 				tt.wantStringXml = strings.Trim(tt.wantStringXml, "\n")
@@ -911,7 +911,7 @@ func TestS7MessageBytes(t *testing.T) {
 			})
 			t.Run("Simple 2 Json", func(t *testing.T) {
 				jsonWriteBuffer := utils.NewJsonWriteBuffer()
-				if err := tt.args.debuggable.Serialize(jsonWriteBuffer); err != nil {
+				if err := tt.args.debuggable.SerializeWithWriteBuffer(jsonWriteBuffer); err != nil {
 					t.Error(err)
 				}
 				tt.wantStringJson = strings.Trim(tt.wantStringJson, "\n")
@@ -925,7 +925,7 @@ func TestS7MessageBytes(t *testing.T) {
 			})
 			t.Run("Simple Binary Serialize", func(t *testing.T) {
 				buffer := utils.NewWriteBufferByteBased()
-				if err := tt.args.debuggable.Serialize(buffer); err != nil {
+				if err := tt.args.debuggable.SerializeWithWriteBuffer(buffer); err != nil {
 					t.Error(err)
 				}
 				tt.wantDump = strings.Trim(tt.wantDump, "\n")
@@ -936,7 +936,7 @@ func TestS7MessageBytes(t *testing.T) {
 			t.Run("xml roundtrip", func(t *testing.T) {
 				reader := strings.NewReader(tt.wantStringXml)
 				readBuffer := utils.NewXmlReadBuffer(reader)
-				if got, err := model.TPKTPacketParse(readBuffer); err != nil {
+				if got, err := model.TPKTPacketParseWithBuffer(readBuffer); err != nil {
 					t.Error(err)
 				} else {
 					assert.Equal(t, tt.args.debuggable, got)
@@ -945,7 +945,7 @@ func TestS7MessageBytes(t *testing.T) {
 			t.Run("json roundtrip", func(t *testing.T) {
 				reader := strings.NewReader(tt.wantStringJson)
 				readBuffer := utils.NewJsonReadBuffer(reader)
-				if got, err := model.TPKTPacketParse(readBuffer); err != nil || !reflect.DeepEqual(got, tt.args.debuggable) {
+				if got, err := model.TPKTPacketParseWithBuffer(readBuffer); err != nil || !reflect.DeepEqual(got, tt.args.debuggable) {
 					if err != nil {
 						t.Error(err)
 					} else {

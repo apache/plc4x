@@ -38,11 +38,11 @@ type AdsAddDeviceNotificationRequest interface {
 	// GetLength returns Length (property field)
 	GetLength() uint32
 	// GetTransmissionMode returns TransmissionMode (property field)
-	GetTransmissionMode() uint32
-	// GetMaxDelay returns MaxDelay (property field)
-	GetMaxDelay() uint32
-	// GetCycleTime returns CycleTime (property field)
-	GetCycleTime() uint32
+	GetTransmissionMode() AdsTransMode
+	// GetMaxDelayInMs returns MaxDelayInMs (property field)
+	GetMaxDelayInMs() uint32
+	// GetCycleTimeInMs returns CycleTimeInMs (property field)
+	GetCycleTimeInMs() uint32
 }
 
 // AdsAddDeviceNotificationRequestExactly can be used when we want exactly this type and not a type which fulfills AdsAddDeviceNotificationRequest.
@@ -58,9 +58,9 @@ type _AdsAddDeviceNotificationRequest struct {
 	IndexGroup       uint32
 	IndexOffset      uint32
 	Length           uint32
-	TransmissionMode uint32
-	MaxDelay         uint32
-	CycleTime        uint32
+	TransmissionMode AdsTransMode
+	MaxDelayInMs     uint32
+	CycleTimeInMs    uint32
 	// Reserved Fields
 	reservedField0 *uint64
 	reservedField1 *uint64
@@ -114,16 +114,16 @@ func (m *_AdsAddDeviceNotificationRequest) GetLength() uint32 {
 	return m.Length
 }
 
-func (m *_AdsAddDeviceNotificationRequest) GetTransmissionMode() uint32 {
+func (m *_AdsAddDeviceNotificationRequest) GetTransmissionMode() AdsTransMode {
 	return m.TransmissionMode
 }
 
-func (m *_AdsAddDeviceNotificationRequest) GetMaxDelay() uint32 {
-	return m.MaxDelay
+func (m *_AdsAddDeviceNotificationRequest) GetMaxDelayInMs() uint32 {
+	return m.MaxDelayInMs
 }
 
-func (m *_AdsAddDeviceNotificationRequest) GetCycleTime() uint32 {
-	return m.CycleTime
+func (m *_AdsAddDeviceNotificationRequest) GetCycleTimeInMs() uint32 {
+	return m.CycleTimeInMs
 }
 
 ///////////////////////
@@ -132,14 +132,14 @@ func (m *_AdsAddDeviceNotificationRequest) GetCycleTime() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewAdsAddDeviceNotificationRequest factory function for _AdsAddDeviceNotificationRequest
-func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, length uint32, transmissionMode uint32, maxDelay uint32, cycleTime uint32, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsAddDeviceNotificationRequest {
+func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, length uint32, transmissionMode AdsTransMode, maxDelayInMs uint32, cycleTimeInMs uint32, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsAddDeviceNotificationRequest {
 	_result := &_AdsAddDeviceNotificationRequest{
 		IndexGroup:       indexGroup,
 		IndexOffset:      indexOffset,
 		Length:           length,
 		TransmissionMode: transmissionMode,
-		MaxDelay:         maxDelay,
-		CycleTime:        cycleTime,
+		MaxDelayInMs:     maxDelayInMs,
+		CycleTimeInMs:    cycleTimeInMs,
 		_AmsPacket:       NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
 	_result._AmsPacket._AmsPacketChildRequirements = _result
@@ -180,10 +180,10 @@ func (m *_AdsAddDeviceNotificationRequest) GetLengthInBitsConditional(lastItem b
 	// Simple field (transmissionMode)
 	lengthInBits += 32
 
-	// Simple field (maxDelay)
+	// Simple field (maxDelayInMs)
 	lengthInBits += 32
 
-	// Simple field (cycleTime)
+	// Simple field (cycleTimeInMs)
 	lengthInBits += 32
 
 	// Reserved Field (reserved)
@@ -199,7 +199,11 @@ func (m *_AdsAddDeviceNotificationRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (AdsAddDeviceNotificationRequest, error) {
+func AdsAddDeviceNotificationRequestParse(theBytes []byte) (AdsAddDeviceNotificationRequest, error) {
+	return AdsAddDeviceNotificationRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsAddDeviceNotificationRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsAddDeviceNotificationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsAddDeviceNotificationRequest"); pullErr != nil {
@@ -230,25 +234,31 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (AdsAddDe
 	length := _length
 
 	// Simple Field (transmissionMode)
-	_transmissionMode, _transmissionModeErr := readBuffer.ReadUint32("transmissionMode", 32)
+	if pullErr := readBuffer.PullContext("transmissionMode"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for transmissionMode")
+	}
+	_transmissionMode, _transmissionModeErr := AdsTransModeParseWithBuffer(readBuffer)
 	if _transmissionModeErr != nil {
 		return nil, errors.Wrap(_transmissionModeErr, "Error parsing 'transmissionMode' field of AdsAddDeviceNotificationRequest")
 	}
 	transmissionMode := _transmissionMode
-
-	// Simple Field (maxDelay)
-	_maxDelay, _maxDelayErr := readBuffer.ReadUint32("maxDelay", 32)
-	if _maxDelayErr != nil {
-		return nil, errors.Wrap(_maxDelayErr, "Error parsing 'maxDelay' field of AdsAddDeviceNotificationRequest")
+	if closeErr := readBuffer.CloseContext("transmissionMode"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for transmissionMode")
 	}
-	maxDelay := _maxDelay
 
-	// Simple Field (cycleTime)
-	_cycleTime, _cycleTimeErr := readBuffer.ReadUint32("cycleTime", 32)
-	if _cycleTimeErr != nil {
-		return nil, errors.Wrap(_cycleTimeErr, "Error parsing 'cycleTime' field of AdsAddDeviceNotificationRequest")
+	// Simple Field (maxDelayInMs)
+	_maxDelayInMs, _maxDelayInMsErr := readBuffer.ReadUint32("maxDelayInMs", 32)
+	if _maxDelayInMsErr != nil {
+		return nil, errors.Wrap(_maxDelayInMsErr, "Error parsing 'maxDelayInMs' field of AdsAddDeviceNotificationRequest")
 	}
-	cycleTime := _cycleTime
+	maxDelayInMs := _maxDelayInMs
+
+	// Simple Field (cycleTimeInMs)
+	_cycleTimeInMs, _cycleTimeInMsErr := readBuffer.ReadUint32("cycleTimeInMs", 32)
+	if _cycleTimeInMsErr != nil {
+		return nil, errors.Wrap(_cycleTimeInMsErr, "Error parsing 'cycleTimeInMs' field of AdsAddDeviceNotificationRequest")
+	}
+	cycleTimeInMs := _cycleTimeInMs
 
 	var reservedField0 *uint64
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -295,8 +305,8 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (AdsAddDe
 		IndexOffset:      indexOffset,
 		Length:           length,
 		TransmissionMode: transmissionMode,
-		MaxDelay:         maxDelay,
-		CycleTime:        cycleTime,
+		MaxDelayInMs:     maxDelayInMs,
+		CycleTimeInMs:    cycleTimeInMs,
 		reservedField0:   reservedField0,
 		reservedField1:   reservedField1,
 	}
@@ -304,7 +314,15 @@ func AdsAddDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (AdsAddDe
 	return _child, nil
 }
 
-func (m *_AdsAddDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsAddDeviceNotificationRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsAddDeviceNotificationRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -334,24 +352,29 @@ func (m *_AdsAddDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuff
 		}
 
 		// Simple Field (transmissionMode)
-		transmissionMode := uint32(m.GetTransmissionMode())
-		_transmissionModeErr := writeBuffer.WriteUint32("transmissionMode", 32, (transmissionMode))
+		if pushErr := writeBuffer.PushContext("transmissionMode"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for transmissionMode")
+		}
+		_transmissionModeErr := writeBuffer.WriteSerializable(m.GetTransmissionMode())
+		if popErr := writeBuffer.PopContext("transmissionMode"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for transmissionMode")
+		}
 		if _transmissionModeErr != nil {
 			return errors.Wrap(_transmissionModeErr, "Error serializing 'transmissionMode' field")
 		}
 
-		// Simple Field (maxDelay)
-		maxDelay := uint32(m.GetMaxDelay())
-		_maxDelayErr := writeBuffer.WriteUint32("maxDelay", 32, (maxDelay))
-		if _maxDelayErr != nil {
-			return errors.Wrap(_maxDelayErr, "Error serializing 'maxDelay' field")
+		// Simple Field (maxDelayInMs)
+		maxDelayInMs := uint32(m.GetMaxDelayInMs())
+		_maxDelayInMsErr := writeBuffer.WriteUint32("maxDelayInMs", 32, (maxDelayInMs))
+		if _maxDelayInMsErr != nil {
+			return errors.Wrap(_maxDelayInMsErr, "Error serializing 'maxDelayInMs' field")
 		}
 
-		// Simple Field (cycleTime)
-		cycleTime := uint32(m.GetCycleTime())
-		_cycleTimeErr := writeBuffer.WriteUint32("cycleTime", 32, (cycleTime))
-		if _cycleTimeErr != nil {
-			return errors.Wrap(_cycleTimeErr, "Error serializing 'cycleTime' field")
+		// Simple Field (cycleTimeInMs)
+		cycleTimeInMs := uint32(m.GetCycleTimeInMs())
+		_cycleTimeInMsErr := writeBuffer.WriteUint32("cycleTimeInMs", 32, (cycleTimeInMs))
+		if _cycleTimeInMsErr != nil {
+			return errors.Wrap(_cycleTimeInMsErr, "Error serializing 'cycleTimeInMs' field")
 		}
 
 		// Reserved Field (reserved)

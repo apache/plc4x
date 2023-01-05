@@ -30,7 +30,7 @@ import (
 type ErrorReportingSystemCategoryTypeForSupportUnits uint8
 
 type IErrorReportingSystemCategoryTypeForSupportUnits interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -179,7 +179,11 @@ func (m ErrorReportingSystemCategoryTypeForSupportUnits) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingSystemCategoryTypeForSupportUnitsParse(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeForSupportUnits, error) {
+func ErrorReportingSystemCategoryTypeForSupportUnitsParse(theBytes []byte) (ErrorReportingSystemCategoryTypeForSupportUnits, error) {
+	return ErrorReportingSystemCategoryTypeForSupportUnitsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ErrorReportingSystemCategoryTypeForSupportUnitsParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeForSupportUnits, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingSystemCategoryTypeForSupportUnits", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingSystemCategoryTypeForSupportUnits")
@@ -192,7 +196,15 @@ func ErrorReportingSystemCategoryTypeForSupportUnitsParse(readBuffer utils.ReadB
 	}
 }
 
-func (e ErrorReportingSystemCategoryTypeForSupportUnits) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ErrorReportingSystemCategoryTypeForSupportUnits) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ErrorReportingSystemCategoryTypeForSupportUnits) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ErrorReportingSystemCategoryTypeForSupportUnits", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

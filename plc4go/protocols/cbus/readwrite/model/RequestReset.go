@@ -157,7 +157,11 @@ func (m *_RequestReset) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestResetParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestReset, error) {
+func RequestResetParse(theBytes []byte, cBusOptions CBusOptions) (RequestReset, error) {
+	return RequestResetParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+}
+
+func RequestResetParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestReset, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestReset"); pullErr != nil {
@@ -171,7 +175,7 @@ func RequestResetParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Re
 	if pullErr := readBuffer.PullContext("tildePeek"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for tildePeek")
 	}
-	tildePeek, _err := RequestTypeParse(readBuffer)
+	tildePeek, _err := RequestTypeParseWithBuffer(readBuffer)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'tildePeek' field of RequestReset")
 	}
@@ -187,7 +191,7 @@ func RequestResetParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Re
 		if pullErr := readBuffer.PullContext("secondTilde"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for secondTilde")
 		}
-		_val, _err := RequestTypeParse(readBuffer)
+		_val, _err := RequestTypeParseWithBuffer(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'secondTilde' field of RequestReset")
 		}
@@ -202,7 +206,7 @@ func RequestResetParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Re
 	if pullErr := readBuffer.PullContext("tildePeek2"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for tildePeek2")
 	}
-	tildePeek2, _err := RequestTypeParse(readBuffer)
+	tildePeek2, _err := RequestTypeParseWithBuffer(readBuffer)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'tildePeek2' field of RequestReset")
 	}
@@ -218,7 +222,7 @@ func RequestResetParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Re
 		if pullErr := readBuffer.PullContext("thirdTilde"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for thirdTilde")
 		}
-		_val, _err := RequestTypeParse(readBuffer)
+		_val, _err := RequestTypeParseWithBuffer(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'thirdTilde' field of RequestReset")
 		}
@@ -246,7 +250,15 @@ func RequestResetParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Re
 	return _child, nil
 }
 
-func (m *_RequestReset) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_RequestReset) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_RequestReset) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

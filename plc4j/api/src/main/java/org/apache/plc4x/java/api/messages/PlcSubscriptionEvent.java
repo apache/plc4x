@@ -21,8 +21,10 @@ package org.apache.plc4x.java.api.messages;
 import java.time.Instant;
 
 public interface PlcSubscriptionEvent extends PlcReadResponse {
+
     /**
      * @return the timestamp at which this event occurred.
      */
     Instant getTimestamp();
+
 }

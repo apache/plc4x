@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -108,7 +109,11 @@ func (m *_CIPEncapsulationConnectionResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CIPEncapsulationConnectionResponseParse(readBuffer utils.ReadBuffer) (CIPEncapsulationConnectionResponse, error) {
+func CIPEncapsulationConnectionResponseParse(theBytes []byte) (CIPEncapsulationConnectionResponse, error) {
+	return CIPEncapsulationConnectionResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+}
+
+func CIPEncapsulationConnectionResponseParseWithBuffer(readBuffer utils.ReadBuffer) (CIPEncapsulationConnectionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CIPEncapsulationConnectionResponse"); pullErr != nil {
@@ -129,7 +134,15 @@ func CIPEncapsulationConnectionResponseParse(readBuffer utils.ReadBuffer) (CIPEn
 	return _child, nil
 }
 
-func (m *_CIPEncapsulationConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CIPEncapsulationConnectionResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CIPEncapsulationConnectionResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

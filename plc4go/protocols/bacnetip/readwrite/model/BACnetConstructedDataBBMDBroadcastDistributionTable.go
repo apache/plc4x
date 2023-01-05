@@ -136,7 +136,11 @@ func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBBMDBroadcastDistributionTableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBBMDBroadcastDistributionTable, error) {
+func BACnetConstructedDataBBMDBroadcastDistributionTableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBBMDBroadcastDistributionTable, error) {
+	return BACnetConstructedDataBBMDBroadcastDistributionTableParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataBBMDBroadcastDistributionTableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBBMDBroadcastDistributionTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBBMDBroadcastDistributionTable"); pullErr != nil {
@@ -153,12 +157,11 @@ func BACnetConstructedDataBBMDBroadcastDistributionTableParse(readBuffer utils.R
 	var bbmdBroadcastDistributionTable []BACnetBDTEntry
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetBDTEntryParse(readBuffer)
+			_item, _err := BACnetBDTEntryParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'bbmdBroadcastDistributionTable' field of BACnetConstructedDataBBMDBroadcastDistributionTable")
 			}
 			bbmdBroadcastDistributionTable = append(bbmdBroadcastDistributionTable, _item.(BACnetBDTEntry))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("bbmdBroadcastDistributionTable", utils.WithRenderAsList(true)); closeErr != nil {
@@ -181,7 +184,15 @@ func BACnetConstructedDataBBMDBroadcastDistributionTableParse(readBuffer utils.R
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

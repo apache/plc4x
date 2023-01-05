@@ -179,7 +179,11 @@ func (m *_MPropReadCon) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MPropReadConParse(readBuffer utils.ReadBuffer, size uint16) (MPropReadCon, error) {
+func MPropReadConParse(theBytes []byte, size uint16) (MPropReadCon, error) {
+	return MPropReadConParseWithBuffer(utils.NewReadBufferByteBased(theBytes), size)
+}
+
+func MPropReadConParseWithBuffer(readBuffer utils.ReadBuffer, size uint16) (MPropReadCon, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MPropReadCon"); pullErr != nil {
@@ -250,7 +254,15 @@ func MPropReadConParse(readBuffer utils.ReadBuffer, size uint16) (MPropReadCon, 
 	return _child, nil
 }
 
-func (m *_MPropReadCon) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MPropReadCon) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_MPropReadCon) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -30,7 +30,7 @@ import (
 type DefaultAmsPorts uint16
 
 type IDefaultAmsPorts interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -413,7 +413,11 @@ func (m DefaultAmsPorts) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DefaultAmsPortsParse(readBuffer utils.ReadBuffer) (DefaultAmsPorts, error) {
+func DefaultAmsPortsParse(theBytes []byte) (DefaultAmsPorts, error) {
+	return DefaultAmsPortsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func DefaultAmsPortsParseWithBuffer(readBuffer utils.ReadBuffer) (DefaultAmsPorts, error) {
 	val, err := readBuffer.ReadUint16("DefaultAmsPorts", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DefaultAmsPorts")
@@ -426,7 +430,15 @@ func DefaultAmsPortsParse(readBuffer utils.ReadBuffer) (DefaultAmsPorts, error) 
 	}
 }
 
-func (e DefaultAmsPorts) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e DefaultAmsPorts) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e DefaultAmsPorts) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("DefaultAmsPorts", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

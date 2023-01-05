@@ -122,7 +122,11 @@ func (m *_BACnetPropertyStatesZoneOccupanyState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesZoneOccupanyStateParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesZoneOccupanyState, error) {
+func BACnetPropertyStatesZoneOccupanyStateParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesZoneOccupanyState, error) {
+	return BACnetPropertyStatesZoneOccupanyStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+}
+
+func BACnetPropertyStatesZoneOccupanyStateParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesZoneOccupanyState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesZoneOccupanyState"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPropertyStatesZoneOccupanyStateParse(readBuffer utils.ReadBuffer, pee
 	if pullErr := readBuffer.PullContext("zoneOccupanyState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for zoneOccupanyState")
 	}
-	_zoneOccupanyState, _zoneOccupanyStateErr := BACnetAccessZoneOccupancyStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_zoneOccupanyState, _zoneOccupanyStateErr := BACnetAccessZoneOccupancyStateTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _zoneOccupanyStateErr != nil {
 		return nil, errors.Wrap(_zoneOccupanyStateErr, "Error parsing 'zoneOccupanyState' field of BACnetPropertyStatesZoneOccupanyState")
 	}
@@ -157,7 +161,15 @@ func BACnetPropertyStatesZoneOccupanyStateParse(readBuffer utils.ReadBuffer, pee
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesZoneOccupanyState) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesZoneOccupanyState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesZoneOccupanyState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

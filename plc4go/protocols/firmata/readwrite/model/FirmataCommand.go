@@ -102,7 +102,11 @@ func (m *_FirmataCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func FirmataCommandParse(readBuffer utils.ReadBuffer, response bool) (FirmataCommand, error) {
+func FirmataCommandParse(theBytes []byte, response bool) (FirmataCommand, error) {
+	return FirmataCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+}
+
+func FirmataCommandParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommand"); pullErr != nil {
@@ -128,15 +132,15 @@ func FirmataCommandParse(readBuffer utils.ReadBuffer, response bool) (FirmataCom
 	var typeSwitchError error
 	switch {
 	case commandCode == 0x0: // FirmataCommandSysex
-		_childTemp, typeSwitchError = FirmataCommandSysexParse(readBuffer, response)
+		_childTemp, typeSwitchError = FirmataCommandSysexParseWithBuffer(readBuffer, response)
 	case commandCode == 0x4: // FirmataCommandSetPinMode
-		_childTemp, typeSwitchError = FirmataCommandSetPinModeParse(readBuffer, response)
+		_childTemp, typeSwitchError = FirmataCommandSetPinModeParseWithBuffer(readBuffer, response)
 	case commandCode == 0x5: // FirmataCommandSetDigitalPinValue
-		_childTemp, typeSwitchError = FirmataCommandSetDigitalPinValueParse(readBuffer, response)
+		_childTemp, typeSwitchError = FirmataCommandSetDigitalPinValueParseWithBuffer(readBuffer, response)
 	case commandCode == 0x9: // FirmataCommandProtocolVersion
-		_childTemp, typeSwitchError = FirmataCommandProtocolVersionParse(readBuffer, response)
+		_childTemp, typeSwitchError = FirmataCommandProtocolVersionParseWithBuffer(readBuffer, response)
 	case commandCode == 0xF: // FirmataCommandSystemReset
-		_childTemp, typeSwitchError = FirmataCommandSystemResetParse(readBuffer, response)
+		_childTemp, typeSwitchError = FirmataCommandSystemResetParseWithBuffer(readBuffer, response)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandCode=%v]", commandCode)
 	}

@@ -21,6 +21,8 @@ package knxnetip
 
 import (
 	"context"
+	"net/url"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
@@ -28,7 +30,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"net/url"
 )
 
 type Driver struct {
@@ -37,12 +38,12 @@ type Driver struct {
 
 func NewDriver() *Driver {
 	return &Driver{
-		DefaultDriver: _default.NewDefaultDriver("knxnet-ip", "KNXNet/IP", "udp", NewFieldHandler()),
+		DefaultDriver: _default.NewDefaultDriver("knxnet-ip", "KNXNet/IP", "udp", NewTagHandler()),
 	}
 }
 
 func (m *Driver) CheckQuery(query string) error {
-	_, err := m.GetPlcFieldHandler().ParseQuery(query)
+	_, err := m.GetPlcTagHandler().ParseQuery(query)
 	return err
 }
 
@@ -69,7 +70,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	}
 
 	// Create the new connection
-	connection := NewConnection(transportInstance, options, m.GetPlcFieldHandler())
+	connection := NewConnection(transportInstance, options, m.GetPlcTagHandler())
 	log.Trace().Str("transport", transportUrl.String()).Stringer("connection", connection).Msg("created new connection instance, trying to connect now")
 	return connection.Connect()
 }

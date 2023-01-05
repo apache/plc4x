@@ -30,7 +30,7 @@ import (
 type BACnetVTClass uint16
 
 type IBACnetVTClass interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -131,7 +131,11 @@ func (m BACnetVTClass) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetVTClassParse(readBuffer utils.ReadBuffer) (BACnetVTClass, error) {
+func BACnetVTClassParse(theBytes []byte) (BACnetVTClass, error) {
+	return BACnetVTClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetVTClassParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVTClass, error) {
 	val, err := readBuffer.ReadUint16("BACnetVTClass", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetVTClass")
@@ -144,7 +148,15 @@ func BACnetVTClassParse(readBuffer utils.ReadBuffer) (BACnetVTClass, error) {
 	}
 }
 
-func (e BACnetVTClass) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetVTClass) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetVTClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetVTClass", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -147,7 +148,11 @@ func (m *_AdsTableSizes) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsTableSizesParse(readBuffer utils.ReadBuffer) (AdsTableSizes, error) {
+func AdsTableSizesParse(theBytes []byte) (AdsTableSizes, error) {
+	return AdsTableSizesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+}
+
+func AdsTableSizesParseWithBuffer(readBuffer utils.ReadBuffer) (AdsTableSizes, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsTableSizes"); pullErr != nil {
@@ -213,7 +218,15 @@ func AdsTableSizesParse(readBuffer utils.ReadBuffer) (AdsTableSizes, error) {
 	}, nil
 }
 
-func (m *_AdsTableSizes) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsTableSizes) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsTableSizes) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsTableSizes"); pushErr != nil {

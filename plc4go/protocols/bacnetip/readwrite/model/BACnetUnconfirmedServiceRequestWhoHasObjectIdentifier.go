@@ -122,7 +122,11 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) GetLengthInByte
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierParse(readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier, error) {
+func BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierParse(theBytes []byte) (BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier, error) {
+	return BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierParse(readBuffer utils
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier")
 	}
@@ -157,7 +161,15 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierParse(readBuffer utils
 	return _child, nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

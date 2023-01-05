@@ -107,7 +107,11 @@ func (m *_SysexCommandAnalogMappingQueryRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandAnalogMappingQueryRequestParse(readBuffer utils.ReadBuffer, response bool) (SysexCommandAnalogMappingQueryRequest, error) {
+func SysexCommandAnalogMappingQueryRequestParse(theBytes []byte, response bool) (SysexCommandAnalogMappingQueryRequest, error) {
+	return SysexCommandAnalogMappingQueryRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+}
+
+func SysexCommandAnalogMappingQueryRequestParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandAnalogMappingQueryRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandAnalogMappingQueryRequest"); pullErr != nil {
@@ -128,7 +132,15 @@ func SysexCommandAnalogMappingQueryRequestParse(readBuffer utils.ReadBuffer, res
 	return _child, nil
 }
 
-func (m *_SysexCommandAnalogMappingQueryRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SysexCommandAnalogMappingQueryRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SysexCommandAnalogMappingQueryRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

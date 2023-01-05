@@ -147,7 +147,11 @@ func (m *_AmsSerialResetFrame) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AmsSerialResetFrameParse(readBuffer utils.ReadBuffer) (AmsSerialResetFrame, error) {
+func AmsSerialResetFrameParse(theBytes []byte) (AmsSerialResetFrame, error) {
+	return AmsSerialResetFrameParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AmsSerialResetFrameParseWithBuffer(readBuffer utils.ReadBuffer) (AmsSerialResetFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsSerialResetFrame"); pullErr != nil {
@@ -213,7 +217,15 @@ func AmsSerialResetFrameParse(readBuffer utils.ReadBuffer) (AmsSerialResetFrame,
 	}, nil
 }
 
-func (m *_AmsSerialResetFrame) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AmsSerialResetFrame) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AmsSerialResetFrame) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AmsSerialResetFrame"); pushErr != nil {

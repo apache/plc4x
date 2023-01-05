@@ -30,8 +30,8 @@ import (
 type SimulatedDataTypeSizes uint8
 
 type ISimulatedDataTypeSizes interface {
+	utils.Serializable
 	DataTypeSize() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -371,7 +371,11 @@ func (m SimulatedDataTypeSizes) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SimulatedDataTypeSizesParse(readBuffer utils.ReadBuffer) (SimulatedDataTypeSizes, error) {
+func SimulatedDataTypeSizesParse(theBytes []byte) (SimulatedDataTypeSizes, error) {
+	return SimulatedDataTypeSizesParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SimulatedDataTypeSizesParseWithBuffer(readBuffer utils.ReadBuffer) (SimulatedDataTypeSizes, error) {
 	val, err := readBuffer.ReadUint8("SimulatedDataTypeSizes", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SimulatedDataTypeSizes")
@@ -384,7 +388,15 @@ func SimulatedDataTypeSizesParse(readBuffer utils.ReadBuffer) (SimulatedDataType
 	}
 }
 
-func (e SimulatedDataTypeSizes) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e SimulatedDataTypeSizes) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e SimulatedDataTypeSizes) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("SimulatedDataTypeSizes", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

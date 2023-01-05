@@ -129,7 +129,11 @@ func (m *_DF1CommandRequestMessage) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DF1CommandRequestMessageParse(readBuffer utils.ReadBuffer) (DF1CommandRequestMessage, error) {
+func DF1CommandRequestMessageParse(theBytes []byte) (DF1CommandRequestMessage, error) {
+	return DF1CommandRequestMessageParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func DF1CommandRequestMessageParseWithBuffer(readBuffer utils.ReadBuffer) (DF1CommandRequestMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1CommandRequestMessage"); pullErr != nil {
@@ -142,7 +146,7 @@ func DF1CommandRequestMessageParse(readBuffer utils.ReadBuffer) (DF1CommandReque
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
-	_command, _commandErr := DF1RequestCommandParse(readBuffer)
+	_command, _commandErr := DF1RequestCommandParseWithBuffer(readBuffer)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of DF1CommandRequestMessage")
 	}
@@ -164,7 +168,15 @@ func DF1CommandRequestMessageParse(readBuffer utils.ReadBuffer) (DF1CommandReque
 	return _child, nil
 }
 
-func (m *_DF1CommandRequestMessage) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_DF1CommandRequestMessage) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_DF1CommandRequestMessage) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

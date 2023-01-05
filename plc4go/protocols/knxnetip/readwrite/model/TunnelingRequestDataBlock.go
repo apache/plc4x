@@ -115,7 +115,11 @@ func (m *_TunnelingRequestDataBlock) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TunnelingRequestDataBlockParse(readBuffer utils.ReadBuffer) (TunnelingRequestDataBlock, error) {
+func TunnelingRequestDataBlockParse(theBytes []byte) (TunnelingRequestDataBlock, error) {
+	return TunnelingRequestDataBlockParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TunnelingRequestDataBlockParseWithBuffer(readBuffer utils.ReadBuffer) (TunnelingRequestDataBlock, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TunnelingRequestDataBlock"); pullErr != nil {
@@ -174,7 +178,15 @@ func TunnelingRequestDataBlockParse(readBuffer utils.ReadBuffer) (TunnelingReque
 	}, nil
 }
 
-func (m *_TunnelingRequestDataBlock) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TunnelingRequestDataBlock) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TunnelingRequestDataBlock) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("TunnelingRequestDataBlock"); pushErr != nil {

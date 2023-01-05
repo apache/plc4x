@@ -21,16 +21,16 @@ package modbus
 
 import (
 	"context"
+	"math"
+	"sync/atomic"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"math"
-	"sync/atomic"
-	"time"
 )
 
 type Writer struct {
@@ -51,8 +51,8 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 	// TODO: handle context
 	result := make(chan model.PlcWriteRequestResult)
 	go func() {
-		// If we are requesting only one field, use a
-		if len(writeRequest.GetFieldNames()) != 1 {
+		// If we are requesting only one tag, use a
+		if len(writeRequest.GetTagNames()) != 1 {
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
@@ -60,24 +60,24 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 			}
 			return
 		}
-		fieldName := writeRequest.GetFieldNames()[0]
+		tagName := writeRequest.GetTagNames()[0]
 
-		// Get the modbus field instance from the request
-		field := writeRequest.GetField(fieldName)
-		modbusField, err := CastToModbusFieldFromPlcField(field)
+		// Get the modbus tag instance from the request
+		tag := writeRequest.GetTag(tagName)
+		modbusTag, err := CastToModbusTagFromPlcTag(tag)
 		if err != nil {
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
-				Err:      errors.Wrap(err, "invalid field item type"),
+				Err:      errors.Wrap(err, "invalid tag item type"),
 			}
 			return
 		}
 
 		// Get the value from the request and serialize it to a byte array
-		value := writeRequest.GetValue(fieldName)
-		io := utils.NewWriteBufferByteBased()
-		if err := readWriteModel.DataItemSerialize(io, value, modbusField.Datatype, modbusField.Quantity); err != nil {
+		value := writeRequest.GetValue(tagName)
+		data, err := readWriteModel.DataItemSerialize(value, modbusTag.Datatype, modbusTag.Quantity)
+		if err != nil {
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
@@ -85,21 +85,20 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 			}
 			return
 		}
-		data := io.GetBytes()
 
 		// Calculate the number of words needed to send the data
 		numWords := uint16(math.Ceil(float64(len(data)) / 2))
 
 		var pdu readWriteModel.ModbusPDU
-		switch modbusField.FieldType {
+		switch modbusTag.TagType {
 		case Coil:
 			pdu = readWriteModel.NewModbusPDUWriteMultipleCoilsRequest(
-				modbusField.Address,
-				modbusField.Quantity,
+				modbusTag.Address,
+				modbusTag.Quantity,
 				data)
 		case HoldingRegister:
 			pdu = readWriteModel.NewModbusPDUWriteMultipleHoldingRegistersRequest(
-				modbusField.Address,
+				modbusTag.Address,
 				numWords,
 				data)
 		case ExtendedRegister:
@@ -113,7 +112,7 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
-				Err:      errors.New("unsupported field type"),
+				Err:      errors.New("unsupported tag type"),
 			}
 			return
 		}
@@ -164,43 +163,43 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 
 func (m Writer) ToPlc4xWriteResponse(requestAdu readWriteModel.ModbusTcpADU, responseAdu readWriteModel.ModbusTcpADU, writeRequest model.PlcWriteRequest) (model.PlcWriteResponse, error) {
 	responseCodes := map[string]model.PlcResponseCode{}
-	fieldName := writeRequest.GetFieldNames()[0]
+	tagName := writeRequest.GetTagNames()[0]
 
 	// we default to an error until its proven wrong
-	responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
+	responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
 	switch resp := responseAdu.GetPdu().(type) {
 	case readWriteModel.ModbusPDUWriteMultipleCoilsResponse:
 		req := requestAdu.GetPdu().(readWriteModel.ModbusPDUWriteMultipleCoilsRequest)
 		if req.GetQuantity() == resp.GetQuantity() {
-			responseCodes[fieldName] = model.PlcResponseCode_OK
+			responseCodes[tagName] = model.PlcResponseCode_OK
 		}
 	case readWriteModel.ModbusPDUWriteMultipleHoldingRegistersResponse:
 		req := requestAdu.GetPdu().(readWriteModel.ModbusPDUWriteMultipleHoldingRegistersRequest)
 		if req.GetQuantity() == resp.GetQuantity() {
-			responseCodes[fieldName] = model.PlcResponseCode_OK
+			responseCodes[tagName] = model.PlcResponseCode_OK
 		}
 	case readWriteModel.ModbusPDUError:
 		switch resp.GetExceptionCode() {
 		case readWriteModel.ModbusErrorCode_ILLEGAL_FUNCTION:
-			responseCodes[fieldName] = model.PlcResponseCode_UNSUPPORTED
+			responseCodes[tagName] = model.PlcResponseCode_UNSUPPORTED
 		case readWriteModel.ModbusErrorCode_ILLEGAL_DATA_ADDRESS:
-			responseCodes[fieldName] = model.PlcResponseCode_INVALID_ADDRESS
+			responseCodes[tagName] = model.PlcResponseCode_INVALID_ADDRESS
 		case readWriteModel.ModbusErrorCode_ILLEGAL_DATA_VALUE:
-			responseCodes[fieldName] = model.PlcResponseCode_INVALID_DATA
+			responseCodes[tagName] = model.PlcResponseCode_INVALID_DATA
 		case readWriteModel.ModbusErrorCode_SLAVE_DEVICE_FAILURE:
-			responseCodes[fieldName] = model.PlcResponseCode_REMOTE_ERROR
+			responseCodes[tagName] = model.PlcResponseCode_REMOTE_ERROR
 		case readWriteModel.ModbusErrorCode_ACKNOWLEDGE:
-			responseCodes[fieldName] = model.PlcResponseCode_OK
+			responseCodes[tagName] = model.PlcResponseCode_OK
 		case readWriteModel.ModbusErrorCode_SLAVE_DEVICE_BUSY:
-			responseCodes[fieldName] = model.PlcResponseCode_REMOTE_BUSY
+			responseCodes[tagName] = model.PlcResponseCode_REMOTE_BUSY
 		case readWriteModel.ModbusErrorCode_NEGATIVE_ACKNOWLEDGE:
-			responseCodes[fieldName] = model.PlcResponseCode_REMOTE_ERROR
+			responseCodes[tagName] = model.PlcResponseCode_REMOTE_ERROR
 		case readWriteModel.ModbusErrorCode_MEMORY_PARITY_ERROR:
-			responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
+			responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
 		case readWriteModel.ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE:
-			responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
+			responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
 		case readWriteModel.ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND:
-			responseCodes[fieldName] = model.PlcResponseCode_REMOTE_ERROR
+			responseCodes[tagName] = model.PlcResponseCode_REMOTE_ERROR
 		default:
 			log.Debug().Msgf("Unmapped exception code %x", resp.GetExceptionCode())
 		}

@@ -122,7 +122,11 @@ func (m *_BACnetScaleIntegerScale) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetScaleIntegerScaleParse(readBuffer utils.ReadBuffer) (BACnetScaleIntegerScale, error) {
+func BACnetScaleIntegerScaleParse(theBytes []byte) (BACnetScaleIntegerScale, error) {
+	return BACnetScaleIntegerScaleParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetScaleIntegerScaleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetScaleIntegerScale, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetScaleIntegerScale"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetScaleIntegerScaleParse(readBuffer utils.ReadBuffer) (BACnetScaleInteg
 	if pullErr := readBuffer.PullContext("integerScale"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for integerScale")
 	}
-	_integerScale, _integerScaleErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
+	_integerScale, _integerScaleErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _integerScaleErr != nil {
 		return nil, errors.Wrap(_integerScaleErr, "Error parsing 'integerScale' field of BACnetScaleIntegerScale")
 	}
@@ -157,7 +161,15 @@ func BACnetScaleIntegerScaleParse(readBuffer utils.ReadBuffer) (BACnetScaleInteg
 	return _child, nil
 }
 
-func (m *_BACnetScaleIntegerScale) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetScaleIntegerScale) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetScaleIntegerScale) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -22,10 +22,11 @@ package utils
 import (
 	"bytes"
 	"encoding/binary"
-	"github.com/icza/bitio"
-	"github.com/pkg/errors"
 	"math"
 	"math/big"
+
+	"github.com/icza/bitio"
+	"github.com/pkg/errors"
 )
 
 type ReadBufferByteBased interface {
@@ -35,25 +36,26 @@ type ReadBufferByteBased interface {
 	PeekByte(offset byte) byte
 }
 
-func NewReadBufferByteBased(data []byte) ReadBufferByteBased {
+func NewReadBufferByteBased(data []byte, options ...ReadBufferByteBasedOptions) ReadBufferByteBased {
 	buffer := bytes.NewBuffer(data)
 	reader := bitio.NewReader(buffer)
-	return &byteReadBuffer{
+	b := &byteReadBuffer{
 		data:      data,
 		reader:    reader,
 		pos:       uint64(0),
 		byteOrder: binary.BigEndian,
 	}
+	for _, option := range options {
+		option(b)
+	}
+	return b
 }
 
-func NewLittleEndianReadBufferByteBased(data []byte) ReadBufferByteBased {
-	buffer := bytes.NewBuffer(data)
-	reader := bitio.NewReader(buffer)
-	return &byteReadBuffer{
-		data:      data,
-		reader:    reader,
-		pos:       uint64(0),
-		byteOrder: binary.LittleEndian,
+type ReadBufferByteBasedOptions = func(b *byteReadBuffer)
+
+func WithByteOrderForReadBufferByteBased(byteOrder binary.ByteOrder) ReadBufferByteBasedOptions {
+	return func(b *byteReadBuffer) {
+		b.byteOrder = byteOrder
 	}
 }
 
@@ -278,6 +280,7 @@ func (rb *byteReadBuffer) ReadBigInt(_ string, bitLength uint64, _ ...WithReader
 		}
 		// we now read the bits
 		data := rb.reader.TryReadBits(bitToRead)
+		rb.pos += bitLength
 
 		// and check for uneven bits for a right shift at the end
 		correction = 64 - bitToRead
@@ -314,18 +317,14 @@ func (rb *byteReadBuffer) ReadBigInt(_ string, bitLength uint64, _ ...WithReader
 }
 
 func (rb *byteReadBuffer) ReadFloat32(logicalName string, bitLength uint8, _ ...WithReaderArgs) (float32, error) {
-	if rb.byteOrder == binary.LittleEndian {
-		// TODO: indirection till we have a native LE implementation
-		bigInt, err := rb.ReadBigFloat(logicalName, bitLength)
-		if err != nil {
-			return 0, err
-		}
-		f, _ := bigInt.Float32()
-		return f, nil
-	}
 	if bitLength == 32 {
 		rb.pos += uint64(bitLength)
 		uintValue := uint32(rb.reader.TryReadBits(bitLength))
+		if rb.byteOrder == binary.LittleEndian {
+			array := make([]byte, 4)
+			binary.LittleEndian.PutUint32(array, uintValue)
+			uintValue = binary.BigEndian.Uint32(array)
+		}
 		res := math.Float32frombits(uintValue)
 		if rb.reader.TryError != nil {
 			return 0, rb.reader.TryError
@@ -381,6 +380,12 @@ func (rb *byteReadBuffer) ReadString(logicalName string, bitLength uint32, encod
 	stringBytes, err := rb.ReadByteArray(logicalName, int(bitLength/8))
 	if err != nil {
 		return "", errors.Wrap(err, "Error reading big int")
+	}
+	// End the string at the 0-character.
+	for i, value := range stringBytes {
+		if value == 0x00 {
+			return string(stringBytes[0:i]), nil
+		}
 	}
 	return string(stringBytes), nil
 }

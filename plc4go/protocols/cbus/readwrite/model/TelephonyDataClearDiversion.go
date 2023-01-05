@@ -102,7 +102,11 @@ func (m *_TelephonyDataClearDiversion) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyDataClearDiversionParse(readBuffer utils.ReadBuffer) (TelephonyDataClearDiversion, error) {
+func TelephonyDataClearDiversionParse(theBytes []byte) (TelephonyDataClearDiversion, error) {
+	return TelephonyDataClearDiversionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TelephonyDataClearDiversionParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyDataClearDiversion, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataClearDiversion"); pullErr != nil {
@@ -123,7 +127,15 @@ func TelephonyDataClearDiversionParse(readBuffer utils.ReadBuffer) (TelephonyDat
 	return _child, nil
 }
 
-func (m *_TelephonyDataClearDiversion) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TelephonyDataClearDiversion) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TelephonyDataClearDiversion) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

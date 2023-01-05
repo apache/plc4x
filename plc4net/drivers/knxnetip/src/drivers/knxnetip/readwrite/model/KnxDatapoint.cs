@@ -284,10 +284,9 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                     }
                 }
 
-                // Simple Field (value)
-                var value = readBuffer.ReadUint("", 32);
+                // Simple Field (milliseconds)
+                var milliseconds = readBuffer.ReadUint("", 32);
 
-                return new PlcTIME(TimeSpan.FromSeconds(value));
             } else if( datapointType == KnxDatapointType.LTIME ) { // LTIME
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -298,10 +297,9 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                     }
                 }
 
-                // Simple Field (value)
-                var value = readBuffer.ReadUlong("", 64);
+                // Simple Field (nanoseconds)
+                var nanoseconds = readBuffer.ReadUlong("", 64);
 
-                return new PlcTIME(TimeSpan.FromMilliseconds(value));
             } else if( datapointType == KnxDatapointType.DATE ) { // DATE
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -312,10 +310,9 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                     }
                 }
 
-                // Simple Field (value)
-                var value = readBuffer.ReadUshort("", 16);
+                // Simple Field (secondsSinceEpoch)
+                var secondsSinceEpoch = readBuffer.ReadUint("", 32);
 
-                return new PlcDATE(DateTime.Now); 
             } else if( datapointType == KnxDatapointType.TIME_OF_DAY ) { // TIME_OF_DAY
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -326,10 +323,9 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                     }
                 }
 
-                // Simple Field (value)
-                var value = readBuffer.ReadUint("", 32);
+                // Simple Field (millisecondsSinceMidnight)
+                var millisecondsSinceMidnight = readBuffer.ReadUint("", 32);
 
-                return new PlcTIME_OF_DAY(DateTime.Now); 
             } else if( datapointType == KnxDatapointType.TOD ) { // TIME_OF_DAY
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -340,10 +336,9 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                     }
                 }
 
-                // Simple Field (value)
-                var value = readBuffer.ReadUint("", 32);
+                // Simple Field (millisecondsSinceMidnight)
+                var millisecondsSinceMidnight = readBuffer.ReadUint("", 32);
 
-                return new PlcTIME_OF_DAY(DateTime.Now); 
             } else if( datapointType == KnxDatapointType.DATE_AND_TIME ) { // DATE_AND_TIME
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -375,10 +370,10 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Simple Field (seconds)
                 var seconds = readBuffer.ReadByte("", 8);
 
-                // Simple Field (nanos)
-                var nanos = readBuffer.ReadUint("", 32);
+                // Simple Field (nanoseconds)
+                var nanoseconds = readBuffer.ReadUint("", 32);
 
-                var value = new DateTime(year, (month == 0) ? 1 : month, (day == 0) ? 1 : day, hour, minutes, seconds, (int) (nanos / 1000000));
+                var value = new DateTime(year, (month == 0) ? 1 : month, (day == 0) ? 1 : day, hour, minutes, seconds, 0);
                 return new PlcDATE_AND_TIME(value);
             } else if( datapointType == KnxDatapointType.DT ) { // DATE_AND_TIME
 
@@ -411,10 +406,10 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Simple Field (seconds)
                 var seconds = readBuffer.ReadByte("", 8);
 
-                // Simple Field (nanos)
-                var nanos = readBuffer.ReadUint("", 32);
+                // Simple Field (nanoseconds)
+                var nanoseconds = readBuffer.ReadUint("", 32);
 
-                var value = new DateTime(year, (month == 0) ? 1 : month, (day == 0) ? 1 : day, hour, minutes, seconds, (int) (nanos / 1000000));
+                var value = new DateTime(year, (month == 0) ? 1 : month, (day == 0) ? 1 : day, hour, minutes, seconds, 0);
                 return new PlcDATE_AND_TIME(value);
             } else if( datapointType == KnxDatapointType.DPT_Switch ) { // BOOL
 
@@ -6690,45 +6685,45 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
 
                 // Reserved Field
                 writeBuffer.WriteByte("", 8, (byte) 0x00);
-                // Simple Field (value)
-                var value = (uint) _value.GetUint();
-                writeBuffer.WriteUint("", 32, (uint) (value));
+                // Simple Field (milliseconds)
+                var milliseconds = (uint) _value.GetUint();
+                writeBuffer.WriteUint("", 32, (uint) (milliseconds));
             return writeBuffer;
         } else if( datapointType == KnxDatapointType.LTIME ) { // LTIME
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
                 writeBuffer.WriteByte("", 8, (byte) 0x00);
-                // Simple Field (value)
-                var value = (ulong) _value.GetUlong();
-                writeBuffer.WriteUlong("", 64, (ulong) (value));
+                // Simple Field (nanoseconds)
+                var nanoseconds = (ulong) _value.GetUlong();
+                writeBuffer.WriteUlong("", 64, (ulong) (nanoseconds));
             return writeBuffer;
         } else if( datapointType == KnxDatapointType.DATE ) { // DATE
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
                 writeBuffer.WriteByte("", 8, (byte) 0x00);
-                // Simple Field (value)
-                var value = (ushort) _value.GetUshort();
-                writeBuffer.WriteUshort("", 16, (ushort) (value));
+                // Simple Field (secondsSinceEpoch)
+                var secondsSinceEpoch = (uint) _value.GetUint();
+                writeBuffer.WriteUint("", 32, (uint) (secondsSinceEpoch));
             return writeBuffer;
         } else if( datapointType == KnxDatapointType.TIME_OF_DAY ) { // TIME_OF_DAY
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
                 writeBuffer.WriteByte("", 8, (byte) 0x00);
-                // Simple Field (value)
-                var value = (uint) _value.GetUint();
-                writeBuffer.WriteUint("", 32, (uint) (value));
+                // Simple Field (millisecondsSinceMidnight)
+                var millisecondsSinceMidnight = (uint) _value.GetUint();
+                writeBuffer.WriteUint("", 32, (uint) (millisecondsSinceMidnight));
             return writeBuffer;
         } else if( datapointType == KnxDatapointType.TOD ) { // TIME_OF_DAY
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field
                 writeBuffer.WriteByte("", 8, (byte) 0x00);
-                // Simple Field (value)
-                var value = (uint) _value.GetUint();
-                writeBuffer.WriteUint("", 32, (uint) (value));
+                // Simple Field (millisecondsSinceMidnight)
+                var millisecondsSinceMidnight = (uint) _value.GetUint();
+                writeBuffer.WriteUint("", 32, (uint) (millisecondsSinceMidnight));
             return writeBuffer;
         } else if( datapointType == KnxDatapointType.DATE_AND_TIME ) { // DATE_AND_TIME
                 var writeBuffer = new WriteBuffer();
@@ -6736,29 +6731,29 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Reserved Field
                 writeBuffer.WriteByte("", 8, (byte) 0x00);
                 // Simple Field (year)
-                var year = 0;
+                var year = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (year));
                 // Simple Field (month)
-                var month = 0;
+                var month = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (month));
                 // Simple Field (day)
-                var day = 0;
+                var day = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (day));
                 // Simple Field (dayOfWeek)
-                var dayOfWeek = 0;
+                var dayOfWeek = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (dayOfWeek));
                 // Simple Field (hour)
-                var hour = 0;
+                var hour = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (hour));
                 // Simple Field (minutes)
-                var minutes = 0;
+                var minutes = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (minutes));
                 // Simple Field (seconds)
-                var seconds = 0;
+                var seconds = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (seconds));
-                // Simple Field (nanos)
-                var nanos = 0l;
-                writeBuffer.WriteUint("", 32, (uint) (nanos));
+                // Simple Field (nanoseconds)
+                var nanoseconds = (uint) _value.GetUint();
+                writeBuffer.WriteUint("", 32, (uint) (nanoseconds));
             return writeBuffer;
         } else if( datapointType == KnxDatapointType.DT ) { // DATE_AND_TIME
                 var writeBuffer = new WriteBuffer();
@@ -6766,29 +6761,29 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 // Reserved Field
                 writeBuffer.WriteByte("", 8, (byte) 0x00);
                 // Simple Field (year)
-                var year = 0;
+                var year = (ushort) _value.GetUshort();
                 writeBuffer.WriteUshort("", 16, (ushort) (year));
                 // Simple Field (month)
-                var month = 0;
+                var month = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (month));
                 // Simple Field (day)
-                var day = 0;
+                var day = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (day));
                 // Simple Field (dayOfWeek)
-                var dayOfWeek = 0;
+                var dayOfWeek = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (dayOfWeek));
                 // Simple Field (hour)
-                var hour = 0;
+                var hour = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (hour));
                 // Simple Field (minutes)
-                var minutes = 0;
+                var minutes = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (minutes));
                 // Simple Field (seconds)
-                var seconds = 0;
+                var seconds = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (seconds));
-                // Simple Field (nanos)
-                var nanos = 0l;
-                writeBuffer.WriteUint("", 32, (uint) (nanos));
+                // Simple Field (nanoseconds)
+                var nanoseconds = (uint) _value.GetUint();
+                writeBuffer.WriteUint("", 32, (uint) (nanoseconds));
             return writeBuffer;
         } else if( datapointType == KnxDatapointType.DPT_Switch ) { // BOOL
                 var writeBuffer = new WriteBuffer();

@@ -128,7 +128,11 @@ func (m *_BACnetOptionalBinaryPV) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetOptionalBinaryPVParse(readBuffer utils.ReadBuffer) (BACnetOptionalBinaryPV, error) {
+func BACnetOptionalBinaryPVParse(theBytes []byte) (BACnetOptionalBinaryPV, error) {
+	return BACnetOptionalBinaryPVParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetOptionalBinaryPVParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetOptionalBinaryPV, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalBinaryPV"); pullErr != nil {
@@ -142,7 +146,7 @@ func BACnetOptionalBinaryPVParse(readBuffer utils.ReadBuffer) (BACnetOptionalBin
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -161,9 +165,9 @@ func BACnetOptionalBinaryPVParse(readBuffer utils.ReadBuffer) (BACnetOptionalBin
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetOptionalBinaryPVNull
-		_childTemp, typeSwitchError = BACnetOptionalBinaryPVNullParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetOptionalBinaryPVNullParseWithBuffer(readBuffer)
 	case 0 == 0: // BACnetOptionalBinaryPVValue
-		_childTemp, typeSwitchError = BACnetOptionalBinaryPVValueParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetOptionalBinaryPVValueParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}

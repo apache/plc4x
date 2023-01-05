@@ -30,7 +30,7 @@ import (
 type CIPStructTypeCode uint16
 
 type ICIPStructTypeCode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -89,7 +89,11 @@ func (m CIPStructTypeCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CIPStructTypeCodeParse(readBuffer utils.ReadBuffer) (CIPStructTypeCode, error) {
+func CIPStructTypeCodeParse(theBytes []byte) (CIPStructTypeCode, error) {
+	return CIPStructTypeCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func CIPStructTypeCodeParseWithBuffer(readBuffer utils.ReadBuffer) (CIPStructTypeCode, error) {
 	val, err := readBuffer.ReadUint16("CIPStructTypeCode", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CIPStructTypeCode")
@@ -102,7 +106,15 @@ func CIPStructTypeCodeParse(readBuffer utils.ReadBuffer) (CIPStructTypeCode, err
 	}
 }
 
-func (e CIPStructTypeCode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e CIPStructTypeCode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e CIPStructTypeCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("CIPStructTypeCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

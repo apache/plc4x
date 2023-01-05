@@ -22,7 +22,7 @@ package spi
 import "github.com/apache/plc4x/plc4go/spi/utils"
 
 type Message interface {
+	utils.Serializable
 	GetLengthInBytes() uint16
 	GetLengthInBits() uint16
-	Serialize(io utils.WriteBuffer) error
 }

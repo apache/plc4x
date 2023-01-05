@@ -30,8 +30,8 @@ import (
 type TriggerControlCommandType uint8
 
 type ITriggerControlCommandType interface {
+	utils.Serializable
 	NumberOfArguments() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -151,7 +151,11 @@ func (m TriggerControlCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TriggerControlCommandTypeParse(readBuffer utils.ReadBuffer) (TriggerControlCommandType, error) {
+func TriggerControlCommandTypeParse(theBytes []byte) (TriggerControlCommandType, error) {
+	return TriggerControlCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TriggerControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlCommandType, error) {
 	val, err := readBuffer.ReadUint8("TriggerControlCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TriggerControlCommandType")
@@ -164,7 +168,15 @@ func TriggerControlCommandTypeParse(readBuffer utils.ReadBuffer) (TriggerControl
 	}
 }
 
-func (e TriggerControlCommandType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e TriggerControlCommandType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e TriggerControlCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("TriggerControlCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

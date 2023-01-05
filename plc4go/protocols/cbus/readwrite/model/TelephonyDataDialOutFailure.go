@@ -123,7 +123,11 @@ func (m *_TelephonyDataDialOutFailure) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TelephonyDataDialOutFailureParse(readBuffer utils.ReadBuffer) (TelephonyDataDialOutFailure, error) {
+func TelephonyDataDialOutFailureParse(theBytes []byte) (TelephonyDataDialOutFailure, error) {
+	return TelephonyDataDialOutFailureParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TelephonyDataDialOutFailureParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyDataDialOutFailure, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataDialOutFailure"); pullErr != nil {
@@ -136,7 +140,7 @@ func TelephonyDataDialOutFailureParse(readBuffer utils.ReadBuffer) (TelephonyDat
 	if pullErr := readBuffer.PullContext("reason"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reason")
 	}
-	_reason, _reasonErr := DialOutFailureReasonParse(readBuffer)
+	_reason, _reasonErr := DialOutFailureReasonParseWithBuffer(readBuffer)
 	if _reasonErr != nil {
 		return nil, errors.Wrap(_reasonErr, "Error parsing 'reason' field of TelephonyDataDialOutFailure")
 	}
@@ -158,7 +162,15 @@ func TelephonyDataDialOutFailureParse(readBuffer utils.ReadBuffer) (TelephonyDat
 	return _child, nil
 }
 
-func (m *_TelephonyDataDialOutFailure) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TelephonyDataDialOutFailure) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TelephonyDataDialOutFailure) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

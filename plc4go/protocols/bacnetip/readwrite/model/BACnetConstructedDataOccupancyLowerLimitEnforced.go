@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataOccupancyLowerLimitEnforcedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyLowerLimitEnforced, error) {
+func BACnetConstructedDataOccupancyLowerLimitEnforcedParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyLowerLimitEnforced, error) {
+	return BACnetConstructedDataOccupancyLowerLimitEnforcedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataOccupancyLowerLimitEnforcedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyLowerLimitEnforced, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyLowerLimitEnforced"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataOccupancyLowerLimitEnforcedParse(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("occupancyLowerLimitEnforced"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for occupancyLowerLimitEnforced")
 	}
-	_occupancyLowerLimitEnforced, _occupancyLowerLimitEnforcedErr := BACnetApplicationTagParse(readBuffer)
+	_occupancyLowerLimitEnforced, _occupancyLowerLimitEnforcedErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _occupancyLowerLimitEnforcedErr != nil {
 		return nil, errors.Wrap(_occupancyLowerLimitEnforcedErr, "Error parsing 'occupancyLowerLimitEnforced' field of BACnetConstructedDataOccupancyLowerLimitEnforced")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataOccupancyLowerLimitEnforcedParse(readBuffer utils.Read
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

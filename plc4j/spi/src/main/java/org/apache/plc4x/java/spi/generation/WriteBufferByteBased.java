@@ -303,6 +303,11 @@ public class WriteBufferByteBased implements WriteBuffer {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
+    /*
+     * When encoding strings we currently implement a sort of 0-terminated string. If the string is shorter than the
+     * max bit-length, we fill it up with 0x00, which makes it 0-terminated. If it exactly fits, then there is no
+     * 0-termination.
+     */
     @Override
     public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws SerializationException {
         byte[] bytes;
@@ -316,6 +321,11 @@ public class WriteBufferByteBased implements WriteBuffer {
             case "UTF16LE":
             case "UTF16BE": {
                 bytes = value.getBytes(StandardCharsets.UTF_16);
+                if(bytes.length > 2) {
+                    bytes = new byte[] {
+                        bytes[2], bytes[3]
+                    };
+                }
                 break;
             }
             default:
@@ -328,13 +338,15 @@ public class WriteBufferByteBased implements WriteBuffer {
         }
 
         try {
-            int offset = bytes.length - fixedByteLength;
-            while (offset < 0) {
-                bo.writeByte(false, 8, (byte) 0x00);
-                offset++;
-            }
-            for (int i = offset; i < bytes.length; i++) {
+            int numStringBytes = Math.min(bytes.length, fixedByteLength);
+            int numZeroBytes = fixedByteLength - numStringBytes;
+            // Output the string data
+            for (int i = 0; i < numStringBytes; i++) {
                 bo.writeByte(false, 8, bytes[i]);
+            }
+            // Fill up with empty bytes
+            for (int i = 0; i < numZeroBytes; i++) {
+                bo.writeByte(false, 8, (byte) 0x00);
             }
         } catch (IOException e) {
             throw new SerializationException("Error writing string", e);

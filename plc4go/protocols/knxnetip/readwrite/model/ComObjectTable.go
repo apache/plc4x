@@ -97,7 +97,11 @@ func (m *_ComObjectTable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTable, error) {
+func ComObjectTableParse(theBytes []byte, firmwareType FirmwareType) (ComObjectTable, error) {
+	return ComObjectTableParseWithBuffer(utils.NewReadBufferByteBased(theBytes), firmwareType)
+}
+
+func ComObjectTableParseWithBuffer(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ComObjectTable"); pullErr != nil {
@@ -117,11 +121,11 @@ func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType FirmwareType)
 	var typeSwitchError error
 	switch {
 	case firmwareType == FirmwareType_SYSTEM_1: // ComObjectTableRealisationType1
-		_childTemp, typeSwitchError = ComObjectTableRealisationType1Parse(readBuffer, firmwareType)
+		_childTemp, typeSwitchError = ComObjectTableRealisationType1ParseWithBuffer(readBuffer, firmwareType)
 	case firmwareType == FirmwareType_SYSTEM_2: // ComObjectTableRealisationType2
-		_childTemp, typeSwitchError = ComObjectTableRealisationType2Parse(readBuffer, firmwareType)
+		_childTemp, typeSwitchError = ComObjectTableRealisationType2ParseWithBuffer(readBuffer, firmwareType)
 	case firmwareType == FirmwareType_SYSTEM_300: // ComObjectTableRealisationType6
-		_childTemp, typeSwitchError = ComObjectTableRealisationType6Parse(readBuffer, firmwareType)
+		_childTemp, typeSwitchError = ComObjectTableRealisationType6ParseWithBuffer(readBuffer, firmwareType)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [firmwareType=%v]", firmwareType)
 	}

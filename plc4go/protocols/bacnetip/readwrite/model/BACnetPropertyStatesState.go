@@ -122,7 +122,11 @@ func (m *_BACnetPropertyStatesState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesStateParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesState, error) {
+func BACnetPropertyStatesStateParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesState, error) {
+	return BACnetPropertyStatesStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+}
+
+func BACnetPropertyStatesStateParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesState"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPropertyStatesStateParse(readBuffer utils.ReadBuffer, peekedTagNumber
 	if pullErr := readBuffer.PullContext("state"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for state")
 	}
-	_state, _stateErr := BACnetEventStateTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_state, _stateErr := BACnetEventStateTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _stateErr != nil {
 		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field of BACnetPropertyStatesState")
 	}
@@ -157,7 +161,15 @@ func BACnetPropertyStatesStateParse(readBuffer utils.ReadBuffer, peekedTagNumber
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesState) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

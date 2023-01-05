@@ -179,7 +179,11 @@ func (m *_RequestDirectCommandAccess) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {
+func RequestDirectCommandAccessParse(theBytes []byte, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {
+	return RequestDirectCommandAccessParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+}
+
+func RequestDirectCommandAccessParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestDirectCommandAccess"); pullErr != nil {
@@ -219,7 +223,7 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CB
 		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
 		}
-		_val, _err := AlphaParse(readBuffer)
+		_val, _err := AlphaParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -250,7 +254,15 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CB
 	return _child, nil
 }
 
-func (m *_RequestDirectCommandAccess) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_RequestDirectCommandAccess) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_RequestDirectCommandAccess) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

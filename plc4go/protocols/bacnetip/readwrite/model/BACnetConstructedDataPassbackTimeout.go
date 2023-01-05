@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataPassbackTimeout) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPassbackTimeoutParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPassbackTimeout, error) {
+func BACnetConstructedDataPassbackTimeoutParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPassbackTimeout, error) {
+	return BACnetConstructedDataPassbackTimeoutParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataPassbackTimeoutParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPassbackTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPassbackTimeout"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataPassbackTimeoutParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("passbackTimeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for passbackTimeout")
 	}
-	_passbackTimeout, _passbackTimeoutErr := BACnetApplicationTagParse(readBuffer)
+	_passbackTimeout, _passbackTimeoutErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _passbackTimeoutErr != nil {
 		return nil, errors.Wrap(_passbackTimeoutErr, "Error parsing 'passbackTimeout' field of BACnetConstructedDataPassbackTimeout")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataPassbackTimeoutParse(readBuffer utils.ReadBuffer, tagN
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataPassbackTimeout) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataPassbackTimeout) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataPassbackTimeout) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

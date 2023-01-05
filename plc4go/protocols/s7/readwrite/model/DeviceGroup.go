@@ -30,7 +30,7 @@ import (
 type DeviceGroup uint8
 
 type IDeviceGroup interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -101,7 +101,11 @@ func (m DeviceGroup) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func DeviceGroupParse(readBuffer utils.ReadBuffer) (DeviceGroup, error) {
+func DeviceGroupParse(theBytes []byte) (DeviceGroup, error) {
+	return DeviceGroupParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func DeviceGroupParseWithBuffer(readBuffer utils.ReadBuffer) (DeviceGroup, error) {
 	val, err := readBuffer.ReadUint8("DeviceGroup", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DeviceGroup")
@@ -114,7 +118,15 @@ func DeviceGroupParse(readBuffer utils.ReadBuffer) (DeviceGroup, error) {
 	}
 }
 
-func (e DeviceGroup) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e DeviceGroup) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e DeviceGroup) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("DeviceGroup", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

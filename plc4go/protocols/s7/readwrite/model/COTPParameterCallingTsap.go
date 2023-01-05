@@ -124,7 +124,11 @@ func (m *_COTPParameterCallingTsap) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPParameterCallingTsapParse(readBuffer utils.ReadBuffer, rest uint8) (COTPParameterCallingTsap, error) {
+func COTPParameterCallingTsapParse(theBytes []byte, rest uint8) (COTPParameterCallingTsap, error) {
+	return COTPParameterCallingTsapParseWithBuffer(utils.NewReadBufferByteBased(theBytes), rest)
+}
+
+func COTPParameterCallingTsapParseWithBuffer(readBuffer utils.ReadBuffer, rest uint8) (COTPParameterCallingTsap, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameterCallingTsap"); pullErr != nil {
@@ -155,7 +159,15 @@ func COTPParameterCallingTsapParse(readBuffer utils.ReadBuffer, rest uint8) (COT
 	return _child, nil
 }
 
-func (m *_COTPParameterCallingTsap) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_COTPParameterCallingTsap) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_COTPParameterCallingTsap) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

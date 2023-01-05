@@ -127,7 +127,11 @@ func (m *_StatusByte) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func StatusByteParse(readBuffer utils.ReadBuffer) (StatusByte, error) {
+func StatusByteParse(theBytes []byte) (StatusByte, error) {
+	return StatusByteParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func StatusByteParseWithBuffer(readBuffer utils.ReadBuffer) (StatusByte, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StatusByte"); pullErr != nil {
@@ -140,7 +144,7 @@ func StatusByteParse(readBuffer utils.ReadBuffer) (StatusByte, error) {
 	if pullErr := readBuffer.PullContext("gav3"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for gav3")
 	}
-	_gav3, _gav3Err := GAVStateParse(readBuffer)
+	_gav3, _gav3Err := GAVStateParseWithBuffer(readBuffer)
 	if _gav3Err != nil {
 		return nil, errors.Wrap(_gav3Err, "Error parsing 'gav3' field of StatusByte")
 	}
@@ -153,7 +157,7 @@ func StatusByteParse(readBuffer utils.ReadBuffer) (StatusByte, error) {
 	if pullErr := readBuffer.PullContext("gav2"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for gav2")
 	}
-	_gav2, _gav2Err := GAVStateParse(readBuffer)
+	_gav2, _gav2Err := GAVStateParseWithBuffer(readBuffer)
 	if _gav2Err != nil {
 		return nil, errors.Wrap(_gav2Err, "Error parsing 'gav2' field of StatusByte")
 	}
@@ -166,7 +170,7 @@ func StatusByteParse(readBuffer utils.ReadBuffer) (StatusByte, error) {
 	if pullErr := readBuffer.PullContext("gav1"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for gav1")
 	}
-	_gav1, _gav1Err := GAVStateParse(readBuffer)
+	_gav1, _gav1Err := GAVStateParseWithBuffer(readBuffer)
 	if _gav1Err != nil {
 		return nil, errors.Wrap(_gav1Err, "Error parsing 'gav1' field of StatusByte")
 	}
@@ -179,7 +183,7 @@ func StatusByteParse(readBuffer utils.ReadBuffer) (StatusByte, error) {
 	if pullErr := readBuffer.PullContext("gav0"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for gav0")
 	}
-	_gav0, _gav0Err := GAVStateParse(readBuffer)
+	_gav0, _gav0Err := GAVStateParseWithBuffer(readBuffer)
 	if _gav0Err != nil {
 		return nil, errors.Wrap(_gav0Err, "Error parsing 'gav0' field of StatusByte")
 	}
@@ -201,7 +205,15 @@ func StatusByteParse(readBuffer utils.ReadBuffer) (StatusByte, error) {
 	}, nil
 }
 
-func (m *_StatusByte) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_StatusByte) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_StatusByte) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("StatusByte"); pushErr != nil {

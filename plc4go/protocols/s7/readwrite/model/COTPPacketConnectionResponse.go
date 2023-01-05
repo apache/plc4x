@@ -149,7 +149,11 @@ func (m *_COTPPacketConnectionResponse) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPPacketConnectionResponseParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketConnectionResponse, error) {
+func COTPPacketConnectionResponseParse(theBytes []byte, cotpLen uint16) (COTPPacketConnectionResponse, error) {
+	return COTPPacketConnectionResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cotpLen)
+}
+
+func COTPPacketConnectionResponseParseWithBuffer(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketConnectionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacketConnectionResponse"); pullErr != nil {
@@ -176,7 +180,7 @@ func COTPPacketConnectionResponseParse(readBuffer utils.ReadBuffer, cotpLen uint
 	if pullErr := readBuffer.PullContext("protocolClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for protocolClass")
 	}
-	_protocolClass, _protocolClassErr := COTPProtocolClassParse(readBuffer)
+	_protocolClass, _protocolClassErr := COTPProtocolClassParseWithBuffer(readBuffer)
 	if _protocolClassErr != nil {
 		return nil, errors.Wrap(_protocolClassErr, "Error parsing 'protocolClass' field of COTPPacketConnectionResponse")
 	}
@@ -202,7 +206,15 @@ func COTPPacketConnectionResponseParse(readBuffer utils.ReadBuffer, cotpLen uint
 	return _child, nil
 }
 
-func (m *_COTPPacketConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_COTPPacketConnectionResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_COTPPacketConnectionResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

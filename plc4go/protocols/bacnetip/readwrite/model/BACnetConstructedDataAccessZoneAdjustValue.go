@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataAccessZoneAdjustValue) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessZoneAdjustValueParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessZoneAdjustValue, error) {
+func BACnetConstructedDataAccessZoneAdjustValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessZoneAdjustValue, error) {
+	return BACnetConstructedDataAccessZoneAdjustValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataAccessZoneAdjustValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessZoneAdjustValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessZoneAdjustValue"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataAccessZoneAdjustValueParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("adjustValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for adjustValue")
 	}
-	_adjustValue, _adjustValueErr := BACnetApplicationTagParse(readBuffer)
+	_adjustValue, _adjustValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _adjustValueErr != nil {
 		return nil, errors.Wrap(_adjustValueErr, "Error parsing 'adjustValue' field of BACnetConstructedDataAccessZoneAdjustValue")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataAccessZoneAdjustValueParse(readBuffer utils.ReadBuffer
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataAccessZoneAdjustValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAccessZoneAdjustValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataAccessZoneAdjustValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

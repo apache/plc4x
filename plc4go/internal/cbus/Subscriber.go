@@ -22,14 +22,15 @@ package cbus
 import (
 	"context"
 	"fmt"
+	"strings"
+	"time"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/rs/zerolog/log"
-	"strings"
-	"time"
 )
 
 type Subscriber struct {
@@ -55,9 +56,9 @@ func (m *Subscriber) Subscribe(_ context.Context, subscriptionRequest apiModel.P
 		// Just populate all requests with an OK
 		responseCodes := map[string]apiModel.PlcResponseCode{}
 		subscriptionValues := make(map[string]apiModel.PlcSubscriptionHandle)
-		for _, fieldName := range internalPlcSubscriptionRequest.GetFieldNames() {
-			responseCodes[fieldName] = apiModel.PlcResponseCode_OK
-			subscriptionValues[fieldName] = NewSubscriptionHandle(m, fieldName, internalPlcSubscriptionRequest.GetField(fieldName), internalPlcSubscriptionRequest.GetType(fieldName), internalPlcSubscriptionRequest.GetInterval(fieldName))
+		for _, tagName := range internalPlcSubscriptionRequest.GetTagNames() {
+			responseCodes[tagName] = apiModel.PlcResponseCode_OK
+			subscriptionValues[tagName] = NewSubscriptionHandle(m, tagName, internalPlcSubscriptionRequest.GetTag(tagName), internalPlcSubscriptionRequest.GetType(tagName), internalPlcSubscriptionRequest.GetInterval(tagName))
 		}
 
 		result <- &spiModel.DefaultPlcSubscriptionRequestResult{
@@ -100,37 +101,37 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 	for registration, consumer := range m.consumers {
 		for _, subscriptionHandle := range registration.GetSubscriptionHandles() {
 			subscriptionHandle := subscriptionHandle.(*SubscriptionHandle)
-			field, ok := subscriptionHandle.field.(*mmiMonitorField)
+			tag, ok := subscriptionHandle.tag.(*mmiMonitorTag)
 			if !ok {
-				log.Debug().Msgf("Unusable field for mmi subscription %s", subscriptionHandle.field)
+				log.Debug().Msgf("Unusable tag for mmi subscription %s", subscriptionHandle.tag)
 				continue
 			}
 
-			fields := map[string]apiModel.PlcField{}
+			tags := map[string]apiModel.PlcTag{}
 			types := map[string]spiModel.SubscriptionType{}
 			intervals := map[string]time.Duration{}
 			responseCodes := map[string]apiModel.PlcResponseCode{}
 			address := map[string]string{}
 			sources := map[string]string{}
 			plcValues := map[string]apiValues.PlcValue{}
-			fieldName := subscriptionHandle.fieldName
+			tagName := subscriptionHandle.tagName
 
-			if unitAddress := field.GetUnitAddress(); unitAddress != nil {
+			if unitAddress := tag.GetUnitAddress(); unitAddress != nil {
 				unitSuffix := fmt.Sprintf("u%d", (*unitAddress).GetAddress())
 				if !strings.HasSuffix(unitAddressString, unitSuffix) {
 					log.Debug().Msgf("Current address string %s has not the suffix %s", unitAddressString, unitSuffix)
 					continue
 				}
 			}
-			sources[fieldName] = unitAddressString
+			sources[tagName] = unitAddressString
 
-			subscriptionType := subscriptionHandle.fieldType
+			subscriptionType := subscriptionHandle.subscriptionType
 			// TODO: handle subscriptionType
 			_ = subscriptionType
 
-			fields[fieldName] = field
-			types[fieldName] = subscriptionHandle.fieldType
-			intervals[fieldName] = subscriptionHandle.interval
+			tags[tagName] = tag
+			types[tagName] = subscriptionHandle.subscriptionType
+			intervals[tagName] = subscriptionHandle.interval
 
 			var applicationString string
 
@@ -144,7 +145,7 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 				blockStart = calData.GetBlockStart()
 
 				statusBytes := calData.GetStatusBytes()
-				responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+				responseCodes[tagName] = apiModel.PlcResponseCode_OK
 				plcListValues := make([]apiValues.PlcValue, len(statusBytes)*4)
 				for i, statusByte := range statusBytes {
 					plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
@@ -152,7 +153,7 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 					plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
 					plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
 				}
-				plcValues[fieldName] = spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
+				plcValues[tagName] = spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 					"application": spiValues.NewPlcSTRING(application.PLC4XEnumName()),
 					"blockStart":  spiValues.NewPlcBYTE(blockStart),
 					"values":      spiValues.NewPlcList(plcListValues),
@@ -168,7 +169,7 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 					fallthrough
 				case readWriteModel.StatusCoding_BINARY_BY_ELSEWHERE:
 					statusBytes := calData.GetStatusBytes()
-					responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+					responseCodes[tagName] = apiModel.PlcResponseCode_OK
 					plcListValues := make([]apiValues.PlcValue, len(statusBytes)*4)
 					for i, statusByte := range statusBytes {
 						plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
@@ -176,7 +177,7 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 						plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
 						plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
 					}
-					plcValues[fieldName] = spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
+					plcValues[tagName] = spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
 						"application": spiValues.NewPlcSTRING(application.PLC4XEnumName()),
 						"blockStart":  spiValues.NewPlcBYTE(blockStart),
 						"values":      spiValues.NewPlcList(plcListValues),
@@ -185,7 +186,7 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 					fallthrough
 				case readWriteModel.StatusCoding_LEVEL_BY_ELSEWHERE:
 					levelInformation := calData.GetLevelInformation()
-					responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+					responseCodes[tagName] = apiModel.PlcResponseCode_OK
 					plcListValues := make([]apiValues.PlcValue, len(levelInformation))
 					for i, levelInformation := range levelInformation {
 						switch levelInformation := levelInformation.(type) {
@@ -199,12 +200,12 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 							panic("Impossible case")
 						}
 					}
-					plcValues[fieldName] = spiValues.NewPlcList(plcListValues)
+					plcValues[tagName] = spiValues.NewPlcList(plcListValues)
 				}
 			default:
 				return false
 			}
-			if application := field.GetApplication(); application != nil {
+			if application := tag.GetApplication(); application != nil {
 				if actualApplicationIdString := application.ApplicationId().String(); applicationString != actualApplicationIdString {
 					log.Debug().Msgf("Current application id %s  doesn't match actual id %s", unitAddressString, actualApplicationIdString)
 					continue
@@ -214,11 +215,11 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 			if isLevel {
 				statusType = fmt.Sprintf("level=0x%X", blockStart)
 			}
-			address[fieldName] = fmt.Sprintf("status/%s/%s", statusType, applicationString)
+			address[tagName] = fmt.Sprintf("status/%s/%s", statusType, applicationString)
 
 			// Assemble a PlcSubscription event
 			if len(plcValues) > 0 {
-				event := NewSubscriptionEvent(fields, types, intervals, responseCodes, address, sources, plcValues)
+				event := NewSubscriptionEvent(tags, types, intervals, responseCodes, address, sources, plcValues)
 				consumer(&event)
 			}
 		}
@@ -230,27 +231,27 @@ func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 	for registration, consumer := range m.consumers {
 		for _, subscriptionHandle := range registration.GetSubscriptionHandles() {
 			subscriptionHandle := subscriptionHandle.(*SubscriptionHandle)
-			field, ok := subscriptionHandle.field.(*salMonitorField)
+			tag, ok := subscriptionHandle.tag.(*salMonitorTag)
 			if !ok {
-				log.Debug().Msgf("Unusable field for mmi subscription %s", subscriptionHandle.field)
+				log.Debug().Msgf("Unusable tag for mmi subscription %s", subscriptionHandle.tag)
 				continue
 			}
-			fields := map[string]apiModel.PlcField{}
+			tags := map[string]apiModel.PlcTag{}
 			types := map[string]spiModel.SubscriptionType{}
 			intervals := map[string]time.Duration{}
 			responseCodes := map[string]apiModel.PlcResponseCode{}
 			address := map[string]string{}
 			sources := map[string]string{}
 			plcValues := map[string]apiValues.PlcValue{}
-			fieldName := subscriptionHandle.fieldName
+			tagName := subscriptionHandle.tagName
 
-			subscriptionType := subscriptionHandle.fieldType
+			subscriptionType := subscriptionHandle.subscriptionType
 			// TODO: handle subscriptionType
 			_ = subscriptionType
 
-			fields[fieldName] = field
-			types[fieldName] = subscriptionType
-			intervals[fieldName] = subscriptionHandle.interval
+			tags[tagName] = tag
+			types[tagName] = subscriptionType
+			intervals[tagName] = subscriptionHandle.interval
 
 			var salData readWriteModel.SALData
 			var unitAddressString, applicationString string
@@ -273,16 +274,16 @@ func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 				applicationString = sal.GetApplication().ApplicationId().String()
 				salData = sal.GetSalData()
 			}
-			if unitAddress := field.GetUnitAddress(); unitAddress != nil {
+			if unitAddress := tag.GetUnitAddress(); unitAddress != nil {
 				unitSuffix := fmt.Sprintf("u%d", (*unitAddress).GetAddress())
 				if !strings.HasSuffix(unitAddressString, unitSuffix) {
 					log.Debug().Msgf("Current address string %s has not the suffix %s", unitAddressString, unitSuffix)
 					continue
 				}
 			}
-			sources[fieldName] = unitAddressString
+			sources[tagName] = unitAddressString
 
-			if application := field.GetApplication(); application != nil {
+			if application := tag.GetApplication(); application != nil {
 				if actualApplicationIdString := application.ApplicationId().String(); applicationString != actualApplicationIdString {
 					log.Debug().Msgf("Current application id %s  doesn't match actual id %s", unitAddressString, actualApplicationIdString)
 					continue
@@ -342,22 +343,22 @@ func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 			}
 
 			// TODO: we need to map commands e.g. if we get a MeteringDataElectricityConsumption we can map that to MeteringDataMeasureElectricity
-			address[fieldName] = fmt.Sprintf("sal/%s/%s", applicationString, commandType)
+			address[tagName] = fmt.Sprintf("sal/%s/%s", applicationString, commandType)
 
 			rbvb := spiValues.NewWriteBufferPlcValueBased()
-			err := salData.Serialize(rbvb)
+			err := salData.SerializeWithWriteBuffer(rbvb)
 			if err != nil {
 				log.Error().Err(err).Msg("Error serializing to plc value... just returning it as string")
-				plcValues[fieldName] = spiValues.NewPlcSTRING(fmt.Sprintf("%s", salData))
+				plcValues[tagName] = spiValues.NewPlcSTRING(fmt.Sprintf("%s", salData))
 			} else {
-				plcValues[fieldName] = rbvb.GetPlcValue()
+				plcValues[tagName] = rbvb.GetPlcValue()
 			}
 
-			responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+			responseCodes[tagName] = apiModel.PlcResponseCode_OK
 
 			// Assemble a PlcSubscription event
 			if len(plcValues) > 0 {
-				event := NewSubscriptionEvent(fields, types, intervals, responseCodes, address, sources, plcValues)
+				event := NewSubscriptionEvent(tags, types, intervals, responseCodes, address, sources, plcValues)
 				consumer(&event)
 			}
 		}

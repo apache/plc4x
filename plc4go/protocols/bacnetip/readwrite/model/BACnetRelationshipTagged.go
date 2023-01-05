@@ -138,7 +138,11 @@ func (m *_BACnetRelationshipTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRelationshipTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetRelationshipTagged, error) {
+func BACnetRelationshipTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetRelationshipTagged, error) {
+	return BACnetRelationshipTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+}
+
+func BACnetRelationshipTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetRelationshipTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetRelationshipTagged"); pullErr != nil {
@@ -151,7 +155,7 @@ func BACnetRelationshipTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8,
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetRelationshipTagged")
 	}
@@ -209,7 +213,15 @@ func BACnetRelationshipTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8,
 	}, nil
 }
 
-func (m *_BACnetRelationshipTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetRelationshipTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetRelationshipTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetRelationshipTagged"); pushErr != nil {

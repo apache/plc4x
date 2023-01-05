@@ -33,17 +33,17 @@ type AbethParserHelper struct {
 func (m AbethParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
 	case "DF1RequestCommand":
-		return model.DF1RequestCommandParse(io)
+		return model.DF1RequestCommandParseWithBuffer(io)
 	case "DF1RequestMessage":
-		return model.DF1RequestMessageParse(io)
+		return model.DF1RequestMessageParseWithBuffer(io)
 	case "DF1ResponseMessage":
 		payloadLength, err := utils.StrToUint16(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.DF1ResponseMessageParse(io, payloadLength)
+		return model.DF1ResponseMessageParseWithBuffer(io, payloadLength)
 	case "CIPEncapsulationPacket":
-		return model.CIPEncapsulationPacketParse(io)
+		return model.CIPEncapsulationPacketParseWithBuffer(io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

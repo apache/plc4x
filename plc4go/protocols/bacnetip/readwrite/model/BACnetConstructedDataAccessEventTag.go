@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataAccessEventTag) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAccessEventTagParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessEventTag, error) {
+func BACnetConstructedDataAccessEventTagParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessEventTag, error) {
+	return BACnetConstructedDataAccessEventTagParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataAccessEventTagParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessEventTag, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessEventTag"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataAccessEventTagParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("accessEventTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessEventTag")
 	}
-	_accessEventTag, _accessEventTagErr := BACnetApplicationTagParse(readBuffer)
+	_accessEventTag, _accessEventTagErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _accessEventTagErr != nil {
 		return nil, errors.Wrap(_accessEventTagErr, "Error parsing 'accessEventTag' field of BACnetConstructedDataAccessEventTag")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataAccessEventTagParse(readBuffer utils.ReadBuffer, tagNu
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataAccessEventTag) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAccessEventTag) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataAccessEventTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

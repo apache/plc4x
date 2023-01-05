@@ -127,7 +127,11 @@ func (m *_ModbusPDUReadFileRecordRequestItem) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModbusPDUReadFileRecordRequestItemParse(readBuffer utils.ReadBuffer) (ModbusPDUReadFileRecordRequestItem, error) {
+func ModbusPDUReadFileRecordRequestItemParse(theBytes []byte) (ModbusPDUReadFileRecordRequestItem, error) {
+	return ModbusPDUReadFileRecordRequestItemParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ModbusPDUReadFileRecordRequestItemParseWithBuffer(readBuffer utils.ReadBuffer) (ModbusPDUReadFileRecordRequestItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFileRecordRequestItem"); pullErr != nil {
@@ -177,7 +181,15 @@ func ModbusPDUReadFileRecordRequestItemParse(readBuffer utils.ReadBuffer) (Modbu
 	}, nil
 }
 
-func (m *_ModbusPDUReadFileRecordRequestItem) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUReadFileRecordRequestItem) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ModbusPDUReadFileRecordRequestItem) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ModbusPDUReadFileRecordRequestItem"); pushErr != nil {

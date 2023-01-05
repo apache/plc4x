@@ -137,7 +137,11 @@ func (m *_ParameterValueSerialNumber) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterValueSerialNumberParse(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueSerialNumber, error) {
+func ParameterValueSerialNumberParse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueSerialNumber, error) {
+	return ParameterValueSerialNumberParseWithBuffer(utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+}
+
+func ParameterValueSerialNumberParseWithBuffer(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueSerialNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueSerialNumber"); pullErr != nil {
@@ -155,7 +159,7 @@ func ParameterValueSerialNumberParse(readBuffer utils.ReadBuffer, parameterType 
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := SerialNumberParse(readBuffer)
+	_value, _valueErr := SerialNumberParseWithBuffer(readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueSerialNumber")
 	}
@@ -186,7 +190,15 @@ func ParameterValueSerialNumberParse(readBuffer utils.ReadBuffer, parameterType 
 	return _child, nil
 }
 
-func (m *_ParameterValueSerialNumber) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ParameterValueSerialNumber) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ParameterValueSerialNumber) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

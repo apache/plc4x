@@ -21,6 +21,10 @@ package tests
 
 import (
 	"fmt"
+	"os"
+	"testing"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/internal/cbus"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
@@ -32,9 +36,6 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/require"
-	"os"
-	"testing"
-	"time"
 )
 
 func TestManualCBusDriverMixed(t *testing.T) {
@@ -65,8 +66,8 @@ func TestManualCBusDriverMixed(t *testing.T) {
 		gotMMI := make(chan bool)
 		gotSAL := make(chan bool)
 		subscriptionRequest, err := plcConnection.SubscriptionRequestBuilder().
-			AddEventQuery("mmi", "mmimonitor/*/*").
-			AddEventQuery("sal", "salmonitor/*/*").
+			AddEventTagAddress("mmi", "mmimonitor/*/*").
+			AddEventTagAddress("sal", "salmonitor/*/*").
 			AddPreRegisteredConsumer("mmi", func(event model.PlcSubscriptionEvent) {
 				fmt.Printf("mmi:\n%s", event)
 				if _, ok := event.GetValue("mmi").GetStruct()["SALData"]; ok {
@@ -146,7 +147,7 @@ func TestManualCBusBrowse(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseEvent) bool {
+	browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseItem) bool {
 		fmt.Printf("%s\n", result)
 		return true
 	})
@@ -175,7 +176,7 @@ func TestManualCBusRead(t *testing.T) {
 	connection := connectionResult.GetConnection()
 	defer connection.Close()
 	readRequest, err := connection.ReadRequestBuilder().
-		AddQuery("asd", "cal/3/identify=OutputUnitSummary").
+		AddTagAddress("asd", "cal/3/identify=OutputUnitSummary").
 		Build()
 	require.NoError(t, err)
 	readRequestResult := <-readRequest.Execute()

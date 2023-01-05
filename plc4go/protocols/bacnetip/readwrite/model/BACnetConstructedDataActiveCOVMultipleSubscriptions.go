@@ -136,7 +136,11 @@ func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetLengthInBytes(
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataActiveCOVMultipleSubscriptionsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveCOVMultipleSubscriptions, error) {
+func BACnetConstructedDataActiveCOVMultipleSubscriptionsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveCOVMultipleSubscriptions, error) {
+	return BACnetConstructedDataActiveCOVMultipleSubscriptionsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataActiveCOVMultipleSubscriptionsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveCOVMultipleSubscriptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveCOVMultipleSubscriptions"); pullErr != nil {
@@ -153,12 +157,11 @@ func BACnetConstructedDataActiveCOVMultipleSubscriptionsParse(readBuffer utils.R
 	var activeCOVMultipleSubscriptions []BACnetCOVMultipleSubscription
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetCOVMultipleSubscriptionParse(readBuffer)
+			_item, _err := BACnetCOVMultipleSubscriptionParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'activeCOVMultipleSubscriptions' field of BACnetConstructedDataActiveCOVMultipleSubscriptions")
 			}
 			activeCOVMultipleSubscriptions = append(activeCOVMultipleSubscriptions, _item.(BACnetCOVMultipleSubscription))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("activeCOVMultipleSubscriptions", utils.WithRenderAsList(true)); closeErr != nil {
@@ -181,7 +184,15 @@ func BACnetConstructedDataActiveCOVMultipleSubscriptionsParse(readBuffer utils.R
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

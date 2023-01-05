@@ -135,7 +135,11 @@ func (m *_KnxGroupAddress2Level) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxGroupAddress2LevelParse(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddress2Level, error) {
+func KnxGroupAddress2LevelParse(theBytes []byte, numLevels uint8) (KnxGroupAddress2Level, error) {
+	return KnxGroupAddress2LevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes), numLevels)
+}
+
+func KnxGroupAddress2LevelParseWithBuffer(readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddress2Level, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxGroupAddress2Level"); pullErr != nil {
@@ -172,7 +176,15 @@ func KnxGroupAddress2LevelParse(readBuffer utils.ReadBuffer, numLevels uint8) (K
 	return _child, nil
 }
 
-func (m *_KnxGroupAddress2Level) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_KnxGroupAddress2Level) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_KnxGroupAddress2Level) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -120,7 +120,11 @@ func (m *_BACnetHostAddressEnclosed) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetHostAddressEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetHostAddressEnclosed, error) {
+func BACnetHostAddressEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetHostAddressEnclosed, error) {
+	return BACnetHostAddressEnclosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+}
+
+func BACnetHostAddressEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetHostAddressEnclosed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetHostAddressEnclosed"); pullErr != nil {
@@ -133,7 +137,7 @@ func BACnetHostAddressEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetHostAddressEnclosed")
 	}
@@ -146,7 +150,7 @@ func BACnetHostAddressEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if pullErr := readBuffer.PullContext("hostAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hostAddress")
 	}
-	_hostAddress, _hostAddressErr := BACnetHostAddressParse(readBuffer)
+	_hostAddress, _hostAddressErr := BACnetHostAddressParseWithBuffer(readBuffer)
 	if _hostAddressErr != nil {
 		return nil, errors.Wrap(_hostAddressErr, "Error parsing 'hostAddress' field of BACnetHostAddressEnclosed")
 	}
@@ -159,7 +163,7 @@ func BACnetHostAddressEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetHostAddressEnclosed")
 	}
@@ -181,7 +185,15 @@ func BACnetHostAddressEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8
 	}, nil
 }
 
-func (m *_BACnetHostAddressEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetHostAddressEnclosed) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetHostAddressEnclosed) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetHostAddressEnclosed"); pushErr != nil {

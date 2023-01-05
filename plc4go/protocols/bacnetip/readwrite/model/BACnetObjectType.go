@@ -30,7 +30,7 @@ import (
 type BACnetObjectType uint16
 
 type IBACnetObjectType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -449,7 +449,11 @@ func (m BACnetObjectType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetObjectTypeParse(readBuffer utils.ReadBuffer) (BACnetObjectType, error) {
+func BACnetObjectTypeParse(theBytes []byte) (BACnetObjectType, error) {
+	return BACnetObjectTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetObjectTypeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetObjectType, error) {
 	val, err := readBuffer.ReadUint16("BACnetObjectType", 10)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetObjectType")
@@ -462,7 +466,15 @@ func BACnetObjectTypeParse(readBuffer utils.ReadBuffer) (BACnetObjectType, error
 	}
 }
 
-func (e BACnetObjectType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetObjectType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetObjectType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetObjectType", 10, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

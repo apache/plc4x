@@ -102,7 +102,11 @@ func (m *_CALReplyShort) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALReplyShortParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (CALReplyShort, error) {
+func CALReplyShortParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (CALReplyShort, error) {
+	return CALReplyShortParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+}
+
+func CALReplyShortParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (CALReplyShort, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALReplyShort"); pullErr != nil {
@@ -126,7 +130,15 @@ func CALReplyShortParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, re
 	return _child, nil
 }
 
-func (m *_CALReplyShort) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CALReplyShort) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CALReplyShort) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

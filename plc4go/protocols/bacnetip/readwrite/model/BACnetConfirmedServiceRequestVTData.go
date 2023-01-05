@@ -98,7 +98,7 @@ func (m *_BACnetConfirmedServiceRequestVTData) GetVtDataFlag() BACnetApplication
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestVTData factory function for _BACnetConfirmedServiceRequestVTData
-func NewBACnetConfirmedServiceRequestVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceRequestLength uint16) *_BACnetConfirmedServiceRequestVTData {
+func NewBACnetConfirmedServiceRequestVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTData {
 	_result := &_BACnetConfirmedServiceRequestVTData{
 		VtSessionIdentifier:            vtSessionIdentifier,
 		VtNewData:                      vtNewData,
@@ -147,7 +147,11 @@ func (m *_BACnetConfirmedServiceRequestVTData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestVTDataParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetConfirmedServiceRequestVTData, error) {
+func BACnetConfirmedServiceRequestVTDataParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTData, error) {
+	return BACnetConfirmedServiceRequestVTDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+}
+
+func BACnetConfirmedServiceRequestVTDataParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTData"); pullErr != nil {
@@ -160,7 +164,7 @@ func BACnetConfirmedServiceRequestVTDataParse(readBuffer utils.ReadBuffer, servi
 	if pullErr := readBuffer.PullContext("vtSessionIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for vtSessionIdentifier")
 	}
-	_vtSessionIdentifier, _vtSessionIdentifierErr := BACnetApplicationTagParse(readBuffer)
+	_vtSessionIdentifier, _vtSessionIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _vtSessionIdentifierErr != nil {
 		return nil, errors.Wrap(_vtSessionIdentifierErr, "Error parsing 'vtSessionIdentifier' field of BACnetConfirmedServiceRequestVTData")
 	}
@@ -173,7 +177,7 @@ func BACnetConfirmedServiceRequestVTDataParse(readBuffer utils.ReadBuffer, servi
 	if pullErr := readBuffer.PullContext("vtNewData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for vtNewData")
 	}
-	_vtNewData, _vtNewDataErr := BACnetApplicationTagParse(readBuffer)
+	_vtNewData, _vtNewDataErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _vtNewDataErr != nil {
 		return nil, errors.Wrap(_vtNewDataErr, "Error parsing 'vtNewData' field of BACnetConfirmedServiceRequestVTData")
 	}
@@ -186,7 +190,7 @@ func BACnetConfirmedServiceRequestVTDataParse(readBuffer utils.ReadBuffer, servi
 	if pullErr := readBuffer.PullContext("vtDataFlag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for vtDataFlag")
 	}
-	_vtDataFlag, _vtDataFlagErr := BACnetApplicationTagParse(readBuffer)
+	_vtDataFlag, _vtDataFlagErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _vtDataFlagErr != nil {
 		return nil, errors.Wrap(_vtDataFlagErr, "Error parsing 'vtDataFlag' field of BACnetConfirmedServiceRequestVTData")
 	}
@@ -212,7 +216,15 @@ func BACnetConfirmedServiceRequestVTDataParse(readBuffer utils.ReadBuffer, servi
 	return _child, nil
 }
 
-func (m *_BACnetConfirmedServiceRequestVTData) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestVTData) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestVTData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

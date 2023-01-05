@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataEffectivePeriod) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataEffectivePeriodParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEffectivePeriod, error) {
+func BACnetConstructedDataEffectivePeriodParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEffectivePeriod, error) {
+	return BACnetConstructedDataEffectivePeriodParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataEffectivePeriodParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEffectivePeriod, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEffectivePeriod"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataEffectivePeriodParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("dateRange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateRange")
 	}
-	_dateRange, _dateRangeErr := BACnetDateRangeParse(readBuffer)
+	_dateRange, _dateRangeErr := BACnetDateRangeParseWithBuffer(readBuffer)
 	if _dateRangeErr != nil {
 		return nil, errors.Wrap(_dateRangeErr, "Error parsing 'dateRange' field of BACnetConstructedDataEffectivePeriod")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataEffectivePeriodParse(readBuffer utils.ReadBuffer, tagN
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataEffectivePeriod) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataEffectivePeriod) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataEffectivePeriod) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

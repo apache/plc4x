@@ -30,8 +30,8 @@ import (
 type COTPTpduSize uint8
 
 type ICOTPTpduSize interface {
+	utils.Serializable
 	SizeInBytes() uint16
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -171,7 +171,11 @@ func (m COTPTpduSize) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPTpduSizeParse(readBuffer utils.ReadBuffer) (COTPTpduSize, error) {
+func COTPTpduSizeParse(theBytes []byte) (COTPTpduSize, error) {
+	return COTPTpduSizeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func COTPTpduSizeParseWithBuffer(readBuffer utils.ReadBuffer) (COTPTpduSize, error) {
 	val, err := readBuffer.ReadUint8("COTPTpduSize", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading COTPTpduSize")
@@ -184,7 +188,15 @@ func COTPTpduSizeParse(readBuffer utils.ReadBuffer) (COTPTpduSize, error) {
 	}
 }
 
-func (e COTPTpduSize) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e COTPTpduSize) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e COTPTpduSize) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("COTPTpduSize", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

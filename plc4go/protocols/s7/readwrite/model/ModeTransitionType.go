@@ -30,7 +30,7 @@ import (
 type ModeTransitionType uint8
 
 type IModeTransitionType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -137,7 +137,11 @@ func (m ModeTransitionType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ModeTransitionTypeParse(readBuffer utils.ReadBuffer) (ModeTransitionType, error) {
+func ModeTransitionTypeParse(theBytes []byte) (ModeTransitionType, error) {
+	return ModeTransitionTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ModeTransitionTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ModeTransitionType, error) {
 	val, err := readBuffer.ReadUint8("ModeTransitionType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ModeTransitionType")
@@ -150,7 +154,15 @@ func ModeTransitionTypeParse(readBuffer utils.ReadBuffer) (ModeTransitionType, e
 	}
 }
 
-func (e ModeTransitionType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ModeTransitionType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ModeTransitionType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ModeTransitionType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -128,7 +128,11 @@ func (m *_BACnetScale) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetScaleParse(readBuffer utils.ReadBuffer) (BACnetScale, error) {
+func BACnetScaleParse(theBytes []byte) (BACnetScale, error) {
+	return BACnetScaleParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetScaleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetScale, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetScale"); pullErr != nil {
@@ -142,7 +146,7 @@ func BACnetScaleParse(readBuffer utils.ReadBuffer) (BACnetScale, error) {
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -161,9 +165,9 @@ func BACnetScaleParse(readBuffer utils.ReadBuffer) (BACnetScale, error) {
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetScaleFloatScale
-		_childTemp, typeSwitchError = BACnetScaleFloatScaleParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetScaleFloatScaleParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(1): // BACnetScaleIntegerScale
-		_childTemp, typeSwitchError = BACnetScaleIntegerScaleParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetScaleIntegerScaleParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}

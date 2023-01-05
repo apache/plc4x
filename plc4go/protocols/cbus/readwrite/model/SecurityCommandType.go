@@ -30,8 +30,8 @@ import (
 type SecurityCommandType uint8
 
 type ISecurityCommandType interface {
+	utils.Serializable
 	NumberOfArguments() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -131,7 +131,11 @@ func (m SecurityCommandType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityCommandTypeParse(readBuffer utils.ReadBuffer) (SecurityCommandType, error) {
+func SecurityCommandTypeParse(theBytes []byte) (SecurityCommandType, error) {
+	return SecurityCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SecurityCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityCommandType, error) {
 	val, err := readBuffer.ReadUint8("SecurityCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SecurityCommandType")
@@ -144,7 +148,15 @@ func SecurityCommandTypeParse(readBuffer utils.ReadBuffer) (SecurityCommandType,
 	}
 }
 
-func (e SecurityCommandType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e SecurityCommandType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e SecurityCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("SecurityCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

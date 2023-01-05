@@ -122,7 +122,11 @@ func (m *_BACnetProcessIdSelectionValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetProcessIdSelectionValueParse(readBuffer utils.ReadBuffer) (BACnetProcessIdSelectionValue, error) {
+func BACnetProcessIdSelectionValueParse(theBytes []byte) (BACnetProcessIdSelectionValue, error) {
+	return BACnetProcessIdSelectionValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetProcessIdSelectionValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetProcessIdSelectionValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetProcessIdSelectionValue"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetProcessIdSelectionValueParse(readBuffer utils.ReadBuffer) (BACnetProc
 	if pullErr := readBuffer.PullContext("processIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for processIdentifier")
 	}
-	_processIdentifier, _processIdentifierErr := BACnetApplicationTagParse(readBuffer)
+	_processIdentifier, _processIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _processIdentifierErr != nil {
 		return nil, errors.Wrap(_processIdentifierErr, "Error parsing 'processIdentifier' field of BACnetProcessIdSelectionValue")
 	}
@@ -157,7 +161,15 @@ func BACnetProcessIdSelectionValueParse(readBuffer utils.ReadBuffer) (BACnetProc
 	return _child, nil
 }
 
-func (m *_BACnetProcessIdSelectionValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetProcessIdSelectionValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetProcessIdSelectionValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

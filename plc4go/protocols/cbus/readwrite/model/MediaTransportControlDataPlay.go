@@ -102,7 +102,11 @@ func (m *_MediaTransportControlDataPlay) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlDataPlayParse(readBuffer utils.ReadBuffer) (MediaTransportControlDataPlay, error) {
+func MediaTransportControlDataPlayParse(theBytes []byte) (MediaTransportControlDataPlay, error) {
+	return MediaTransportControlDataPlayParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func MediaTransportControlDataPlayParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataPlay, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataPlay"); pullErr != nil {
@@ -123,7 +127,15 @@ func MediaTransportControlDataPlayParse(readBuffer utils.ReadBuffer) (MediaTrans
 	return _child, nil
 }
 
-func (m *_MediaTransportControlDataPlay) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataPlay) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_MediaTransportControlDataPlay) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

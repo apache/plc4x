@@ -30,7 +30,7 @@ import (
 type BACnetAuthorizationExemption uint8
 
 type IBACnetAuthorizationExemption interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -131,7 +131,11 @@ func (m BACnetAuthorizationExemption) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAuthorizationExemptionParse(readBuffer utils.ReadBuffer) (BACnetAuthorizationExemption, error) {
+func BACnetAuthorizationExemptionParse(theBytes []byte) (BACnetAuthorizationExemption, error) {
+	return BACnetAuthorizationExemptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetAuthorizationExemptionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthorizationExemption, error) {
 	val, err := readBuffer.ReadUint8("BACnetAuthorizationExemption", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAuthorizationExemption")
@@ -144,7 +148,15 @@ func BACnetAuthorizationExemptionParse(readBuffer utils.ReadBuffer) (BACnetAutho
 	}
 }
 
-func (e BACnetAuthorizationExemption) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAuthorizationExemption) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetAuthorizationExemption) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetAuthorizationExemption", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

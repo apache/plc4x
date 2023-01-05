@@ -100,7 +100,7 @@ public class ConnectedEntityTest {
     @PlcEntity
     public static class CachingEntity {
 
-        @PlcField(value = "address", cacheDurationMillis = 500)
+        @PlcTag(value = "address", cacheDurationMillis = 500)
         private String field;
 
         public CachingEntity() {

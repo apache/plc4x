@@ -26,8 +26,8 @@ import (
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseEvent
 type DefaultPlcBrowseEvent struct {
 	Request   model.PlcBrowseRequest
-	FieldName string
-	Result    model.PlcBrowseFoundField
+	QueryName string
+	Result    model.PlcBrowseItem
 	Err       error
 }
 
@@ -39,11 +39,11 @@ func (d *DefaultPlcBrowseEvent) GetRequest() model.PlcBrowseRequest {
 	return d.Request
 }
 
-func (d *DefaultPlcBrowseEvent) GetFieldName() string {
-	return d.FieldName
+func (d *DefaultPlcBrowseEvent) GetQueryName() string {
+	return d.QueryName
 }
 
-func (d *DefaultPlcBrowseEvent) GetResult() model.PlcBrowseFoundField {
+func (d *DefaultPlcBrowseEvent) GetResult() model.PlcBrowseItem {
 	return d.Result
 }
 

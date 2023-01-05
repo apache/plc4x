@@ -20,17 +20,18 @@
 package model
 
 import (
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"time"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionEvent
 type DefaultPlcSubscriptionEvent struct {
 	DefaultResponse
 	DefaultPlcSubscriptionEventRequirements `ignore:"true"` // Avoid recursion
-	fields                                  map[string]model.PlcField
+	tags                                    map[string]model.PlcTag
 	types                                   map[string]SubscriptionType
 	intervals                               map[string]time.Duration
 	values                                  map[string]values.PlcValue
@@ -41,29 +42,29 @@ type DefaultPlcSubscriptionEventRequirements interface {
 	GetAddress(name string) string
 }
 
-func NewDefaultPlcSubscriptionEvent(defaultPlcSubscriptionEventRequirements DefaultPlcSubscriptionEventRequirements, fields map[string]model.PlcField, types map[string]SubscriptionType,
+func NewDefaultPlcSubscriptionEvent(defaultPlcSubscriptionEventRequirements DefaultPlcSubscriptionEventRequirements, tags map[string]model.PlcTag, types map[string]SubscriptionType,
 	intervals map[string]time.Duration, responseCodes map[string]model.PlcResponseCode,
 	values map[string]values.PlcValue) DefaultPlcSubscriptionEvent {
 	return DefaultPlcSubscriptionEvent{
 		DefaultResponse:                         NewDefaultResponse(responseCodes),
 		DefaultPlcSubscriptionEventRequirements: defaultPlcSubscriptionEventRequirements,
-		fields:                                  fields,
+		tags:                                    tags,
 		types:                                   types,
 		intervals:                               intervals,
 		values:                                  values,
 	}
 }
 
-func (d *DefaultPlcSubscriptionEvent) GetFieldNames() []string {
-	var fieldNames []string
-	for fieldName := range d.fields {
-		fieldNames = append(fieldNames, fieldName)
+func (d *DefaultPlcSubscriptionEvent) GetTagNames() []string {
+	var tagNames []string
+	for tagName := range d.tags {
+		tagNames = append(tagNames, tagName)
 	}
-	return fieldNames
+	return tagNames
 }
 
-func (d *DefaultPlcSubscriptionEvent) GetField(name string) model.PlcField {
-	return d.fields[name]
+func (d *DefaultPlcSubscriptionEvent) GetTag(name string) model.PlcTag {
+	return d.tags[name]
 }
 
 func (d *DefaultPlcSubscriptionEvent) GetType(name string) SubscriptionType {

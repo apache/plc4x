@@ -30,7 +30,7 @@ import (
 type BACnetEscalatorOperationDirection uint16
 
 type IBACnetEscalatorOperationDirection interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -125,7 +125,11 @@ func (m BACnetEscalatorOperationDirection) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEscalatorOperationDirectionParse(readBuffer utils.ReadBuffer) (BACnetEscalatorOperationDirection, error) {
+func BACnetEscalatorOperationDirectionParse(theBytes []byte) (BACnetEscalatorOperationDirection, error) {
+	return BACnetEscalatorOperationDirectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetEscalatorOperationDirectionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEscalatorOperationDirection, error) {
 	val, err := readBuffer.ReadUint16("BACnetEscalatorOperationDirection", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetEscalatorOperationDirection")
@@ -138,7 +142,15 @@ func BACnetEscalatorOperationDirectionParse(readBuffer utils.ReadBuffer) (BACnet
 	}
 }
 
-func (e BACnetEscalatorOperationDirection) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetEscalatorOperationDirection) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetEscalatorOperationDirection) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetEscalatorOperationDirection", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

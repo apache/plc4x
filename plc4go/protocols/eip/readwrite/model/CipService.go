@@ -102,7 +102,11 @@ func (m *_CipService) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CipServiceParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipService, error) {
+func CipServiceParse(theBytes []byte, serviceLen uint16) (CipService, error) {
+	return CipServiceParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceLen)
+}
+
+func CipServiceParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint16) (CipService, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipService"); pullErr != nil {
@@ -128,19 +132,19 @@ func CipServiceParse(readBuffer utils.ReadBuffer, serviceLen uint16) (CipService
 	var typeSwitchError error
 	switch {
 	case service == 0x4C: // CipReadRequest
-		_childTemp, typeSwitchError = CipReadRequestParse(readBuffer, serviceLen)
+		_childTemp, typeSwitchError = CipReadRequestParseWithBuffer(readBuffer, serviceLen)
 	case service == 0xCC: // CipReadResponse
-		_childTemp, typeSwitchError = CipReadResponseParse(readBuffer, serviceLen)
+		_childTemp, typeSwitchError = CipReadResponseParseWithBuffer(readBuffer, serviceLen)
 	case service == 0x4D: // CipWriteRequest
-		_childTemp, typeSwitchError = CipWriteRequestParse(readBuffer, serviceLen)
+		_childTemp, typeSwitchError = CipWriteRequestParseWithBuffer(readBuffer, serviceLen)
 	case service == 0xCD: // CipWriteResponse
-		_childTemp, typeSwitchError = CipWriteResponseParse(readBuffer, serviceLen)
+		_childTemp, typeSwitchError = CipWriteResponseParseWithBuffer(readBuffer, serviceLen)
 	case service == 0x0A: // MultipleServiceRequest
-		_childTemp, typeSwitchError = MultipleServiceRequestParse(readBuffer, serviceLen)
+		_childTemp, typeSwitchError = MultipleServiceRequestParseWithBuffer(readBuffer, serviceLen)
 	case service == 0x8A: // MultipleServiceResponse
-		_childTemp, typeSwitchError = MultipleServiceResponseParse(readBuffer, serviceLen)
+		_childTemp, typeSwitchError = MultipleServiceResponseParseWithBuffer(readBuffer, serviceLen)
 	case service == 0x52: // CipUnconnectedRequest
-		_childTemp, typeSwitchError = CipUnconnectedRequestParse(readBuffer, serviceLen)
+		_childTemp, typeSwitchError = CipUnconnectedRequestParseWithBuffer(readBuffer, serviceLen)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [service=%v]", service)
 	}

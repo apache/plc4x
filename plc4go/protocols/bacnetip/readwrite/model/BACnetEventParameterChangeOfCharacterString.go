@@ -155,7 +155,11 @@ func (m *_BACnetEventParameterChangeOfCharacterString) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetEventParameterChangeOfCharacterStringParse(readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfCharacterString, error) {
+func BACnetEventParameterChangeOfCharacterStringParse(theBytes []byte) (BACnetEventParameterChangeOfCharacterString, error) {
+	return BACnetEventParameterChangeOfCharacterStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetEventParameterChangeOfCharacterStringParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfCharacterString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfCharacterString"); pullErr != nil {
@@ -168,7 +172,7 @@ func BACnetEventParameterChangeOfCharacterStringParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(17)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(17)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterChangeOfCharacterString")
 	}
@@ -181,7 +185,7 @@ func BACnetEventParameterChangeOfCharacterStringParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
 	}
-	_timeDelay, _timeDelayErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
 		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterChangeOfCharacterString")
 	}
@@ -194,7 +198,7 @@ func BACnetEventParameterChangeOfCharacterStringParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("listOfAlarmValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfAlarmValues")
 	}
-	_listOfAlarmValues, _listOfAlarmValuesErr := BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesParse(readBuffer, uint8(uint8(1)))
+	_listOfAlarmValues, _listOfAlarmValuesErr := BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _listOfAlarmValuesErr != nil {
 		return nil, errors.Wrap(_listOfAlarmValuesErr, "Error parsing 'listOfAlarmValues' field of BACnetEventParameterChangeOfCharacterString")
 	}
@@ -207,7 +211,7 @@ func BACnetEventParameterChangeOfCharacterStringParse(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(17)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(17)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterChangeOfCharacterString")
 	}
@@ -232,7 +236,15 @@ func BACnetEventParameterChangeOfCharacterStringParse(readBuffer utils.ReadBuffe
 	return _child, nil
 }
 
-func (m *_BACnetEventParameterChangeOfCharacterString) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventParameterChangeOfCharacterString) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetEventParameterChangeOfCharacterString) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

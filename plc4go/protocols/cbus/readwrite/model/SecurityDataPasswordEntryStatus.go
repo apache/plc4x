@@ -172,7 +172,11 @@ func (m *_SecurityDataPasswordEntryStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataPasswordEntryStatusParse(readBuffer utils.ReadBuffer) (SecurityDataPasswordEntryStatus, error) {
+func SecurityDataPasswordEntryStatusParse(theBytes []byte) (SecurityDataPasswordEntryStatus, error) {
+	return SecurityDataPasswordEntryStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SecurityDataPasswordEntryStatusParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataPasswordEntryStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataPasswordEntryStatus"); pullErr != nil {
@@ -226,7 +230,15 @@ func SecurityDataPasswordEntryStatusParse(readBuffer utils.ReadBuffer) (Security
 	return _child, nil
 }
 
-func (m *_SecurityDataPasswordEntryStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataPasswordEntryStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataPasswordEntryStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

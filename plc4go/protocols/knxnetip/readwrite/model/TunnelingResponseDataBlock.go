@@ -120,7 +120,11 @@ func (m *_TunnelingResponseDataBlock) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TunnelingResponseDataBlockParse(readBuffer utils.ReadBuffer) (TunnelingResponseDataBlock, error) {
+func TunnelingResponseDataBlockParse(theBytes []byte) (TunnelingResponseDataBlock, error) {
+	return TunnelingResponseDataBlockParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TunnelingResponseDataBlockParseWithBuffer(readBuffer utils.ReadBuffer) (TunnelingResponseDataBlock, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TunnelingResponseDataBlock"); pullErr != nil {
@@ -154,7 +158,7 @@ func TunnelingResponseDataBlockParse(readBuffer utils.ReadBuffer) (TunnelingResp
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for status")
 	}
-	_status, _statusErr := StatusParse(readBuffer)
+	_status, _statusErr := StatusParseWithBuffer(readBuffer)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of TunnelingResponseDataBlock")
 	}
@@ -175,7 +179,15 @@ func TunnelingResponseDataBlockParse(readBuffer utils.ReadBuffer) (TunnelingResp
 	}, nil
 }
 
-func (m *_TunnelingResponseDataBlock) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TunnelingResponseDataBlock) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TunnelingResponseDataBlock) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("TunnelingResponseDataBlock"); pushErr != nil {

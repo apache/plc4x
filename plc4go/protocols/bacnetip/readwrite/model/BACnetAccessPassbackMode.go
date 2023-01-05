@@ -30,7 +30,7 @@ import (
 type BACnetAccessPassbackMode uint8
 
 type IBACnetAccessPassbackMode interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -101,7 +101,11 @@ func (m BACnetAccessPassbackMode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAccessPassbackModeParse(readBuffer utils.ReadBuffer) (BACnetAccessPassbackMode, error) {
+func BACnetAccessPassbackModeParse(theBytes []byte) (BACnetAccessPassbackMode, error) {
+	return BACnetAccessPassbackModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetAccessPassbackModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAccessPassbackMode, error) {
 	val, err := readBuffer.ReadUint8("BACnetAccessPassbackMode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccessPassbackMode")
@@ -114,7 +118,15 @@ func BACnetAccessPassbackModeParse(readBuffer utils.ReadBuffer) (BACnetAccessPas
 	}
 }
 
-func (e BACnetAccessPassbackMode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAccessPassbackMode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetAccessPassbackMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetAccessPassbackMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

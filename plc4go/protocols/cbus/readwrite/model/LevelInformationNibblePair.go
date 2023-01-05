@@ -30,8 +30,8 @@ import (
 type LevelInformationNibblePair uint8
 
 type ILevelInformationNibblePair interface {
+	utils.Serializable
 	NibbleValue() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -261,7 +261,11 @@ func (m LevelInformationNibblePair) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func LevelInformationNibblePairParse(readBuffer utils.ReadBuffer) (LevelInformationNibblePair, error) {
+func LevelInformationNibblePairParse(theBytes []byte) (LevelInformationNibblePair, error) {
+	return LevelInformationNibblePairParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func LevelInformationNibblePairParseWithBuffer(readBuffer utils.ReadBuffer) (LevelInformationNibblePair, error) {
 	val, err := readBuffer.ReadUint8("LevelInformationNibblePair", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading LevelInformationNibblePair")
@@ -274,7 +278,15 @@ func LevelInformationNibblePairParse(readBuffer utils.ReadBuffer) (LevelInformat
 	}
 }
 
-func (e LevelInformationNibblePair) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e LevelInformationNibblePair) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e LevelInformationNibblePair) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("LevelInformationNibblePair", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,10 +20,11 @@
 package cbus
 
 import (
+	"time"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	internalMode "github.com/apache/plc4x/plc4go/spi/model"
-	"time"
 )
 
 type SubscriptionEvent struct {
@@ -33,7 +34,7 @@ type SubscriptionEvent struct {
 }
 
 func NewSubscriptionEvent(
-	fields map[string]apiModel.PlcField,
+	tags map[string]apiModel.PlcTag,
 	types map[string]internalMode.SubscriptionType,
 	intervals map[string]time.Duration,
 	responseCodes map[string]apiModel.PlcResponseCode,
@@ -44,7 +45,7 @@ func NewSubscriptionEvent(
 		address: address,
 		sources: sources,
 	}
-	subscriptionEvent.DefaultPlcSubscriptionEvent = internalMode.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, fields, types, intervals, responseCodes, values)
+	subscriptionEvent.DefaultPlcSubscriptionEvent = internalMode.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values)
 	return subscriptionEvent
 }
 

@@ -122,7 +122,11 @@ func (m *_BACnetPropertyStatesMaintenance) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesMaintenanceParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesMaintenance, error) {
+func BACnetPropertyStatesMaintenanceParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesMaintenance, error) {
+	return BACnetPropertyStatesMaintenanceParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+}
+
+func BACnetPropertyStatesMaintenanceParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesMaintenance, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesMaintenance"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPropertyStatesMaintenanceParse(readBuffer utils.ReadBuffer, peekedTag
 	if pullErr := readBuffer.PullContext("maintenance"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maintenance")
 	}
-	_maintenance, _maintenanceErr := BACnetMaintenanceTaggedParse(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_maintenance, _maintenanceErr := BACnetMaintenanceTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _maintenanceErr != nil {
 		return nil, errors.Wrap(_maintenanceErr, "Error parsing 'maintenance' field of BACnetPropertyStatesMaintenance")
 	}
@@ -157,7 +161,15 @@ func BACnetPropertyStatesMaintenanceParse(readBuffer utils.ReadBuffer, peekedTag
 	return _child, nil
 }
 
-func (m *_BACnetPropertyStatesMaintenance) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesMaintenance) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyStatesMaintenance) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -111,7 +111,11 @@ func (m *_StatusRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func StatusRequestParse(readBuffer utils.ReadBuffer) (StatusRequest, error) {
+func StatusRequestParse(theBytes []byte) (StatusRequest, error) {
+	return StatusRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func StatusRequestParseWithBuffer(readBuffer utils.ReadBuffer) (StatusRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StatusRequest"); pullErr != nil {
@@ -140,11 +144,11 @@ func StatusRequestParse(readBuffer utils.ReadBuffer) (StatusRequest, error) {
 	var typeSwitchError error
 	switch {
 	case statusType == 0x7A: // StatusRequestBinaryState
-		_childTemp, typeSwitchError = StatusRequestBinaryStateParse(readBuffer)
+		_childTemp, typeSwitchError = StatusRequestBinaryStateParseWithBuffer(readBuffer)
 	case statusType == 0xFA: // StatusRequestBinaryStateDeprecated
-		_childTemp, typeSwitchError = StatusRequestBinaryStateDeprecatedParse(readBuffer)
+		_childTemp, typeSwitchError = StatusRequestBinaryStateDeprecatedParseWithBuffer(readBuffer)
 	case statusType == 0x73: // StatusRequestLevel
-		_childTemp, typeSwitchError = StatusRequestLevelParse(readBuffer)
+		_childTemp, typeSwitchError = StatusRequestLevelParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [statusType=%v]", statusType)
 	}

@@ -129,7 +129,11 @@ func (m *_APDUUnconfirmedRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUUnconfirmedRequest, error) {
+func APDUUnconfirmedRequestParse(theBytes []byte, apduLength uint16) (APDUUnconfirmedRequest, error) {
+	return APDUUnconfirmedRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+}
+
+func APDUUnconfirmedRequestParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDUUnconfirmedRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUUnconfirmedRequest"); pullErr != nil {
@@ -159,7 +163,7 @@ func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16)
 	if pullErr := readBuffer.PullContext("serviceRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for serviceRequest")
 	}
-	_serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParse(readBuffer, uint16(uint16(apduLength)-uint16(uint16(1))))
+	_serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParseWithBuffer(readBuffer, uint16(uint16(apduLength)-uint16(uint16(1))))
 	if _serviceRequestErr != nil {
 		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field of APDUUnconfirmedRequest")
 	}
@@ -184,7 +188,15 @@ func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16)
 	return _child, nil
 }
 
-func (m *_APDUUnconfirmedRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_APDUUnconfirmedRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_APDUUnconfirmedRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

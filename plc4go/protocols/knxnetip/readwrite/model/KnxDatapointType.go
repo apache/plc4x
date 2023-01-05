@@ -30,10 +30,10 @@ import (
 type KnxDatapointType uint32
 
 type IKnxDatapointType interface {
+	utils.Serializable
 	Number() uint16
 	Name() string
 	DatapointMainType() KnxDatapointMainType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -6421,7 +6421,11 @@ func (m KnxDatapointType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxDatapointTypeParse(readBuffer utils.ReadBuffer) (KnxDatapointType, error) {
+func KnxDatapointTypeParse(theBytes []byte) (KnxDatapointType, error) {
+	return KnxDatapointTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func KnxDatapointTypeParseWithBuffer(readBuffer utils.ReadBuffer) (KnxDatapointType, error) {
 	val, err := readBuffer.ReadUint32("KnxDatapointType", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxDatapointType")
@@ -6434,7 +6438,15 @@ func KnxDatapointTypeParse(readBuffer utils.ReadBuffer) (KnxDatapointType, error
 	}
 }
 
-func (e KnxDatapointType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e KnxDatapointType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e KnxDatapointType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint32("KnxDatapointType", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

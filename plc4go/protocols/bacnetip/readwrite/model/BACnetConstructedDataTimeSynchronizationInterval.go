@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataTimeSynchronizationIntervalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeSynchronizationInterval, error) {
+func BACnetConstructedDataTimeSynchronizationIntervalParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeSynchronizationInterval, error) {
+	return BACnetConstructedDataTimeSynchronizationIntervalParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataTimeSynchronizationIntervalParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeSynchronizationInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeSynchronizationInterval"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataTimeSynchronizationIntervalParse(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("timeSynchronization"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeSynchronization")
 	}
-	_timeSynchronization, _timeSynchronizationErr := BACnetApplicationTagParse(readBuffer)
+	_timeSynchronization, _timeSynchronizationErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _timeSynchronizationErr != nil {
 		return nil, errors.Wrap(_timeSynchronizationErr, "Error parsing 'timeSynchronization' field of BACnetConstructedDataTimeSynchronizationInterval")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataTimeSynchronizationIntervalParse(readBuffer utils.Read
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataTimeSynchronizationInterval) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataTimeSynchronizationInterval) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataTimeSynchronizationInterval) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

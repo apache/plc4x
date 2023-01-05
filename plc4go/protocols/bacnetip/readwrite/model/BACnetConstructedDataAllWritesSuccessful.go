@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAllWritesSuccessfulParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAllWritesSuccessful, error) {
+func BACnetConstructedDataAllWritesSuccessfulParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAllWritesSuccessful, error) {
+	return BACnetConstructedDataAllWritesSuccessfulParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataAllWritesSuccessfulParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAllWritesSuccessful, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAllWritesSuccessful"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataAllWritesSuccessfulParse(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("allWritesSuccessful"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for allWritesSuccessful")
 	}
-	_allWritesSuccessful, _allWritesSuccessfulErr := BACnetApplicationTagParse(readBuffer)
+	_allWritesSuccessful, _allWritesSuccessfulErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _allWritesSuccessfulErr != nil {
 		return nil, errors.Wrap(_allWritesSuccessfulErr, "Error parsing 'allWritesSuccessful' field of BACnetConstructedDataAllWritesSuccessful")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataAllWritesSuccessfulParse(readBuffer utils.ReadBuffer, 
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataAllWritesSuccessful) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAllWritesSuccessful) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataAllWritesSuccessful) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -134,7 +134,11 @@ func (m *_SecurityDataZoneName) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataZoneNameParse(readBuffer utils.ReadBuffer) (SecurityDataZoneName, error) {
+func SecurityDataZoneNameParse(theBytes []byte) (SecurityDataZoneName, error) {
+	return SecurityDataZoneNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SecurityDataZoneNameParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataZoneName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataZoneName"); pullErr != nil {
@@ -171,7 +175,15 @@ func SecurityDataZoneNameParse(readBuffer utils.ReadBuffer) (SecurityDataZoneNam
 	return _child, nil
 }
 
-func (m *_SecurityDataZoneName) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataZoneName) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataZoneName) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

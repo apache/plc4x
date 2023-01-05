@@ -131,7 +131,11 @@ func (m *_CBusPointToMultiPointCommandStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToMultiPointCommandStatus, error) {
+func CBusPointToMultiPointCommandStatusParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToMultiPointCommandStatus, error) {
+	return CBusPointToMultiPointCommandStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+}
+
+func CBusPointToMultiPointCommandStatusParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToMultiPointCommandStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToMultiPointCommandStatus"); pullErr != nil {
@@ -178,7 +182,7 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, cBusOp
 	if pullErr := readBuffer.PullContext("statusRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for statusRequest")
 	}
-	_statusRequest, _statusRequestErr := StatusRequestParse(readBuffer)
+	_statusRequest, _statusRequestErr := StatusRequestParseWithBuffer(readBuffer)
 	if _statusRequestErr != nil {
 		return nil, errors.Wrap(_statusRequestErr, "Error parsing 'statusRequest' field of CBusPointToMultiPointCommandStatus")
 	}
@@ -204,7 +208,15 @@ func CBusPointToMultiPointCommandStatusParse(readBuffer utils.ReadBuffer, cBusOp
 	return _child, nil
 }
 
-func (m *_CBusPointToMultiPointCommandStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusPointToMultiPointCommandStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CBusPointToMultiPointCommandStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

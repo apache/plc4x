@@ -111,7 +111,11 @@ func (m *_BACnetBinaryPVTagged) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetBinaryPVTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetBinaryPVTagged, error) {
+func BACnetBinaryPVTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetBinaryPVTagged, error) {
+	return BACnetBinaryPVTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+}
+
+func BACnetBinaryPVTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetBinaryPVTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetBinaryPVTagged"); pullErr != nil {
@@ -124,7 +128,7 @@ func BACnetBinaryPVTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParse(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetBinaryPVTagged")
 	}
@@ -166,7 +170,15 @@ func BACnetBinaryPVTaggedParse(readBuffer utils.ReadBuffer, tagNumber uint8, tag
 	}, nil
 }
 
-func (m *_BACnetBinaryPVTagged) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetBinaryPVTagged) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetBinaryPVTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetBinaryPVTagged"); pushErr != nil {

@@ -18,8 +18,7 @@
  */
 package org.apache.plc4x.java.bacnetip.configuration;
 
-import org.apache.plc4x.java.bacnetip.BacNetIpDriver;
-import org.apache.plc4x.java.spi.configuration.BaseConfiguration;
+import org.apache.plc4x.java.bacnetip.readwrite.BacnetConstants;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.DoubleDefaultValue;
@@ -30,7 +29,7 @@ import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 import org.pcap4j.packet.Dot1qVlanTagPacket;
 
-public class BacNetIpConfiguration extends BaseConfiguration implements UdpTransportConfiguration, RawSocketTransportConfiguration, PcapReplayTransportConfiguration {
+public class BacNetIpConfiguration implements Configuration, UdpTransportConfiguration, RawSocketTransportConfiguration, PcapReplayTransportConfiguration {
 
     // Path to a single EDE file.
     @ConfigurationParameter("ede-file-path")
@@ -85,7 +84,7 @@ public class BacNetIpConfiguration extends BaseConfiguration implements UdpTrans
 
     @Override
     public int getDefaultPort() {
-        return BacNetIpDriver.BACNET_IP_PORT;
+        return BacnetConstants.BACNETUDPDEFAULTPORT;
     }
 
     @Override
@@ -106,18 +105,19 @@ public class BacNetIpConfiguration extends BaseConfiguration implements UdpTrans
      * Packet handler to use when running in PCAP mode.
      * In this case all packets are Ethernet frames and we need to first get the
      * IP packet and then the UDP packet and then the raw data from that.
+     *
      * @return payload of the packet.
      */
     @Override
     public PacketHandler getPcapPacketHandler() {
         return packet -> {
             // If it's a VLan packet, we need to go one level deeper.
-            if(packet.getPayload() instanceof Dot1qVlanTagPacket) {
+            if (packet.getPayload() instanceof Dot1qVlanTagPacket) {
                 return packet.getPayload().getPayload().getPayload().getPayload().getRawData();
             }
             // This is a normal udp packet.
             else {
-                if((packet.getPayload() != null) && (packet.getPayload().getPayload() != null) && (packet.getPayload().getPayload().getPayload() != null)) {
+                if ((packet.getPayload() != null) && (packet.getPayload().getPayload() != null) && (packet.getPayload().getPayload().getPayload() != null)) {
                     return packet.getPayload().getPayload().getPayload().getRawData();
                 }
             }

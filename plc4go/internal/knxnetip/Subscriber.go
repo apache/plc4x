@@ -21,13 +21,14 @@ package knxnetip
 
 import (
 	"context"
+	"time"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	values2 "github.com/apache/plc4x/plc4go/spi/values"
-	"time"
 )
 
 type Subscriber struct {
@@ -54,10 +55,10 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 		// Just populate all requests with an OK
 		responseCodes := map[string]apiModel.PlcResponseCode{}
 		subscriptionValues := make(map[string]apiModel.PlcSubscriptionHandle)
-		for _, fieldName := range internalPlcSubscriptionRequest.GetFieldNames() {
-			responseCodes[fieldName] = apiModel.PlcResponseCode_OK
-			fieldType := internalPlcSubscriptionRequest.GetType(fieldName)
-			subscriptionValues[fieldName] = NewSubscriptionHandle(m, fieldName, internalPlcSubscriptionRequest.GetField(fieldName), fieldType, internalPlcSubscriptionRequest.GetInterval(fieldName))
+		for _, tagName := range internalPlcSubscriptionRequest.GetTagNames() {
+			responseCodes[tagName] = apiModel.PlcResponseCode_OK
+			tagType := internalPlcSubscriptionRequest.GetType(tagName)
+			subscriptionValues[tagName] = NewSubscriptionHandle(m, tagName, internalPlcSubscriptionRequest.GetTag(tagName), tagType, internalPlcSubscriptionRequest.GetInterval(tagName))
 		}
 
 		result <- &spiModel.DefaultPlcSubscriptionRequestResult{
@@ -85,47 +86,49 @@ func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte, changed bool) {
 	// Decode the group-address according to the settings in the driver
 	// Group addresses can be 1, 2 or 3 levels (3 being the default)
-	garb := utils.NewReadBufferByteBased(destinationAddress)
-	groupAddress, err := driverModel.KnxGroupAddressParse(garb, m.connection.getGroupAddressNumLevels())
+	groupAddress, err := driverModel.KnxGroupAddressParse(destinationAddress, m.connection.getGroupAddressNumLevels())
 	if err != nil {
 		return
 	}
 
-	// TODO: aggregate fields and send it to a consumer which want's all of them
+	// TODO: aggregate tags and send it to a consumer which want's all of them
 	for registration, consumer := range m.consumers {
 		for _, subscriptionHandle := range registration.GetSubscriptionHandles() {
 			subscriptionHandle := subscriptionHandle.(*SubscriptionHandle)
-			groupAddressField, ok := subscriptionHandle.field.(GroupAddressField)
-			if !ok || !groupAddressField.matches(groupAddress) {
+			groupAddressTag, ok := subscriptionHandle.tag.(GroupAddressTag)
+			if !ok || !groupAddressTag.matches(groupAddress) {
 				continue
 			}
-			if subscriptionHandle.fieldType != spiModel.SubscriptionChangeOfState || !changed {
+			if subscriptionHandle.tagType != spiModel.SubscriptionChangeOfState || !changed {
 				continue
 			}
-			fields := map[string]apiModel.PlcField{}
+			tags := map[string]apiModel.PlcTag{}
 			types := map[string]spiModel.SubscriptionType{}
 			intervals := map[string]time.Duration{}
 			responseCodes := map[string]apiModel.PlcResponseCode{}
 			addresses := map[string][]byte{}
 			plcValues := map[string]values.PlcValue{}
-			fieldName := subscriptionHandle.fieldName
+			tagName := subscriptionHandle.tagName
 			rb := utils.NewReadBufferByteBased(payload)
-			if groupAddressField.GetFieldType() == nil {
-				responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_DATATYPE
-				plcValues[fieldName] = nil
+			if groupAddressTag.GetTagType() == nil {
+				responseCodes[tagName] = apiModel.PlcResponseCode_INVALID_DATATYPE
+				plcValues[tagName] = nil
 				continue
 			}
-			// If the size of the field is greater than 6, we have to skip the first byte
-			if groupAddressField.GetFieldType().GetLengthInBits() > 6 {
+			// If the size of the tag is greater than 6, we have to skip the first byte
+			if groupAddressTag.GetTagType().GetLengthInBits() > 6 {
 				_, _ = rb.ReadUint8("groupAddress", 8)
 			}
-			elementType := *groupAddressField.GetFieldType()
-			numElements := groupAddressField.GetQuantity()
+			elementType := *groupAddressTag.GetTagType()
+			numElements := uint16(1)
+			if len(groupAddressTag.GetArrayInfo()) > 0 {
+				numElements = uint16(groupAddressTag.GetArrayInfo()[0].GetUpperBound() - groupAddressTag.GetArrayInfo()[0].GetLowerBound())
+			}
 
-			fields[fieldName] = groupAddressField
-			types[fieldName] = subscriptionHandle.fieldType
-			intervals[fieldName] = subscriptionHandle.interval
-			addresses[fieldName] = destinationAddress
+			tags[tagName] = groupAddressTag
+			types[tagName] = subscriptionHandle.tagType
+			intervals[tagName] = subscriptionHandle.interval
+			addresses[tagName] = destinationAddress
 
 			var plcValueList []values.PlcValue
 			responseCode := apiModel.PlcResponseCode_OK
@@ -137,10 +140,10 @@ func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte
 					if !rb.HasMore(1) {
 						rb.Reset(0)
 					}
-					plcValue := values2.NewRawPlcValue(rb, NewValueDecoder(rb))
+					plcValue := values2.NewPlcRawByteArray(rb.GetBytes())
 					plcValueList = append(plcValueList, plcValue)
 				} else {
-					plcValue, err2 := driverModel.KnxDatapointParse(rb, elementType)
+					plcValue, err2 := driverModel.KnxDatapointParseWithBuffer(rb, elementType)
 					if err2 == nil {
 						plcValueList = append(plcValueList, plcValue)
 					} else {
@@ -150,15 +153,15 @@ func (m *Subscriber) handleValueChange(destinationAddress []byte, payload []byte
 					}
 				}
 			}
-			responseCodes[fieldName] = responseCode
+			responseCodes[tagName] = responseCode
 			if responseCode == apiModel.PlcResponseCode_OK {
 				if len(plcValueList) == 1 {
-					plcValues[fieldName] = plcValueList[0]
+					plcValues[tagName] = plcValueList[0]
 				} else {
-					plcValues[fieldName] = values2.NewPlcList(plcValueList)
+					plcValues[tagName] = values2.NewPlcList(plcValueList)
 				}
 			}
-			event := NewSubscriptionEvent(fields, types, intervals, responseCodes, addresses, plcValues)
+			event := NewSubscriptionEvent(tags, types, intervals, responseCodes, addresses, plcValues)
 			consumer(&event)
 		}
 	}

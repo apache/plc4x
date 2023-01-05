@@ -22,17 +22,26 @@
 package model
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var _ = fmt.Printf
 
-func (d *DefaultPlcBrowseRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (d *DefaultPlcBrowseRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := d.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (d *DefaultPlcBrowseRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("PlcBrowseRequest"); err != nil {
 		return err
 	}
-	if err := d.DefaultRequest.Serialize(writeBuffer); err != nil {
+	if err := d.DefaultPlcRequest.SerializeWithWriteBuffer(writeBuffer); err != nil {
 		return err
 	}
 
@@ -41,7 +50,7 @@ func (d *DefaultPlcBrowseRequest) Serialize(writeBuffer utils.WriteBuffer) error
 			if err := writeBuffer.PushContext("browser"); err != nil {
 				return err
 			}
-			if err := serializableField.Serialize(writeBuffer); err != nil {
+			if err := serializableField.SerializeWithWriteBuffer(writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext("browser"); err != nil {
@@ -53,6 +62,43 @@ func (d *DefaultPlcBrowseRequest) Serialize(writeBuffer utils.WriteBuffer) error
 				return err
 			}
 		}
+	}
+	if err := writeBuffer.PushContext("queryNames", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+	for _, elem := range d.queryNames {
+		if err := writeBuffer.WriteString("", uint32(len(elem)*8), "UTF-8", elem); err != nil {
+			return err
+		}
+	}
+	if err := writeBuffer.PopContext("queryNames", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+	if err := writeBuffer.PushContext("queries", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+	for name, elem := range d.queries {
+
+		var elem interface{} = elem
+		if serializable, ok := elem.(utils.Serializable); ok {
+			if err := writeBuffer.PushContext(name); err != nil {
+				return err
+			}
+			if err := serializable.SerializeWithWriteBuffer(writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext(name); err != nil {
+				return err
+			}
+		} else {
+			elemAsString := fmt.Sprintf("%v", elem)
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
+				return err
+			}
+		}
+	}
+	if err := writeBuffer.PopContext("queries", utils.WithRenderAsList(true)); err != nil {
+		return err
 	}
 	if err := writeBuffer.PopContext("PlcBrowseRequest"); err != nil {
 		return err

@@ -142,7 +142,11 @@ func (m *_COTPPacket) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, error) {
+func COTPPacketParse(theBytes []byte, cotpLen uint16) (COTPPacket, error) {
+	return COTPPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cotpLen)
+}
+
+func COTPPacketParseWithBuffer(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacket"); pullErr != nil {
@@ -152,7 +156,6 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, e
 	_ = currentPos
 	var startPos = positionAware.GetPos()
 	_ = startPos
-	var curPos uint16
 
 	// Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
 	headerLength, _headerLengthErr := readBuffer.ReadUint8("headerLength", 8)
@@ -178,17 +181,17 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, e
 	var typeSwitchError error
 	switch {
 	case tpduCode == 0xF0: // COTPPacketData
-		_childTemp, typeSwitchError = COTPPacketDataParse(readBuffer, cotpLen)
+		_childTemp, typeSwitchError = COTPPacketDataParseWithBuffer(readBuffer, cotpLen)
 	case tpduCode == 0xE0: // COTPPacketConnectionRequest
-		_childTemp, typeSwitchError = COTPPacketConnectionRequestParse(readBuffer, cotpLen)
+		_childTemp, typeSwitchError = COTPPacketConnectionRequestParseWithBuffer(readBuffer, cotpLen)
 	case tpduCode == 0xD0: // COTPPacketConnectionResponse
-		_childTemp, typeSwitchError = COTPPacketConnectionResponseParse(readBuffer, cotpLen)
+		_childTemp, typeSwitchError = COTPPacketConnectionResponseParseWithBuffer(readBuffer, cotpLen)
 	case tpduCode == 0x80: // COTPPacketDisconnectRequest
-		_childTemp, typeSwitchError = COTPPacketDisconnectRequestParse(readBuffer, cotpLen)
+		_childTemp, typeSwitchError = COTPPacketDisconnectRequestParseWithBuffer(readBuffer, cotpLen)
 	case tpduCode == 0xC0: // COTPPacketDisconnectResponse
-		_childTemp, typeSwitchError = COTPPacketDisconnectResponseParse(readBuffer, cotpLen)
+		_childTemp, typeSwitchError = COTPPacketDisconnectResponseParseWithBuffer(readBuffer, cotpLen)
 	case tpduCode == 0x70: // COTPPacketTpduError
-		_childTemp, typeSwitchError = COTPPacketTpduErrorParse(readBuffer, cotpLen)
+		_childTemp, typeSwitchError = COTPPacketTpduErrorParseWithBuffer(readBuffer, cotpLen)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [tpduCode=%v]", tpduCode)
 	}
@@ -201,19 +204,17 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, e
 	if pullErr := readBuffer.PullContext("parameters", utils.WithRenderAsList(true)); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for parameters")
 	}
-	curPos = positionAware.GetPos() - startPos
 	// Length array
 	var parameters []COTPParameter
 	{
-		_parametersLength := uint16((uint16(headerLength) + uint16(uint16(1)))) - uint16(curPos)
+		_parametersLength := uint16((uint16(headerLength) + uint16(uint16(1)))) - uint16((positionAware.GetPos() - startPos))
 		_parametersEndPos := positionAware.GetPos() + uint16(_parametersLength)
 		for positionAware.GetPos() < _parametersEndPos {
-			_item, _err := COTPParameterParse(readBuffer, uint8((uint8(headerLength)+uint8(uint8(1))))-uint8(curPos))
+			_item, _err := COTPParameterParseWithBuffer(readBuffer, uint8((uint8(headerLength)+uint8(uint8(1))))-uint8((positionAware.GetPos()-startPos)))
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'parameters' field of COTPPacket")
 			}
 			parameters = append(parameters, _item.(COTPParameter))
-			curPos = positionAware.GetPos() - startPos
 		}
 	}
 	if closeErr := readBuffer.CloseContext("parameters", utils.WithRenderAsList(true)); closeErr != nil {
@@ -221,14 +222,13 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, e
 	}
 
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
-	curPos = positionAware.GetPos() - startPos
 	var payload S7Message = nil
-	if bool((curPos) < (cotpLen)) {
+	if bool((positionAware.GetPos() - startPos) < (cotpLen)) {
 		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for payload")
 		}
-		_val, _err := S7MessageParse(readBuffer)
+		_val, _err := S7MessageParseWithBuffer(readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

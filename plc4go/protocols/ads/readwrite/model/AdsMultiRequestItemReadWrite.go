@@ -157,7 +157,11 @@ func (m *_AdsMultiRequestItemReadWrite) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsMultiRequestItemReadWriteParse(readBuffer utils.ReadBuffer, indexGroup uint32) (AdsMultiRequestItemReadWrite, error) {
+func AdsMultiRequestItemReadWriteParse(theBytes []byte, indexGroup uint32) (AdsMultiRequestItemReadWrite, error) {
+	return AdsMultiRequestItemReadWriteParseWithBuffer(utils.NewReadBufferByteBased(theBytes), indexGroup)
+}
+
+func AdsMultiRequestItemReadWriteParseWithBuffer(readBuffer utils.ReadBuffer, indexGroup uint32) (AdsMultiRequestItemReadWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsMultiRequestItemReadWrite"); pullErr != nil {
@@ -210,7 +214,15 @@ func AdsMultiRequestItemReadWriteParse(readBuffer utils.ReadBuffer, indexGroup u
 	return _child, nil
 }
 
-func (m *_AdsMultiRequestItemReadWrite) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsMultiRequestItemReadWrite) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsMultiRequestItemReadWrite) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

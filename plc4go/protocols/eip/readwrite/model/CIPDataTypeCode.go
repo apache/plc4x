@@ -30,21 +30,20 @@ import (
 type CIPDataTypeCode uint16
 
 type ICIPDataTypeCode interface {
+	utils.Serializable
 	Size() uint8
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
-	CIPDataTypeCode_BOOL       CIPDataTypeCode = 0x00C1
-	CIPDataTypeCode_SINT       CIPDataTypeCode = 0x00C2
-	CIPDataTypeCode_INT        CIPDataTypeCode = 0x00C3
-	CIPDataTypeCode_DINT       CIPDataTypeCode = 0x00C4
-	CIPDataTypeCode_LINT       CIPDataTypeCode = 0x00C5
-	CIPDataTypeCode_REAL       CIPDataTypeCode = 0x00CA
-	CIPDataTypeCode_DWORD      CIPDataTypeCode = 0x00D3
-	CIPDataTypeCode_STRUCTURED CIPDataTypeCode = 0x02A0
-	CIPDataTypeCode_STRING     CIPDataTypeCode = 0x02A0
-	CIPDataTypeCode_STRING36   CIPDataTypeCode = 0x02A0
+	CIPDataTypeCode_BOOL   CIPDataTypeCode = 0x00C1
+	CIPDataTypeCode_SINT   CIPDataTypeCode = 0x00C2
+	CIPDataTypeCode_INT    CIPDataTypeCode = 0x00C3
+	CIPDataTypeCode_DINT   CIPDataTypeCode = 0x00C4
+	CIPDataTypeCode_LINT   CIPDataTypeCode = 0x00C5
+	CIPDataTypeCode_REAL   CIPDataTypeCode = 0x00CA
+	CIPDataTypeCode_DWORD  CIPDataTypeCode = 0x00D3
+	CIPDataTypeCode_Struct CIPDataTypeCode = 0x02A0
+	CIPDataTypeCode_STRING CIPDataTypeCode = 0x02A0
 )
 
 var CIPDataTypeCodeValues []CIPDataTypeCode
@@ -59,9 +58,8 @@ func init() {
 		CIPDataTypeCode_LINT,
 		CIPDataTypeCode_REAL,
 		CIPDataTypeCode_DWORD,
-		CIPDataTypeCode_STRUCTURED,
+		CIPDataTypeCode_Struct,
 		CIPDataTypeCode_STRING,
-		CIPDataTypeCode_STRING36,
 	}
 }
 
@@ -131,7 +129,7 @@ func CIPDataTypeCodeByValue(value uint16) (enum CIPDataTypeCode, ok bool) {
 	case 0x00D3:
 		return CIPDataTypeCode_DWORD, true
 	case 0x02A0:
-		return CIPDataTypeCode_STRUCTURED, true
+		return CIPDataTypeCode_Struct, true
 	}
 	return 0, false
 }
@@ -152,8 +150,8 @@ func CIPDataTypeCodeByName(value string) (enum CIPDataTypeCode, ok bool) {
 		return CIPDataTypeCode_REAL, true
 	case "DWORD":
 		return CIPDataTypeCode_DWORD, true
-	case "STRUCTURED":
-		return CIPDataTypeCode_STRUCTURED, true
+	case "Struct":
+		return CIPDataTypeCode_Struct, true
 	}
 	return 0, false
 }
@@ -185,7 +183,11 @@ func (m CIPDataTypeCode) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CIPDataTypeCodeParse(readBuffer utils.ReadBuffer) (CIPDataTypeCode, error) {
+func CIPDataTypeCodeParse(theBytes []byte) (CIPDataTypeCode, error) {
+	return CIPDataTypeCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func CIPDataTypeCodeParseWithBuffer(readBuffer utils.ReadBuffer) (CIPDataTypeCode, error) {
 	val, err := readBuffer.ReadUint16("CIPDataTypeCode", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CIPDataTypeCode")
@@ -198,7 +200,15 @@ func CIPDataTypeCodeParse(readBuffer utils.ReadBuffer) (CIPDataTypeCode, error) 
 	}
 }
 
-func (e CIPDataTypeCode) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e CIPDataTypeCode) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e CIPDataTypeCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("CIPDataTypeCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
@@ -219,8 +229,8 @@ func (e CIPDataTypeCode) PLC4XEnumName() string {
 		return "REAL"
 	case CIPDataTypeCode_DWORD:
 		return "DWORD"
-	case CIPDataTypeCode_STRUCTURED:
-		return "STRUCTURED"
+	case CIPDataTypeCode_Struct:
+		return "Struct"
 	}
 	return ""
 }

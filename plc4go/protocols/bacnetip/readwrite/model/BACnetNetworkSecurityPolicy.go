@@ -107,7 +107,11 @@ func (m *_BACnetNetworkSecurityPolicy) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNetworkSecurityPolicyParse(readBuffer utils.ReadBuffer) (BACnetNetworkSecurityPolicy, error) {
+func BACnetNetworkSecurityPolicyParse(theBytes []byte) (BACnetNetworkSecurityPolicy, error) {
+	return BACnetNetworkSecurityPolicyParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetNetworkSecurityPolicyParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNetworkSecurityPolicy, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNetworkSecurityPolicy"); pullErr != nil {
@@ -120,7 +124,7 @@ func BACnetNetworkSecurityPolicyParse(readBuffer utils.ReadBuffer) (BACnetNetwor
 	if pullErr := readBuffer.PullContext("portId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for portId")
 	}
-	_portId, _portIdErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_portId, _portIdErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _portIdErr != nil {
 		return nil, errors.Wrap(_portIdErr, "Error parsing 'portId' field of BACnetNetworkSecurityPolicy")
 	}
@@ -133,7 +137,7 @@ func BACnetNetworkSecurityPolicyParse(readBuffer utils.ReadBuffer) (BACnetNetwor
 	if pullErr := readBuffer.PullContext("securityLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for securityLevel")
 	}
-	_securityLevel, _securityLevelErr := BACnetSecurityPolicyTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_securityLevel, _securityLevelErr := BACnetSecurityPolicyTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _securityLevelErr != nil {
 		return nil, errors.Wrap(_securityLevelErr, "Error parsing 'securityLevel' field of BACnetNetworkSecurityPolicy")
 	}
@@ -153,7 +157,15 @@ func BACnetNetworkSecurityPolicyParse(readBuffer utils.ReadBuffer) (BACnetNetwor
 	}, nil
 }
 
-func (m *_BACnetNetworkSecurityPolicy) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetNetworkSecurityPolicy) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetNetworkSecurityPolicy) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetNetworkSecurityPolicy"); pushErr != nil {

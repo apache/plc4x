@@ -31,7 +31,7 @@ func NewValueHandler() ValueHandler {
 	return ValueHandler{}
 }
 
-func (v ValueHandler) NewPlcValue(field model.PlcField, value interface{}) (values.PlcValue, error) {
+func (v ValueHandler) NewPlcValue(tag model.PlcTag, value interface{}) (values.PlcValue, error) {
 	//TODO implement me
 	panic("implement me")
 }

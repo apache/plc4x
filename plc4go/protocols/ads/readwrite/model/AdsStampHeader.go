@@ -122,7 +122,11 @@ func (m *_AdsStampHeader) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (AdsStampHeader, error) {
+func AdsStampHeaderParse(theBytes []byte) (AdsStampHeader, error) {
+	return AdsStampHeaderParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsStampHeaderParseWithBuffer(readBuffer utils.ReadBuffer) (AdsStampHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsStampHeader"); pullErr != nil {
@@ -157,7 +161,7 @@ func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (AdsStampHeader, error) {
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(samples); curItem++ {
-			_item, _err := AdsNotificationSampleParse(readBuffer)
+			_item, _err := AdsNotificationSampleParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'adsNotificationSamples' field of AdsStampHeader")
 			}
@@ -180,7 +184,15 @@ func AdsStampHeaderParse(readBuffer utils.ReadBuffer) (AdsStampHeader, error) {
 	}, nil
 }
 
-func (m *_AdsStampHeader) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsStampHeader) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsStampHeader) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsStampHeader"); pushErr != nil {

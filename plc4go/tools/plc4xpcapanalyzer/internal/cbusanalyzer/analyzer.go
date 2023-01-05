@@ -24,10 +24,9 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/cbus"
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
-	"github.com/google/gopacket"
+	"github.com/gopacket/gopacket"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -92,9 +91,9 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 		return nil, common.ErrEcho
 	}
 	a.lastParsePayload = currentPayload
-	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, a.requestContext, cBusOptions)
+	parse, err := model.CBusMessageParse(currentPayload, isResponse, a.requestContext, cBusOptions)
 	if err != nil {
-		if secondParse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, model.NewRequestContext(false), model.NewCBusOptions(false, false, false, false, false, false, false, false, false)); err != nil {
+		if secondParse, err := model.CBusMessageParse(currentPayload, isResponse, model.NewRequestContext(false), model.NewCBusOptions(false, false, false, false, false, false, false, false, false)); err != nil {
 			log.Debug().Err(err).Msg("Second parse failed too")
 			return nil, errors.Wrap(err, "Error parsing CBusCommand")
 		} else {
@@ -242,11 +241,11 @@ func (a *Analyzer) SerializePackage(message spi.Message) ([]byte, error) {
 		log.Fatal().Msgf("Unsupported type %T supplied", message)
 		panic("unreachable statement")
 	} else {
-		based := utils.NewWriteBufferByteBased()
-		if err := message.Serialize(based); err != nil {
+		theBytes, err := message.Serialize()
+		if err != nil {
 			return nil, errors.Wrap(err, "Error serializing")
 		}
-		return based.GetBytes(), nil
+		return theBytes, nil
 	}
 }
 

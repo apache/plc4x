@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="plc4py",
-    version="0.10a0",
+    version="0.11a0",
     description="Plc4py The Python Industrial IOT Adapter",
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -41,12 +41,13 @@ setup(
     install_requires=[
         "pytest-asyncio>=0.18.3",
         "pip-tools",
+        "black",
     ],
     extras_require={
         "dev": [
             "requires",
             "pre-commit>=2.6.0",
-            "pytest-mock>=3.3.1",
+            "pytest-mock>=3.8.1",
             "mock>=4.0.2",
             "mypy>=0.942",
             "flake8>=4.0.1",

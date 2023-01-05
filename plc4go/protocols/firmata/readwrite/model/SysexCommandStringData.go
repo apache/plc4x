@@ -107,7 +107,11 @@ func (m *_SysexCommandStringData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SysexCommandStringDataParse(readBuffer utils.ReadBuffer, response bool) (SysexCommandStringData, error) {
+func SysexCommandStringDataParse(theBytes []byte, response bool) (SysexCommandStringData, error) {
+	return SysexCommandStringDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+}
+
+func SysexCommandStringDataParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandStringData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandStringData"); pullErr != nil {
@@ -128,7 +132,15 @@ func SysexCommandStringDataParse(readBuffer utils.ReadBuffer, response bool) (Sy
 	return _child, nil
 }
 
-func (m *_SysexCommandStringData) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SysexCommandStringData) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SysexCommandStringData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

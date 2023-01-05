@@ -131,7 +131,11 @@ func (m *_StatusRequestBinaryStateDeprecated) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func StatusRequestBinaryStateDeprecatedParse(readBuffer utils.ReadBuffer) (StatusRequestBinaryStateDeprecated, error) {
+func StatusRequestBinaryStateDeprecatedParse(theBytes []byte) (StatusRequestBinaryStateDeprecated, error) {
+	return StatusRequestBinaryStateDeprecatedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func StatusRequestBinaryStateDeprecatedParseWithBuffer(readBuffer utils.ReadBuffer) (StatusRequestBinaryStateDeprecated, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StatusRequestBinaryStateDeprecated"); pullErr != nil {
@@ -161,7 +165,7 @@ func StatusRequestBinaryStateDeprecatedParse(readBuffer utils.ReadBuffer) (Statu
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
-	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of StatusRequestBinaryStateDeprecated")
 	}
@@ -202,7 +206,15 @@ func StatusRequestBinaryStateDeprecatedParse(readBuffer utils.ReadBuffer) (Statu
 	return _child, nil
 }
 
-func (m *_StatusRequestBinaryStateDeprecated) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_StatusRequestBinaryStateDeprecated) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_StatusRequestBinaryStateDeprecated) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

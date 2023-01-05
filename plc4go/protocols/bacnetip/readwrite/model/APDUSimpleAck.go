@@ -34,7 +34,7 @@ type APDUSimpleAck interface {
 	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
 	// GetServiceChoice returns ServiceChoice (property field)
-	GetServiceChoice() uint8
+	GetServiceChoice() BACnetConfirmedServiceChoice
 }
 
 // APDUSimpleAckExactly can be used when we want exactly this type and not a type which fulfills APDUSimpleAck.
@@ -48,7 +48,7 @@ type APDUSimpleAckExactly interface {
 type _APDUSimpleAck struct {
 	*_APDU
 	OriginalInvokeId uint8
-	ServiceChoice    uint8
+	ServiceChoice    BACnetConfirmedServiceChoice
 	// Reserved Fields
 	reservedField0 *uint8
 }
@@ -82,7 +82,7 @@ func (m *_APDUSimpleAck) GetOriginalInvokeId() uint8 {
 	return m.OriginalInvokeId
 }
 
-func (m *_APDUSimpleAck) GetServiceChoice() uint8 {
+func (m *_APDUSimpleAck) GetServiceChoice() BACnetConfirmedServiceChoice {
 	return m.ServiceChoice
 }
 
@@ -92,7 +92,7 @@ func (m *_APDUSimpleAck) GetServiceChoice() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewAPDUSimpleAck factory function for _APDUSimpleAck
-func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice uint8, apduLength uint16) *_APDUSimpleAck {
+func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice BACnetConfirmedServiceChoice, apduLength uint16) *_APDUSimpleAck {
 	_result := &_APDUSimpleAck{
 		OriginalInvokeId: originalInvokeId,
 		ServiceChoice:    serviceChoice,
@@ -140,7 +140,11 @@ func (m *_APDUSimpleAck) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSimpleAck, error) {
+func APDUSimpleAckParse(theBytes []byte, apduLength uint16) (APDUSimpleAck, error) {
+	return APDUSimpleAckParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+}
+
+func APDUSimpleAckParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSimpleAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUSimpleAck"); pullErr != nil {
@@ -174,11 +178,17 @@ func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSim
 	originalInvokeId := _originalInvokeId
 
 	// Simple Field (serviceChoice)
-	_serviceChoice, _serviceChoiceErr := readBuffer.ReadUint8("serviceChoice", 8)
+	if pullErr := readBuffer.PullContext("serviceChoice"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for serviceChoice")
+	}
+	_serviceChoice, _serviceChoiceErr := BACnetConfirmedServiceChoiceParseWithBuffer(readBuffer)
 	if _serviceChoiceErr != nil {
 		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field of APDUSimpleAck")
 	}
 	serviceChoice := _serviceChoice
+	if closeErr := readBuffer.CloseContext("serviceChoice"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for serviceChoice")
+	}
 
 	if closeErr := readBuffer.CloseContext("APDUSimpleAck"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for APDUSimpleAck")
@@ -197,7 +207,15 @@ func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUSim
 	return _child, nil
 }
 
-func (m *_APDUSimpleAck) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_APDUSimpleAck) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_APDUSimpleAck) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -229,8 +247,13 @@ func (m *_APDUSimpleAck) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Simple Field (serviceChoice)
-		serviceChoice := uint8(m.GetServiceChoice())
-		_serviceChoiceErr := writeBuffer.WriteUint8("serviceChoice", 8, (serviceChoice))
+		if pushErr := writeBuffer.PushContext("serviceChoice"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for serviceChoice")
+		}
+		_serviceChoiceErr := writeBuffer.WriteSerializable(m.GetServiceChoice())
+		if popErr := writeBuffer.PopContext("serviceChoice"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for serviceChoice")
+		}
 		if _serviceChoiceErr != nil {
 			return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
 		}

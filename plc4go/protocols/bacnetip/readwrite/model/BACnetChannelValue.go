@@ -136,7 +136,11 @@ func (m *_BACnetChannelValue) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueParse(readBuffer utils.ReadBuffer) (BACnetChannelValue, error) {
+func BACnetChannelValueParse(theBytes []byte) (BACnetChannelValue, error) {
+	return BACnetChannelValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetChannelValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValue"); pullErr != nil {
@@ -150,7 +154,7 @@ func BACnetChannelValueParse(readBuffer utils.ReadBuffer) (BACnetChannelValue, e
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -179,33 +183,33 @@ func BACnetChannelValueParse(readBuffer utils.ReadBuffer) (BACnetChannelValue, e
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == 0x0 && peekedIsContextTag == bool(false): // BACnetChannelValueNull
-		_childTemp, typeSwitchError = BACnetChannelValueNullParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetChannelValueNullParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x4 && peekedIsContextTag == bool(false): // BACnetChannelValueReal
-		_childTemp, typeSwitchError = BACnetChannelValueRealParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetChannelValueRealParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetChannelValueEnumerated
-		_childTemp, typeSwitchError = BACnetChannelValueEnumeratedParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetChannelValueEnumeratedParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetChannelValueUnsigned
-		_childTemp, typeSwitchError = BACnetChannelValueUnsignedParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetChannelValueUnsignedParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetChannelValueBoolean
-		_childTemp, typeSwitchError = BACnetChannelValueBooleanParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetChannelValueBooleanParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetChannelValueInteger
-		_childTemp, typeSwitchError = BACnetChannelValueIntegerParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetChannelValueIntegerParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x5 && peekedIsContextTag == bool(false): // BACnetChannelValueDouble
-		_childTemp, typeSwitchError = BACnetChannelValueDoubleParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetChannelValueDoubleParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetChannelValueTime
-		_childTemp, typeSwitchError = BACnetChannelValueTimeParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetChannelValueTimeParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetChannelValueCharacterString
-		_childTemp, typeSwitchError = BACnetChannelValueCharacterStringParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetChannelValueCharacterStringParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetChannelValueOctetString
-		_childTemp, typeSwitchError = BACnetChannelValueOctetStringParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetChannelValueOctetStringParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x8 && peekedIsContextTag == bool(false): // BACnetChannelValueBitString
-		_childTemp, typeSwitchError = BACnetChannelValueBitStringParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetChannelValueBitStringParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetChannelValueDate
-		_childTemp, typeSwitchError = BACnetChannelValueDateParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetChannelValueDateParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetChannelValueObjectidentifier
-		_childTemp, typeSwitchError = BACnetChannelValueObjectidentifierParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetChannelValueObjectidentifierParseWithBuffer(readBuffer)
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetChannelValueLightingCommand
-		_childTemp, typeSwitchError = BACnetChannelValueLightingCommandParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetChannelValueLightingCommandParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v, peekedIsContextTag=%v]", peekedTagNumber, peekedIsContextTag)
 	}

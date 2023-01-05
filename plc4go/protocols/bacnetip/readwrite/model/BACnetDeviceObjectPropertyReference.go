@@ -132,7 +132,11 @@ func (m *_BACnetDeviceObjectPropertyReference) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (BACnetDeviceObjectPropertyReference, error) {
+func BACnetDeviceObjectPropertyReferenceParse(theBytes []byte) (BACnetDeviceObjectPropertyReference, error) {
+	return BACnetDeviceObjectPropertyReferenceParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetDeviceObjectPropertyReferenceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDeviceObjectPropertyReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetDeviceObjectPropertyReference"); pullErr != nil {
@@ -145,7 +149,7 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (BACn
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetDeviceObjectPropertyReference")
 	}
@@ -158,7 +162,7 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (BACn
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field of BACnetDeviceObjectPropertyReference")
 	}
@@ -174,7 +178,7 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (BACn
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for arrayIndex")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -196,7 +200,7 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (BACn
 		if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(3), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -224,7 +228,15 @@ func BACnetDeviceObjectPropertyReferenceParse(readBuffer utils.ReadBuffer) (BACn
 	}, nil
 }
 
-func (m *_BACnetDeviceObjectPropertyReference) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetDeviceObjectPropertyReference) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetDeviceObjectPropertyReference) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetDeviceObjectPropertyReference"); pushErr != nil {

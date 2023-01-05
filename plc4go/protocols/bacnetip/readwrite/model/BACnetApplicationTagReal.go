@@ -139,7 +139,11 @@ func (m *_BACnetApplicationTagReal) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetApplicationTagRealParse(readBuffer utils.ReadBuffer) (BACnetApplicationTagReal, error) {
+func BACnetApplicationTagRealParse(theBytes []byte) (BACnetApplicationTagReal, error) {
+	return BACnetApplicationTagRealParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetApplicationTagRealParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetApplicationTagReal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagReal"); pullErr != nil {
@@ -152,7 +156,7 @@ func BACnetApplicationTagRealParse(readBuffer utils.ReadBuffer) (BACnetApplicati
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadRealParse(readBuffer)
+	_payload, _payloadErr := BACnetTagPayloadRealParseWithBuffer(readBuffer)
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetApplicationTagReal")
 	}
@@ -179,7 +183,15 @@ func BACnetApplicationTagRealParse(readBuffer utils.ReadBuffer) (BACnetApplicati
 	return _child, nil
 }
 
-func (m *_BACnetApplicationTagReal) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetApplicationTagReal) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetApplicationTagReal) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -97,7 +97,11 @@ func (m *_BACnetLandingDoorStatus) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLandingDoorStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingDoorStatus, error) {
+func BACnetLandingDoorStatusParse(theBytes []byte) (BACnetLandingDoorStatus, error) {
+	return BACnetLandingDoorStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLandingDoorStatusParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLandingDoorStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLandingDoorStatus"); pullErr != nil {
@@ -110,7 +114,7 @@ func BACnetLandingDoorStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingDoo
 	if pullErr := readBuffer.PullContext("landingDoors"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for landingDoors")
 	}
-	_landingDoors, _landingDoorsErr := BACnetLandingDoorStatusLandingDoorsListParse(readBuffer, uint8(uint8(0)))
+	_landingDoors, _landingDoorsErr := BACnetLandingDoorStatusLandingDoorsListParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _landingDoorsErr != nil {
 		return nil, errors.Wrap(_landingDoorsErr, "Error parsing 'landingDoors' field of BACnetLandingDoorStatus")
 	}
@@ -129,7 +133,15 @@ func BACnetLandingDoorStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingDoo
 	}, nil
 }
 
-func (m *_BACnetLandingDoorStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLandingDoorStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLandingDoorStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetLandingDoorStatus"); pushErr != nil {

@@ -122,7 +122,11 @@ func (m *_BACnetChannelValueDate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueDateParse(readBuffer utils.ReadBuffer) (BACnetChannelValueDate, error) {
+func BACnetChannelValueDateParse(theBytes []byte) (BACnetChannelValueDate, error) {
+	return BACnetChannelValueDateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetChannelValueDateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueDate"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetChannelValueDateParse(readBuffer utils.ReadBuffer) (BACnetChannelValu
 	if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for dateValue")
 	}
-	_dateValue, _dateValueErr := BACnetApplicationTagParse(readBuffer)
+	_dateValue, _dateValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _dateValueErr != nil {
 		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetChannelValueDate")
 	}
@@ -157,7 +161,15 @@ func BACnetChannelValueDateParse(readBuffer utils.ReadBuffer) (BACnetChannelValu
 	return _child, nil
 }
 
-func (m *_BACnetChannelValueDate) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetChannelValueDate) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetChannelValueDate) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

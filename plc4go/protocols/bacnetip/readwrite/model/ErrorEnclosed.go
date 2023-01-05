@@ -120,7 +120,11 @@ func (m *_ErrorEnclosed) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (ErrorEnclosed, error) {
+func ErrorEnclosedParse(theBytes []byte, tagNumber uint8) (ErrorEnclosed, error) {
+	return ErrorEnclosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+}
+
+func ErrorEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (ErrorEnclosed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorEnclosed"); pullErr != nil {
@@ -133,7 +137,7 @@ func ErrorEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (ErrorEncl
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of ErrorEnclosed")
 	}
@@ -146,7 +150,7 @@ func ErrorEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (ErrorEncl
 	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for error")
 	}
-	_error, _errorErr := ErrorParse(readBuffer)
+	_error, _errorErr := ErrorParseWithBuffer(readBuffer)
 	if _errorErr != nil {
 		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of ErrorEnclosed")
 	}
@@ -159,7 +163,7 @@ func ErrorEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (ErrorEncl
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of ErrorEnclosed")
 	}
@@ -181,7 +185,15 @@ func ErrorEnclosedParse(readBuffer utils.ReadBuffer, tagNumber uint8) (ErrorEncl
 	}, nil
 }
 
-func (m *_ErrorEnclosed) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ErrorEnclosed) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ErrorEnclosed) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ErrorEnclosed"); pushErr != nil {

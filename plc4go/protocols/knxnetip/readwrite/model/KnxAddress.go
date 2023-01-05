@@ -117,7 +117,11 @@ func (m *_KnxAddress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func KnxAddressParse(readBuffer utils.ReadBuffer) (KnxAddress, error) {
+func KnxAddressParse(theBytes []byte) (KnxAddress, error) {
+	return KnxAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func KnxAddressParseWithBuffer(readBuffer utils.ReadBuffer) (KnxAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxAddress"); pullErr != nil {
@@ -159,7 +163,15 @@ func KnxAddressParse(readBuffer utils.ReadBuffer) (KnxAddress, error) {
 	}, nil
 }
 
-func (m *_KnxAddress) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_KnxAddress) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_KnxAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("KnxAddress"); pushErr != nil {

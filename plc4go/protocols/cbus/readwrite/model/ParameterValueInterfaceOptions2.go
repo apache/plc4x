@@ -137,7 +137,11 @@ func (m *_ParameterValueInterfaceOptions2) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterValueInterfaceOptions2Parse(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions2, error) {
+func ParameterValueInterfaceOptions2Parse(theBytes []byte, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions2, error) {
+	return ParameterValueInterfaceOptions2ParseWithBuffer(utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
+}
+
+func ParameterValueInterfaceOptions2ParseWithBuffer(readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions2, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueInterfaceOptions2"); pullErr != nil {
@@ -155,7 +159,7 @@ func ParameterValueInterfaceOptions2Parse(readBuffer utils.ReadBuffer, parameter
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := InterfaceOptions2Parse(readBuffer)
+	_value, _valueErr := InterfaceOptions2ParseWithBuffer(readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueInterfaceOptions2")
 	}
@@ -186,7 +190,15 @@ func ParameterValueInterfaceOptions2Parse(readBuffer utils.ReadBuffer, parameter
 	return _child, nil
 }
 
-func (m *_ParameterValueInterfaceOptions2) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ParameterValueInterfaceOptions2) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ParameterValueInterfaceOptions2) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

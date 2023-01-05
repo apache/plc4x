@@ -30,9 +30,9 @@ import (
 type CALCommandTypeContainer uint8
 
 type ICALCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() CALCommandType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -1758,7 +1758,11 @@ func (m CALCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALCommandTypeContainerParse(readBuffer utils.ReadBuffer) (CALCommandTypeContainer, error) {
+func CALCommandTypeContainerParse(theBytes []byte) (CALCommandTypeContainer, error) {
+	return CALCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func CALCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (CALCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("CALCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CALCommandTypeContainer")
@@ -1771,7 +1775,15 @@ func CALCommandTypeContainerParse(readBuffer utils.ReadBuffer) (CALCommandTypeCo
 	}
 }
 
-func (e CALCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e CALCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e CALCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("CALCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

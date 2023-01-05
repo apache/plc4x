@@ -107,7 +107,11 @@ func (m *_S7MessageUserData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7MessageUserDataParse(readBuffer utils.ReadBuffer) (S7MessageUserData, error) {
+func S7MessageUserDataParse(theBytes []byte) (S7MessageUserData, error) {
+	return S7MessageUserDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func S7MessageUserDataParseWithBuffer(readBuffer utils.ReadBuffer) (S7MessageUserData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7MessageUserData"); pullErr != nil {
@@ -128,7 +132,15 @@ func S7MessageUserDataParse(readBuffer utils.ReadBuffer) (S7MessageUserData, err
 	return _child, nil
 }
 
-func (m *_S7MessageUserData) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7MessageUserData) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7MessageUserData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

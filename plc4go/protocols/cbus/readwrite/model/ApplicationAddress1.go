@@ -114,7 +114,11 @@ func (m *_ApplicationAddress1) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApplicationAddress1Parse(readBuffer utils.ReadBuffer) (ApplicationAddress1, error) {
+func ApplicationAddress1Parse(theBytes []byte) (ApplicationAddress1, error) {
+	return ApplicationAddress1ParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ApplicationAddress1ParseWithBuffer(readBuffer utils.ReadBuffer) (ApplicationAddress1, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApplicationAddress1"); pullErr != nil {
@@ -145,7 +149,15 @@ func ApplicationAddress1Parse(readBuffer utils.ReadBuffer) (ApplicationAddress1,
 	}, nil
 }
 
-func (m *_ApplicationAddress1) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ApplicationAddress1) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ApplicationAddress1) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ApplicationAddress1"); pushErr != nil {

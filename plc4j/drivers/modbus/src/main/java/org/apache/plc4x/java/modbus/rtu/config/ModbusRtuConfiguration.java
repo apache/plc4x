@@ -58,7 +58,9 @@ public class ModbusRtuConfiguration extends BaseConfiguration implements TcpTran
 
     @Override
     public String toString() {
-        return "Configuration{" +
+        return "ModbusRtuConfiguration{" +
+            "requestTimeout=" + requestTimeout +
+            ", unitIdentifier=" + unitIdentifier +
             '}';
     }
 

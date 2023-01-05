@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataExtendedTimeEnableParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataExtendedTimeEnable, error) {
+func BACnetConstructedDataExtendedTimeEnableParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataExtendedTimeEnable, error) {
+	return BACnetConstructedDataExtendedTimeEnableParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataExtendedTimeEnableParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataExtendedTimeEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExtendedTimeEnable"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataExtendedTimeEnableParse(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("extendedTimeEnable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for extendedTimeEnable")
 	}
-	_extendedTimeEnable, _extendedTimeEnableErr := BACnetApplicationTagParse(readBuffer)
+	_extendedTimeEnable, _extendedTimeEnableErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _extendedTimeEnableErr != nil {
 		return nil, errors.Wrap(_extendedTimeEnableErr, "Error parsing 'extendedTimeEnable' field of BACnetConstructedDataExtendedTimeEnable")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataExtendedTimeEnableParse(readBuffer utils.ReadBuffer, t
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataExtendedTimeEnable) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataExtendedTimeEnable) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataExtendedTimeEnable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

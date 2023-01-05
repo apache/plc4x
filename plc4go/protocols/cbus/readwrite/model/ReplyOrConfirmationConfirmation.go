@@ -136,7 +136,11 @@ func (m *_ReplyOrConfirmationConfirmation) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReplyOrConfirmationConfirmationParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmationConfirmation, error) {
+func ReplyOrConfirmationConfirmationParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmationConfirmation, error) {
+	return ReplyOrConfirmationConfirmationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+}
+
+func ReplyOrConfirmationConfirmationParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmationConfirmation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyOrConfirmationConfirmation"); pullErr != nil {
@@ -149,7 +153,7 @@ func ReplyOrConfirmationConfirmationParse(readBuffer utils.ReadBuffer, cBusOptio
 	if pullErr := readBuffer.PullContext("confirmation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for confirmation")
 	}
-	_confirmation, _confirmationErr := ConfirmationParse(readBuffer)
+	_confirmation, _confirmationErr := ConfirmationParseWithBuffer(readBuffer)
 	if _confirmationErr != nil {
 		return nil, errors.Wrap(_confirmationErr, "Error parsing 'confirmation' field of ReplyOrConfirmationConfirmation")
 	}
@@ -165,7 +169,7 @@ func ReplyOrConfirmationConfirmationParse(readBuffer utils.ReadBuffer, cBusOptio
 		if pullErr := readBuffer.PullContext("embeddedReply"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for embeddedReply")
 		}
-		_val, _err := ReplyOrConfirmationParse(readBuffer, cBusOptions, requestContext)
+		_val, _err := ReplyOrConfirmationParseWithBuffer(readBuffer, cBusOptions, requestContext)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -197,7 +201,15 @@ func ReplyOrConfirmationConfirmationParse(readBuffer utils.ReadBuffer, cBusOptio
 	return _child, nil
 }
 
-func (m *_ReplyOrConfirmationConfirmation) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ReplyOrConfirmationConfirmation) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ReplyOrConfirmationConfirmation) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

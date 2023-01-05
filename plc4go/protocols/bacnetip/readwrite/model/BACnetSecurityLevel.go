@@ -30,7 +30,7 @@ import (
 type BACnetSecurityLevel uint8
 
 type IBACnetSecurityLevel interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -119,7 +119,11 @@ func (m BACnetSecurityLevel) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetSecurityLevelParse(readBuffer utils.ReadBuffer) (BACnetSecurityLevel, error) {
+func BACnetSecurityLevelParse(theBytes []byte) (BACnetSecurityLevel, error) {
+	return BACnetSecurityLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetSecurityLevelParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSecurityLevel, error) {
 	val, err := readBuffer.ReadUint8("BACnetSecurityLevel", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetSecurityLevel")
@@ -132,7 +136,15 @@ func BACnetSecurityLevelParse(readBuffer utils.ReadBuffer) (BACnetSecurityLevel,
 	}
 }
 
-func (e BACnetSecurityLevel) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetSecurityLevel) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetSecurityLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetSecurityLevel", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

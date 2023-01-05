@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataLastCredentialRemoved) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLastCredentialRemovedParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialRemoved, error) {
+func BACnetConstructedDataLastCredentialRemovedParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialRemoved, error) {
+	return BACnetConstructedDataLastCredentialRemovedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataLastCredentialRemovedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialRemoved, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastCredentialRemoved"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataLastCredentialRemovedParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("lastCredentialRemoved"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastCredentialRemoved")
 	}
-	_lastCredentialRemoved, _lastCredentialRemovedErr := BACnetDeviceObjectReferenceParse(readBuffer)
+	_lastCredentialRemoved, _lastCredentialRemovedErr := BACnetDeviceObjectReferenceParseWithBuffer(readBuffer)
 	if _lastCredentialRemovedErr != nil {
 		return nil, errors.Wrap(_lastCredentialRemovedErr, "Error parsing 'lastCredentialRemoved' field of BACnetConstructedDataLastCredentialRemoved")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataLastCredentialRemovedParse(readBuffer utils.ReadBuffer
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataLastCredentialRemoved) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLastCredentialRemoved) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataLastCredentialRemoved) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

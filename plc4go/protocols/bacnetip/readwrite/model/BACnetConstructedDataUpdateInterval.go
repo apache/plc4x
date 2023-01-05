@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataUpdateInterval) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataUpdateIntervalParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateInterval, error) {
+func BACnetConstructedDataUpdateIntervalParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateInterval, error) {
+	return BACnetConstructedDataUpdateIntervalParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataUpdateIntervalParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUpdateInterval"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataUpdateIntervalParse(readBuffer utils.ReadBuffer, tagNu
 	if pullErr := readBuffer.PullContext("updateInterval"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for updateInterval")
 	}
-	_updateInterval, _updateIntervalErr := BACnetApplicationTagParse(readBuffer)
+	_updateInterval, _updateIntervalErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _updateIntervalErr != nil {
 		return nil, errors.Wrap(_updateIntervalErr, "Error parsing 'updateInterval' field of BACnetConstructedDataUpdateInterval")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataUpdateIntervalParse(readBuffer utils.ReadBuffer, tagNu
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataUpdateInterval) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataUpdateInterval) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataUpdateInterval) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

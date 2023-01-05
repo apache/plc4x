@@ -110,7 +110,11 @@ func (m *_BACnetRecipientProcess) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetRecipientProcessParse(readBuffer utils.ReadBuffer) (BACnetRecipientProcess, error) {
+func BACnetRecipientProcessParse(theBytes []byte) (BACnetRecipientProcess, error) {
+	return BACnetRecipientProcessParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetRecipientProcessParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRecipientProcess, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetRecipientProcess"); pullErr != nil {
@@ -123,7 +127,7 @@ func BACnetRecipientProcessParse(readBuffer utils.ReadBuffer) (BACnetRecipientPr
 	if pullErr := readBuffer.PullContext("recipient"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for recipient")
 	}
-	_recipient, _recipientErr := BACnetRecipientEnclosedParse(readBuffer, uint8(uint8(0)))
+	_recipient, _recipientErr := BACnetRecipientEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _recipientErr != nil {
 		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field of BACnetRecipientProcess")
 	}
@@ -139,7 +143,7 @@ func BACnetRecipientProcessParse(readBuffer utils.ReadBuffer) (BACnetRecipientPr
 		if pullErr := readBuffer.PullContext("processIdentifier"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for processIdentifier")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -165,7 +169,15 @@ func BACnetRecipientProcessParse(readBuffer utils.ReadBuffer) (BACnetRecipientPr
 	}, nil
 }
 
-func (m *_BACnetRecipientProcess) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetRecipientProcess) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetRecipientProcess) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetRecipientProcess"); pushErr != nil {

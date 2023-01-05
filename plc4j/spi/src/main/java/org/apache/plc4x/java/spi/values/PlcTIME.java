@@ -30,7 +30,6 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcTIME extends PlcSimpleValue<Duration> {
@@ -46,22 +45,26 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
         throw new PlcRuntimeException("Invalid value type");
     }
 
+    public static PlcTIME ofMilliseconds(long milliseconds) {
+        return new PlcTIME(Duration.ofMillis(milliseconds));
+    }
+
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcTIME(@JsonProperty("value") Duration value) {
         super(value, true);
     }
 
-    public PlcTIME(@JsonProperty("value") Integer value) {
-        super(Duration.of((long) value, ChronoUnit.MILLIS), true);
-    }
-
-    public PlcTIME(@JsonProperty("value") Long value) {
-        super(Duration.of(value, ChronoUnit.MILLIS), true);
+    public PlcTIME(@JsonProperty("value") long milliseconds) {
+        super(Duration.ofMillis(milliseconds), true);
     }
 
     @Override
     public PlcValueType getPlcValueType() {
         return PlcValueType.TIME;
+    }
+
+    public long getMilliseconds() {
+        return value.toMillis();
     }
 
     @Override

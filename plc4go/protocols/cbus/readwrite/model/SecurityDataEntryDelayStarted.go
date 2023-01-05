@@ -102,7 +102,11 @@ func (m *_SecurityDataEntryDelayStarted) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataEntryDelayStartedParse(readBuffer utils.ReadBuffer) (SecurityDataEntryDelayStarted, error) {
+func SecurityDataEntryDelayStartedParse(theBytes []byte) (SecurityDataEntryDelayStarted, error) {
+	return SecurityDataEntryDelayStartedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SecurityDataEntryDelayStartedParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataEntryDelayStarted, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataEntryDelayStarted"); pullErr != nil {
@@ -123,7 +127,15 @@ func SecurityDataEntryDelayStartedParse(readBuffer utils.ReadBuffer) (SecurityDa
 	return _child, nil
 }
 
-func (m *_SecurityDataEntryDelayStarted) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataEntryDelayStarted) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataEntryDelayStarted) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

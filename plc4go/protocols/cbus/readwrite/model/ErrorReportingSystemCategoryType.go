@@ -97,7 +97,11 @@ func (m *_ErrorReportingSystemCategoryType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingSystemCategoryTypeParse(readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryType, error) {
+func ErrorReportingSystemCategoryTypeParse(theBytes []byte, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryType, error) {
+	return ErrorReportingSystemCategoryTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), errorReportingSystemCategoryClass)
+}
+
+func ErrorReportingSystemCategoryTypeParseWithBuffer(readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorReportingSystemCategoryType"); pullErr != nil {
@@ -117,17 +121,17 @@ func ErrorReportingSystemCategoryTypeParse(readBuffer utils.ReadBuffer, errorRep
 	var typeSwitchError error
 	switch {
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_INPUT_UNITS: // ErrorReportingSystemCategoryTypeInputUnits
-		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeInputUnitsParse(readBuffer, errorReportingSystemCategoryClass)
+		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeInputUnitsParseWithBuffer(readBuffer, errorReportingSystemCategoryClass)
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_SUPPORT_UNITS: // ErrorReportingSystemCategoryTypeSupportUnits
-		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeSupportUnitsParse(readBuffer, errorReportingSystemCategoryClass)
+		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeSupportUnitsParseWithBuffer(readBuffer, errorReportingSystemCategoryClass)
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_BUILDING_MANAGEMENT_SYSTEMS: // ErrorReportingSystemCategoryTypeBuildingManagementSystems
-		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeBuildingManagementSystemsParse(readBuffer, errorReportingSystemCategoryClass)
+		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeBuildingManagementSystemsParseWithBuffer(readBuffer, errorReportingSystemCategoryClass)
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_OUTPUT_UNITS: // ErrorReportingSystemCategoryTypeOutputUnits
-		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeOutputUnitsParse(readBuffer, errorReportingSystemCategoryClass)
+		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeOutputUnitsParseWithBuffer(readBuffer, errorReportingSystemCategoryClass)
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_CLIMATE_CONTROLLERS: // ErrorReportingSystemCategoryTypeClimateControllers
-		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeClimateControllersParse(readBuffer, errorReportingSystemCategoryClass)
+		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeClimateControllersParseWithBuffer(readBuffer, errorReportingSystemCategoryClass)
 	case 0 == 0: // ErrorReportingSystemCategoryTypeReserved
-		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeReservedParse(readBuffer, errorReportingSystemCategoryClass)
+		_childTemp, typeSwitchError = ErrorReportingSystemCategoryTypeReservedParseWithBuffer(readBuffer, errorReportingSystemCategoryClass)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [errorReportingSystemCategoryClass=%v]", errorReportingSystemCategoryClass)
 	}

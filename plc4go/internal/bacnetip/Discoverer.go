@@ -24,7 +24,6 @@ import (
 	"fmt"
 	"github.com/IBM/netaddr"
 	internalModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -102,11 +101,11 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 			bvlc := driverModel.NewBVLCOriginalUnicastNPDU(npdu, 0)
 
 			// Send the search request.
-			wbbb := utils.NewWriteBufferByteBased()
-			if err := bvlc.Serialize(wbbb); err != nil {
-				panic(err)
+			theBytes, err := bvlc.Serialize()
+			if err != nil {
+				return nil, err
 			}
-			if _, err := communicationChannelInstance.broadcastConnection.WriteTo(wbbb.GetBytes(), communicationChannelInstance.broadcastConnection.LocalAddr()); err != nil {
+			if _, err := communicationChannelInstance.broadcastConnection.WriteTo(theBytes, communicationChannelInstance.broadcastConnection.LocalAddr()); err != nil {
 				log.Debug().Err(err).Msg("Error sending broadcast")
 			}
 		}
@@ -146,11 +145,11 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 			bvlc := driverModel.NewBVLCOriginalUnicastNPDU(npdu, 0)
 
 			// Send the search request.
-			wbbb := utils.NewWriteBufferByteBased()
-			if err := bvlc.Serialize(wbbb); err != nil {
-				panic(err)
+			theBytes, err := bvlc.Serialize()
+			if err != nil {
+				return nil, err
 			}
-			if _, err := communicationChannelInstance.broadcastConnection.WriteTo(wbbb.GetBytes(), communicationChannelInstance.broadcastConnection.LocalAddr()); err != nil {
+			if _, err := communicationChannelInstance.broadcastConnection.WriteTo(theBytes, communicationChannelInstance.broadcastConnection.LocalAddr()); err != nil {
 				log.Debug().Err(err).Msg("Error sending broadcast")
 			}
 		}
@@ -167,7 +166,7 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 						return
 					}
 					log.Debug().Stringer("addr", addr).Msg("Received broadcast bvlc")
-					incomingBvlc, err := driverModel.BVLCParse(utils.NewReadBufferByteBased(buf[:n]))
+					incomingBvlc, err := driverModel.BVLCParse(buf[:n])
 					if err != nil {
 						log.Warn().Err(err).Msg("Could not parse bvlc")
 						blockingReadChan <- true
@@ -202,7 +201,7 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 						return
 					}
 					log.Debug().Stringer("addr", addr).Msg("Received broadcast bvlc")
-					incomingBvlc, err := driverModel.BVLCParse(utils.NewReadBufferByteBased(buf[:n]))
+					incomingBvlc, err := driverModel.BVLCParse(buf[:n])
 					if err != nil {
 						log.Warn().Err(err).Msg("Could not parse bvlc")
 						blockingReadChan <- true

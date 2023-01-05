@@ -33,7 +33,7 @@ import org.apache.plc4x.java.s7.events.S7UserEvent;
  * Example for capturing events generated from a Siemens S7-300, S7-400 or VIPA PLC.
  * Support for mode events ("MODE"), system events ("SYS"), user events ("USR")
  * and alarms ("ALM").
- * Each consumer shows the fields and associated values of the "map" containing
+ * Each consumer shows the tags and associated values of the "map" containing
  * the event parameters.
  */
 public class EventSubscription {
@@ -45,10 +45,10 @@ public class EventSubscription {
         try (PlcConnection connection = new PlcDriverManager().getConnection("s7://192.168.1.51?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
             final PlcSubscriptionRequest.Builder subscription = connection.subscriptionRequestBuilder();
 
-            subscription.addEventField("myMODE", "MODE");
-            subscription.addEventField("mySYS", "SYS");
-            subscription.addEventField("myUSR", "USR");
-            subscription.addEventField("myALM", "ALM");
+            subscription.addEventTagAddress("myMODE", "MODE");
+            subscription.addEventTagAddress("mySYS", "SYS");
+            subscription.addEventTagAddress("myUSR", "USR");
+            subscription.addEventTagAddress("myALM", "ALM");
 
             final PlcSubscriptionRequest sub = subscription.build();
             final PlcSubscriptionResponse subresponse = sub.execute().get();

@@ -122,7 +122,11 @@ func (m *_BACnetChannelValueBoolean) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueBooleanParse(readBuffer utils.ReadBuffer) (BACnetChannelValueBoolean, error) {
+func BACnetChannelValueBooleanParse(theBytes []byte) (BACnetChannelValueBoolean, error) {
+	return BACnetChannelValueBooleanParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetChannelValueBooleanParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueBoolean"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetChannelValueBooleanParse(readBuffer utils.ReadBuffer) (BACnetChannelV
 	if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
 	}
-	_booleanValue, _booleanValueErr := BACnetApplicationTagParse(readBuffer)
+	_booleanValue, _booleanValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _booleanValueErr != nil {
 		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field of BACnetChannelValueBoolean")
 	}
@@ -157,7 +161,15 @@ func BACnetChannelValueBooleanParse(readBuffer utils.ReadBuffer) (BACnetChannelV
 	return _child, nil
 }
 
-func (m *_BACnetChannelValueBoolean) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetChannelValueBoolean) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetChannelValueBoolean) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

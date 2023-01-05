@@ -126,7 +126,11 @@ func (m *_SALDataHeating) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataHeatingParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataHeating, error) {
+func SALDataHeatingParse(theBytes []byte, applicationId ApplicationId) (SALDataHeating, error) {
+	return SALDataHeatingParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+}
+
+func SALDataHeatingParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataHeating, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataHeating"); pullErr != nil {
@@ -139,7 +143,7 @@ func SALDataHeatingParse(readBuffer utils.ReadBuffer, applicationId ApplicationI
 	if pullErr := readBuffer.PullContext("heatingData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for heatingData")
 	}
-	_heatingData, _heatingDataErr := LightingDataParse(readBuffer)
+	_heatingData, _heatingDataErr := LightingDataParseWithBuffer(readBuffer)
 	if _heatingDataErr != nil {
 		return nil, errors.Wrap(_heatingDataErr, "Error parsing 'heatingData' field of SALDataHeating")
 	}
@@ -161,7 +165,15 @@ func SALDataHeatingParse(readBuffer utils.ReadBuffer, applicationId ApplicationI
 	return _child, nil
 }
 
-func (m *_SALDataHeating) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataHeating) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SALDataHeating) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

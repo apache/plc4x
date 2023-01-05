@@ -135,7 +135,11 @@ func (m *_BACnetServiceAckAtomicReadFileStream) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckAtomicReadFileStreamParse(readBuffer utils.ReadBuffer) (BACnetServiceAckAtomicReadFileStream, error) {
+func BACnetServiceAckAtomicReadFileStreamParse(theBytes []byte) (BACnetServiceAckAtomicReadFileStream, error) {
+	return BACnetServiceAckAtomicReadFileStreamParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetServiceAckAtomicReadFileStreamParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetServiceAckAtomicReadFileStream, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicReadFileStream"); pullErr != nil {
@@ -148,7 +152,7 @@ func BACnetServiceAckAtomicReadFileStreamParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("fileStartPosition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileStartPosition")
 	}
-	_fileStartPosition, _fileStartPositionErr := BACnetApplicationTagParse(readBuffer)
+	_fileStartPosition, _fileStartPositionErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _fileStartPositionErr != nil {
 		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field of BACnetServiceAckAtomicReadFileStream")
 	}
@@ -161,7 +165,7 @@ func BACnetServiceAckAtomicReadFileStreamParse(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("fileData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fileData")
 	}
-	_fileData, _fileDataErr := BACnetApplicationTagParse(readBuffer)
+	_fileData, _fileDataErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _fileDataErr != nil {
 		return nil, errors.Wrap(_fileDataErr, "Error parsing 'fileData' field of BACnetServiceAckAtomicReadFileStream")
 	}
@@ -184,7 +188,15 @@ func BACnetServiceAckAtomicReadFileStreamParse(readBuffer utils.ReadBuffer) (BAC
 	return _child, nil
 }
 
-func (m *_BACnetServiceAckAtomicReadFileStream) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetServiceAckAtomicReadFileStream) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetServiceAckAtomicReadFileStream) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

@@ -18,11 +18,9 @@
  */
 package org.apache.plc4x.java.utils.connectionpool2;
 
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.util.LinkedHashSet;
@@ -46,23 +44,23 @@ public class CachedWriteRequest implements PlcWriteRequest {
     }
 
     @Override
-    public int getNumberOfFields() {
-        return innerRequest.getNumberOfFields();
+    public int getNumberOfTags() {
+        return innerRequest.getNumberOfTags();
     }
 
     @Override
-    public LinkedHashSet<String> getFieldNames() {
-        return innerRequest.getFieldNames();
+    public LinkedHashSet<String> getTagNames() {
+        return innerRequest.getTagNames();
     }
 
     @Override
-    public PlcField getField(String s) {
-        return innerRequest.getField(s);
+    public PlcTag getTag(String s) {
+        return innerRequest.getTag(s);
     }
 
     @Override
-    public List<PlcField> getFields() {
-        return innerRequest.getFields();
+    public List<PlcTag> getTags() {
+        return innerRequest.getTags();
     }
 
     @Override

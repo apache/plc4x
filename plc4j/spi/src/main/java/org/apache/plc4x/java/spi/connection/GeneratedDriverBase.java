@@ -79,7 +79,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         return null;
     }
 
-    protected abstract PlcFieldHandler getFieldHandler();
+    protected abstract PlcTagHandler getTagHandler();
 
     protected abstract PlcValueHandler getValueHandler();
 
@@ -177,7 +177,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
         return new DefaultNettyPlcConnection(
             canRead(), canWrite(), canSubscribe(), canBrowse(),
-            getFieldHandler(),
+            getTagHandler(),
             getValueHandler(),
             configuration,
             channelFactory,

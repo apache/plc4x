@@ -162,7 +162,11 @@ func (m *_AdsDeviceNotificationRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (AdsDeviceNotificationRequest, error) {
+func AdsDeviceNotificationRequestParse(theBytes []byte) (AdsDeviceNotificationRequest, error) {
+	return AdsDeviceNotificationRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsDeviceNotificationRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDeviceNotificationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDeviceNotificationRequest"); pullErr != nil {
@@ -197,7 +201,7 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (AdsDeviceNo
 	}
 	{
 		for curItem := uint16(0); curItem < uint16(stamps); curItem++ {
-			_item, _err := AdsStampHeaderParse(readBuffer)
+			_item, _err := AdsStampHeaderParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'adsStampHeaders' field of AdsDeviceNotificationRequest")
 			}
@@ -223,7 +227,15 @@ func AdsDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (AdsDeviceNo
 	return _child, nil
 }
 
-func (m *_AdsDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDeviceNotificationRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsDeviceNotificationRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

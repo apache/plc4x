@@ -30,9 +30,9 @@ import (
 type MediaTransportControlCommandTypeContainer uint8
 
 type IMediaTransportControlCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() MediaTransportControlCommandType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -1716,7 +1716,11 @@ func (m MediaTransportControlCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MediaTransportControlCommandTypeContainerParse(readBuffer utils.ReadBuffer) (MediaTransportControlCommandTypeContainer, error) {
+func MediaTransportControlCommandTypeContainerParse(theBytes []byte) (MediaTransportControlCommandTypeContainer, error) {
+	return MediaTransportControlCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func MediaTransportControlCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("MediaTransportControlCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading MediaTransportControlCommandTypeContainer")
@@ -1729,7 +1733,15 @@ func MediaTransportControlCommandTypeContainerParse(readBuffer utils.ReadBuffer)
 	}
 }
 
-func (e MediaTransportControlCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e MediaTransportControlCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e MediaTransportControlCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("MediaTransportControlCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -43,9 +43,9 @@ func init() {
 func (m Df1XmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "DF1Symbol":
-		return model.DF1SymbolParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.DF1SymbolParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DF1Command":
-		return model.DF1CommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		return model.DF1CommandParseWithBuffer(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

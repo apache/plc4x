@@ -102,7 +102,11 @@ func (m *_SecurityDataDropTamper) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataDropTamperParse(readBuffer utils.ReadBuffer) (SecurityDataDropTamper, error) {
+func SecurityDataDropTamperParse(theBytes []byte) (SecurityDataDropTamper, error) {
+	return SecurityDataDropTamperParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SecurityDataDropTamperParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataDropTamper, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataDropTamper"); pullErr != nil {
@@ -123,7 +127,15 @@ func SecurityDataDropTamperParse(readBuffer utils.ReadBuffer) (SecurityDataDropT
 	return _child, nil
 }
 
-func (m *_SecurityDataDropTamper) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataDropTamper) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataDropTamper) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

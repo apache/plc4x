@@ -121,7 +121,11 @@ func (m *_BACnetActionList) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetActionListParse(readBuffer utils.ReadBuffer) (BACnetActionList, error) {
+func BACnetActionListParse(theBytes []byte) (BACnetActionList, error) {
+	return BACnetActionListParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetActionListParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetActionList, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetActionList"); pullErr != nil {
@@ -134,7 +138,7 @@ func BACnetActionListParse(readBuffer utils.ReadBuffer) (BACnetActionList, error
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(0)))
+	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetActionList")
 	}
@@ -151,12 +155,11 @@ func BACnetActionListParse(readBuffer utils.ReadBuffer) (BACnetActionList, error
 	var action []BACnetActionCommand
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 0)) {
-			_item, _err := BACnetActionCommandParse(readBuffer)
+			_item, _err := BACnetActionCommandParseWithBuffer(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'action' field of BACnetActionList")
 			}
 			action = append(action, _item.(BACnetActionCommand))
-
 		}
 	}
 	if closeErr := readBuffer.CloseContext("action", utils.WithRenderAsList(true)); closeErr != nil {
@@ -167,7 +170,7 @@ func BACnetActionListParse(readBuffer utils.ReadBuffer) (BACnetActionList, error
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(0)))
+	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetActionList")
 	}
@@ -188,7 +191,15 @@ func BACnetActionListParse(readBuffer utils.ReadBuffer) (BACnetActionList, error
 	}, nil
 }
 
-func (m *_BACnetActionList) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetActionList) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetActionList) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetActionList"); pushErr != nil {

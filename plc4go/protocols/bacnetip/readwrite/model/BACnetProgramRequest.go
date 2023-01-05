@@ -30,7 +30,7 @@ import (
 type BACnetProgramRequest uint8
 
 type IBACnetProgramRequest interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -119,7 +119,11 @@ func (m BACnetProgramRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetProgramRequestParse(readBuffer utils.ReadBuffer) (BACnetProgramRequest, error) {
+func BACnetProgramRequestParse(theBytes []byte) (BACnetProgramRequest, error) {
+	return BACnetProgramRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetProgramRequestParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetProgramRequest, error) {
 	val, err := readBuffer.ReadUint8("BACnetProgramRequest", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetProgramRequest")
@@ -132,7 +136,15 @@ func BACnetProgramRequestParse(readBuffer utils.ReadBuffer) (BACnetProgramReques
 	}
 }
 
-func (e BACnetProgramRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetProgramRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetProgramRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetProgramRequest", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

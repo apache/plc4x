@@ -20,6 +20,7 @@
 package model
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +125,11 @@ func (m *_BVLCResult) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BVLCResultParse(readBuffer utils.ReadBuffer) (BVLCResult, error) {
+func BVLCResultParse(theBytes []byte) (BVLCResult, error) {
+	return BVLCResultParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+}
+
+func BVLCResultParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCResult"); pullErr != nil {
@@ -137,7 +142,7 @@ func BVLCResultParse(readBuffer utils.ReadBuffer) (BVLCResult, error) {
 	if pullErr := readBuffer.PullContext("code"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for code")
 	}
-	_code, _codeErr := BVLCResultCodeParse(readBuffer)
+	_code, _codeErr := BVLCResultCodeParseWithBuffer(readBuffer)
 	if _codeErr != nil {
 		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of BVLCResult")
 	}
@@ -159,7 +164,15 @@ func BVLCResultParse(readBuffer utils.ReadBuffer) (BVLCResult, error) {
 	return _child, nil
 }
 
-func (m *_BVLCResult) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BVLCResult) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BVLCResult) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

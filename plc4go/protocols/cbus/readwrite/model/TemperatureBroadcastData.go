@@ -142,7 +142,11 @@ func (m *_TemperatureBroadcastData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TemperatureBroadcastDataParse(readBuffer utils.ReadBuffer) (TemperatureBroadcastData, error) {
+func TemperatureBroadcastDataParse(theBytes []byte) (TemperatureBroadcastData, error) {
+	return TemperatureBroadcastDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TemperatureBroadcastDataParseWithBuffer(readBuffer utils.ReadBuffer) (TemperatureBroadcastData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TemperatureBroadcastData"); pullErr != nil {
@@ -160,7 +164,7 @@ func TemperatureBroadcastDataParse(readBuffer utils.ReadBuffer) (TemperatureBroa
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := TemperatureBroadcastCommandTypeContainerParse(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := TemperatureBroadcastCommandTypeContainerParseWithBuffer(readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of TemperatureBroadcastData")
 	}
@@ -205,7 +209,15 @@ func TemperatureBroadcastDataParse(readBuffer utils.ReadBuffer) (TemperatureBroa
 	}, nil
 }
 
-func (m *_TemperatureBroadcastData) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TemperatureBroadcastData) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TemperatureBroadcastData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("TemperatureBroadcastData"); pushErr != nil {

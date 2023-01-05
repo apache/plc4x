@@ -122,7 +122,11 @@ func (m *_BACnetChannelValueEnumerated) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueEnumeratedParse(readBuffer utils.ReadBuffer) (BACnetChannelValueEnumerated, error) {
+func BACnetChannelValueEnumeratedParse(theBytes []byte) (BACnetChannelValueEnumerated, error) {
+	return BACnetChannelValueEnumeratedParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetChannelValueEnumeratedParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueEnumerated, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueEnumerated"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetChannelValueEnumeratedParse(readBuffer utils.ReadBuffer) (BACnetChann
 	if pullErr := readBuffer.PullContext("enumeratedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for enumeratedValue")
 	}
-	_enumeratedValue, _enumeratedValueErr := BACnetApplicationTagParse(readBuffer)
+	_enumeratedValue, _enumeratedValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _enumeratedValueErr != nil {
 		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field of BACnetChannelValueEnumerated")
 	}
@@ -157,7 +161,15 @@ func BACnetChannelValueEnumeratedParse(readBuffer utils.ReadBuffer) (BACnetChann
 	return _child, nil
 }
 
-func (m *_BACnetChannelValueEnumerated) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetChannelValueEnumerated) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetChannelValueEnumerated) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

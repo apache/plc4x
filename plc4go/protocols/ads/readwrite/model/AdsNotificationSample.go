@@ -119,7 +119,11 @@ func (m *_AdsNotificationSample) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsNotificationSampleParse(readBuffer utils.ReadBuffer) (AdsNotificationSample, error) {
+func AdsNotificationSampleParse(theBytes []byte) (AdsNotificationSample, error) {
+	return AdsNotificationSampleParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsNotificationSampleParseWithBuffer(readBuffer utils.ReadBuffer) (AdsNotificationSample, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsNotificationSample"); pullErr != nil {
@@ -160,7 +164,15 @@ func AdsNotificationSampleParse(readBuffer utils.ReadBuffer) (AdsNotificationSam
 	}, nil
 }
 
-func (m *_AdsNotificationSample) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsNotificationSample) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsNotificationSample) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsNotificationSample"); pushErr != nil {

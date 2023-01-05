@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataPacketReorderTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPacketReorderTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPacketReorderTime, error) {
+func BACnetConstructedDataPacketReorderTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPacketReorderTime, error) {
+	return BACnetConstructedDataPacketReorderTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataPacketReorderTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPacketReorderTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPacketReorderTime"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataPacketReorderTimeParse(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("packetReorderTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for packetReorderTime")
 	}
-	_packetReorderTime, _packetReorderTimeErr := BACnetApplicationTagParse(readBuffer)
+	_packetReorderTime, _packetReorderTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _packetReorderTimeErr != nil {
 		return nil, errors.Wrap(_packetReorderTimeErr, "Error parsing 'packetReorderTime' field of BACnetConstructedDataPacketReorderTime")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataPacketReorderTimeParse(readBuffer utils.ReadBuffer, ta
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataPacketReorderTime) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataPacketReorderTime) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataPacketReorderTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

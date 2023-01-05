@@ -131,7 +131,11 @@ func (m *_BACnetContextTagUnknown) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetContextTagUnknownParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (BACnetContextTagUnknown, error) {
+func BACnetContextTagUnknownParse(theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (BACnetContextTagUnknown, error) {
+	return BACnetContextTagUnknownParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType, actualLength)
+}
+
+func BACnetContextTagUnknownParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (BACnetContextTagUnknown, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagUnknown"); pullErr != nil {
@@ -161,7 +165,15 @@ func BACnetContextTagUnknownParse(readBuffer utils.ReadBuffer, tagNumberArgument
 	return _child, nil
 }
 
-func (m *_BACnetContextTagUnknown) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetContextTagUnknown) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetContextTagUnknown) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

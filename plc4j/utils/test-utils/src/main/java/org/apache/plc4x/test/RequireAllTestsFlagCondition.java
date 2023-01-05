@@ -30,6 +30,7 @@ public class RequireAllTestsFlagCondition implements ExecutionCondition {
         if("true".equalsIgnoreCase(propertyValue)) {
             return ConditionEvaluationResult.enabled("ENABLE_ALL_TESTS variable set to 'true'.");
         }
+        System.out.println("DISABLED-RequireAllTestsFlagCondition");
         return ConditionEvaluationResult.disabled("ENABLE_ALL_TESTS variable not set to 'true', therefore disabling this test.");
     }
 

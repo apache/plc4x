@@ -30,7 +30,7 @@ import (
 type BACnetLifeSafetyState uint16
 
 type IBACnetLifeSafetyState interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -233,7 +233,11 @@ func (m BACnetLifeSafetyState) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetLifeSafetyStateParse(readBuffer utils.ReadBuffer) (BACnetLifeSafetyState, error) {
+func BACnetLifeSafetyStateParse(theBytes []byte) (BACnetLifeSafetyState, error) {
+	return BACnetLifeSafetyStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLifeSafetyStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLifeSafetyState, error) {
 	val, err := readBuffer.ReadUint16("BACnetLifeSafetyState", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLifeSafetyState")
@@ -246,7 +250,15 @@ func BACnetLifeSafetyStateParse(readBuffer utils.ReadBuffer) (BACnetLifeSafetySt
 	}
 }
 
-func (e BACnetLifeSafetyState) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetLifeSafetyState) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetLifeSafetyState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetLifeSafetyState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

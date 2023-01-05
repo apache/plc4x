@@ -122,7 +122,11 @@ func (m *_BACnetPriorityValueNull) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPriorityValueNullParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueNull, error) {
+func BACnetPriorityValueNullParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueNull, error) {
+	return BACnetPriorityValueNullParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+}
+
+func BACnetPriorityValueNullParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueNull"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetPriorityValueNullParse(readBuffer utils.ReadBuffer, objectTypeArgumen
 	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
 	}
-	_nullValue, _nullValueErr := BACnetApplicationTagParse(readBuffer)
+	_nullValue, _nullValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _nullValueErr != nil {
 		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetPriorityValueNull")
 	}
@@ -159,7 +163,15 @@ func BACnetPriorityValueNullParse(readBuffer utils.ReadBuffer, objectTypeArgumen
 	return _child, nil
 }
 
-func (m *_BACnetPriorityValueNull) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPriorityValueNull) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPriorityValueNull) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

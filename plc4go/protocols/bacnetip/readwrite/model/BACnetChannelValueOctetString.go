@@ -122,7 +122,11 @@ func (m *_BACnetChannelValueOctetString) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetChannelValueOctetStringParse(readBuffer utils.ReadBuffer) (BACnetChannelValueOctetString, error) {
+func BACnetChannelValueOctetStringParse(theBytes []byte) (BACnetChannelValueOctetString, error) {
+	return BACnetChannelValueOctetStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetChannelValueOctetStringParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueOctetString"); pullErr != nil {
@@ -135,7 +139,7 @@ func BACnetChannelValueOctetStringParse(readBuffer utils.ReadBuffer) (BACnetChan
 	if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for octetStringValue")
 	}
-	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParse(readBuffer)
+	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _octetStringValueErr != nil {
 		return nil, errors.Wrap(_octetStringValueErr, "Error parsing 'octetStringValue' field of BACnetChannelValueOctetString")
 	}
@@ -157,7 +161,15 @@ func BACnetChannelValueOctetStringParse(readBuffer utils.ReadBuffer) (BACnetChan
 	return _child, nil
 }
 
-func (m *_BACnetChannelValueOctetString) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetChannelValueOctetString) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetChannelValueOctetString) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

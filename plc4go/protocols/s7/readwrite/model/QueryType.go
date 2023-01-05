@@ -30,7 +30,7 @@ import (
 type QueryType uint8
 
 type IQueryType interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -101,7 +101,11 @@ func (m QueryType) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func QueryTypeParse(readBuffer utils.ReadBuffer) (QueryType, error) {
+func QueryTypeParse(theBytes []byte) (QueryType, error) {
+	return QueryTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func QueryTypeParseWithBuffer(readBuffer utils.ReadBuffer) (QueryType, error) {
 	val, err := readBuffer.ReadUint8("QueryType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading QueryType")
@@ -114,7 +118,15 @@ func QueryTypeParse(readBuffer utils.ReadBuffer) (QueryType, error) {
 	}
 }
 
-func (e QueryType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e QueryType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e QueryType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("QueryType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -151,7 +151,11 @@ func (m *_APDUAbort) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUAbort, error) {
+func APDUAbortParse(theBytes []byte, apduLength uint16) (APDUAbort, error) {
+	return APDUAbortParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+}
+
+func APDUAbortParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (APDUAbort, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUAbort"); pullErr != nil {
@@ -195,7 +199,7 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUAbort, 
 	if pullErr := readBuffer.PullContext("abortReason"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for abortReason")
 	}
-	_abortReason, _abortReasonErr := BACnetAbortReasonTaggedParse(readBuffer, uint32(uint32(1)))
+	_abortReason, _abortReasonErr := BACnetAbortReasonTaggedParseWithBuffer(readBuffer, uint32(uint32(1)))
 	if _abortReasonErr != nil {
 		return nil, errors.Wrap(_abortReasonErr, "Error parsing 'abortReason' field of APDUAbort")
 	}
@@ -222,7 +226,15 @@ func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDUAbort, 
 	return _child, nil
 }
 
-func (m *_APDUAbort) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_APDUAbort) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_APDUAbort) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

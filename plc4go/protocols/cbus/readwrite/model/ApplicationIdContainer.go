@@ -30,9 +30,9 @@ import (
 type ApplicationIdContainer uint8
 
 type IApplicationIdContainer interface {
+	utils.Serializable
 	LightingCompatible() LightingCompatible
 	ApplicationId() ApplicationId
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -3704,7 +3704,11 @@ func (m ApplicationIdContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApplicationIdContainerParse(readBuffer utils.ReadBuffer) (ApplicationIdContainer, error) {
+func ApplicationIdContainerParse(theBytes []byte) (ApplicationIdContainer, error) {
+	return ApplicationIdContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ApplicationIdContainerParseWithBuffer(readBuffer utils.ReadBuffer) (ApplicationIdContainer, error) {
 	val, err := readBuffer.ReadUint8("ApplicationIdContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ApplicationIdContainer")
@@ -3717,7 +3721,15 @@ func ApplicationIdContainerParse(readBuffer utils.ReadBuffer) (ApplicationIdCont
 	}
 }
 
-func (e ApplicationIdContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ApplicationIdContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ApplicationIdContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ApplicationIdContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -139,7 +139,11 @@ func (m *_BACnetApplicationTagUnsignedInteger) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetApplicationTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagUnsignedInteger, error) {
+func BACnetApplicationTagUnsignedIntegerParse(theBytes []byte, header BACnetTagHeader) (BACnetApplicationTagUnsignedInteger, error) {
+	return BACnetApplicationTagUnsignedIntegerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), header)
+}
+
+func BACnetApplicationTagUnsignedIntegerParseWithBuffer(readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagUnsignedInteger, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagUnsignedInteger"); pullErr != nil {
@@ -152,7 +156,7 @@ func BACnetApplicationTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, heade
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadUnsignedIntegerParse(readBuffer, uint32(header.GetActualLength()))
+	_payload, _payloadErr := BACnetTagPayloadUnsignedIntegerParseWithBuffer(readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetApplicationTagUnsignedInteger")
 	}
@@ -179,7 +183,15 @@ func BACnetApplicationTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, heade
 	return _child, nil
 }
 
-func (m *_BACnetApplicationTagUnsignedInteger) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetApplicationTagUnsignedInteger) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetApplicationTagUnsignedInteger) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

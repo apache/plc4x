@@ -187,7 +187,11 @@ func (m *_HVACHumidityStatusFlags) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACHumidityStatusFlagsParse(readBuffer utils.ReadBuffer) (HVACHumidityStatusFlags, error) {
+func HVACHumidityStatusFlagsParse(theBytes []byte) (HVACHumidityStatusFlags, error) {
+	return HVACHumidityStatusFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func HVACHumidityStatusFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACHumidityStatusFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACHumidityStatusFlags"); pullErr != nil {
@@ -289,7 +293,15 @@ func HVACHumidityStatusFlagsParse(readBuffer utils.ReadBuffer) (HVACHumidityStat
 	}, nil
 }
 
-func (m *_HVACHumidityStatusFlags) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_HVACHumidityStatusFlags) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_HVACHumidityStatusFlags) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HVACHumidityStatusFlags"); pushErr != nil {

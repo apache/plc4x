@@ -102,7 +102,11 @@ func (m *_ApduData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ApduDataParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduData, error) {
+func ApduDataParse(theBytes []byte, dataLength uint8) (ApduData, error) {
+	return ApduDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes), dataLength)
+}
+
+func ApduDataParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduData"); pullErr != nil {
@@ -128,37 +132,37 @@ func ApduDataParse(readBuffer utils.ReadBuffer, dataLength uint8) (ApduData, err
 	var typeSwitchError error
 	switch {
 	case apciType == 0x0: // ApduDataGroupValueRead
-		_childTemp, typeSwitchError = ApduDataGroupValueReadParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataGroupValueReadParseWithBuffer(readBuffer, dataLength)
 	case apciType == 0x1: // ApduDataGroupValueResponse
-		_childTemp, typeSwitchError = ApduDataGroupValueResponseParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataGroupValueResponseParseWithBuffer(readBuffer, dataLength)
 	case apciType == 0x2: // ApduDataGroupValueWrite
-		_childTemp, typeSwitchError = ApduDataGroupValueWriteParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataGroupValueWriteParseWithBuffer(readBuffer, dataLength)
 	case apciType == 0x3: // ApduDataIndividualAddressWrite
-		_childTemp, typeSwitchError = ApduDataIndividualAddressWriteParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataIndividualAddressWriteParseWithBuffer(readBuffer, dataLength)
 	case apciType == 0x4: // ApduDataIndividualAddressRead
-		_childTemp, typeSwitchError = ApduDataIndividualAddressReadParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataIndividualAddressReadParseWithBuffer(readBuffer, dataLength)
 	case apciType == 0x5: // ApduDataIndividualAddressResponse
-		_childTemp, typeSwitchError = ApduDataIndividualAddressResponseParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataIndividualAddressResponseParseWithBuffer(readBuffer, dataLength)
 	case apciType == 0x6: // ApduDataAdcRead
-		_childTemp, typeSwitchError = ApduDataAdcReadParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataAdcReadParseWithBuffer(readBuffer, dataLength)
 	case apciType == 0x7: // ApduDataAdcResponse
-		_childTemp, typeSwitchError = ApduDataAdcResponseParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataAdcResponseParseWithBuffer(readBuffer, dataLength)
 	case apciType == 0x8: // ApduDataMemoryRead
-		_childTemp, typeSwitchError = ApduDataMemoryReadParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataMemoryReadParseWithBuffer(readBuffer, dataLength)
 	case apciType == 0x9: // ApduDataMemoryResponse
-		_childTemp, typeSwitchError = ApduDataMemoryResponseParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataMemoryResponseParseWithBuffer(readBuffer, dataLength)
 	case apciType == 0xA: // ApduDataMemoryWrite
-		_childTemp, typeSwitchError = ApduDataMemoryWriteParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataMemoryWriteParseWithBuffer(readBuffer, dataLength)
 	case apciType == 0xB: // ApduDataUserMessage
-		_childTemp, typeSwitchError = ApduDataUserMessageParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataUserMessageParseWithBuffer(readBuffer, dataLength)
 	case apciType == 0xC: // ApduDataDeviceDescriptorRead
-		_childTemp, typeSwitchError = ApduDataDeviceDescriptorReadParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataDeviceDescriptorReadParseWithBuffer(readBuffer, dataLength)
 	case apciType == 0xD: // ApduDataDeviceDescriptorResponse
-		_childTemp, typeSwitchError = ApduDataDeviceDescriptorResponseParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataDeviceDescriptorResponseParseWithBuffer(readBuffer, dataLength)
 	case apciType == 0xE: // ApduDataRestart
-		_childTemp, typeSwitchError = ApduDataRestartParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataRestartParseWithBuffer(readBuffer, dataLength)
 	case apciType == 0xF: // ApduDataOther
-		_childTemp, typeSwitchError = ApduDataOtherParse(readBuffer, dataLength)
+		_childTemp, typeSwitchError = ApduDataOtherParseWithBuffer(readBuffer, dataLength)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [apciType=%v]", apciType)
 	}

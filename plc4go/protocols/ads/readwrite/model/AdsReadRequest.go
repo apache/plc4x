@@ -157,7 +157,11 @@ func (m *_AdsReadRequest) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AdsReadRequestParse(readBuffer utils.ReadBuffer) (AdsReadRequest, error) {
+func AdsReadRequestParse(theBytes []byte) (AdsReadRequest, error) {
+	return AdsReadRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AdsReadRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsReadRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadRequest"); pullErr != nil {
@@ -202,7 +206,15 @@ func AdsReadRequestParse(readBuffer utils.ReadBuffer) (AdsReadRequest, error) {
 	return _child, nil
 }
 
-func (m *_AdsReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsReadRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsReadRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

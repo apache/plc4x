@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataDefaultRampRate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDefaultRampRateParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultRampRate, error) {
+func BACnetConstructedDataDefaultRampRateParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultRampRate, error) {
+	return BACnetConstructedDataDefaultRampRateParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataDefaultRampRateParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultRampRate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultRampRate"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataDefaultRampRateParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("defaultRampRate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for defaultRampRate")
 	}
-	_defaultRampRate, _defaultRampRateErr := BACnetApplicationTagParse(readBuffer)
+	_defaultRampRate, _defaultRampRateErr := BACnetApplicationTagParseWithBuffer(readBuffer)
 	if _defaultRampRateErr != nil {
 		return nil, errors.Wrap(_defaultRampRateErr, "Error parsing 'defaultRampRate' field of BACnetConstructedDataDefaultRampRate")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataDefaultRampRateParse(readBuffer utils.ReadBuffer, tagN
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataDefaultRampRate) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDefaultRampRate) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataDefaultRampRate) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

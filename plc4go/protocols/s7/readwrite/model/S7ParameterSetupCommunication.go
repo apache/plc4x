@@ -155,7 +155,11 @@ func (m *_S7ParameterSetupCommunication) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterSetupCommunication, error) {
+func S7ParameterSetupCommunicationParse(theBytes []byte, messageType uint8) (S7ParameterSetupCommunication, error) {
+	return S7ParameterSetupCommunicationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), messageType)
+}
+
+func S7ParameterSetupCommunicationParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterSetupCommunication, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterSetupCommunication"); pullErr != nil {
@@ -218,7 +222,15 @@ func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType
 	return _child, nil
 }
 
-func (m *_S7ParameterSetupCommunication) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_S7ParameterSetupCommunication) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_S7ParameterSetupCommunication) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

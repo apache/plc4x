@@ -19,9 +19,8 @@
 package org.apache.plc4x.java.modbus.rtu;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
-import org.apache.plc4x.java.modbus.base.field.ModbusField;
-import org.apache.plc4x.java.modbus.base.field.ModbusFieldHandler;
+import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
+import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.readwrite.DriverType;
 import org.apache.plc4x.java.modbus.readwrite.ModbusRtuADU;
 import org.apache.plc4x.java.modbus.rtu.config.ModbusRtuConfiguration;
@@ -31,8 +30,8 @@ import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.util.function.ToIntFunction;
 
@@ -88,17 +87,17 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
 
     @Override
     protected BaseOptimizer getOptimizer() {
-        return new SingleFieldOptimizer();
+        return new SingleTagOptimizer();
     }
 
     @Override
-    protected ModbusFieldHandler getFieldHandler() {
-        return new ModbusFieldHandler();
+    protected ModbusTagHandler getTagHandler() {
+        return new ModbusTagHandler();
     }
 
     @Override
-    protected PlcValueHandler getValueHandler() {
-        return new IEC61131ValueHandler();
+    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
+        return new PlcValueHandler();
     }
 
     @Override
@@ -124,8 +123,8 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
     }
 
     @Override
-    public ModbusField prepareField(String query){
-        return ModbusField.of(query);
+    public ModbusTag prepareTag(String tagAddress){
+        return ModbusTag.of(tagAddress);
     }
 
 }

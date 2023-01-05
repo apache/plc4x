@@ -120,7 +120,11 @@ func (m *_SALData) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SALDataParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALData, error) {
+func SALDataParse(theBytes []byte, applicationId ApplicationId) (SALData, error) {
+	return SALDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+}
+
+func SALDataParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALData"); pullErr != nil {
@@ -140,51 +144,51 @@ func SALDataParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SAL
 	var typeSwitchError error
 	switch {
 	case applicationId == ApplicationId_RESERVED: // SALDataReserved
-		_childTemp, typeSwitchError = SALDataReservedParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataReservedParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_FREE_USAGE: // SALDataFreeUsage
-		_childTemp, typeSwitchError = SALDataFreeUsageParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataFreeUsageParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_TEMPERATURE_BROADCAST: // SALDataTemperatureBroadcast
-		_childTemp, typeSwitchError = SALDataTemperatureBroadcastParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataTemperatureBroadcastParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_ROOM_CONTROL_SYSTEM: // SALDataRoomControlSystem
-		_childTemp, typeSwitchError = SALDataRoomControlSystemParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataRoomControlSystemParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_LIGHTING: // SALDataLighting
-		_childTemp, typeSwitchError = SALDataLightingParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataLightingParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_VENTILATION: // SALDataVentilation
-		_childTemp, typeSwitchError = SALDataVentilationParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataVentilationParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_IRRIGATION_CONTROL: // SALDataIrrigationControl
-		_childTemp, typeSwitchError = SALDataIrrigationControlParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataIrrigationControlParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL: // SALDataPoolsSpasPondsFountainsControl
-		_childTemp, typeSwitchError = SALDataPoolsSpasPondsFountainsControlParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataPoolsSpasPondsFountainsControlParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_HEATING: // SALDataHeating
-		_childTemp, typeSwitchError = SALDataHeatingParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataHeatingParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_AIR_CONDITIONING: // SALDataAirConditioning
-		_childTemp, typeSwitchError = SALDataAirConditioningParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataAirConditioningParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_TRIGGER_CONTROL: // SALDataTriggerControl
-		_childTemp, typeSwitchError = SALDataTriggerControlParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataTriggerControlParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_ENABLE_CONTROL: // SALDataEnableControl
-		_childTemp, typeSwitchError = SALDataEnableControlParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataEnableControlParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_AUDIO_AND_VIDEO: // SALDataAudioAndVideo
-		_childTemp, typeSwitchError = SALDataAudioAndVideoParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataAudioAndVideoParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_SECURITY: // SALDataSecurity
-		_childTemp, typeSwitchError = SALDataSecurityParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataSecurityParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_METERING: // SALDataMetering
-		_childTemp, typeSwitchError = SALDataMeteringParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataMeteringParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_ACCESS_CONTROL: // SALDataAccessControl
-		_childTemp, typeSwitchError = SALDataAccessControlParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataAccessControlParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_CLOCK_AND_TIMEKEEPING: // SALDataClockAndTimekeeping
-		_childTemp, typeSwitchError = SALDataClockAndTimekeepingParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataClockAndTimekeepingParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_TELEPHONY_STATUS_AND_CONTROL: // SALDataTelephonyStatusAndControl
-		_childTemp, typeSwitchError = SALDataTelephonyStatusAndControlParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataTelephonyStatusAndControlParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_MEASUREMENT: // SALDataMeasurement
-		_childTemp, typeSwitchError = SALDataMeasurementParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataMeasurementParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_TESTING: // SALDataTesting
-		_childTemp, typeSwitchError = SALDataTestingParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataTestingParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_MEDIA_TRANSPORT_CONTROL: // SALDataMediaTransport
-		_childTemp, typeSwitchError = SALDataMediaTransportParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataMediaTransportParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_ERROR_REPORTING: // SALDataErrorReporting
-		_childTemp, typeSwitchError = SALDataErrorReportingParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataErrorReportingParseWithBuffer(readBuffer, applicationId)
 	case applicationId == ApplicationId_HVAC_ACTUATOR: // SALDataHvacActuator
-		_childTemp, typeSwitchError = SALDataHvacActuatorParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataHvacActuatorParseWithBuffer(readBuffer, applicationId)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [applicationId=%v]", applicationId)
 	}
@@ -200,7 +204,7 @@ func SALDataParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SAL
 		if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for salData")
 		}
-		_val, _err := SALDataParse(readBuffer, applicationId)
+		_val, _err := SALDataParseWithBuffer(readBuffer, applicationId)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

@@ -20,7 +20,7 @@
 import asyncio
 import logging
 from dataclasses import dataclass, field
-from typing import Awaitable, Type
+from typing import Awaitable, Type, List, Dict
 
 import plc4py
 
@@ -73,9 +73,9 @@ class MockPlcFieldHandler:
 
 @dataclass
 class MockDevice:
-    fields: dict[str, PlcValue] = field(default_factory=lambda: {})
+    fields: Dict[str, PlcValue] = field(default_factory=lambda: {})
 
-    def read(self, field: str) -> list[ResponseItem[PlcValue]]:
+    def read(self, field: str) -> List[ResponseItem[PlcValue]]:
         """
         Reads one field from the Mock Device
         """
@@ -96,13 +96,19 @@ class MockConnection(PlcConnection, PlcReader):
     _is_connected: bool = False
     device: MockDevice = field(default_factory=lambda: MockDevice())
 
-    def connect(self):
+    def _connect(self):
         """
         Connect the Mock PLC connection
         :return:
         """
         self._is_connected = True
-        self.device = MockDevice()
+
+    @staticmethod
+    async def create(url):
+        # config = PlcConfiguration(url)
+        connection = MockConnection()
+        connection._connect()
+        return connection
 
     def is_connected(self) -> bool:
         """
@@ -168,7 +174,7 @@ class MockDriver(PlcDriver):
         self.protocol_code = "mock"
         self.protocol_name = "Mock"
 
-    def get_connection(
+    async def get_connection(
         self, url: str, authentication: PlcAuthentication = PlcAuthentication()
     ) -> PlcConnection:
         """
@@ -177,7 +183,7 @@ class MockDriver(PlcDriver):
         :param authentication: authentication credentials.
         :return PlcConnection: PLC Connection object
         """
-        return MockConnection()
+        return await MockConnection.create(url)
 
 
 class MockDriverLoader(PlcDriverLoader):

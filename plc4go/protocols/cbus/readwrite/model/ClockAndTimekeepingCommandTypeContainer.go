@@ -30,9 +30,9 @@ import (
 type ClockAndTimekeepingCommandTypeContainer uint8
 
 type IClockAndTimekeepingCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() ClockAndTimekeepingCommandType
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -246,7 +246,11 @@ func (m ClockAndTimekeepingCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ClockAndTimekeepingCommandTypeContainerParse(readBuffer utils.ReadBuffer) (ClockAndTimekeepingCommandTypeContainer, error) {
+func ClockAndTimekeepingCommandTypeContainerParse(theBytes []byte) (ClockAndTimekeepingCommandTypeContainer, error) {
+	return ClockAndTimekeepingCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ClockAndTimekeepingCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (ClockAndTimekeepingCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("ClockAndTimekeepingCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ClockAndTimekeepingCommandTypeContainer")
@@ -259,7 +263,15 @@ func ClockAndTimekeepingCommandTypeContainerParse(readBuffer utils.ReadBuffer) (
 	}
 }
 
-func (e ClockAndTimekeepingCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e ClockAndTimekeepingCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e ClockAndTimekeepingCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ClockAndTimekeepingCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

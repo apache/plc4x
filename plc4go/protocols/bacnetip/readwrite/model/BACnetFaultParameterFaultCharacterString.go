@@ -144,7 +144,11 @@ func (m *_BACnetFaultParameterFaultCharacterString) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetFaultParameterFaultCharacterStringParse(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultCharacterString, error) {
+func BACnetFaultParameterFaultCharacterStringParse(theBytes []byte) (BACnetFaultParameterFaultCharacterString, error) {
+	return BACnetFaultParameterFaultCharacterStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetFaultParameterFaultCharacterStringParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultCharacterString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultCharacterString"); pullErr != nil {
@@ -157,7 +161,7 @@ func BACnetFaultParameterFaultCharacterStringParse(readBuffer utils.ReadBuffer) 
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(1)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetFaultParameterFaultCharacterString")
 	}
@@ -170,7 +174,7 @@ func BACnetFaultParameterFaultCharacterStringParse(readBuffer utils.ReadBuffer) 
 	if pullErr := readBuffer.PullContext("listOfFaultValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for listOfFaultValues")
 	}
-	_listOfFaultValues, _listOfFaultValuesErr := BACnetFaultParameterFaultCharacterStringListOfFaultValuesParse(readBuffer, uint8(uint8(0)))
+	_listOfFaultValues, _listOfFaultValuesErr := BACnetFaultParameterFaultCharacterStringListOfFaultValuesParseWithBuffer(readBuffer, uint8(uint8(0)))
 	if _listOfFaultValuesErr != nil {
 		return nil, errors.Wrap(_listOfFaultValuesErr, "Error parsing 'listOfFaultValues' field of BACnetFaultParameterFaultCharacterString")
 	}
@@ -183,7 +187,7 @@ func BACnetFaultParameterFaultCharacterStringParse(readBuffer utils.ReadBuffer) 
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(1)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(1)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetFaultParameterFaultCharacterString")
 	}
@@ -207,7 +211,15 @@ func BACnetFaultParameterFaultCharacterStringParse(readBuffer utils.ReadBuffer) 
 	return _child, nil
 }
 
-func (m *_BACnetFaultParameterFaultCharacterString) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFaultParameterFaultCharacterString) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetFaultParameterFaultCharacterString) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

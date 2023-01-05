@@ -128,7 +128,11 @@ func (m *_BACnetClientCOV) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetClientCOVParse(readBuffer utils.ReadBuffer) (BACnetClientCOV, error) {
+func BACnetClientCOVParse(theBytes []byte) (BACnetClientCOV, error) {
+	return BACnetClientCOVParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetClientCOVParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetClientCOV, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetClientCOV"); pullErr != nil {
@@ -142,7 +146,7 @@ func BACnetClientCOVParse(readBuffer utils.ReadBuffer) (BACnetClientCOV, error) 
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -161,9 +165,9 @@ func BACnetClientCOVParse(readBuffer utils.ReadBuffer) (BACnetClientCOV, error) 
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == 0x4: // BACnetClientCOVObject
-		_childTemp, typeSwitchError = BACnetClientCOVObjectParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetClientCOVObjectParseWithBuffer(readBuffer)
 	case peekedTagNumber == 0x0: // BACnetClientCOVNone
-		_childTemp, typeSwitchError = BACnetClientCOVNoneParse(readBuffer)
+		_childTemp, typeSwitchError = BACnetClientCOVNoneParseWithBuffer(readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}

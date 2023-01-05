@@ -30,7 +30,7 @@ import (
 type BACnetAbortReason uint8
 
 type IBACnetAbortReason interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
+	utils.Serializable
 }
 
 const (
@@ -161,7 +161,11 @@ func (m BACnetAbortReason) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetAbortReasonParse(readBuffer utils.ReadBuffer) (BACnetAbortReason, error) {
+func BACnetAbortReasonParse(theBytes []byte) (BACnetAbortReason, error) {
+	return BACnetAbortReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetAbortReasonParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAbortReason, error) {
 	val, err := readBuffer.ReadUint8("BACnetAbortReason", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAbortReason")
@@ -174,7 +178,15 @@ func BACnetAbortReasonParse(readBuffer utils.ReadBuffer) (BACnetAbortReason, err
 	}
 }
 
-func (e BACnetAbortReason) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAbortReason) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e BACnetAbortReason) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetAbortReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

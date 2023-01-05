@@ -103,7 +103,11 @@ func (m *_AccessControlDataLockAccessPoint) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AccessControlDataLockAccessPointParse(readBuffer utils.ReadBuffer) (AccessControlDataLockAccessPoint, error) {
+func AccessControlDataLockAccessPointParse(theBytes []byte) (AccessControlDataLockAccessPoint, error) {
+	return AccessControlDataLockAccessPointParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AccessControlDataLockAccessPointParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlDataLockAccessPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AccessControlDataLockAccessPoint"); pullErr != nil {
@@ -124,7 +128,15 @@ func AccessControlDataLockAccessPointParse(readBuffer utils.ReadBuffer) (AccessC
 	return _child, nil
 }
 
-func (m *_AccessControlDataLockAccessPoint) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AccessControlDataLockAccessPoint) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AccessControlDataLockAccessPoint) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

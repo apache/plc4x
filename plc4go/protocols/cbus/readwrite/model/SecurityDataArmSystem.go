@@ -180,7 +180,11 @@ func (m *_SecurityDataArmSystem) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataArmSystemParse(readBuffer utils.ReadBuffer) (SecurityDataArmSystem, error) {
+func SecurityDataArmSystemParse(theBytes []byte) (SecurityDataArmSystem, error) {
+	return SecurityDataArmSystemParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func SecurityDataArmSystemParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataArmSystem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataArmSystem"); pullErr != nil {
@@ -239,7 +243,15 @@ func SecurityDataArmSystemParse(readBuffer utils.ReadBuffer) (SecurityDataArmSys
 	return _child, nil
 }
 
-func (m *_SecurityDataArmSystem) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataArmSystem) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataArmSystem) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

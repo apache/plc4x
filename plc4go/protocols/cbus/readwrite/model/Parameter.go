@@ -30,13 +30,13 @@ import (
 type Parameter uint8
 
 type IParameter interface {
+	utils.Serializable
 	ParameterType() ParameterType
 	Form() string
 	IsVolatile() bool
 	ParameterDescription() string
 	ProtectionLevel() ProtectionLevel
 	Group() string
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -7876,7 +7876,11 @@ func (m Parameter) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ParameterParse(readBuffer utils.ReadBuffer) (Parameter, error) {
+func ParameterParse(theBytes []byte) (Parameter, error) {
+	return ParameterParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func ParameterParseWithBuffer(readBuffer utils.ReadBuffer) (Parameter, error) {
 	val, err := readBuffer.ReadUint8("Parameter", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading Parameter")
@@ -7889,7 +7893,15 @@ func ParameterParse(readBuffer utils.ReadBuffer) (Parameter, error) {
 	}
 }
 
-func (e Parameter) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e Parameter) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e Parameter) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("Parameter", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

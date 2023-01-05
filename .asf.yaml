@@ -47,8 +47,8 @@ github:
     - iot
 
   features:
-    wiki: false
-    issues: false
+    wiki: true
+    issues: true
     projects: true
 
   enabled_merge_buttons:

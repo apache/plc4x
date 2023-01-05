@@ -149,7 +149,11 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMinimumValueTimestampParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumValueTimestamp, error) {
+func BACnetConstructedDataMinimumValueTimestampParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumValueTimestamp, error) {
+	return BACnetConstructedDataMinimumValueTimestampParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataMinimumValueTimestampParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumValueTimestamp, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinimumValueTimestamp"); pullErr != nil {
@@ -162,7 +166,7 @@ func BACnetConstructedDataMinimumValueTimestampParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("minimumValueTimestamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for minimumValueTimestamp")
 	}
-	_minimumValueTimestamp, _minimumValueTimestampErr := BACnetDateTimeParse(readBuffer)
+	_minimumValueTimestamp, _minimumValueTimestampErr := BACnetDateTimeParseWithBuffer(readBuffer)
 	if _minimumValueTimestampErr != nil {
 		return nil, errors.Wrap(_minimumValueTimestampErr, "Error parsing 'minimumValueTimestamp' field of BACnetConstructedDataMinimumValueTimestamp")
 	}
@@ -192,7 +196,15 @@ func BACnetConstructedDataMinimumValueTimestampParse(readBuffer utils.ReadBuffer
 	return _child, nil
 }
 
-func (m *_BACnetConstructedDataMinimumValueTimestamp) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMinimumValueTimestamp) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataMinimumValueTimestamp) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

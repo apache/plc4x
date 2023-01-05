@@ -114,7 +114,11 @@ func (m *_HVACTemperature) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func HVACTemperatureParse(readBuffer utils.ReadBuffer) (HVACTemperature, error) {
+func HVACTemperatureParse(theBytes []byte) (HVACTemperature, error) {
+	return HVACTemperatureParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func HVACTemperatureParseWithBuffer(readBuffer utils.ReadBuffer) (HVACTemperature, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACTemperature"); pullErr != nil {
@@ -145,7 +149,15 @@ func HVACTemperatureParse(readBuffer utils.ReadBuffer) (HVACTemperature, error) 
 	}, nil
 }
 
-func (m *_HVACTemperature) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_HVACTemperature) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_HVACTemperature) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HVACTemperature"); pushErr != nil {

@@ -125,7 +125,11 @@ func (m *_ErrorReportingSystemCategoryTypeInputUnits) GetLengthInBytes() uint16 
 	return m.GetLengthInBits() / 8
 }
 
-func ErrorReportingSystemCategoryTypeInputUnitsParse(readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeInputUnits, error) {
+func ErrorReportingSystemCategoryTypeInputUnitsParse(theBytes []byte, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeInputUnits, error) {
+	return ErrorReportingSystemCategoryTypeInputUnitsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), errorReportingSystemCategoryClass)
+}
+
+func ErrorReportingSystemCategoryTypeInputUnitsParseWithBuffer(readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeInputUnits, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorReportingSystemCategoryTypeInputUnits"); pullErr != nil {
@@ -138,7 +142,7 @@ func ErrorReportingSystemCategoryTypeInputUnitsParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("categoryForType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for categoryForType")
 	}
-	_categoryForType, _categoryForTypeErr := ErrorReportingSystemCategoryTypeForInputUnitsParse(readBuffer)
+	_categoryForType, _categoryForTypeErr := ErrorReportingSystemCategoryTypeForInputUnitsParseWithBuffer(readBuffer)
 	if _categoryForTypeErr != nil {
 		return nil, errors.Wrap(_categoryForTypeErr, "Error parsing 'categoryForType' field of ErrorReportingSystemCategoryTypeInputUnits")
 	}
@@ -160,7 +164,15 @@ func ErrorReportingSystemCategoryTypeInputUnitsParse(readBuffer utils.ReadBuffer
 	return _child, nil
 }
 
-func (m *_ErrorReportingSystemCategoryTypeInputUnits) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ErrorReportingSystemCategoryTypeInputUnits) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ErrorReportingSystemCategoryTypeInputUnits) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

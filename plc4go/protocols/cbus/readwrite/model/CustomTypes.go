@@ -100,7 +100,11 @@ func (m *_CustomTypes) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CustomTypesParse(readBuffer utils.ReadBuffer, numBytes uint8) (CustomTypes, error) {
+func CustomTypesParse(theBytes []byte, numBytes uint8) (CustomTypes, error) {
+	return CustomTypesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), numBytes)
+}
+
+func CustomTypesParseWithBuffer(readBuffer utils.ReadBuffer, numBytes uint8) (CustomTypes, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CustomTypes"); pullErr != nil {
@@ -127,7 +131,15 @@ func CustomTypesParse(readBuffer utils.ReadBuffer, numBytes uint8) (CustomTypes,
 	}, nil
 }
 
-func (m *_CustomTypes) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CustomTypes) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CustomTypes) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CustomTypes"); pushErr != nil {

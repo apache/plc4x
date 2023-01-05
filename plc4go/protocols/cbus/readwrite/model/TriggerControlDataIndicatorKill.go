@@ -102,7 +102,11 @@ func (m *_TriggerControlDataIndicatorKill) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func TriggerControlDataIndicatorKillParse(readBuffer utils.ReadBuffer) (TriggerControlDataIndicatorKill, error) {
+func TriggerControlDataIndicatorKillParse(theBytes []byte) (TriggerControlDataIndicatorKill, error) {
+	return TriggerControlDataIndicatorKillParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func TriggerControlDataIndicatorKillParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlDataIndicatorKill, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlDataIndicatorKill"); pullErr != nil {
@@ -123,7 +127,15 @@ func TriggerControlDataIndicatorKillParse(readBuffer utils.ReadBuffer) (TriggerC
 	return _child, nil
 }
 
-func (m *_TriggerControlDataIndicatorKill) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_TriggerControlDataIndicatorKill) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_TriggerControlDataIndicatorKill) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

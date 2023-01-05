@@ -30,10 +30,10 @@ import (
 type AccessControlCommandTypeContainer uint8
 
 type IAccessControlCommandTypeContainer interface {
+	utils.Serializable
 	NumBytes() uint8
 	CommandType() AccessControlCommandType
 	Category() AccessControlCategory
-	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -1399,7 +1399,11 @@ func (m AccessControlCommandTypeContainer) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func AccessControlCommandTypeContainerParse(readBuffer utils.ReadBuffer) (AccessControlCommandTypeContainer, error) {
+func AccessControlCommandTypeContainerParse(theBytes []byte) (AccessControlCommandTypeContainer, error) {
+	return AccessControlCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func AccessControlCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("AccessControlCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AccessControlCommandTypeContainer")
@@ -1412,7 +1416,15 @@ func AccessControlCommandTypeContainerParse(readBuffer utils.ReadBuffer) (Access
 	}
 }
 
-func (e AccessControlCommandTypeContainer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (e AccessControlCommandTypeContainer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased()
+	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (e AccessControlCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("AccessControlCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

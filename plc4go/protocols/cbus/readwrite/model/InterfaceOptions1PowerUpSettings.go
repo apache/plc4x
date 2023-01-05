@@ -97,7 +97,11 @@ func (m *_InterfaceOptions1PowerUpSettings) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func InterfaceOptions1PowerUpSettingsParse(readBuffer utils.ReadBuffer) (InterfaceOptions1PowerUpSettings, error) {
+func InterfaceOptions1PowerUpSettingsParse(theBytes []byte) (InterfaceOptions1PowerUpSettings, error) {
+	return InterfaceOptions1PowerUpSettingsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+}
+
+func InterfaceOptions1PowerUpSettingsParseWithBuffer(readBuffer utils.ReadBuffer) (InterfaceOptions1PowerUpSettings, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("InterfaceOptions1PowerUpSettings"); pullErr != nil {
@@ -110,7 +114,7 @@ func InterfaceOptions1PowerUpSettingsParse(readBuffer utils.ReadBuffer) (Interfa
 	if pullErr := readBuffer.PullContext("interfaceOptions1"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for interfaceOptions1")
 	}
-	_interfaceOptions1, _interfaceOptions1Err := InterfaceOptions1Parse(readBuffer)
+	_interfaceOptions1, _interfaceOptions1Err := InterfaceOptions1ParseWithBuffer(readBuffer)
 	if _interfaceOptions1Err != nil {
 		return nil, errors.Wrap(_interfaceOptions1Err, "Error parsing 'interfaceOptions1' field of InterfaceOptions1PowerUpSettings")
 	}
@@ -129,7 +133,15 @@ func InterfaceOptions1PowerUpSettingsParse(readBuffer utils.ReadBuffer) (Interfa
 	}, nil
 }
 
-func (m *_InterfaceOptions1PowerUpSettings) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_InterfaceOptions1PowerUpSettings) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_InterfaceOptions1PowerUpSettings) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("InterfaceOptions1PowerUpSettings"); pushErr != nil {

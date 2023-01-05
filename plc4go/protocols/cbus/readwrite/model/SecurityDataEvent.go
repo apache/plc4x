@@ -125,7 +125,11 @@ func (m *_SecurityDataEvent) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func SecurityDataEventParse(readBuffer utils.ReadBuffer, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataEvent, error) {
+func SecurityDataEventParse(theBytes []byte, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataEvent, error) {
+	return SecurityDataEventParseWithBuffer(utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
+}
+
+func SecurityDataEventParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataEvent, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataEvent"); pullErr != nil {
@@ -153,7 +157,15 @@ func SecurityDataEventParse(readBuffer utils.ReadBuffer, commandTypeContainer Se
 	return _child, nil
 }
 
-func (m *_SecurityDataEvent) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataEvent) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_SecurityDataEvent) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
