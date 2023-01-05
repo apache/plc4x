@@ -42,7 +42,7 @@ require (
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/viney-shih/go-lock v1.1.2
 	golang.org/x/exp v0.0.0-20221109205753-fc8884afc316
-	golang.org/x/tools v0.4.0
+	golang.org/x/tools v0.5.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -71,7 +71,7 @@ require (
 	github.com/subosito/gotenv v1.4.1 // indirect
 	golang.org/x/mod v0.7.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.3.0 // indirect
+	golang.org/x/sys v0.4.0 // indirect
 	golang.org/x/term v0.3.0 // indirect
 	golang.org/x/text v0.5.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
