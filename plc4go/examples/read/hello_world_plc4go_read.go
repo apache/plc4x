@@ -24,7 +24,6 @@ import (
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 func main() {
@@ -47,7 +46,9 @@ func main() {
 
 	// Prepare a read-request
 	readRequest, err := connection.ReadRequestBuilder().
-		AddTagAddress("tag", "holding-register:26:REAL").
+		AddTagAddress("field", "holding-register:26:INT").
+		AddTagAddress("field_bool_single", "holding-register:1:BOOL[1]").
+		AddTagAddress("field_bool_list", "holding-register:1.10:BOOL[20]").
 		Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.GetErr().Error())
@@ -64,12 +65,9 @@ func main() {
 		return
 	}
 
-	// Do something with the response
-	if rrr.GetResponse().GetResponseCode("tag") != model.PlcResponseCode_OK {
-		fmt.Printf("error an non-ok return code: %s", rrr.GetResponse().GetResponseCode("tag").GetName())
-		return
+	readResponse := rrr.GetResponse()
+	for _, tagName := range readResponse.GetTagNames() {
+		plcValue := readResponse.GetValue(tagName)
+		fmt.Printf("%v\n", plcValue)
 	}
-
-	value := rrr.GetResponse().GetValue("tag")
-	fmt.Printf("Got result %f", value.GetFloat32())
 }
