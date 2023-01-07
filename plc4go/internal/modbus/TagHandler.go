@@ -58,8 +58,8 @@ type TagHandler struct {
 }
 
 func NewTagHandler() TagHandler {
-	generalAddressPattern := `(?P<address>\d+)\.?(?P<offset>\d+)?(:(?P<datatype>[a-zA-Z_]+))?(\[(?P<quantity>\d+)])?$`
-	generalFixedDigitAddressPattern := `(?P<address>\d{4,5})?\.?(?P<offset>\d+)?(:(?P<datatype>[a-zA-Z_]+))?(\[(?P<quantity>\d+)])?$`
+	generalAddressPattern := `(?P<address>\d+)(:(?P<datatype>[a-zA-Z_]+))?(\[(?P<quantity>\d+)])?$`
+	generalFixedDigitAddressPattern := `(?P<address>\d{4,5})?(:(?P<datatype>[a-zA-Z_]+))?(\[(?P<quantity>\d+)])?$`
 	return TagHandler{
 		plc4xCoilPattern:               regexp.MustCompile("^coil:" + generalAddressPattern),
 		numericCoilPattern:             regexp.MustCompile("^0[xX]?" + generalFixedDigitAddressPattern),
@@ -80,61 +80,61 @@ func (m TagHandler) ParseTag(tagAddress string) (model.PlcTag, error) {
 		if !ok {
 			return nil, errors.Errorf("Unknown type %s", match["datatype"])
 		}
-		return NewModbusPlcTagFromStrings(Coil, match["address"], match["offset"], match["quantity"], typeByName)
+		return NewModbusPlcTagFromStrings(Coil, match["address"], match["quantity"], typeByName)
 	} else if match := utils.GetSubgroupMatches(m.numericCoilPattern, tagAddress); match != nil {
 		typeByName, ok := model2.ModbusDataTypeByName(match["datatype"])
 		if !ok {
 			return nil, errors.Errorf("Unknown type %s", match["datatype"])
 		}
-		return NewModbusPlcTagFromStrings(Coil, match["address"], match["offset"], match["quantity"], typeByName)
+		return NewModbusPlcTagFromStrings(Coil, match["address"], match["quantity"], typeByName)
 	} else if match := utils.GetSubgroupMatches(m.plc4xDiscreteInputPattern, tagAddress); match != nil {
 		typeByName, ok := model2.ModbusDataTypeByName(match["datatype"])
 		if !ok {
 			return nil, errors.Errorf("Unknown type %s", match["datatype"])
 		}
-		return NewModbusPlcTagFromStrings(DiscreteInput, match["address"], match["offset"], match["quantity"], typeByName)
+		return NewModbusPlcTagFromStrings(DiscreteInput, match["address"], match["quantity"], typeByName)
 	} else if match := utils.GetSubgroupMatches(m.numericDiscreteInputPattern, tagAddress); match != nil {
 		typeByName, ok := model2.ModbusDataTypeByName(match["datatype"])
 		if !ok {
 			return nil, errors.Errorf("Unknown type %s", match["datatype"])
 		}
-		return NewModbusPlcTagFromStrings(DiscreteInput, match["address"], match["offset"], match["quantity"], typeByName)
+		return NewModbusPlcTagFromStrings(DiscreteInput, match["address"], match["quantity"], typeByName)
 	} else if match := utils.GetSubgroupMatches(m.plc4xInputRegisterPattern, tagAddress); match != nil {
 		typeByName, ok := model2.ModbusDataTypeByName(match["datatype"])
 		if !ok {
 			return nil, errors.Errorf("Unknown type %s", match["datatype"])
 		}
-		return NewModbusPlcTagFromStrings(InputRegister, match["address"], match["offset"], match["quantity"], typeByName)
+		return NewModbusPlcTagFromStrings(InputRegister, match["address"], match["quantity"], typeByName)
 	} else if match := utils.GetSubgroupMatches(m.numericInputRegisterPattern, tagAddress); match != nil {
 		typeByName, ok := model2.ModbusDataTypeByName(match["datatype"])
 		if !ok {
 			return nil, errors.Errorf("Unknown type %s", match["datatype"])
 		}
-		return NewModbusPlcTagFromStrings(InputRegister, match["address"], match["offset"], match["quantity"], typeByName)
+		return NewModbusPlcTagFromStrings(InputRegister, match["address"], match["quantity"], typeByName)
 	} else if match := utils.GetSubgroupMatches(m.plc4xHoldingRegisterPattern, tagAddress); match != nil {
 		typeByName, ok := model2.ModbusDataTypeByName(match["datatype"])
 		if !ok {
 			return nil, errors.Errorf("Unknown type %s", match["datatype"])
 		}
-		return NewModbusPlcTagFromStrings(HoldingRegister, match["address"], match["offset"], match["quantity"], typeByName)
+		return NewModbusPlcTagFromStrings(HoldingRegister, match["address"], match["quantity"], typeByName)
 	} else if match := utils.GetSubgroupMatches(m.numericHoldingRegisterPattern, tagAddress); match != nil {
 		typeByName, ok := model2.ModbusDataTypeByName(match["datatype"])
 		if !ok {
 			return nil, errors.Errorf("Unknown type %s", match["datatype"])
 		}
-		return NewModbusPlcTagFromStrings(HoldingRegister, match["address"], match["offset"], match["quantity"], typeByName)
+		return NewModbusPlcTagFromStrings(HoldingRegister, match["address"], match["quantity"], typeByName)
 	} else if match := utils.GetSubgroupMatches(m.plc4xExtendedRegisterPattern, tagAddress); match != nil {
 		typeByName, ok := model2.ModbusDataTypeByName(match["datatype"])
 		if !ok {
 			return nil, errors.Errorf("Unknown type %s", match["datatype"])
 		}
-		return NewModbusPlcTagFromStrings(ExtendedRegister, match["address"], match["offset"], match["quantity"], typeByName)
+		return NewModbusPlcTagFromStrings(ExtendedRegister, match["address"], match["quantity"], typeByName)
 	} else if match := utils.GetSubgroupMatches(m.numericExtendedRegisterPattern, tagAddress); match != nil {
 		typeByName, ok := model2.ModbusDataTypeByName(match["datatype"])
 		if !ok {
 			return nil, errors.Errorf("Unknown type %s", match["datatype"])
 		}
-		return NewModbusPlcTagFromStrings(ExtendedRegister, match["address"], match["offset"], match["quantity"], typeByName)
+		return NewModbusPlcTagFromStrings(ExtendedRegister, match["address"], match["quantity"], typeByName)
 	}
 	return nil, errors.Errorf("Invalid address format for address '%s'", tagAddress)
 }
