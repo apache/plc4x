@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcBrowseResponse;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
+import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
 import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
@@ -59,18 +60,21 @@ public class ProfinetConfigurationTests {
         assertEquals(directory, configuration.getGsdDirectory());
     }
 
-    /*@Test
+    @Test
     public void readGsdFilesInDirectory()  {
         String directory = "src/test/resources";
         ProfinetProtocolLogic protocolLogic = new ProfinetProtocolLogic();
 
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "gsddirectory=" + directory);
-        protocolLogic.setConfiguration(configuration);
 
-        Map<String, ProfinetISO15745Profile> gsdFiles = protocolLogic.readGsdFiles();
+        ProfinetDriverContext driverContext = new ProfinetDriverContext();
+        driverContext.setConfiguration(configuration);
+        protocolLogic.setDriverContext(driverContext);
+
+        Map<String, ProfinetISO15745Profile> gsdFiles = ((ProfinetDriverContext) protocolLogic.getDriverContext()).getGsdFiles();
         assertEquals(gsdFiles.size(), 1);
-    }*/
+    }
 
     @Test
     public void readGsdFilesInDirectoryUsingTilde()  {
