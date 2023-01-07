@@ -105,7 +105,6 @@
           <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4x-code-generation-language-java</usedDependency>
             <usedDependency>org.apache.plc4x:plc4x-protocols-profinet</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-utils-raw-sockets</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -218,11 +217,6 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-xml</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>

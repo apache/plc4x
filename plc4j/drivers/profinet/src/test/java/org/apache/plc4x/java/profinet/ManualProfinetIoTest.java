@@ -35,7 +35,7 @@ public class ManualProfinetIoTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ManualProfinetIoTest.class);
 
-    @Test
+
     public void manualConnectionTest() throws DecoderException, PlcConnectionException, ExecutionException, InterruptedException {
         final PlcConnection connection = new PlcDriverManager().getConnection("profinet://192.168.90.1?deviceaccess='IDD_1'&gsddirectory=/home/missy/Documents/Profinet/gsd&devices=[00:0c:29:75:25:67]&submodules=[[IDM_30,IDM_32,IDM_31,]]&reductionratio=512&sendclockfactor=32&dataholdfactor=3&watchdogfactor=10");
         PlcBrowseRequest browseRequest = connection.browseRequestBuilder().addQuery("Browse", "00:0c:29:75:25:67").build();
