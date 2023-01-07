@@ -42,23 +42,34 @@ type modbusTag struct {
 
 	TagType  TagType
 	Address  uint16
+	Offset   uint16
 	Quantity uint16
 	Datatype model2.ModbusDataType
 }
 
-func NewTag(tagType TagType, address uint16, quantity uint16, datatype model2.ModbusDataType) modbusTag {
+func NewTag(tagType TagType, address uint16, offset uint16, quantity uint16, datatype model2.ModbusDataType) modbusTag {
 	return modbusTag{
 		TagType:  tagType,
 		Address:  address - AddressOffset,
+		Offset:   offset,
 		Quantity: quantity,
 		Datatype: datatype,
 	}
 }
 
-func NewModbusPlcTagFromStrings(tagType TagType, addressString string, quantityString string, datatype model2.ModbusDataType) (model.PlcTag, error) {
+func NewModbusPlcTagFromStrings(tagType TagType, addressString string, offsetString string, quantityString string, datatype model2.ModbusDataType) (model.PlcTag, error) {
 	address, err := strconv.ParseUint(addressString, 10, 16)
 	if err != nil {
 		return nil, errors.Errorf("Couldn't parse address string '%s' into an int", addressString)
+	}
+	if offsetString == "" {
+		log.Debug().Msg("No offset supplied, assuming 0")
+		offsetString = "0"
+	}
+	offset, err := strconv.ParseUint(offsetString, 10, 16)
+	if err != nil {
+		log.Warn().Err(err).Msgf("Error during parsing for %s. Falling back to 1", offsetString)
+		offset = 0
 	}
 	if quantityString == "" {
 		log.Debug().Msg("No quantity supplied, assuming 1")
@@ -69,7 +80,7 @@ func NewModbusPlcTagFromStrings(tagType TagType, addressString string, quantityS
 		log.Warn().Err(err).Msgf("Error during parsing for %s. Falling back to 1", quantityString)
 		quantity = 1
 	}
-	return NewTag(tagType, uint16(address), uint16(quantity), datatype), nil
+	return NewTag(tagType, uint16(address), uint16(offset), uint16(quantity), datatype), nil
 }
 
 func (m modbusTag) GetAddressString() string {

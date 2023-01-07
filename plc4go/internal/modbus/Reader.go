@@ -76,6 +76,10 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 			return
 		}
 		numWords := uint16(math.Ceil(float64(modbusTagVar.Quantity*uint16(modbusTagVar.Datatype.DataTypeSize())) / float64(2)))
+		// BOOL type numWords = Ceil((Offset + Quantity) / 16)
+		if modbusTagVar.Datatype == readWriteModel.ModbusDataType_BOOL {
+			numWords = uint16(math.Ceil(float64(modbusTagVar.Offset+modbusTagVar.Quantity) / float64(16)))
+		}
 		log.Debug().Msgf("Working with %d words", numWords)
 		var pdu readWriteModel.ModbusPDU = nil
 		switch modbusTagVar.TagType {
@@ -190,7 +194,7 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 
 	// Decode the data according to the information from the request
 	log.Trace().Msg("decode data")
-	value, err := readWriteModel.DataItemParse(data, tag.Datatype, tag.Quantity)
+	value, err := readWriteModel.DataItemParse(data, tag.Datatype, tag.Quantity, tag.Offset)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing data item")
 	}
