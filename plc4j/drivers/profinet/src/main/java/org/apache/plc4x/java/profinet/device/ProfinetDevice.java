@@ -56,7 +56,7 @@ public class ProfinetDevice {
     private ProfinetDeviceContext deviceContext = new ProfinetDeviceContext();
     DatagramSocket socket = null;
 
-    public ProfinetDevice(MacAddress macAddress, String deviceAccess, String subModules, ProfinetDriverContext driverContext) {
+    public ProfinetDevice(MacAddress macAddress, String deviceAccess, String subModules, ProfinetDriverContext driverContext) throws PlcConnectionException {
         this.driverContext = driverContext;
         deviceContext.setDeviceAccess(deviceAccess);
         deviceContext.setSubModules(subModules);

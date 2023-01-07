@@ -42,7 +42,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ProfinetConfigurationTests {
@@ -190,7 +190,7 @@ public class ProfinetConfigurationTests {
     }
 
     @Test
-    public void readProfinetBrowseTags() throws DecoderException, PlcConnectionException, ExecutionException, InterruptedException {
+    public void setIncorrectSubModule() throws DecoderException {
 
         String[] macAddresses = new String[] {"00:0c:29:75:25:67"};
         String subModules = "[[PLC4X_01, PLC4X_02, PLC4X_01, PLC4X_02]]";
@@ -202,6 +202,68 @@ public class ProfinetConfigurationTests {
         context.setConfiguration(configuration);
         protocolLogic.setConfiguration(configuration);
 
+        try {
+            protocolLogic.setDevices();
+            XmlMapper xmlMapper = new XmlMapper();
+            ProfinetDevice ss = protocolLogic.getDevices().get("000C29752567");
+            assertThrows(PlcException.class, () -> protocolLogic.getDevices().get("000C29752567").getDeviceContext().setGsdFile(xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class)));
+        } catch (PlcException ignored) {}
+    }
+
+    @Test
+    public void setCorrectSubModule() throws DecoderException {
+
+        String[] macAddresses = new String[] {"00:0c:29:75:25:67"};
+        String subModules = "[[PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE]]";
+        ProfinetProtocolLogic protocolLogic = new ProfinetProtocolLogic();
+        ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
+            ProfinetConfiguration.class, "deviceaccess=[PLC4X_1]&devices=[" + String.join(",", macAddresses) + "]&submodules=" + subModules);
+
+        ProfinetDeviceContext context = new ProfinetDeviceContext();
+        context.setConfiguration(configuration);
+        protocolLogic.setConfiguration(configuration);
+
+        try {
+            protocolLogic.setDevices();
+            XmlMapper xmlMapper = new XmlMapper();
+            ProfinetDevice ss = protocolLogic.getDevices().get("000C29752567");
+            assertDoesNotThrow(() -> protocolLogic.getDevices().get("000C29752567").getDeviceContext().setGsdFile(xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class)));
+        } catch (PlcException ignored) {}
+    }
+
+    @Test
+    public void setCorrectSubModuleCaseInsensitive() throws DecoderException {
+
+        String[] macAddresses = new String[] {"00:0c:29:75:25:67"};
+        String subModules = "[[PLC4X_DUMMY_MODULE, PLC4X_dummy_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE]]";
+        ProfinetProtocolLogic protocolLogic = new ProfinetProtocolLogic();
+        ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
+            ProfinetConfiguration.class, "deviceaccess=[PLC4X_1]&devices=[" + String.join(",", macAddresses) + "]&submodules=" + subModules);
+
+        ProfinetDeviceContext context = new ProfinetDeviceContext();
+        context.setConfiguration(configuration);
+        protocolLogic.setConfiguration(configuration);
+
+        try {
+            protocolLogic.setDevices();
+            XmlMapper xmlMapper = new XmlMapper();
+            ProfinetDevice ss = protocolLogic.getDevices().get("000C29752567");
+            assertDoesNotThrow(() -> protocolLogic.getDevices().get("000C29752567").getDeviceContext().setGsdFile(xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class)));
+        } catch (PlcException ignored) {}
+    }
+
+    @Test
+    public void readProfinetBrowseTags() throws DecoderException, PlcConnectionException, ExecutionException, InterruptedException {
+
+        String[] macAddresses = new String[] {"00:0c:29:75:25:67"};
+        String subModules = "[[PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, , ]]";
+        ProfinetProtocolLogic protocolLogic = new ProfinetProtocolLogic();
+        ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
+            ProfinetConfiguration.class, "deviceaccess=[PLC4X_1]&devices=[" + String.join(",", macAddresses) + "]&submodules=" + subModules);
+
+        ProfinetDeviceContext context = new ProfinetDeviceContext();
+        context.setConfiguration(configuration);
+        protocolLogic.setConfiguration(configuration);
 
         try {
             protocolLogic.setDevices();

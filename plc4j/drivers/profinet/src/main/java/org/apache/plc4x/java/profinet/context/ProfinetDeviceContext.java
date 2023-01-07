@@ -408,6 +408,20 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
 
         this.deviceAccessItem = foundDeviceAccessItem;
 
+        List<ProfinetModuleItemRef> usableSubModules = this.deviceAccessItem.getUseableModules();
+        for (String subModule : this.subModules) {
+            boolean found = false;
+            for (ProfinetModuleItemRef useableModule : usableSubModules) {
+                if (useableModule.getModuleItemTarget().equals(subModule)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                throw new PlcConnectionException("Sub Module not Found in allowed Modules");
+            }
+        }
+
         List<ProfinetInterfaceSubmoduleItem> interfaceSubModules = foundDeviceAccessItem.getSystemDefinedSubmoduleList().getInterfaceSubmodules();
         if (interfaceSubModules != null && interfaceSubModules.size() > 0) {
             if (interfaceSubModules.get(0).getApplicationRelations().getStartupMode() != null && interfaceSubModules.get(0).getApplicationRelations().getStartupMode().toLowerCase().contains("advanced")) {
