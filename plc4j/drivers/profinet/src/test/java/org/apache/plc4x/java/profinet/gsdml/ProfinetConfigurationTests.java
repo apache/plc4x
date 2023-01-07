@@ -226,7 +226,6 @@ public class ProfinetConfigurationTests {
         try {
             protocolLogic.setDevices();
             XmlMapper xmlMapper = new XmlMapper();
-            ProfinetDevice ss = protocolLogic.getDevices().get("000C29752567");
             assertDoesNotThrow(() -> protocolLogic.getDevices().get("000C29752567").getDeviceContext().setGsdFile(xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class)));
         } catch (PlcException ignored) {}
     }
@@ -247,7 +246,6 @@ public class ProfinetConfigurationTests {
         try {
             protocolLogic.setDevices();
             XmlMapper xmlMapper = new XmlMapper();
-            ProfinetDevice ss = protocolLogic.getDevices().get("000C29752567");
             assertDoesNotThrow(() -> protocolLogic.getDevices().get("000C29752567").getDeviceContext().setGsdFile(xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class)));
         } catch (PlcException ignored) {}
     }
@@ -267,9 +265,10 @@ public class ProfinetConfigurationTests {
 
         try {
             protocolLogic.setDevices();
-            XmlMapper xmlMapper = new XmlMapper();
-            protocolLogic.getDevices().get("000C29752567").getDeviceContext().setGsdFile(xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class));
-        } catch (PlcException | IOException e) {
+            protocolLogic.getDevices().get("000C29752567").getDeviceContext().setVendorId("0xCAFE");
+            protocolLogic.getDevices().get("000C29752567").getDeviceContext().setDeviceId("0x0001");
+            protocolLogic.getDevices().get("000C29752567").setSubModulesObjects();
+        } catch (PlcException e) {
             throw new RuntimeException(e);
         }
         CompletableFuture<PlcBrowseResponse> devices = protocolLogic.browse(new DefaultPlcBrowseRequest(null, new LinkedHashMap<>()));
