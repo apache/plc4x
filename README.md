@@ -24,7 +24,7 @@
 [![Java Platform compatibility](https://github.com/apache/plc4x/actions/workflows/java-platform.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/java-platform.yml)
 [![Go Platform compatibility](https://github.com/apache/plc4x/actions/workflows/go-platform.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/go-platform.yml)
 [![C Platform compatibility](https://github.com/apache/plc4x/actions/workflows/c-platform.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/c-platform.yml)
-[![Python Platform Compatibility](https://github.com/apache/plc4x/actions/workflows/python-build.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/python-build.yml)
+[![Python Platform Compatibility](https://github.com/apache/plc4x/actions/workflows/python-platform.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/python-platform.yml)
 
 <h1 align="center">
   <br>
