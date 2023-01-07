@@ -1,0 +1,178 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/users/protocols
+:icons: font
+
+== Profinet
+=== Connection String Options
+
+On linux as the Java execuatble won't have permission to capture raw packets, this needs to be enabled via:-
+----
+sudo setcap cap_net_raw,cap_net_admin=eip /usr/lib/jvm/jdk-19/bin/java
+----
+The executable will change based on your jdk you are using.
+
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|Code
+2+|`profinet`
+
+|Name
+2+|Profinet
+
+|Maven Dependency
+2+|
+
+----
+
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-driver-opcua</artifactId>
+  <version>{current-last-released-version}</version>
+</dependency>
+
+----
+
+|Default Transport:
+2+| `tcp`
+
+|Compatible Transports:
+2+| - `tcp` (Default Port: 4840)
+
+
+3+|Supported Operations
+
+|| `read`      |The read interface allows for reading the full range of supported PLC4X data types in single and bulk requests
+|| `write`     |The write interface allows for writing the full range of supported PLC4X data types in single and bulk requests
+|| `subscribe` |Subscriptions are possible with events on event- and cyclic-basis
+
+
+3+|Options
+
+|| `discovery`  |   Controls the feature of the discovery endpoint of an OPC UA server which every server
+will propagate over an '<address>/discovery' endpoint. The most common issue here is that most servers are not correctly
+configured and propagate the wrong external IP or URL address. If that is the case you can disable the discovery by
+configuring it with a `false` value.
+
+|| `username`  |   A username to authenticate to the OPCUA server with.
+|| `password`  |   A password to authenticate to the OPCUA server with. |
+
+|===
+
+=== Connection String
+
+The OPC UA drivers uses the connection string
+
+----
+
+opcua:{transport}://{ip-address}:{port}?{options}
+
+----
+
+An example of this connection string would be:-
+
+----
+
+opcua:tcp://127.0.0.1:12686?discovery=true&username=admin&password=password
+
+----
+
+Note the transport, port and options fields are optional.
+
+
+=== Address Format
+To read, write and subscribe to data, the OPC UA driver uses the variable declaration string of the OPC UA server it is
+connecting to.
+It includes the namespace(`ns`) of the hierarchy tree followed by the type of identifier string(`s`), numeric(`i`),
+binary(`b`) or guid(`g`) and its address. The Data Type is an optional field, if it is not included a default data type
+is selected based on the datatype of the returned value. For Unsigned data types it needs to be included otherwise.
+
+----
+
+ns={namespace-index};[s|i|g|b]={Identifier};{Data Type}
+
+----
+
+==== Data Types
+
+The following data types are supported
+
+- BOOL (boolean)
+- SINT (int 8)
+- USINT (uint 8)
+- BYTE (uint 8)
+- INT (int 16)
+- UINT (uint 16)
+- WORD (uint 16)
+- DINT (int 32)
+- UDINT (uint 32)
+- DWORD (uint 32)
+- LINT (int 64)
+- ULINT (uint 64)
+- LWORD (uint 64)
+- REAL (float)
+- LREAL (double)
+- CHAR (char)
+- WCHAR (2 byte char)
+- STRING (utf-8)
+- WSTRING (utf-16)
+
+
+==== Example of a valid OPC UA address:
+
+The following are examples of valid addresses
+
+String address:
+----
+ns=2;s=HelloWorld/ScalarTypes/Boolean
+ns=2;s=HelloWorld/ScalarTypes/Boolean;BOOL
+----
+Numeric address
+----
+ns=1;i=1337
+ns=1;i=1337;DINT
+----
+GUID address:
+----
+ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a
+ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a;REAL
+----
+
+Note the Identifiers `s`,`i`,`b` and `g` specify the format of the address not the data type of the returned value.
+
+=== Some useful tips
+
+The namespace (e.g. `ns=2`) within the address is specific to the server you are connecting to.
+
+
+=== More details on OPC UA
+
+https://opcfoundation.org/about/opc-technologies/opc-ua/[OPC UA]
+The OPC Unified Architecture (UA), released in 2008, is a platform independent service-oriented architecture that integrates all the functionality of the individual OPC Classic specifications into one extensible framework.
+
+This multi-layered approach accomplishes the original design specification goals of:
+
+* Functional equivalence: all COM OPC Classic specifications are mapped to UA
+* Platform independence: from an embedded micro-controller to cloud-based infrastructure
+* Secure: encryption, authentication, and auditing
+* Extensible: ability to add new features without affecting existing applications
+* Comprehensive information modeling: for defining complex information
+
+|===

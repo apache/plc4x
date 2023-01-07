@@ -62,7 +62,6 @@ public class ProfinetDevice {
         deviceContext.setSubModules(subModules);
         deviceContext.setMacAddress(macAddress);
         deviceContext.setConfiguration(driverContext.getConfiguration());
-        deviceContext.setLocalIpAddress(deviceContext.getConfiguration().getIpAddress());
         openDeviceUdpPort();
     }
 

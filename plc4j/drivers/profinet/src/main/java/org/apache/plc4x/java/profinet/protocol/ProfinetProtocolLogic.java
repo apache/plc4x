@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.profinet.protocol;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.NotImplementedException;
@@ -28,14 +27,11 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.types.PlcValueType;
-import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.device.ProfinetChannel;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
-import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.profinet.tag.ProfinetTag;
 import org.apache.plc4x.java.spi.ConversationContext;
@@ -45,16 +41,12 @@ import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
+import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
 import org.pcap4j.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.*;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -81,33 +73,24 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     @Override
     public void setContext(ConversationContext<Ethernet_Frame> context) {
         super.setContext(context);
+
+        // Open the receiving UDP port.
+        try {
+            driverContext.setSocket(new DatagramSocket(ProfinetDriverContext.DEFAULT_UDP_PORT));
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
+        }
+
         try {
             setDevices();
         } catch (DecoderException | PlcException e) {
             throw new RuntimeException(e);
         }
+
         driverContext.getHandler().setConfiguredDevices(configuredDevices);
-        try {
-            PcapNetworkInterface devByAddress = Pcaps.getDevByAddress(driverContext.getSocket().getLocalAddress());
-            driverContext.setChannel(new ProfinetChannel(Collections.singletonList(devByAddress)));
-            driverContext.getChannel().setConfiguredDevices(this.configuredDevices);
-        } catch (PcapNativeException e) {
-            throw new RuntimeException(e);
-        }
+
         for (Map.Entry<String, ProfinetDevice> device : configuredDevices.entrySet()) {
             device.getValue().setContext(context, this.driverContext.getChannel());
-        }
-
-        try {
-            onDeviceDiscovery();
-        } catch (InterruptedException ignored) {}
-
-        for (Map.Entry<String, ProfinetDevice> device : configuredDevices.entrySet()) {
-            try {
-                device.getValue().setSubModulesObjects();
-            } catch (PlcException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 
@@ -221,12 +204,32 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
     @Override
     public void onConnect(ConversationContext<Ethernet_Frame> context) {
-        // Open the receiving UDP port.
+        InetAddress localIpAddress = null;
         try {
-            driverContext.setSocket(new DatagramSocket(ProfinetDriverContext.DEFAULT_UDP_PORT));
-        } catch (SocketException e) {
+            RawSocketChannel channel = (RawSocketChannel) context.getChannel();
+            String localAddress = channel.getLocalAddress().toString().substring(1).split(":")[0];
+            localIpAddress = InetAddress.getByName(localAddress.toString());
+            PcapNetworkInterface devByAddress = Pcaps.getDevByAddress(localIpAddress);
+            driverContext.setChannel(new ProfinetChannel(Collections.singletonList(devByAddress)));
+            driverContext.getChannel().setConfiguredDevices(this.configuredDevices);
+        } catch (PcapNativeException | UnknownHostException e) {
             throw new RuntimeException(e);
         }
+
+        try {
+            onDeviceDiscovery();
+        } catch (InterruptedException ignored) {}
+
+        for (Map.Entry<String, ProfinetDevice> device : configuredDevices.entrySet()) {
+            try {
+                device.getValue().setSubModulesObjects();
+                device.getValue().getDeviceContext().setChannel(driverContext.getChannel());
+                device.getValue().getDeviceContext().setLocalIpAddress(localIpAddress);
+            } catch (PlcException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         try {
             for (Map.Entry<String, ProfinetDevice> device : this.configuredDevices.entrySet()) {
                 device.getValue().onConnect(this);

@@ -16,23 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.profinet.tag;
+package org.apache.plc4x.java.profinet.browse;
 
-import org.apache.plc4x.java.api.model.PlcTag;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.plc4x.java.api.model.PlcQuery;
-import org.apache.plc4x.java.profinet.browse.ProfinetPlcQuery;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 
-public class ProfinetTagHandler implements PlcTagHandler {
+public class ProfinetPlcQuery implements PlcQuery {
 
-    @Override
-    public PlcTag parseTag(String tagAddress) {
-        return null;
+    private final String queryString;
+
+    public ProfinetPlcQuery(String queryString) {
+        this.queryString = queryString;
     }
-
     @Override
-    public PlcQuery parseQuery(String query) {
-        return new ProfinetPlcQuery(query);
+    public String getQueryString() {
+        return queryString;
     }
 
 }

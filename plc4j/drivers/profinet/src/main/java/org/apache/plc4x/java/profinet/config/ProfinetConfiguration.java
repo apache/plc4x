@@ -135,14 +135,6 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
         return dataHoldFactor;
     }
 
-    public InetAddress getIpAddress() {
-        try {
-            return InetAddress.getByName("127.0.0.1");
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public String getDeviceAccess() {
         return deviceAccess;
     }
