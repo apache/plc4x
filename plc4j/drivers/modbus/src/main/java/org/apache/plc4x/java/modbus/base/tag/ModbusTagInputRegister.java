@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 public class ModbusTagInputRegister extends ModbusTag {
 
+    public static final String ADDRESS_PREFIX = "3x";
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("input-register:" + ModbusTag.ADDRESS_PATTERN);
     public static final Pattern ADDRESS_SHORTER_PATTERN = Pattern.compile("3" + ModbusTag.FIXED_DIGIT_MODBUS_PATTERN);
     public static final Pattern ADDRESS_SHORT_PATTERN = Pattern.compile("3x" + ModbusTag.FIXED_DIGIT_MODBUS_PATTERN);
@@ -33,19 +34,12 @@ public class ModbusTagInputRegister extends ModbusTag {
     protected static final int REGISTER_MAXADDRESS = 65535;
 
     protected ModbusTagInputRegister(int address, Integer quantity, ModbusDataType dataType) {
-        super(address, quantity, dataType);
+        super(address, quantity, dataType, ADDRESS_PREFIX);
     }
 
     @Override
-    public String getAddressString() {
-        String address = "3x" + getAddress();
-        if(getDataType() != null) {
-            address += ":" + getDataType().name();
-        }
-        if(getArrayInfo().size() > 0) {
-            address += "[" + getArrayInfo().get(0).getUpperBound() + "]";
-        }
-        return address;
+    public int getLogicalAddress() {
+        return getAddress() + PROTOCOL_ADDRESS_OFFSET;
     }
 
     public static boolean matches(String addressString) {

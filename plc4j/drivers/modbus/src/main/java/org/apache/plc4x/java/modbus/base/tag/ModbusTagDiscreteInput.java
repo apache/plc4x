@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 public class ModbusTagDiscreteInput extends ModbusTag {
 
+    public static final String ADDRESS_PREFIX = "1x";
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("discrete-input:" + ModbusTag.ADDRESS_PATTERN);
     public static final Pattern ADDRESS_SHORTER_PATTERN = Pattern.compile("1" + ModbusTag.FIXED_DIGIT_MODBUS_PATTERN);
     public static final Pattern ADDRESS_SHORT_PATTERN = Pattern.compile("1x" + ModbusTag.FIXED_DIGIT_MODBUS_PATTERN);
@@ -33,19 +34,12 @@ public class ModbusTagDiscreteInput extends ModbusTag {
     protected static final int REGISTER_MAX_ADDRESS = 65535;
 
     public ModbusTagDiscreteInput(int address, Integer quantity, ModbusDataType dataType) {
-        super(address, quantity, dataType);
+        super(address, quantity, dataType, ADDRESS_PREFIX);
     }
 
     @Override
-    public String getAddressString() {
-        String address = "1x" + getAddress();
-        if(getDataType() != null) {
-            address += ":" + getDataType().name();
-        }
-        if(getArrayInfo().size() > 0) {
-            address += "[" + getArrayInfo().get(0).getUpperBound() + "]";
-        }
-        return address;
+    public int getLogicalAddress() {
+        return getAddress() + PROTOCOL_ADDRESS_OFFSET;
     }
 
     public static boolean matches(String addressString) {
@@ -57,7 +51,7 @@ public class ModbusTagDiscreteInput extends ModbusTag {
     public static Matcher getMatcher(String addressString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (matcher.matches()) {
-          return matcher;
+            return matcher;
         }
         matcher = ADDRESS_SHORT_PATTERN.matcher(addressString);
         if (matcher.matches()) {
