@@ -40,7 +40,7 @@ public abstract class ModbusTag implements PlcTag, Serializable {
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(:(?<datatype>[a-zA-Z_]+))?(\\[(?<quantity>\\d+)])?");
     public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})?(:(?<datatype>[a-zA-Z_]+))?(\\[(?<quantity>\\d+)])?");
 
-    protected static final int PROTOCOL_ADDRESS_OFFSET = 1;
+    public static final int PROTOCOL_ADDRESS_OFFSET = 1;
 
     private final int address;
 
@@ -67,10 +67,30 @@ public abstract class ModbusTag implements PlcTag, Serializable {
         throw new PlcInvalidTagException("Unable to parse address: " + addressString);
     }
 
+    @Override
+    public String getAddressString() {
+        String address = String.format("%s%05d", getAddressStringPrefix(), getLogicalAddress());
+        if(getDataType() != null) {
+            address += ":" + getDataType().name();
+        }
+        if(!getArrayInfo().isEmpty()) {
+            address += "[" + getArrayInfo().get(0).getUpperBound() + "]";
+        }
+        return address;
+    }
+
+    protected abstract String getAddressStringPrefix();
+
+    /**
+     * Instantiate a new ModbusTag
+     * @param address The WIRE address that is to be used.
+     * @param quantity The number of registers
+     * @param dataType The type for the interpretation of the registers.
+     */
     protected ModbusTag(int address, Integer quantity, ModbusDataType dataType) {
         this.address = address;
-        if ((this.address + PROTOCOL_ADDRESS_OFFSET) <= 0) {
-            throw new IllegalArgumentException("address must be greater than zero. Was " + (this.address + PROTOCOL_ADDRESS_OFFSET));
+        if (getLogicalAddress() <= 0) {
+            throw new IllegalArgumentException("address must be greater than zero. Was " + getLogicalAddress());
         }
         this.quantity = quantity != null ? quantity : 1;
         if (this.quantity <= 0) {
@@ -79,9 +99,19 @@ public abstract class ModbusTag implements PlcTag, Serializable {
         this.dataType = dataType != null ? dataType : ModbusDataType.INT;
     }
 
+    /**
+     * Get the technical address that must be used 'on the wire'
+     * @return The address that is to be used on the wire (shifted by 1 because of the modbus spec).
+     */
     public int getAddress() {
         return address;
     }
+
+    /**
+     * Get the logical (configured) address
+     * @return The address which was configured and is different from what is used on the wire.
+     */
+    public abstract int getLogicalAddress();
 
     public int getNumberOfElements() {
         return quantity;
@@ -122,21 +152,24 @@ public abstract class ModbusTag implements PlcTag, Serializable {
             return false;
         }
         ModbusTag that = (ModbusTag) o;
-        return address == that.address;
+        return address == that.address &&
+            quantity == that.quantity &&
+            dataType == that.dataType &&
+            getClass() == that.getClass(); // MUST be identical
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(address);
+        return Objects.hash(this.getClass(), address, quantity, dataType);
     }
 
     @Override
     public String toString() {
-        return "ModbusTag{" +
+        return this.getClass().getSimpleName() + " {" +
             "address=" + address +
-            "datatype=" + dataType +
-            "quantity=" + quantity +
-            '}';
+            ", quantity=" + quantity +
+            ", dataType=" + dataType +
+            " }";
     }
 
     @Override
