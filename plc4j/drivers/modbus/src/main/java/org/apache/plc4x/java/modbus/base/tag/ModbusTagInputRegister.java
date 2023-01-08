@@ -34,7 +34,11 @@ public class ModbusTagInputRegister extends ModbusTag {
     protected static final int REGISTER_MAXADDRESS = 65535;
 
     protected ModbusTagInputRegister(int address, Integer quantity, ModbusDataType dataType) {
-        super(address, quantity, dataType, ADDRESS_PREFIX);
+        super(address, quantity, dataType);
+    }
+
+    protected String getAddressStringPrefix() {
+        return ADDRESS_PREFIX;
     }
 
     @Override

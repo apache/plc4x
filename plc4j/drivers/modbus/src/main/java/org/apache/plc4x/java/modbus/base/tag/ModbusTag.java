@@ -48,8 +48,6 @@ public abstract class ModbusTag implements PlcTag, Serializable {
 
     private final ModbusDataType dataType;
 
-    private final String addressStringPrefix;
-
     public static ModbusTag of(String addressString) {
         if (ModbusTagCoil.matches(addressString)) {
             return ModbusTagCoil.of(addressString);
@@ -71,7 +69,7 @@ public abstract class ModbusTag implements PlcTag, Serializable {
 
     @Override
     public String getAddressString() {
-        String address = String.format("%s%05d", addressStringPrefix, getLogicalAddress());
+        String address = String.format("%s%05d", getAddressStringPrefix(), getLogicalAddress());
         if(getDataType() != null) {
             address += ":" + getDataType().name();
         }
@@ -81,13 +79,15 @@ public abstract class ModbusTag implements PlcTag, Serializable {
         return address;
     }
 
+    protected abstract String getAddressStringPrefix();
+
     /**
      * Instantiate a new ModbusTag
      * @param address The WIRE address that is to be used.
      * @param quantity The number of registers
      * @param dataType The type for the interpretation of the registers.
      */
-    protected ModbusTag(int address, Integer quantity, ModbusDataType dataType, String addressStringPrefix) {
+    protected ModbusTag(int address, Integer quantity, ModbusDataType dataType) {
         this.address = address;
         if (getLogicalAddress() <= 0) {
             throw new IllegalArgumentException("address must be greater than zero. Was " + getLogicalAddress());
@@ -97,7 +97,6 @@ public abstract class ModbusTag implements PlcTag, Serializable {
             throw new IllegalArgumentException("quantity must be greater than zero. Was " + this.quantity);
         }
         this.dataType = dataType != null ? dataType : ModbusDataType.INT;
-        this.addressStringPrefix = addressStringPrefix;
     }
 
     /**
