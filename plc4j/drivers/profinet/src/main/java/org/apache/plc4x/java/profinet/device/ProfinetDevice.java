@@ -214,22 +214,34 @@ public class ProfinetDevice {
 
     /*
         Loop through each configured submodule and return a list of child tags.
-        Each child in itself can also contain configued submodules.
+        Each child in itself can also contain configured submodules.
      */
     public Map<String, PlcBrowseItem> getChildTags() {
         Map<String, PlcBrowseItem> children = new HashMap<>();
 
         for (PnIoCm_Block_ExpectedSubmoduleReq ioData : deviceContext.getExpectedSubmoduleReq()) {
             for (PnIoCm_ExpectedSubmoduleBlockReqApi api : ioData.getApis()) {
+
                 ProfinetDeviceAccessPointItem accessPointItem = findDeviceAccessPoint(api.getModuleIdentNumber());
                 // Add Module to list of Children
                 if (accessPointItem != null) {
-                    Map<String, PlcBrowseItem> moduleChildren = getSubModules(accessPointItem);
+                    Map<String, PlcBrowseItem> moduleChildren = getDeviceAccessSubModules(accessPointItem);
                     // Populate a map of protocol-dependent options.
                     Map<String, PlcValue> options = new HashMap<>();
                     options.put("name", new PlcSTRING(accessPointItem.getModuleInfo().getName().getTextId()));
                     options.put("infotext", new PlcSTRING(accessPointItem.getModuleInfo().getInfoText().getTextId()));
-                    children.put(accessPointItem.getModuleInfo().getName().getTextId(), new DefaultPlcBrowseItem(ProfinetTag.of(accessPointItem.getModuleInfo().getName().getTextId()), accessPointItem.getModuleInfo().getName().getTextId(), false, false, true, moduleChildren, options));
+                    children.put(String.valueOf(api.getSlotNumber()), new DefaultPlcBrowseItem(ProfinetTag.of(accessPointItem.getModuleInfo().getName().getTextId()), accessPointItem.getModuleInfo().getName().getTextId(), false, false, true, moduleChildren, options));
+                }
+
+                ProfinetModuleItem module = findModule(api.getModuleIdentNumber());
+                // Add Module to list of Children
+                if (accessPointItem == null && module != null) {
+                    Map<String, PlcBrowseItem> moduleChildren = getModulesSubModules(module);
+                    // Populate a map of protocol-dependent options.
+                    Map<String, PlcValue> options = new HashMap<>();
+                    options.put("name", new PlcSTRING(module.getModuleInfo().getName().getTextId()));
+                    options.put("infotext", new PlcSTRING(module.getModuleInfo().getInfoText().getTextId()));
+                    children.put(String.valueOf(api.getSlotNumber()), new DefaultPlcBrowseItem(ProfinetTag.of(module.getModuleInfo().getName().getTextId()), module.getModuleInfo().getName().getTextId(), false, false, true, moduleChildren, options));
                 }
             }
         }
@@ -239,7 +251,7 @@ public class ProfinetDevice {
     /*
         Loop through an Access Point Item and return the configured submodules
      */
-    public Map<String, PlcBrowseItem> getSubModules(ProfinetDeviceAccessPointItem module) {
+    public Map<String, PlcBrowseItem> getDeviceAccessSubModules(ProfinetDeviceAccessPointItem module) {
         Map<String, PlcBrowseItem> children = new HashMap<>();
 
         for (ProfinetVirtualSubmoduleItem virtualSubModuleItem : module.getVirtualSubmoduleList()) {
@@ -247,7 +259,24 @@ public class ProfinetDevice {
             Map<String, PlcValue> options = new HashMap<>();
             options.put("name", new PlcSTRING(virtualSubModuleItem.getModuleInfo().getName().getTextId()));
             options.put("infotext", new PlcSTRING(virtualSubModuleItem.getModuleInfo().getInfoText().getTextId()));
-            String childName = deviceContext.getDeviceName() + "." + virtualSubModuleItem.getModuleInfo().getName().getTextId();
+            String childName = virtualSubModuleItem.getModuleInfo().getName().getTextId();
+            children.put(childName, new DefaultPlcBrowseItem(ProfinetTag.of(childName), childName,false, false, true, null, options));
+        }
+        return children;
+    }
+
+    /*
+        Loop through an Access Point Item and return the configured submodules
+     */
+    public Map<String, PlcBrowseItem> getModulesSubModules(ProfinetModuleItem module) {
+        Map<String, PlcBrowseItem> children = new HashMap<>();
+
+        for (ProfinetVirtualSubmoduleItem virtualSubModuleItem : module.getVirtualSubmoduleList()) {
+            // Populate a map of protocol-dependent options.
+            Map<String, PlcValue> options = new HashMap<>();
+            options.put("name", new PlcSTRING(virtualSubModuleItem.getModuleInfo().getName().getTextId()));
+            options.put("infotext", new PlcSTRING(virtualSubModuleItem.getModuleInfo().getInfoText().getTextId()));
+            String childName = virtualSubModuleItem.getModuleInfo().getName().getTextId();
             children.put(childName, new DefaultPlcBrowseItem(ProfinetTag.of(childName), childName,false, false, true, null, options));
         }
         return children;
@@ -255,6 +284,16 @@ public class ProfinetDevice {
 
     private ProfinetDeviceAccessPointItem findDeviceAccessPoint(long moduleIdentNumber) {
         for (ProfinetDeviceAccessPointItem gsdModule : deviceContext.getGsdFile().getProfileBody().getApplicationProcess().getDeviceAccessPointList()) {
+            int moduleIdent = Integer.decode(gsdModule.getModuleIdentNumber());
+            if (moduleIdentNumber == moduleIdent) {
+                return gsdModule;
+            }
+        }
+        return null;
+    }
+
+    private ProfinetModuleItem findModule(long moduleIdentNumber) {
+        for (ProfinetModuleItem gsdModule : deviceContext.getGsdFile().getProfileBody().getApplicationProcess().getModuleList()) {
             int moduleIdent = Integer.decode(gsdModule.getModuleIdentNumber());
             if (moduleIdentNumber == moduleIdent) {
                 return gsdModule;

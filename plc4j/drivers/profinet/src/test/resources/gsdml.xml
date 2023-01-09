@@ -59,8 +59,8 @@
                   <VirtualSubmoduleItem ID="PLC4X_1_V0" SubmoduleIdentNumber="0x00000001" Writeable_IM_Records="1 2 3" MayIssueProcessAlarm="false">
                      <IOData/>
                      <ModuleInfo>
-                        <Name TextId="PLC4X_Module"/>
-                        <InfoText TextId="PLC4X_Info"/>
+                        <Name TextId="Virtual_PLC4X_Module"/>
+                        <InfoText TextId="Virtual_PLC4X_Info"/>
                      </ModuleInfo>
                   </VirtualSubmoduleItem>
                </VirtualSubmoduleList>
@@ -109,8 +109,8 @@
                         </Input>
                      </IOData>
                      <ModuleInfo>
-                        <Name TextId="PLC4X_INPUT_MODULE_NAME"/>
-                        <InfoText TextId="PLC4X_INPUT_MODULE_INFO"/>
+                        <Name TextId="PLC4X_VIRTUAL_INPUT_MODULE_NAME"/>
+                        <InfoText TextId="PLC4X_VIRTUAL_INPUT_MODULE_INFO"/>
                      </ModuleInfo>
                   </VirtualSubmoduleItem>
                </VirtualSubmoduleList>
@@ -128,6 +128,8 @@
                <Text TextId="PLC4X_Device" Value="https://plc4x.apache.org"/>
                <Text TextId="PLC4X_Module" Value="Sample"/>
                <Text TextId="PLC4X_Info" Value="Profinet Sample for Testing"/>
+               <Text TextId="Virtual_PLC4X_Module" Value="Virtual Sample"/>
+               <Text TextId="Virtual_PLC4X_Info" Value="Virtual Profinet Sample for Testing"/>
                <Text TextId="IDT_CUSTOM_DIAG_1" Value="Custom diagnosis in USI format"/>
                <Text TextId="IDT_CUSTOM_DIAG_1_VALUE" Value="Custom diagnosis value"/>
                <Text TextId="IDT_CUSTOM_LOGBOOK_1" Value="Custom Logbook entry"/>
@@ -135,6 +137,8 @@
                <Text TextId="PLC4X_Module_System_1" Value="1"/>
                <Text TextId="PLC4X_INPUT_MODULE_NAME" Value="32 Digital Input"/>
                <Text TextId="PLC4X_INPUT_MODULE_INFO" Value="32 Bits"/>
+               <Text TextId="PLC4X_VIRTUAL_INPUT_MODULE_NAME" Value="Virtual 32 Digital Input"/>
+               <Text TextId="PLC4X_VIRTUAL_INPUT_MODULE_INFO" Value="Virtual 32 Bits"/>
                <Text TextId="PLC4X_INPUT_MODULE_INFO_32" Value="32 Bits"/>
             </PrimaryLanguage>
          </ExternalTextList>

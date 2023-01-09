@@ -61,6 +61,8 @@ public class ProfinetModuleItem {
         switch(dataType) {
             case "Unsigned8":
                 return 1;
+            case "Float":
+                return 4;
             default:
                 throw new IllegalArgumentException("Unsupport data type found in GSD IO Data Item - " + dataType);
         }

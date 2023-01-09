@@ -19,6 +19,8 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.commons.codec.DecoderException;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -254,10 +256,10 @@ public class ProfinetConfigurationTests {
     public void readProfinetBrowseTags() throws DecoderException, PlcConnectionException, ExecutionException, InterruptedException {
 
         String[] macAddresses = new String[] {"00:0c:29:75:25:67"};
-        String subModules = "[[PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, , ]]";
+        String subModules = "[[PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, ]]";
         ProfinetProtocolLogic protocolLogic = new ProfinetProtocolLogic();
         ProfinetConfiguration configuration = (ProfinetConfiguration) new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "deviceaccess=[PLC4X_1]&devices=[" + String.join(",", macAddresses) + "]&submodules=" + subModules);
+            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&deviceaccess=[PLC4X_1]&devices=[" + String.join(",", macAddresses) + "]&submodules=" + subModules);
 
         ProfinetDeviceContext context = new ProfinetDeviceContext();
         context.setConfiguration(configuration);
@@ -265,10 +267,20 @@ public class ProfinetConfigurationTests {
 
         try {
             protocolLogic.setDevices();
-            protocolLogic.getDevices().get("000C29752567").getDeviceContext().setVendorId("0xCAFE");
-            protocolLogic.getDevices().get("000C29752567").getDeviceContext().setDeviceId("0x0001");
-            protocolLogic.getDevices().get("000C29752567").setSubModulesObjects();
+            XmlMapper xmlMapper = new XmlMapper();
+            ProfinetDevice device = protocolLogic.getDevices().get("000C29752567");
+            device.getDeviceContext().setDeviceName("PLC4X Test Module");
+            device.getDeviceContext().setGsdFile(xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class));
+            device.getDeviceContext().setVendorId("CAFE");
+            device.getDeviceContext().setDeviceId("0001");
+            device.setSubModulesObjects();
         } catch (PlcException e) {
+            throw new RuntimeException(e);
+        } catch (StreamReadException e) {
+            throw new RuntimeException(e);
+        } catch (DatabindException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         CompletableFuture<PlcBrowseResponse> devices = protocolLogic.browse(new DefaultPlcBrowseRequest(null, new LinkedHashMap<>()));
