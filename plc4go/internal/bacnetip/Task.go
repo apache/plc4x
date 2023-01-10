@@ -47,7 +47,7 @@ type OneShotDeleteTask struct {
 	_Task
 }
 
-func FunctionTask(func()) _Task {
+func FunctionTask(func()) *_Task {
 	// TODO: implement me
-	return _Task{}
+	return &_Task{}
 }

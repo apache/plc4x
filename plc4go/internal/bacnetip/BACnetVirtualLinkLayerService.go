@@ -130,7 +130,7 @@ func NewUDPMultiplexer(address interface{}, noBroadcast bool) (*UDPMultiplexer, 
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating multiplex client")
 	}
-	u.directPort, err = NewUDPDirector(u.addrTuple, nil, nil, nil, nil)
+	u.directPort, err = NewUDPDirector(*u.addrTuple, nil, nil, nil, nil)
 	if err := bind(u.direct, u.directPort); err != nil {
 		return nil, errors.Wrap(err, "error binding ports")
 	}
@@ -142,7 +142,7 @@ func NewUDPMultiplexer(address interface{}, noBroadcast bool) (*UDPMultiplexer, 
 			return nil, errors.Wrap(err, "error creating broadcast multiplex client")
 		}
 		reuse := true
-		u.broadcastPort, err = NewUDPDirector(u.addrBroadcastTuple, nil, &reuse, nil, nil)
+		u.broadcastPort, err = NewUDPDirector(*u.addrBroadcastTuple, nil, &reuse, nil, nil)
 		if err := bind(u.direct, u.directPort); err != nil {
 			return nil, errors.Wrap(err, "error binding ports")
 		}
@@ -236,11 +236,13 @@ func NewAnnexJCodec(cid *int, sid *int) (*AnnexJCodec, error) {
 }
 
 func (b *AnnexJCodec) Indication(pdu _PDU) error {
-	panic("not implemented yet")
+	// Note: our BVLC are all annexJ at the moment
+	return b.Request(pdu)
 }
 
 func (b *AnnexJCodec) Confirmation(pdu _PDU) error {
-	panic("not implemented yet")
+	// Note: our BVLC are all annexJ at the moment
+	return b.Request(pdu)
 }
 
 type _BIPSAP interface {
