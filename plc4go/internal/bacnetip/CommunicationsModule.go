@@ -21,6 +21,7 @@ package bacnetip
 
 import (
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -40,14 +41,13 @@ func init() {
 	elementMap = make(map[int]*ApplicationServiceElement)
 }
 
-// TODO: implement me
 type _PCI struct {
-	pduUserData    interface{}
+	pduUserData    spi.Message
 	pduSource      *Address
 	pduDestination *Address
 }
 
-func _New_PCI(pduUserData interface{}, pduSource *Address, pduDestination *Address) *_PCI {
+func _New_PCI(pduUserData spi.Message, pduSource *Address, pduDestination *Address) *_PCI {
 	return &_PCI{pduUserData, pduSource, pduDestination}
 }
 

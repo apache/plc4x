@@ -1943,7 +1943,7 @@ func NewApplicationServiceAccessPoint(aseID *int, sapID *int) (*ApplicationServi
 func (a *ApplicationServiceAccessPoint) Indication(apdu _PDU) error {
 	log.Debug().Msgf("Indication\n%s", apdu)
 
-	switch _apdu := apdu.(type) {
+	switch _apdu := apdu.GetMessage().(type) {
 	case readWriteModel.APDUConfirmedRequestExactly:
 		//assume no errors found
 		var errorFound error
@@ -2007,6 +2007,7 @@ func (a *ApplicationServiceAccessPoint) Confirmation(apdu _PDU) error {
 
 	// TODO: check if we need to check apdu here
 
+	// forward the decoded packet
 	return a.SapResponse(apdu)
 }
 
