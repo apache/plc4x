@@ -33,7 +33,7 @@ import (
 type UDPActor struct {
 	director *UDPDirector
 	timeout  uint32
-	timer    *_Task
+	timer    *OneShotFunctionTask
 	peer     string
 }
 
