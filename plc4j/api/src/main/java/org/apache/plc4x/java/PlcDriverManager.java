@@ -19,6 +19,7 @@
 package org.apache.plc4x.java;
 
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.PlcDriver;
@@ -32,7 +33,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
-public class PlcDriverManager {
+public class PlcDriverManager implements PlcConnectionManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlcDriverManager.class);
 
