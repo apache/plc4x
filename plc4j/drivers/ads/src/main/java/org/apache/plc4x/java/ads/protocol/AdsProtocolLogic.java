@@ -136,11 +136,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         // otherwise just mark the connection as completed instantly.
         setupAmsRouteFuture.whenComplete((unused, throwable) -> {
             if (!configuration.isLoadSymbolAndDataTypeTables()) {
-                future.completeExceptionally(new PlcConnectionException(
-                    "Lazy loading is generally planned, but not implemented yet. " +
-                        "If you are in need for this feature, please reach out to the community."));
-            }
-            //if (configuration.isLoadSymbolAndDataTypeTables()) {
+                context.fireConnected();
+//                future.completeExceptionally(new PlcConnectionException(
+//                    "Lazy loading is generally planned, but not implemented yet. " +
+//                        "If you are in need for this feature, please reach out to the community."));
+            } else {
                 // Execute a ReadDeviceInfo command
                 AmsPacket readDeviceInfoRequest = new AdsReadDeviceInfoRequest(
                     configuration.getTargetAmsNetId(), DefaultAmsPorts.RUNTIME_SYSTEM_01.getValue(),
@@ -230,9 +230,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                                 }
                             }));
                     }));
-            /*} else {
-                context.fireConnected();
-            }*/
+            }
         });
     }
 
@@ -646,7 +644,12 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         String dataTypeName = directAdsTag.getPlcDataType();
         AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
-        long size = adsDataTypeTableEntry.getSize();
+        long size;
+        if(adsDataTypeTableEntry == null) {
+            size = AdsDataType.valueOf(dataTypeName).getNumBytes();
+        } else {
+            size = adsDataTypeTableEntry.getSize();
+        }
 
         AmsPacket amsPacket = new AdsReadRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(), 0, getInvokeId(),
@@ -685,7 +688,12 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             tag -> {
                 String dataTypeName = tag.getPlcDataType();
                 AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
-                long size = adsDataTypeTableEntry.getSize();
+                long size;
+                if(adsDataTypeTableEntry == null) {
+                    size = AdsDataType.valueOf(dataTypeName).getNumBytes();
+                } else {
+                    size = adsDataTypeTableEntry.getSize();
+                }
                 // Status code + payload size
                 return 4 + (size * tag.getNumberOfElements());
             }).sum();
@@ -699,7 +707,12 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 DirectAdsTag directAdsTag = resolvedTags.get(tag);
                 String dataTypeName = directAdsTag.getPlcDataType();
                 AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
-                long size = adsDataTypeTableEntry.getSize();
+                long size;
+                if(adsDataTypeTableEntry == null) {
+                    size = AdsDataType.valueOf(dataTypeName).getNumBytes();
+                } else {
+                    size = adsDataTypeTableEntry.getSize();
+                }
                 return new AdsMultiRequestItemRead(
                     directAdsTag.getIndexGroup(), directAdsTag.getIndexOffset(),
                     (size * directAdsTag.getNumberOfElements()));
@@ -791,7 +804,14 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     private ResponseItem<PlcValue> parseResponseItem(DirectAdsTag tag, ReadBuffer readBuffer) {
         try {
             String dataTypeName = tag.getPlcDataType();
-            AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
+            AdsDataTypeTableEntry adsDataTypeTableEntry;
+            if (dataTypeTable.containsKey(dataTypeName)) {
+                adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
+            } else {
+                // If we're missing a datatype, try just using the datatype name.
+                AdsDataType adsDataType = AdsDataType.valueOf(dataTypeName);
+                adsDataTypeTableEntry = new AdsDataTypeTableEntry(0L, 0L, 0L, 0L, adsDataType.getNumBytes(), 0L, 0L, 0L, 0, 0, dataTypeName, dataTypeName, "", Collections.emptyList(), Collections.emptyList(), new byte[]{});
+            }
             PlcValueType plcValueType = getPlcValueTypeForAdsDataType(adsDataTypeTableEntry);
 
             int strLen = 0;
