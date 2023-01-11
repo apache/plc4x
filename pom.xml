@@ -1128,9 +1128,15 @@
           <dependencies>
             <dependency>
               <groupId>org.codehaus.plexus</groupId>
-              <artifactId>plexus-compiler-eclipse</artifactId>
-              <version>2.12.1</version>
+              <artifactId>plexus-compiler-api</artifactId>
+              <version>2.13.0</version>
             </dependency>
+            <dependency>
+              <groupId>org.codehaus.plexus</groupId>
+              <artifactId>plexus-compiler-eclipse</artifactId>
+              <version>2.13.0</version>
+            </dependency>
+            <!-- Redundant import, however we might need to bump this version more often -->
             <dependency>
               <groupId>org.eclipse.jdt</groupId>
               <artifactId>ecj</artifactId>
