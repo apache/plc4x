@@ -20,7 +20,6 @@
 package bacnetip
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/local"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -76,7 +75,7 @@ type SSMSAPRequirements interface {
 	_ServiceAccessPoint
 	_Client
 	GetDeviceInfoCache() *DeviceInfoCache
-	GetLocalDevice() *local.LocalDeviceObject
+	GetLocalDevice() *LocalDeviceObject
 	GetProposedWindowSize() uint8
 	GetClientTransactions() []*ClientSSM
 	RemoveClientTransaction(*ClientSSM)
@@ -92,7 +91,7 @@ type SSMSAPRequirements interface {
 
 // SSM - Segmentation State Machine
 type SSM struct {
-	OneShotTask
+	*OneShotTask
 
 	ssmSAP SSMSAPRequirements
 
@@ -164,6 +163,7 @@ func NewSSM(sap SSMSAPRequirements, pduAddress *Address) (SSM, error) {
 		maxApduLengthAccepted = sap.GetDefaultMaximumApduLengthAccepted()
 	}
 	return SSM{
+		OneShotTask:           NewOneShotTask(nil),
 		ssmSAP:                sap,
 		pduAddress:            pduAddress,
 		deviceInfo:            deviceInfo,
@@ -1510,7 +1510,7 @@ type StateMachineAccessPoint struct {
 	*Client
 	*ServiceAccessPoint
 
-	localDevice           *local.LocalDeviceObject
+	localDevice           *LocalDeviceObject
 	deviceInventory       *DeviceInfoCache
 	nextInvokeId          uint8
 	clientTransactions    []*ClientSSM
@@ -1526,7 +1526,7 @@ type StateMachineAccessPoint struct {
 	applicationTimeout    uint
 }
 
-func NewStateMachineAccessPoint(localDevice *local.LocalDeviceObject, deviceInventory *DeviceInfoCache, sapID *int, cid *int) (*StateMachineAccessPoint, error) {
+func NewStateMachineAccessPoint(localDevice *LocalDeviceObject, deviceInventory *DeviceInfoCache, sapID *int, cid *int) (*StateMachineAccessPoint, error) {
 	log.Debug().Msgf("NewStateMachineAccessPoint localDevice=%v deviceInventory=%v sap=%v cid=%v", localDevice, deviceInventory, sapID, cid)
 
 	s := &StateMachineAccessPoint{
@@ -1873,7 +1873,7 @@ func (s *StateMachineAccessPoint) GetDeviceInfoCache() *DeviceInfoCache {
 	return s.deviceInventory
 }
 
-func (s *StateMachineAccessPoint) GetLocalDevice() *local.LocalDeviceObject {
+func (s *StateMachineAccessPoint) GetLocalDevice() *LocalDeviceObject {
 	return s.localDevice
 }
 

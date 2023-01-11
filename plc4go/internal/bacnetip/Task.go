@@ -23,7 +23,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"sync"
 	"time"
-	"unsafe"
 )
 
 type _TaskRequirements interface {
@@ -62,7 +61,7 @@ func (t *_Task) InstallTask(when *time.Time, delta *time.Duration) {
 }
 
 func (t *_Task) processTask() {
-	panic("processTask must be overridden")
+	t._TaskRequirements.processTask()
 }
 
 func (t *_Task) SuspendTask() {
@@ -73,17 +72,13 @@ func (t *_Task) Resume() {
 	_taskManager.resumeTask(t)
 }
 
-func (t *_Task) LowerThan(other *_Task) bool {
-	return *unsafe.Pointer(t) < *unsafe.Pointer(other)
-}
-
 type OneShotTask struct {
 	*_Task
 }
 
 func NewOneShotTask(when *time.Time) *OneShotTask {
 	o := &OneShotTask{}
-	o._TaskRequirements = o
+	o._Task = _New_Task(o)
 	if when != nil {
 		o.taskTime = when
 	}
@@ -96,7 +91,7 @@ type OneShotDeleteTask struct {
 
 func NewOneShotDeleteTask(when *time.Time) *OneShotDeleteTask {
 	o := &OneShotDeleteTask{}
-	o._TaskRequirements = o
+	o._Task = _New_Task(o)
 	if when != nil {
 		o.taskTime = when
 	}
@@ -135,7 +130,7 @@ type RecurringTask struct {
 
 func NewRecurringTask(_TaskRequirements _TaskRequirements, interval *time.Duration, offset *time.Duration) *RecurringTask {
 	r := &RecurringTask{}
-	r._TaskRequirements = _New_Task(_TaskRequirements)
+	r._Task = _New_Task(_TaskRequirements)
 	// set the interval if it hasn't already been set
 	if interval != nil {
 		r.taskInterval = interval
@@ -198,6 +193,10 @@ func init() {
 	go func() {
 		for {
 			task, delta := _taskManager.getNextTask()
+			if task == nil {
+				time.Sleep(10 * time.Millisecond)
+				continue
+			}
 			_taskManager.processTask(task)
 			time.Sleep(delta)
 		}

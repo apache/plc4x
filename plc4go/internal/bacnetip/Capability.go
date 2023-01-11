@@ -23,6 +23,10 @@ package bacnetip
 type Capability struct {
 }
 
+func NewCapability() *Capability {
+	return &Capability{}
+}
+
 // TODO: implement
 type Collector struct {
 }

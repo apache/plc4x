@@ -21,7 +21,6 @@ package bacnetip
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/local"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
@@ -59,7 +58,7 @@ func NewApplicationLayerMessageCodec(udpTransport *udp.Transport, transportUrl u
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
-	application, err := NewBIPSimpleApplication(&local.LocalDeviceObject{}, *address, &a.deviceInfoCache, nil)
+	application, err := NewBIPSimpleApplication(&LocalDeviceObject{}, *address, &a.deviceInfoCache, nil)
 	if err != nil {
 		return nil, err
 	}

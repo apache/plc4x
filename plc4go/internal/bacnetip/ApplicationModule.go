@@ -22,8 +22,6 @@ package bacnetip
 import (
 	"encoding/binary"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/local"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/service"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -209,9 +207,9 @@ type Application struct {
 	*ApplicationServiceElement
 	Collector
 
-	objectName       map[string]*local.LocalDeviceObject
-	objectIdentifier map[string]*local.LocalDeviceObject
-	localDevice      *local.LocalDeviceObject
+	objectName       map[string]*LocalDeviceObject
+	objectIdentifier map[string]*LocalDeviceObject
+	localDevice      *LocalDeviceObject
 	deviceInfoCache  *DeviceInfoCache
 	controllers      map[string]interface{}
 	helpers          map[string]func(pdu _PDU) error
@@ -219,7 +217,7 @@ type Application struct {
 	_startup_disabled bool
 }
 
-func NewApplication(localDevice *local.LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*Application, error) {
+func NewApplication(localDevice *LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*Application, error) {
 	log.Debug().Msgf("NewApplication localDevice=%v localAddress=%v deviceInfoCache=%s aseID=%d", localDevice, &localAddress, deviceInfoCache, aseID)
 	a := &Application{}
 	var err error
@@ -229,8 +227,8 @@ func NewApplication(localDevice *local.LocalDeviceObject, localAddress Address, 
 	}
 
 	// local objects by ID and name
-	a.objectName = map[string]*local.LocalDeviceObject{}
-	a.objectIdentifier = map[string]*local.LocalDeviceObject{}
+	a.objectName = map[string]*LocalDeviceObject{}
+	a.objectIdentifier = map[string]*LocalDeviceObject{}
 
 	// keep track of the local device
 	if localDevice != nil {
@@ -311,7 +309,7 @@ type ApplicationIOController struct {
 	queueByAddress map[string]SieveQueue
 }
 
-func NewApplicationIOController(localDevice *local.LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*ApplicationIOController, error) {
+func NewApplicationIOController(localDevice *LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*ApplicationIOController, error) {
 	a := &ApplicationIOController{
 		// queues for each address
 		queueByAddress: make(map[string]SieveQueue),
@@ -422,8 +420,8 @@ func (a *ApplicationIOController) Confirmation(apdu _PDU) error {
 
 type BIPSimpleApplication struct {
 	*ApplicationIOController
-	*service.WhoIsIAmServices
-	*service.ReadWritePropertyServices
+	*WhoIsIAmServices
+	*ReadWritePropertyServices
 	localAddress Address
 	asap         *ApplicationServiceAccessPoint
 	smap         *StateMachineAccessPoint
@@ -434,15 +432,21 @@ type BIPSimpleApplication struct {
 	mux          *UDPMultiplexer
 }
 
-func NewBIPSimpleApplication(localDevice *local.LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*BIPSimpleApplication, error) {
+func NewBIPSimpleApplication(localDevice *LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*BIPSimpleApplication, error) {
 	b := &BIPSimpleApplication{}
 	var err error
 	b.ApplicationIOController, err = NewApplicationIOController(localDevice, localAddress, deviceInfoCache, aseID)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating io controller")
 	}
-
-	b.localAddress = localAddress
+	b.WhoIsIAmServices, err = NewWhoIsIAmServices(b)
+	if err != nil {
+		return nil, errors.Wrap(err, "error WhoIs/IAm services")
+	}
+	b.ReadWritePropertyServices, err = NewReadWritePropertyServices()
+	if err != nil {
+		return nil, errors.Wrap(err, "error read write property services")
+	}
 
 	// include a application decoder
 	b.asap, err = NewApplicationServiceAccessPoint(nil, nil)
