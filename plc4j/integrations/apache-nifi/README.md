@@ -85,29 +85,25 @@ Also, it is important to keep in mind the Processor Scheduling Configuration. Us
 
 Table of data mapping between plc data and Avro
 
+
 | PLC type | Avro Type |
-|----------|-----------|
-| PlcBigDecimal | float |
-| PlcBigInteger | long |
-| PlcBitString | string |
+|----------:|-----------|
 | PlcBOOL | boolean |
-| PlcBYTE | string |
+| PlcBYTE | bytes |
+| PlcSINT | int |
+| PlcINT | int |
+| PlcLINT | long |
+| PlcREAL | float |
+| PlcLREAL | double |
 | PlcCHAR | string |
 | PlcDATE_AND_TIME | string |
 | PlcDATE | string |
 | PlcDINT | string |
 | PlcDWORD | string |
-| PlcINT | int |
-| PlcLINT | string |
-| PlcList | string |
-| PlcLREAL | string |
 | PlcLTIME | string |
 | PlcLWORD | string |
 | PlcNull | string |
-| PlcREAL | double |
-| PlcSINT | int |
 | PlcSTRING | string |
-| PlcStruct | string |
 | PlcTIME_OF_DAY | string |
 | PlcTIME | string |
 | PlcUDINT | string |
