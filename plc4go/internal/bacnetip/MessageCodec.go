@@ -21,6 +21,7 @@ package bacnetip
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
@@ -49,7 +50,6 @@ func NewApplicationLayerMessageCodec(udpTransport *udp.Transport, transportUrl u
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating transport instance")
 	}
-	_ = transportInstance
 	a := &ApplicationLayerMessageCodec{
 		localAddress:  localAddress,
 		remoteAddress: remoteAddress,
@@ -58,6 +58,9 @@ func NewApplicationLayerMessageCodec(udpTransport *udp.Transport, transportUrl u
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
+	// TODO: workaround for strange address parsing
+	at := AddressTuple[string, uint16]{fmt.Sprintf("%d.%d.%d.%d", address.AddrAddress[0], address.AddrAddress[1], address.AddrAddress[2], address.AddrAddress[3]), *address.AddrPort}
+	address.AddrTuple = &at
 	application, err := NewBIPSimpleApplication(&LocalDeviceObject{}, *address, &a.deviceInfoCache, nil)
 	if err != nil {
 		return nil, err

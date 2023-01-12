@@ -149,6 +149,9 @@ func NewUDPDirector(address AddressTuple[string, uint16], timeout *int, reuse *b
 		return nil, errors.Wrap(err, "error resolving udp address")
 	}
 	d.ti = udp.NewTransportInstance(resolvedAddress, nil, d.timeout, d.reuse, nil)
+	if err := d.ti.Connect(); err != nil {
+		return nil, errors.Wrap(err, "error connecting transport instance")
+	}
 
 	d.running = true
 	go func() {
@@ -164,7 +167,7 @@ func NewUDPDirector(address AddressTuple[string, uint16], timeout *int, reuse *b
 	}()
 
 	// start with an empty peer pool
-	d.peers = nil
+	d.peers = map[string]*UDPActor{}
 
 	return d, nil
 }

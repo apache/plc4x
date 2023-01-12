@@ -448,6 +448,8 @@ func NewBIPSimpleApplication(localDevice *LocalDeviceObject, localAddress Addres
 		return nil, errors.Wrap(err, "error read write property services")
 	}
 
+	b.localAddress = localAddress
+
 	// include a application decoder
 	b.asap, err = NewApplicationServiceAccessPoint(nil, nil)
 	if err != nil {
