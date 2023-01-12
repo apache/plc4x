@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.plc4x.java.profinet.context;
 
 import org.apache.commons.codec.DecoderException;
@@ -23,9 +24,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
-import org.apache.plc4x.java.profinet.device.ProfinetCallable;
-import org.apache.plc4x.java.profinet.device.ProfinetChannel;
-import org.apache.plc4x.java.profinet.device.ProfinetSubscriptionHandle;
+import org.apache.plc4x.java.profinet.device.*;
 import org.apache.plc4x.java.profinet.gsdml.*;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
@@ -90,7 +89,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     private String[] subModules;
     private AtomicInteger sessionKeyGenerator = new AtomicInteger(1);
     private AtomicInteger identificationGenerator = new AtomicInteger(1);
-    List<PnIoCm_IoDataObject> inputIoDataApiBlocks = new ArrayList<>();
+    List<PnIoCm_IoDataObject> inputIoPsApiBlocks = new ArrayList<>();
     List<PnIoCm_IoCs> inputIoCsApiBlocks = new ArrayList<>();
     List<PnIoCm_IoDataObject> outputIoDataApiBlocks = new ArrayList<>();
     List<PnIoCm_IoCs> outputIoCsApiBlocks = new ArrayList<>();
@@ -109,6 +108,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
 
     private String deviceAccess;
     private ProfinetDeviceAccessPointItem deviceAccessItem;
+    private ProfinetModule[] modules;
 
     public ProfinetDeviceContext() {
         // Generate a new Activity Id, which will be used throughout the connection.
@@ -303,12 +303,12 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         this.identificationGenerator = identificationGenerator;
     }
 
-    public List<PnIoCm_IoDataObject> getInputIoDataApiBlocks() {
-        return inputIoDataApiBlocks;
+    public List<PnIoCm_IoDataObject> getInputIoPsApiBlocks() {
+        return inputIoPsApiBlocks;
     }
 
-    public void setInputIoDataApiBlocks(List<PnIoCm_IoDataObject> inputIoDataApiBlocks) {
-        this.inputIoDataApiBlocks = inputIoDataApiBlocks;
+    public void setInputIoPsApiBlocks(List<PnIoCm_IoDataObject> inputIoPsApiBlocks) {
+        this.inputIoPsApiBlocks = inputIoPsApiBlocks;
     }
 
     public List<PnIoCm_IoCs> getInputIoCsApiBlocks() {
@@ -377,44 +377,84 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     }
 
     private void extractGSDFileInfo(ProfinetISO15745Profile gsdFile) throws PlcConnectionException {
-        ProfinetDeviceAccessPointItem foundDeviceAccessItem = null;
+
         for (ProfinetDeviceAccessPointItem deviceAccessItem : gsdFile.getProfileBody().getApplicationProcess().getDeviceAccessPointList()) {
             if (deviceAccess.equals(deviceAccessItem.getId())) {
-                foundDeviceAccessItem = deviceAccessItem;
+                this.deviceAccessItem = deviceAccessItem;
             }
         }
-        if (foundDeviceAccessItem == null) {
+        if (deviceAccessItem == null) {
             throw new PlcConnectionException("Unable to find Device Access Item - " + this.deviceAccess);
         }
 
-        this.deviceAccessItem = foundDeviceAccessItem;
+        Matcher matcher = RANGE_PATTERN.matcher(deviceAccessItem.getPhysicalSlots());
+        if (!matcher.matches()) {
+            throw new PlcConnectionException("Physical Slots Range is not in the correct format " + deviceAccessItem.getPhysicalSlots());
+        }
+        if (!matcher.group("from").equals("0")) {
+            throw new PlcConnectionException("Physical Slots don't start from 0, instead starts at " + deviceAccessItem.getPhysicalSlots());
+        }
+        int numberOfSlots = Integer.parseInt(matcher.group("to"));
+        this.modules = new ProfinetModule[numberOfSlots];
+        this.modules[deviceAccessItem.getFixedInSlots()] = new ProfinetModuleImpl(deviceAccessItem);
 
         List<ProfinetModuleItemRef> usableSubModules = this.deviceAccessItem.getUseableModules();
+        int currentSlot = deviceAccessItem.getFixedInSlots() + 1;
         for (String subModule : this.subModules) {
-            boolean found = false;
             if (subModule.equals("")) {
-                found = true;
+                this.modules[currentSlot] = new ProfinetEmptyModule();
             } else {
                 for (ProfinetModuleItemRef useableModule : usableSubModules) {
                     if (useableModule.getModuleItemTarget().equals(subModule)) {
-                        found = true;
+                        matcher = RANGE_PATTERN.matcher(useableModule.getAllowedInSlots());
+                        if (!matcher.matches()) {
+                            throw new PlcConnectionException("Physical Slots Range is not in the correct format " + useableModule.getAllowedInSlots());
+                        }
+                        int from = Integer.parseInt(matcher.group("from"));
+                        int to = Integer.parseInt(matcher.group("to"));
+                        if (currentSlot < from || currentSlot > to) {
+                            throw new PlcConnectionException("Current Submodule Slot " + currentSlot + " is not with the allowable slots" + useableModule.getAllowedInSlots());
+                        }
+
+                        ProfinetModuleItem foundReferencedModule = null;
+                        for (ProfinetModuleItem module : gsdFile.getProfileBody().getApplicationProcess().getModuleList()) {
+                            if (module.getId().equals(subModule)) {
+                                foundReferencedModule = module;
+                                break;
+                            }
+                        }
+
+                        if (foundReferencedModule == null) {
+                            throw new PlcConnectionException("Couldn't find reference module " + subModule + " in GSD file.");
+                        }
+
+                        this.modules[currentSlot] = new ProfinetModuleImpl(foundReferencedModule);
                         break;
                     }
                 }
             }
-
-            if (!found) {
+            if (this.modules[currentSlot] == null) {
                 throw new PlcConnectionException("Sub Module not Found in allowed Modules");
             }
+            currentSlot += 1;
         }
 
-        List<ProfinetInterfaceSubmoduleItem> interfaceSubModules = foundDeviceAccessItem.getSystemDefinedSubmoduleList().getInterfaceSubmodules();
+        while (currentSlot != numberOfSlots) {
+            this.modules[currentSlot] = new ProfinetEmptyModule();
+            currentSlot += 1;
+        }
+
+        List<ProfinetInterfaceSubmoduleItem> interfaceSubModules = deviceAccessItem.getSystemDefinedSubmoduleList().getInterfaceSubmodules();
         if (interfaceSubModules != null && interfaceSubModules.size() > 0) {
             if (interfaceSubModules.get(0).getApplicationRelations().getStartupMode() != null && interfaceSubModules.get(0).getApplicationRelations().getStartupMode().toLowerCase().contains("advanced")) {
                 this.startupMode = true;
                 this.frameId = 0x8001;
             }
         }
+    }
+
+    public ProfinetModule[] getModules() {
+        return modules;
     }
 
     public boolean isStartupMode() {
@@ -483,24 +523,20 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
 
     public void populateNode() throws PlcException {
         extractGSDFileInfo(this.gsdFile);
-        Matcher matcher = RANGE_PATTERN.matcher(deviceAccessItem.getPhysicalSlots());
-        if (!matcher.matches()) {
-            throw new PlcConnectionException("Physical Slots Range is not in the correct format " + deviceAccessItem.getPhysicalSlots());
-        }
 
-        int inputIoDataOffsetCount = 0;
-        int outputIoCsOffsetCount = 0;
+        int inputIoPsOffset = 0;
+        int outputIoCsOffset = 0;
 
         for (ProfinetVirtualSubmoduleItem virtualItem : this.deviceAccessItem.getVirtualSubmoduleList()) {
             Integer identNumber = Integer.decode(virtualItem.getSubmoduleIdentNumber());
-            inputIoDataApiBlocks.add(new PnIoCm_IoDataObject(
+            inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
                 0,
                 identNumber,
-                inputIoDataOffsetCount));
+                inputIoPsOffset));
             outputIoCsApiBlocks.add(new PnIoCm_IoCs(
                 0,
                 identNumber,
-                outputIoCsOffsetCount));
+                outputIoCsOffset));
             expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
                 identNumber,
                 identNumber,
@@ -508,20 +544,20 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
                 false,
                 false,
                 false));
-            inputIoDataOffsetCount += 1;
-            outputIoCsOffsetCount += 1;
+            inputIoPsOffset += 1;
+            outputIoCsOffset += 1;
         }
 
         for (ProfinetInterfaceSubmoduleItem interfaceItem : this.deviceAccessItem.getSystemDefinedSubmoduleList().getInterfaceSubmodules()) {
             Integer identNumber = Integer.decode(interfaceItem.getSubmoduleIdentNumber());
-            inputIoDataApiBlocks.add(new PnIoCm_IoDataObject(
+            inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
                 0,
                 identNumber,
-                inputIoDataOffsetCount));
+                inputIoPsOffset));
             outputIoCsApiBlocks.add(new PnIoCm_IoCs(
                 0,
                 identNumber,
-                outputIoCsOffsetCount));
+                outputIoCsOffset));
             expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
                 identNumber,
                 identNumber,
@@ -529,21 +565,21 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
                 false,
                 false,
                 false));
-            inputIoDataOffsetCount += 1;
-            outputIoCsOffsetCount += 1;
+            inputIoPsOffset += 1;
+            outputIoCsOffset += 1;
         }
 
         for (
             ProfinetPortSubmoduleItem portItem : this.deviceAccessItem.getSystemDefinedSubmoduleList().getPortSubmodules()) {
             Integer identNumber = Integer.decode(portItem.getSubmoduleIdentNumber());
-            inputIoDataApiBlocks.add(new PnIoCm_IoDataObject(
+            inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
                 0,
                 identNumber,
-                inputIoDataOffsetCount));
+                inputIoPsOffset));
             outputIoCsApiBlocks.add(new PnIoCm_IoCs(
                 0,
                 identNumber,
-                outputIoCsOffsetCount));
+                outputIoCsOffset));
             expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
                 identNumber,
                 identNumber,
@@ -551,8 +587,8 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
                 false,
                 false,
                 false));
-            inputIoDataOffsetCount += 1;
-            outputIoCsOffsetCount += 1;
+            inputIoPsOffset += 1;
+            outputIoCsOffset += 1;
         }
         expectedSubmoduleReq.add(
             new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
@@ -584,18 +620,18 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
 
                 Integer identNumber = Integer.decode(foundModule.getModuleIdentNumber());
                 if (foundModule.getInputDataLength() != 0) {
-                    inputIoDataApiBlocks.add(new PnIoCm_IoDataObject(
+                    inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
                         slot,
                         0x01,
-                        inputIoDataOffsetCount));
-                    inputIoDataOffsetCount += 1 + foundModule.getInputDataLength();
+                        inputIoPsOffset));
+                    inputIoPsOffset += 1 + foundModule.getInputDataLength();
                 }
                 if (foundModule.getInputDataLength() != 0) {
                     outputIoCsApiBlocks.add(new PnIoCm_IoCs(
                         slot,
                         0x01,
-                        outputIoCsOffsetCount));
-                    outputIoCsOffsetCount += 1;
+                        outputIoCsOffset));
+                    outputIoCsOffset += 1;
                 }
             }
             slot += 1;
@@ -618,16 +654,16 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
                     inputIoCsApiBlocks.add(new PnIoCm_IoCs(
                         slot,
                         0x01,
-                        inputIoDataOffsetCount));
-                    inputIoDataOffsetCount += foundModule.getOutputDataLength();
+                        inputIoPsOffset));
+                    inputIoPsOffset += foundModule.getOutputDataLength();
                 }
 
                 if (foundModule.getOutputDataLength() != 0) {
                     outputIoDataApiBlocks.add(new PnIoCm_IoDataObject(
                         slot,
                         0x01,
-                        outputIoCsOffsetCount));
-                    outputIoCsOffsetCount += 1 + foundModule.getOutputDataLength();
+                        outputIoCsOffset));
+                    outputIoCsOffset += 1 + foundModule.getOutputDataLength();
                 }
 
                 if (foundModule.getInputDataLength() != 0 && foundModule.getOutputDataLength() != 0) {

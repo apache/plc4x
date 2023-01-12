@@ -21,16 +21,11 @@ package org.apache.plc4x.java.profinet.device;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
-import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
-import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.gsdml.*;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.profinet.tag.ProfinetTag;
@@ -464,7 +459,7 @@ public class ProfinetDevice {
 
             List<PnIoCm_IoCrBlockReqApi> inputApis = Collections.singletonList(
                 new PnIoCm_IoCrBlockReqApi(
-                    deviceContext.getInputIoDataApiBlocks(),
+                    deviceContext.getInputIoPsApiBlocks(),
                     deviceContext.getInputIoCsApiBlocks())
             );
 

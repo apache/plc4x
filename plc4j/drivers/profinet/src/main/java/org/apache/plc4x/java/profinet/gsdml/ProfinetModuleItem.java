@@ -27,7 +27,7 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonRootName("ModuleItem")
-public class ProfinetModuleItem {
+public class ProfinetModuleItem implements ProfinetDeviceItem {
 
     @JacksonXmlProperty(isAttribute=true, localName="ID")
     private String id;
