@@ -19,7 +19,7 @@
 package org.apache.plc4x.nifi;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,20 +29,43 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
+import org.apache.nifi.components.AllowableValue;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.components.ValidationContext;
 import org.apache.nifi.components.ValidationResult;
 import org.apache.nifi.components.Validator;
 import org.apache.nifi.expression.ExpressionLanguageScope;
+import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.processor.AbstractProcessor;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.util.StandardValidators;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.apache.plc4x.nifi.util.AddressesAccessStrategies;
 
 public abstract class BasePlc4xProcessor extends AbstractProcessor {
+
+    private static final List<AllowableValue> addressAccessStrategy = Collections.unmodifiableList(Arrays.asList(
+        AddressesAccessStrategies.ADDRESS_PROPERTY,
+        AddressesAccessStrategies.ADDRESS_TEXT));
+
+    protected static List<AllowableValue> getAddressAccessStrategyValues() {
+            return addressAccessStrategy;
+        }
+
+    private AllowableValue getDefaultAddressAccessStrategy() {
+        return AddressesAccessStrategies.ADDRESS_PROPERTY;
+    }
+
+    private PropertyDescriptor buildStrategyProperty(AllowableValue[] values) {
+        return new PropertyDescriptor.Builder()
+                .fromPropertyDescriptor(AddressesAccessStrategies.PLC_ADDRESS_ACCESS_STRATEGY)
+                .allowableValues(values)
+                .defaultValue(getDefaultAddressAccessStrategy().getValue())
+                .build();
+    }
+
 
 	protected static final PropertyDescriptor PLC_CONNECTION_STRING = new PropertyDescriptor
         .Builder().name("PLC_CONNECTION_STRING")
@@ -67,15 +90,17 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     protected Set<Relationship> relationships;
   
     protected String connectionString;
-    protected Map<String, String> addressMap;
-
 
     private final PooledPlcDriverManager driverManager = new PooledPlcDriverManager();
 
     @Override
     protected void init(final ProcessorInitializationContext context) {
     	final List<PropertyDescriptor> properties = new ArrayList<>();
+        final AllowableValue[] strategies = getAddressAccessStrategyValues().toArray(new AllowableValue[0]);
     	properties.add(PLC_CONNECTION_STRING);
+        properties.add(buildStrategyProperty(strategies));
+
+        properties.add(AddressesAccessStrategies.ADDRESS_TEXT_PROPERTY);
         this.properties = Collections.unmodifiableList(properties);
 
     	
@@ -85,19 +110,18 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         this.relationships = Collections.unmodifiableSet(relationships);
     }
 
-    public Map<String, String> getPlcAddress() {
+    public Map<String, String> getPlcAddressMap(ProcessContext context, FlowFile flowFile) {
+        Map<String, String> addressMap = new HashMap<>();
+		//variables are passed as dynamic properties
+
+        AddressesAccessStrategies.AddressAccessStrategy strategy = AddressesAccessStrategies.getAccessStrategy(context);
+
+        addressMap = strategy.extractAddresses(context, flowFile);
         return addressMap;
     }
     
     public String getConnectionString() {
         return connectionString;
-    }
-
-    Collection<String> getTags() {
-        return addressMap.keySet();
-    }
-    String getAddress(String tagName) {
-        return addressMap.get(tagName);
     }
     
 	@Override
@@ -117,6 +141,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
                 .name(propertyDescriptorName)
                 .expressionLanguageSupported(ExpressionLanguageScope.NONE)
                 .addValidator(StandardValidators.ATTRIBUTE_KEY_PROPERTY_NAME_VALIDATOR)
+                .dependsOn(AddressesAccessStrategies.PLC_ADDRESS_ACCESS_STRATEGY, AddressesAccessStrategies.ADDRESS_PROPERTY)
                 .required(false)
                 .dynamic(true)
                 .build();
@@ -126,13 +151,6 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     @OnScheduled
     public void onScheduled(final ProcessContext context) {
 		connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
-		addressMap = new HashMap<>();
-		//variables are passed as dynamic properties
-		context.getProperties().keySet().stream().filter(PropertyDescriptor::isDynamic).forEach(
-				t -> addressMap.put(t.getName(), context.getProperty(t.getName()).getValue()));
-		if (addressMap.isEmpty()) {
-			throw new PlcRuntimeException("No address specified");
-		}	
     }
 
     @Override
@@ -149,13 +167,12 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         BasePlc4xProcessor that = (BasePlc4xProcessor) o;
         return Objects.equals(properties, that.properties) &&
             Objects.equals(getRelationships(), that.getRelationships()) &&
-            Objects.equals(getConnectionString(), that.getConnectionString()) &&
-            Objects.equals(addressMap, that.addressMap);
+            Objects.equals(getConnectionString(), that.getConnectionString());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), properties, getRelationships(), getConnectionString(), addressMap);
+        return Objects.hash(super.hashCode(), properties, getRelationships(), getConnectionString());
     }
 
     public static class Plc4xConnectionStringValidator implements Validator {

@@ -49,7 +49,6 @@ import org.apache.nifi.serialization.RecordSetWriterFactory;
 import org.apache.nifi.util.StopWatch;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.nifi.record.Plc4xWriter;
@@ -105,13 +104,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	public void onScheduled(final ProcessContext context) {
         super.connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
         this.readTimeout = context.getProperty(PLC_READ_FUTURE_TIMEOUT_MILISECONDS.getName()).asInteger();
-		addressMap = new HashMap<>();
-		//variables are passed as dynamic properties
-		context.getProperties().keySet().stream().filter(PropertyDescriptor::isDynamic).forEach(
-				t -> addressMap.put(t.getName(), context.getProperty(t.getName()).getValue()));
-		if (addressMap.isEmpty()) {
-			throw new PlcRuntimeException("No address specified");
-		}	
 	}
 	
 	@Override
@@ -151,12 +143,10 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			}
 
 			PlcReadRequest.Builder builder = connection.readRequestBuilder();
-			getTags().forEach(tagName -> {
-				String address = getAddress(tagName);
-				if (address != null) {
-					builder.addTagAddress(tagName, address);
-				}
-			});
+			Map<String,String> addressMap = getPlcAddressMap(context, fileToProcess);
+            for (Map.Entry<String,String> entry: addressMap.entrySet()){
+                builder.addTagAddress(entry.getKey(), entry.getValue());
+            }
 			PlcReadRequest readRequest = builder.build();
 			final FlowFile originalFlowFile = fileToProcess;
 			resultSetFF = session.write(resultSetFF, out -> {

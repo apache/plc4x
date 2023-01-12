@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.nifi;
 
+import java.util.Map;
+
 import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.behavior.ReadsAttribute;
 import org.apache.nifi.annotation.behavior.ReadsAttributes;
@@ -56,13 +58,11 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
 
             // Prepare the request.
             PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
-            flowFile.getAttributes().forEach((tag, value) -> {
-                String address = getAddress(tag);
-                if (address != null) {
-                    // TODO: Convert the String into the right type ...
-                    builder.addTagAddress(tag, address, Boolean.valueOf(value));
-                }
-            });
+            Map<String,String> addressMap = getPlcAddressMap(context, flowFile);
+            for (Map.Entry<String,String> entry: addressMap.entrySet()){
+                builder.addTagAddress(entry.getKey(), entry.getValue());
+            }
+           
             PlcWriteRequest writeRequest = builder.build();
 
             // Send the request to the PLC.
