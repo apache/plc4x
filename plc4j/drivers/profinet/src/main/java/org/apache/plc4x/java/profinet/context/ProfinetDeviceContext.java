@@ -97,8 +97,6 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     List<PnIoCm_Submodule> expectedSubModuleApiBlocks = new ArrayList<>();
     List<PnIoCm_Block_ExpectedSubmoduleReq> expectedSubmoduleReq = new ArrayList<>();
     private String deviceTypeName;
-    private String vendorId;
-    private String deviceId;
     private String deviceName;
     private ProfinetISO15745Profile gsdFile;
     private boolean startupMode = false;
@@ -359,22 +357,6 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
 
     public void setDeviceTypeName(String deviceTypeName) {
         this.deviceTypeName = deviceTypeName;
-    }
-
-    public String getVendorId() {
-        return vendorId;
-    }
-
-    public void setVendorId(String vendorId) {
-        this.vendorId = vendorId;
-    }
-
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
     }
 
     public String getDeviceName() {

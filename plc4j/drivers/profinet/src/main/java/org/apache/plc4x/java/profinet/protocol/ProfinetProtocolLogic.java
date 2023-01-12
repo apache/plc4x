@@ -166,13 +166,8 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         } catch (InterruptedException ignored) {}
 
         for (Map.Entry<String, ProfinetDevice> device : configuredDevices.entrySet()) {
-            try {
-                device.getValue().setSubModulesObjects();
-                device.getValue().getDeviceContext().setChannel(driverContext.getChannel());
-                device.getValue().getDeviceContext().setLocalIpAddress(localIpAddress);
-            } catch (PlcException e) {
-                throw new RuntimeException(e);
-            }
+            device.getValue().getDeviceContext().setChannel(driverContext.getChannel());
+            device.getValue().getDeviceContext().setLocalIpAddress(localIpAddress);
         }
 
         try {

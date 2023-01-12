@@ -18,9 +18,13 @@
  */
 package org.apache.plc4x.java.profinet.config;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
+import org.apache.plc4x.java.profinet.device.GsdFileMap;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
 import org.apache.plc4x.java.profinet.device.ProfinetDevices;
+import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
@@ -31,6 +35,11 @@ import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaul
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -65,8 +74,8 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
 
     @Required
     @ConfigurationParameter("gsddirectory")
-    @StringDefaultValue("")
-    private String gsdDirectory;
+    @ParameterConverter(ProfinetGsdFileConvertor.class)
+    static protected GsdFileMap gsdFiles;
 
     @ConfigurationParameter("sendclockfactor")
     @IntDefaultValue(32)
@@ -83,8 +92,6 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
     @ConfigurationParameter("dataholdfactor")
     @IntDefaultValue(50)
     private int dataHoldFactor;
-
-    //  devices=[[name,deviceaccess,{submodule,submodule}], [name,deviceaccess,{submodule,submodule}]]
 
     public static class ProfinetDeviceConvertor implements ConfigurationParameterConverter<ProfinetDevices> {
 
@@ -114,7 +121,13 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
                 if (deviceParameter.length() > 7) {
                     matcher = DEVICE_PARAMETERS.matcher(deviceParameter);
                     if (matcher.matches()) {
-                        devices.put(matcher.group("devicename"), new ProfinetDevice(matcher.group("devicename"), matcher.group("deviceaccess"), matcher.group("submodules")));
+                        devices.put(matcher.group("devicename"),
+                            new ProfinetDevice(matcher.group("devicename"),
+                                               matcher.group("deviceaccess"),
+                                               matcher.group("submodules"),
+                                               (vendorId, deviceId) -> gsdFiles.getGsdFiles().get("0x" + vendorId + "-0x" + deviceId)
+                            )
+                        );
                     }
                 }
             }
@@ -123,17 +136,39 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
         }
     }
 
+    public static class ProfinetGsdFileConvertor implements ConfigurationParameterConverter<GsdFileMap> {
+
+        @Override
+        public Class<GsdFileMap> getType() {
+            return GsdFileMap.class;
+        }
+
+        @Override
+        public GsdFileMap convert(String value) {
+            HashMap<String, ProfinetISO15745Profile> gsdFiles = new HashMap<>();
+            try {
+                DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(value));
+                XmlMapper xmlMapper = new XmlMapper();
+                for (Path file : stream) {
+                    try {
+                        ProfinetISO15745Profile gsdFile = xmlMapper.readValue(file.toFile(), ProfinetISO15745Profile.class);
+                        if (gsdFile.getProfileHeader() != null && gsdFile.getProfileHeader().getProfileIdentification().equals("PROFINET Device Profile") && gsdFile.getProfileHeader().getProfileClassID().equals("Device")) {
+                            String id = gsdFile.getProfileBody().getDeviceIdentity().getVendorId() + "-" + gsdFile.getProfileBody().getDeviceIdentity().getDeviceID();
+                            gsdFiles.put(id, gsdFile);
+                        }
+                    } catch (IOException ignored) {
+                    }
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("GSDML File directory is un-readable");
+            }
+            return new GsdFileMap(gsdFiles);
+        }
+
+    }
+
     public ProfinetDevices getDevices() {
         return this.devices;
-    }
-
-
-    public String getGsdDirectory() {
-        return gsdDirectory;
-    }
-
-    public void setGsdDirectory(String gsdDirectory) {
-        this.gsdDirectory = gsdDirectory;
     }
 
     public int getSendClockFactor() {
@@ -150,6 +185,10 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
 
     public int getDataHoldFactor() {
         return dataHoldFactor;
+    }
+
+    public static GsdFileMap getGsdFiles() {
+        return gsdFiles;
     }
 
     @Override

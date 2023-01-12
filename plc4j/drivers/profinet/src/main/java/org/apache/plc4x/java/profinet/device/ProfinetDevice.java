@@ -49,27 +49,29 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class ProfinetDevice {
+
     private final Logger logger = LoggerFactory.getLogger(ProfinetDevice.class);
-    private ProfinetDriverContext driverContext;
+    private static final int DEFAULT_NUMBER_OF_PORTS_TO_SCAN = 100;
+    private final BiFunction<String, String, ProfinetISO15745Profile> gsdHandler;
     private ProfinetDeviceContext deviceContext = new ProfinetDeviceContext();
     DatagramSocket socket = null;
+    private String vendorId;
+    private String deviceId;
 
-    public ProfinetDevice(String deviceName, String deviceAccess, String subModules)  {
+    public ProfinetDevice(String deviceName, String deviceAccess, String subModules, BiFunction<String, String, ProfinetISO15745Profile> gsdHandler)  {
+        this.gsdHandler = gsdHandler;
         deviceContext.setDeviceAccess(deviceAccess);
         deviceContext.setSubModules(subModules);
         deviceContext.setDeviceName(deviceName);
         openDeviceUdpPort();
     }
 
-    public ProfinetDriverContext getDriverContext() {
-        return driverContext;
-    }
-
-    public void setDriverContext(ProfinetDriverContext driverContext) {
-        this.driverContext = driverContext;
+    public BiFunction<String, String, ProfinetISO15745Profile> getGsdHandler() {
+        return gsdHandler;
     }
 
     private void openDeviceUdpPort() {
@@ -77,7 +79,7 @@ public class ProfinetDevice {
         int count = 0;
         int port = ProfinetDeviceContext.DEFAULT_SEND_UDP_PORT;
         boolean portFound = false;
-        while (!portFound && count < 100) {
+        while (!portFound && count < DEFAULT_NUMBER_OF_PORTS_TO_SCAN) {
             try {
                 socket = new DatagramSocket(port + count);
                 portFound = true;
@@ -91,32 +93,29 @@ public class ProfinetDevice {
         }
     }
 
-    private void issueGSDMLFile(String vendorId, String deviceId) {
-        String id = "0x" + vendorId + "-0x" + deviceId;
-        try {
-            deviceContext.setGsdFile(driverContext.getGsdFiles().get(id));
-        } catch (PlcConnectionException e) {
-            throw new RuntimeException("No GSDML file available for device " + deviceContext.getVendorId() + " - " + deviceContext.getDeviceId() + " - " + deviceContext.getDeviceName());
-        }
-    }
-
     private long getObjectId() {
-        long id = deviceContext.getAndIncrementIdentification();
-        return id;
+        return deviceContext.getAndIncrementIdentification();
     }
 
-    public String[] getSubModules() {
-        return deviceContext.getSubModules();
+    public String getVendorId() {
+        return vendorId;
     }
 
-    private int getNumberofSlotsAvailable() {
-        int count = 0;
-        return count;
+    public String getDeviceId() {
+        return deviceId;
     }
 
-    public void setSubModulesObjects() throws PlcException {
-        issueGSDMLFile(deviceContext.getVendorId(), deviceContext.getDeviceId());
-        deviceContext.populateNode();
+    public void setVendorDeviceId(String vendorId, String deviceId) {
+        try {
+            this.vendorId = vendorId;
+            this.deviceId = deviceId;
+            if (deviceContext.getGsdFile() == null) {
+                deviceContext.setGsdFile(gsdHandler.apply(vendorId, deviceId));
+                deviceContext.populateNode();
+            }
+        } catch (PlcException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void recordIdAndSend(ProfinetCallable<DceRpc_Packet> callable) {
@@ -210,7 +209,7 @@ public class ProfinetDevice {
             options.put(entry.getKey(), entry.getValue());
         }
         return new DefaultPlcBrowseItem(
-            ProfinetTag.of(Hex.encodeHexString(this.deviceContext.getMacAddress().getAddress())),
+            ProfinetTag.of(this.deviceContext.getDeviceName()),
             this.deviceContext.getDeviceName(),
             false,
             false,
@@ -369,11 +368,8 @@ public class ProfinetDevice {
         if (item.getOptions().containsKey("deviceTypeName")) {
             deviceContext.setDeviceTypeName(item.getOptions().get("deviceTypeName"));
         }
-        if (item.getOptions().containsKey("vendorId")) {
-            deviceContext.setVendorId(item.getOptions().get("vendorId"));
-        }
-        if (item.getOptions().containsKey("deviceId")) {
-            deviceContext.setDeviceId(item.getOptions().get("deviceId"));
+        if (item.getOptions().containsKey("vendorId") && item.getOptions().containsKey("deviceId")) {
+            setVendorDeviceId(item.getOptions().get("vendorId"), item.getOptions().get("deviceId"));
         }
         if (item.getOptions().containsKey("deviceName")) {
             deviceContext.setDeviceName(item.getOptions().get("deviceName"));
@@ -433,7 +429,7 @@ public class ProfinetDevice {
                     ProfinetDeviceContext.ARUUID,
                     deviceContext.getSessionKey(),
                     deviceContext.getLocalMacAddress(),
-                    new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.valueOf(deviceContext.getDeviceId()), Integer.valueOf(deviceContext.getVendorId())),
+                    new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.valueOf(deviceId), Integer.valueOf(vendorId)),
                     false,
                     deviceContext.isStartupMode(),
                     false,
@@ -551,7 +547,7 @@ public class ProfinetDevice {
                 IntegerEncoding.BIG_ENDIAN,
                 CharacterEncoding.ASCII,
                 FloatingPointEncoding.IEEE,
-                new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.valueOf(deviceContext.getDeviceId()), Integer.valueOf(deviceContext.getVendorId())),
+                new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.valueOf(deviceId), Integer.valueOf(vendorId)),
                 new DceRpc_InterfaceUuid_DeviceInterface(),
                 deviceContext.getUuid(),
                 0,
@@ -678,7 +674,7 @@ public class ProfinetDevice {
             return new DceRpc_Packet(
                 DceRpc_PacketType.REQUEST, true, false, false,
                 IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
-                new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.valueOf(deviceContext.getDeviceId()), Integer.valueOf(deviceContext.getVendorId())),
+                new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.valueOf(deviceId), Integer.valueOf(vendorId)),
                 new DceRpc_InterfaceUuid_DeviceInterface(),
                 deviceContext.getUuid(),
                 0,
@@ -717,7 +713,7 @@ public class ProfinetDevice {
             return new DceRpc_Packet(
                 DceRpc_PacketType.REQUEST, true, false, false,
                 IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
-                new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.valueOf(deviceContext.getDeviceId()), Integer.valueOf(deviceContext.getVendorId())),
+                new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.valueOf(deviceId), Integer.valueOf(vendorId)),
                 new DceRpc_InterfaceUuid_DeviceInterface(),
                 deviceContext.getUuid(),
                 0,
@@ -775,7 +771,7 @@ public class ProfinetDevice {
                 IntegerEncoding.BIG_ENDIAN,
                 CharacterEncoding.ASCII,
                 FloatingPointEncoding.IEEE,
-                new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.valueOf(deviceContext.getDeviceId()), Integer.valueOf(deviceContext.getVendorId())),
+                new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.valueOf(deviceId), Integer.valueOf(vendorId)),
                 new DceRpc_InterfaceUuid_ControllerInterface(),
                 activityUuid,
                 0,

@@ -76,7 +76,6 @@ public class ProfinetDriverContext implements DriverContext {
 
     public void setConfiguration(ProfinetConfiguration configuration) {
         this.configuration = configuration;
-        setGsdDirectory();
     }
 
     public DatagramSocket getSocket() {
@@ -91,22 +90,4 @@ public class ProfinetDriverContext implements DriverContext {
         return gsdFiles;
     }
 
-    private void setGsdDirectory() {
-        try {
-            DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(configuration.getGsdDirectory()));
-            XmlMapper xmlMapper = new XmlMapper();
-            for (Path file : stream) {
-                try {
-                    ProfinetISO15745Profile gsdFile = xmlMapper.readValue(file.toFile(), ProfinetISO15745Profile.class);
-                    if (gsdFile.getProfileHeader() != null && gsdFile.getProfileHeader().getProfileIdentification().equals("PROFINET Device Profile") && gsdFile.getProfileHeader().getProfileClassID().equals("Device")) {
-                        String id = gsdFile.getProfileBody().getDeviceIdentity().getVendorId() + "-" + gsdFile.getProfileBody().getDeviceIdentity().getDeviceID();
-                        this.gsdFiles.put(id, gsdFile);
-                    }
-                } catch (IOException ignored) {
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("GSDML File directory is un-readable");
-        }
-    }
 }
