@@ -37,10 +37,12 @@ import org.apache.plc4x.java.profinet.tag.ProfinetTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
+import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
 import org.pcap4j.core.*;
 import org.slf4j.Logger;
@@ -61,9 +63,18 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     private final Logger LOGGER = LoggerFactory.getLogger(ProfinetProtocolLogic.class);
     public static final Pattern SUB_MODULE_ARRAY_PATTERN = Pattern.compile("^\\[((\\[[\\w, ]*\\]){1}[ ,]{0,2})*\\]");
     public static final Pattern SUB_MODULE_SPLIT_ARRAY_PATTERN = Pattern.compile("(?:\\[(?:\\[([\\w, ]*)\\]){1}(?:[ ,]{0,2}))*\\]");
-    public static final Pattern MACADDRESS_ARRAY_PATTERN = Pattern.compile("^\\[(([A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2}:[A-F0-9]{2})[, ]?)*\\]");
     public LinkedHashMap<String, ProfinetDevice> configuredDevices = new LinkedHashMap<>();
-    private ProfinetDriverContext driverContext = new ProfinetDriverContext();
+    private ProfinetDriverContext driverContext;
+
+    public ProfinetProtocolLogic() {
+        super();
+        setDriverContext(new ProfinetDriverContext());
+    }
+
+    public void setDriverContext(ProfinetDriverContext driverContext) {
+        super.setDriverContext(driverContext);
+        this.driverContext = driverContext;
+    }
 
     @Override
     public void setConfiguration(ProfinetConfiguration configuration) {
@@ -81,77 +92,11 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             throw new RuntimeException(e);
         }
 
-        try {
-            setDevices();
-        } catch (DecoderException | PlcException e) {
-            throw new RuntimeException(e);
-        }
-
         driverContext.getHandler().setConfiguredDevices(configuredDevices);
 
         for (Map.Entry<String, ProfinetDevice> device : configuredDevices.entrySet()) {
             device.getValue().setContext(context, this.driverContext.getChannel());
         }
-    }
-
-    public void setDevices() throws DecoderException, PlcConnectionException {
-        // Split up the connection string into its individual segments.
-        Matcher matcher = MACADDRESS_ARRAY_PATTERN.matcher(driverContext.getConfiguration().getDevices().toUpperCase());
-
-        if (!matcher.matches()) {
-            throw new PlcConnectionException("Profinet Device Array is not in the correct format " + driverContext.getConfiguration().getDevices() + ".");
-        }
-
-        String[] devices = driverContext.getConfiguration().getDevices().substring(1, driverContext.getConfiguration().getDevices().length() - 1).split("[ ,]");
-
-        String[] deviceAccess = driverContext.getConfiguration().getDeviceAccess().substring(1, driverContext.getConfiguration().getDeviceAccess().length() - 1).split("[ ,]");
-
-        String[] subModules = getSubModules(deviceAccess.length);
-
-        if (deviceAccess.length != devices.length && deviceAccess.length != subModules.length) {
-            throw new PlcConnectionException("Number of Devices not the same as those in the device access list and submodule list.");
-        }
-
-        for (int i = 0; i < devices.length; i++) {
-            MacAddress macAddress = new MacAddress(Hex.decodeHex(devices[i].replace(":", "")));
-            configuredDevices.put(devices[i].replace(":", "").toUpperCase(), new ProfinetDevice(macAddress, deviceAccess[i], subModules[i], driverContext));
-        }
-    }
-
-    public Map<String, ProfinetDevice> getDevices() {
-        return this.configuredDevices;
-    }
-
-
-    /*
-        Splits the connection string array for the submodules.
-     */
-    public String[] getSubModules(int len) throws PlcConnectionException {
-        // Split up the connection string into its individual segments.
-        String[] subModules = new String[len];
-        if (driverContext.getConfiguration().getSubModules().length() < 2) {
-            for (int i = 0; i < len; i++) {
-                subModules[i] = "[]";
-            }
-        } else {
-            String regexString = driverContext.getConfiguration().getSubModules().toUpperCase();
-            Matcher matcher = SUB_MODULE_ARRAY_PATTERN.matcher(regexString);
-            if (!matcher.matches()) {
-                throw new PlcConnectionException("Profinet Submodule Array is not in the correct format " + regexString + ".");
-            }
-
-            String[] splitMatches = SUB_MODULE_SPLIT_ARRAY_PATTERN.split(regexString);
-            if (splitMatches.length == 0) {
-                splitMatches = new String[] {regexString};
-            }
-            for (int j = 0; j < splitMatches.length; j++) {
-                subModules[j] = splitMatches[j].replace("[", "").replace("]", "");
-                if (subModules[j].startsWith(",")){
-                    subModules[j] = subModules[j].substring(1);
-                }
-            }
-        }
-        return subModules;
     }
 
     private void onDeviceDiscovery() throws InterruptedException {
@@ -208,7 +153,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         try {
             RawSocketChannel channel = (RawSocketChannel) context.getChannel();
             String localAddress = channel.getLocalAddress().toString().substring(1).split(":")[0];
-            localIpAddress = InetAddress.getByName(localAddress.toString());
+            localIpAddress = InetAddress.getByName(localAddress);
             PcapNetworkInterface devByAddress = Pcaps.getDevByAddress(localIpAddress);
             driverContext.setChannel(new ProfinetChannel(Collections.singletonList(devByAddress)));
             driverContext.getChannel().setConfiguredDevices(this.configuredDevices);

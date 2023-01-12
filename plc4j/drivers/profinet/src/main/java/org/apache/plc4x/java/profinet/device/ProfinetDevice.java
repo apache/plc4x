@@ -28,6 +28,7 @@ import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.gsdml.*;
@@ -52,17 +53,23 @@ import java.util.function.Function;
 
 public class ProfinetDevice {
     private final Logger logger = LoggerFactory.getLogger(ProfinetDevice.class);
-    private final ProfinetDriverContext driverContext;
+    private ProfinetDriverContext driverContext;
     private ProfinetDeviceContext deviceContext = new ProfinetDeviceContext();
     DatagramSocket socket = null;
 
-    public ProfinetDevice(MacAddress macAddress, String deviceAccess, String subModules, ProfinetDriverContext driverContext) throws PlcConnectionException {
-        this.driverContext = driverContext;
+    public ProfinetDevice(String deviceName, String deviceAccess, String subModules)  {
         deviceContext.setDeviceAccess(deviceAccess);
         deviceContext.setSubModules(subModules);
-        deviceContext.setMacAddress(macAddress);
-        deviceContext.setConfiguration(driverContext.getConfiguration());
+        deviceContext.setDeviceName(deviceName);
         openDeviceUdpPort();
+    }
+
+    public ProfinetDriverContext getDriverContext() {
+        return driverContext;
+    }
+
+    public void setDriverContext(ProfinetDriverContext driverContext) {
+        this.driverContext = driverContext;
     }
 
     private void openDeviceUdpPort() {
@@ -70,7 +77,7 @@ public class ProfinetDevice {
         int count = 0;
         int port = ProfinetDeviceContext.DEFAULT_SEND_UDP_PORT;
         boolean portFound = false;
-        while (!portFound && count < 10) {
+        while (!portFound && count < 100) {
             try {
                 socket = new DatagramSocket(port + count);
                 portFound = true;

@@ -279,7 +279,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     }
 
     public void setSubModules(String subModules) {
-        String[] splitModules = subModules.split("[,]");
+        String[] splitModules = subModules.split(",");
         ArrayList<String> arrayList = new ArrayList<>();
         for (String s : splitModules) {
             String normalizedString = s.trim();

@@ -18,33 +18,20 @@
  */
 package org.apache.plc4x.java.profinet.config;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
-import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
-import org.apache.plc4x.java.profinet.readwrite.MacAddress;
+import org.apache.plc4x.java.profinet.device.ProfinetDevices;
 import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.ParameterConverter;
+import org.apache.plc4x.java.spi.configuration.annotations.Required;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
-import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,14 +58,12 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
         return null;
     }
 
-    @ConfigurationParameter("deviceaccess")
-    @StringDefaultValue("")
-    private String deviceAccess;
+    @Required
+    @ConfigurationParameter
+    @ParameterConverter(ProfinetDeviceConvertor.class)
+    protected ProfinetDevices devices;
 
-    @ConfigurationParameter("devices")
-    @StringDefaultValue("")
-    private String devices;
-
+    @Required
     @ConfigurationParameter("gsddirectory")
     @StringDefaultValue("")
     private String gsdDirectory;
@@ -86,10 +71,6 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
     @ConfigurationParameter("sendclockfactor")
     @IntDefaultValue(32)
     private int sendClockFactor;
-
-    @ConfigurationParameter("submodules")
-    @StringDefaultValue("")
-    private String subModules;
 
     @ConfigurationParameter("reductionratio")
     @IntDefaultValue(4)
@@ -103,9 +84,49 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
     @IntDefaultValue(50)
     private int dataHoldFactor;
 
-    public String getDevices() {
-        return devices;
+    //  devices=[[name,deviceaccess,{submodule,submodule}], [name,deviceaccess,{submodule,submodule}]]
+
+    public static class ProfinetDeviceConvertor implements ConfigurationParameterConverter<ProfinetDevices> {
+
+        public static final Pattern DEVICE_NAME_ARRAY_PATTERN = Pattern.compile("^\\[(?:(\\[(?:[\\w]*){1},(?:[\\w]*){1},\\{(?:[\\w]*[, ]?)*\\}{1}\\])[, ]?)+\\]");
+        public static final Pattern DEVICE_PARAMETERS = Pattern.compile("^(?<devicename>[\\w]*){1}[, ]+(?<deviceaccess>[\\w]*){1}[, ]+\\{(?<submodules>[\\w, ]*)\\}");
+
+        @Override
+        public Class<ProfinetDevices> getType() {
+            return ProfinetDevices.class;
+        }
+
+        @Override
+        public ProfinetDevices convert(String value) {
+
+            // Split up the connection string into its individual segments.
+            value = value.replaceAll(" ", "").toUpperCase();
+            Matcher matcher = DEVICE_NAME_ARRAY_PATTERN.matcher(value);
+            int s = matcher.groupCount();
+
+            if (!matcher.matches()) {
+                throw new RuntimeException("Profinet Device Array is not in the correct format " + value + ".");
+            }
+
+            Map<String, ProfinetDevice> devices = new HashMap<>();
+            String[] deviceParameters  = value.substring(1, value.length() - 1).replaceAll(" ", "").split("[\\[\\]]");
+            for (String deviceParameter : deviceParameters) {
+                if (deviceParameter.length() > 7) {
+                    matcher = DEVICE_PARAMETERS.matcher(deviceParameter);
+                    if (matcher.matches()) {
+                        devices.put(matcher.group("devicename"), new ProfinetDevice(matcher.group("devicename"), matcher.group("deviceaccess"), matcher.group("submodules")));
+                    }
+                }
+            }
+
+            return new ProfinetDevices(devices);
+        }
     }
+
+    public ProfinetDevices getDevices() {
+        return this.devices;
+    }
+
 
     public String getGsdDirectory() {
         return gsdDirectory;
@@ -119,10 +140,6 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
         return sendClockFactor;
     }
 
-    public String getSubModules() {
-        return subModules;
-    }
-
     public int getReductionRatio() {
         return reductionRatio;
     }
@@ -133,10 +150,6 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
 
     public int getDataHoldFactor() {
         return dataHoldFactor;
-    }
-
-    public String getDeviceAccess() {
-        return deviceAccess;
     }
 
     @Override
