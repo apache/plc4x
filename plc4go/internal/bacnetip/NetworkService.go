@@ -459,6 +459,7 @@ func buildNPDU(hopCount uint8, source *Address, destination *Address, expectingR
 	var destinationNetworkAddress *uint16
 	var destinationLength *uint8
 	var destinationAddress []uint8
+	var destinationHopCount *uint8
 	if destinationSpecified {
 		destinationSpecified = true
 		destinationNetworkAddress = destination.AddrNet
@@ -473,9 +474,10 @@ func buildNPDU(hopCount uint8, source *Address, destination *Address, expectingR
 			// If we define the len 0 we must not send the array
 			destinationAddress = nil
 		}
+		destinationHopCount = &hopCount
 	}
 	control := readWriteModel.NewNPDUControl(false, destinationSpecified, sourceSpecified, expectingReply, networkPriority)
-	return readWriteModel.NewNPDU(1, control, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, &hopCount, nil, apdu, 0), nil
+	return readWriteModel.NewNPDU(1, control, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, destinationHopCount, nil, apdu, 0), nil
 }
 
 func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu _PDU) error {

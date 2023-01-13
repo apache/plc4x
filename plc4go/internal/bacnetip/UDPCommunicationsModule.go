@@ -20,10 +20,9 @@
 package bacnetip
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/transports/udp"
+	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net"
@@ -109,7 +108,7 @@ type UDPDirector struct {
 	timeout uint32
 	reuse   bool
 	address AddressTuple[string, uint16]
-	ti      *udp.TransportInstance
+	udpConn *net.UDPConn
 
 	actorClass func(*UDPDirector, string) *UDPActor
 	request    chan _PDU
@@ -149,9 +148,16 @@ func NewUDPDirector(address AddressTuple[string, uint16], timeout *int, reuse *b
 	if err != nil {
 		return nil, errors.Wrap(err, "error resolving udp address")
 	}
-	d.ti = udp.NewTransportInstance(resolvedAddress, nil, d.timeout, d.reuse, nil)
-	if err := d.ti.Connect(); err != nil {
-		return nil, errors.Wrap(err, "error connecting transport instance")
+	if d.reuse {
+		if packetConn, err := reuseport.ListenPacket("udp", resolvedAddress.String()); err != nil {
+			return nil, errors.Wrap(err, "error connecting to local address")
+		} else {
+			d.udpConn = packetConn.(*net.UDPConn)
+		}
+	} else {
+		if d.udpConn, err = net.ListenUDP("udp", resolvedAddress); err != nil {
+			return nil, errors.Wrap(err, "error connecting to local address")
+		}
 	}
 
 	d.running = true
@@ -164,7 +170,28 @@ func NewUDPDirector(address AddressTuple[string, uint16], timeout *int, reuse *b
 	// create the request queue
 	d.request = make(chan _PDU)
 	go func() {
-		// TODO: get requests and send them...
+		for {
+			pdu := <-d.request
+			serialize, err := pdu.GetMessage().Serialize()
+			if err != nil {
+				log.Error().Err(err).Msg("Error building message")
+				continue
+			}
+			// TODO: wonky address object
+			destination := pdu.GetPDUDestination()
+			addr := net.IPv4(destination.AddrAddress[0], destination.AddrAddress[1], destination.AddrAddress[2], destination.AddrAddress[3])
+			udpAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", addr, *destination.AddrPort))
+			if err != nil {
+				log.Error().Err(err).Msg("Error resolving address")
+				continue
+			}
+			writtenBytes, err := d.udpConn.WriteToUDP(serialize, udpAddr)
+			if err != nil {
+				log.Error().Err(err).Msg("Error writing bytes")
+				continue
+			}
+			log.Debug().Msgf("%d written bytes", writtenBytes)
+		}
 	}()
 
 	// start with an empty peer pool
@@ -213,31 +240,31 @@ func (d *UDPDirector) ActorError(err error) {
 
 func (d *UDPDirector) Close() error {
 	d.running = false
-	return d.ti.Close()
+	return d.udpConn.Close()
 }
 
 func (d *UDPDirector) handleRead() {
 	log.Debug().Msgf("handleRead(%v)", d.address)
 
-	if err := d.ti.FillBuffer(func(pos uint, _ byte, _ *bufio.Reader) bool {
-		if pos >= 4 {
-			return false
-		}
-		return true
-	}); err != nil {
-		// pass along to a handler
-		d.handleError(errors.Wrap(err, "error filling buffer"))
+	firstFourBytes := make([]byte, 4)
+	if read, err := d.udpConn.Read(firstFourBytes); err != nil {
+		log.Error().Err(err).Msg("error reading")
 		return
-	}
-	peekedBytes, err := d.ti.PeekReadableBytes(4)
-	if err != nil {
-		// pass along to a handler
-		d.handleError(errors.Wrap(err, "error peeking 4 bytes"))
+	} else if read != 4 {
+		log.Error().Msgf("Not enough data %d", read)
 		return
 	}
 
-	length := uint32(peekedBytes[2])<<8 | uint32(peekedBytes[3])
-	readBytes, err := d.ti.Read(length)
+	length := uint32(firstFourBytes[2])<<8 | uint32(firstFourBytes[3])
+	remainingMessage := make([]byte, length-4)
+	if read, err := d.udpConn.Read(remainingMessage); err != nil {
+		log.Error().Err(err).Msg("error reading")
+		return
+	} else if read != int(length-4) {
+		log.Error().Msgf("Not enough data: actual: %d, wanted: %d", read, length-4)
+		return
+	}
+	readBytes := append(firstFourBytes, remainingMessage...)
 
 	bvlc, err := model.BVLCParse(readBytes)
 	if err != nil {
