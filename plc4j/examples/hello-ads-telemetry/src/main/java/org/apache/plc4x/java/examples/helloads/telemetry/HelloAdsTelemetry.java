@@ -28,6 +28,42 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+// Extracted from https://infosys.beckhoff.com/index.php?content=../content/1031/devicemanager/262982923.html
+
+enum Module {
+    NIC(0x00000002),
+    Time(0x00000003),
+    UserManagement(0x00000004),
+    RAS(0x00000005),
+    FTP(0x00000006),
+    SMB(0x00000007),
+    TwinCat(0x00000008),
+    Software(0x0000000A),
+    COU(0x0000000B),
+    Memory(0x0000000C),
+    FirewallWinCE(0x0000000E),
+    FileSystemObject(0x00000010),
+    DisplayDevice(0x00000013),
+    EWF(0x00000014),
+    FBWF(0x00000015),
+    OS(0x00000018),
+    RAID(0x00000019),
+    Fan(0x0000001B),
+    Mainboard(0x0000001C),
+    DiskManagement(0x0000001D),
+    UPS(0x0000001E),
+    PhysicalDrive(0x0000001F),
+    MassStorageDrive(0x00000020),
+    UnifiedWriteFilter(0x00000021),
+    IO(0x00000022),
+    Misc(0x00000100);
+
+    final int typeNumber;
+    Module(int typeNumber) {
+        this.typeNumber = typeNumber;
+    }
+
+}
 public class HelloAdsTelemetry {
 
     private static final Logger logger = LoggerFactory.getLogger(HelloAdsTelemetry.class);
@@ -60,8 +96,8 @@ public class HelloAdsTelemetry {
             }
 
             // Read the ADS Version information.
-            if(moduleTypeIdMap.containsKey(0x00000008)) {
-                Integer mdpId = moduleTypeIdMap.get(0x00000008);
+            if(moduleTypeIdMap.containsKey(Module.TwinCat.typeNumber)) {
+                Integer mdpId = moduleTypeIdMap.get(Module.TwinCat.typeNumber);
                 int addrAdsTypeMain = (mdpId << 20) | 0x80010001;
                 int addrAdsTypeMinor = (mdpId << 20) | 0x80010002;
                 int addrAdsTypeBuild = (mdpId << 20) | 0x80010003;
@@ -71,8 +107,8 @@ public class HelloAdsTelemetry {
                 logger.info("TwinCat Version: {}.{}.{}", twinCatMainVersion, twinCatMinorVersion, twinCatBuildVersion);
             }
             // Read the CPU Frequency and Utilization.
-            if(moduleTypeIdMap.containsKey(0x0000000B)) {
-                Integer mdpId = moduleTypeIdMap.get(0x0000000B);
+            if(moduleTypeIdMap.containsKey(Module.COU.typeNumber)) {
+                Integer mdpId = moduleTypeIdMap.get(Module.COU.typeNumber);
                 int addrCpuFrequency = (mdpId << 20) | 0x80010001;
                 int addrCpuUsage = (mdpId << 20) | 0x80010002;
                 int cpuFrequency = connection.readRequestBuilder().addTagAddress("value", String.format("0x0000F302/0x%8X:UDINT", addrCpuFrequency)).build().execute().get().getInteger("value");
@@ -80,11 +116,13 @@ public class HelloAdsTelemetry {
                 logger.info("CPU: Frequency: {}MHz Usage: {}%", cpuFrequency, cpuUsage);
             }
             // Read the Memory usage.
-            if(moduleTypeIdMap.containsKey(0x0000000C)) {
-                Integer mdpId = moduleTypeIdMap.get(0x0000000C);
-                int addrMemoryUsage = (mdpId << 20) | 0x80010002;
-                int memoryUsage = connection.readRequestBuilder().addTagAddress("value", String.format("0x0000F302/0x%8X:UDINT", addrMemoryUsage)).build().execute().get().getInteger("value");
-                logger.info("Memory: Available: {}MB", memoryUsage / (1024 * 1024));
+            if(moduleTypeIdMap.containsKey(Module.Memory.typeNumber)) {
+                Integer mdpId = moduleTypeIdMap.get(Module.Memory.typeNumber);
+                int addrMemoryAllocated = (mdpId << 20) | 0x80010001;
+                int addrMemoryAvailable = (mdpId << 20) | 0x80010002;
+                int memoryAllocated = connection.readRequestBuilder().addTagAddress("value", String.format("0x0000F302/0x%8X:UDINT", addrMemoryAllocated)).build().execute().get().getInteger("value");
+                int memoryAvailable = connection.readRequestBuilder().addTagAddress("value", String.format("0x0000F302/0x%8X:UDINT", addrMemoryAvailable)).build().execute().get().getInteger("value");
+                logger.info("Memory: Allocated: {}MB, Available: {}MB, Usage {}%", memoryAllocated / (1024 * 1024), memoryAvailable / (1024 * 1024), ((float) 100 / memoryAllocated) * memoryAvailable);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
