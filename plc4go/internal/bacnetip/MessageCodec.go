@@ -45,11 +45,12 @@ type ApplicationLayerMessageCodec struct {
 }
 
 func NewApplicationLayerMessageCodec(udpTransport *udp.Transport, transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr, remoteAddress *net.UDPAddr) (*ApplicationLayerMessageCodec, error) {
+	// TODO: currently this is done by the BIP down below
 	// Have the transport create a new transport-instance.
-	transportInstance, err := udpTransport.CreateTransportInstanceForLocalAddress(transportUrl, options, localAddress)
-	if err != nil {
-		return nil, errors.Wrap(err, "error creating transport instance")
-	}
+	//transportInstance, err := udpTransport.CreateTransportInstanceForLocalAddress(transportUrl, options, localAddress)
+	//if err != nil {
+	//	return nil, errors.Wrap(err, "error creating transport instance")
+	//}
 	a := &ApplicationLayerMessageCodec{
 		localAddress:  localAddress,
 		remoteAddress: remoteAddress,
@@ -61,12 +62,15 @@ func NewApplicationLayerMessageCodec(udpTransport *udp.Transport, transportUrl u
 	// TODO: workaround for strange address parsing
 	at := AddressTuple[string, uint16]{fmt.Sprintf("%d.%d.%d.%d", address.AddrAddress[0], address.AddrAddress[1], address.AddrAddress[2], address.AddrAddress[3]), *address.AddrPort}
 	address.AddrTuple = &at
-	application, err := NewBIPSimpleApplication(&LocalDeviceObject{}, *address, &a.deviceInfoCache, nil)
+	application, err := NewBIPSimpleApplication(&LocalDeviceObject{
+		NumberOfAPDURetries: func() *uint { retries := uint(10); return &retries }(),
+	}, *address, &a.deviceInfoCache, nil)
 	if err != nil {
 		return nil, err
 	}
 	a.bipSimpleApplication = application
-	a.messageCode = NewMessageCodec(transportInstance)
+	// TODO: this is currently done by the BIP
+	//a.messageCode = NewMessageCodec(transportInstance)
 	return a, nil
 }
 
@@ -75,11 +79,15 @@ func (m *ApplicationLayerMessageCodec) GetCodec() spi.MessageCodec {
 }
 
 func (m *ApplicationLayerMessageCodec) Connect() error {
-	return m.messageCode.Connect()
+	// TODO: this is currently done by the BIP
+	//	return m.messageCode.Connect()
+	return nil
 }
 
 func (m *ApplicationLayerMessageCodec) ConnectWithContext(ctx context.Context) error {
-	return m.messageCode.ConnectWithContext(ctx)
+	// TODO: this is currently done by the BIP
+	//	return m.messageCode.ConnectWithContext(ctx)
+	return nil
 }
 
 func (m *ApplicationLayerMessageCodec) Disconnect() error {
@@ -132,7 +140,9 @@ func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message 
 }
 
 func (m *ApplicationLayerMessageCodec) GetDefaultIncomingMessageChannel() chan spi.Message {
-	return m.messageCode.GetDefaultIncomingMessageChannel()
+	// TODO: this is currently done by the BIP
+	//return m.messageCode.GetDefaultIncomingMessageChannel()
+	return make(chan spi.Message)
 }
 
 type MessageCodec struct {

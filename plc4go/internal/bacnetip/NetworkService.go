@@ -568,13 +568,14 @@ func NewNetworkServiceElement(eid *int) (*NetworkServiceElement, error) {
 	return n, nil
 }
 
-func (n *NetworkServiceElement) Startup() {
+func (n *NetworkServiceElement) Startup() error {
 	log.Debug().Msg("Startup")
 
 	// reference the service access point
-	sap := n.elementService.(*NetworkServiceAccessPoint) // TODO: hard cast but seems like adapters apears first in network service access point (so hard binding)
+	sap := n.elementService.(*NetworkServiceAccessPoint) // TODO: hard cast but seems like adapters appears first in network service access point (so hard binding)
 	log.Debug().Msgf("sap: %v", sap)
 
 	// loop through all the adapters
 	// TODO: no adapters yet
+	return nil
 }

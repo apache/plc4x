@@ -59,11 +59,12 @@ func NewUDPActor(director *UDPDirector, peer string) *UDPActor {
 	return a
 }
 
-func (a *UDPActor) idleTimeout() {
+func (a *UDPActor) idleTimeout() error {
 	log.Debug().Msg("idleTimeout")
 
 	// tell the director this is gone
 	a.director.DelActor(a)
+	return nil
 }
 
 func (a *UDPActor) Indication(pdu _PDU) error {

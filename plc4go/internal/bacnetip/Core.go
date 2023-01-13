@@ -19,6 +19,9 @@
 
 package bacnetip
 
-func Deferred(fn func()) {
+import "github.com/rs/zerolog/log"
+
+func Deferred(fn func() error) {
+	log.Debug().Msg("Deferred")
 	// TODO: implement me
 }

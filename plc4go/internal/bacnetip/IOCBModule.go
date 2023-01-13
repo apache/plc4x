@@ -741,19 +741,19 @@ func (i *IOQController) AbortIO(iocb _IOCB, err error) error {
 }
 
 // _trigger Called to launch the next request in the queue
-func (i *IOQController) _trigger() {
+func (i *IOQController) _trigger() error {
 	log.Debug().Msg("_trigger")
 
 	// if we are busy, do nothing
 	if i.state != IOQControllerStates_CTRL_IDLE {
 		log.Debug().Msg("not idle")
-		return
+		return nil
 	}
 
 	// if there is nothing to do, return
 	if len(i.ioQueue.queue) == 0 {
 		log.Debug().Msg("empty queue")
-		return
+		return nil
 	}
 
 	// get the next iocb
@@ -766,25 +766,26 @@ func (i *IOQController) _trigger() {
 		// if there was an error, abort the request
 		if err := i.Abort(err); err != nil {
 			log.Debug().Err(err).Msg("error aborting")
-			return
+			return nil
 		}
-		return
+		return nil
 	}
 
 	// if we're idle, call again
 	if i.state == IOQControllerStates_CTRL_IDLE {
 		Deferred(i._trigger)
 	}
+	return nil
 }
 
 // _waitTrigger is called to launch the next request in the queue
-func (i *IOQController) _waitTrigger() {
+func (i *IOQController) _waitTrigger() error {
 	log.Debug().Msg("_waitTrigger")
 
 	// make sure we are waiting
 	if i.state != IOQControllerStates_CTRL_WAITING {
 		log.Debug().Msg("not waiting")
-		return
+		return nil
 	}
 
 	// change our state
@@ -793,6 +794,7 @@ func (i *IOQController) _waitTrigger() {
 
 	// look for more to do
 	i._trigger()
+	return nil
 }
 
 type SieveQueue struct {

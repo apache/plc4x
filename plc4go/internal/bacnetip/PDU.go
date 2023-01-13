@@ -423,7 +423,6 @@ func NewPCI(msg spi.Message, pduSource *Address, pduDestination *Address, expect
 }
 
 type _PDU interface {
-	spi.Message
 	GetMessage() spi.Message
 	GetPDUSource() *Address
 	GetPDUDestination() *Address
@@ -433,13 +432,11 @@ type _PDU interface {
 }
 
 type PDU struct {
-	spi.Message
 	*PCI
 }
 
 func NewPDU(msg spi.Message, pduOptions ...PDUOption) *PDU {
 	p := &PDU{
-		msg,
 		NewPCI(msg, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE),
 	}
 	for _, option := range pduOptions {
@@ -449,9 +446,8 @@ func NewPDU(msg spi.Message, pduOptions ...PDUOption) *PDU {
 }
 
 func NewPDUFromPDU(pdu _PDU, pduOptions ...PDUOption) *PDU {
-	msg := pdu.(*PDU).Message
+	msg := pdu.(*PDU).pduUserData
 	p := &PDU{
-		msg,
 		NewPCI(msg, pdu.GetPDUSource(), pdu.GetPDUDestination(), pdu.GetExpectingReply(), pdu.GetNetworkPriority()),
 	}
 	for _, option := range pduOptions {
@@ -462,7 +458,6 @@ func NewPDUFromPDU(pdu _PDU, pduOptions ...PDUOption) *PDU {
 
 func NewPDUFromPDUWithNewMessage(pdu _PDU, msg spi.Message, pduOptions ...PDUOption) *PDU {
 	p := &PDU{
-		msg,
 		NewPCI(msg, pdu.GetPDUSource(), pdu.GetPDUDestination(), pdu.GetExpectingReply(), pdu.GetNetworkPriority()),
 	}
 	for _, option := range pduOptions {
@@ -473,7 +468,6 @@ func NewPDUFromPDUWithNewMessage(pdu _PDU, msg spi.Message, pduOptions ...PDUOpt
 
 func NewPDUWithAllOptions(msg spi.Message, pduSource *Address, pduDestination *Address, expectingReply bool, networkPriority readWriteModel.NPDUNetworkPriority) *PDU {
 	return &PDU{
-		msg,
 		NewPCI(msg, pduSource, pduDestination, expectingReply, networkPriority),
 	}
 }
@@ -505,7 +499,7 @@ func WithPDUNetworkPriority(networkPriority readWriteModel.NPDUNetworkPriority) 
 }
 
 func (p *PDU) GetMessage() spi.Message {
-	return p.Message
+	return p.pduUserData
 }
 
 func (p *PDU) GetPDUSource() *Address {
@@ -529,5 +523,5 @@ func (p *PDU) GetNetworkPriority() readWriteModel.NPDUNetworkPriority {
 }
 
 func (p *PDU) String() string {
-	return fmt.Sprintf("PDU{\n%s,\n%s}", p.Message, p._PCI)
+	return fmt.Sprintf("PDU{\n%s}", p._PCI)
 }
