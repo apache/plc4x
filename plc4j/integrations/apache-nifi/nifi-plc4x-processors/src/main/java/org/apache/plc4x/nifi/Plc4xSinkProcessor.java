@@ -31,6 +31,7 @@ import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 @TriggerSerially
 @Tags({"plc4x-sink"})
@@ -68,8 +69,15 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
             // Send the request to the PLC.
             try {
                 final PlcWriteResponse plcWriteResponse = writeRequest.execute().get();
-                // TODO: Evaluate the response and create flow files for successful and unsuccessful updates
+                PlcResponseCode code = null;
+
+                for (String tag : plcWriteResponse.getTagNames()) {
+                    code = plcWriteResponse.getResponseCode(tag);
+                    if (!code.equals(PlcResponseCode.OK))
+                        throw new Exception(code.toString());
+                }
                 session.transfer(flowFile, REL_SUCCESS);
+                
             } catch (Exception e) {
                 flowFile = session.putAttribute(flowFile, "exception", e.getLocalizedMessage());
                 session.transfer(flowFile, REL_FAILURE);
