@@ -45,6 +45,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
     public static Builder getBuilder(PlcConnectionManager connectionManager) {
         return new Builder(connectionManager);
     }
+
     public CachedPlcConnectionManager(PlcConnectionManager connectionManager, Duration maxLeaseTime, Duration maxWaitTime) {
         this.connectionManager = connectionManager;
         this.maxLeaseTime = maxLeaseTime;
