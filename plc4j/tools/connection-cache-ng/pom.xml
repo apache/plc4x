@@ -23,26 +23,39 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j</artifactId>
+    <artifactId>plc4j-tools</artifactId>
     <version>0.11.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-tools</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>plc4j-connection-cache-ng</artifactId>
 
-  <name>PLC4J: Tools</name>
-  <description>A collection of tools that provide additional services to users.</description>
+  <name>PLC4J: Tools: Connection Cache (NG)</name>
+  <description>An implementation of a connection pool based on Apache Commons Pool.</description>
 
-  <modules>
-    <module>capture-replay</module>
-    <module>connection-cache</module>
-    <module>connection-cache-ng</module>
-    <module>connection-pool</module>
-    <module>opm</module>
-    <module>plc4x-server</module>
-    <module>scraper</module>
-    <module>scraper-ng</module>
-    <module>ui</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-api</artifactId>
+      <version>0.11.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-ads</artifactId>
+      <version>0.11.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-mock</artifactId>
+      <version>0.11.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 </project>
