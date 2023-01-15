@@ -64,7 +64,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
                 PlcConnection connection = connectionManager.getConnection(url);
 
                 // Crate a connection container to manage handling this connection
-                connectionContainer = new ConnectionContainer(connection);
+                connectionContainer = new ConnectionContainer(connection, maxLeaseTime);
                 connectionContainers.put(url, connectionContainer);
             } else {
                 LOG.debug("Reusing exising connection");

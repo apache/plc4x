@@ -24,6 +24,12 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 
 public class LeasedPlcConnection implements PlcConnection {
@@ -31,13 +37,20 @@ public class LeasedPlcConnection implements PlcConnection {
     private final ConnectionContainer connectionContainer;
     private PlcConnection connection;
 
-    public LeasedPlcConnection(ConnectionContainer connectionContainer, PlcConnection connection) {
+    public LeasedPlcConnection(ConnectionContainer connectionContainer, PlcConnection connection, Duration maxUseTime) {
         this.connectionContainer = connectionContainer;
         this.connection = connection;
+        Timer usageTimer = new Timer();
+        usageTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                close();
+            }
+        }, Date.from(LocalDateTime.now().plusNanos(maxUseTime.toNanos()).atZone(ZoneId.systemDefault()).toInstant()));
     }
 
     @Override
-    public synchronized void close() throws Exception {
+    public synchronized void close() {
         // Make the connection unusable.
         connection = null;
 

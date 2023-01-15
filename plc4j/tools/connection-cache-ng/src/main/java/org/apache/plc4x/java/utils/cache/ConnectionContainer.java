@@ -21,6 +21,7 @@ package org.apache.plc4x.java.utils.cache;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
+import java.time.Duration;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
@@ -28,12 +29,14 @@ import java.util.concurrent.Future;
 
 class ConnectionContainer {
     private final PlcConnection connection;
+    private final Duration maxLeaseTime;
     private final Queue<CompletableFuture<PlcConnection>> queue;
 
     private LeasedPlcConnection leasedConnection;
 
-    public ConnectionContainer(PlcConnection connection) {
+    public ConnectionContainer(PlcConnection connection, Duration maxLeaseTime) {
         this.connection = connection;
+        this.maxLeaseTime = maxLeaseTime;
         this.queue = new LinkedList<>();
         this.leasedConnection = null;
     }
@@ -42,7 +45,7 @@ class ConnectionContainer {
         CompletableFuture<PlcConnection> connectionFuture = new CompletableFuture<>();
         // If the connection is currently idle, return the connection immediately.
         if (leasedConnection == null) {
-            leasedConnection = new LeasedPlcConnection(this, connection);
+            leasedConnection = new LeasedPlcConnection(this, connection, maxLeaseTime);
             connectionFuture.complete(leasedConnection);
         }
         // Otherwise queue the future up for completion as soon as the connection is returned.
@@ -64,7 +67,7 @@ class ConnectionContainer {
         }
 
         // Create a new lease and complete the next future in the queue with this.
-        leasedConnection = new LeasedPlcConnection(this, connection);
+        leasedConnection = new LeasedPlcConnection(this, connection, maxLeaseTime);
         CompletableFuture<PlcConnection> leaseFuture = queue.poll();
         leaseFuture.complete(leasedConnection);
     }
