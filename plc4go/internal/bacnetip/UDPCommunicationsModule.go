@@ -170,7 +170,7 @@ func NewUDPDirector(address AddressTuple[string, uint16], timeout *int, reuse *b
 	// create the request queue
 	d.request = make(chan _PDU)
 	go func() {
-		for {
+		for d.running {
 			pdu := <-d.request
 			serialize, err := pdu.GetMessage().Serialize()
 			if err != nil {
