@@ -29,6 +29,7 @@ import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.MessageToMessageEncoder;
+import io.netty.util.concurrent.FastThreadLocal;
 import org.apache.plc4x.java.bacnetip.BacNetIpDriver;
 import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
 import org.apache.plc4x.java.bacnetip.readwrite.BacnetConstants;
@@ -49,6 +50,8 @@ public class BacnetServerModule implements ServerModule {
     private EventLoopGroup workerGroup;
     private Context context;
     private PlcSimulatorConfig config;
+
+    private final FastThreadLocal<String> returnToSender = new FastThreadLocal<>();
 
     @Override
     public String getName() {
@@ -87,14 +90,15 @@ public class BacnetServerModule implements ServerModule {
                                 protected void decode(ChannelHandlerContext ctx, DatagramPacket msg, List<Object> out) throws Exception {
                                     final ByteBuf content = msg.content();
                                     out.add(content.retain());
+                                    String value = msg.sender().getHostString();
+                                    returnToSender.set(value);
                                 }
                             })
                             .addLast(new MessageToMessageEncoder<ByteBuf>() {
                                 @Override
                                 protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
                                     msg.retain();
-                                    // TODO: find better way to implement request response
-                                    out.add(new DatagramPacket(msg, new InetSocketAddress("192.168.178.102", 47808)));
+                                    out.add(new DatagramPacket(msg, new InetSocketAddress(returnToSender.get(), 47808)));
                                 }
                             })
                             .addLast(new GeneratedProtocolMessageCodec<>(BVLC.class,
