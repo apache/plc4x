@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
@@ -193,13 +194,13 @@ public class PlcEntityInterceptor {
      * Renews all values of all tags that are annotated with {@link PlcEntity}.
      *
      * @param proxy         Object to refresh the tags on.
-     * @param driverManager Driver Manager to use
+     * @param connectionManager Connection Manager to use
      * @param registry      AliasRegistry to use
      * @param lastFetched
      * @throws OPMException on various errors.
      */
     @SuppressWarnings("squid:S1141") // Nested try blocks readability is okay, move to other method makes it imho worse
-    static void refetchAllFields(Object proxy, PlcDriverManager driverManager, String address, AliasRegistry registry, Map<String, Instant> lastFetched) throws OPMException {
+    static void refetchAllFields(Object proxy, PlcConnectionManager connectionManager, String address, AliasRegistry registry, Map<String, Instant> lastFetched) throws OPMException {
         // Don't log o here as this would cause a second request against a plc so don't touch it, or if you log be aware of that
         Class<?> entityClass = proxy.getClass().getSuperclass();
         LOGGER.trace("Refetching all tags on proxy object of class {}", entityClass);
@@ -214,7 +215,7 @@ public class PlcEntityInterceptor {
                 OpmUtils.getOrResolveAddress(registry, field.getAnnotation(PlcTag.class).value());
             }
         }
-        try (PlcConnection connection = driverManager.getConnection(address)) {
+        try (PlcConnection connection = connectionManager.getConnection(address)) {
             // Catch the exception, if no reader present (see below)
             // Build the query
             PlcReadRequest.Builder requestBuilder = connection.readRequestBuilder();
@@ -255,7 +256,7 @@ public class PlcEntityInterceptor {
         }
     }
 
-    static void writeAllFields(Object proxy, PlcDriverManager driverManager, String address, AliasRegistry registry, Map<String, Instant> lastWritten) throws OPMException {
+    static void writeAllFields(Object proxy, PlcConnectionManager connectionManager, String address, AliasRegistry registry, Map<String, Instant> lastWritten) throws OPMException {
         // Don't log o here as this would cause a second request against a plc so don't touch it, or if you log be aware of that
         Class<?> entityClass = proxy.getClass().getSuperclass();
         LOGGER.trace("Writing all tags on proxy object of class {}", entityClass);
@@ -270,7 +271,7 @@ public class PlcEntityInterceptor {
                 OpmUtils.getOrResolveAddress(registry, field.getAnnotation(PlcTag.class).value());
             }
         }
-        try (PlcConnection connection = driverManager.getConnection(address)) {
+        try (PlcConnection connection = connectionManager.getConnection(address)) {
             // Catch the exception, if no reader present (see below)
             // Build the query
             PlcWriteRequest.Builder requestBuilder = connection.writeRequestBuilder();

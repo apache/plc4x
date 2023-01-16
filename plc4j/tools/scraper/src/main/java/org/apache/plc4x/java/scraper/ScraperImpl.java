@@ -24,14 +24,11 @@ import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
-import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
-import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.util.PercentageAboveThreshold;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,31 +64,31 @@ public class ScraperImpl implements Scraper {
 
     private final MultiValuedMap<ScrapeJob, ScraperTask> tasks = new ArrayListValuedHashMap<>();
     private final MultiValuedMap<ScraperTask, ScheduledFuture<?>> futures = new ArrayListValuedHashMap<>();
-    private final PlcDriverManager driverManager;
+    private final PlcConnectionManager connectionManager;
     private final List<ScrapeJob> jobs;
 
     /**
      * default constructor
      * @param resultHandler handler for acquired data
-     * @param driverManager handler for Plc connection
+     * @param connectionManager handler for Plc connection
      * @param jobs list of scrapings jobs to be executed
      */
-    public ScraperImpl(ResultHandler resultHandler, PlcDriverManager driverManager, List<ScrapeJob> jobs) {
+    public ScraperImpl(ResultHandler resultHandler, PlcConnectionManager connectionManager, List<ScrapeJob> jobs) {
         this.resultHandler = resultHandler;
         Validate.notEmpty(jobs);
-        this.driverManager = driverManager;
+        this.connectionManager = connectionManager;
         this.jobs = jobs;
     }
 
     /**
      * Creates a Scraper instance from a configuration.
-     * By default a {@link PooledPlcDriverManager} is used.
+     * By default, a {@link CachedPlcConnectionManager} is used.
      * @param config Configuration to use.
      * @param resultHandler handler for acquired data
      * @throws ScraperException something went wrong ...
      */
     public ScraperImpl(ScraperConfiguration config, ResultHandler resultHandler) throws ScraperException {
-        this(resultHandler, createPooledDriverManager(), config.getJobs());
+        this(resultHandler, createCachedPlcConnectionManager(), config.getJobs());
     }
 
     /**
@@ -99,17 +96,9 @@ public class ScraperImpl implements Scraper {
      * Then, on reconnect we can fail all getConnection calls (in the ScraperTask) fast until
      * (in the background) the idle connection is created and the getConnection call returns fast.
      */
-    private static PooledPlcDriverManager createPooledDriverManager() {
-        return new PooledPlcDriverManager(pooledPlcConnectionFactory -> {
-            GenericKeyedObjectPoolConfig<PlcConnection> poolConfig = new GenericKeyedObjectPoolConfig<>();
-            poolConfig.setMinIdlePerKey(1);  // This should avoid problems with long running connect attempts??
-            poolConfig.setTestOnBorrow(true);
-            poolConfig.setTestOnReturn(true);
-            return new GenericKeyedObjectPool<>(pooledPlcConnectionFactory, poolConfig);
-        });
+    private static CachedPlcConnectionManager createCachedPlcConnectionManager() {
+        return CachedPlcConnectionManager.getBuilder().build();
     }
-
-
 
     @Override
     public void start() {
@@ -123,7 +112,7 @@ public class ScraperImpl implements Scraper {
                 tuple -> {
                     LOGGER.debug("Register task for job {} for conn {} ({}) at rate {} ms",
                         tuple.getLeft().getJobName(), tuple.getMiddle(), tuple.getRight(), tuple.getLeft().getScrapeRate());
-                    ScraperTask task = new ScraperTaskImpl(driverManager,
+                    ScraperTask task = new ScraperTaskImpl(connectionManager,
                         tuple.getLeft().getJobName(), tuple.getMiddle(), tuple.getRight(),
                         tuple.getLeft().getTags(),
                         1_000,

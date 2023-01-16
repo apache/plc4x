@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.utils.cache;
 
+import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
@@ -41,6 +42,10 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
     private final Duration maxWaitTime;
 
     private final Map<String, ConnectionContainer> connectionContainers;
+
+    public static Builder getBuilder() {
+        return new Builder(new PlcDriverManager());
+    }
 
     public static Builder getBuilder(PlcConnectionManager connectionManager) {
         return new Builder(connectionManager);
@@ -96,16 +101,16 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
             this.maxWaitTime = Duration.ofSeconds(20);
         }
 
-        CachedPlcConnectionManager build() {
+        public CachedPlcConnectionManager build() {
             return new CachedPlcConnectionManager(this.connectionManager, this.maxLeaseTime, this.maxWaitTime);
         }
 
-        CachedPlcConnectionManager.Builder withMaxLeaseTime(Duration maxLeaseTime) {
+        public CachedPlcConnectionManager.Builder withMaxLeaseTime(Duration maxLeaseTime) {
             this.maxLeaseTime = maxLeaseTime;
             return this;
         }
 
-        CachedPlcConnectionManager.Builder withMaxWaitTime(Duration maxWaitTime) {
+        public CachedPlcConnectionManager.Builder withMaxWaitTime(Duration maxWaitTime) {
             this.maxWaitTime = maxWaitTime;
             return this;
         }

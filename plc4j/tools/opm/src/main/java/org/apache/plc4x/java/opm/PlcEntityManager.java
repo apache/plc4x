@@ -23,6 +23,7 @@ import net.bytebuddy.description.modifier.Visibility;
 import net.bytebuddy.implementation.MethodDelegation;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.slf4j.Logger;
@@ -80,24 +81,24 @@ public class PlcEntityManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(PlcEntityManager.class);
 
     public static final String PLC_ADDRESS_FIELD_NAME = "_plcAddress";
-    static final String DRIVER_MANAGER_FIELD_NAME = "_driverManager";
+    static final String DRIVER_MANAGER_FIELD_NAME = "_connectionManager";
     static final String ALIAS_REGISTRY = "_aliasRegistry";
     public static final String LAST_FETCHED = "_lastFetched";
     public static final String LAST_WRITTEN = "_lastWritten";
 
-    private final PlcDriverManager driverManager;
+    private final PlcConnectionManager connectionManager;
     private final SimpleAliasRegistry registry;
 
     public PlcEntityManager() {
         this(new PlcDriverManager());
     }
 
-    public PlcEntityManager(PlcDriverManager driverManager) {
-        this(driverManager, new SimpleAliasRegistry());
+    public PlcEntityManager(PlcConnectionManager connectionManager) {
+        this(connectionManager, new SimpleAliasRegistry());
     }
 
-    public PlcEntityManager(PlcDriverManager driverManager, SimpleAliasRegistry registry) {
-        this.driverManager = driverManager;
+    public PlcEntityManager(PlcConnectionManager connectionManager, SimpleAliasRegistry registry) {
+        this.connectionManager = connectionManager;
         this.registry = registry;
     }
 
@@ -158,7 +159,7 @@ public class PlcEntityManager {
                 .newInstance();
             // Set connection value into the private field
             FieldUtils.writeDeclaredField(instance, PLC_ADDRESS_FIELD_NAME, address, true);
-            FieldUtils.writeDeclaredField(instance, DRIVER_MANAGER_FIELD_NAME, driverManager, true);
+            FieldUtils.writeDeclaredField(instance, DRIVER_MANAGER_FIELD_NAME, connectionManager, true);
             FieldUtils.writeDeclaredField(instance, ALIAS_REGISTRY, registry, true);
             Map<String, Instant> lastFetched = new HashMap<>();
             FieldUtils.writeDeclaredField(instance, LAST_FETCHED, lastFetched, true);
@@ -167,13 +168,13 @@ public class PlcEntityManager {
 
             // Initially fetch all values
             if (existingInstance == null) {
-                PlcEntityInterceptor.refetchAllFields(instance, driverManager, address, registry, lastFetched);
+                PlcEntityInterceptor.refetchAllFields(instance, connectionManager, address, registry, lastFetched);
             } else {
                 FieldUtils.getAllFieldsList(clazz).stream()
                     .peek(field -> field.setAccessible(true))
                     .forEach(field -> setValueToField(field, instance, getValueFromField(field, existingInstance)));
 
-                PlcEntityInterceptor.writeAllFields(instance, driverManager, address, registry, lastWritten);
+                PlcEntityInterceptor.writeAllFields(instance, connectionManager, address, registry, lastWritten);
             }
 
             return instance;

@@ -39,8 +39,9 @@ import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.util.StandardValidators;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 
 public abstract class BasePlc4xProcessor extends AbstractProcessor {
 
@@ -70,7 +71,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     protected Map<String, String> addressMap;
 
 
-    private final PooledPlcDriverManager driverManager = new PooledPlcDriverManager();
+    private final PlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder().build();
 
     @Override
     protected void init(final ProcessorInitializationContext context) {
@@ -174,8 +175,8 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         }
     }
 
-    protected PooledPlcDriverManager getDriverManager() {
-        return driverManager;
+    protected PlcConnectionManager getConnectionManager() {
+        return connectionManager;
     }
 
 }

@@ -18,14 +18,11 @@
  */
 package org.apache.plc4x.java.opcuaserver.backend;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.List;
-
+import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.opcuaserver.configuration.Configuration;
 import org.apache.plc4x.java.opcuaserver.configuration.DeviceConfiguration;
 import org.apache.plc4x.java.opcuaserver.configuration.Tag;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.eclipse.milo.opcua.sdk.core.AccessLevel;
 import org.eclipse.milo.opcua.sdk.core.Reference;
 import org.eclipse.milo.opcua.sdk.core.ValueRank;
@@ -47,7 +44,10 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 
 
@@ -74,7 +74,7 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
     }
 
     private void addNodes() {
-        for (DeviceConfiguration c: config.getDevices()) {
+        for (DeviceConfiguration c : config.getDevices()) {
             NodeId folderNodeId = newNodeId(c.getName());
 
             UaFolderNode folderNode = new UaFolderNode(
@@ -186,7 +186,7 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
 
             if (plc4xServer.getDriverManager() == null) {
                 plc4xServer.removeTag(item);
-                plc4xServer.setDriverManager(new PooledPlcDriverManager());
+                plc4xServer.setDriverManager(new PlcDriverManager());
             }
         }
 
