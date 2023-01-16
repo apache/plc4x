@@ -223,20 +223,6 @@ func RecurringFunctionTask(interval *time.Duration, fn func() error) *RecurringT
 
 var _taskManager = TaskManager{}
 
-func init() {
-	go func() {
-		for {
-			task, delta := _taskManager.getNextTask()
-			if task == nil {
-				time.Sleep(10 * time.Millisecond)
-				continue
-			}
-			_taskManager.processTask(task)
-			time.Sleep(delta)
-		}
-	}()
-}
-
 type TaskManager struct {
 	sync.Mutex
 	tasks []_TaskRequirements
