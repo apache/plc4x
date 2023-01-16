@@ -102,11 +102,11 @@ func (m *ApplicationLayerMessageCodec) IsRunning() bool {
 }
 
 func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
-	address, err2 := NewAddress(m.remoteAddress)
-	if err2 != nil {
-		panic(err2)
+	address, err := NewAddress(m.remoteAddress)
+	if err != nil {
+		return err
 	}
-	iocb, err := NewIOCB(NewPDU(message, WithPDUDestination(address)), m.remoteAddress)
+	iocb, err := NewIOCB(NewPDU(message, WithPDUDestination(address)), address)
 	if err != nil {
 		return errors.Wrap(err, "error creating IOCB")
 	}
@@ -115,10 +115,10 @@ func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
 		iocb.Wait()
 		if iocb.ioError != nil {
 			// TODO: handle error
-			println(iocb.ioError)
+			fmt.Printf("Err: %v\n", iocb.ioError)
 		} else if iocb.ioResponse != nil {
 			// TODO: response?
-			println(iocb.ioResponse)
+			fmt.Printf("Response: %v\n", iocb.ioResponse)
 		} else {
 			// TODO: what now?
 		}

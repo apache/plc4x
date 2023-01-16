@@ -1702,8 +1702,9 @@ func (s *StateMachineAccessPoint) Confirmation(apdu _PDU) error { // TODO: note 
 	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUComplexAckExactly, readWriteModel.APDUErrorExactly, readWriteModel.APDURejectExactly:
 		// find the client transaction this is acking
 		var tr *ClientSSM
-		for _, tr := range s.clientTransactions {
-			if apdu.(interface{ GetOriginalInvokeId() uint8 }).GetOriginalInvokeId() == tr.invokeId && pduSource.Equals(tr.pduAddress) {
+		for _, _tr := range s.clientTransactions {
+			if _apdu.(interface{ GetOriginalInvokeId() uint8 }).GetOriginalInvokeId() == _tr.invokeId && pduSource.Equals(_tr.pduAddress) {
+				tr = _tr
 				break
 			}
 		}

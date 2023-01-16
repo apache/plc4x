@@ -365,7 +365,7 @@ func (a *ApplicationIOController) _AppComplete(address *Address, apdu _PDU) erro
 	}
 
 	// this request is complete
-	switch apdu.(type) {
+	switch apdu.GetMessage().(type) {
 	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUComplexAckExactly:
 		if err := queue.CompleteIO(queue.activeIOCB, apdu); err != nil {
 			return err
@@ -420,7 +420,7 @@ func (a *ApplicationIOController) Confirmation(apdu _PDU) error {
 	log.Debug().Msgf("Confirmation\n%s", apdu)
 
 	// this is an ack, error, reject or abort
-	return a._AppComplete(apdu.GetPDUDestination(), apdu)
+	return a._AppComplete(apdu.GetPDUSource(), apdu)
 }
 
 type BIPSimpleApplication struct {

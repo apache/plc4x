@@ -246,25 +246,14 @@ func (d *UDPDirector) Close() error {
 func (d *UDPDirector) handleRead() {
 	log.Debug().Msgf("handleRead(%v)", d.address)
 
-	firstFourBytes := make([]byte, 4)
-	if read, err := d.udpConn.Read(firstFourBytes); err != nil {
+	readBytes := make([]byte, 1500) // TODO: check if that is sufficient
+	var sourceAddr *net.UDPAddr
+	if _, addr, err := d.udpConn.ReadFromUDP(readBytes); err != nil {
 		log.Error().Err(err).Msg("error reading")
 		return
-	} else if read != 4 {
-		log.Error().Msgf("Not enough data %d", read)
-		return
+	} else {
+		sourceAddr = addr
 	}
-
-	length := uint32(firstFourBytes[2])<<8 | uint32(firstFourBytes[3])
-	remainingMessage := make([]byte, length-4)
-	if read, err := d.udpConn.Read(remainingMessage); err != nil {
-		log.Error().Err(err).Msg("error reading")
-		return
-	} else if read != int(length-4) {
-		log.Error().Msgf("Not enough data: actual: %d, wanted: %d", read, length-4)
-		return
-	}
-	readBytes := append(firstFourBytes, remainingMessage...)
 
 	bvlc, err := model.BVLCParse(readBytes)
 	if err != nil {
@@ -273,8 +262,19 @@ func (d *UDPDirector) handleRead() {
 		return
 	}
 
-	// TODO: how to get the addr? Maybe we ditch the transport instance and use the udp socket directly
-	pdu := NewPDU(bvlc)
+	saddr, err := NewAddress(sourceAddr)
+	if err != nil {
+		// pass along to a handler
+		d.handleError(errors.Wrap(err, "error parsing source address"))
+		return
+	}
+	daddr, err := NewAddress(d.udpConn.LocalAddr())
+	if err != nil {
+		// pass along to a handler
+		d.handleError(errors.Wrap(err, "error parsing destination address"))
+		return
+	}
+	pdu := NewPDU(bvlc, WithPDUSource(saddr), WithPDUDestination(daddr))
 	// send the PDU up to the client
 	go d._response(pdu)
 }
@@ -305,12 +305,12 @@ func (d *UDPDirector) _response(pdu _PDU) error {
 	log.Debug().Msgf("_response %s", pdu)
 
 	// get the destination
-	addr := pdu.GetPDUDestination()
+	addr := pdu.GetPDUSource()
 
 	// get the peer
 	peer, ok := d.peers[addr.String()]
 	if !ok {
-		peer = d.actorClass(d, (*addr).String())
+		peer = d.actorClass(d, addr.String())
 	}
 
 	// send the message

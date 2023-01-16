@@ -26,7 +26,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"net"
 	"sync"
 	"time"
 )
@@ -89,7 +88,7 @@ type _IOCB interface {
 	Trigger()
 	setIOError(err error)
 	getRequest() _PDU
-	getDestination() net.Addr
+	getDestination() *Address
 	getPriority() int
 	clearQueue()
 	Abort(err error) error
@@ -101,7 +100,7 @@ var _identLock sync.Mutex
 type IOCB struct {
 	ioID           int
 	request        _PDU
-	destination    net.Addr
+	destination    *Address
 	ioState        IOCBState
 	ioResponse     _PDU
 	ioError        error
@@ -115,7 +114,7 @@ type IOCB struct {
 	priority       int
 }
 
-func NewIOCB(request _PDU, destination net.Addr) (*IOCB, error) {
+func NewIOCB(request _PDU, destination *Address) (*IOCB, error) {
 	// lock the identity sequence number
 	_identLock.Lock()
 
@@ -276,7 +275,7 @@ func (i *IOCB) getRequest() _PDU {
 	return i.request
 }
 
-func (i *IOCB) getDestination() net.Addr {
+func (i *IOCB) getDestination() *Address {
 	return i.destination
 }
 
@@ -793,17 +792,16 @@ func (i *IOQController) _waitTrigger() error {
 	stateLog.Debug().Msgf("%s %s %s", time.Now(), i.name, "idle")
 
 	// look for more to do
-	i._trigger()
-	return nil
+	return i._trigger()
 }
 
 type SieveQueue struct {
 	*IOQController
 	requestFn func(apdu _PDU)
-	address   net.Addr
+	address   *Address
 }
 
-func NewSieveQueue(fn func(apdu _PDU), address net.Addr) (*SieveQueue, error) {
+func NewSieveQueue(fn func(apdu _PDU), address *Address) (*SieveQueue, error) {
 	s := &SieveQueue{}
 	var err error
 	s.IOQController, err = NewIOQController(address.String(), s)
