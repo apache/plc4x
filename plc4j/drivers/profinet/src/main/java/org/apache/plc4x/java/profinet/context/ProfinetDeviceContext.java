@@ -89,11 +89,6 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     private String[] subModules;
     private AtomicInteger sessionKeyGenerator = new AtomicInteger(1);
     private AtomicInteger identificationGenerator = new AtomicInteger(1);
-    List<PnIoCm_IoDataObject> inputIoPsApiBlocks = new ArrayList<>();
-    List<PnIoCm_IoCs> inputIoCsApiBlocks = new ArrayList<>();
-    List<PnIoCm_IoDataObject> outputIoDataApiBlocks = new ArrayList<>();
-    List<PnIoCm_IoCs> outputIoCsApiBlocks = new ArrayList<>();
-    List<PnIoCm_Submodule> expectedSubModuleApiBlocks = new ArrayList<>();
     List<PnIoCm_Block_ExpectedSubmoduleReq> expectedSubmoduleReq = new ArrayList<>();
     private String deviceTypeName;
     private String deviceName;
@@ -527,69 +522,11 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         int inputIoPsOffset = 0;
         int outputIoCsOffset = 0;
 
-        for (ProfinetVirtualSubmoduleItem virtualItem : this.deviceAccessItem.getVirtualSubmoduleList()) {
-            Integer identNumber = Integer.decode(virtualItem.getSubmoduleIdentNumber());
-            inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
-                0,
-                identNumber,
-                inputIoPsOffset));
-            outputIoCsApiBlocks.add(new PnIoCm_IoCs(
-                0,
-                identNumber,
-                outputIoCsOffset));
-            expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
-                identNumber,
-                identNumber,
-                false,
-                false,
-                false,
-                false));
-            inputIoPsOffset += 1;
-            outputIoCsOffset += 1;
+        ArrayList<PnIoCm_Submodule> expectedSubModuleApiBlocks = new ArrayList<>();
+        for (ProfinetModule module : modules) {
+            expectedSubModuleApiBlocks.addAll(module.getExpectedSubModuleApiBlocks());
         }
 
-        for (ProfinetInterfaceSubmoduleItem interfaceItem : this.deviceAccessItem.getSystemDefinedSubmoduleList().getInterfaceSubmodules()) {
-            Integer identNumber = Integer.decode(interfaceItem.getSubmoduleIdentNumber());
-            inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
-                0,
-                identNumber,
-                inputIoPsOffset));
-            outputIoCsApiBlocks.add(new PnIoCm_IoCs(
-                0,
-                identNumber,
-                outputIoCsOffset));
-            expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
-                identNumber,
-                identNumber,
-                false,
-                false,
-                false,
-                false));
-            inputIoPsOffset += 1;
-            outputIoCsOffset += 1;
-        }
-
-        for (
-            ProfinetPortSubmoduleItem portItem : this.deviceAccessItem.getSystemDefinedSubmoduleList().getPortSubmodules()) {
-            Integer identNumber = Integer.decode(portItem.getSubmoduleIdentNumber());
-            inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
-                0,
-                identNumber,
-                inputIoPsOffset));
-            outputIoCsApiBlocks.add(new PnIoCm_IoCs(
-                0,
-                identNumber,
-                outputIoCsOffset));
-            expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
-                identNumber,
-                identNumber,
-                false,
-                false,
-                false,
-                false));
-            inputIoPsOffset += 1;
-            outputIoCsOffset += 1;
-        }
         expectedSubmoduleReq.add(
             new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
                 Collections.singletonList(

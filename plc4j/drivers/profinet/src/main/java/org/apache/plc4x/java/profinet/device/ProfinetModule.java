@@ -19,6 +19,15 @@
 
 package org.apache.plc4x.java.profinet.device;
 
+import org.apache.plc4x.java.profinet.gsdml.ProfinetVirtualSubmoduleItem;
+import org.apache.plc4x.java.profinet.readwrite.PnIoCm_Submodule;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public interface ProfinetModule {
+
+    List<PnIoCm_Submodule> getExpectedSubModuleApiBlocks();
+
 
 }
