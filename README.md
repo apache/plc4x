@@ -28,8 +28,8 @@
 
 <h1 align="center">
   <br>
-   <img src="https://plc4x.apache.org/images/apache_plc4x_logo.png" 
-   alt="Apache PLC4X Logo" title="Apache PLC4X Logo"/>
+   <a href="https://plc4x.apache.org"><img src="https://plc4x.apache.org/images/apache_plc4x_logo.png" 
+   alt="Apache PLC4X Logo" title="Apache PLC4X Logo"/></a>
   <br>
 </h1>
 <h3 align="center">The Industrial IoT adapter</h3>
