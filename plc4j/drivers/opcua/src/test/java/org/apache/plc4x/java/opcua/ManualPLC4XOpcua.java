@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.opcua;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
@@ -101,7 +101,7 @@ public class ManualPLC4XOpcua {
         OpcuaPlcTagHandler tagH = new OpcuaPlcTagHandler();
         PlcTag tag = tagH.parseTag(BOOL_IDENTIFIER);
         try {
-            opcuaConnection = new PlcDriverManager().getConnection("opcua:tcp://127.0.0.1:12686/milo?discovery=false");
+            opcuaConnection = new DefaultPlcDriverManager().getConnection("opcua:tcp://127.0.0.1:12686/milo?discovery=false");
 
         } catch (PlcConnectionException e) {
             throw new PlcRuntimeException(e);

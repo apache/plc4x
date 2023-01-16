@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.utils.cache;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
@@ -44,7 +44,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
     private final Map<String, ConnectionContainer> connectionContainers;
 
     public static Builder getBuilder() {
-        return new Builder(new PlcDriverManager());
+        return new Builder(new DefaultPlcDriverManager());
     }
 
     public static Builder getBuilder(PlcConnectionManager connectionManager) {

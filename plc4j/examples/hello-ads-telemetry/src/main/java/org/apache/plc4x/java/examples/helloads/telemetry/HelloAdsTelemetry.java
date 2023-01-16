@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.examples.helloads.telemetry;
 
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
@@ -75,7 +75,7 @@ public class HelloAdsTelemetry {
 
         String remoteIp = args[0];
         String localIp = args[1];
-        try (PlcConnection connection = new PlcDriverManager().getConnection(String.format("ads:tcp://%s?targetAmsNetId=%s.1.1&targetAmsPort=10000&sourceAmsNetId=%s.1.1&sourceAmsPort=65534&load-symbol-and-data-type-tables=false", remoteIp, remoteIp, localIp))) {
+        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionManager().getConnection(String.format("ads:tcp://%s?targetAmsNetId=%s.1.1&targetAmsPort=10000&sourceAmsNetId=%s.1.1&sourceAmsPort=65534&load-symbol-and-data-type-tables=false", remoteIp, remoteIp, localIp))) {
             // Load the number of modules:
             int numModules = connection.readRequestBuilder().addTagAddress("numberOfModules", "0x0000F302/0xF0200000:UINT").build().execute().get().getInteger("numberOfModules");
 

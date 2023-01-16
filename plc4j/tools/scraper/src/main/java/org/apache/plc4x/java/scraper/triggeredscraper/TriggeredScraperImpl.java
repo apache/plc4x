@@ -23,7 +23,6 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -323,20 +322,20 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
 
     /**
      * acquires a plc connection from connection pool
-     * @param plcDriverManager  Driver manager handling connection and pools
+     * @param plcConnectionManager  Connection manager handling connection and pools
      * @param connectionString  Connection string as defined in the regarding implementation of {@link PlcDriver}
      * @param executorService   ExecuterService holding a pool as threads handling requests and stuff
-     * @param requestTimeoutMs  maximum awaiting for the the future to return a result
+     * @param requestTimeoutMs  maximum waiting time for the future to return a result
      * @return the {@link PlcConnection} used for acquiring data from PLC endpoint
      * @throws InterruptedException something went wrong
      * @throws ExecutionException something went wrong
      * @throws TimeoutException something went wrong
      */
-    public static PlcConnection getPlcConnection(PlcDriverManager plcDriverManager,
+    public static PlcConnection getPlcConnection(PlcConnectionManager plcConnectionManager,
                                                  String connectionString,
                                                  ExecutorService executorService,
                                                  long requestTimeoutMs) throws InterruptedException, ExecutionException, TimeoutException {
-        return getPlcConnection(plcDriverManager,connectionString,executorService,requestTimeoutMs,"");
+        return getPlcConnection(plcConnectionManager,connectionString,executorService,requestTimeoutMs,"");
     }
 
     /**

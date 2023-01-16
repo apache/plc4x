@@ -20,7 +20,6 @@ package org.apache.plc4x.java.scraper.triggeredscraper;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;

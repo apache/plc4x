@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.scraper;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -79,7 +79,7 @@ class ScraperTest implements WithAssertions {
 
     @Test
     void scraper_schedulesJob() throws InterruptedException, PlcConnectionException {
-        PlcDriverManager driverManager = new PlcDriverManager();
+        DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
         MockConnection connection = (MockConnection) driverManager.getConnection("mock:m1");
         connection.setDevice(mockDevice);
 
@@ -107,7 +107,7 @@ class ScraperTest implements WithAssertions {
 
     @Test
     void stop_stopsAllJobs() {
-        PlcDriverManager driverManager = new PlcDriverManager();
+        DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
 
         Scraper scraper = new ScraperImpl((j, a, m) -> {}, driverManager, Collections.singletonList(
             new ScrapeJobImpl("job1",
@@ -130,7 +130,7 @@ class ScraperTest implements WithAssertions {
 
     @Test
     void restart_works() throws PlcConnectionException {
-        PlcDriverManager driverManager = new PlcDriverManager();
+        DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
         MockConnection connection = (MockConnection) driverManager.getConnection("mock:m1");
         connection.setDevice(mockDevice);
 

@@ -20,9 +20,10 @@ package org.apache.plc4x.java;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.PlcDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,19 +34,19 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
-public class PlcDriverManager implements PlcConnectionManager {
+public class DefaultPlcDriverManager implements PlcDriverManager, PlcConnectionManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlcDriverManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(org.apache.plc4x.java.DefaultPlcDriverManager.class);
 
     protected ClassLoader classLoader;
 
     private Map<String, PlcDriver> driverMap;
 
-    public PlcDriverManager() {
+    public DefaultPlcDriverManager() {
         this(Thread.currentThread().getContextClassLoader());
     }
 
-    public PlcDriverManager(ClassLoader classLoader) {
+    public DefaultPlcDriverManager(ClassLoader classLoader) {
         LOGGER.info("Instantiating new PLC Driver Manager with class loader {}", classLoader);
         this.classLoader = classLoader;
         driverMap = new HashMap<>();
@@ -141,6 +142,10 @@ public class PlcDriverManager implements PlcConnectionManager {
         } catch (URISyntaxException e) {
             throw new PlcConnectionException("Invalid plc4j connection string '" + url + "'", e);
         }
+    }
+
+    public PlcConnectionManager getConnectionManager() {
+        return this;
     }
 
 }

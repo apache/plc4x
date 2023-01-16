@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.opcuaserver.backend;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.opcuaserver.configuration.Configuration;
 import org.apache.plc4x.java.opcuaserver.configuration.DeviceConfiguration;
@@ -186,7 +186,7 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
 
             if (plc4xServer.getDriverManager() == null) {
                 plc4xServer.removeTag(item);
-                plc4xServer.setDriverManager(new PlcDriverManager());
+                plc4xServer.setDriverManager(new DefaultPlcDriverManager());
             }
         }
 

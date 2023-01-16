@@ -16,20 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.modbus;
+package org.apache.plc4x.java.api;
 
 import org.apache.plc4x.java.DefaultPlcDriverManager;
-import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
-import org.junit.jupiter.api.Disabled;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
-@Disabled("Manual Test")
-public class ManualModbusDiscoveryTest {
+import java.util.Set;
 
-    public static void main(String[] args) throws Exception {
-        final PlcDriver modbusDriver = new DefaultPlcDriverManager().getDriver("modbus-tcp");
-        final PlcDiscoveryResponse plcDiscoveryResponse = modbusDriver.discoveryRequestBuilder().build().execute().get();
-        System.out.println(plcDiscoveryResponse);
+public interface PlcDriverManager {
+
+    static PlcDriverManager getDefault() {
+        return new DefaultPlcDriverManager();
     }
+
+    Set<String> listDrivers();
+
+    PlcDriver getDriver(String protocolCode) throws PlcConnectionException;
+
+    PlcDriver getDriverForUrl(String url) throws PlcConnectionException;
+
+    PlcConnectionManager getConnectionManager();
 
 }

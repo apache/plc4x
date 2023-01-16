@@ -18,7 +18,9 @@
  */
 package org.apache.plc4x.java.opm;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -59,7 +61,7 @@ public class PlcEntityInterceptorTest implements WithAssertions {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlcEntityInterceptorTest.class);
 
-    PlcDriverManager driverManager;
+    DefaultPlcDriverManager driverManager;
 
     MockConnection connection;
 
@@ -70,7 +72,7 @@ public class PlcEntityInterceptorTest implements WithAssertions {
 
     @BeforeEach
     void setUp() throws Exception {
-        driverManager = new PlcDriverManager();
+        driverManager = new DefaultPlcDriverManager();
         connection = (MockConnection) driverManager.getConnection("mock:test");
         connection.setDevice(mockDevice);
         entityManager = new PlcEntityManager(driverManager);
@@ -139,7 +141,7 @@ public class PlcEntityInterceptorTest implements WithAssertions {
         Callable callable;
 
         @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-        PlcDriverManager plcDriverManager;
+        PlcConnectionManager connectionManager;
 
         class MiscEntity {
 
@@ -181,27 +183,27 @@ public class PlcEntityInterceptorTest implements WithAssertions {
             assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("something"), callable, null, null, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Exception during forwarding call");
-            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getTest", String.class), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getTest", String.class), callable, null, connectionManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Only getter with no arguments are supported");
-            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk"), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk"), callable, null, connectionManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessageMatching("Unable to identify tag with name .*");
-            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk2"), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk2"), callable, null, connectionManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Problem during processing");
-            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk2"), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk2"), callable, null, connectionManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Problem during processing")
                 .hasStackTraceContaining(" Unable to read specified tag 'org.apache.plc4x.java.opm.PlcEntityInterceptorTest$Misc$MiscEntity.ok2', response code was 'null'");
-            assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("setOk2", String.class), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("setOk2", String.class), callable, null, connectionManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Problem during processing")
                 .hasStackTraceContaining(" Unable to read specified tag 'org.apache.plc4x.java.opm.PlcEntityInterceptorTest$Misc$MiscEntity.ok2', response code was 'null'");
-            assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("setOkOk", String.class, String.class), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("setOkOk", String.class, String.class), callable, null, connectionManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Only setter with one arguments are supported");
-            assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("someNotSetterMethod", String.class), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("someNotSetterMethod", String.class), callable, null, connectionManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Unable to forward invocation someNotSetterMethod on connected PlcEntity");
         }

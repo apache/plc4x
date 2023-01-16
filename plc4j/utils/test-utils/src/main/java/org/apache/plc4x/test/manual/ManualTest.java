@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.test.manual;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -56,7 +56,7 @@ public abstract class ManualTest {
     }
 
     public void run() throws Exception {
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionString)) {
+        try (PlcConnection plcConnection = new DefaultPlcDriverManager().getConnection(connectionString)) {
             System.out.println("Reading all types in separate requests");
             // Run all entries separately:
             for (TestCase testCase : testCases) {

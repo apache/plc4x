@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.opcuaserver.backend;
 
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -71,7 +71,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
 
     @Override
     protected void onStartup() {
-        setDriverManager(new PlcDriverManager());
+        setDriverManager(PlcDriverManager.getDefault());
     }
 
     @Override
@@ -85,7 +85,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
 
     public void setDriverManager(PlcDriverManager driverManager) {
         this.driverManager = driverManager;
-        this.cachedPlcConnectionManager = CachedPlcConnectionManager.getBuilder(driverManager).build();
+        this.cachedPlcConnectionManager = CachedPlcConnectionManager.getBuilder(driverManager.getConnectionManager()).build();
     }
 
     public PlcTag getTag(String tag, String connectionString) throws PlcConnectionException {

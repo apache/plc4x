@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.profinet;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -26,7 +26,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 public class ManualProfinetIoTest {
 
     public static void main(String[] args) throws Exception {
-        final PlcConnection connection = new PlcDriverManager().getConnection("profinet://192.168.24.31");
+        final PlcConnection connection = new DefaultPlcDriverManager().getConnection("profinet://192.168.24.31");
         final PlcReadRequest readRequest = connection.readRequestBuilder().addTagAddress("test", "").build();
         final PlcReadResponse plcReadResponse = readRequest.execute().get();
         System.out.println(plcReadResponse);

@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.opcua.protocol;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
@@ -97,7 +97,7 @@ public class OpcuaSubscriptionHandleTest {
             exampleServer = new ExampleServer();
             exampleServer.startup().get();
             //Connect
-            opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
+            opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
             assert opcuaConnection.isConnected();
         } catch (Exception e) {
             e.printStackTrace();
