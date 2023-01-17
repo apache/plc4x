@@ -42,11 +42,6 @@
       <version>${kotlin.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-stdlib-jdk7</artifactId>
-      <version>${kotlin.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
       <version>0.11.0-SNAPSHOT</version>
@@ -62,7 +57,7 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>3.23.1</version>
+      <version>3.24.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
