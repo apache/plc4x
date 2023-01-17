@@ -20,7 +20,6 @@ package org.apache.plc4x.java.opm;
 
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnectionManager;
-import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -195,11 +194,11 @@ public class PlcEntityInterceptorTest implements WithAssertions {
             assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk2"), callable, null, connectionManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Problem during processing")
-                .hasStackTraceContaining(" Unable to read specified tag 'org.apache.plc4x.java.opm.PlcEntityInterceptorTest$Misc$MiscEntity.ok2', response code was 'null'");
+                .hasStackTraceContaining(" Unable to read specified tag 'org.apache.plc4x.java.opm.PlcEntityInterceptorTest$Misc$MiscEntity.ok2', response code was 'Mock for PlcResponseCode");
             assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("setOk2", String.class), callable, null, connectionManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Problem during processing")
-                .hasStackTraceContaining(" Unable to read specified tag 'org.apache.plc4x.java.opm.PlcEntityInterceptorTest$Misc$MiscEntity.ok2', response code was 'null'");
+                .hasStackTraceContaining(" Unable to read specified tag 'org.apache.plc4x.java.opm.PlcEntityInterceptorTest$Misc$MiscEntity.ok2', response code was 'Mock for PlcResponseCode");
             assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("setOkOk", String.class, String.class), callable, null, connectionManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Only setter with one arguments are supported");
