@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package local
+package bacnetip
 
 import (
 	"fmt"
@@ -34,6 +34,7 @@ type LocalDeviceObject struct {
 	App                       interface{}
 	ObjectName                string
 	ObjectIdentifier          string
+	VendorIdentifier          uint16
 }
 
 func (l *LocalDeviceObject) String() string {

@@ -25,6 +25,7 @@ on:
       - code-generation/**
       - protocols/**
       - plc4j**
+      - pom.xml
   pull_request:
     paths:
       - code-generation/**

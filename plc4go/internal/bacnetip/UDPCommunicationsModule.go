@@ -20,10 +20,9 @@
 package bacnetip
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/transports/udp"
+	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net"
@@ -33,7 +32,7 @@ import (
 type UDPActor struct {
 	director *UDPDirector
 	timeout  uint32
-	timer    *_Task
+	timer    *OneShotFunctionTask
 	peer     string
 }
 
@@ -59,11 +58,12 @@ func NewUDPActor(director *UDPDirector, peer string) *UDPActor {
 	return a
 }
 
-func (a *UDPActor) idleTimeout() {
+func (a *UDPActor) idleTimeout() error {
 	log.Debug().Msg("idleTimeout")
 
 	// tell the director this is gone
 	a.director.DelActor(a)
+	return nil
 }
 
 func (a *UDPActor) Indication(pdu _PDU) error {
@@ -108,7 +108,7 @@ type UDPDirector struct {
 	timeout uint32
 	reuse   bool
 	address AddressTuple[string, uint16]
-	ti      *udp.TransportInstance
+	udpConn *net.UDPConn
 
 	actorClass func(*UDPDirector, string) *UDPActor
 	request    chan _PDU
@@ -148,7 +148,17 @@ func NewUDPDirector(address AddressTuple[string, uint16], timeout *int, reuse *b
 	if err != nil {
 		return nil, errors.Wrap(err, "error resolving udp address")
 	}
-	d.ti = udp.NewTransportInstance(resolvedAddress, nil, d.timeout, d.reuse, nil)
+	if d.reuse {
+		if packetConn, err := reuseport.ListenPacket("udp", resolvedAddress.String()); err != nil {
+			return nil, errors.Wrap(err, "error connecting to local address")
+		} else {
+			d.udpConn = packetConn.(*net.UDPConn)
+		}
+	} else {
+		if d.udpConn, err = net.ListenUDP("udp", resolvedAddress); err != nil {
+			return nil, errors.Wrap(err, "error connecting to local address")
+		}
+	}
 
 	d.running = true
 	go func() {
@@ -160,11 +170,32 @@ func NewUDPDirector(address AddressTuple[string, uint16], timeout *int, reuse *b
 	// create the request queue
 	d.request = make(chan _PDU)
 	go func() {
-		// TODO: get requests and send them...
+		for d.running {
+			pdu := <-d.request
+			serialize, err := pdu.GetMessage().Serialize()
+			if err != nil {
+				log.Error().Err(err).Msg("Error building message")
+				continue
+			}
+			// TODO: wonky address object
+			destination := pdu.GetPDUDestination()
+			addr := net.IPv4(destination.AddrAddress[0], destination.AddrAddress[1], destination.AddrAddress[2], destination.AddrAddress[3])
+			udpAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", addr, *destination.AddrPort))
+			if err != nil {
+				log.Error().Err(err).Msg("Error resolving address")
+				continue
+			}
+			writtenBytes, err := d.udpConn.WriteToUDP(serialize, udpAddr)
+			if err != nil {
+				log.Error().Err(err).Msg("Error writing bytes")
+				continue
+			}
+			log.Debug().Msgf("%d written bytes", writtenBytes)
+		}
 	}()
 
 	// start with an empty peer pool
-	d.peers = nil
+	d.peers = map[string]*UDPActor{}
 
 	return d, nil
 }
@@ -209,31 +240,20 @@ func (d *UDPDirector) ActorError(err error) {
 
 func (d *UDPDirector) Close() error {
 	d.running = false
-	return d.ti.Close()
+	return d.udpConn.Close()
 }
 
 func (d *UDPDirector) handleRead() {
 	log.Debug().Msgf("handleRead(%v)", d.address)
 
-	if err := d.ti.FillBuffer(func(pos uint, _ byte, _ *bufio.Reader) bool {
-		if pos >= 4 {
-			return false
-		}
-		return true
-	}); err != nil {
-		// pass along to a handler
-		d.handleError(errors.Wrap(err, "error filling buffer"))
+	readBytes := make([]byte, 1500) // TODO: check if that is sufficient
+	var sourceAddr *net.UDPAddr
+	if _, addr, err := d.udpConn.ReadFromUDP(readBytes); err != nil {
+		log.Error().Err(err).Msg("error reading")
 		return
+	} else {
+		sourceAddr = addr
 	}
-	peekedBytes, err := d.ti.PeekReadableBytes(4)
-	if err != nil {
-		// pass along to a handler
-		d.handleError(errors.Wrap(err, "error peeking 4 bytes"))
-		return
-	}
-
-	length := uint32(peekedBytes[2])<<8 | uint32(peekedBytes[3])
-	readBytes, err := d.ti.Read(length)
 
 	bvlc, err := model.BVLCParse(readBytes)
 	if err != nil {
@@ -242,8 +262,19 @@ func (d *UDPDirector) handleRead() {
 		return
 	}
 
-	// TODO: how to get the addr? Maybe we ditch the transport instance and use the udp socket directly
-	pdu := NewPDU(bvlc)
+	saddr, err := NewAddress(sourceAddr)
+	if err != nil {
+		// pass along to a handler
+		d.handleError(errors.Wrap(err, "error parsing source address"))
+		return
+	}
+	daddr, err := NewAddress(d.udpConn.LocalAddr())
+	if err != nil {
+		// pass along to a handler
+		d.handleError(errors.Wrap(err, "error parsing destination address"))
+		return
+	}
+	pdu := NewPDU(bvlc, WithPDUSource(saddr), WithPDUDestination(daddr))
 	// send the PDU up to the client
 	go d._response(pdu)
 }
@@ -274,12 +305,12 @@ func (d *UDPDirector) _response(pdu _PDU) error {
 	log.Debug().Msgf("_response %s", pdu)
 
 	// get the destination
-	addr := pdu.GetPDUDestination()
+	addr := pdu.GetPDUSource()
 
 	// get the peer
 	peer, ok := d.peers[addr.String()]
 	if !ok {
-		peer = d.actorClass(d, (*addr).String())
+		peer = d.actorClass(d, addr.String())
 	}
 
 	// send the message
