@@ -55,7 +55,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 @TriggerSerially
 @Tags({ "plc4x-sink" })
-@InputRequirement(InputRequirement.Requirement.INPUT_ALLOWED)
+@InputRequirement(InputRequirement.Requirement.INPUT_REQUIRED)
 @CapabilityDescription("Processor able to write data to industrial PLCs using Apache PLC4X")
 @WritesAttributes({ @WritesAttribute(attribute = "value", description = "some value") })
 public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
