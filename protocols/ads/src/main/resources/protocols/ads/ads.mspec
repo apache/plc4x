@@ -634,54 +634,59 @@
 // Especially interesting for the sum add/delete notification requests
 // https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_ads_intro/117463563.html&id=
 [enum uint 32 ReservedIndexGroups
-    ['0x0000F000' ADSIGRP_SYMTAB]
-    ['0x0000F001' ADSIGRP_SYMNAME]
-    ['0x0000F002' ADSIGRP_SYMVAL]
-    ['0x0000F003' ADSIGRP_SYM_HNDBYNAME]
-    ['0x0000F004' ADSIGRP_SYM_VALBYNAME]
-    ['0x0000F005' ADSIGRP_SYM_VALBYHND]
-    ['0x0000F006' ADSIGRP_SYM_RELEASEHND]
-    ['0x0000F007' ADSIGRP_SYM_INFOBYNAME]
-    ['0x0000F008' ADSIGRP_SYM_VERSION]
+    ['0x0000F000' ADSIGRP_SYMTAB                              ]
+    ['0x0000F001' ADSIGRP_SYMNAME                             ]
+    ['0x0000F002' ADSIGRP_SYMVAL                              ]
+    ['0x0000F003' ADSIGRP_SYM_HNDBYNAME                       ]
+    ['0x0000F004' ADSIGRP_SYM_VALBYNAME                       ]
+    ['0x0000F005' ADSIGRP_SYM_VALBYHND                        ]
+    ['0x0000F006' ADSIGRP_SYM_RELEASEHND                      ]
+    ['0x0000F007' ADSIGRP_SYM_INFOBYNAME                      ]
+    ['0x0000F008' ADSIGRP_SYM_VERSION                         ]
     // We can use this GID to read the type information of a given variable
     // in the operation mode in which we don't read the entire structures on
     // connection start.
-    ['0x0000F009' ADSIGRP_SYM_INFOBYNAMEEX]
-    ['0x0000F00A' ADSIGRP_SYM_DOWNLOAD]
+    ['0x0000F009' ADSIGRP_SYM_INFOBYNAMEEX                    ]
+    ['0x0000F00A' ADSIGRP_SYM_DOWNLOAD                        ]
     // Read the symbol-table (All variables defined in the PLC)
-    ['0x0000F00B' ADSIGRP_SYM_UPLOAD]
-    ['0x0000F00C' ADSIGRP_SYM_UPLOADINFO]
+    ['0x0000F00B' ADSIGRP_SYM_UPLOAD                          ]
+    ['0x0000F00C' ADSIGRP_SYM_UPLOADINFO                      ]
     // Read the data-type-table (All data-types defined in the PLC)
-    ['0x0000F00E' ADSIGRP_DATA_TYPE_TABLE_UPLOAD]
+    ['0x0000F00E' ADSIGRP_DATA_TYPE_TABLE_UPLOAD              ]
     // Read the sizes of the symbol and data-type-tables
-    ['0x0000F00F' ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES]
-    ['0x0000F010' ADSIGRP_SYMNOTE]
+    ['0x0000F00F' ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES          ]
+    ['0x0000F010' ADSIGRP_SYMNOTE                             ]
     // We can use this GIT to read the data-type information for a given
     // data type name in the operation mode in which we don't read the
     // entire structures on connection start.
-    ['0x0000F011' ADSIGRP_DT_INFOBYNAMEEX]
+    ['0x0000F011' ADSIGRP_DT_INFOBYNAMEEX                     ]
     // Access to the %I fields
-    ['0x0000F020' ADSIGRP_IOIMAGE_RWIB]
-    ['0x0000F021' ADSIGRP_IOIMAGE_RWIX]
-    ['0x0000F025' ADSIGRP_IOIMAGE_RISIZE]
+    ['0x0000F020' ADSIGRP_IOIMAGE_RWIB                        ]
+    ['0x0000F021' ADSIGRP_IOIMAGE_RWIX                        ]
+    ['0x0000F025' ADSIGRP_IOIMAGE_RISIZE                      ]
     // Access to the %Q fields
-    ['0x0000F030' ADSIGRP_IOIMAGE_RWOB]
-    ['0x0000F031' ADSIGRP_IOIMAGE_RWOX]
-    ['0x0000F035' ADSIGRP_IOIMAGE_RWOSIZE]
-    ['0x0000F040' ADSIGRP_IOIMAGE_CLEARI]
-    ['0x0000F050' ADSIGRP_IOIMAGE_CLEARO]
-    ['0x0000F060' ADSIGRP_IOIMAGE_RWIOB]
+    ['0x0000F030' ADSIGRP_IOIMAGE_RWOB                        ]
+    ['0x0000F031' ADSIGRP_IOIMAGE_RWOX                        ]
+    ['0x0000F035' ADSIGRP_IOIMAGE_RWOSIZE                     ]
+    ['0x0000F040' ADSIGRP_IOIMAGE_CLEARI                      ]
+    ['0x0000F050' ADSIGRP_IOIMAGE_CLEARO                      ]
+    ['0x0000F060' ADSIGRP_IOIMAGE_RWIOB                       ]
     // Sum Requests
-    ['0x0000F080' ADSIGRP_MULTIPLE_READ]
-    ['0x0000F081' ADSIGRP_MULTIPLE_WRITE]
-    ['0x0000F082' ADSIGRP_MULTIPLE_READ_WRITE]
-    ['0x0000F083' ADSIGRP_MULTIPLE_RELEASE_HANDLE]
-    ['0x0000F084' ADSIGRP_SUMUP_READEX2]
-    ['0x0000F085' ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS]
+    ['0x0000F080' ADSIGRP_MULTIPLE_READ                       ]
+    ['0x0000F081' ADSIGRP_MULTIPLE_WRITE                      ]
+    ['0x0000F082' ADSIGRP_MULTIPLE_READ_WRITE                 ]
+    ['0x0000F083' ADSIGRP_MULTIPLE_RELEASE_HANDLE             ]
+    ['0x0000F084' ADSIGRP_SUMUP_READEX2                       ]
+    ['0x0000F085' ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS   ]
     ['0x0000F086' ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS]
-    ['0x0000F100' ADSIGRP_DEVICE_DATA]
-    ['0x00000000' ADSIOFFS_DEVDATA_ADSSTATE]
-    ['0x00000002' ADSIOFFS_DEVDATA_DEVSTATE]
+    ['0x0000F100' ADSIGRP_DEVICE_DATA                         ]
+    // This Group Index makes ADS access data via AoE (ADS over EtherCAT) and
+    // can be used to access telemetry data on the DeviceManager or from attached
+    // EtherCAT devices.
+    // https://infosys.beckhoff.com/index.php?content=../content/1031/eap/1521731467.html
+    ['0x0000F302' ADS_OVER_ETHERCAT                           ]
+    ['0x00000000' ADSIOFFS_DEVDATA_ADSSTATE                   ]
+    ['0x00000002' ADSIOFFS_DEVDATA_DEVSTATE                   ]
 ]
 
 [enum uint 32 ReturnCode
