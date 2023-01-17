@@ -36,7 +36,7 @@ import java.util.Set;
 
 public class DefaultPlcDriverManager implements PlcDriverManager, PlcConnectionManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(org.apache.plc4x.java.DefaultPlcDriverManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultPlcDriverManager.class);
 
     protected ClassLoader classLoader;
 

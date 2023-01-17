@@ -137,6 +137,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         setupAmsRouteFuture.whenComplete((unused, throwable) -> {
             if (!configuration.isLoadSymbolAndDataTypeTables()) {
                 context.fireConnected();
+                // Instead of aborting here, we allow connecting, as the user might be using raw-addresses
+                // This is particularly important for using the driver together with ADS over EtherCAT for accessing
+                // direct EtherCAT devices.
 //                future.completeExceptionally(new PlcConnectionException(
 //                    "Lazy loading is generally planned, but not implemented yet. " +
 //                        "If you are in need for this feature, please reach out to the community."));
