@@ -89,7 +89,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     private String[] subModules;
     private AtomicInteger sessionKeyGenerator = new AtomicInteger(1);
     private AtomicInteger identificationGenerator = new AtomicInteger(1);
-    List<PnIoCm_Block_ExpectedSubmoduleReq> expectedSubmoduleReq = new ArrayList<>();
+
     private String deviceTypeName;
     private String deviceName;
     private ProfinetISO15745Profile gsdFile;
@@ -299,51 +299,61 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     }
 
     public List<PnIoCm_IoDataObject> getInputIoPsApiBlocks() {
+        List<PnIoCm_IoDataObject> inputIoPsApiBlocks = new ArrayList<>();
+        for (ProfinetModule module : modules) {
+            inputIoPsApiBlocks.addAll(module.getInputIoPsApiBlocks());
+        }
         return inputIoPsApiBlocks;
     }
 
-    public void setInputIoPsApiBlocks(List<PnIoCm_IoDataObject> inputIoPsApiBlocks) {
-        this.inputIoPsApiBlocks = inputIoPsApiBlocks;
-    }
-
     public List<PnIoCm_IoCs> getInputIoCsApiBlocks() {
+        List<PnIoCm_IoCs> inputIoCsApiBlocks = new ArrayList<>();
+        for (ProfinetModule module : modules) {
+            inputIoCsApiBlocks.addAll(module.getInputIoCsApiBlocks());
+        }
         return inputIoCsApiBlocks;
     }
 
-    public void setInputIoCsApiBlocks(List<PnIoCm_IoCs> inputIoCsApiBlocks) {
-        this.inputIoCsApiBlocks = inputIoCsApiBlocks;
-    }
-
-    public List<PnIoCm_IoDataObject> getOutputIoDataApiBlocks() {
-        return outputIoDataApiBlocks;
-    }
-
-    public void setOutputIoDataApiBlocks(List<PnIoCm_IoDataObject> outputIoDataApiBlocks) {
-        this.outputIoDataApiBlocks = outputIoDataApiBlocks;
+    public List<PnIoCm_IoDataObject> getOutputIoPsApiBlocks() {
+        List<PnIoCm_IoDataObject> outputIoPsApiBlocks = new ArrayList<>();
+        for (ProfinetModule module : modules) {
+            outputIoPsApiBlocks.addAll(module.getOutputIoPsApiBlocks());
+        }
+        return outputIoPsApiBlocks;
     }
 
     public List<PnIoCm_IoCs> getOutputIoCsApiBlocks() {
+        List<PnIoCm_IoCs> outputIoCsApiBlocks = new ArrayList<>();
+        for (ProfinetModule module : modules) {
+            outputIoCsApiBlocks.addAll(module.getOutputIoCsApiBlocks());
+        }
         return outputIoCsApiBlocks;
     }
 
-    public void setOutputIoCsApiBlocks(List<PnIoCm_IoCs> outputIoCsApiBlocks) {
-        this.outputIoCsApiBlocks = outputIoCsApiBlocks;
-    }
-
-    public List<PnIoCm_Submodule> getExpectedSubModuleApiBlocks() {
-        return expectedSubModuleApiBlocks;
-    }
-
-    public void setExpectedSubModuleApiBlocks(List<PnIoCm_Submodule> expectedSubModuleApiBlocks) {
-        this.expectedSubModuleApiBlocks = expectedSubModuleApiBlocks;
+    public List<PnIoCm_Submodule> getExpectedSubModuleApiBlocks(ProfinetModule module) {
+        return module.getExpectedSubModuleApiBlocks();
     }
 
     public List<PnIoCm_Block_ExpectedSubmoduleReq> getExpectedSubmoduleReq() {
-        return expectedSubmoduleReq;
-    }
+        List<PnIoCm_Block_ExpectedSubmoduleReq> expectedSubmoduleReq = new ArrayList<>();
+        for (ProfinetModule module : modules) {
+            if (!(module instanceof ProfinetEmptyModule)) {
+                expectedSubmoduleReq.add(
+                    new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
+                        Collections.singletonList(
+                            new PnIoCm_ExpectedSubmoduleBlockReqApi(module.getSlotNumber(),
+                                module.getIdentNumber(),
+                                0x00000000,
+                                getExpectedSubModuleApiBlocks(module)
+                            )
+                        )
+                    )
+                );
+            }
+        }
 
-    public void setExpectedSubmoduleReq(List<PnIoCm_Block_ExpectedSubmoduleReq> expectedSubmoduleReq) {
-        this.expectedSubmoduleReq = expectedSubmoduleReq;
+
+        return expectedSubmoduleReq;
     }
 
     public String getDeviceTypeName() {
@@ -391,10 +401,12 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         }
         int numberOfSlots = Integer.parseInt(matcher.group("to"));
         this.modules = new ProfinetModule[numberOfSlots];
-        this.modules[deviceAccessItem.getFixedInSlots()] = new ProfinetModuleImpl(deviceAccessItem);
+        this.modules[deviceAccessItem.getFixedInSlots()] = new ProfinetModuleImpl(deviceAccessItem, 0, 0, deviceAccessItem.getFixedInSlots());
 
         List<ProfinetModuleItemRef> usableSubModules = this.deviceAccessItem.getUseableModules();
         int currentSlot = deviceAccessItem.getFixedInSlots() + 1;
+        Integer inputOffset = deviceAccessItem.getInputDataLength();
+        Integer outputOffset = deviceAccessItem.getOutputDataLength();
         for (String subModule : this.subModules) {
             if (subModule.equals("")) {
                 this.modules[currentSlot] = new ProfinetEmptyModule();
@@ -423,7 +435,10 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
                             throw new PlcConnectionException("Couldn't find reference module " + subModule + " in GSD file.");
                         }
 
-                        this.modules[currentSlot] = new ProfinetModuleImpl(foundReferencedModule);
+                        this.modules[currentSlot] = new ProfinetModuleImpl(foundReferencedModule, inputOffset, outputOffset, currentSlot);
+
+                        inputOffset += foundReferencedModule.getInputDataLength();
+                        outputOffset += foundReferencedModule.getOutputDataLength();
                         break;
                     }
                 }
@@ -516,154 +531,4 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         this.deviceAccess = deviceAccess;
     }
 
-    public void populateNode() throws PlcException {
-        extractGSDFileInfo(this.gsdFile);
-
-        int inputIoPsOffset = 0;
-        int outputIoCsOffset = 0;
-
-        ArrayList<PnIoCm_Submodule> expectedSubModuleApiBlocks = new ArrayList<>();
-        for (ProfinetModule module : modules) {
-            expectedSubModuleApiBlocks.addAll(module.getExpectedSubModuleApiBlocks());
-        }
-
-        expectedSubmoduleReq.add(
-            new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
-                Collections.singletonList(
-                    new PnIoCm_ExpectedSubmoduleBlockReqApi(0,
-                        0x00000001,
-                        0x00000000,
-                        expectedSubModuleApiBlocks
-                    )
-                )
-            )
-        );
-
-        int slot = 1;
-        for (String submodule : subModules) {
-            if (submodule.equals("")) {
-                // Empty Module
-            } else {
-                ProfinetModuleItem foundModule = null;
-                for (ProfinetModuleItem module : gsdFile.getProfileBody().getApplicationProcess().getModuleList()) {
-                    if (module.getId().equals(submodule)) {
-                        foundModule = module;
-                        break;
-                    }
-                }
-                if (foundModule == null) {
-                    throw new PlcException("Unable to find module id in configured devices");
-                }
-
-                Integer identNumber = Integer.decode(foundModule.getModuleIdentNumber());
-                if (foundModule.getInputDataLength() != 0) {
-                    inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
-                        slot,
-                        0x01,
-                        inputIoPsOffset));
-                    inputIoPsOffset += 1 + foundModule.getInputDataLength();
-                }
-                if (foundModule.getInputDataLength() != 0) {
-                    outputIoCsApiBlocks.add(new PnIoCm_IoCs(
-                        slot,
-                        0x01,
-                        outputIoCsOffset));
-                    outputIoCsOffset += 1;
-                }
-            }
-            slot += 1;
-        }
-        slot = 1;
-        for (String submodule : this.subModules) {
-            if (submodule.equals("")) {
-                // Empty Module
-            } else {
-                ProfinetModuleItem foundModule = null;
-                for (ProfinetModuleItem module : gsdFile.getProfileBody().getApplicationProcess().getModuleList()) {
-                    if (module.getId().equals(submodule)) {
-                        foundModule = module;
-                        break;
-                    }
-                }
-
-                Integer identNumber = Integer.decode(foundModule.getModuleIdentNumber());
-                if (foundModule.getOutputDataLength() != 0) {
-                    inputIoCsApiBlocks.add(new PnIoCm_IoCs(
-                        slot,
-                        0x01,
-                        inputIoPsOffset));
-                    inputIoPsOffset += foundModule.getOutputDataLength();
-                }
-
-                if (foundModule.getOutputDataLength() != 0) {
-                    outputIoDataApiBlocks.add(new PnIoCm_IoDataObject(
-                        slot,
-                        0x01,
-                        outputIoCsOffset));
-                    outputIoCsOffset += 1 + foundModule.getOutputDataLength();
-                }
-
-                if (foundModule.getInputDataLength() != 0 && foundModule.getOutputDataLength() != 0) {
-                    expectedSubmoduleReq.add(new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
-                        Collections.singletonList(
-                            new PnIoCm_ExpectedSubmoduleBlockReqApi(slot,
-                                identNumber,
-                                0x00000000,
-                                Collections.singletonList(new PnIoCm_Submodule_InputAndOutputData(
-                                    0x01,
-                                    Long.decode(foundModule.getVirtualSubmoduleList().get(0).getSubmoduleIdentNumber()),
-                                    false,
-                                    false,
-                                    false,
-                                    false,
-                                    foundModule.getInputDataLength(),
-                                    (short) 0x01,
-                                    (short) 0x01,
-                                    foundModule.getOutputDataLength(),
-                                    (short) 0x01,
-                                    (short) 0x01
-                                ))
-                            )
-                        )));
-                } else if (foundModule.getInputDataLength() != 0) {
-                    expectedSubmoduleReq.add(new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
-                        Collections.singletonList(
-                            new PnIoCm_ExpectedSubmoduleBlockReqApi(slot,
-                                identNumber,
-                                0x00000000,
-                                Collections.singletonList(new PnIoCm_Submodule_InputData(
-                                    0x01,
-                                    Long.decode(foundModule.getVirtualSubmoduleList().get(0).getSubmoduleIdentNumber()),
-                                    false,
-                                    false,
-                                    false,
-                                    false,
-                                    foundModule.getInputDataLength(),
-                                    (short) 0x01,
-                                    (short) 0x01))
-                            )
-                        )));
-                } else if (foundModule.getOutputDataLength() != 0) {
-                    expectedSubmoduleReq.add(new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
-                        Collections.singletonList(
-                            new PnIoCm_ExpectedSubmoduleBlockReqApi(slot,
-                                identNumber,
-                                0x00000000,
-                                Collections.singletonList(new PnIoCm_Submodule_OutputData(
-                                    0x01,
-                                    Long.decode(foundModule.getVirtualSubmoduleList().get(0).getSubmoduleIdentNumber()),
-                                    false,
-                                    false,
-                                    false,
-                                    false,
-                                    foundModule.getOutputDataLength(),
-                                    (short) 0x01,
-                                    (short) 0x01))
-                            )
-                        )));
-                }
-            }
-            slot += 1;
-        }
-    }
 }

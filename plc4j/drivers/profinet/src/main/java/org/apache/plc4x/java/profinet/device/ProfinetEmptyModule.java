@@ -19,6 +19,55 @@
 
 package org.apache.plc4x.java.profinet.device;
 
+import org.apache.plc4x.java.api.messages.PlcBrowseItem;
+import org.apache.plc4x.java.profinet.readwrite.PnIoCm_IoCs;
+import org.apache.plc4x.java.profinet.readwrite.PnIoCm_IoDataObject;
+import org.apache.plc4x.java.profinet.readwrite.PnIoCm_Submodule;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class ProfinetEmptyModule implements ProfinetModule{
+
+    @Override
+    public List<PnIoCm_Submodule> getExpectedSubModuleApiBlocks() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<PnIoCm_IoDataObject> getInputIoPsApiBlocks() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<PnIoCm_IoCs> getOutputIoCsApiBlocks() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<PnIoCm_IoCs> getInputIoCsApiBlocks() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<PnIoCm_IoDataObject> getOutputIoPsApiBlocks() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public Integer getIdentNumber() {
+        return null;
+    }
+
+    @Override
+    public Integer getSlotNumber() {
+        return null;
+    }
+
+    @Override
+    public Map<String, List<PlcBrowseItem>> browseTags(Map<String, List<PlcBrowseItem>> browseItems) {
+        return browseItems;
+    }
 
 }

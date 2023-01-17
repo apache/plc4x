@@ -21,13 +21,18 @@ package org.apache.plc4x.java.profinet.gsdml;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("CertificationInfo")
+@JsonIgnoreProperties(ignoreUnknown = false)
+@JsonRootName("DataItem")
 public class ProfinetDataItem {
+
+    @JacksonXmlProperty(localName="BitDataItem")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    private List<ProfinetBitDataItem> bitDataItem;
 
     @JacksonXmlProperty(isAttribute=true, localName="DataType")
     private String dataType;
@@ -36,10 +41,7 @@ public class ProfinetDataItem {
     private String textId;
 
     @JacksonXmlProperty(isAttribute=true, localName="UseAsBits")
-    private boolean UseAsBits;
-
-    @JacksonXmlProperty(isAttribute=true, localName="BitDataItem")
-    private List<ProfinetBitDataItem> bitDataItem;
+    private boolean useAsBits;
 
     public String getDataType() {
         return dataType;
@@ -50,7 +52,7 @@ public class ProfinetDataItem {
     }
 
     public boolean isUseAsBits() {
-        return UseAsBits;
+        return useAsBits;
     }
 
     public List<ProfinetBitDataItem> getBitDataItem() {

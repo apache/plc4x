@@ -57,7 +57,13 @@ public class ProfinetModuleItem implements ProfinetDeviceItem {
         return virtualSubmoduleList;
     }
 
+    @Override
+    public ProfinetSystemDefinedSubmoduleList getSystemDefinedSubmoduleList() {
+        return null;
+    }
+
     private static int getLengthSimpleType(String dataType) {
+        // TODO:- Add all datatype lengths
         switch(dataType) {
             case "Unsigned8":
                 return 1;
@@ -68,7 +74,7 @@ public class ProfinetModuleItem implements ProfinetDeviceItem {
         }
     }
 
-    public int getInputDataLength() {
+    public Integer getInputDataLength() {
         int length = 0;
         for (ProfinetVirtualSubmoduleItem module : this.virtualSubmoduleList) {
             if (module.getIoData() != null && module.getIoData().getInput() != null) {
@@ -82,7 +88,7 @@ public class ProfinetModuleItem implements ProfinetDeviceItem {
         return length;
     }
 
-    public int getOutputDataLength() {
+    public Integer getOutputDataLength() {
         int length = 0;
         for (ProfinetVirtualSubmoduleItem module : this.virtualSubmoduleList) {
             if (module.getIoData() != null && module.getIoData().getOutput() != null) {

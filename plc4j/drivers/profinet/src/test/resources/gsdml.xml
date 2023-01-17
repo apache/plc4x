@@ -105,7 +105,7 @@
                               <BitDataItem BitOffset="6" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
                               <BitDataItem BitOffset="7" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
                            </DataItem>
-                           <DataItem DataType="Float"/>
+                           <DataItem DataType="Float" TextId="PLC4X_INPUT_MODULE_INFO_FLOAT"/>
                         </Input>
                      </IOData>
                      <ModuleInfo>
@@ -140,6 +140,7 @@
                <Text TextId="PLC4X_VIRTUAL_INPUT_MODULE_NAME" Value="Virtual 32 Digital Input"/>
                <Text TextId="PLC4X_VIRTUAL_INPUT_MODULE_INFO" Value="Virtual 32 Bits"/>
                <Text TextId="PLC4X_INPUT_MODULE_INFO_32" Value="32 Bits"/>
+               <Text TextId="PLC4X_INPUT_MODULE_INFO_FLOAT" Value="32 Bits"/>
             </PrimaryLanguage>
          </ExternalTextList>
       </ApplicationProcess>

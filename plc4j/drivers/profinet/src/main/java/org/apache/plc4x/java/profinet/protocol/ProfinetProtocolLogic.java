@@ -136,9 +136,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         Map<String, PlcResponseCode> codes = new HashMap<>();
 
         for (Map.Entry<String, ProfinetDevice> device : this.configuredDevices.entrySet()) {
-            List<PlcBrowseItem> items = new LinkedList<>();
-            items.add(device.getValue().browseTags());
-            values.put(device.getKey(), items);
+            device.getValue().browseTags(values);
             codes.put(device.getKey(), PlcResponseCode.OK);
         }
 

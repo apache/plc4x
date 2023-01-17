@@ -26,6 +26,10 @@ import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ProfinetBrowseTests {
 
@@ -37,8 +41,9 @@ public class ProfinetBrowseTests {
         ProfinetDevice device = configuration.getDevices().getConfiguredDevices().get("DEVICE_NAME_1");
         device.setVendorDeviceId("CAFE", "0001");
 
-        PlcBrowseItem response = device.browseTags();
-        response.getTag();
+        Map<String, List<PlcBrowseItem>> browseItems = new HashMap<>();
+        Map<String, List<PlcBrowseItem>> response = device.browseTags(browseItems);
+        response.entrySet();
     }
 
 }

@@ -106,7 +106,6 @@ public class ProfinetDevice {
             this.deviceId = deviceId;
             if (deviceContext.getGsdFile() == null) {
                 deviceContext.setGsdFile(gsdHandler.apply(vendorId, deviceId));
-                deviceContext.populateNode();
             }
         } catch (PlcException e) {
             throw new RuntimeException(e);
@@ -194,23 +193,12 @@ public class ProfinetDevice {
         The children are a list of configured submodules, with the same format as the parent.
         Each address of the children is formatted with the format i.e. parent.submodule.chiildtag
      */
-    public PlcBrowseItem browseTags() {
-        // If this type has children, add entries for its children.
-        Map<String, PlcBrowseItem> children = getChildTags();
-
-        // Populate a map of protocol-dependent options.
-        Map<String, PlcValue> options = new HashMap<>();
-        for (Map.Entry<String, PlcValue> entry : getDeviceInfo().entrySet()) {
-            options.put(entry.getKey(), entry.getValue());
+    public Map<String, List<PlcBrowseItem>> browseTags(Map<String, List<PlcBrowseItem>> browseItems) {
+        for (ProfinetModule module : deviceContext.getModules()) {
+            module.browseTags(browseItems);
         }
-        return new DefaultPlcBrowseItem(
-            ProfinetTag.of(this.deviceContext.getDeviceName()),
-            this.deviceContext.getDeviceName(),
-            false,
-            false,
-            true,
-            children,
-            options);
+
+        return browseItems;
     }
 
     /*
@@ -465,7 +453,7 @@ public class ProfinetDevice {
 
             List<PnIoCm_IoCrBlockReqApi> outputApis = Collections.singletonList(
                 new PnIoCm_IoCrBlockReqApi(
-                    deviceContext.getOutputIoDataApiBlocks(),
+                    deviceContext.getOutputIoPsApiBlocks(),
                     deviceContext.getOutputIoCsApiBlocks()
                 )
             );

@@ -19,15 +19,26 @@
 
 package org.apache.plc4x.java.profinet.device;
 
+import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetVirtualSubmoduleItem;
+import org.apache.plc4x.java.profinet.readwrite.PnIoCm_IoCs;
+import org.apache.plc4x.java.profinet.readwrite.PnIoCm_IoDataObject;
 import org.apache.plc4x.java.profinet.readwrite.PnIoCm_Submodule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public interface ProfinetModule {
 
     List<PnIoCm_Submodule> getExpectedSubModuleApiBlocks();
+    List<PnIoCm_IoDataObject> getInputIoPsApiBlocks();
+    List<PnIoCm_IoCs> getOutputIoCsApiBlocks();
+    List<PnIoCm_IoCs> getInputIoCsApiBlocks();
+    List<PnIoCm_IoDataObject> getOutputIoPsApiBlocks();
+    Integer getIdentNumber();
+    Integer getSlotNumber();
 
+    Map<String, List<PlcBrowseItem>> browseTags(Map<String, List<PlcBrowseItem>> browseItems);
 
 }

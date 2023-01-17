@@ -8,5 +8,10 @@ public interface ProfinetDeviceItem {
 
     ProfinetSystemDefinedSubmoduleList getSystemDefinedSubmoduleList();
 
+    String getModuleIdentNumber();
+
+    Integer getInputDataLength();
+
+    Integer getOutputDataLength();
 
 }

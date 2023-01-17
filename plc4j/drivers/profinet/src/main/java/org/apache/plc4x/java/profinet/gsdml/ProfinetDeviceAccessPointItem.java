@@ -108,6 +108,16 @@ public class ProfinetDeviceAccessPointItem implements ProfinetDeviceItem {
         return moduleIdentNumber;
     }
 
+    @Override
+    public Integer getInputDataLength() {
+        return 0;
+    }
+
+    @Override
+    public Integer getOutputDataLength() {
+        return 0;
+    }
+
     public int getMinDeviceInterval() {
         return minDeviceInterval;
     }
