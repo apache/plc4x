@@ -1354,7 +1354,7 @@
           [WARNING]    org.apache.commons:commons-pool2:jar:2.11.1:compile
           [WARNING]    org.apache.plc4x:plc4j-api:jar:0.11.0-SNAPSHOT:compile
           -->
-          <version>3.5.0</version>
+          <version>3.1.2</version>
         </plugin>
       </plugins>
     </pluginManagement>
