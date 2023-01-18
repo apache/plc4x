@@ -2141,7 +2141,7 @@ public enum Parameter {
 
   public static Parameter firstEnumForFieldForm(String fieldValue) {
     for (Parameter _val : Parameter.values()) {
-      if (_val.getForm() == fieldValue) {
+      if (_val.getForm().equals(fieldValue)) {
         return _val;
       }
     }
@@ -2151,7 +2151,7 @@ public enum Parameter {
   public static List<Parameter> enumsForFieldForm(String fieldValue) {
     List<Parameter> _values = new ArrayList();
     for (Parameter _val : Parameter.values()) {
-      if (_val.getForm() == fieldValue) {
+      if (_val.getForm().equals(fieldValue)) {
         _values.add(_val);
       }
     }
@@ -2187,7 +2187,7 @@ public enum Parameter {
 
   public static Parameter firstEnumForFieldParameterDescription(String fieldValue) {
     for (Parameter _val : Parameter.values()) {
-      if (_val.getParameterDescription() == fieldValue) {
+      if (_val.getParameterDescription().equals(fieldValue)) {
         return _val;
       }
     }
@@ -2197,7 +2197,7 @@ public enum Parameter {
   public static List<Parameter> enumsForFieldParameterDescription(String fieldValue) {
     List<Parameter> _values = new ArrayList();
     for (Parameter _val : Parameter.values()) {
-      if (_val.getParameterDescription() == fieldValue) {
+      if (_val.getParameterDescription().equals(fieldValue)) {
         _values.add(_val);
       }
     }
@@ -2233,7 +2233,7 @@ public enum Parameter {
 
   public static Parameter firstEnumForFieldGroup(String fieldValue) {
     for (Parameter _val : Parameter.values()) {
-      if (_val.getGroup() == fieldValue) {
+      if (_val.getGroup().equals(fieldValue)) {
         return _val;
       }
     }
@@ -2243,7 +2243,7 @@ public enum Parameter {
   public static List<Parameter> enumsForFieldGroup(String fieldValue) {
     List<Parameter> _values = new ArrayList();
     for (Parameter _val : Parameter.values()) {
-      if (_val.getGroup() == fieldValue) {
+      if (_val.getGroup().equals(fieldValue)) {
         _values.add(_val);
       }
     }
