@@ -364,13 +364,13 @@ func (b *BIPSimple) Confirmation(pdu _PDU) error {
 	// some kind of response to a request
 	case readWriteModel.BVLCResultExactly:
 		// send this to the service access point
-		return b.SapRequest(pdu)
+		return b.SapResponse(pdu)
 	case readWriteModel.BVLCReadBroadcastDistributionTableAckExactly:
 		// send this to the service access point
-		return b.SapRequest(pdu)
+		return b.SapResponse(pdu)
 	case readWriteModel.BVLCReadForeignDeviceTableAckExactly:
 		// send this to the service access point
-		return b.SapRequest(pdu)
+		return b.SapResponse(pdu)
 	case readWriteModel.BVLCOriginalUnicastNPDUExactly:
 		// build a vanilla PDU
 		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(pdu.GetPDUDestination()))
