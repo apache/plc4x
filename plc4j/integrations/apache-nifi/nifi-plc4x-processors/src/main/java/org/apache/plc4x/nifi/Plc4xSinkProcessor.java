@@ -60,8 +60,7 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
             flowFile.getAttributes().forEach((tag, value) -> {
                 String address = getAddress(tag);
                 if (address != null) {
-                    // TODO: Convert the String into the right type ...
-                    builder.addTagAddress(tag, address, Boolean.valueOf(value));
+                    builder.addTagAddress(tag, address, value);
                 }
             });
             PlcWriteRequest writeRequest = builder.build();
