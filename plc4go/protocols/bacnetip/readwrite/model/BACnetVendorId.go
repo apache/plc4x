@@ -1425,6 +1425,9 @@ const (
 	BACnetVendorId_EM_FIRST_CO_LTD                                                              BACnetVendorId = 1393
 	BACnetVendorId_IION_SYSTEMS_APS                                                             BACnetVendorId = 1394
 	BACnetVendorId_SAF_TEHNIKAJSC                                                               BACnetVendorId = 1396
+	BACnetVendorId_KOMFORTIQ_INC                                                                BACnetVendorId = 1397
+	BACnetVendorId_COOL_TERA_LIMITED                                                            BACnetVendorId = 1398
+	BACnetVendorId_HADRON_SOLUTIONS_SRLS                                                        BACnetVendorId = 1399
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2822,6 +2825,9 @@ func init() {
 		BACnetVendorId_EM_FIRST_CO_LTD,
 		BACnetVendorId_IION_SYSTEMS_APS,
 		BACnetVendorId_SAF_TEHNIKAJSC,
+		BACnetVendorId_KOMFORTIQ_INC,
+		BACnetVendorId_COOL_TERA_LIMITED,
+		BACnetVendorId_HADRON_SOLUTIONS_SRLS,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4595,6 +4601,18 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1396:
 		{ /* '1396' */
 			return 1396
+		}
+	case 1397:
+		{ /* '1397' */
+			return 1397
+		}
+	case 1398:
+		{ /* '1398' */
+			return 1398
+		}
+	case 1399:
+		{ /* '1399' */
+			return 1399
 		}
 	case 14:
 		{ /* '14' */
@@ -10174,6 +10192,18 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1396' */
 			return "SAF Tehnika JSC"
 		}
+	case 1397:
+		{ /* '1397' */
+			return "Komfort IQ, Inc."
+		}
+	case 1398:
+		{ /* '1398' */
+			return "CoolTera Limited"
+		}
+	case 1399:
+		{ /* '1399' */
+			return "Hadron Solutions S.r.l.s"
+		}
 	case 14:
 		{ /* '14' */
 			return "Cimetrics Technology"
@@ -14867,6 +14897,12 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_IION_SYSTEMS_APS, true
 	case 1396:
 		return BACnetVendorId_SAF_TEHNIKAJSC, true
+	case 1397:
+		return BACnetVendorId_KOMFORTIQ_INC, true
+	case 1398:
+		return BACnetVendorId_COOL_TERA_LIMITED, true
+	case 1399:
+		return BACnetVendorId_HADRON_SOLUTIONS_SRLS, true
 	case 14:
 		return BACnetVendorId_CIMETRICS_TECHNOLOGY, true
 	case 140:
@@ -17653,6 +17689,12 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_IION_SYSTEMS_APS, true
 	case "SAF_TEHNIKAJSC":
 		return BACnetVendorId_SAF_TEHNIKAJSC, true
+	case "KOMFORTIQ_INC":
+		return BACnetVendorId_KOMFORTIQ_INC, true
+	case "COOL_TERA_LIMITED":
+		return BACnetVendorId_COOL_TERA_LIMITED, true
+	case "HADRON_SOLUTIONS_SRLS":
+		return BACnetVendorId_HADRON_SOLUTIONS_SRLS, true
 	case "CIMETRICS_TECHNOLOGY":
 		return BACnetVendorId_CIMETRICS_TECHNOLOGY, true
 	case "VICONICS_ELECTRONICS_INC":
@@ -20496,6 +20538,12 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "IION_SYSTEMS_APS"
 	case BACnetVendorId_SAF_TEHNIKAJSC:
 		return "SAF_TEHNIKAJSC"
+	case BACnetVendorId_KOMFORTIQ_INC:
+		return "KOMFORTIQ_INC"
+	case BACnetVendorId_COOL_TERA_LIMITED:
+		return "COOL_TERA_LIMITED"
+	case BACnetVendorId_HADRON_SOLUTIONS_SRLS:
+		return "HADRON_SOLUTIONS_SRLS"
 	case BACnetVendorId_CIMETRICS_TECHNOLOGY:
 		return "CIMETRICS_TECHNOLOGY"
 	case BACnetVendorId_VICONICS_ELECTRONICS_INC:

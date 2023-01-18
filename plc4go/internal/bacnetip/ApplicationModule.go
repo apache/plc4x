@@ -22,13 +22,10 @@ package bacnetip
 import (
 	"encoding/binary"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/local"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/service"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"hash/fnv"
-	"net"
 )
 
 type DeviceInfo struct {
@@ -209,17 +206,17 @@ type Application struct {
 	*ApplicationServiceElement
 	Collector
 
-	objectName       map[string]*local.LocalDeviceObject
-	objectIdentifier map[string]*local.LocalDeviceObject
-	localDevice      *local.LocalDeviceObject
+	objectName       map[string]*LocalDeviceObject
+	objectIdentifier map[string]*LocalDeviceObject
+	localDevice      *LocalDeviceObject
 	deviceInfoCache  *DeviceInfoCache
 	controllers      map[string]interface{}
 	helpers          map[string]func(pdu _PDU) error
 
-	_startup_disabled bool
+	_startupDisabled bool
 }
 
-func NewApplication(localDevice *local.LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*Application, error) {
+func NewApplication(localDevice *LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*Application, error) {
 	log.Debug().Msgf("NewApplication localDevice=%v localAddress=%v deviceInfoCache=%s aseID=%d", localDevice, &localAddress, deviceInfoCache, aseID)
 	a := &Application{}
 	var err error
@@ -229,8 +226,8 @@ func NewApplication(localDevice *local.LocalDeviceObject, localAddress Address, 
 	}
 
 	// local objects by ID and name
-	a.objectName = map[string]*local.LocalDeviceObject{}
-	a.objectIdentifier = map[string]*local.LocalDeviceObject{}
+	a.objectName = map[string]*LocalDeviceObject{}
+	a.objectIdentifier = map[string]*LocalDeviceObject{}
 
 	// keep track of the local device
 	if localDevice != nil {
@@ -258,7 +255,7 @@ func NewApplication(localDevice *local.LocalDeviceObject, localAddress Address, 
 	a.Collector = Collector{}
 
 	// if starting up is enabled, find all the startup functions
-	if !a._startup_disabled {
+	if !a._startupDisabled {
 		for _, fn := range a.CapabilityFunctions("startup") {
 			log.Debug().Msgf("startup fn %t", fn != nil)
 			fn()
@@ -298,7 +295,9 @@ func (a *Application) Indication(apdu _PDU) error {
 	if err := helperFn(apdu); err != nil {
 		log.Debug().Err(err).Msgf("err result")
 		// TODO: do proper mapping
-		a.Response(NewPDU(readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0)))
+		if err := a.Response(NewPDU(readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0))); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -311,7 +310,7 @@ type ApplicationIOController struct {
 	queueByAddress map[string]SieveQueue
 }
 
-func NewApplicationIOController(localDevice *local.LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*ApplicationIOController, error) {
+func NewApplicationIOController(localDevice *LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*ApplicationIOController, error) {
 	a := &ApplicationIOController{
 		// queues for each address
 		queueByAddress: make(map[string]SieveQueue),
@@ -348,7 +347,7 @@ func (a *ApplicationIOController) ProcessIO(iocb _IOCB) error {
 	return queue.RequestIO(iocb)
 }
 
-func (a *ApplicationIOController) _AppComplete(address net.Addr, apdu _PDU) error {
+func (a *ApplicationIOController) _AppComplete(address *Address, apdu _PDU) error {
 	log.Debug().Msgf("_AppComplete %s\n%s", address, apdu)
 
 	// look up the queue
@@ -366,12 +365,16 @@ func (a *ApplicationIOController) _AppComplete(address net.Addr, apdu _PDU) erro
 	}
 
 	// this request is complete
-	switch apdu.(type) {
+	switch apdu.GetMessage().(type) {
 	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUComplexAckExactly:
-		queue.CompleteIO(queue.activeIOCB, apdu)
+		if err := queue.CompleteIO(queue.activeIOCB, apdu); err != nil {
+			return err
+		}
 	case readWriteModel.APDUErrorExactly, readWriteModel.APDURejectExactly, readWriteModel.APDUAbortExactly:
 		// TODO: extract error
-		queue.AbortIO(queue.activeIOCB, errors.Errorf("%s", apdu))
+		if err := queue.AbortIO(queue.activeIOCB, errors.Errorf("%s", apdu)); err != nil {
+			return err
+		}
 	default:
 		return errors.New("unrecognized APDU type")
 	}
@@ -394,8 +397,10 @@ func (a *ApplicationIOController) _AppRequest(apdu _PDU) {
 
 	// if this was an unconfirmed request, it's complete, no message
 	if _, ok := apdu.(readWriteModel.APDUUnconfirmedRequestExactly); ok {
-		// TODO: where to get the destination now again??
-		a._AppComplete(nil, apdu)
+		if err := a._AppComplete(apdu.GetPDUDestination(), apdu); err != nil {
+			log.Error().Err(err).Msg("AppRequest failed")
+			return
+		}
 	}
 }
 
@@ -415,15 +420,13 @@ func (a *ApplicationIOController) Confirmation(apdu _PDU) error {
 	log.Debug().Msgf("Confirmation\n%s", apdu)
 
 	// this is an ack, error, reject or abort
-	// TODO: where to get the destination now again??
-	a._AppComplete(nil, apdu)
-	return nil
+	return a._AppComplete(apdu.GetPDUSource(), apdu)
 }
 
 type BIPSimpleApplication struct {
 	*ApplicationIOController
-	*service.WhoIsIAmServices
-	*service.ReadWritePropertyServices
+	*WhoIsIAmServices
+	*ReadWritePropertyServices
 	localAddress Address
 	asap         *ApplicationServiceAccessPoint
 	smap         *StateMachineAccessPoint
@@ -434,12 +437,20 @@ type BIPSimpleApplication struct {
 	mux          *UDPMultiplexer
 }
 
-func NewBIPSimpleApplication(localDevice *local.LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*BIPSimpleApplication, error) {
+func NewBIPSimpleApplication(localDevice *LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*BIPSimpleApplication, error) {
 	b := &BIPSimpleApplication{}
 	var err error
 	b.ApplicationIOController, err = NewApplicationIOController(localDevice, localAddress, deviceInfoCache, aseID)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating io controller")
+	}
+	b.WhoIsIAmServices, err = NewWhoIsIAmServices(b)
+	if err != nil {
+		return nil, errors.Wrap(err, "error WhoIs/IAm services")
+	}
+	b.ReadWritePropertyServices, err = NewReadWritePropertyServices()
+	if err != nil {
+		return nil, errors.Wrap(err, "error read write property services")
 	}
 
 	b.localAddress = localAddress

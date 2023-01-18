@@ -68,7 +68,7 @@ func (m *_MultiplexServer) Indication(pdu _PDU) error {
 }
 
 type UDPMultiplexer struct {
-	address            Address
+	address            *Address
 	addrTuple          *AddressTuple[string, uint16]
 	addrBroadcastTuple *AddressTuple[string, uint16]
 	direct             *_MultiplexClient
@@ -87,21 +87,21 @@ func NewUDPMultiplexer(address interface{}, noBroadcast bool) (*UDPMultiplexer, 
 	specialBroadcast := false
 	if address == nil {
 		address, _ := NewAddress()
-		u.address = *address
+		u.address = address
 		u.addrTuple = &AddressTuple[string, uint16]{"", 47808}
 		u.addrBroadcastTuple = &AddressTuple[string, uint16]{"255.255.255.255", 47808}
 	} else {
 		// allow the address to be cast
 		if caddress, ok := address.(*Address); ok {
-			u.address = *caddress
-		} else if caddress, ok := address.(Address); ok {
 			u.address = caddress
+		} else if caddress, ok := address.(Address); ok {
+			u.address = &caddress
 		} else {
 			newAddress, err := NewAddress(address)
 			if err != nil {
 				return nil, errors.Wrap(err, "error parsing address")
 			}
-			u.address = *newAddress
+			u.address = newAddress
 		}
 
 		// promote the normal and broadcast tuples
@@ -130,7 +130,7 @@ func NewUDPMultiplexer(address interface{}, noBroadcast bool) (*UDPMultiplexer, 
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating multiplex client")
 	}
-	u.directPort, err = NewUDPDirector(u.addrTuple, nil, nil, nil, nil)
+	u.directPort, err = NewUDPDirector(*u.addrTuple, nil, nil, nil, nil)
 	if err := bind(u.direct, u.directPort); err != nil {
 		return nil, errors.Wrap(err, "error binding ports")
 	}
@@ -142,7 +142,7 @@ func NewUDPMultiplexer(address interface{}, noBroadcast bool) (*UDPMultiplexer, 
 			return nil, errors.Wrap(err, "error creating broadcast multiplex client")
 		}
 		reuse := true
-		u.broadcastPort, err = NewUDPDirector(u.addrBroadcastTuple, nil, &reuse, nil, nil)
+		u.broadcastPort, err = NewUDPDirector(*u.addrBroadcastTuple, nil, &reuse, nil, nil)
 		if err := bind(u.direct, u.directPort); err != nil {
 			return nil, errors.Wrap(err, "error binding ports")
 		}
@@ -210,7 +210,33 @@ func (m *UDPMultiplexer) Confirmation(client *_MultiplexClient, pdu _PDU) error 
 		return nil
 	}
 
-	// TODO: it is getting to messy, we need to solve the source destination topic
+	// TODO: upstream this is a tuple but we don't have that here so we can work with what we have
+	src := pduSource
+	var dest *Address
+
+	// match the destination in case the stack needs it
+	if client == m.direct {
+		log.Debug().Msg("direct to us")
+		dest = m.address
+	} else if client == m.broadcast {
+		log.Debug().Msg("broadcast to us")
+		dest = NewLocalBroadcast(nil)
+	} else {
+		return errors.New("Confirmation missmatch")
+	}
+	log.Debug().Msgf("dest: %s", dest)
+
+	// must have at least one octet
+	if pdu.GetMessage() == nil {
+		log.Debug().Msg("no data")
+		return nil
+	}
+
+	// TODO: we only support 0x81 at the moment
+	if m.annexJ != nil {
+		return m.annexJ.Response(NewPDU(pdu.GetMessage(), WithPDUSource(src), WithPDUDestination(dest)))
+	}
+
 	return nil
 }
 
@@ -236,11 +262,13 @@ func NewAnnexJCodec(cid *int, sid *int) (*AnnexJCodec, error) {
 }
 
 func (b *AnnexJCodec) Indication(pdu _PDU) error {
-	panic("not implemented yet")
+	// Note: our BVLC are all annexJ at the moment
+	return b.Request(pdu)
 }
 
 func (b *AnnexJCodec) Confirmation(pdu _PDU) error {
-	panic("not implemented yet")
+	// Note: our BVLC are all annexJ at the moment
+	return b.Response(pdu)
 }
 
 type _BIPSAP interface {
@@ -345,14 +373,14 @@ func (b *BIPSimple) Confirmation(pdu _PDU) error {
 		return b.SapRequest(pdu)
 	case readWriteModel.BVLCOriginalUnicastNPDUExactly:
 		// build a vanilla PDU
-		xpdu := NewPDU(msg, WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(pdu.GetPDUDestination()))
+		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(pdu.GetPDUDestination()))
 		log.Debug().Msgf("xpdu: %s", xpdu)
 
 		// send it upstream
 		return b.Response(xpdu)
 	case readWriteModel.BVLCOriginalBroadcastNPDUExactly:
 		// build a PDU with a local broadcast address
-		xpdu := NewPDU(msg, WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(NewLocalBroadcast(nil)))
+		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(NewLocalBroadcast(nil)))
 		log.Debug().Msgf("xpdu: %s", xpdu)
 
 		// send it upstream
@@ -365,7 +393,7 @@ func (b *BIPSimple) Confirmation(pdu _PDU) error {
 		if err != nil {
 			return errors.Wrap(err, "error building a ip")
 		}
-		xpdu := NewPDU(msg, WithPDUSource(source), WithPDUDestination(NewLocalBroadcast(nil)))
+		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(source), WithPDUDestination(NewLocalBroadcast(nil)))
 		log.Debug().Msgf("xpdu: %s", xpdu)
 
 		// send it upstream

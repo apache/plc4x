@@ -19,9 +19,10 @@
 
 package bacnetip
 
-import readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+type ReadWritePropertyServices struct {
+}
 
-func GetObjectClass(name string) readWriteModel.BACnetObjectType {
-	objectTypeByName, _ := readWriteModel.BACnetObjectTypeByName(name)
-	return objectTypeByName
+func NewReadWritePropertyServices() (*ReadWritePropertyServices, error) {
+	// TODO: implement me
+	return nil, nil
 }
