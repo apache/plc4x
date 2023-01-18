@@ -43,6 +43,7 @@ setup(
         "pip-tools",
         "black",
         "pip",
+        "aenum",
     ],
     extras_require={
         "dev": [
