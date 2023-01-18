@@ -374,7 +374,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             new S7MessageUserData(tpduId,
                 new S7ParameterUserData(parameterItems),
                 new S7PayloadUserData(payloadItems, null)),
-            true, (short) tpduId, null));
+            true, (short) tpduId, Integer.MAX_VALUE));
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();

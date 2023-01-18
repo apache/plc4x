@@ -82,7 +82,7 @@ public enum KnxInterfaceObjectType {
 
   public static KnxInterfaceObjectType firstEnumForFieldCode(String fieldValue) {
     for (KnxInterfaceObjectType _val : KnxInterfaceObjectType.values()) {
-      if (_val.getCode() == fieldValue) {
+      if (_val.getCode().equals(fieldValue)) {
         return _val;
       }
     }
@@ -92,7 +92,7 @@ public enum KnxInterfaceObjectType {
   public static List<KnxInterfaceObjectType> enumsForFieldCode(String fieldValue) {
     List<KnxInterfaceObjectType> _values = new ArrayList();
     for (KnxInterfaceObjectType _val : KnxInterfaceObjectType.values()) {
-      if (_val.getCode() == fieldValue) {
+      if (_val.getCode().equals(fieldValue)) {
         _values.add(_val);
       }
     }
@@ -105,7 +105,7 @@ public enum KnxInterfaceObjectType {
 
   public static KnxInterfaceObjectType firstEnumForFieldName(String fieldValue) {
     for (KnxInterfaceObjectType _val : KnxInterfaceObjectType.values()) {
-      if (_val.getName() == fieldValue) {
+      if (_val.getName().equals(fieldValue)) {
         return _val;
       }
     }
@@ -115,7 +115,7 @@ public enum KnxInterfaceObjectType {
   public static List<KnxInterfaceObjectType> enumsForFieldName(String fieldValue) {
     List<KnxInterfaceObjectType> _values = new ArrayList();
     for (KnxInterfaceObjectType _val : KnxInterfaceObjectType.values()) {
-      if (_val.getName() == fieldValue) {
+      if (_val.getName().equals(fieldValue)) {
         _values.add(_val);
       }
     }

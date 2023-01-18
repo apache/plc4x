@@ -26,7 +26,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"net"
 	"sync"
 	"time"
 )
@@ -89,7 +88,7 @@ type _IOCB interface {
 	Trigger()
 	setIOError(err error)
 	getRequest() _PDU
-	getDestination() net.Addr
+	getDestination() *Address
 	getPriority() int
 	clearQueue()
 	Abort(err error) error
@@ -101,7 +100,7 @@ var _identLock sync.Mutex
 type IOCB struct {
 	ioID           int
 	request        _PDU
-	destination    net.Addr
+	destination    *Address
 	ioState        IOCBState
 	ioResponse     _PDU
 	ioError        error
@@ -115,7 +114,7 @@ type IOCB struct {
 	priority       int
 }
 
-func NewIOCB(request _PDU, destination net.Addr) (*IOCB, error) {
+func NewIOCB(request _PDU, destination *Address) (*IOCB, error) {
 	// lock the identity sequence number
 	_identLock.Lock()
 
@@ -276,7 +275,7 @@ func (i *IOCB) getRequest() _PDU {
 	return i.request
 }
 
-func (i *IOCB) getDestination() net.Addr {
+func (i *IOCB) getDestination() *Address {
 	return i.destination
 }
 
@@ -741,19 +740,19 @@ func (i *IOQController) AbortIO(iocb _IOCB, err error) error {
 }
 
 // _trigger Called to launch the next request in the queue
-func (i *IOQController) _trigger() {
+func (i *IOQController) _trigger() error {
 	log.Debug().Msg("_trigger")
 
 	// if we are busy, do nothing
 	if i.state != IOQControllerStates_CTRL_IDLE {
 		log.Debug().Msg("not idle")
-		return
+		return nil
 	}
 
 	// if there is nothing to do, return
 	if len(i.ioQueue.queue) == 0 {
 		log.Debug().Msg("empty queue")
-		return
+		return nil
 	}
 
 	// get the next iocb
@@ -766,25 +765,26 @@ func (i *IOQController) _trigger() {
 		// if there was an error, abort the request
 		if err := i.Abort(err); err != nil {
 			log.Debug().Err(err).Msg("error aborting")
-			return
+			return nil
 		}
-		return
+		return nil
 	}
 
 	// if we're idle, call again
 	if i.state == IOQControllerStates_CTRL_IDLE {
 		Deferred(i._trigger)
 	}
+	return nil
 }
 
 // _waitTrigger is called to launch the next request in the queue
-func (i *IOQController) _waitTrigger() {
+func (i *IOQController) _waitTrigger() error {
 	log.Debug().Msg("_waitTrigger")
 
 	// make sure we are waiting
 	if i.state != IOQControllerStates_CTRL_WAITING {
 		log.Debug().Msg("not waiting")
-		return
+		return nil
 	}
 
 	// change our state
@@ -792,16 +792,16 @@ func (i *IOQController) _waitTrigger() {
 	stateLog.Debug().Msgf("%s %s %s", time.Now(), i.name, "idle")
 
 	// look for more to do
-	i._trigger()
+	return i._trigger()
 }
 
 type SieveQueue struct {
 	*IOQController
 	requestFn func(apdu _PDU)
-	address   net.Addr
+	address   *Address
 }
 
-func NewSieveQueue(fn func(apdu _PDU), address net.Addr) (*SieveQueue, error) {
+func NewSieveQueue(fn func(apdu _PDU), address *Address) (*SieveQueue, error) {
 	s := &SieveQueue{}
 	var err error
 	s.IOQController, err = NewIOQController(address.String(), s)

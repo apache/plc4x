@@ -698,9 +698,13 @@ public enum KnxManufacturer {
   M_GAIMEX((int) 605, (int) 664, (String) "Gaimex"),
   M_B3_INTERNATIONAL_S_R_L((int) 606, (int) 665, (String) "B3 International S.R.L"),
   M_MM_ELECTRO((int) 607, (int) 666, (String) "MM Electro"),
-  M_ABB___RESERVED((int) 608, (int) 43954, (String) "ABB - reserved"),
+  M_CASCODA((int) 608, (int) 667, (String) "CASCODA"),
+  M_XIAMEN_INTRETECH_INC_((int) 609, (int) 668, (String) "Xiamen Intretech Inc."),
+  M_KILOELEC_TECHNOLOGY((int) 610, (int) 669, (String) "KiloElec Technology"),
+  M_INYX((int) 611, (int) 670, (String) "Inyx"),
+  M_ABB___RESERVED((int) 612, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 609, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 613, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
@@ -753,7 +757,7 @@ public enum KnxManufacturer {
 
   public static KnxManufacturer firstEnumForFieldName(String fieldValue) {
     for (KnxManufacturer _val : KnxManufacturer.values()) {
-      if (_val.getName() == fieldValue) {
+      if (_val.getName().equals(fieldValue)) {
         return _val;
       }
     }
@@ -763,7 +767,7 @@ public enum KnxManufacturer {
   public static List<KnxManufacturer> enumsForFieldName(String fieldValue) {
     List<KnxManufacturer> _values = new ArrayList();
     for (KnxManufacturer _val : KnxManufacturer.values()) {
-      if (_val.getName() == fieldValue) {
+      if (_val.getName().equals(fieldValue)) {
         _values.add(_val);
       }
     }

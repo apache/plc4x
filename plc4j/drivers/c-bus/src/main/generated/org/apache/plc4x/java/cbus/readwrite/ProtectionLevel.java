@@ -57,7 +57,7 @@ public enum ProtectionLevel {
 
   public static ProtectionLevel firstEnumForFieldDescription(String fieldValue) {
     for (ProtectionLevel _val : ProtectionLevel.values()) {
-      if (_val.getDescription() == fieldValue) {
+      if (_val.getDescription().equals(fieldValue)) {
         return _val;
       }
     }
@@ -67,7 +67,7 @@ public enum ProtectionLevel {
   public static List<ProtectionLevel> enumsForFieldDescription(String fieldValue) {
     List<ProtectionLevel> _values = new ArrayList();
     for (ProtectionLevel _val : ProtectionLevel.values()) {
-      if (_val.getDescription() == fieldValue) {
+      if (_val.getDescription().equals(fieldValue)) {
         _values.add(_val);
       }
     }

@@ -26,7 +26,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"hash/fnv"
-	"net"
 )
 
 type DeviceInfo struct {
@@ -214,7 +213,7 @@ type Application struct {
 	controllers      map[string]interface{}
 	helpers          map[string]func(pdu _PDU) error
 
-	_startup_disabled bool
+	_startupDisabled bool
 }
 
 func NewApplication(localDevice *LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*Application, error) {
@@ -256,7 +255,7 @@ func NewApplication(localDevice *LocalDeviceObject, localAddress Address, device
 	a.Collector = Collector{}
 
 	// if starting up is enabled, find all the startup functions
-	if !a._startup_disabled {
+	if !a._startupDisabled {
 		for _, fn := range a.CapabilityFunctions("startup") {
 			log.Debug().Msgf("startup fn %t", fn != nil)
 			fn()
@@ -296,7 +295,9 @@ func (a *Application) Indication(apdu _PDU) error {
 	if err := helperFn(apdu); err != nil {
 		log.Debug().Err(err).Msgf("err result")
 		// TODO: do proper mapping
-		a.Response(NewPDU(readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0)))
+		if err := a.Response(NewPDU(readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0))); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -346,7 +347,7 @@ func (a *ApplicationIOController) ProcessIO(iocb _IOCB) error {
 	return queue.RequestIO(iocb)
 }
 
-func (a *ApplicationIOController) _AppComplete(address net.Addr, apdu _PDU) error {
+func (a *ApplicationIOController) _AppComplete(address *Address, apdu _PDU) error {
 	log.Debug().Msgf("_AppComplete %s\n%s", address, apdu)
 
 	// look up the queue
@@ -364,12 +365,16 @@ func (a *ApplicationIOController) _AppComplete(address net.Addr, apdu _PDU) erro
 	}
 
 	// this request is complete
-	switch apdu.(type) {
+	switch apdu.GetMessage().(type) {
 	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUComplexAckExactly:
-		queue.CompleteIO(queue.activeIOCB, apdu)
+		if err := queue.CompleteIO(queue.activeIOCB, apdu); err != nil {
+			return err
+		}
 	case readWriteModel.APDUErrorExactly, readWriteModel.APDURejectExactly, readWriteModel.APDUAbortExactly:
 		// TODO: extract error
-		queue.AbortIO(queue.activeIOCB, errors.Errorf("%s", apdu))
+		if err := queue.AbortIO(queue.activeIOCB, errors.Errorf("%s", apdu)); err != nil {
+			return err
+		}
 	default:
 		return errors.New("unrecognized APDU type")
 	}
@@ -392,8 +397,10 @@ func (a *ApplicationIOController) _AppRequest(apdu _PDU) {
 
 	// if this was an unconfirmed request, it's complete, no message
 	if _, ok := apdu.(readWriteModel.APDUUnconfirmedRequestExactly); ok {
-		// TODO: where to get the destination now again??
-		a._AppComplete(nil, apdu)
+		if err := a._AppComplete(apdu.GetPDUDestination(), apdu); err != nil {
+			log.Error().Err(err).Msg("AppRequest failed")
+			return
+		}
 	}
 }
 
@@ -413,9 +420,7 @@ func (a *ApplicationIOController) Confirmation(apdu _PDU) error {
 	log.Debug().Msgf("Confirmation\n%s", apdu)
 
 	// this is an ack, error, reject or abort
-	// TODO: where to get the destination now again??
-	a._AppComplete(nil, apdu)
-	return nil
+	return a._AppComplete(apdu.GetPDUSource(), apdu)
 }
 
 type BIPSimpleApplication struct {
@@ -447,6 +452,8 @@ func NewBIPSimpleApplication(localDevice *LocalDeviceObject, localAddress Addres
 	if err != nil {
 		return nil, errors.Wrap(err, "error read write property services")
 	}
+
+	b.localAddress = localAddress
 
 	// include a application decoder
 	b.asap, err = NewApplicationServiceAccessPoint(nil, nil)

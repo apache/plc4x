@@ -26,17 +26,21 @@ import (
 )
 
 type _TaskRequirements interface {
-	processTask()
+	processTask() error
+	InstallTask(when *time.Time, delta *time.Duration)
+	getTaskTime() *time.Time
+	getIsScheduled() bool
+	setIsScheduled(isScheduled bool)
 }
 
 type _Task struct {
-	_TaskRequirements
-	taskTime    *time.Time
-	isScheduled bool
+	taskRequirements _TaskRequirements
+	taskTime         *time.Time
+	isScheduled      bool
 }
 
 func _New_Task(_TaskRequirements _TaskRequirements) *_Task {
-	return &_Task{_TaskRequirements: _TaskRequirements}
+	return &_Task{taskRequirements: _TaskRequirements}
 }
 
 func (t *_Task) InstallTask(when *time.Time, delta *time.Duration) {
@@ -57,27 +61,42 @@ func (t *_Task) InstallTask(when *time.Time, delta *time.Duration) {
 	t.taskTime = when
 
 	// pass along to the task manager
-	_taskManager.installTask(t)
-}
-
-func (t *_Task) processTask() {
-	t._TaskRequirements.processTask()
+	_taskManager.installTask(t.taskRequirements)
 }
 
 func (t *_Task) SuspendTask() {
-	_taskManager.suspendTask(t)
+	_taskManager.suspendTask(t.taskRequirements)
 }
 
 func (t *_Task) Resume() {
-	_taskManager.resumeTask(t)
+	_taskManager.resumeTask(t.taskRequirements)
+}
+
+func (t *_Task) getTaskTime() *time.Time {
+	return t.taskTime
+}
+
+func (t *_Task) getIsScheduled() bool {
+	return t.isScheduled
+}
+
+func (t *_Task) setIsScheduled(isScheduled bool) {
+	t.isScheduled = isScheduled
+}
+
+type OneShotTaskRequirements interface {
+	processTask() error
 }
 
 type OneShotTask struct {
 	*_Task
+	OneShotTaskRequirements
 }
 
-func NewOneShotTask(when *time.Time) *OneShotTask {
-	o := &OneShotTask{}
+func NewOneShotTask(oneShotTaskRequirements OneShotTaskRequirements, when *time.Time) *OneShotTask {
+	o := &OneShotTask{
+		OneShotTaskRequirements: oneShotTaskRequirements,
+	}
 	o._Task = _New_Task(o)
 	if when != nil {
 		o.taskTime = when
@@ -87,10 +106,11 @@ func NewOneShotTask(when *time.Time) *OneShotTask {
 
 type OneShotDeleteTask struct {
 	*_Task
+	OneShotTaskRequirements
 }
 
-func NewOneShotDeleteTask(when *time.Time) *OneShotDeleteTask {
-	o := &OneShotDeleteTask{}
+func NewOneShotDeleteTask(oneShotTaskRequirements OneShotTaskRequirements, when *time.Time) *OneShotDeleteTask {
+	o := &OneShotDeleteTask{OneShotTaskRequirements: oneShotTaskRequirements}
 	o._Task = _New_Task(o)
 	if when != nil {
 		o.taskTime = when
@@ -98,39 +118,49 @@ func NewOneShotDeleteTask(when *time.Time) *OneShotDeleteTask {
 	return o
 }
 
+func (r *OneShotDeleteTask) IsOneShotDeleteTask() bool {
+	return true
+}
+
 type OneShotFunctionTask struct {
 	*OneShotDeleteTask
-	fn func()
+	fn func() error
 }
 
-func (m *OneShotFunctionTask) processTask() {
-	m.fn()
+func (m *OneShotFunctionTask) processTask() error {
+	return m.fn()
 }
 
-func OneShotFunction(fn func()) *OneShotFunctionTask {
-	task := &OneShotFunctionTask{NewOneShotDeleteTask(nil), fn}
-
+func OneShotFunction(fn func() error) *OneShotFunctionTask {
+	task := &OneShotFunctionTask{fn: fn}
+	task.OneShotDeleteTask = NewOneShotDeleteTask(task, nil)
 	var delta time.Duration = 0
 	task.InstallTask(nil, &delta)
 	return task
 }
 
-func FunctionTask(fn func()) *OneShotFunctionTask {
-	task := &OneShotFunctionTask{NewOneShotDeleteTask(nil), fn}
+func FunctionTask(fn func() error) *OneShotFunctionTask {
+	task := &OneShotFunctionTask{fn: fn}
+	task.OneShotDeleteTask = NewOneShotDeleteTask(task, nil)
 
 	log.Debug().Msgf("task: %v", task)
 	return task
 }
 
+type RecurringTaskRequirements interface {
+	processTask() error
+}
+
 type RecurringTask struct {
 	*_Task
+	RecurringTaskRequirements
 	taskInterval       *time.Duration
 	taskIntervalOffset *time.Duration
 }
 
-func NewRecurringTask(_TaskRequirements _TaskRequirements, interval *time.Duration, offset *time.Duration) *RecurringTask {
-	r := &RecurringTask{}
-	r._Task = _New_Task(_TaskRequirements)
+func NewRecurringTask(recurringTaskRequirements RecurringTaskRequirements, interval *time.Duration, offset *time.Duration) *RecurringTask {
+	r := &RecurringTask{RecurringTaskRequirements: recurringTaskRequirements}
+	r._Task = _New_Task(r)
 	// set the interval if it hasn't already been set
 	if interval != nil {
 		r.taskInterval = interval
@@ -163,67 +193,57 @@ func NewRecurringTask(_TaskRequirements _TaskRequirements, interval *time.Durati
 	r.taskTime = &_taskTime
 
 	// install it
-	_taskManager.installTask(r._Task)
+	_taskManager.installTask(r)
 
 	return r
+}
+
+func (r *RecurringTask) IsRecurringTask() bool {
+	return true
 }
 
 type _RecurringFunctionTask struct {
 	*RecurringTask
-	fn func()
+	fn func() error
 }
 
-func _New_RecurringFunctionTask(interval *time.Duration) *_RecurringFunctionTask {
-	r := &_RecurringFunctionTask{}
+func _New_RecurringFunctionTask(interval *time.Duration, fn func() error) *_RecurringFunctionTask {
+	r := &_RecurringFunctionTask{fn: fn}
 	r.RecurringTask = NewRecurringTask(r, interval, nil)
 	return r
 }
 
-func (r _RecurringFunctionTask) processTask() {
-	r.fn()
+func (r _RecurringFunctionTask) processTask() error {
+	return r.fn()
 }
 
-func RecurringFunctionTask(interval *time.Duration) *RecurringTask {
-	return _New_RecurringFunctionTask(interval).RecurringTask
+func RecurringFunctionTask(interval *time.Duration, fn func() error) *RecurringTask {
+	return _New_RecurringFunctionTask(interval, fn).RecurringTask
 }
 
 var _taskManager = TaskManager{}
 
-func init() {
-	go func() {
-		for {
-			task, delta := _taskManager.getNextTask()
-			if task == nil {
-				time.Sleep(10 * time.Millisecond)
-				continue
-			}
-			_taskManager.processTask(task)
-			time.Sleep(delta)
-		}
-	}()
-}
-
 type TaskManager struct {
 	sync.Mutex
-	tasks []*_Task
+	tasks []_TaskRequirements
 }
 
 func (m *TaskManager) getTime() time.Time {
 	return time.Now()
 }
 
-func (m *TaskManager) installTask(task *_Task) {
+func (m *TaskManager) installTask(task _TaskRequirements) {
 	m.Lock()
 	defer m.Unlock()
-	log.Debug().Msgf("installTask %v@%v", task, task.taskTime)
+	log.Debug().Msgf("installTask %v@%v", task, task.getTaskTime())
 
 	// if the taskTime is None is hasn't been computed correctly
-	if task.taskTime == nil {
+	if task.getTaskTime() == nil {
 		panic("task time is None")
 	}
 
 	// if this is already installed, suspend it
-	if task.isScheduled {
+	if task.getIsScheduled() {
 		m.suspendTask(task)
 	}
 
@@ -231,10 +251,10 @@ func (m *TaskManager) installTask(task *_Task) {
 	// TODO: we might need to insert it at the right place
 	m.tasks = append(m.tasks, task)
 
-	task.isScheduled = true
+	task.setIsScheduled(true)
 }
 
-func (m *TaskManager) suspendTask(task *_Task) {
+func (m *TaskManager) suspendTask(task _TaskRequirements) {
 	log.Debug().Msgf("suspendTask %v", task)
 	m.Lock()
 	defer m.Unlock()
@@ -244,7 +264,7 @@ func (m *TaskManager) suspendTask(task *_Task) {
 		if _task == task {
 			log.Debug().Msgf("task found")
 			iToDelete = i
-			task.isScheduled = false
+			task.setIsScheduled(false)
 			break
 		}
 	}
@@ -255,7 +275,7 @@ func (m *TaskManager) suspendTask(task *_Task) {
 	}
 }
 
-func (m *TaskManager) resumeTask(task *_Task) {
+func (m *TaskManager) resumeTask(task _TaskRequirements) {
 	log.Debug().Msgf("resumeTask %v", task)
 	m.Lock()
 	defer m.Unlock()
@@ -264,28 +284,28 @@ func (m *TaskManager) resumeTask(task *_Task) {
 	m.installTask(task)
 }
 
-func (m *TaskManager) getNextTask() (*_Task, time.Duration) {
-	log.Debug().Msgf("getNextTask")
+func (m *TaskManager) getNextTask() (_TaskRequirements, time.Duration) {
+	log.Trace().Msgf("getNextTask")
 	m.Lock()
 	defer m.Unlock()
 
 	now := time.Now()
 
-	var task *_Task
+	var task _TaskRequirements
 	var delta time.Duration
 
-	if m.tasks != nil {
+	if len(m.tasks) > 0 {
 		nextTask := m.tasks[0]
-		when := nextTask.taskTime
+		when := nextTask.getTaskTime()
 		if when.Before(now) {
 			// pull it off the list and mark that it's no longer scheduled
 			m.tasks = m.tasks[1:] // TODO: guard against empty list
 			task = nextTask
-			task.isScheduled = false
+			task.setIsScheduled(false)
 
-			if m.tasks != nil {
+			if len(m.tasks) > 0 {
 				nextTask = m.tasks[0]
-				when = nextTask.taskTime
+				when = nextTask.getTaskTime()
 				// peek at the next task, return how long to wait
 				delta = when.Sub(now) // TODO: avoid negative
 			}
@@ -298,16 +318,18 @@ func (m *TaskManager) getNextTask() (*_Task, time.Duration) {
 	return task, delta
 }
 
-func (m *TaskManager) processTask(task *_Task) {
+func (m *TaskManager) processTask(task _TaskRequirements) {
 	log.Debug().Msgf("processTask %v", task)
 
 	// process the task
-	task.processTask()
+	if err := task.processTask(); err != nil {
+		log.Error().Err(err).Msg("Error processing Task")
+	}
 
-	switch task._TaskRequirements.(type) {
-	case *RecurringTask:
+	switch task.(type) {
+	case interface{ IsRecurringTask() bool }:
 		task.InstallTask(nil, nil)
-	case OneShotDeleteTask:
+	case interface{ IsOneShotDeleteTask() bool }:
 		// TODO: Delete? How?
 	}
 }

@@ -60,7 +60,7 @@ public enum AccessLevel {
 
   public static AccessLevel firstEnumForFieldPurpose(String fieldValue) {
     for (AccessLevel _val : AccessLevel.values()) {
-      if (_val.getPurpose() == fieldValue) {
+      if (_val.getPurpose().equals(fieldValue)) {
         return _val;
       }
     }
@@ -70,7 +70,7 @@ public enum AccessLevel {
   public static List<AccessLevel> enumsForFieldPurpose(String fieldValue) {
     List<AccessLevel> _values = new ArrayList();
     for (AccessLevel _val : AccessLevel.values()) {
-      if (_val.getPurpose() == fieldValue) {
+      if (_val.getPurpose().equals(fieldValue)) {
         _values.add(_val);
       }
     }
