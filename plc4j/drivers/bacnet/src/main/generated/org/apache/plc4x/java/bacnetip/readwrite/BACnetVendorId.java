@@ -1660,7 +1660,7 @@ public enum BACnetVendorId {
 
   public static BACnetVendorId firstEnumForFieldVendorName(String fieldValue) {
     for (BACnetVendorId _val : BACnetVendorId.values()) {
-      if (_val.getVendorName() == fieldValue) {
+      if (_val.getVendorName().equals(fieldValue)) {
         return _val;
       }
     }
@@ -1670,7 +1670,7 @@ public enum BACnetVendorId {
   public static List<BACnetVendorId> enumsForFieldVendorName(String fieldValue) {
     List<BACnetVendorId> _values = new ArrayList();
     for (BACnetVendorId _val : BACnetVendorId.values()) {
-      if (_val.getVendorName() == fieldValue) {
+      if (_val.getVendorName().equals(fieldValue)) {
         _values.add(_val);
       }
     }

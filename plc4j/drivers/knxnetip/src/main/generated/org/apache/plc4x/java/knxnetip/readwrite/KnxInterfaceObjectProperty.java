@@ -1385,7 +1385,7 @@ public enum KnxInterfaceObjectProperty {
 
   public static KnxInterfaceObjectProperty firstEnumForFieldName(String fieldValue) {
     for (KnxInterfaceObjectProperty _val : KnxInterfaceObjectProperty.values()) {
-      if (_val.getName() == fieldValue) {
+      if (_val.getName().equals(fieldValue)) {
         return _val;
       }
     }
@@ -1395,7 +1395,7 @@ public enum KnxInterfaceObjectProperty {
   public static List<KnxInterfaceObjectProperty> enumsForFieldName(String fieldValue) {
     List<KnxInterfaceObjectProperty> _values = new ArrayList();
     for (KnxInterfaceObjectProperty _val : KnxInterfaceObjectProperty.values()) {
-      if (_val.getName() == fieldValue) {
+      if (_val.getName().equals(fieldValue)) {
         _values.add(_val);
       }
     }
