@@ -194,8 +194,9 @@ public class ProfinetDevice {
         Each address of the children is formatted with the format i.e. parent.submodule.chiildtag
      */
     public Map<String, List<PlcBrowseItem>> browseTags(Map<String, List<PlcBrowseItem>> browseItems) {
+        Map<String, PlcValue> options = getDeviceInfo();
         for (ProfinetModule module : deviceContext.getModules()) {
-            module.browseTags(browseItems);
+            browseItems = module.browseTags(browseItems, deviceContext.getDeviceName(), options);
         }
 
         return browseItems;

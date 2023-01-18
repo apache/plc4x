@@ -20,6 +20,7 @@
 package org.apache.plc4x.java.profinet.device;
 
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.readwrite.PnIoCm_IoCs;
 import org.apache.plc4x.java.profinet.readwrite.PnIoCm_IoDataObject;
 import org.apache.plc4x.java.profinet.readwrite.PnIoCm_Submodule;
@@ -66,7 +67,7 @@ public class ProfinetEmptyModule implements ProfinetModule{
     }
 
     @Override
-    public Map<String, List<PlcBrowseItem>> browseTags(Map<String, List<PlcBrowseItem>> browseItems) {
+    public Map<String, List<PlcBrowseItem>> browseTags(Map<String, List<PlcBrowseItem>> browseItems, String addressSpace, Map<String, PlcValue> options) {
         return browseItems;
     }
 

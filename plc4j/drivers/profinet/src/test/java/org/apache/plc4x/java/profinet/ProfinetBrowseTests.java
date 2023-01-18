@@ -36,14 +36,15 @@ public class ProfinetBrowseTests {
     @Test
     public void readProfinetBrowseTags()  {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, {PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, }]]");
+            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name, PLC4X_1, {PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, }]]");
 
-        ProfinetDevice device = configuration.getDevices().getConfiguredDevices().get("DEVICE_NAME_1");
+        ProfinetDevice device = configuration.getDevices().getConfiguredDevices().get("DEVICE_NAME");
         device.setVendorDeviceId("CAFE", "0001");
 
         Map<String, List<PlcBrowseItem>> browseItems = new HashMap<>();
         Map<String, List<PlcBrowseItem>> response = device.browseTags(browseItems);
-        response.entrySet();
+
+        assert(response.containsKey("DEVICE_NAME.3.2.PLC4X_VIRTUAL_INPUT_MODULE_NAME.Status"));
     }
 
 }

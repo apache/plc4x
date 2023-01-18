@@ -105,7 +105,7 @@
                               <BitDataItem BitOffset="6" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
                               <BitDataItem BitOffset="7" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
                            </DataItem>
-                           <DataItem DataType="Float" TextId="PLC4X_INPUT_MODULE_INFO_FLOAT"/>
+                           <DataItem DataType="Float32" TextId="PLC4X_INPUT_MODULE_INFO_FLOAT"/>
                         </Input>
                      </IOData>
                      <ModuleInfo>

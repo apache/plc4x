@@ -22,6 +22,7 @@ package org.apache.plc4x.java.profinet.gsdml;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.apache.plc4x.java.profinet.readwrite.ProfinetDataType;
 
 import java.util.List;
 
@@ -63,15 +64,12 @@ public class ProfinetModuleItem implements ProfinetDeviceItem {
     }
 
     private static int getLengthSimpleType(String dataType) {
-        // TODO:- Add all datatype lengths
-        switch(dataType) {
-            case "Unsigned8":
-                return 1;
-            case "Float":
-                return 4;
-            default:
-                throw new IllegalArgumentException("Unsupport data type found in GSD IO Data Item - " + dataType);
+        ProfinetDataType dt = ProfinetDataType.firstEnumForFieldConversion(dataType.toUpperCase());
+        if (dt == null) {
+            throw new UnsupportedOperationException("Data type " + dataType + " not supported");
         }
+        Integer dataTypeSize = (int) dt.getDataTypeSize();
+        return dataTypeSize;
     }
 
     public Integer getInputDataLength() {
