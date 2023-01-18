@@ -580,7 +580,7 @@ func NewBIPSimpleApplication(localDevice *LocalDeviceObject, localAddress Addres
 
 	// bind the top layers
 	if err := bind(b, b.asap, b.smap, b.nsap); err != nil {
-		return nil, errors.New("error binding top layers")
+		return nil, errors.Wrap(err, "error binding top layers")
 	}
 
 	// create a generic BIP stack, bound to the Annex J server on the UDP multiplexer
@@ -681,7 +681,7 @@ func NewBIPForeignApplication(localDevice *LocalDeviceObject, localAddress Addre
 
 	// bind the top layers
 	if err := bind(b, b.asap, b.smap, b.nsap); err != nil {
-		return nil, errors.New("error binding top layers")
+		return nil, errors.Wrap(err, "error binding top layers")
 	}
 
 	// create a generic BIP stack, bound to the Annex J server on the UDP multiplexer
@@ -716,4 +716,69 @@ func (b *BIPForeignApplication) Close() error {
 
 	// pass to the multiplexer, then down to the sockets
 	return b.mux.Close()
+}
+
+type BIPNetworkApplication struct {
+	*NetworkServiceElement
+	localAddress Address
+	nsap         *NetworkServiceAccessPoint
+	bip          any // BIPSimple or BIPForeign
+	annexj       *AnnexJCodec
+	mux          *UDPMultiplexer
+}
+
+func NewBIPNetworkApplication(localAddress Address, bbmdAddress *Address, bbmdTTL *int, eID *int) (*BIPNetworkApplication, error) {
+	n := &BIPNetworkApplication{}
+	var err error
+	n.NetworkServiceElement, err = NewNetworkServiceElement(eID)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating new network service element")
+	}
+
+	n.localAddress = localAddress
+
+	// a network service access point will be needed
+	n.nsap, err = NewNetworkServiceAccessPoint(nil, nil, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating network service access point")
+	}
+
+	// give the NSAP a generic network layer service element
+	if err := bind(n, n.nsap); err != nil {
+		return nil, errors.New("error binding network layer")
+	}
+
+	// create a generic BIP stack, bound to the Annex J server
+	// on the UDP multiplexer
+	if bbmdAddress == nil && bbmdTTL == nil {
+		n.bip, err = NewBIPSimple(nil, nil, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "error creating BIPSimple")
+		}
+	} else {
+		n.bip, err = NewBIPForeign(bbmdAddress, bbmdTTL, nil, nil, nil)
+		if err != nil {
+			return nil, errors.Wrap(err, "error creating BIPForeign")
+		}
+	}
+	n.annexj, err = NewAnnexJCodec(nil, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating new annex j codec")
+	}
+	n.mux, err = NewUDPMultiplexer(n.localAddress, true)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating new udp multiplexer")
+	}
+
+	// bind the bottom layers
+	if err := bind(n.bip, n.annexj, n.mux.annexJ); err != nil {
+		return nil, errors.Wrap(err, "error binding bottom layers")
+	}
+
+	// bind the BIP stack to the network, no network number
+	if err := n.nsap.bind(n.bip.(_Server), nil, &n.localAddress); err != nil {
+		return nil, err
+	}
+
+	return n, nil
 }
