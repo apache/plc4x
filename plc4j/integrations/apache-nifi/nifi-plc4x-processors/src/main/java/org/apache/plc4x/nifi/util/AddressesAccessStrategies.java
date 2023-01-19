@@ -31,7 +31,7 @@ import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.nifi.processor.util.JsonValidator;
 
-public interface AddressesAccessStrategies {
+public abstract class AddressesAccessStrategies {
 
     public static final PropertyDescriptor PLC_ADDRESS_ACCESS_STRATEGY = new PropertyDescriptor.Builder()
         .name("plc4x-address-access-strategy")
