@@ -42,16 +42,20 @@ public interface AddressesAccessStrategies {
 
     public static final AllowableValue ADDRESS_PROPERTY = new AllowableValue(
         "property-address", 
-        "Use Properties as Addresses");
+        "Use Properties as Addresses",
+        "Each property will be treated as tag-address pairs after Expression Language is evaluated.");
 
     public static final AllowableValue ADDRESS_TEXT = new AllowableValue(
         "text-address", 
-        "Use 'Address Text' Property");
+        "Use 'Address Text' Property",
+        "Addresses will be obtained from 'Address Text' Property. It's content must be a valid JSON " +
+            "after Expression Language is evaluated. ");
         
     public static final PropertyDescriptor ADDRESS_TEXT_PROPERTY = new PropertyDescriptor.Builder()
         .name("text-address-property")
         .displayName("Address Text")
-        .description("Each line must contain variable name and address in the following format: \"name\"=\"address\"")
+        .description("Must contain a valid JSON object after Expression Language is evaluated. "
+            + "Each field-value is treated as tag-address.")
         .expressionLanguageSupported(ExpressionLanguageScope.FLOWFILE_ATTRIBUTES)
         .addValidator(new JsonValidator())
         .dependsOn(PLC_ADDRESS_ACCESS_STRATEGY, ADDRESS_TEXT)
@@ -91,7 +95,7 @@ public interface AddressesAccessStrategies {
         }
     }
 
-    public static class AddressPropertyAccess  implements AddressAccessStrategy{
+    public static class AddressPropertyAccess implements AddressAccessStrategy{
 
         private Map<String,String> extractAddressesFromAttributes(final ProcessContext context, final FlowFile flowFile) {
             Map<String,String> addressMap = new HashMap<>();
