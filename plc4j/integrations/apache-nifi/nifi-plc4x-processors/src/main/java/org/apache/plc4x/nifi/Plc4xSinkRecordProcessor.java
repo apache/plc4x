@@ -44,11 +44,13 @@ import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.exception.ProcessException;
+import org.apache.nifi.processor.util.StandardValidators;
 import org.apache.nifi.serialization.RecordReader;
 import org.apache.nifi.serialization.RecordReaderFactory;
 import org.apache.nifi.serialization.record.Record;
 import org.apache.nifi.util.StopWatch;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -75,6 +77,14 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 			.identifiesControllerService(RecordReaderFactory.class)
 			.required(true)
 			.build();
+
+	public static final PropertyDescriptor PLC_WRITE_FUTURE_TIMEOUT_MILISECONDS = new PropertyDescriptor.Builder().name("plc4x-record-write-timeout").displayName("Write timeout (miliseconds)")
+			.description("Read timeout in miliseconds")
+			.defaultValue("10000")
+			.required(true)
+			.addValidator(StandardValidators.INTEGER_VALIDATOR)
+			.build();
+	
 
 	public Plc4xSinkRecordProcessor() {
 	}
@@ -119,52 +129,58 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 			}
 
 			final FlowFile originalFlowFile = fileToProcess;
-			resultSetFF = session.write(resultSetFF, out -> {
-				try {
-					InputStream in = session.read(originalFlowFile);
 
-					RecordReader recordReader = context.getProperty(PLC_RECORD_READER_FACTORY)
-						.asControllerService(RecordReaderFactory.class)
-						.createRecordReader(originalFlowFile, in, logger);
+			InputStream in = session.read(originalFlowFile);
 
-					Record record = null;
-					
-					try (PlcConnection connection = getDriverManager().getConnection(getConnectionString())) {
-						while ((record = recordReader.nextRecord()) != null) {
-							
-							PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
-							long nrOfRowsHere = 0L;
-							for (String tagName: getTags()){
-								String address = getAddress(tagName);
-								if (record.toMap().containsKey(tagName)) {
-									if (address != null) {
-										builder.addTagAddress(tagName, address,record.getValue(tagName));
-										nrOfRowsHere++;
-									}
-								}
-							}
-							PlcWriteRequest writeRequest = builder.build();
+			RecordReader recordReader = context.getProperty(PLC_RECORD_READER_FACTORY)
+					.asControllerService(RecordReaderFactory.class)
+					.createRecordReader(originalFlowFile, in, logger);
 
-							final PlcWriteResponse plcWriteResponse = writeRequest.execute().get();
-							PlcResponseCode code = null;
+			Record record = null;
 			
-							for (String tag : plcWriteResponse.getTagNames()) {
-								code = plcWriteResponse.getResponseCode(tag);
-								if (!code.equals(PlcResponseCode.OK))
-									throw new Exception(code.toString());
+			try (PlcConnection connection = getDriverManager().getConnection(getConnectionString())) {
+				while ((record = recordReader.nextRecord()) != null) {
+					PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
+					
+					long nrOfRowsHere = 0L;
+					for (String tagName: getTags()){
+						String address = getAddress(tagName);
+						if (record.toMap().containsKey(tagName)) {
+							if (address != null) {
+								builder.addTagAddress(tagName, address,record.getValue(tagName));
+								nrOfRowsHere++;
 							}
-							nrOfRows.getAndAdd(nrOfRowsHere);
 						}
 					}
-					
-					in.close();
+					PlcWriteRequest writeRequest = builder.build();
 
-					// nrOfRows.set(plc4xWriter.writePlcReadResponse(readResponse, out, logger, null, originalFlowFile));
-				} catch (Exception e) {
-					logger.error("Exception writing the data to PLC", e);
-					throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
+					final PlcWriteResponse plcWriteResponse = writeRequest.execute().get(
+						context.getProperty(PLC_WRITE_FUTURE_TIMEOUT_MILISECONDS.getName()).asInteger(), TimeUnit.MILLISECONDS
+						);
+					PlcResponseCode code = null;
+
+					for (String tag : plcWriteResponse.getTagNames()) {
+						code = plcWriteResponse.getResponseCode(tag);
+						if (!code.equals(PlcResponseCode.OK)) {
+							logger.error("Not OK code when writing the data to PLC for tag " + tag 
+								+ " with value  " + record.getValue(tag).toString() 
+								+ " in addresss " + getAddress(tag));
+							throw new PlcException("Writing response code was " + code.name() + ", expected OK");
+						}
+					}
+					nrOfRows.getAndAdd(nrOfRowsHere);
 				}
-			});
+				in.close();
+		
+			} catch (Exception e) {
+				in.close();
+				logger.error("Exception writing the data to PLC", e);
+				session.transfer(originalFlowFile, REL_FAILURE);
+				session.remove(resultSetFF);
+				session.commitAsync();
+				throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
+			}
+
 			long executionTimeElapsed = executeTime.getElapsed(TimeUnit.MILLISECONDS);
 			final Map<String, String> attributesToAdd = new HashMap<>();
 			attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));
@@ -175,7 +191,8 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 
 			resultSetFF = session.putAllAttributes(resultSetFF, attributesToAdd);
 
-			logger.info("{} contains {} records; transferring to 'success'", new Object[] { resultSetFF, nrOfRows.get() });
+
+			logger.info("{} contains {} records; transferring to 'success'", new Object[] { resultSetFF, nrOfRows.get()});
 			// Report a FETCH event if there was an incoming flow file, or a RECEIVE event
 			// otherwise
 			if (context.hasIncomingConnection()) {
@@ -185,6 +202,7 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 			}
 
 			session.transfer(resultSetFF, BasePlc4xProcessor.REL_SUCCESS);
+
 			// Need to remove the original input file if it exists
 			if (fileToProcess != null) {
 				session.remove(fileToProcess);

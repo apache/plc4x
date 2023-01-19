@@ -29,12 +29,10 @@ import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.DatumWriter;
 import org.apache.nifi.avro.AvroReader;
-import org.apache.nifi.json.JsonTreeReader;
 import org.apache.nifi.reporting.InitializationException;
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class Plc4xSinkRecordProcessorTest {
@@ -46,7 +44,7 @@ public class Plc4xSinkRecordProcessorTest {
 
 	static Map<String, String> addressMap = Map.ofEntries(
             Map.entry("BOOL", "STATE/v1:BOOL"),
-            // Map.entry("BYTE", "STATE/v2:BYTE"),
+            // Map.entry("BYTE", "STATE/v2:BYTE(2)"),
             Map.entry("WORD", "STATE/v3:WORD"),
             Map.entry("SINT", "STATE/v4:SINT"),
             Map.entry("USINT", "STATE/v5:USINT"),
@@ -110,10 +108,11 @@ public class Plc4xSinkRecordProcessorTest {
 	static {
         GenericRecord record = new GenericData.Record(schema);
         for (Map.Entry<String, Object> e : originalMap.entrySet()){
-            if (e.getKey() == "BYTE"){
-                // record.put(e.getKey(), (Byte[]) e.getValue());
-                continue;
-            }
+            //TODO: complete this part. Byte needs to be a ByteBuffer instance
+            // if (e.getKey() == "BYTE"){
+            //     record.put(e.getKey(), e.getValue());
+            //     continue;
+            // }
             record.put(e.getKey(), e.getValue());
         }
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -138,6 +137,7 @@ public class Plc4xSinkRecordProcessorTest {
     	testRunner.setIncomingConnection(false);
     	testRunner.setValidateExpressionUsage(false);
     	testRunner.setProperty(Plc4xSinkRecordProcessor.PLC_CONNECTION_STRING, "simulated://127.0.0.1");
+        testRunner.setProperty(Plc4xSinkRecordProcessor.PLC_WRITE_FUTURE_TIMEOUT_MILISECONDS, "1000");
 
 		addressMap.forEach((k,v) -> testRunner.setProperty(k, v));
 
@@ -147,19 +147,7 @@ public class Plc4xSinkRecordProcessorTest {
 		for (int i = 0; i<NUMBER_OF_CALLS; i++)
 			testRunner.enqueue(data);
     }
-
-    @Test
-    @Disabled("Disabled for now")
-    public void testJsonRecordWriterProcessor() throws InitializationException {
-    	final JsonTreeReader readerService = new  JsonTreeReader();
-    	testRunner.addControllerService("reader", readerService);
-    	testRunner.enableControllerService(readerService);
-    	testRunner.setProperty(Plc4xSinkRecordProcessor.PLC_RECORD_READER_FACTORY.getName(), "reader");
-    	testRunner.run(NUMBER_OF_CALLS,true, true);
-    	//validations
-    	testRunner.assertTransferCount(Plc4xSinkRecordProcessor.REL_FAILURE, 0);
-    	testRunner.assertTransferCount(Plc4xSinkRecordProcessor.REL_SUCCESS, NUMBER_OF_CALLS);
-    }
+    
     
     @Test
     public void testAvroRecordReaderProcessor() throws InitializationException {
@@ -171,5 +159,4 @@ public class Plc4xSinkRecordProcessorTest {
     	testRunner.assertTransferCount(Plc4xSinkRecordProcessor.REL_FAILURE, 0);
     	testRunner.assertTransferCount(Plc4xSinkRecordProcessor.REL_SUCCESS, NUMBER_OF_CALLS);
     }
-
 }
