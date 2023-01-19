@@ -98,7 +98,8 @@ def checkDotnet() {
 
 def checkJavaVersion(String minVersion, String maxVersion) {
     print "Detecting Java version:    "
-    String curVersion = System.properties['java.version']
+    String curVersion = System.properties['java.version'].split("-")[0]
+
     def result
     if (minVersion != null) {
         result = checkVersionAtLeast(curVersion, minVersion)

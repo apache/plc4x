@@ -105,7 +105,7 @@ public enum SupportedPhysicalMedia {
 
   public static SupportedPhysicalMedia firstEnumForFieldDescription(String fieldValue) {
     for (SupportedPhysicalMedia _val : SupportedPhysicalMedia.values()) {
-      if (_val.getDescription() == fieldValue) {
+      if (_val.getDescription().equals(fieldValue)) {
         return _val;
       }
     }
@@ -115,7 +115,7 @@ public enum SupportedPhysicalMedia {
   public static List<SupportedPhysicalMedia> enumsForFieldDescription(String fieldValue) {
     List<SupportedPhysicalMedia> _values = new ArrayList();
     for (SupportedPhysicalMedia _val : SupportedPhysicalMedia.values()) {
-      if (_val.getDescription() == fieldValue) {
+      if (_val.getDescription().equals(fieldValue)) {
         _values.add(_val);
       }
     }
