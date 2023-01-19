@@ -31,7 +31,7 @@ func NewCapability() *Capability {
 type Collector struct {
 }
 
-func (c *Collector) CapabilityFunctions(fn string) []func() {
+func (c *Collector) CapabilityFunctions(fn string) []func() error {
 	// TODO: implement
 	return nil
 }

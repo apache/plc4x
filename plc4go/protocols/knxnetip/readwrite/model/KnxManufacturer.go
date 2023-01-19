@@ -644,8 +644,12 @@ const (
 	KnxManufacturer_M_GAIMEX                                             KnxManufacturer = 605
 	KnxManufacturer_M_B3_INTERNATIONAL_S_R_L                             KnxManufacturer = 606
 	KnxManufacturer_M_MM_ELECTRO                                         KnxManufacturer = 607
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 608
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 609
+	KnxManufacturer_M_CASCODA                                            KnxManufacturer = 608
+	KnxManufacturer_M_XIAMEN_INTRETECH_INC_                              KnxManufacturer = 609
+	KnxManufacturer_M_KILOELEC_TECHNOLOGY                                KnxManufacturer = 610
+	KnxManufacturer_M_INYX                                               KnxManufacturer = 611
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 612
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 613
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1261,6 +1265,10 @@ func init() {
 		KnxManufacturer_M_GAIMEX,
 		KnxManufacturer_M_B3_INTERNATIONAL_S_R_L,
 		KnxManufacturer_M_MM_ELECTRO,
+		KnxManufacturer_M_CASCODA,
+		KnxManufacturer_M_XIAMEN_INTRETECH_INC_,
+		KnxManufacturer_M_KILOELEC_TECHNOLOGY,
+		KnxManufacturer_M_INYX,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3534,15 +3542,31 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 608:
 		{ /* '608' */
-			return 43954
+			return 667
 		}
 	case 609:
 		{ /* '609' */
-			return 43959
+			return 668
 		}
 	case 61:
 		{ /* '61' */
 			return 100
+		}
+	case 610:
+		{ /* '610' */
+			return 669
+		}
+	case 611:
+		{ /* '611' */
+			return 670
+		}
+	case 612:
+		{ /* '612' */
+			return 43954
+		}
+	case 613:
+		{ /* '613' */
+			return 43959
 		}
 	case 62:
 		{ /* '62' */
@@ -5992,15 +6016,31 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 608:
 		{ /* '608' */
-			return "ABB - reserved"
+			return "CASCODA"
 		}
 	case 609:
 		{ /* '609' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "Xiamen Intretech Inc."
 		}
 	case 61:
 		{ /* '61' */
 			return "Schneider Electric Industries SAS"
+		}
+	case 610:
+		{ /* '610' */
+			return "KiloElec Technology"
+		}
+	case 611:
+		{ /* '611' */
+			return "Inyx"
+		}
+	case 612:
+		{ /* '612' */
+			return "ABB - reserved"
+		}
+	case 613:
+		{ /* '613' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 62:
 		{ /* '62' */
@@ -7316,11 +7356,19 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 607:
 		return KnxManufacturer_M_MM_ELECTRO, true
 	case 608:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_CASCODA, true
 	case 609:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
+		return KnxManufacturer_M_XIAMEN_INTRETECH_INC_, true
 	case 61:
 		return KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS, true
+	case 610:
+		return KnxManufacturer_M_KILOELEC_TECHNOLOGY, true
+	case 611:
+		return KnxManufacturer_M_INYX, true
+	case 612:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 613:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 62:
 		return KnxManufacturer_M_WHD_WILHELM_HUBER_Plus_SOEHNE, true
 	case 63:
@@ -8541,12 +8589,20 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_B3_INTERNATIONAL_S_R_L, true
 	case "M_MM_ELECTRO":
 		return KnxManufacturer_M_MM_ELECTRO, true
+	case "M_CASCODA":
+		return KnxManufacturer_M_CASCODA, true
+	case "M_XIAMEN_INTRETECH_INC_":
+		return KnxManufacturer_M_XIAMEN_INTRETECH_INC_, true
+	case "M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS":
+		return KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS, true
+	case "M_KILOELEC_TECHNOLOGY":
+		return KnxManufacturer_M_KILOELEC_TECHNOLOGY, true
+	case "M_INYX":
+		return KnxManufacturer_M_INYX, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
-	case "M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS":
-		return KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS, true
 	case "M_WHD_WILHELM_HUBER_Plus_SOEHNE":
 		return KnxManufacturer_M_WHD_WILHELM_HUBER_Plus_SOEHNE, true
 	case "M_BISCHOFF_ELEKTRONIK":
@@ -9824,12 +9880,20 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_B3_INTERNATIONAL_S_R_L"
 	case KnxManufacturer_M_MM_ELECTRO:
 		return "M_MM_ELECTRO"
+	case KnxManufacturer_M_CASCODA:
+		return "M_CASCODA"
+	case KnxManufacturer_M_XIAMEN_INTRETECH_INC_:
+		return "M_XIAMEN_INTRETECH_INC_"
+	case KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS:
+		return "M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS"
+	case KnxManufacturer_M_KILOELEC_TECHNOLOGY:
+		return "M_KILOELEC_TECHNOLOGY"
+	case KnxManufacturer_M_INYX:
+		return "M_INYX"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
 		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
-	case KnxManufacturer_M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS:
-		return "M_SCHNEIDER_ELECTRIC_INDUSTRIES_SAS"
 	case KnxManufacturer_M_WHD_WILHELM_HUBER_Plus_SOEHNE:
 		return "M_WHD_WILHELM_HUBER_Plus_SOEHNE"
 	case KnxManufacturer_M_BISCHOFF_ELEKTRONIK:

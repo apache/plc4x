@@ -630,7 +630,7 @@ public enum TransportSize {
 
   public static TransportSize firstEnumForFieldDataProtocolId(String fieldValue) {
     for (TransportSize _val : TransportSize.values()) {
-      if (_val.getDataProtocolId() == fieldValue) {
+      if (_val.getDataProtocolId().equals(fieldValue)) {
         return _val;
       }
     }
@@ -640,7 +640,7 @@ public enum TransportSize {
   public static List<TransportSize> enumsForFieldDataProtocolId(String fieldValue) {
     List<TransportSize> _values = new ArrayList();
     for (TransportSize _val : TransportSize.values()) {
-      if (_val.getDataProtocolId() == fieldValue) {
+      if (_val.getDataProtocolId().equals(fieldValue)) {
         _values.add(_val);
       }
     }

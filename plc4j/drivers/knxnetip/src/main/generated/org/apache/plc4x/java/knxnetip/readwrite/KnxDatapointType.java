@@ -1207,7 +1207,7 @@ public enum KnxDatapointType {
 
   public static KnxDatapointType firstEnumForFieldName(String fieldValue) {
     for (KnxDatapointType _val : KnxDatapointType.values()) {
-      if (_val.getName() == fieldValue) {
+      if (_val.getName().equals(fieldValue)) {
         return _val;
       }
     }
@@ -1217,7 +1217,7 @@ public enum KnxDatapointType {
   public static List<KnxDatapointType> enumsForFieldName(String fieldValue) {
     List<KnxDatapointType> _values = new ArrayList();
     for (KnxDatapointType _val : KnxDatapointType.values()) {
-      if (_val.getName() == fieldValue) {
+      if (_val.getName().equals(fieldValue)) {
         _values.add(_val);
       }
     }

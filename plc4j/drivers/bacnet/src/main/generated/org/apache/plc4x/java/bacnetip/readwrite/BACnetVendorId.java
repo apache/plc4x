@@ -1604,6 +1604,9 @@ public enum BACnetVendorId {
   EM_FIRST_CO_LTD((int) 1393, (int) 1393, (String) "EmFirst Co. Ltd."),
   IION_SYSTEMS_APS((int) 1394, (int) 1394, (String) "Iion Systems ApS"),
   SAF_TEHNIKAJSC((int) 1396, (int) 1396, (String) "SAF Tehnika JSC"),
+  KOMFORTIQ_INC((int) 1397, (int) 1397, (String) "Komfort IQ, Inc."),
+  COOL_TERA_LIMITED((int) 1398, (int) 1398, (String) "CoolTera Limited"),
+  HADRON_SOLUTIONS_SRLS((int) 1399, (int) 1399, (String) "Hadron Solutions S.r.l.s"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
@@ -1657,7 +1660,7 @@ public enum BACnetVendorId {
 
   public static BACnetVendorId firstEnumForFieldVendorName(String fieldValue) {
     for (BACnetVendorId _val : BACnetVendorId.values()) {
-      if (_val.getVendorName() == fieldValue) {
+      if (_val.getVendorName().equals(fieldValue)) {
         return _val;
       }
     }
@@ -1667,7 +1670,7 @@ public enum BACnetVendorId {
   public static List<BACnetVendorId> enumsForFieldVendorName(String fieldValue) {
     List<BACnetVendorId> _values = new ArrayList();
     for (BACnetVendorId _val : BACnetVendorId.values()) {
-      if (_val.getVendorName() == fieldValue) {
+      if (_val.getVendorName().equals(fieldValue)) {
         _values.add(_val);
       }
     }

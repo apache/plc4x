@@ -58,9 +58,9 @@ ${import}
 </#macro>
 <#macro emitImport import>${helper.emitRequiredImport(import)}</#macro>
 <@importSectionWithContentBelow>
-<@emitImport import="from enum import Enum" />
+<@emitImport import="from aenum import MultiValueEnum" />
 
-class ${type.name}(Enum):
+class ${type.name}(MultiValueEnum):
     <#list type.enumValues as enumValue>
     ${enumValue.name}: <@compress single_line=true>
             <#if type.type.isPresent()>

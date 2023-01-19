@@ -153,7 +153,7 @@ public enum KnxPropertyDataType {
 
   public static KnxPropertyDataType firstEnumForFieldName(String fieldValue) {
     for (KnxPropertyDataType _val : KnxPropertyDataType.values()) {
-      if (_val.getName() == fieldValue) {
+      if (_val.getName().equals(fieldValue)) {
         return _val;
       }
     }
@@ -163,7 +163,7 @@ public enum KnxPropertyDataType {
   public static List<KnxPropertyDataType> enumsForFieldName(String fieldValue) {
     List<KnxPropertyDataType> _values = new ArrayList();
     for (KnxPropertyDataType _val : KnxPropertyDataType.values()) {
-      if (_val.getName() == fieldValue) {
+      if (_val.getName().equals(fieldValue)) {
         _values.add(_val);
       }
     }
