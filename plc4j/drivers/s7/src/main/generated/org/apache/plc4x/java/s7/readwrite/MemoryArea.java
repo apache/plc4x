@@ -62,7 +62,7 @@ public enum MemoryArea {
 
   public static MemoryArea firstEnumForFieldShortName(String fieldValue) {
     for (MemoryArea _val : MemoryArea.values()) {
-      if (_val.getShortName() == fieldValue) {
+      if (_val.getShortName().equals(fieldValue)) {
         return _val;
       }
     }
@@ -72,7 +72,7 @@ public enum MemoryArea {
   public static List<MemoryArea> enumsForFieldShortName(String fieldValue) {
     List<MemoryArea> _values = new ArrayList();
     for (MemoryArea _val : MemoryArea.values()) {
-      if (_val.getShortName() == fieldValue) {
+      if (_val.getShortName().equals(fieldValue)) {
         _values.add(_val);
       }
     }

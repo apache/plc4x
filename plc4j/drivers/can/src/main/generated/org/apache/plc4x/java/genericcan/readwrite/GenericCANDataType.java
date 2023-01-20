@@ -75,7 +75,7 @@ public enum GenericCANDataType {
 
   public static GenericCANDataType firstEnumForFieldPlcValueName(String fieldValue) {
     for (GenericCANDataType _val : GenericCANDataType.values()) {
-      if (_val.getPlcValueName() == fieldValue) {
+      if (_val.getPlcValueName().equals(fieldValue)) {
         return _val;
       }
     }
@@ -85,7 +85,7 @@ public enum GenericCANDataType {
   public static List<GenericCANDataType> enumsForFieldPlcValueName(String fieldValue) {
     List<GenericCANDataType> _values = new ArrayList();
     for (GenericCANDataType _val : GenericCANDataType.values()) {
-      if (_val.getPlcValueName() == fieldValue) {
+      if (_val.getPlcValueName().equals(fieldValue)) {
         _values.add(_val);
       }
     }

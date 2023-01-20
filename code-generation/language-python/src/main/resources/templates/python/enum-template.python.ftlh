@@ -67,12 +67,12 @@ class ${type.name}(Enum):
                 ${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}
                 <#if type.type.orElseThrow().isNonSimpleTypeReference()>
                     <#if type.type.orElseThrow().isEnumTypeReference()>
-                         = ${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}.${enumValue.value}
+                         = <#if type.constantNames?has_content>(</#if>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}.${enumValue.value}
                     <#else>
-                         = ${enumValue.value}
+                         = <#if type.constantNames?has_content>(</#if>${enumValue.value}
                     </#if>
                 <#else>
-                    = ${enumValue.value}
+                    = <#if type.constantNames?has_content>(</#if>${enumValue.value}
                 </#if>
             </#if>
             <#if type.constantNames?has_content>
@@ -86,10 +86,25 @@ class ${type.name}(Enum):
                         </#if>
                     <#sep>, </#sep>
                 </#list>
+                )
             </#if>
     </@compress>
 
     </#list>
+
+    <#if type.constantNames?has_content>
+    def __new__(cls, value, <@compress single_line=true>
+        <#list type.constantNames as constantName>
+            ${constantName}
+            <#sep>, </#sep>
+        </#list>):
+        </@compress>
+
+        obj = object.__new__(cls)
+        obj._value_ = value
+        <#list type.constantNames as constantName>obj.${constantName} = ${constantName}</#list>
+        return obj
+    </#if>
 
 </@importSectionWithContentBelow>
 

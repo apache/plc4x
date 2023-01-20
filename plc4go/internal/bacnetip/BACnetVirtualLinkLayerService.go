@@ -23,6 +23,7 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
+	"time"
 )
 
 type _MultiplexClient struct {
@@ -364,13 +365,13 @@ func (b *BIPSimple) Confirmation(pdu _PDU) error {
 	// some kind of response to a request
 	case readWriteModel.BVLCResultExactly:
 		// send this to the service access point
-		return b.SapRequest(pdu)
+		return b.SapResponse(pdu)
 	case readWriteModel.BVLCReadBroadcastDistributionTableAckExactly:
 		// send this to the service access point
-		return b.SapRequest(pdu)
+		return b.SapResponse(pdu)
 	case readWriteModel.BVLCReadForeignDeviceTableAckExactly:
 		// send this to the service access point
-		return b.SapRequest(pdu)
+		return b.SapResponse(pdu)
 	case readWriteModel.BVLCOriginalUnicastNPDUExactly:
 		// build a vanilla PDU
 		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(pdu.GetPDUDestination()))
@@ -445,4 +446,294 @@ func (b *BIPSimple) Confirmation(pdu _PDU) error {
 		log.Warn().Msgf("invalid pdu type %T", msg)
 		return nil
 	}
+}
+
+type BIPForeign struct {
+	*BIPSAP
+	*Client
+	*Server
+	*OneShotTask
+	registrationStatus      int
+	bbmdAddress             *Address
+	bbmdTimeToLive          *int
+	registrationTimeoutTask *OneShotFunctionTask
+}
+
+func NewBIPForeign(addr *Address, ttl *int, sapID *int, cid *int, sid *int) (*BIPForeign, error) {
+	log.Debug().Msgf("NewBIPForeign addr=%s ttl=%d sapID=%d cid=%d sid=%d", addr, ttl, sapID, cid, sid)
+	b := &BIPForeign{}
+	bipsap, err := NewBIPSAP(sapID, b)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating bisap")
+	}
+	b.BIPSAP = bipsap
+	client, err := NewClient(cid, b)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating client")
+	}
+	b.Client = client
+	server, err := NewServer(sid, b)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating server")
+	}
+	b.Server = server
+	b.OneShotTask = NewOneShotTask(b, nil)
+
+	// -2=unregistered, -1=not attempted or no ack, 0=OK, >0 error
+	b.registrationStatus = -1
+
+	// clear the BBMD address and time-to-live
+	b.bbmdAddress = nil
+	b.bbmdTimeToLive = nil
+
+	// used in tracking active registration timeouts
+	b.registrationTimeoutTask = OneShotFunction(b._registration_expired)
+
+	// registration provided
+	if addr != nil {
+		// a little error checking
+		if ttl == nil {
+			return nil, errors.New("BBMD address and time-to-live must both be specified")
+		}
+
+		if err := b.register(*addr, *ttl); err != nil {
+			return nil, errors.Wrap(err, "error registering")
+		}
+	}
+
+	return b, nil
+}
+
+func (b *BIPForeign) Indication(pdu _PDU) error {
+	log.Debug().Msgf("Indication %s", pdu)
+
+	// check for local stations
+	switch pdu.GetPDUDestination().AddrType {
+	case LOCAL_STATION_ADDRESS:
+		// make an original unicast PDU
+		xpdu := readWriteModel.NewBVLCOriginalUnicastNPDU(pdu.GetMessage().(readWriteModel.NPDU), 0)
+		log.Debug().Msgf("xpdu:\n%s", xpdu)
+
+		// send it downstream
+		return b.Request(NewPDUFromPDUWithNewMessage(pdu, xpdu))
+	case LOCAL_BROADCAST_ADDRESS:
+		// check the BBMD registration status, we may not be registered
+		if b.registrationStatus != 0 {
+			log.Debug().Msg("packet dropped, unregistered")
+			return nil
+		}
+
+		// make an original broadcast PDU
+		xpdu := readWriteModel.NewBVLCOriginalBroadcastNPDU(pdu.GetMessage().(readWriteModel.NPDU), 0)
+
+		log.Debug().Msgf("xpdu:\n%s", xpdu)
+
+		// send it downstream
+		return b.Request(NewPDUFromPDUWithNewMessage(pdu, xpdu))
+	default:
+		return errors.Errorf("invalid destination address: %s", pdu.GetPDUDestination())
+	}
+}
+
+func (b *BIPForeign) Confirmation(pdu _PDU) error {
+	log.Debug().Msgf("Confirmation %s", pdu)
+
+	switch msg := pdu.GetMessage().(type) {
+	// check for a registration request result
+	case readWriteModel.BVLCResultExactly:
+		// if we are unbinding, do nothing
+		if b.registrationStatus == -2 {
+			return nil
+		}
+
+		// make sure we have a bind request in process
+
+		// make sure the result is from the bbmd
+
+		if !pdu.GetPDUSource().Equals(b.bbmdAddress) {
+			log.Debug().Msg("packet dropped, not from the BBMD")
+			return nil
+		}
+		// save the result code as the status
+		b.registrationStatus = int(msg.GetCode())
+
+		// If successful, track registration timeout
+		if b.registrationStatus == 0 {
+			b._start_track_registration()
+		}
+
+		return nil
+	case readWriteModel.BVLCOriginalUnicastNPDUExactly:
+		// build a vanilla PDU
+		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(pdu.GetPDUDestination()))
+		log.Debug().Msgf("xpdu: %s", xpdu)
+
+		// send it upstream
+		return b.Response(xpdu)
+	case readWriteModel.BVLCForwardedNPDUExactly:
+		// check the BBMD registration status, we may not be registered
+		if b.registrationStatus != 0 {
+			log.Debug().Msg("packet dropped, unregistered")
+			return nil
+		}
+
+		// make sure the forwarded PDU from the bbmd
+		if !pdu.GetPDUSource().Equals(b.bbmdAddress) {
+			log.Debug().Msg("packet dropped, not from the BBMD")
+			return nil
+		}
+
+		// build a PDU with the source from the real source
+		ip := msg.GetIp()
+		port := msg.GetPort()
+		source, err := NewAddress(append(ip, uint16ToPort(port)...))
+		if err != nil {
+			return errors.Wrap(err, "error building a ip")
+		}
+		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(source), WithPDUDestination(NewLocalBroadcast(nil)))
+		log.Debug().Msgf("xpdu: %s", xpdu)
+
+		// send it upstream
+		return b.Response(xpdu)
+	case readWriteModel.BVLCReadBroadcastDistributionTableAckExactly:
+		// send this to the service access point
+		return b.SapResponse(pdu)
+	case readWriteModel.BVLCReadForeignDeviceTableAckExactly:
+		// send this to the service access point
+		return b.SapResponse(pdu)
+	case readWriteModel.BVLCWriteBroadcastDistributionTableExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+	case readWriteModel.BVLCReadBroadcastDistributionTableExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+	case readWriteModel.BVLCRegisterForeignDeviceExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+	case readWriteModel.BVLCReadForeignDeviceTableExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+	case readWriteModel.BVLCDeleteForeignDeviceTableEntryExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+	case readWriteModel.BVLCDistributeBroadcastToNetworkExactly:
+		// build a response
+		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK)
+		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+
+		// send it downstream
+		return b.Request(xpdu)
+	case readWriteModel.BVLCOriginalBroadcastNPDUExactly:
+		log.Debug().Msg("packet dropped")
+		return nil
+	default:
+		log.Warn().Msgf("invalid pdu type %T", msg)
+		return nil
+	}
+}
+
+// register starts the foreign device registration process with the given BBMD.
+//
+//        Registration will be renewed periodically according to the ttl value
+//        until explicitly stopped by a call to `unregister`.
+func (b *BIPForeign) register(addr Address, ttl int) error {
+	// a little error checking
+	if ttl <= 0 {
+		return errors.New("time-to-live must be greater than zero")
+	}
+
+	// save the BBMD address and time-to-live
+	b.bbmdAddress = &addr
+	b.bbmdTimeToLive = &ttl
+
+	// install this task to do registration renewal according to the TTL
+	// and stop tracking any active registration timeouts
+	var taskTime time.Time
+	b.InstallTask(&taskTime, nil)
+	b._stop_track_registration()
+	return nil
+}
+
+// unregister stops the foreign device registration process.
+//
+// Immediately drops active foreign device registration and stops further
+// registration renewals.
+func (b *BIPForeign) unregister() {
+	pdu := NewPDU(readWriteModel.NewBVLCRegisterForeignDevice(0), WithPDUDestination(b.bbmdAddress))
+
+	// send it downstream
+	if err := b.Request(pdu); err != nil {
+		log.Debug().Err(err).Msg("error sending request")
+		return
+	}
+
+	// change the status to unregistered
+	b.registrationStatus = -2
+
+	// clear the BBMD address and time-to-live
+	b.bbmdAddress = nil
+	b.bbmdTimeToLive = nil
+
+	// unschedule registration renewal & timeout tracking if previously
+	// scheduled
+	b.SuspendTask()
+	b._stop_track_registration()
+}
+
+// processTask is called when the registration request should be sent to the BBMD.
+func (b *BIPForeign) processTask() error {
+	pdu := NewPDU(readWriteModel.NewBVLCRegisterForeignDevice(uint16(*b.bbmdTimeToLive)), WithPDUDestination(b.bbmdAddress))
+
+	// send it downstream
+	if err := b.Request(pdu); err != nil {
+		return errors.Wrap(err, "error sending request")
+	}
+
+	// schedule the next registration renewal
+	var delta = time.Duration(*b.bbmdTimeToLive) * time.Second
+	b.InstallTask(nil, &delta)
+	return nil
+}
+
+// _start_track_registration From J.5.2.3 Foreign Device Table Operation (paraphrasing): if a
+// foreign device does not renew its registration 30 seconds after its
+// TTL expired then it will be removed from the BBMD's FDT.
+//
+// Thus, if we're registered and don't get a response to a subsequent
+// renewal request 30 seconds after our TTL expired then we're
+// definitely not registered anymore.
+func (b *BIPForeign) _start_track_registration() {
+	var delta = time.Duration(*b.bbmdTimeToLive)*time.Second + (30 * time.Second)
+	b.registrationTimeoutTask.InstallTask(nil, &delta)
+}
+
+func (b *BIPForeign) _stop_track_registration() {
+	b.registrationTimeoutTask.SuspendTask()
+}
+
+// _registration_expired is called when detecting that foreign device registration has definitely expired.
+func (b *BIPForeign) _registration_expired() error {
+	b.registrationStatus = -1 // Unregistered
+	b._stop_track_registration()
+	return nil
 }

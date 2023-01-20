@@ -80,7 +80,7 @@ public enum CANOpenDataType {
 
   public static CANOpenDataType firstEnumForFieldPlcValueName(String fieldValue) {
     for (CANOpenDataType _val : CANOpenDataType.values()) {
-      if (_val.getPlcValueName() == fieldValue) {
+      if (_val.getPlcValueName().equals(fieldValue)) {
         return _val;
       }
     }
@@ -90,7 +90,7 @@ public enum CANOpenDataType {
   public static List<CANOpenDataType> enumsForFieldPlcValueName(String fieldValue) {
     List<CANOpenDataType> _values = new ArrayList();
     for (CANOpenDataType _val : CANOpenDataType.values()) {
-      if (_val.getPlcValueName() == fieldValue) {
+      if (_val.getPlcValueName().equals(fieldValue)) {
         _values.add(_val);
       }
     }
