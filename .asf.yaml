@@ -63,3 +63,5 @@ notifications:
   issues:               issues@plc4x.apache.org
   pullrequests_status:  dev@plc4x.apache.org
   pullrequests_comment: dev@plc4x.apache.org
+  # Send dependabot PRs to commits@ instead
+  pullrequests_bot_dependabot: commits@plc4x.apache.org

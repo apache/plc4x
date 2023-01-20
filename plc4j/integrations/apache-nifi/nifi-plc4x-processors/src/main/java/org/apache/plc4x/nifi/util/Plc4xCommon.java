@@ -23,8 +23,10 @@ import java.util.Map;
 
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
+import org.apache.avro.SchemaBuilder.BaseTypeBuilder;
 import org.apache.avro.SchemaBuilder.FieldAssembler;
-//TODO review remaining datatypes
+import org.apache.avro.SchemaBuilder.NullDefault;
+import org.apache.avro.SchemaBuilder.UnionAccumulator;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.java.spi.values.PlcBYTE;
@@ -36,14 +38,10 @@ import org.apache.plc4x.java.spi.values.PlcDWORD;
 import org.apache.plc4x.java.spi.values.PlcINT;
 import org.apache.plc4x.java.spi.values.PlcLINT;
 import org.apache.plc4x.java.spi.values.PlcLREAL;
-import org.apache.plc4x.java.spi.values.PlcLTIME;
 import org.apache.plc4x.java.spi.values.PlcLWORD;
 import org.apache.plc4x.java.spi.values.PlcList;
-import org.apache.plc4x.java.spi.values.PlcNull;
 import org.apache.plc4x.java.spi.values.PlcREAL;
 import org.apache.plc4x.java.spi.values.PlcSINT;
-import org.apache.plc4x.java.spi.values.PlcSTRING;
-import org.apache.plc4x.java.spi.values.PlcStruct;
 import org.apache.plc4x.java.spi.values.PlcTIME;
 import org.apache.plc4x.java.spi.values.PlcTIME_OF_DAY;
 import org.apache.plc4x.java.spi.values.PlcUDINT;
@@ -75,68 +73,38 @@ public class Plc4xCommon {
 		
 		for (Map.Entry<String, ? extends PlcValue> entry : responseDataStructure.entrySet()) {
 			fieldName = entry.getKey();
-			if (entry.getValue() instanceof PlcBOOL) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().booleanType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcBYTE) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().bytesType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcCHAR) {	
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcDATE_AND_TIME) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();	
-			}else if (entry.getValue() instanceof PlcDATE) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcDINT) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcDWORD) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcINT) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().intType().endUnion().noDefault();				
-			}else if (entry.getValue() instanceof PlcLINT) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcLREAL) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcLTIME) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcLWORD) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcNull) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcREAL) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().doubleType().endUnion().noDefault();		
-			}else if (entry.getValue() instanceof PlcSINT) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().intType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcSTRING) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcStruct) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcTIME_OF_DAY) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcTIME) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcUDINT) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcUINT) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcULINT) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcUSINT) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcWCHAR) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcWORD) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();				
-			}else if(entry.getValue() instanceof PlcList) {
-				if(!entry.getValue().getList().isEmpty()) {
-					if(entry.getValue().getList().get(0) instanceof PlcBOOL) {
-						builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().array().items().booleanType().endUnion().noDefault();
-					}
-				} else {
-					builder.name(fieldName).type().nullBuilder().endNull();
+			PlcValue value = entry.getValue();
+			BaseTypeBuilder<UnionAccumulator<NullDefault<Schema>>> fieldBuilder = 
+				builder.name(fieldName).type().unionOf().nullType().and();
+			
+			if (value instanceof PlcList) {
+				if(!value.getList().isEmpty()) {
+					fieldBuilder = fieldBuilder.array().items();
+					value = value.getList().get(0);
 				}
 			}
-			else { //TODO try forcing any other datatype to string...
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();	
+
+			// PlcTYPEs not in here are casted to avro string type.
+			UnionAccumulator<NullDefault<Schema>> buildedField = null;
+			if (value instanceof PlcBOOL) {
+				buildedField = fieldBuilder.booleanType();
+			}else if (value instanceof PlcBYTE) {
+				buildedField = fieldBuilder.bytesType();
+			}else if (value instanceof PlcINT) {
+				buildedField = fieldBuilder.intType();				
+			}else if (value instanceof PlcLINT) {
+				buildedField = fieldBuilder.longType();
+			}else if (value instanceof PlcLREAL) {
+				buildedField = fieldBuilder.doubleType();
+			}else if (value instanceof PlcREAL) {
+				buildedField = fieldBuilder.floatType();		
+			}else if (value instanceof PlcSINT) {
+				buildedField = fieldBuilder.intType();		
+			}else  {// Default to string:
+				fieldBuilder.stringType().endUnion().nullDefault();
+				continue;// In case of null default continue
 			}
+			buildedField.endUnion().noDefault();
 		}
 		
 		//add timestamp tag to schema
@@ -144,47 +112,66 @@ public class Plc4xCommon {
 		
 		
 		return builder.endRecord();
-
 	}
 	
 	
 	private static Object normalizeBasicTypes(final Object valueOriginal) {
-		if (valueOriginal == null) {
+		if (valueOriginal == null) 
 			return null;
-		} else if (valueOriginal instanceof PlcValue) {
+			
+		if (valueOriginal instanceof PlcValue) {
 			PlcValue value = (PlcValue) valueOriginal;
-			if (value.isBoolean() && value instanceof PlcBOOL)
+			// 8 bits
+			if (value instanceof PlcBOOL && value.isBoolean())
 				return value.getBoolean();
-			else if (value.isByte() && value instanceof PlcBYTE)
-				return value.getByte();
-			else if (value.isDate() && value instanceof PlcDATE)
-				return value.getDate();
-			else if (value.isDateTime() && value instanceof PlcDATE_AND_TIME)
-				return value.getDateTime();
-			else if (value.isFloat() && value instanceof PlcLREAL)
-				return value.getFloat();
-			else if (value.isInteger() && value instanceof PlcINT)
-				return value.getInteger();
-			else if (value.isList() && value instanceof PlcList) // TODO
-				return value.getList().toArray();
-			else if (value.isDouble())
-				return value.getDouble();
-			else if (value.isDuration())
-				return value.getDuration();
-			else if (value.isLong())
-				return value.getLong();
-			else if (value.isShort())
+			if (value instanceof PlcBYTE && (value.isByte() || value.isShort()))
+				return new byte[]{value.getByte()};
+			if (value instanceof PlcCHAR && value.isShort())
+				return value.getString();
+			if ((value instanceof PlcSINT || value instanceof PlcUSINT) && value.isShort())
 				return value.getShort();
-			else if (value.isString())
+
+
+			// 16 bits
+			if (value instanceof PlcWORD && (value.isInteger() || value.isShort()))
 				return value.getString();
-			else if (value.isTime())
+			if (value instanceof PlcINT && value.isInteger())
+				return value.getInteger();
+			if (value instanceof PlcUINT && value.isInteger())
+				return value.getInteger();
+			if ((value instanceof PlcWCHAR || value instanceof PlcDWORD) && value.isInteger())
+				return value.getString();
+
+			// 32 bits
+			if (value instanceof PlcREAL && value.isFloat())
+				return value.getFloat();
+			if ((value instanceof PlcDINT || value instanceof PlcUDINT) && value.isInteger())
+				return value.getInteger();
+			if (value instanceof PlcDWORD && value.isInteger())
+				return value.getString();
+			
+			// 64 bits
+			if ((value instanceof PlcLINT || value instanceof PlcULINT) && value.isLong())
+				return value.getLong();
+			if (value instanceof PlcLREAL && value.isDouble())
+				return value.getDouble();
+			if (value instanceof PlcLWORD && (value.isLong() || value.isBigInteger()))
+				return value.getString();
+
+			// Dates and time
+			if (value instanceof PlcDATE && value.isDate())
+				return value.getDate();
+			if (value instanceof PlcDATE_AND_TIME && value.isDateTime())
+				return value.getDateTime();
+			if (value instanceof PlcTIME && value.isTime())
 				return value.getTime();
-			else
-				return value.getString();
-		} else {
-			return valueOriginal;
-		}
-    
+			if (value instanceof PlcTIME_OF_DAY && value.isTime())
+				return value.getTime();
+
+			// Everything else to string
+			return value.getString();
+		} 
+		return valueOriginal;
 	}
 	
 	public static Object normalizeValue(final Object valueOriginal) {
@@ -192,22 +179,11 @@ public class Plc4xCommon {
             return null;
         }
         if (valueOriginal instanceof List) {
-            return ((List) valueOriginal).toArray();
+            return ((List<?>) valueOriginal).toArray();
         } else  if (valueOriginal instanceof PlcValue) {
-        	PlcValue value = (PlcValue) valueOriginal;
-	        if(value.isBoolean() && value instanceof PlcBOOL)
-	        	return value.getBoolean();
-	        else if (value.isByte() && value instanceof PlcBYTE)
-	        	return value.getByte();
-	        else if (value.isDate() && value instanceof PlcDATE)
-	        	return value.getDate();
-	        else if (value.isDateTime() && value instanceof PlcDATE_AND_TIME)
-	        	return value.getDateTime();
-	        else if (value.isFloat() && value instanceof PlcLREAL)
-	           	return value.getFloat();
-	        else if (value.isInteger() && value instanceof PlcINT)
-	           	return value.getInteger();
-	        else if (value.isList() && value instanceof PlcList) { //TODO
+			PlcValue value = (PlcValue) valueOriginal;
+
+			if (value.isList() && value instanceof PlcList) {
 	        	Object[] r = new Object[value.getList().size()];
 	        	int i = 0;
 	        	for (Object element : value.getList()) {
@@ -215,21 +191,8 @@ public class Plc4xCommon {
 	        		i++;
 				}
 	        	return r;
-	        }   	
-	        else if (value.isDouble())
-	        	return value.getDouble();
-	        else if (value.isDuration())
-	        	return value.getDuration();
-	        else if (value.isLong())
-	           	return value.getLong();
-	        else if (value.isShort())
-	           	return value.getShort();
-	        else if (value.isString())
-	          	return value.getString();
-	        else if (value.isTime())
-	          	return value.getTime();
-	        else 
-	        	return value.getString();
+	        } 	
+			return normalizeBasicTypes(value);
         } else {
         	return valueOriginal;
         }
