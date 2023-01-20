@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
- package org.apache.plc4x.nifi.address;
+package org.apache.plc4x.nifi.address;
 
 import org.apache.nifi.components.AllowableValue;
 import org.apache.nifi.components.PropertyDescriptor;
@@ -24,39 +24,40 @@ import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.util.JsonValidator;
 
 public class AddressesAccessUtils {
-    public static final PropertyDescriptor PLC_ADDRESS_ACCESS_STRATEGY = new PropertyDescriptor.Builder()
-        .name("plc4x-address-access-strategy")
-        .displayName("Address Access Strategy")
-        .description("Strategy used to obtain the PLC addresses")
-        .required(true)
-        .build();
-
     public static final AllowableValue ADDRESS_PROPERTY = new AllowableValue(
-        "property-address", 
-        "Use Properties as Addresses",
-        "Each property will be treated as tag-address pairs after Expression Language is evaluated.");
+            "property-address",
+            "Use Properties as Addresses",
+            "Each property will be treated as tag-address pairs after Expression Language is evaluated.");
 
     public static final AllowableValue ADDRESS_TEXT = new AllowableValue(
-        "text-address", 
-        "Use 'Address Text' Property",
-        "Addresses will be obtained from 'Address Text' Property. It's content must be a valid JSON " +
-            "after Expression Language is evaluated. ");
-        
-    public static final PropertyDescriptor ADDRESS_TEXT_PROPERTY = new PropertyDescriptor.Builder()
-        .name("text-address-property")
-        .displayName("Address Text")
-        .description("Must contain a valid JSON object after Expression Language is evaluated. "
-            + "Each field-value is treated as tag-address.")
-        .expressionLanguageSupported(ExpressionLanguageScope.FLOWFILE_ATTRIBUTES)
-        .addValidator(new JsonValidator())
-        .dependsOn(PLC_ADDRESS_ACCESS_STRATEGY, ADDRESS_TEXT)
-        .required(true)
-        .build();
+            "text-address",
+            "Use 'Address Text' Property",
+            "Addresses will be obtained from 'Address Text' Property. It's content must be a valid JSON " +
+                    "after Expression Language is evaluated. ");
 
+    public static final PropertyDescriptor PLC_ADDRESS_ACCESS_STRATEGY = new PropertyDescriptor.Builder()
+            .name("plc4x-address-access-strategy")
+            .displayName("Address Access Strategy")
+            .description("Strategy used to obtain the PLC addresses")
+            .allowableValues(ADDRESS_PROPERTY, ADDRESS_TEXT)
+            .defaultValue(ADDRESS_PROPERTY.getValue())
+            .required(true)
+            .build();
+
+    public static final PropertyDescriptor ADDRESS_TEXT_PROPERTY = new PropertyDescriptor.Builder()
+            .name("text-address-property")
+            .displayName("Address Text")
+            .description("Must contain a valid JSON object after Expression Language is evaluated. "
+                    + "Each field-value is treated as tag-address.")
+            .expressionLanguageSupported(ExpressionLanguageScope.FLOWFILE_ATTRIBUTES)
+            .addValidator(new JsonValidator())
+            .dependsOn(PLC_ADDRESS_ACCESS_STRATEGY, ADDRESS_TEXT)
+            .required(true)
+            .build();
 
     public static AddressesAccessStrategy getAccessStrategy(final ProcessContext context) {
         String value = context.getProperty(PLC_ADDRESS_ACCESS_STRATEGY).getValue();
-        if (ADDRESS_PROPERTY.getValue().equalsIgnoreCase(value)) 
+        if (ADDRESS_PROPERTY.getValue().equalsIgnoreCase(value))
             return new DynamicPropertyAccessStrategy();
         else if (ADDRESS_TEXT.getValue().equalsIgnoreCase(value))
             return new TextPropertyAccessStrategy();

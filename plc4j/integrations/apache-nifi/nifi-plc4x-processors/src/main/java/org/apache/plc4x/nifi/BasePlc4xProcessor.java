@@ -57,21 +57,6 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         AddressesAccessUtils.ADDRESS_PROPERTY,
         AddressesAccessUtils.ADDRESS_TEXT));
 
-    protected static List<AllowableValue> getAddressAccessStrategyValues() {
-            return addressAccessStrategy;
-        }
-
-    protected AllowableValue getDefaultAddressAccessStrategy() {
-        return AddressesAccessUtils.ADDRESS_PROPERTY;
-    }
-
-    private PropertyDescriptor buildStrategyProperty(AllowableValue[] values) {
-        return new PropertyDescriptor.Builder()
-                .fromPropertyDescriptor(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY)
-                .allowableValues(values)
-                .defaultValue(getDefaultAddressAccessStrategy().getValue())
-                .build();
-    }
 
 	protected static final PropertyDescriptor PLC_CONNECTION_STRING = new PropertyDescriptor
         .Builder().name("PLC_CONNECTION_STRING")
@@ -95,10 +80,9 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     @Override
     protected void init(final ProcessorInitializationContext context) {
     	final List<PropertyDescriptor> properties = new ArrayList<>();
-        final AllowableValue[] strategies = getAddressAccessStrategyValues().toArray(new AllowableValue[0]);
-    	properties.add(PLC_CONNECTION_STRING);
-        properties.add(buildStrategyProperty(strategies));
 
+    	properties.add(PLC_CONNECTION_STRING);
+        properties.add(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY);
         properties.add(AddressesAccessUtils.ADDRESS_TEXT_PROPERTY);
         this.properties = Collections.unmodifiableList(properties);
 
