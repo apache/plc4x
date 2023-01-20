@@ -1860,30 +1860,51 @@
             <inherited>false</inherited>
             <executions>
               <execution>
+                <phase>verify</phase>
                 <goals>
                   <goal>files</goal>
                 </goals>
+                <configuration>
+                  <algorithms>
+                    <algorithm>SHA-512</algorithm>
+                  </algorithms>
+                  <includeRelativePath>true</includeRelativePath>
+                  <fileSets>
+                    <fileSet>
+                      <directory>${project.build.directory}</directory>
+                      <includes>
+                        <include>apache-plc4x-${project.version}-source-release.zip</include>
+                      </includes>
+                    </fileSet>
+                  </fileSets>
+                </configuration>
               </execution>
             </executions>
+          </plugin>
+          <!--
+            Generate an SBOM for the project
+          -->
+          <plugin>
+            <groupId>org.cyclonedx</groupId>
+            <artifactId>cyclonedx-maven-plugin</artifactId>
+            <version>2.7.4</version>
+            <!-- Only run this in the root module of the project -->
+            <inherited>false</inherited>
             <configuration>
-              <algorithms>
-                <algorithm>SHA-512</algorithm>
-              </algorithms>
-              <includeRelativePath>true</includeRelativePath>
-              <fileSets>
-                <fileSet>
-                  <directory>${project.build.directory}</directory>
-                  <includes>
-                    <include>apache-plc4x-${project.version}-source-release.zip</include>
-                  </includes>
-                </fileSet>
-              </fileSets>
+              <outputName>apache-${project.artifactId}-${project.version}-sbom</outputName>
             </configuration>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>makeAggregateBom</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
     </profile>
-
   </profiles>
 
 </project>
