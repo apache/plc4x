@@ -263,7 +263,7 @@ public class ProfinetModuleImpl implements ProfinetModule {
                         options.put("module_info_text", new PlcSTRING(virtual.getModuleInfo().getInfoText().getTextId()));
                     }
 
-                    String statusName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + virtual.getModuleInfo().getName().getTextId() + ".Status";
+                    String statusName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + virtual.getId() + ".Status";
                     browseItems.put(statusName, Collections.singletonList(new DefaultPlcBrowseItem(ProfinetTag.of(statusName + ":INT"), statusName, false, false, true, new HashMap<>(), options)));
                     if (virtual.getIoData() != null && virtual.getIoData().getInput() != null) {
                         for (ProfinetIoDataInput input : virtual.getIoData().getInput()) {
@@ -286,13 +286,13 @@ public class ProfinetModuleImpl implements ProfinetModule {
             if (module.getSystemDefinedSubmoduleList() != null) {
                 for (ProfinetInterfaceSubmoduleItem systemInterface : module.getSystemDefinedSubmoduleList().getInterfaceSubmodules()) {
                     if (identNumber == Integer.decode(systemInterface.getSubmoduleIdentNumber())) {
-                        String statusName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + systemInterface.getTextId() + ".Status";
+                        String statusName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + systemInterface.getId() + ".Status";
                         browseItems.put(statusName, Collections.singletonList(new DefaultPlcBrowseItem(ProfinetTag.of(statusName + ":INT"), statusName, false, false, true, new HashMap<>(), options)));
                     }
                 }
                 for (ProfinetPortSubmoduleItem systemPort : module.getSystemDefinedSubmoduleList().getPortSubmodules()) {
                     if (identNumber == Integer.decode(systemPort.getSubmoduleIdentNumber())) {
-                        String statusName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + systemPort.getTextId() + ".Status";
+                        String statusName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + systemPort.getId() + ".Status";
                         browseItems.put(statusName, Collections.singletonList(new DefaultPlcBrowseItem(ProfinetTag.of(statusName + ":INT"), statusName, false, false, true, new HashMap<>(), options)));
                     }
                 }

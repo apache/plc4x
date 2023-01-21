@@ -32,10 +32,10 @@ public class ProfinetTag implements PlcTag {
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>[\\w\\-.]+)(:(?<datatype>[a-zA-Z_]+)){1}(\\[(?<quantity>\\d+)])?");
     private final String address;
     private final int quantity;
-    private final String dataType;
+    private final PlcValueType dataType;
     private String addressString;
 
-    protected ProfinetTag(String address, Integer quantity, String dataType) {
+    protected ProfinetTag(String address, Integer quantity, PlcValueType dataType) {
         this.address = address;
         this.quantity = (quantity != null) ? quantity : 1;
         if (this.quantity <= 0) {
@@ -51,18 +51,19 @@ public class ProfinetTag implements PlcTag {
         }
 
         String quantity = matcher.group("quantity") == null ? "1" :  matcher.group("quantity");
+        PlcValueType plcValueType = PlcValueType.valueOf(matcher.group("datatype"));
 
-        return new ProfinetTag(matcher.group("address"), Integer.parseInt(quantity), matcher.group("datatype"));
+        return new ProfinetTag(matcher.group("address"), Integer.parseInt(quantity), plcValueType);
     }
 
     @Override
     public String getAddressString() {
-        return null;
+        return address;
     }
 
     @Override
     public PlcValueType getPlcValueType() {
-        return PlcTag.super.getPlcValueType();
+        return dataType;
     }
 
     @Override
