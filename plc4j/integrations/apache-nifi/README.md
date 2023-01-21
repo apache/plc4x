@@ -74,40 +74,36 @@ The output flowfile will contain the PLC read values. This information is includ
 [ {
   "var1" : true,
   "var2" : false,
-  "var3" : [ false, false, false, false, false, false, true, true ],
+  "var3" : "\u0005",
   "var5" : 1992,
-  "var4" : [ false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, true ],
+  "var4" : "4",
   "ts" : 1628783058433
 } ]
 ```
 
 Also, it is important to keep in mind the Processor Scheduling Configuration. Using the parameter **Run Schedule** (for example to *1 sec*), the reading frequency can be set. Note that by default, this value is defined to 0 sec (as fast as possible).
 
-Table of data mapping between plc data and Avro
+Table of data mapping between plc data and Avro types (as specified in [Avro specification](https://avro.apache.org/docs/1.11.1/specification/#primitive-types)).
+
 
 | PLC type | Avro Type |
-|----------|-----------|
-| PlcBigDecimal | float |
-| PlcBigInteger | long |
-| PlcBitString | string |
+|----------:|-----------|
 | PlcBOOL | boolean |
-| PlcBYTE | string |
+| PlcBYTE | bytes |
+| PlcSINT | int |
+| PlcINT | int |
+| PlcLINT | long |
+| PlcREAL | float |
+| PlcLREAL | double |
 | PlcCHAR | string |
 | PlcDATE_AND_TIME | string |
 | PlcDATE | string |
 | PlcDINT | string |
 | PlcDWORD | string |
-| PlcINT | int |
-| PlcLINT | string |
-| PlcList | string |
-| PlcLREAL | string |
 | PlcLTIME | string |
 | PlcLWORD | string |
 | PlcNull | string |
-| PlcREAL | double |
-| PlcSINT | int |
 | PlcSTRING | string |
-| PlcStruct | string |
 | PlcTIME_OF_DAY | string |
 | PlcTIME | string |
 | PlcUDINT | string |
