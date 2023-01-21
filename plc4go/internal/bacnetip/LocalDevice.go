@@ -31,10 +31,11 @@ type LocalDeviceObject struct {
 	APDUSegmentTimeout        *uint
 	MaxSegmentsAccepted       *readWriteModel.MaxSegmentsAccepted
 	MaximumApduLengthAccepted *readWriteModel.MaxApduLengthAccepted
-	App                       interface{}
+	App                       *Application
 	ObjectName                string
 	ObjectIdentifier          string
 	VendorIdentifier          uint16
+	ObjectList                []string
 }
 
 func (l *LocalDeviceObject) String() string {
