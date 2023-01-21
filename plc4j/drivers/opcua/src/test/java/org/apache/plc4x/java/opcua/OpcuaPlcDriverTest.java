@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.opcua;
 
 import io.vavr.collection.List;
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -156,7 +156,7 @@ public class OpcuaPlcDriverTest {
     public void connectionNoParams() {
         connectionStringValidSet.forEach(connectionString -> {
             try {
-                PlcConnection opcuaConnection = new PlcDriverManager().getConnection(connectionString);
+                PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
                 Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
                 assertThat(opcuaConnection).is(is_connected);
                 opcuaConnection.close();
@@ -175,7 +175,7 @@ public class OpcuaPlcDriverTest {
             discoveryParamValidSet.forEach(discoveryParam -> {
                 String connectionString = connectionAddress + paramSectionDivider + discoveryParam;
                 try {
-                    PlcConnection opcuaConnection = new PlcDriverManager().getConnection(connectionString);
+                    PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
                     Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
                     assertThat(opcuaConnection).is(is_connected);
                     opcuaConnection.close();
@@ -192,7 +192,7 @@ public class OpcuaPlcDriverTest {
     @Test
     public void readVariables() {
         try {
-            PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
+            PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
             Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
             assertThat(opcuaConnection).is(is_connected);
 
@@ -269,7 +269,7 @@ public class OpcuaPlcDriverTest {
 
     @Test
     public void writeVariables() throws Exception {
-        PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
+        PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
         Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
         assertThat(opcuaConnection).is(is_connected);
 
@@ -433,7 +433,7 @@ public class OpcuaPlcDriverTest {
 
 
         try {
-            PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
+            PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
             Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
             assertThat(opcuaConnection).is(is_connected);
 

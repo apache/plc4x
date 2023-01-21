@@ -18,13 +18,13 @@
  */
 package org.apache.plc4x.java.scraper;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,10 +41,10 @@ public class TriggeredScraperRunnerModbus {
      */
     public static void main(String[] args) throws IOException, ScraperException {
         ScraperConfiguration configuration = ScraperConfiguration.fromFile("plc4j/utils/scraper/src/test/resources/example_triggered_scraper_modbus.yml", ScraperConfigurationTriggeredImpl.class);
-        PlcDriverManager plcDriverManager = new PooledPlcDriverManager();
+        PlcConnectionManager plcConnectionManager = CachedPlcConnectionManager.getBuilder().build();
         TriggeredScraperImpl scraper = new TriggeredScraperImpl(
             configuration,
-            plcDriverManager,
+            plcConnectionManager,
             (j, a, m) -> {
             LOGGER.info("Results from {}/{}: {}", j, a, m);
             for(Map.Entry<String, Object> entry:m.entrySet()){
@@ -53,7 +53,7 @@ public class TriggeredScraperRunnerModbus {
                 }
             }
             },
-            new TriggerCollectorImpl(plcDriverManager));
+            new TriggerCollectorImpl(plcConnectionManager));
 
         scraper.start();
     }

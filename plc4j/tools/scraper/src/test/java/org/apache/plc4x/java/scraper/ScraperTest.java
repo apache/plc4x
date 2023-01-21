@@ -18,17 +18,15 @@
  */
 package org.apache.plc4x.java.scraper;
 
-import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
-import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
-import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.values.PlcDINT;
 import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.apache.plc4x.java.mock.connection.MockDevice;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -61,19 +59,9 @@ class ScraperTest implements WithAssertions {
     @Test
     @Disabled
     void real_stuff() throws InterruptedException {
-        PlcDriverManager driverManager = new PooledPlcDriverManager(pooledPlcConnectionFactory -> {
-            GenericKeyedObjectPoolConfig<PlcConnection> config = new GenericKeyedObjectPoolConfig<>();
-            config.setJmxEnabled(true);
-            config.setMaxWaitMillis(-1);
-            config.setMaxTotal(3);
-            config.setMinIdlePerKey(0);
-            config.setBlockWhenExhausted(true);
-            config.setTestOnBorrow(true);
-            config.setTestOnReturn(true);
-            return new GenericKeyedObjectPool<>(pooledPlcConnectionFactory, config);
-        });
+        PlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder().build();
 
-        Scraper scraper = new ScraperImpl((j, a, m) -> {}, driverManager, Arrays.asList(
+        Scraper scraper = new ScraperImpl((j, a, m) -> {}, connectionManager, Arrays.asList(
             new ScrapeJobImpl("job1",
                 10,
                 Collections.singletonMap("tim", CONN_STRING_TIM),
@@ -91,7 +79,7 @@ class ScraperTest implements WithAssertions {
 
     @Test
     void scraper_schedulesJob() throws InterruptedException, PlcConnectionException {
-        PlcDriverManager driverManager = new PlcDriverManager();
+        DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
         MockConnection connection = (MockConnection) driverManager.getConnection("mock:m1");
         connection.setDevice(mockDevice);
 
@@ -119,7 +107,7 @@ class ScraperTest implements WithAssertions {
 
     @Test
     void stop_stopsAllJobs() {
-        PlcDriverManager driverManager = new PlcDriverManager();
+        DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
 
         Scraper scraper = new ScraperImpl((j, a, m) -> {}, driverManager, Collections.singletonList(
             new ScrapeJobImpl("job1",
@@ -142,7 +130,7 @@ class ScraperTest implements WithAssertions {
 
     @Test
     void restart_works() throws PlcConnectionException {
-        PlcDriverManager driverManager = new PlcDriverManager();
+        DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
         MockConnection connection = (MockConnection) driverManager.getConnection("mock:m1");
         connection.setDevice(mockDevice);
 

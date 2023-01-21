@@ -28,9 +28,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Paint;
 
 import javafx.util.StringConverter;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
@@ -55,7 +55,7 @@ public class FxmlController {
     public TabPane connectionTabs;
 
     public FxmlController() {
-        driverManager = new PlcDriverManager();
+        driverManager = PlcDriverManager.getDefault();
     }
 
     @FXML
@@ -121,7 +121,7 @@ public class FxmlController {
                     if(mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.getClickCount() == 2) {
                         String connectionString = selectedItem.getCode();
                         try {
-                            PlcConnection connection = driverManager.getConnection(connectionString);
+                            PlcConnection connection = driverManager.getConnectionManager().getConnection(connectionString);
                             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("connection-tab.fxml")));
 
                             Tab connectionTab = loader.load();

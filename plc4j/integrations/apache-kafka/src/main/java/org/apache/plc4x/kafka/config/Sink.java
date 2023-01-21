@@ -18,11 +18,10 @@
  */
 package org.apache.plc4x.kafka.config;
 
-import org.apache.plc4x.java.PlcDriverManager;
-
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigException;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 
 import java.util.Map;
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public class Sink extends AbstractConfig{
                 String.format("Connection string shouldn't be null for source %s ", this.name));
         }
         try {
-            new PlcDriverManager().getDriverForUrl(connectionString);
+            new DefaultPlcDriverManager().getDriverForUrl(connectionString);
         } catch (Exception e) {
             throw new ConfigException(
                 String.format("Connection String format is incorrect %s ", Constants.SINKS_CONFIG + "." + this.name + "." + Constants.CONNECTION_STRING_CONFIG + "=" + connectionString));

@@ -19,9 +19,10 @@
 package org.apache.plc4x.java.examples.helloplc4x.discoverandbrowse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
@@ -34,7 +35,8 @@ public class HelloPlc4xDiscoverAndBrowse {
 
     public static void main(String[] args) throws Exception {
         // Iterate over all installed drivers and execute their browse functionality (If they support it)
-        PlcDriverManager driverManager = new PlcDriverManager();
+        PlcDriverManager driverManager = PlcDriverManager.getDefault();
+        PlcConnectionManager connectionManager = driverManager.getConnectionManager();
         for (String protocolCode : driverManager.listDrivers()) {
             PlcDriver driver = driverManager.getDriver(protocolCode);
             if (driver.getMetadata().canDiscover()) {
@@ -44,7 +46,7 @@ public class HelloPlc4xDiscoverAndBrowse {
 
                 discoveryRequest.executeWithHandler(discoveryItem -> {
                     logger.info(" - Found device with connection-url {}", discoveryItem.getConnectionUrl());
-                    try (PlcConnection connection = driverManager.getConnection(discoveryItem.getConnectionUrl())) {
+                    try (PlcConnection connection = connectionManager.getConnection(discoveryItem.getConnectionUrl())) {
                         if (connection.getMetadata().canBrowse()) {
                             PlcBrowseRequest browseRequest = connection.browseRequestBuilder().build();
                             browseRequest.execute().whenComplete((browseResponse, throwable) -> {

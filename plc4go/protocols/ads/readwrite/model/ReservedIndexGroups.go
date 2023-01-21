@@ -68,6 +68,7 @@ const (
 	ReservedIndexGroups_ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS    ReservedIndexGroups = 0x0000F085
 	ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS ReservedIndexGroups = 0x0000F086
 	ReservedIndexGroups_ADSIGRP_DEVICE_DATA                          ReservedIndexGroups = 0x0000F100
+	ReservedIndexGroups_ADS_OVER_ETHERCAT                            ReservedIndexGroups = 0x0000F302
 	ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE                    ReservedIndexGroups = 0x00000000
 	ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE                    ReservedIndexGroups = 0x00000002
 )
@@ -111,6 +112,7 @@ func init() {
 		ReservedIndexGroups_ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS,
 		ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS,
 		ReservedIndexGroups_ADSIGRP_DEVICE_DATA,
+		ReservedIndexGroups_ADS_OVER_ETHERCAT,
 		ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE,
 		ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE,
 	}
@@ -190,6 +192,8 @@ func ReservedIndexGroupsByValue(value uint32) (enum ReservedIndexGroups, ok bool
 		return ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS, true
 	case 0x0000F100:
 		return ReservedIndexGroups_ADSIGRP_DEVICE_DATA, true
+	case 0x0000F302:
+		return ReservedIndexGroups_ADS_OVER_ETHERCAT, true
 	}
 	return 0, false
 }
@@ -268,6 +272,8 @@ func ReservedIndexGroupsByName(value string) (enum ReservedIndexGroups, ok bool)
 		return ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS, true
 	case "ADSIGRP_DEVICE_DATA":
 		return ReservedIndexGroups_ADSIGRP_DEVICE_DATA, true
+	case "ADS_OVER_ETHERCAT":
+		return ReservedIndexGroups_ADS_OVER_ETHERCAT, true
 	}
 	return 0, false
 }
@@ -403,6 +409,8 @@ func (e ReservedIndexGroups) PLC4XEnumName() string {
 		return "ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS"
 	case ReservedIndexGroups_ADSIGRP_DEVICE_DATA:
 		return "ADSIGRP_DEVICE_DATA"
+	case ReservedIndexGroups_ADS_OVER_ETHERCAT:
+		return "ADS_OVER_ETHERCAT"
 	}
 	return ""
 }

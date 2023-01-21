@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.opm;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -49,7 +49,7 @@ public class PlcEntityManagerTest implements WithAssertions {
     class Read {
 
         @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-        PlcDriverManager driverManager;
+        DefaultPlcDriverManager driverManager;
 
         @Test
         public void throwsInvalidTagException_rethrows() throws PlcConnectionException {
@@ -85,7 +85,7 @@ public class PlcEntityManagerTest implements WithAssertions {
         public void timeoutOnGet_throwsException() throws PlcConnectionException {
             // Prepare the Mock
             MockDevice mockDevice = Mockito.mock(MockDevice.class);
-            PlcDriverManager driverManager = new PlcDriverManager();
+            DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
             MockConnection connection = (MockConnection) driverManager.getConnection("mock:test");
             when(mockDevice.read(any())).thenAnswer(invocation -> {
                 // Sleep for 3s
@@ -116,7 +116,7 @@ public class PlcEntityManagerTest implements WithAssertions {
             registry.register("alias", "real_tag");
 
             // Mock
-            PlcDriverManager driverManager = new PlcDriverManager();
+            DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
             MockConnection connection = (MockConnection) driverManager.getConnection("mock:test");
             MockDevice mockDevice = Mockito.mock(MockDevice.class);
             when(mockDevice.read(any())).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcSTRING("value")));
@@ -165,7 +165,7 @@ public class PlcEntityManagerTest implements WithAssertions {
             registry.register("alias", "real_tag");
 
             // Mock
-            PlcDriverManager driverManager = new PlcDriverManager();
+            DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
             MockConnection connection = (MockConnection) driverManager.getConnection("mock:test");
             MockDevice mockDevice = Mockito.mock(MockDevice.class);
             when(mockDevice.write(anyString(), any())).thenReturn(PlcResponseCode.OK);
@@ -195,7 +195,7 @@ public class PlcEntityManagerTest implements WithAssertions {
         @Test
         void simpleWrite_uses_getter() throws Exception {
             // Mock
-            PlcDriverManager driverManager = new PlcDriverManager();
+            DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
             MockConnection connection = (MockConnection) driverManager.getConnection("mock:test");
             MockDevice mockDevice = Mockito.mock(MockDevice.class);
             when(mockDevice.read(any())).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcSTRING("value")));
@@ -228,7 +228,7 @@ public class PlcEntityManagerTest implements WithAssertions {
             registry.register("alias", "real_tag");
 
             // Mock
-            PlcDriverManager driverManager = new PlcDriverManager();
+            DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
             MockConnection connection = (MockConnection) driverManager.getConnection("mock:test");
             MockDevice mockDevice = Mockito.mock(MockDevice.class);
             when(mockDevice.read(any())).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcSTRING("value")));

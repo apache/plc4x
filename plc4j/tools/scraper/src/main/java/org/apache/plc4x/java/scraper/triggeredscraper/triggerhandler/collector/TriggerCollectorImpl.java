@@ -19,13 +19,13 @@
 package org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ public class TriggerCollectorImpl implements TriggerCollector {
     private static final int FUTURE_TIMEOUT                     = 2000;
     private static final int READ_REQUEST_TIMEOUT               = 2000;
 
-    private final PlcDriverManager plcDriverManager;
+    private final PlcConnectionManager plcConnectionManager;
     private final Map<String,RequestElement> currentRequestElements;
     private long schedulerInterval;
     private final long futureTimeout;
@@ -52,11 +52,11 @@ public class TriggerCollectorImpl implements TriggerCollector {
     private final ScheduledExecutorService scheduledExecutorService;
     private final ExecutorService executorService;
 
-    public TriggerCollectorImpl(PlcDriverManager plcDriverManager, long schedulerInterval, long futureTimeout, int poolSizeScheduler, int poolSizeExecutor) {
-        if (!(plcDriverManager instanceof PooledPlcDriverManager)) {
-            logger.warn("The Triggered Scraper is intended to be used with a Pooled Connection. In other situations leaks could occur!");
+    public TriggerCollectorImpl(PlcConnectionManager plcConnectionManager, long schedulerInterval, long futureTimeout, int poolSizeScheduler, int poolSizeExecutor) {
+        if (!(plcConnectionManager instanceof CachedPlcConnectionManager)) {
+            logger.warn("The Triggered Scraper is intended to be used with a Cached Connection-Manager. In other situations leaks could occur!");
         }
-        this.plcDriverManager = plcDriverManager;
+        this.plcConnectionManager = plcConnectionManager;
         this.currentRequestElements = new ConcurrentHashMap<>();
         this.schedulerInterval = schedulerInterval;
         this.futureTimeout = futureTimeout;
@@ -76,12 +76,12 @@ public class TriggerCollectorImpl implements TriggerCollector {
 
     }
 
-    public TriggerCollectorImpl(PlcDriverManager plcDriverManager, long schedulerInterval, long futureTimeout) {
-        this(plcDriverManager,schedulerInterval,futureTimeout,10,20);
+    public TriggerCollectorImpl(PlcConnectionManager plcConnectionManager, long schedulerInterval, long futureTimeout) {
+        this(plcConnectionManager,schedulerInterval,futureTimeout,10,20);
     }
 
-    public TriggerCollectorImpl(PlcDriverManager plcDriverManager) {
-        this(plcDriverManager,DEFAULT_SCHEDULED_TRIGGER_INTERVAL, FUTURE_TIMEOUT);
+    public TriggerCollectorImpl(PlcConnectionManager plcConnectionManager) {
+        this(plcConnectionManager,DEFAULT_SCHEDULED_TRIGGER_INTERVAL, FUTURE_TIMEOUT);
     }
 
     /**
@@ -151,7 +151,7 @@ public class TriggerCollectorImpl implements TriggerCollector {
                             info = String.format("acquiring trigger connection to (%s)", plcConnectionString);
                             logger.trace("acquiring trigger connection to ({})", plcConnectionString);
                         }
-                        plcConnection = TriggeredScraperImpl.getPlcConnection(plcDriverManager,plcConnectionString,executorService,futureTimeout,info);
+                        plcConnection = TriggeredScraperImpl.getPlcConnection(plcConnectionManager,plcConnectionString,executorService,futureTimeout,info);
                         plcConnectionList.add(plcConnection);
                         plcReadRequestBuilderMap.put(plcConnectionString,plcConnection.readRequestBuilder());
                         plcReadRequestBuilderMap.get(plcConnectionString).addTagAddress(entry.getKey(),entry.getValue().getPlcTag());

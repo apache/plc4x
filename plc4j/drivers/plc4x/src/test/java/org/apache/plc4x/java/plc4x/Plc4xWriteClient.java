@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.plc4x;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
@@ -28,7 +28,7 @@ import java.math.BigInteger;
 public class Plc4xWriteClient {
 
     public static void main(String[] args) throws Exception {
-        try (final PlcConnection connection = new PlcDriverManager().getConnection("plc4x://localhost?remote-connection-string=simulated%3A%2F%2Flocalhost")) {
+        try (final PlcConnection connection = new DefaultPlcDriverManager().getConnection("plc4x://localhost?remote-connection-string=simulated%3A%2F%2Flocalhost")) {
             final PlcWriteRequest.Builder requestBuilder = connection.writeRequestBuilder();
             requestBuilder.addTagAddress("test-BOOL", "STDOUT/foo:BOOL", true);
             requestBuilder.addTagAddress("test-BYTE", "STDOUT/foo:BYTE", new boolean[] {true, true, false, true, false, true, false, true});
