@@ -58,6 +58,18 @@ github:
 
   del_branch_on_merge: true
 
+  # Attempt to make the auto-generated github emails more easily readable in email clients.
+  custom_subjects:
+    new_pr: "[PR] {title}"
+    close_pr: "Re: [PR] {title}"
+    comment_pr: "Re: [PR] {title}"
+    diffcomment: "Re: [PR] {title}"
+    merge_pr: "Re: [PR] {title}"
+    new_issue: "Re: [I] {title}"
+    comment_issue: "Re: [I] {title}"
+    close_issue: "Re: [I] {title}"
+    catchall: "[GH] {title}"
+
 notifications:
   commits:              commits@plc4x.apache.org
   issues:               issues@plc4x.apache.org
