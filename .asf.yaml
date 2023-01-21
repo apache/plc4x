@@ -65,7 +65,7 @@ github:
     comment_pr: "Re: [PR] {title} ({repository})"
     diffcomment: "Re: [PR] {title} ({repository})"
     merge_pr: "Re: [PR] {title} ({repository})"
-    new_issue: "Re: [I] {title} ({repository})"
+    new_issue: "[I] {title} ({repository})"
     comment_issue: "Re: [I] {title} ({repository})"
     close_issue: "Re: [I] {title} ({repository})"
     catchall: "[GH] {title} ({repository})"
