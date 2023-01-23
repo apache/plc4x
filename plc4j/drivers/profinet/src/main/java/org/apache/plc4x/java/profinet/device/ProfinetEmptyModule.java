@@ -71,4 +71,27 @@ public class ProfinetEmptyModule implements ProfinetModule{
         return browseItems;
     }
 
+    public int getInputIoPsSize() {
+        return 0;
+    }
+
+    public int getOutputIoCsSize() {
+        return 0;
+    }
+
+    @Override
+    public int getInputIoCsSize() {
+        return 0;
+    }
+
+    @Override
+    public int getOutputIoPsSize() {
+        return 0;
+    }
+
+    @Override
+    public void populateOutputCR(int ioPsOffset, int ioCsOffset) {
+
+    }
+
 }

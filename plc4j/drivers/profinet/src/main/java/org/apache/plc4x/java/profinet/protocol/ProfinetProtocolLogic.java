@@ -18,11 +18,7 @@
  */
 package org.apache.plc4x.java.profinet.protocol;
 
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
@@ -31,18 +27,17 @@ import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.device.ProfinetChannel;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
+import org.apache.plc4x.java.profinet.device.ProfinetDeviceMessageHandler;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.profinet.tag.ProfinetTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
-import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
-import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
 import org.pcap4j.core.*;
 import org.slf4j.Logger;
@@ -55,7 +50,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> implements HasConfiguration<ProfinetConfiguration>, PlcSubscriber {
@@ -63,7 +57,6 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     private final Logger LOGGER = LoggerFactory.getLogger(ProfinetProtocolLogic.class);
     public static final Pattern SUB_MODULE_ARRAY_PATTERN = Pattern.compile("^\\[((\\[[\\w, ]*\\]){1}[ ,]{0,2})*\\]");
     public static final Pattern SUB_MODULE_SPLIT_ARRAY_PATTERN = Pattern.compile("(?:\\[(?:\\[([\\w, ]*)\\]){1}(?:[ ,]{0,2}))*\\]");
-    public LinkedHashMap<String, ProfinetDevice> configuredDevices = new LinkedHashMap<>();
     private ProfinetDriverContext driverContext;
 
     public ProfinetProtocolLogic() {
@@ -79,6 +72,10 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     @Override
     public void setConfiguration(ProfinetConfiguration configuration) {
         driverContext.setConfiguration(configuration);
+        driverContext.setHandler(new ProfinetDeviceMessageHandler(configuration.getDevices()));
+        for (Map.Entry<String, ProfinetDevice> device : configuration.getDevices().getConfiguredDevices().entrySet()) {
+            device.getValue().getDeviceContext().setConfiguration(configuration);
+        }
     }
 
     @Override
@@ -92,9 +89,9 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             throw new RuntimeException(e);
         }
 
-        driverContext.getHandler().setConfiguredDevices(configuredDevices);
+        driverContext.getHandler().setConfiguredDevices(driverContext.getConfiguration().getDevices());
 
-        for (Map.Entry<String, ProfinetDevice> device : configuredDevices.entrySet()) {
+        for (Map.Entry<String, ProfinetDevice> device : driverContext.getConfiguration().getDevices().getConfiguredDevices().entrySet()) {
             device.getValue().setContext(context, this.driverContext.getChannel());
         }
     }
@@ -114,7 +111,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         int count = 0;
         while (!discovered) {
             discovered = true;
-            for (Map.Entry<String, ProfinetDevice> device : this.configuredDevices.entrySet()) {
+            for (Map.Entry<String, ProfinetDevice> device : driverContext.getConfiguration().getDevices().getConfiguredDevices().entrySet()) {
                 if (!device.getValue().hasLldpPdu() || !device.getValue().hasDcpPdu()) {
                     discovered = false;
                 }
@@ -135,7 +132,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         Map<String, List<PlcBrowseItem>> values = new HashMap<>();
         Map<String, PlcResponseCode> codes = new HashMap<>();
 
-        for (Map.Entry<String, ProfinetDevice> device : this.configuredDevices.entrySet()) {
+        for (Map.Entry<String, ProfinetDevice> device : driverContext.getConfiguration().getDevices().getConfiguredDevices().entrySet()) {
             device.getValue().browseTags(values);
             codes.put(device.getKey(), PlcResponseCode.OK);
         }
@@ -153,8 +150,8 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             String localAddress = channel.getLocalAddress().toString().substring(1).split(":")[0];
             localIpAddress = InetAddress.getByName(localAddress);
             PcapNetworkInterface devByAddress = Pcaps.getDevByAddress(localIpAddress);
-            driverContext.setChannel(new ProfinetChannel(Collections.singletonList(devByAddress)));
-            driverContext.getChannel().setConfiguredDevices(this.configuredDevices);
+            driverContext.setChannel(new ProfinetChannel(Collections.singletonList(devByAddress), driverContext.getConfiguration().getDevices()));
+            driverContext.getChannel().setConfiguredDevices(driverContext.getConfiguration().getDevices());
         } catch (PcapNativeException | UnknownHostException e) {
             throw new RuntimeException(e);
         }
@@ -163,13 +160,13 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             onDeviceDiscovery();
         } catch (InterruptedException ignored) {}
 
-        for (Map.Entry<String, ProfinetDevice> device : configuredDevices.entrySet()) {
+        for (Map.Entry<String, ProfinetDevice> device : driverContext.getConfiguration().getDevices().getConfiguredDevices().entrySet()) {
             device.getValue().getDeviceContext().setChannel(driverContext.getChannel());
             device.getValue().getDeviceContext().setLocalIpAddress(localIpAddress);
         }
 
         try {
-            for (Map.Entry<String, ProfinetDevice> device : this.configuredDevices.entrySet()) {
+            for (Map.Entry<String, ProfinetDevice> device : driverContext.getConfiguration().getDevices().getConfiguredDevices().entrySet()) {
                 device.getValue().onConnect(this);
             }
             context.fireConnected();

@@ -405,8 +405,8 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
 
         List<ProfinetModuleItemRef> usableSubModules = this.deviceAccessItem.getUseableModules();
         int currentSlot = deviceAccessItem.getFixedInSlots() + 1;
-        Integer inputOffset = deviceAccessItem.getInputDataLength();
-        Integer outputOffset = deviceAccessItem.getOutputDataLength();
+        Integer inputOffset = this.modules[deviceAccessItem.getFixedInSlots()].getInputIoPsSize();
+        Integer outputOffset = this.modules[deviceAccessItem.getFixedInSlots()].getOutputIoCsSize();
         for (String subModule : this.subModules) {
             if (subModule.equals("")) {
                 this.modules[currentSlot] = new ProfinetEmptyModule();
@@ -437,8 +437,8 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
 
                         this.modules[currentSlot] = new ProfinetModuleImpl(foundReferencedModule, inputOffset, outputOffset, currentSlot);
 
-                        inputOffset += foundReferencedModule.getInputDataLength();
-                        outputOffset += foundReferencedModule.getOutputDataLength();
+                        inputOffset += this.modules[currentSlot].getInputIoPsSize();
+                        outputOffset += this.modules[currentSlot].getOutputIoCsSize();
                         break;
                     }
                 }
@@ -447,6 +447,11 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
                 throw new PlcConnectionException("Sub Module not Found in allowed Modules");
             }
             currentSlot += 1;
+        }
+        for (ProfinetModule usableModule :this.modules) {
+            usableModule.populateOutputCR(inputOffset, outputOffset);
+            inputOffset += usableModule.getInputIoCsSize();
+            outputOffset += usableModule.getOutputIoPsSize();
         }
 
         while (currentSlot != numberOfSlots) {

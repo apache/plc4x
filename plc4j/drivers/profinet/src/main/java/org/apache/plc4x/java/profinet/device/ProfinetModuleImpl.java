@@ -44,8 +44,10 @@ public class ProfinetModuleImpl implements ProfinetModule {
     private List<PnIoCm_IoDataObject> outputIoPsApiBlocks = new ArrayList<>();
     private int ioPsSize;
     private int ioCsSize;
+    private Integer inputCsSize = 0;
+    private Integer outputPsSize = 0;
 
-    public ProfinetModuleImpl(ProfinetDeviceItem module, int ioCsOffset, int ioPsOffset, int slot) {
+    public ProfinetModuleImpl(ProfinetDeviceItem module, int ioPsOffset, int ioCsOffset, int slot) {
         this.module = module;
         this.ioCsOffset = ioCsOffset;
         this.ioPsOffset = ioPsOffset;
@@ -58,18 +60,21 @@ public class ProfinetModuleImpl implements ProfinetModule {
         int outputIoCsOffset = ioCsOffset;
 
         for (ProfinetVirtualSubmoduleItem virtualItem : module.getVirtualSubmoduleList()) {
-            Integer identNumber = Integer.decode(virtualItem.getSubmoduleIdentNumber());
-            inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
-                slot,
-                identNumber,
-                inputIoPsOffset));
-            outputIoCsApiBlocks.add(new PnIoCm_IoCs(
-                slot,
-                identNumber,
-                outputIoCsOffset));
+            if (module instanceof ProfinetDeviceAccessPointItem || module.getInputDataLength() > 0) {
+                inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
+                    slot,
+                    virtualItem.getSubslotNumber(),
+                    inputIoPsOffset));
+                inputIoPsOffset += module.getInputDataLength() + 1;
+            }
+            if (module instanceof ProfinetDeviceAccessPointItem || module.getInputDataLength() > 0) {
+                outputIoCsApiBlocks.add(new PnIoCm_IoCs(
+                    slot,
+                    virtualItem.getSubslotNumber(),
+                    outputIoCsOffset));
+                outputIoCsOffset += module.getOutputDataLength() + 1;
+            }
             expectedSubModuleApiBlocks.addAll(populateExpectedSubModuleApiBlocks());
-            inputIoPsOffset += 1;
-            outputIoCsOffset += 1;
         }
 
         if (module.getSystemDefinedSubmoduleList() != null) {
@@ -77,11 +82,11 @@ public class ProfinetModuleImpl implements ProfinetModule {
                 Integer identNumber = Integer.decode(interfaceItem.getSubmoduleIdentNumber());
                 inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
                     slot,
-                    identNumber,
+                    interfaceItem.getSubslotNumber(),
                     inputIoPsOffset));
                 outputIoCsApiBlocks.add(new PnIoCm_IoCs(
                     slot,
-                    identNumber,
+                    interfaceItem.getSubslotNumber(),
                     outputIoCsOffset));
                 expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
                     identNumber,
@@ -98,11 +103,11 @@ public class ProfinetModuleImpl implements ProfinetModule {
                 Integer identNumber = Integer.decode(portItem.getSubmoduleIdentNumber());
                 inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
                     0,
-                    identNumber,
+                    portItem.getSubslotNumber(),
                     inputIoPsOffset));
                 outputIoCsApiBlocks.add(new PnIoCm_IoCs(
                     0,
-                    identNumber,
+                    portItem.getSubslotNumber(),
                     outputIoCsOffset));
                 expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
                     identNumber,
@@ -116,40 +121,25 @@ public class ProfinetModuleImpl implements ProfinetModule {
             }
         }
 
-
         ioPsSize = inputIoPsOffset - ioPsOffset;
         ioCsSize = outputIoCsOffset - ioCsOffset;
+    }
 
-        Integer identNumber = Integer.decode(module.getModuleIdentNumber());
-        if (module.getInputDataLength() != 0) {
-            inputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
-                slot,
-                0x01,
-                inputIoPsOffset));
-            inputIoPsOffset += 1 + module.getInputDataLength();
-        }
-        if (module.getInputDataLength() != 0) {
-            outputIoCsApiBlocks.add(new PnIoCm_IoCs(
-                slot,
-                0x01,
-                outputIoCsOffset));
-            outputIoCsOffset += 1;
-        }
-
+    public void populateOutputCR(int ioPsOffset, int ioCsOffset) {
         if (module.getOutputDataLength() != 0) {
             inputIoCsApiBlocks.add(new PnIoCm_IoCs(
                 slot,
                 0x01,
-                inputIoPsOffset));
-            inputIoPsOffset += module.getOutputDataLength();
+                ioPsOffset));
+            inputCsSize += module.getOutputDataLength();
         }
 
         if (module.getOutputDataLength() != 0) {
             outputIoPsApiBlocks.add(new PnIoCm_IoDataObject(
                 slot,
                 0x01,
-                outputIoCsOffset));
-            outputIoCsOffset += 1 + module.getOutputDataLength();
+                ioCsOffset));
+            outputPsSize += 1 + module.getOutputDataLength();
         }
     }
 
@@ -213,6 +203,16 @@ public class ProfinetModuleImpl implements ProfinetModule {
 
     public int getOutputIoCsSize() {
         return ioCsSize;
+    }
+
+    @Override
+    public int getInputIoCsSize() {
+        return inputCsSize;
+    }
+
+    @Override
+    public int getOutputIoPsSize() {
+        return outputPsSize;
     }
 
     @Override

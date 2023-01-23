@@ -41,4 +41,12 @@ public interface ProfinetModule {
     Integer getSlotNumber();
     Map<String, List<PlcBrowseItem>> browseTags(Map<String, List<PlcBrowseItem>> browseItems, String addressSpace, Map<String, PlcValue> options);
 
+    int getInputIoPsSize();
+
+    int getOutputIoCsSize();
+
+    int getInputIoCsSize();
+
+    int getOutputIoPsSize();
+    void populateOutputCR(int ioPsOffset, int ioCsOffset);
 }

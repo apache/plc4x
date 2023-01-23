@@ -26,17 +26,21 @@ import java.util.HashMap;
 
 public class ProfinetDeviceMessageHandler implements PlcDiscoveryItemHandler {
 
-    private HashMap<String, ProfinetDevice> configuredDevices;
+    private ProfinetDevices configuredDevices;
+
+    public ProfinetDeviceMessageHandler(ProfinetDevices configuredDevices) {
+        this.configuredDevices = configuredDevices;
+    }
 
     @Override
     public void handle(PlcDiscoveryItem discoveryItem) {
-        String macAddress = discoveryItem.getOptions().get("macAddress").replace(":", "").toUpperCase();
-        if (configuredDevices.containsKey(macAddress)) {
-            configuredDevices.get(macAddress).handle(discoveryItem);
+        String deviceName = discoveryItem.getOptions().get("deviceName").toUpperCase();
+        if (configuredDevices.getConfiguredDevices().containsKey(deviceName)) {
+            configuredDevices.getConfiguredDevices().get(deviceName).handle(discoveryItem);
         }
     }
 
-    public void setConfiguredDevices(HashMap<String, ProfinetDevice> configuredDevices) {
+    public void setConfiguredDevices(ProfinetDevices configuredDevices) {
         this.configuredDevices = configuredDevices;
     }
 }

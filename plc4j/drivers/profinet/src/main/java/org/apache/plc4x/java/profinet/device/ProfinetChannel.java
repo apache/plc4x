@@ -42,9 +42,10 @@ public class ProfinetChannel {
     private ProfinetPlcDiscoverer discoverer = null;
     private ProfinetConfiguration configuration = null;
     private Map<MacAddress, PcapHandle> openHandles;
-    private LinkedHashMap<String, ProfinetDevice> configuredDevices = new LinkedHashMap<>();
+    private ProfinetDevices configuredDevices;
 
-    public ProfinetChannel(List<PcapNetworkInterface> devs) {
+    public ProfinetChannel(List<PcapNetworkInterface> devs, ProfinetDevices devices) {
+        this.configuredDevices = devices;
         this.openHandles = getInterfaceHandles(devs);
         startListener();
     }
@@ -143,10 +144,10 @@ public class ProfinetChannel {
                                     discoverer.processLldp(pdu);
                                 }
                             } else if (payload instanceof Ethernet_FramePayload_IPv4) {
-                                String macAddress = Hex.encodeHexString(ethernetFrame.getSource().getAddress()).toUpperCase();
-                                if (this.configuredDevices != null) {
-                                    ProfinetDevice device = this.configuredDevices.get(macAddress);
-                                    device.handleResponse((Ethernet_FramePayload_IPv4) payload);
+                                for (Map.Entry<String, ProfinetDevice> device : this.configuredDevices.getConfiguredDevices().entrySet()) {
+                                    if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
+                                        device.getValue().handleResponse((Ethernet_FramePayload_IPv4) payload);
+                                    }
                                 }
                             }
 
@@ -210,11 +211,7 @@ public class ProfinetChannel {
         return openHandles;
     }
 
-    public LinkedHashMap<String, ProfinetDevice> getConfiguredDevices() {
-        return configuredDevices;
-    }
-
-    public void setConfiguredDevices(LinkedHashMap<String, ProfinetDevice> configuredDevices) {
+    public void setConfiguredDevices(ProfinetDevices configuredDevices) {
         this.configuredDevices = configuredDevices;
     }
 

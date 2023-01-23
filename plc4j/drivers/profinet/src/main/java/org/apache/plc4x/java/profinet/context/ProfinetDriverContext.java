@@ -25,6 +25,7 @@ import org.apache.plc4x.java.profinet.device.ProfinetChannel;
 import org.apache.plc4x.java.profinet.device.ProfinetDeviceMessageHandler;
 import org.apache.plc4x.java.profinet.device.ProfinetSubscriptionHandle;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
+import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.context.DriverContext;
 
 import java.io.IOException;
@@ -40,7 +41,7 @@ public class ProfinetDriverContext implements DriverContext {
 
     public static final int DEFAULT_UDP_PORT = 34964;
     private Map<Long, ProfinetSubscriptionHandle> subscriptions = new HashMap<>();
-    private ProfinetDeviceMessageHandler handler = new ProfinetDeviceMessageHandler();
+    private ProfinetDeviceMessageHandler handler;
     private ProfinetConfiguration configuration;
     private DatagramSocket socket;
     private ProfinetChannel channel;

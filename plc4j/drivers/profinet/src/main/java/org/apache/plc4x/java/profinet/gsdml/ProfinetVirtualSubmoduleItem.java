@@ -37,6 +37,9 @@ public class ProfinetVirtualSubmoduleItem {
     @JacksonXmlProperty(isAttribute=true, localName="SubmoduleIdentNumber")
     private String submoduleIdentNumber;
 
+    @JacksonXmlProperty(isAttribute=true, localName="SubslotNumber")
+    private int subslotNumber = 1;
+
     @JacksonXmlProperty(isAttribute=true, localName="Writeable_IM_Records")
     private String writeableImRecords;
 
@@ -78,5 +81,9 @@ public class ProfinetVirtualSubmoduleItem {
 
     public List<ProfinetParameterRecordDataItem> getRecordDataList() {
         return recordDataList;
+    }
+
+    public int getSubslotNumber() {
+        return subslotNumber;
     }
 }

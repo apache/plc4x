@@ -49,8 +49,12 @@ public class ProfinetSubscriptionHandle extends DefaultPlcSubscriptionHandle {
      */
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer) {
-        LOGGER.info("Registering a new OPCUA subscription consumer");
+        LOGGER.info("Registering a new Profinet subscription consumer");
         consumers.add(consumer);
         return new DefaultPlcConsumerRegistration(plcSubscriber, consumer, this);
+    }
+
+    public Set<Consumer<PlcSubscriptionEvent>> getConsumers() {
+        return consumers;
     }
 }

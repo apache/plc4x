@@ -24,15 +24,20 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
 import org.apache.plc4x.java.profinet.gsdml.*;
+import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.profinet.tag.ProfinetTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcBrowseItem;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
+import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +50,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ProfinetDevice {
@@ -121,7 +127,6 @@ public class ProfinetDevice {
     }
 
     public boolean onConnect(PlcSubscriber subscriber) throws ExecutionException, InterruptedException, TimeoutException {
-
         CreateConnection createConnection = new CreateConnection();
         recordIdAndSend(createConnection);
         startSubscription(subscriber);
@@ -362,6 +367,14 @@ public class ProfinetDevice {
             String macString = item.getOptions().get("localMacAddress").replace(":", "");
             try {
                 deviceContext.setLocalMacAddress(new MacAddress(Hex.decodeHex(macString)));
+            } catch (DecoderException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (item.getOptions().containsKey("macAddress")) {
+            String macString = item.getOptions().get("macAddress").replace(":", "");
+            try {
+                deviceContext.setMacAddress(new MacAddress(Hex.decodeHex(macString)));
             } catch (DecoderException e) {
                 throw new RuntimeException(e);
             }

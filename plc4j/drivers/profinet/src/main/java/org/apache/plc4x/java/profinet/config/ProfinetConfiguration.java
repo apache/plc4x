@@ -95,8 +95,8 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
 
     public static class ProfinetDeviceConvertor implements ConfigurationParameterConverter<ProfinetDevices> {
 
-        public static final Pattern DEVICE_NAME_ARRAY_PATTERN = Pattern.compile("^\\[(?:(\\[(?:[\\w]*){1},(?:[\\w]*){1},\\{(?:[\\w]*[, ]?)*\\}{1}\\])[, ]?)+\\]");
-        public static final Pattern DEVICE_PARAMETERS = Pattern.compile("^(?<devicename>[\\w]*){1}[, ]+(?<deviceaccess>[\\w]*){1}[, ]+\\{(?<submodules>[\\w, ]*)\\}");
+        public static final Pattern DEVICE_NAME_ARRAY_PATTERN = Pattern.compile("^\\[(?:(\\[(?:[\\w-]*){1},(?:[\\w]*){1},\\((?:[\\w]*[, ]?)*\\){1}\\])[, ]?)+\\]");
+        public static final Pattern DEVICE_PARAMETERS = Pattern.compile("^(?<devicename>[\\w-]*){1}[, ]+(?<deviceaccess>[\\w]*){1}[, ]+\\((?<submodules>[\\w, ]*)\\)");
 
         @Override
         public Class<ProfinetDevices> getType() {
@@ -109,7 +109,6 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
             // Split up the connection string into its individual segments.
             value = value.replaceAll(" ", "").toUpperCase();
             Matcher matcher = DEVICE_NAME_ARRAY_PATTERN.matcher(value);
-            int s = matcher.groupCount();
 
             if (!matcher.matches()) {
                 throw new RuntimeException("Profinet Device Array is not in the correct format " + value + ".");
