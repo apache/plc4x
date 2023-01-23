@@ -46,6 +46,7 @@ import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.nifi.processor.util.StandardValidators;
 import org.apache.nifi.serialization.RecordSetWriterFactory;
+import org.apache.nifi.serialization.record.RecordSchema;
 import org.apache.nifi.util.StopWatch;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -53,6 +54,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.nifi.record.Plc4xWriter;
 import org.apache.plc4x.nifi.record.RecordPlc4xWriter;
+import org.apache.plc4x.nifi.record.SchemaCache;
 
 @Tags({ "plc4x-source" })
 @InputRequirement(InputRequirement.Requirement.INPUT_ALLOWED)
@@ -67,6 +69,8 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	public static final String INPUT_FLOWFILE_UUID = "input.flowfile.uuid";
 	public static final String RESULT_ERROR_MESSAGE = "plc4x.read.error.message";
 
+	public final SchemaCache schemaCache = new SchemaCache(0);
+
 	public static final PropertyDescriptor PLC_RECORD_WRITER_FACTORY = new PropertyDescriptor.Builder().name("plc4x-record-writer").displayName("Record Writer")
 		.description("Specifies the Controller Service to use for writing results to a FlowFile. The Record Writer may use Inherit Schema to emulate the inferred schema behavior, i.e. "
 				+ "an explicit schema need not be defined in the writer, and will be supplied by the same logic used to infer the schema from the column types.")
@@ -77,6 +81,13 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	public static final PropertyDescriptor PLC_READ_FUTURE_TIMEOUT_MILISECONDS = new PropertyDescriptor.Builder().name("plc4x-record-read-timeout").displayName("Read timeout (miliseconds)")
 		.description("Read timeout in miliseconds")
 		.defaultValue("10000")
+		.required(true)
+		.addValidator(StandardValidators.INTEGER_VALIDATOR)
+		.build();
+
+	public static final PropertyDescriptor PLC_SCHEMA_CACHE_SIZE = new PropertyDescriptor.Builder().name("plc4x-record-schema-cache-size").displayName("Read timeout (miliseconds)")
+		.description("Schema Cache Size")
+		.defaultValue("100")
 		.required(true)
 		.addValidator(StandardValidators.INTEGER_VALIDATOR)
 		.build();
@@ -96,6 +107,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		pds.addAll(super.getSupportedPropertyDescriptors());
 		pds.add(PLC_RECORD_WRITER_FACTORY);
 		pds.add(PLC_READ_FUTURE_TIMEOUT_MILISECONDS);
+		pds.add(PLC_SCHEMA_CACHE_SIZE);
 		this.properties = Collections.unmodifiableList(pds);
 	}
 
@@ -104,6 +116,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	public void onScheduled(final ProcessContext context) {
         super.connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
         this.readTimeout = context.getProperty(PLC_READ_FUTURE_TIMEOUT_MILISECONDS.getName()).asInteger();
+		schemaCache.setCacheSize(context.getProperty(PLC_SCHEMA_CACHE_SIZE).asInteger());
 	}
 	
 	@Override
@@ -144,6 +157,8 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 
 			PlcReadRequest.Builder builder = connection.readRequestBuilder();
 			Map<String,String> addressMap = getPlcAddressMap(context, fileToProcess);
+			final RecordSchema recordSchema = schemaCache.retrieveSchema(addressMap);
+
             for (Map.Entry<String,String> entry: addressMap.entrySet()){
                 builder.addTagAddress(entry.getKey(), entry.getValue());
             }
@@ -154,9 +169,9 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 					PlcReadResponse readResponse = readRequest.execute().get(this.readTimeout, TimeUnit.MILLISECONDS);
 					
 					if(originalFlowFile == null) //there is no inherit attributes to use in writer service 
-						nrOfRows.set(plc4xWriter.writePlcReadResponse(readResponse, out, logger, null));
+						nrOfRows.set(plc4xWriter.writePlcReadResponse(readResponse, out, logger, null, recordSchema));
 					else 
-						nrOfRows.set(plc4xWriter.writePlcReadResponse(readResponse, out, logger, null, originalFlowFile));
+						nrOfRows.set(plc4xWriter.writePlcReadResponse(readResponse, out, logger, null, recordSchema, originalFlowFile));
 				} catch (InterruptedException e) {
 					logger.error("InterruptedException reading the data from PLC", e);
 		            Thread.currentThread().interrupt();
@@ -169,6 +184,10 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 					throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
 				}
 			});
+
+			if (recordSchema == null){
+				schemaCache.addSchema(addressMap, plc4xWriter.getRecordSchema());
+			}
 			long executionTimeElapsed = executeTime.getElapsed(TimeUnit.MILLISECONDS);
 			final Map<String, String> attributesToAdd = new HashMap<>();
 			attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));

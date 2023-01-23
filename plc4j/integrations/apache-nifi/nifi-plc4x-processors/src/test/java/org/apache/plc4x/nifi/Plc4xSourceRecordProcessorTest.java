@@ -43,6 +43,7 @@ public class Plc4xSourceRecordProcessorTest {
 
     	testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_READ_FUTURE_TIMEOUT_MILISECONDS, "100");
     	testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_CONNECTION_STRING, "simulated://127.0.0.1");
+		testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_SCHEMA_CACHE_SIZE, "1");
 
     	testRunner.addConnection(Plc4xSourceRecordProcessor.REL_SUCCESS);
     	testRunner.addConnection(Plc4xSourceRecordProcessor.REL_FAILURE);
