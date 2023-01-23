@@ -25,34 +25,34 @@
 ]
 
 [discriminatedType OpenProtocolMessage
-    [implicit      uint 32              length               'lengthInBytes'      encoding="AsciiUint"]
-    [discriminator MID                  mid                                                           ]
-    [simple        OpenProtocolRevision revision                                                      ]
-    [simple        uint 8               noAckFlag                                                     ]
-    [simple        uint 16              stationId                                 encoding="AsciiUint"]
-    [simple        uint 16              spindleId                                 encoding="AsciiUint"]
-    [simple        uint 16              sequenceNumber                            encoding="AsciiUint"]
-    [simple        uint 8               numberOfMessageParts                      encoding="AsciiUint"]
-    [simple        uint 8               messagePartNumber                         encoding="AsciiUint"]
+    [implicit      uint 32              length               'lengthInBytes'      encoding='"AsciiUint"']
+    [discriminator Mid                  mid                                                             ]
+    [simple        OpenProtocolRevision revision                                                        ]
+    [simple        uint 8               noAckFlag                                                       ]
+    [simple        uint 16              stationId                                 encoding='"AsciiUint"']
+    [simple        uint 16              spindleId                                 encoding='"AsciiUint"']
+    [simple        uint 16              sequenceNumber                            encoding='"AsciiUint"']
+    [simple        uint 8               numberOfMessageParts                      encoding='"AsciiUint"']
+    [simple        uint 8               messagePartNumber                         encoding='"AsciiUint"']
     [typeSwitch mid
         ['ApplicationCommunicationStart' *ApplicationCommunicationStart
         ]
-        ['ApplicationCommunicationStartAcknowledge' *ApplicationCommunicationStartAcknowledge(revision)
+        ['ApplicationCommunicationStartAcknowledge' *ApplicationCommunicationStartAcknowledge(OpenProtocolRevision revision)
             [array ApplicationCommunicationStartAcknowledgeBlock blocks           count 'revision.numCommunicationStartAcknowledgeBlocks']
         ]
         ['ApplicationCommunicationStop' *ApplicationCommunicationStop
         ]
         ['ApplicationCommandError' *ApplicationCommandError
-            [simple MID                  requestMid]
+            [simple Mid                  requestMid]
             [simple Error                error     ]
         ]
         ['ApplicationCommandAccepted' *ApplicationCommandAccepted
-            [simple MID                  requestMid]
+            [simple Mid                  requestMid]
         ]
         ['ApplicationGenericDataRequest' *ApplicationGenericDataRequest
-            [simple   MID                  requestMid                             ]
+            [simple   Mid                  requestMid                             ]
             [simple   OpenProtocolRevision wantedRevision                         ]
-            [implicit uint 16              extraDataLength 'LEN(extraData)'       ]
+            [implicit uint 16              extraDataLength 'COUNT(extraData)'     ]
             [array    byte                 extraData       count 'extraDataLength']
         ]
     ]
@@ -60,80 +60,80 @@
 ]
 
 [discriminatedType ApplicationCommunicationStartAcknowledgeBlock
-    [discriminator uint 16 blockType encoding="AsciiUint"]
+    [discriminator uint 16 blockType encoding='"AsciiUint"']
     [typeSwitch blockType
         // Revision 1
-        ['01' *CellId
-            [simple   uint 32    cellId                    encoding="AsciiUint"]
+        ['1' *CellId
+            [simple   uint 32    cellId                    encoding='"AsciiUint"']
         ]
-        ['02' *ChannelId
-            [simple   uint 16    channelId                 encoding="AsciiUint"]
+        ['2' *ChannelId
+            [simple   uint 16    channelId                 encoding='"AsciiUint"']
         ]
-        ['03' *ControllerName
-            [simple   string 200 controllerName            encoding="ASCII"    ]
+        ['3' *ControllerName
+            [simple   string 200 controllerName            encoding='"ASCII"'    ]
         ]
 
         // Additional Blocks for Revision 2
-        ['04' *SupplierCode
-            [simple   uint 24    supplierCode              encoding="AsciiUint"]
+        ['4' *SupplierCode
+            [simple   uint 24    supplierCode              encoding='"AsciiUint"']
         ]
 
         // Additional Blocks for Revision 3
-        ['05' *OpenProtocolVersion
-            [simple   string 152 openProtocolVersion       encoding="ASCII"    ]
+        ['5' *OpenProtocolVersion
+            [simple   string 152 openProtocolVersion       encoding='"ASCII"'    ]
         ]
-        ['06' *ControllerSoftwareVersion
-            [simple   string 152 controllerSoftwareVersion encoding="ASCII"    ]
+        ['6' *ControllerSoftwareVersion
+            [simple   string 152 controllerSoftwareVersion encoding='"ASCII"'    ]
         ]
-        ['07' *ToolSoftwareVersion
-            [simple   string 152 toolSoftwareVersion       encoding="ASCII"    ]
+        ['7' *ToolSoftwareVersion
+            [simple   string 152 toolSoftwareVersion       encoding='"ASCII"'    ]
         ]
 
         // Additional Blocks for Revision 4
-        ['08' *RbuType
-            [simple   string 192 rbuType                   encoding="ASCII"    ]
+        ['8' *RbuType
+            [simple   string 192 rbuType                   encoding='"ASCII"'    ]
         ]
-        ['09' *ControllerSerialNumber
-            [simple   string 80  controllerSerialNumber    encoding="ASCII"    ]
+        ['9' *ControllerSerialNumber
+            [simple   string 80  controllerSerialNumber    encoding='"ASCII"'    ]
         ]
 
         // Additional Blocks for Revision 5
         ['10' *SystemType
-            [simple   string 24  systemType                encoding="ASCII"    ]
+            [simple   string 24  systemType                encoding='"ASCII"'    ]
         ]
         ['11' *SystemSubtype
-            [simple   string 24  systemSubtype             encoding="ASCII"    ]
+            [simple   string 24  systemSubtype             encoding='"ASCII"'    ]
         ]
 
         // Additional Blocks for Revision 6
         ['12' *SequenceNumberSupport
-            [reserved uint 7     0                                             ]
+            [reserved uint 7     '0x00'                                        ]
             [simple   bit        sequenceNumberSupport                         ]
         ]
         ['13' *LinkingHandlingSupport
-            [reserved uint 7     0                                             ]
+            [reserved uint 7     '0x00'                                        ]
             [simple   bit        linkingHandlingSupport                        ]
         ]
         ['14' *StationId
-            [simple   string 80  stationId                 encoding="ASCII"    ]
+            [simple   string 80  stationId                 encoding='"ASCII"'    ]
         ]
         ['15' *StationName
-            [simple   string 200 stationName               encoding="ASCII"    ]
+            [simple   string 200 stationName               encoding='"ASCII"'    ]
         ]
         ['16' *ClientId
-            [simple   uint 8     clientId                  encoding="AsciiUint"]
+            [simple   uint 8     clientId                  encoding='"AsciiUint"']
         ]
     ]
 ]
 
 // Depending on the revision of the device, a different number of blocks are supported.
-[enum uint 24 OpenProtocolRevision(uint 8 numCommunicationStartAcknowledgeBlocks) encoding="AsciiUint"
-    ['1' Revision1                (       3                                     )]
-    ['2' Revision2                (       4                                     )]
-    ['3' Revision3                (       7                                     )]
-    ['4' Revision4                (       9                                     )]
-    ['5' Revision5                (       11                                    )]
-    ['6' Revision6                (       16                                    )]
+[enum uint 24 OpenProtocolRevision(uint 8 numCommunicationStartAcknowledgeBlocks) encoding='"AsciiUint"'
+    ['1' Revision1                [       '3'                                   ]]
+    ['2' Revision2                [       '4'                                   ]]
+    ['3' Revision3                [       '7'                                   ]]
+    ['4' Revision4                [       '9'                                   ]]
+    ['5' Revision5                [       '11'                                  ]]
+    ['6' Revision6                [       '16'                                  ]]
 ]
 
 [enum MidTypes
@@ -160,193 +160,193 @@
     [NewGroupsMessage                   ] // 2600 - 9999
 ]
 
-[enum uint 32 Mid   encoding="AsciiUint"
-    ['0001' ApplicationCommunicationStart               ] // *
-    ['0002' ApplicationCommunicationStartAcknowledge    ] // *
-    ['0003' ApplicationCommunicationStop                ]
-    ['0004' ApplicationCommandError                     ] // *
-    ['0005' ApplicationCommandAccepted                  ] // *
-    ['0006' ApplicationGenericDataRequest               ]
-    ['0007' Reserved                                    ]
-    ['0008' ApplicationGenericSubscription              ] // *
-    ['0009' ApplicationGenericUnsubscribe               ] // *
-    ['0010' ParameterSetIdUploadRequest                 ] // *
-    ['0011' ParameterSetIdUploadReply                   ] // *
-    ['0012' ParameterSetDataUploadRequest               ] // *
-    ['0013' ParameterSetDataUploadReply                 ] // *
-    ['0014' ParameterSetSelectedSubscribe               ]
-    ['0015' ParameterSetSelected                        ]
-    ['0016' ParameterSetSelectedAcknowledge             ]
-    ['0017' ParameterSetSelectedUnsubscribe             ]
-    ['0018' SelectParameterSet                          ] // *
-    ['0019' SetParameterSetBatchSize                    ]
-    ['0020' ResetParameterSetBatchCounter               ]
-    ['0021' LockAtBatchDoneSubscribe                    ]
-    ['0022' LockAtBatchDoneUpload                       ]
-    ['0023' LockAtBatchDoneUploadAcknowledge            ]
-    ['0024' LockAtBatchDoneUnsubscribe                  ]
-    ['0025' ReservedForFord                             ]
+[enum uint 32 Mid   encoding='"AsciiUint"'
+    ['1' ApplicationCommunicationStart               ] // *
+    ['2' ApplicationCommunicationStartAcknowledge    ] // *
+    ['3' ApplicationCommunicationStop                ]
+    ['4' ApplicationCommandError                     ] // *
+    ['5' ApplicationCommandAccepted                  ] // *
+    ['6' ApplicationGenericDataRequest               ]
+    ['7' Reserved                                    ]
+    ['8' ApplicationGenericSubscription              ] // *
+    ['9' ApplicationGenericUnsubscribe               ] // *
+    ['10' ParameterSetIdUploadRequest                 ] // *
+    ['11' ParameterSetIdUploadReply                   ] // *
+    ['12' ParameterSetDataUploadRequest               ] // *
+    ['13' ParameterSetDataUploadReply                 ] // *
+    ['14' ParameterSetSelectedSubscribe               ]
+    ['15' ParameterSetSelected                        ]
+    ['16' ParameterSetSelectedAcknowledge             ]
+    ['17' ParameterSetSelectedUnsubscribe             ]
+    ['18' SelectParameterSet                          ] // *
+    ['19' SetParameterSetBatchSize                    ]
+    ['20' ResetParameterSetBatchCounter               ]
+    ['21' LockAtBatchDoneSubscribe                    ]
+    ['22' LockAtBatchDoneUpload                       ]
+    ['23' LockAtBatchDoneUploadAcknowledge            ]
+    ['24' LockAtBatchDoneUnsubscribe                  ]
+    ['25' ReservedForFord                             ]
 
-    ['0030' JobIdUploadRequest                          ]
-    ['0031' JobIdUploadReply                            ]
-    ['0032' JobDataUploadRequest                        ]
-    ['0033' JobDataUploadReply                          ]
-    ['0034' JobInfoSubscribe                            ]
-    ['0035' JobInfo                                     ]
-    ['0036' JobInfoAcknowledge                          ]
-    ['0037' JobInfoUnsubscribe                          ]
-    ['0038' SelectJob                                   ]
-    ['0039' JobRestart                                  ]
-    ['0040' ToolDataUploadRequest                       ]
-    ['0041' ToolDataUploadReply                         ]
-    ['0042' DisableTool                                 ] // *
-    ['0043' EnableTool                                  ] // *
-    ['0044' DisconnectToolRequest                       ]
-    ['0045' SetCalibrationValueRequest                  ]
-    ['0046' SetPrimaryToolRequest                       ]
-    ['0047' PairingHandling                             ]
-    ['0048' PairingStatus                               ]
-    ['0049' PairingStatusAcknowledge                    ]
-    ['0050' VehicleIdNumberDownloadRequest              ]
-    ['0051' VehicleIdNumberSubscribe                    ]
-    ['0052' VehicleIdNumber                             ]
-    ['0053' VehicleIdNumberAcknowledge                  ]
-    ['0054' VehicleIdNumberUnsubscribe                  ]
+    ['30' JobIdUploadRequest                          ]
+    ['31' JobIdUploadReply                            ]
+    ['32' JobDataUploadRequest                        ]
+    ['33' JobDataUploadReply                          ]
+    ['34' JobInfoSubscribe                            ]
+    ['35' JobInfo                                     ]
+    ['36' JobInfoAcknowledge                          ]
+    ['37' JobInfoUnsubscribe                          ]
+    ['38' SelectJob                                   ]
+    ['39' JobRestart                                  ]
+    ['40' ToolDataUploadRequest                       ]
+    ['41' ToolDataUploadReply                         ]
+    ['42' DisableTool                                 ] // *
+    ['43' EnableTool                                  ] // *
+    ['44' DisconnectToolRequest                       ]
+    ['45' SetCalibrationValueRequest                  ]
+    ['46' SetPrimaryToolRequest                       ]
+    ['47' PairingHandling                             ]
+    ['48' PairingStatus                               ]
+    ['49' PairingStatusAcknowledge                    ]
+    ['50' VehicleIdNumberDownloadRequest              ]
+    ['51' VehicleIdNumberSubscribe                    ]
+    ['52' VehicleIdNumber                             ]
+    ['53' VehicleIdNumberAcknowledge                  ]
+    ['54' VehicleIdNumberUnsubscribe                  ]
 
-    ['0060' LastTighteningResultDataSubscribe           ] // *
-    ['0061' LastTighteningResultData                    ] // *
-    ['0062' LastTighteningResultDataAcknowledge         ]
-    ['0063' LastTighteningResultDataUnsubscribe         ]
-    ['0064' OldTighteningResultUploadRequest            ]
-    ['0065' OldTighteningResultUploadReply              ]
+    ['60' LastTighteningResultDataSubscribe           ] // *
+    ['61' LastTighteningResultData                    ] // *
+    ['62' LastTighteningResultDataAcknowledge         ]
+    ['63' LastTighteningResultDataUnsubscribe         ]
+    ['64' OldTighteningResultUploadRequest            ]
+    ['65' OldTighteningResultUploadReply              ]
 
-    ['0070' AlarmSubscribe                              ] // *
-    ['0071' Alarm                                       ] // *
-    ['0072' AlarmAcknowledge                            ] // *
-    ['0073' AlarmUnsubscribe                            ] // *
-    ['0074' AlarmAcknowledgedOnController               ]
-    ['0075' AlarmAcknowledgedOnControllerAcknowledge    ]
-    ['0076' AlarmStatus                                 ] // *
-    ['0077' AlarmStatusAcknowledge                      ] // *
-    ['0078' AcknowledgeAlarmRemotelyOnController        ]
+    ['70' AlarmSubscribe                              ] // *
+    ['71' Alarm                                       ] // *
+    ['72' AlarmAcknowledge                            ] // *
+    ['73' AlarmUnsubscribe                            ] // *
+    ['74' AlarmAcknowledgedOnController               ]
+    ['75' AlarmAcknowledgedOnControllerAcknowledge    ]
+    ['76' AlarmStatus                                 ] // *
+    ['77' AlarmStatusAcknowledge                      ] // *
+    ['78' AcknowledgeAlarmRemotelyOnController        ]
 
-    ['0080' ReadTimeUploadRequest                       ]
-    ['0081' ReadTimeUploadReply                         ]
-    ['0082' SetTime                                     ] // *
+    ['80' ReadTimeUploadRequest                       ]
+    ['81' ReadTimeUploadReply                         ]
+    ['82' SetTime                                     ] // *
 
-    ['0090' MultiSpindleStatusSubscribe                 ]
-    ['0091' MultiSpindleStatus                          ]
-    ['0092' MultiSpindleStatusAcknowledge               ]
-    ['0093' MultiSpindleStatusUnsubscribe               ]
+    ['90' MultiSpindleStatusSubscribe                 ]
+    ['91' MultiSpindleStatus                          ]
+    ['92' MultiSpindleStatusAcknowledge               ]
+    ['93' MultiSpindleStatusUnsubscribe               ]
 
-    ['0100' MultiSpindleResultSubscribe                 ]
-    ['0101' MultiSpindleResult                          ]
-    ['0102' MultiSpindleResultAcknowledge               ]
-    ['0103' MultiSpindleResultUnsubscribe               ]
+    ['100' MultiSpindleResultSubscribe                 ]
+    ['101' MultiSpindleResult                          ]
+    ['102' MultiSpindleResultAcknowledge               ]
+    ['103' MultiSpindleResultUnsubscribe               ]
 
-    ['0105' LastPowerMacsTighteningResultDataSubscribe  ]
-    ['0106' LastPowerMacsTighteningResultStationData    ]
-    ['0107' LastPowerMacsTighteningResultBoltData       ]
-    ['0108' LastPowerMacsTighteningResultDataAcknowledge]
-    ['0109' LastPowerMacsTighteningResultDataUnsubscribe]
-    ['0110' DisplayUserTextOnCompact                    ]
-    ['0111' DisplayUserTextOnGraph                      ]
+    ['105' LastPowerMacsTighteningResultDataSubscribe  ]
+    ['106' LastPowerMacsTighteningResultStationData    ]
+    ['107' LastPowerMacsTighteningResultBoltData       ]
+    ['108' LastPowerMacsTighteningResultDataAcknowledge]
+    ['109' LastPowerMacsTighteningResultDataUnsubscribe]
+    ['110' DisplayUserTextOnCompact                    ]
+    ['111' DisplayUserTextOnGraph                      ]
 
-    ['0113' FlashGreenLightOnTool                       ]
+    ['113' FlashGreenLightOnTool                       ]
 
-    ['0120' JobLineControlInfoSubscribe                 ]
-    ['0121' JobLineControlStarted                       ]
-    ['0122' JobLineControlAlert1                        ]
-    ['0123' JobLineControlAlert2                        ]
-    ['0124' JobLineControlDone                          ]
-    ['0125' JobLineControlInfoAcknowledge               ]
-    ['0126' JobLineControlUnsubscribe                   ]
-    ['0127' AbortJob                                    ]
-    ['0128' JobBatchIncrement                           ]
-    ['0129' JobBatchDecrement                           ]
-    ['0130' JobOff                                      ]
-    ['0131' SetJobLineControlStart                      ]
-    ['0132' SetJobLineControlAlert1                     ]
-    ['0133' SetJobLineControlAlert2                     ]
+    ['120' JobLineControlInfoSubscribe                 ]
+    ['121' JobLineControlStarted                       ]
+    ['122' JobLineControlAlert1                        ]
+    ['123' JobLineControlAlert2                        ]
+    ['124' JobLineControlDone                          ]
+    ['125' JobLineControlInfoAcknowledge               ]
+    ['126' JobLineControlUnsubscribe                   ]
+    ['127' AbortJob                                    ]
+    ['128' JobBatchIncrement                           ]
+    ['129' JobBatchDecrement                           ]
+    ['130' JobOff                                      ]
+    ['131' SetJobLineControlStart                      ]
+    ['132' SetJobLineControlAlert1                     ]
+    ['133' SetJobLineControlAlert2                     ]
 
-    ['0140' ExecuteDynamicJobRequest                    ] // *
+    ['140' ExecuteDynamicJobRequest                    ] // *
 
-    ['0150' IdentifierDownloadRequest                   ] // *
-    ['0151' MultipleIdentifiersWorkOrderSubscribe       ]
-    ['0152' MultipleIdentifiersWorkOrder                ]
-    ['0153' MultipleIdentifiersWorkOrderAcknowledge     ]
-    ['0154' MultipleIdentifiersWorkOrderUnsubscribe     ]
-    ['0155' BypassIdentifier                            ]
-    ['0156' ResetLatestIdentifier                       ]
-    ['0157' ResetAllIdentifiers                         ]
+    ['150' IdentifierDownloadRequest                   ] // *
+    ['151' MultipleIdentifiersWorkOrderSubscribe       ]
+    ['152' MultipleIdentifiersWorkOrder                ]
+    ['153' MultipleIdentifiersWorkOrderAcknowledge     ]
+    ['154' MultipleIdentifiersWorkOrderUnsubscribe     ]
+    ['155' BypassIdentifier                            ]
+    ['156' ResetLatestIdentifier                       ]
+    ['157' ResetAllIdentifiers                         ]
 
-    ['0200' SetExternalControlledRelays                 ]
+    ['200' SetExternalControlledRelays                 ]
 
-    ['0210' StatusExternalMonitoredInputsSubscribe      ]
-    ['0211' StatusExternalMonitoredInputs               ]
-    ['0212' StatusExternalMonitoredInputsAcknowledge    ]
-    ['0213' StatusExternalMonitoredInputsUnsubscribe    ]
-    ['0214' IoDeviceStatusRequest                       ]
-    ['0215' IoDeviceStatusReply                         ]
-    ['0216' RelayFunctionSubscribe                      ]
-    ['0217' RelayFunction                               ]
-    ['0218' RelayFunctionAcknowledge                    ]
-    ['0219' RelayFunctionUnsubscribe                    ]
-    ['0220' DigitalInputFunctionSubscribe               ]
-    ['0221' DigitalInputFunction                        ]
-    ['0222' DigitalInputFunctionAcknowledge             ]
-    ['0223' DigitalInputFunctionUnsubscribe             ]
-    ['0224' SetDigitalInputFunction                     ]
-    ['0225' ResetDigitalInputFunction                   ]
+    ['210' StatusExternalMonitoredInputsSubscribe      ]
+    ['211' StatusExternalMonitoredInputs               ]
+    ['212' StatusExternalMonitoredInputsAcknowledge    ]
+    ['213' StatusExternalMonitoredInputsUnsubscribe    ]
+    ['214' IoDeviceStatusRequest                       ]
+    ['215' IoDeviceStatusReply                         ]
+    ['216' RelayFunctionSubscribe                      ]
+    ['217' RelayFunction                               ]
+    ['218' RelayFunctionAcknowledge                    ]
+    ['219' RelayFunctionUnsubscribe                    ]
+    ['220' DigitalInputFunctionSubscribe               ]
+    ['221' DigitalInputFunction                        ]
+    ['222' DigitalInputFunctionAcknowledge             ]
+    ['223' DigitalInputFunctionUnsubscribe             ]
+    ['224' SetDigitalInputFunction                     ]
+    ['225' ResetDigitalInputFunction                   ]
 
-    ['0240' UserDataDownload                            ]
-    ['0241' UserDataSubscribe                           ]
-    ['0242' UserData                                    ]
-    ['0243' UserDataAcknowledge                         ]
-    ['0244' UserDataUnsubscribe                         ]
-    ['0245' UserDataDownloadWithOffset                  ]
+    ['240' UserDataDownload                            ]
+    ['241' UserDataSubscribe                           ]
+    ['242' UserData                                    ]
+    ['243' UserDataAcknowledge                         ]
+    ['244' UserDataUnsubscribe                         ]
+    ['245' UserDataDownloadWithOffset                  ]
 
-    ['0250' SelectorSocketInfoSubscribe                 ]
-    ['0251' SelectorSocketInfo                          ]
-    ['0252' SelectorSocketInfoAcknowledge               ]
-    ['0253' SelectorSocketInfoUnsubscribe               ]
-    ['0254' SelectorControlGreenLights                  ]
-    ['0255' SelectorControlRedLights                    ]
+    ['250' SelectorSocketInfoSubscribe                 ]
+    ['251' SelectorSocketInfo                          ]
+    ['252' SelectorSocketInfoAcknowledge               ]
+    ['253' SelectorSocketInfoUnsubscribe               ]
+    ['254' SelectorControlGreenLights                  ]
+    ['255' SelectorControlRedLights                    ]
 
-    ['0260' ToolTagIdRequest                            ]
-    ['0261' ToolTagIdSubscribe                          ]
-    ['0262' ToolTagId                                   ]
-    ['0263' ToolTagIdAcknowledge                        ]
-    ['0264' ToolTagIdUnsubscribe                        ]
+    ['260' ToolTagIdRequest                            ]
+    ['261' ToolTagIdSubscribe                          ]
+    ['262' ToolTagId                                   ]
+    ['263' ToolTagIdAcknowledge                        ]
+    ['264' ToolTagIdUnsubscribe                        ]
 
-    ['0270' ControllerRebootRequest                     ]
+    ['270' ControllerRebootRequest                     ]
 
-    ['0300' HistogramUploadRequest                      ]
-    ['0301' HistogramUploadReply                        ]
+    ['300' HistogramUploadRequest                      ]
+    ['301' HistogramUploadReply                        ]
 
-    ['0400' AutomaticManualModeSubscribe                ]
-    ['0401' AutomaticManualMode                         ]
-    ['0402' AutomaticManualModeAcknowledge              ]
-    ['0403' AutomaticManualModeUnsubscribe              ]
+    ['400' AutomaticManualModeSubscribe                ]
+    ['401' AutomaticManualMode                         ]
+    ['402' AutomaticManualModeAcknowledge              ]
+    ['403' AutomaticManualModeUnsubscribe              ]
 
-    ['0410' AutoDisableSettingsRequest                  ]
-    ['0411' AutoDisableSettingsReply                    ]
+    ['410' AutoDisableSettingsRequest                  ]
+    ['411' AutoDisableSettingsReply                    ]
 
-    ['0420' OpenProtocolCommandsDisabledSubscribe       ]
-    ['0421' OpenProtocolCommandsDisabled                ]
-    ['0422' OpenProtocolCommandsDisabledAcknowledge     ]
-    ['0423' OpenProtocolCommandsDisabledUnsubscribe     ]
+    ['420' OpenProtocolCommandsDisabledSubscribe       ]
+    ['421' OpenProtocolCommandsDisabled                ]
+    ['422' OpenProtocolCommandsDisabledAcknowledge     ]
+    ['423' OpenProtocolCommandsDisabledUnsubscribe     ]
 
-    ['0500' MotorTuningResultDataSubscribe              ]
-    ['0501' MotorTuningResultData                       ]
-    ['0502' MotorTuningResultDataAcknowledge            ]
-    ['0503' MotorTuningResultDataUnsubscribe            ]
-    ['0504' MotorTuningRequest                          ]
+    ['500' MotorTuningResultDataSubscribe              ]
+    ['501' MotorTuningResultData                       ]
+    ['502' MotorTuningResultDataAcknowledge            ]
+    ['503' MotorTuningResultDataUnsubscribe            ]
+    ['504' MotorTuningRequest                          ]
 
-    ['0700' TighteningDataDownloadStatusForRadioTools   ]
+    ['700' TighteningDataDownloadStatusForRadioTools   ]
 
-    ['0900' ResultTracesCurve                           ] // *
-    ['0901' ResultTracesCurvePlotData                   ] // *
+    ['900' ResultTracesCurve                           ] // *
+    ['901' ResultTracesCurvePlotData                   ] // *
 
     ['1201' LastOperationResultOverallData              ]
     ['1202' LastOperationResultObjectData               ]
@@ -379,17 +379,17 @@
     ['9999' KeepAliveOpenProtocolCommunication          ] // *
 ]
 
-[enum uint 16 Error encoding="AsciiUint"
-    ['00' NoError]
-    ['01' InvalidData]
-    ['02' ParameterSetIdNotPresent]
-    ['03' ParameterSetCanNotBeSet]
-    ['04' ParameterSetNotRunning]
+[enum uint 16 Error encoding='"AsciiUint"'
+    ['0'  NoError]
+    ['1'  InvalidData]
+    ['2'  ParameterSetIdNotPresent]
+    ['3'  ParameterSetCanNotBeSet]
+    ['4'  ParameterSetNotRunning]
 
-    ['06' VinUploadSubscriptionAlreadyExists]
-    ['07' VinUploadSubscriptionDoesNotExist]
-    ['08' VinInputSourceNotGranted]
-    ['09' LastTighteningResultSubscriptionAlreadyExists]
+    ['6'  VinUploadSubscriptionAlreadyExists]
+    ['7'  VinUploadSubscriptionDoesNotExist]
+    ['8'  VinInputSourceNotGranted]
+    ['9'  LastTighteningResultSubscriptionAlreadyExists]
     ['10' LastTighteningResultSubscriptionDoesNowExist]
     ['11' AlarmSubscriptionAlreadyExists]
     ['12' AlarmSubscriptionDoesNotExist]
