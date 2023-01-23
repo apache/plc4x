@@ -25,6 +25,7 @@ import org.apache.plc4x.java.ads.model.AdsSubscriptionHandle;
 import org.apache.plc4x.java.ads.readwrite.*;
 import org.apache.plc4x.java.ads.readwrite.DataItem;
 import org.apache.plc4x.java.ads.tag.AdsTag;
+import org.apache.plc4x.java.ads.tag.DirectAdsStringTag;
 import org.apache.plc4x.java.ads.tag.DirectAdsTag;
 import org.apache.plc4x.java.ads.tag.SymbolicAdsTag;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
@@ -818,13 +819,16 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             PlcValueType plcValueType = getPlcValueTypeForAdsDataType(adsDataTypeTableEntry);
 
             int strLen = 0;
-            if ((plcValueType == PlcValueType.STRING) || (plcValueType == PlcValueType.WSTRING)) {
-                // Extract the string length from the data type name.
-                strLen = Integer.parseInt(dataTypeName.substring(dataTypeName.indexOf("(") + 1, dataTypeName.indexOf(")")));
+            if (tag instanceof DirectAdsStringTag) {
+                strLen = ((DirectAdsStringTag) tag).getStringLength();
             }
             final int stringLength = strLen;
             if (tag.getNumberOfElements() == 1) {
-                return new ResponseItem<>(PlcResponseCode.OK, parsePlcValue(plcValueType, adsDataTypeTableEntry, stringLength, readBuffer));
+                ReadBufferByteBased readBufferByteBased = ((ReadBufferByteBased) readBuffer);
+                // Sometimes the ADS device just sends shorter strings than we asked for.
+                int remainingBytes = readBufferByteBased.getTotalBytes() - readBufferByteBased.getPos();
+                final int singleStringLength = Math.min(remainingBytes - 1, stringLength);
+                return new ResponseItem<>(PlcResponseCode.OK, parsePlcValue(plcValueType, adsDataTypeTableEntry, singleStringLength, readBuffer));
             } else {
                 // Fetch all
                 final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {

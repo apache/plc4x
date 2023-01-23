@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.generation;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import com.github.jinahya.bit.io.ArrayByteInput;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.io.MyDefaultBitInput;
@@ -92,7 +93,7 @@ public class ReadBufferByteBased implements ReadBuffer {
             bi.getDelegate().index(oldIndex + offset);
             // Read the byte.
             return bi.readByte(false, 8);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ParseException("Error peeking byte", e);
         } finally {
             // Reset the delegate to the old index.
@@ -109,7 +110,7 @@ public class ReadBufferByteBased implements ReadBuffer {
     public boolean readBit(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
         try {
             return bi.readBoolean();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ParseException("Error reading bit", e);
         }
     }
@@ -138,7 +139,7 @@ public class ReadBufferByteBased implements ReadBuffer {
         }
         try {
             return bi.readByte(true, bitLength);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ParseException("Error reading unsigned byte", e);
         }
     }
@@ -154,7 +155,7 @@ public class ReadBufferByteBased implements ReadBuffer {
         try {
             // No need to flip here as we're only reading one byte.
             return bi.readShort(true, bitLength);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ParseException("Error reading unsigned short", e);
         }
     }
@@ -173,7 +174,7 @@ public class ReadBufferByteBased implements ReadBuffer {
                 return Integer.reverseBytes(intValue) >>> 16;
             }
             return bi.readInt(true, bitLength);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ParseException("Error reading unsigned int", e);
         }
     }
@@ -192,7 +193,7 @@ public class ReadBufferByteBased implements ReadBuffer {
                 return Long.reverseBytes(longValue) >>> 32;
             }
             return bi.readLong(true, bitLength);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ParseException("Error reading unsigned long", e);
         }
     }
@@ -218,7 +219,7 @@ public class ReadBufferByteBased implements ReadBuffer {
                 BigInteger constant = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(2)).add(BigInteger.valueOf(2));
                 return BigInteger.valueOf(val).add(constant);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ParseException("Error reading unsigned big integer", e);
         }
     }
@@ -233,7 +234,7 @@ public class ReadBufferByteBased implements ReadBuffer {
         }
         try {
             return bi.readByte(false, bitLength);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ParseException("Error reading signed byte", e);
         }
     }
@@ -251,7 +252,7 @@ public class ReadBufferByteBased implements ReadBuffer {
                 return Short.reverseBytes(bi.readShort(false, bitLength));
             }
             return bi.readShort(false, bitLength);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ParseException("Error reading signed short", e);
         }
     }
@@ -269,7 +270,7 @@ public class ReadBufferByteBased implements ReadBuffer {
                 return Integer.reverseBytes(bi.readInt(false, bitLength));
             }
             return bi.readInt(false, bitLength);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ParseException("Error reading signed int", e);
         }
     }
@@ -287,7 +288,7 @@ public class ReadBufferByteBased implements ReadBuffer {
                 return Long.reverseBytes(bi.readLong(false, bitLength));
             }
             return bi.readLong(false, bitLength);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ParseException("Error reading signed long", e);
         }
     }
@@ -307,7 +308,7 @@ public class ReadBufferByteBased implements ReadBuffer {
             } else {
                 throw new UnsupportedOperationException("unsupported bit length (only 16 and 32 supported)");
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ParseException("Error reading float", e);
         }
     }
