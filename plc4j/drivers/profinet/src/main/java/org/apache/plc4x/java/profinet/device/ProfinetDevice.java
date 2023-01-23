@@ -35,7 +35,9 @@ import org.apache.plc4x.java.profinet.tag.ProfinetTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcBrowseItem;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
@@ -44,6 +46,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.*;
 import java.nio.ByteBuffer;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -396,6 +399,25 @@ public class ProfinetDevice {
 
     public ProfinetDeviceContext getDeviceContext() {
         return deviceContext;
+    }
+
+    public void handleRealTimeResponse(PnDcp_Pdu_RealTimeCyclic cyclicPdu) {
+        logger.debug("Received Real Time Cyclic Data");
+        Map<String, ResponseItem<PlcValue>> tags = new HashMap<>();
+        ReadBuffer buffer = new ReadBufferByteBased(cyclicPdu.getDataUnit().getData());
+
+        try {
+            for (ProfinetModule module : deviceContext.getModules()) {
+                module.parseTags(tags, deviceContext.getDeviceName(), buffer);
+            }
+
+            for (Consumer<PlcSubscriptionEvent> consumer : deviceContext.getSubscriptionHandle().getConsumers()) {
+                consumer.accept(new DefaultPlcSubscriptionEvent(Instant.now(), tags));
+            }
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {

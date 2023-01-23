@@ -448,15 +448,16 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
             }
             currentSlot += 1;
         }
-        for (ProfinetModule usableModule :this.modules) {
-            usableModule.populateOutputCR(inputOffset, outputOffset);
-            inputOffset += usableModule.getInputIoCsSize();
-            outputOffset += usableModule.getOutputIoPsSize();
-        }
 
         while (currentSlot != numberOfSlots) {
             this.modules[currentSlot] = new ProfinetEmptyModule();
             currentSlot += 1;
+        }
+
+        for (ProfinetModule usableModule : this.modules) {
+            usableModule.populateOutputCR(inputOffset, outputOffset);
+            inputOffset += usableModule.getInputIoCsSize();
+            outputOffset += usableModule.getOutputIoPsSize();
         }
 
         List<ProfinetInterfaceSubmoduleItem> interfaceSubModules = deviceAccessItem.getSystemDefinedSubmoduleList().getInterfaceSubmodules();

@@ -135,9 +135,19 @@ public class ProfinetChannel {
 
                             if (payload instanceof Ethernet_FramePayload_PnDcp) {
                                 PnDcp_Pdu pdu = ((Ethernet_FramePayload_PnDcp) payload).getPdu();
-                                if (discoverer != null) {
-                                    discoverer.processPnDcp(pdu, ethernetPacket);
+                                if (pdu.getFrameId() == PnDcp_FrameId.DCP_Identify_ResPDU) {
+                                    if (discoverer != null) {
+                                        discoverer.processPnDcp(pdu, ethernetPacket);
+                                    }
+                                } else if (pdu.getFrameId() == PnDcp_FrameId.RT_CLASS_1) {
+                                    PnDcp_Pdu_RealTimeCyclic cyclicPdu = (PnDcp_Pdu_RealTimeCyclic) pdu;
+                                    for (Map.Entry<String, ProfinetDevice> device : this.configuredDevices.getConfiguredDevices().entrySet()) {
+                                        if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
+                                            device.getValue().handleRealTimeResponse(cyclicPdu);
+                                        }
+                                    }
                                 }
+
                             } else if (payload instanceof Ethernet_FramePayload_LLDP) {
                                 Lldp_Pdu pdu = ((Ethernet_FramePayload_LLDP) payload).getPdu();
                                 if (discoverer != null) {

@@ -1231,6 +1231,105 @@
     ['0x03' IBM ]
 ]
 
+
+[dataIo DataItem(ProfinetDataType dataType, uint 16 numberOfValues)
+    [typeSwitch dataType,numberOfValues
+        ['BOOL','1'  BOOL
+            [simple   bit     value                            ]
+        ]
+        ['BOOL'      List
+            [array    bit     value count 'numberOfValues'     ]
+        ]
+        ['BYTE','1'  BYTE
+            [simple uint 8 value]
+        ]
+        ['BYTE' List
+            [array    bit     value count 'numberOfValues * 8' ]
+        ]
+        ['WORD'      WORD
+            [simple   uint 16 value]
+        ]
+        ['DWORD'     DWORD
+            [simple   uint 32 value]
+        ]
+        ['LWORD'     LWORD
+            [simple   uint 64 value]
+        ]
+        ['SINT','1' SINT
+            [simple   int 8   value ]
+        ]
+        ['SINT' List
+            [array int 8 value count 'numberOfValues']
+        ]
+        ['INT','1' INT
+            [simple int 16 value]
+        ]
+        ['INT' List
+            [array int 16 value count 'numberOfValues']
+        ]
+        ['DINT','1' DINT
+            [simple int 32 value]
+        ]
+        ['DINT' List
+            [array int 32 value count 'numberOfValues']
+        ]
+        ['LINT','1' LINT
+            [simple int 64 value]
+        ]
+        ['LINT' List
+            [array int 64 value count 'numberOfValues']
+        ]
+        ['USINT','1' USINT
+            [simple   uint 8 value ]
+        ]
+        ['USINT' List
+            [array uint 8 value count 'numberOfValues']
+        ]
+        ['UINT','1' UINT
+            [simple uint 16 value]
+        ]
+        ['UINT' List
+            [array uint 16 value count 'numberOfValues']
+        ]
+        ['UDINT','1' UDINT
+            [simple uint 32 value]
+        ]
+        ['UDINT' List
+            [array uint 32 value count 'numberOfValues']
+        ]
+        ['ULINT','1' ULINT
+            [simple uint 64 value]
+        ]
+        ['ULINT' List
+            [array uint 64 value count 'numberOfValues']
+        ]
+        ['REAL','1' REAL
+            [simple float 32  value]
+        ]
+        ['REAL' List
+            [array float 32 value count 'numberOfValues']
+        ]
+        ['LREAL','1' LREAL
+            [simple float 64  value]
+        ]
+        ['LREAL' List
+            [array float 64 value count 'numberOfValues']
+        ]
+        ['CHAR','1' CHAR
+            [simple string 8 value encoding='"UTF-8"']
+        ]
+        ['CHAR' List
+            [array string 8 value count 'numberOfValues' encoding='"UTF-8"']
+        ]
+        ['WCHAR','1' WCHAR
+            [simple string 16 value encoding='"UTF-16"']
+        ]
+        ['WCHAR' List
+            [array string 16 value count 'numberOfValues' encoding='"UTF-16"']
+        ]
+    ]
+]
+
 [enum uint 8 ProfinetDataType(uint 8 dataTypeSize, string 16 conversion)
     ['1' BOOL ['1','BOOLEAN']]
     ['2' BYTE ['1','BYTE']]

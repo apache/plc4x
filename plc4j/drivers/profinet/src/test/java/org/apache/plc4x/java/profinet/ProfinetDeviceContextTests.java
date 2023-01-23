@@ -42,7 +42,7 @@ public class ProfinetDeviceContextTests {
     @Test
     public void readProfinetAllocatedSubModulesLengthCheck()  {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, {PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE}]]");
+            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]");
 
         ProfinetDevice device = configuration.getDevices().getConfiguredDevices().get("DEVICE_NAME_1");
         device.setVendorDeviceId("CAFE", "0001");
@@ -55,7 +55,7 @@ public class ProfinetDeviceContextTests {
     @Test
     public void readProfinetAllocatedSubModulesTypeCheck()  {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, {PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE}]]");
+            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]");
 
         ProfinetDevice device = configuration.getDevices().getConfiguredDevices().get("DEVICE_NAME_1");
         device.setVendorDeviceId("CAFE", "0001");
@@ -73,7 +73,7 @@ public class ProfinetDeviceContextTests {
     @Test
     public void readProfinetAllocatedSubModulesTypeCheckEmptyModule()  {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, {PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE}]]");
+            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]");
 
         ProfinetDevice device = configuration.getDevices().getConfiguredDevices().get("DEVICE_NAME_1");
         device.setVendorDeviceId("CAFE", "0001");
@@ -91,7 +91,7 @@ public class ProfinetDeviceContextTests {
     @Test
     public void readExpectedSubModuleApiBlocks()  {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, {PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE}]]");
+            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]");
 
         ProfinetDevice device = configuration.getDevices().getConfiguredDevices().get("DEVICE_NAME_1");
         device.setVendorDeviceId("CAFE", "0001");

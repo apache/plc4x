@@ -27,13 +27,15 @@ import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
 public class ProfinetSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfinetSubscriptionHandle.class);
-    private Set<Consumer<PlcSubscriptionEvent>> consumers;
+    private Set<Consumer<PlcSubscriptionEvent>> consumers = new HashSet<>();
     private PlcSubscriber plcSubscriber;
 
     public ProfinetSubscriptionHandle(PlcSubscriber plcSubscriber) {

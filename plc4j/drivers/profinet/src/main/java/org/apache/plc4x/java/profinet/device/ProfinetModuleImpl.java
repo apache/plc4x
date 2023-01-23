@@ -20,11 +20,16 @@
 package org.apache.plc4x.java.profinet.device;
 
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.gsdml.*;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.profinet.tag.ProfinetTag;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.messages.DefaultPlcBrowseItem;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.values.PlcSINT;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
 
 import java.util.*;
@@ -255,7 +260,7 @@ public class ProfinetModuleImpl implements ProfinetModule {
         for (PnIoCm_IoDataObject block : inputIoPsApiBlocks) {
             int identNumber = block.getSubSlotNumber();
             for (ProfinetVirtualSubmoduleItem virtual : module.getVirtualSubmoduleList()) {
-                if (identNumber == Integer.decode(virtual.getSubmoduleIdentNumber())) {
+                if (identNumber == virtual.getSubslotNumber()) {
                     if (virtual.getModuleInfo().getName() != null) {
                         options.put("module_name", new PlcSTRING(virtual.getModuleInfo().getName().getTextId()));
                     }
@@ -285,13 +290,13 @@ public class ProfinetModuleImpl implements ProfinetModule {
             }
             if (module.getSystemDefinedSubmoduleList() != null) {
                 for (ProfinetInterfaceSubmoduleItem systemInterface : module.getSystemDefinedSubmoduleList().getInterfaceSubmodules()) {
-                    if (identNumber == Integer.decode(systemInterface.getSubmoduleIdentNumber())) {
+                    if (identNumber == systemInterface.getSubslotNumber()) {
                         String statusName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + systemInterface.getId() + ".Status";
                         browseItems.put(statusName, Collections.singletonList(new DefaultPlcBrowseItem(ProfinetTag.of(statusName + ":INT"), statusName, false, false, true, new HashMap<>(), options)));
                     }
                 }
                 for (ProfinetPortSubmoduleItem systemPort : module.getSystemDefinedSubmoduleList().getPortSubmodules()) {
-                    if (identNumber == Integer.decode(systemPort.getSubmoduleIdentNumber())) {
+                    if (identNumber == systemPort.getSubslotNumber()) {
                         String statusName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + systemPort.getId() + ".Status";
                         browseItems.put(statusName, Collections.singletonList(new DefaultPlcBrowseItem(ProfinetTag.of(statusName + ":INT"), statusName, false, false, true, new HashMap<>(), options)));
                     }
@@ -300,5 +305,50 @@ public class ProfinetModuleImpl implements ProfinetModule {
         }
 
         return browseItems;
+    }
+
+    @Override
+    public Map<String, ResponseItem<PlcValue>> parseTags(Map<String, ResponseItem<PlcValue>> tags, String addressSpace, ReadBuffer buffer) throws ParseException {
+        for (PnIoCm_IoDataObject block : inputIoPsApiBlocks) {
+            int identNumber = block.getSubSlotNumber();
+            for (ProfinetVirtualSubmoduleItem virtual : module.getVirtualSubmoduleList()) {
+                if (identNumber == virtual.getSubslotNumber()) {
+                    if (virtual.getIoData() != null && virtual.getIoData().getInput() != null) {
+                        for (ProfinetIoDataInput input : virtual.getIoData().getInput()) {
+                            for (ProfinetDataItem item : input.getDataItemList()) {
+                                if (item.isUseAsBits()) {
+                                    for (ProfinetBitDataItem bitItem : item.getBitDataItem()) {
+                                        String tagName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + item.getTextId() + "." + bitItem.getBitOffset();
+                                        tags.put(tagName, new ResponseItem<>(PlcResponseCode.OK, DataItem.staticParse(buffer, ProfinetDataType.BOOL, 1)));
+                                    }
+                                } else {
+                                    String tagName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + item.getTextId();
+                                    String datatype = ProfinetDataType.firstEnumForFieldConversion(item.getDataType().toUpperCase()).toString();
+                                    tags.put(tagName, new ResponseItem<>(PlcResponseCode.OK, DataItem.staticParse(buffer, ProfinetDataType.firstEnumForFieldConversion(datatype), 1)));
+                                }
+                            }
+                        }
+                    }
+                    String statusName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + virtual.getId() + ".Status";
+                    tags.put(statusName, new ResponseItem<>(PlcResponseCode.OK, DataItem.staticParse(buffer, ProfinetDataType.SINT, 1)));
+                }
+            }
+            if (module.getSystemDefinedSubmoduleList() != null) {
+                for (ProfinetInterfaceSubmoduleItem systemInterface : module.getSystemDefinedSubmoduleList().getInterfaceSubmodules()) {
+                    if (identNumber == systemInterface.getSubslotNumber()) {
+                        String statusName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + systemInterface.getId() + ".Status";
+                        tags.put(statusName, new ResponseItem<>(PlcResponseCode.OK, DataItem.staticParse(buffer, ProfinetDataType.SINT, 1)));
+                    }
+                }
+                for (ProfinetPortSubmoduleItem systemPort : module.getSystemDefinedSubmoduleList().getPortSubmodules()) {
+                    if (identNumber == systemPort.getSubslotNumber()) {
+                        String statusName = addressSpace + "." + this.slot + "." + block.getSubSlotNumber() + "." + systemPort.getId() + ".Status";
+                        tags.put(statusName, new ResponseItem<>(PlcResponseCode.OK, DataItem.staticParse(buffer, ProfinetDataType.SINT, 1)));
+                    }
+                }
+            }
+        }
+
+        return tags;
     }
 }
