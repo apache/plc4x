@@ -118,6 +118,7 @@ public class CachedPlcConnectionManagerTest {
      */
     @Test
     public void testDoubleConnectionRequestTimeoutTest() throws Exception {
+        // Create a connectionManager with a maximum wait time of 50ms
         PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
         CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).withMaxWaitTime(Duration.ofMillis(50)).build();
 
@@ -133,7 +134,7 @@ public class CachedPlcConnectionManagerTest {
         })).start();
 
         // This is needed as starting the previous thread seems to take a little-bit of time.
-        Thread.sleep(1L);
+        Thread.sleep(10L);
 
         // Get the same connection a second time.
         try (PlcConnection ignored = connectionManager.getConnection("test")) {
