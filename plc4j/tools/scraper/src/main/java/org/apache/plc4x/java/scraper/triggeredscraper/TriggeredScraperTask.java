@@ -20,8 +20,8 @@ package org.apache.plc4x.java.scraper.triggeredscraper;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
 public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(TriggeredScraperTask.class);
 
-    private final PlcDriverManager driverManager;
+    private final PlcConnectionManager connectionManager;
     private final String jobName;
     private final String connectionAlias;
     private final String connectionString;
@@ -65,7 +65,7 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
     private final DescriptiveStatistics failedStatistics = new DescriptiveStatistics(1000);
 
 
-    public TriggeredScraperTask(PlcDriverManager driverManager,
+    public TriggeredScraperTask(PlcConnectionManager connectionManager,
                                 String jobName,
                                 String connectionAlias,
                                 String connectionString,
@@ -75,7 +75,7 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
                                 ResultHandler resultHandler,
                                 TriggeredScrapeJobImpl triggeredScrapeJob,
                                 TriggerCollector triggerCollector) throws ScraperException {
-        this.driverManager = driverManager;
+        this.connectionManager = connectionManager;
         this.jobName = jobName;
         this.connectionAlias = connectionAlias;
         this.connectionString = connectionString;
@@ -109,7 +109,7 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
                     info = String.format("acquiring data collecting connection to (%s,%s)", connectionAlias,jobName);
                     LOGGER.trace("acquiring data collecting connection to ({},{})", connectionAlias,jobName);
                 }
-                connection = TriggeredScraperImpl.getPlcConnection(driverManager,connectionString,executorService,requestTimeoutMs,info);
+                connection = TriggeredScraperImpl.getPlcConnection(connectionManager,connectionString,executorService,requestTimeoutMs,info);
                 if(LOGGER.isTraceEnabled()) {
                     LOGGER.trace("Connection to {} established: {}", connectionString, connection);
                 }
@@ -213,8 +213,8 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
         LOGGER.warn("Handling error responses: {}", failed);
     }
 
-    public PlcDriverManager getDriverManager() {
-        return driverManager;
+    public PlcConnectionManager getConnectionManager() {
+        return connectionManager;
     }
 
     public String getConnectionString() {
@@ -232,7 +232,7 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
     @Override
     public String toString() {
         return "TriggeredScraperTask{" +
-            "driverManager=" + driverManager +
+            "connectionManager=" + connectionManager +
             ", jobName='" + jobName + '\'' +
             ", connectionAlias='" + connectionAlias + '\'' +
             ", connectionString='" + connectionString + '\'' +

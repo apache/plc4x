@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.canopen;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -35,7 +35,7 @@ import java.util.concurrent.CompletableFuture;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        PlcDriverManager driverManager = new PlcDriverManager();
+        DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
 
         CANOpenDriverContext.CALLBACK.addCallback(new Callback() {
             @Override

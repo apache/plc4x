@@ -81,7 +81,8 @@ public class Plc4xConnectResponse extends Plc4xMessage implements Message {
         new DataWriterEnumDefault<>(
             Plc4xResponseCode::getValue,
             Plc4xResponseCode::name,
-            writeUnsignedShort(writeBuffer, 8)));
+            writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("Plc4xConnectResponse");
   }

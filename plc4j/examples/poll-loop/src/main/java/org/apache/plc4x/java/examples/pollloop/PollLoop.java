@@ -26,8 +26,9 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.plc4x.java.PlcDriverManager;
+
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -157,7 +158,7 @@ public class PollLoop {
             }
 
             try {
-                plcConnection = new PlcDriverManager().getConnection(connectionString);
+                plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(connectionString);
                 // in osgi/karaf uses this instead
 //                switch (plcType) {
 //                    case PLC4JTYPE_SIEMENS:

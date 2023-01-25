@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.opm;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
@@ -62,7 +62,7 @@ import static org.mockito.Mockito.when;
 
 public class PlcEntityManagerComplexTest implements WithAssertions {
 
-    private PlcDriverManager driverManager;
+    private DefaultPlcDriverManager driverManager;
 
     @Test
     public void noEntity_throws() {
@@ -175,7 +175,7 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
         manager.disconnect(connected);
 
         // Assert disconnected
-        Object o = FieldUtils.readDeclaredField(connected, PlcEntityManager.DRIVER_MANAGER_FIELD_NAME, true);
+        Object o = FieldUtils.readDeclaredField(connected, PlcEntityManager.CONNECTION_MANAGER_FIELD_NAME, true);
         assertNull(o);
 
         // Call a method and receive the result
@@ -197,8 +197,8 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
     }
 
     private PlcEntityManager getPlcEntityManager(final Map<String, PlcValue> responses) throws PlcConnectionException {
-        driverManager = Mockito.mock(PlcDriverManager.class);
-        PlcDriverManager mock = driverManager;
+        driverManager = Mockito.mock(DefaultPlcDriverManager.class);
+        DefaultPlcDriverManager mock = driverManager;
         PlcConnection connection = Mockito.mock(PlcConnection.class);
         when(mock.getConnection(ArgumentMatchers.anyString())).thenReturn(connection);
         when(connection.getMetadata()).thenReturn(new PlcConnectionMetadata() {

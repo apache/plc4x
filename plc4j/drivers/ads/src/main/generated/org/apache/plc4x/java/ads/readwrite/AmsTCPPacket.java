@@ -60,12 +60,17 @@ public class AmsTCPPacket implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     long length = (long) (getUserdata().getLengthInBytes());
-    writeImplicitField("length", length, writeUnsignedLong(writeBuffer, 32));
+    writeImplicitField(
+        "length",
+        length,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (userdata)
     writeSimpleField(

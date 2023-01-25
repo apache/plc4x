@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
+                byteOrder="BIG_ENDIAN">
+
+  <name>Open-Protocol</name>
+
+  <protocolName>open-protocol</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
+  <testcase>
+    <name>MID 0001 Application Communication start</name>
+    <!--  0 0 2 0 0 0 0 1 0 0 5 _ _ _ _ _ _ _ _ _ NULL -->
+    <raw>303032303030303130303520202020202020202000</raw>
+    <root-type>OpenProtocolMessage</root-type>
+    <parser-arguments>
+      <connectionRevision>Revision5</connectionRevision>
+    </parser-arguments>
+    <xml>
+      <OpenProtocolMessage>
+        <length dataType="uint" bitLength="32">20</length>
+        <mid>
+          <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationCommunicationStart">1</Mid>
+        </mid>
+        <selectedRevision>
+          <OpenProtocolRevision dataType="uint" bitLength="24" stringRepresentation="Revision5">5</OpenProtocolRevision>
+        </selectedRevision>
+        <OpenProtocolMessageApplicationCommunicationStart>
+        </OpenProtocolMessageApplicationCommunicationStart>
+        <end dataType="uint" bitLength="8">0</end>
+      </OpenProtocolMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>MID 0002 Application Communication start acknowledge</name>
+    <!--  0 0 5 7 0 0 0 2 _ _ _ _ _ _ _ _ _ _ _ _ 0 1 0 0 0 1 0 2 0 1 0 3 A i r b a g 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ NULL-->
+    <raw>30303537303030322020202020202020202020203031303030313032303130334169726261673120202020202020202020202020202020202000</raw>
+    <root-type>OpenProtocolMessage</root-type>
+    <parser-arguments>
+      <connectionRevision>Revision1</connectionRevision>
+    </parser-arguments>
+    <xml>
+      <OpenProtocolMessage>
+        <length dataType="uint" bitLength="32">57</length>
+        <mid>
+          <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationCommunicationStartAcknowledge">2</Mid>
+        </mid>
+        <selectedRevision>
+        </selectedRevision>
+        <OpenProtocolMessageApplicationCommunicationStartAcknowledge>
+          <blocks isList="true">
+            <ApplicationCommunicationStartAcknowledgeBlock>
+              <blockType dataType="uint" bitLength="16">1</blockType>
+              <ApplicationCommunicationStartAcknowledgeBlockCellId>
+                <cellId dataType="uint" bitLength="32">1</cellId>
+              </ApplicationCommunicationStartAcknowledgeBlockCellId>
+            </ApplicationCommunicationStartAcknowledgeBlock>
+            <ApplicationCommunicationStartAcknowledgeBlock>
+              <blockType dataType="uint" bitLength="16">2</blockType>
+              <ApplicationCommunicationStartAcknowledgeBlockChannelId>
+                <channelId dataType="uint" bitLength="16">1</channelId>
+              </ApplicationCommunicationStartAcknowledgeBlockChannelId>
+            </ApplicationCommunicationStartAcknowledgeBlock>
+            <ApplicationCommunicationStartAcknowledgeBlock>
+              <blockType dataType="uint" bitLength="16">3</blockType>
+              <ApplicationCommunicationStartAcknowledgeBlockControllerName>
+                <controllerName dataType="string" bitLength="200" encoding="ASCII">Airbag1</controllerName>
+              </ApplicationCommunicationStartAcknowledgeBlockControllerName>
+            </ApplicationCommunicationStartAcknowledgeBlock>
+          </blocks>
+        </OpenProtocolMessageApplicationCommunicationStartAcknowledge>
+        <end dataType="uint" bitLength="8">0</end>
+      </OpenProtocolMessage>
+    </xml>
+  </testcase>
+
+</test:testsuite>

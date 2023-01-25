@@ -95,16 +95,32 @@ public abstract class DceRpc_InterfaceUuid implements Message {
     writeConstField("data2", DATA2, writeUnsignedInt(writeBuffer, 16));
 
     // Const Field (data3)
-    writeConstField("data3", DATA3, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "data3",
+        DATA3,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (data4)
-    writeConstField("data4", DATA4, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "data4",
+        DATA4,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (data5)
-    writeConstField("data5", DATA5, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "data5",
+        DATA5,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (data6)
-    writeConstField("data6", DATA6, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "data6",
+        DATA6,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializeDceRpc_InterfaceUuidChild(writeBuffer);

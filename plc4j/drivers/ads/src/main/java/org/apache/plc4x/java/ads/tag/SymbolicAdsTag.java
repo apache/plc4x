@@ -21,11 +21,11 @@ package org.apache.plc4x.java.ads.tag;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -113,7 +113,9 @@ public class SymbolicAdsTag implements AdsTag {
         writeBuffer.pushContext(getClass().getSimpleName());
 
         String symbolicAddress = getSymbolicAddress();
-        writeBuffer.writeString("symbolicAddress", symbolicAddress.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), symbolicAddress);
+        writeBuffer.writeString("symbolicAddress",
+            symbolicAddress.getBytes(StandardCharsets.UTF_8).length * 8,
+            symbolicAddress, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
 
         writeBuffer.popContext(getClass().getSimpleName());
     }

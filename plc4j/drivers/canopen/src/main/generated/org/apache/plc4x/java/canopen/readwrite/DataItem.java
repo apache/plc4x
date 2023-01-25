@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.time.*;
 import java.util.*;
 import org.apache.plc4x.java.api.value.*;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.EvaluationHelper;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -175,21 +176,21 @@ public class DataItem {
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", size, "UTF-8");
+          readBuffer.readString("", size, WithOption.WithEncoding("UTF-8"));
 
       return new PlcSTRING(value);
     } else if (EvaluationHelper.equals(dataType, CANOpenDataType.VISIBLE_STRING)) { // STRING
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", size, "UTF-8");
+          readBuffer.readString("", size, WithOption.WithEncoding("UTF-8"));
 
       return new PlcSTRING(value);
     } else if (EvaluationHelper.equals(dataType, CANOpenDataType.UNICODE_STRING)) { // STRING
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", (size) / (8), "UTF-8");
+          readBuffer.readString("", (size) / (8), WithOption.WithEncoding("UTF-8"));
 
       return new PlcSTRING(value);
     }
@@ -316,17 +317,20 @@ public class DataItem {
       // Simple Field (value)
       String value = (String) _value.getString();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString("", size, "UTF-8", (String) (value));
+      /*TODO: migrate me*/ writeBuffer.writeString(
+          "", size, (String) (value), WithOption.WithEncoding("UTF-8"));
     } else if (EvaluationHelper.equals(dataType, CANOpenDataType.VISIBLE_STRING)) { // STRING
       // Simple Field (value)
       String value = (String) _value.getString();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString("", size, "UTF-8", (String) (value));
+      /*TODO: migrate me*/ writeBuffer.writeString(
+          "", size, (String) (value), WithOption.WithEncoding("UTF-8"));
     } else if (EvaluationHelper.equals(dataType, CANOpenDataType.UNICODE_STRING)) { // STRING
       // Simple Field (value)
       String value = (String) _value.getString();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString("", (size) / (8), "UTF-8", (String) (value));
+      /*TODO: migrate me*/ writeBuffer.writeString(
+          "", (size) / (8), (String) (value), WithOption.WithEncoding("UTF-8"));
     }
   }
 

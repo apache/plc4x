@@ -184,7 +184,8 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         "PnIoCm_ArType",
         arType,
         new DataWriterEnumDefault<>(
-            PnIoCm_ArType::getValue, PnIoCm_ArType::name, writeUnsignedInt(writeBuffer, 16)));
+            PnIoCm_ArType::getValue, PnIoCm_ArType::name, writeUnsignedInt(writeBuffer, 16)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (arUuid)
     writeSimpleField(
@@ -239,7 +240,8 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (long) 0x00000,
-        writeUnsignedLong(writeBuffer, 17));
+        writeUnsignedLong(writeBuffer, 17),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (acknowledgeCompanionAr)
     writeSimpleField(
@@ -256,7 +258,8 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         new DataWriterEnumDefault<>(
             PnIoCm_CompanionArType::getValue,
             PnIoCm_CompanionArType::name,
-            writeUnsignedByte(writeBuffer, 2)));
+            writeUnsignedByte(writeBuffer, 2)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (deviceAccess)
     writeSimpleField(
@@ -269,7 +272,8 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (byte) 0x0,
-        writeUnsignedByte(writeBuffer, 3));
+        writeUnsignedByte(writeBuffer, 3),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (cmInitiator)
     writeSimpleField(
@@ -291,7 +295,8 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         "PnIoCm_State",
         state,
         new DataWriterEnumDefault<>(
-            PnIoCm_State::getValue, PnIoCm_State::name, writeUnsignedByte(writeBuffer, 3)));
+            PnIoCm_State::getValue, PnIoCm_State::name, writeUnsignedByte(writeBuffer, 3)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (cmInitiatorActivityTimeoutFactor)
     writeSimpleField(
@@ -310,7 +315,11 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     // Implicit Field (stationNameLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int stationNameLength = (int) (STR_LEN(getCmInitiatorStationName()));
-    writeImplicitField("stationNameLength", stationNameLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "stationNameLength",
+        stationNameLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (cmInitiatorStationName)
     writeSimpleField(

@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.opm;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.apache.plc4x.java.mock.connection.MockConnection;
@@ -42,7 +42,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class ConnectedEntityTest {
 
-    PlcDriverManager driverManager;
+    DefaultPlcDriverManager driverManager;
 
     MockConnection connection;
 
@@ -53,7 +53,7 @@ public class ConnectedEntityTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        driverManager = new PlcDriverManager();
+        driverManager = new DefaultPlcDriverManager();
         connection = (MockConnection) driverManager.getConnection("mock:cached");
         when(mockDevice.read(any()))
             .thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcSTRING("hallo")));

@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.plc4x;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -26,7 +26,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 public class Plc4xReadClient {
 
     public static void main(String[] args) throws Exception {
-        try (final PlcConnection connection = new PlcDriverManager().getConnection("plc4x://localhost?remote-connection-string=simulated%3A%2F%2Flocalhost")) {
+        try (final PlcConnection connection = new DefaultPlcDriverManager().getConnection("plc4x://localhost?remote-connection-string=simulated%3A%2F%2Flocalhost")) {
             final PlcReadRequest.Builder requestBuilder = connection.readRequestBuilder();
             requestBuilder.addTagAddress("test-BOOL", "RANDOM/foo:BOOL");
             requestBuilder.addTagAddress("test-BYTE", "RANDOM/foo:BYTE");

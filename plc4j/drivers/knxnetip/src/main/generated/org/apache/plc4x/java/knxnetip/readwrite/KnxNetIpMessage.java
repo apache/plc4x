@@ -62,18 +62,34 @@ public abstract class KnxNetIpMessage implements Message {
     // Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     short headerLength = (short) (6);
-    writeImplicitField("headerLength", headerLength, writeUnsignedShort(writeBuffer, 8));
+    writeImplicitField(
+        "headerLength",
+        headerLength,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (protocolVersion)
-    writeConstField("protocolVersion", PROTOCOLVERSION, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "protocolVersion",
+        PROTOCOLVERSION,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Discriminator Field (msgType) (Used as input to a switch field)
-    writeDiscriminatorField("msgType", getMsgType(), writeUnsignedInt(writeBuffer, 16));
+    writeDiscriminatorField(
+        "msgType",
+        getMsgType(),
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (totalLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int totalLength = (int) (getLengthInBytes());
-    writeImplicitField("totalLength", totalLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "totalLength",
+        totalLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializeKnxNetIpMessageChild(writeBuffer);

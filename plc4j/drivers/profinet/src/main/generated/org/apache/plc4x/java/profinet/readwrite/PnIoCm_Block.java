@@ -72,12 +72,17 @@ public abstract class PnIoCm_Block implements Message {
         "PnIoCm_BlockType",
         getBlockType(),
         new DataWriterEnumDefault<>(
-            PnIoCm_BlockType::getValue, PnIoCm_BlockType::name, writeUnsignedInt(writeBuffer, 16)));
+            PnIoCm_BlockType::getValue, PnIoCm_BlockType::name, writeUnsignedInt(writeBuffer, 16)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int blockLength = (int) ((getLengthInBytes()) - (4));
-    writeImplicitField("blockLength", blockLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "blockLength",
+        blockLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (blockVersionHigh)
     writeSimpleField(

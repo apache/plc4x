@@ -110,32 +110,47 @@ public class SocketCANFrame implements Message {
     // Implicit Field (size) (Used for parsing, but its value is not stored as it's implicitly given
     // by the objects content)
     short size = (short) (COUNT(getData()));
-    writeImplicitField("size", size, writeUnsignedShort(writeBuffer, 8));
+    writeImplicitField(
+        "size",
+        size,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (short) 0x0,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (short) 0x0,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField2 != null ? reservedField2 : (short) 0x0,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Array Field (data)
-    writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "data",
+        data,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Padding Field (padding)
     writePaddingField(
-        "padding", (int) ((8) - ((COUNT(data)))), (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+        "padding",
+        (int) ((8) - ((COUNT(data)))),
+        (short) 0x00,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("SocketCANFrame");
   }

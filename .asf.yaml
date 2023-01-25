@@ -58,9 +58,21 @@ github:
 
   del_branch_on_merge: true
 
+  # Attempt to make the auto-generated github emails more easily readable in email clients.
+  custom_subjects:
+    new_pr: "[PR] {title} ({repository})"
+    close_pr: "Re: [PR] {title} ({repository})"
+    comment_pr: "Re: [PR] {title} ({repository})"
+    diffcomment: "Re: [PR] {title} ({repository})"
+    merge_pr: "Re: [PR] {title} ({repository})"
+    new_issue: "[I] {title} ({repository})"
+    comment_issue: "Re: [I] {title} ({repository})"
+    close_issue: "Re: [I] {title} ({repository})"
+    catchall: "[GH] {title} ({repository})"
+
 notifications:
   commits:              commits@plc4x.apache.org
-  issues:               issues@plc4x.apache.org
+  issues:               dev@plc4x.apache.org
   pullrequests_status:  dev@plc4x.apache.org
   pullrequests_comment: dev@plc4x.apache.org
   # Send dependabot PRs to commits@ instead

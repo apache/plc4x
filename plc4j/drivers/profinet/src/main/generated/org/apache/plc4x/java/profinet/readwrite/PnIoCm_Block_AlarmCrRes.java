@@ -85,7 +85,8 @@ public class PnIoCm_Block_AlarmCrRes extends PnIoCm_Block implements Message {
         new DataWriterEnumDefault<>(
             PnIoCm_AlarmCrType::getValue,
             PnIoCm_AlarmCrType::name,
-            writeUnsignedInt(writeBuffer, 16)));
+            writeUnsignedInt(writeBuffer, 16)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (localAlarmReference)
     writeSimpleField(

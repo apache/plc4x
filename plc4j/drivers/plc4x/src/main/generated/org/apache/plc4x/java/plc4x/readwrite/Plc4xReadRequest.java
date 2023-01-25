@@ -76,10 +76,15 @@ public class Plc4xReadRequest extends Plc4xMessage implements Message {
     // Implicit Field (numTags) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     short numTags = (short) (COUNT(getTags()));
-    writeImplicitField("numTags", numTags, writeUnsignedShort(writeBuffer, 8));
+    writeImplicitField(
+        "numTags",
+        numTags,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (tags)
-    writeComplexTypeArrayField("tags", tags, writeBuffer);
+    writeComplexTypeArrayField(
+        "tags", tags, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("Plc4xReadRequest");
   }

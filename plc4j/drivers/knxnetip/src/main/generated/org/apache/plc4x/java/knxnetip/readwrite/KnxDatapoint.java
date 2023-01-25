@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.time.*;
 import java.util.*;
 import org.apache.plc4x.java.api.value.*;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.EvaluationHelper;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -298,7 +299,7 @@ public class KnxDatapoint {
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 8, "UTF-8");
+          readBuffer.readString("", 8, WithOption.WithEncoding("UTF-8"));
 
       return new PlcCHAR(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.WCHAR)) { // WCHAR
@@ -315,7 +316,7 @@ public class KnxDatapoint {
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 16, "UTF-16");
+          readBuffer.readString("", 16, WithOption.WithEncoding("UTF-16"));
 
       return new PlcWCHAR(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.TIME)) { // TIME
@@ -1233,7 +1234,7 @@ public class KnxDatapoint {
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 8, "ASCII");
+          readBuffer.readString("", 8, WithOption.WithEncoding("ASCII"));
 
       return new PlcSTRING(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Char_8859_1)) { // STRING
@@ -1250,7 +1251,7 @@ public class KnxDatapoint {
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 8, "ISO-8859-1");
+          readBuffer.readString("", 8, WithOption.WithEncoding("ISO-8859-1"));
 
       return new PlcSTRING(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Scaling)) { // USINT
@@ -4022,7 +4023,7 @@ public class KnxDatapoint {
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 112, "ASCII");
+          readBuffer.readString("", 112, WithOption.WithEncoding("ASCII"));
 
       return new PlcSTRING(value);
     } else if (EvaluationHelper.equals(
@@ -4040,7 +4041,7 @@ public class KnxDatapoint {
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 112, "ISO-8859-1");
+          readBuffer.readString("", 112, WithOption.WithEncoding("ISO-8859-1"));
 
       return new PlcSTRING(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_SceneNumber)) { // USINT
@@ -7148,7 +7149,7 @@ public class KnxDatapoint {
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 16, "ASCII");
+          readBuffer.readString("", 16, WithOption.WithEncoding("ASCII"));
 
       return new PlcSTRING(value);
     } else if (EvaluationHelper.equals(
@@ -8344,7 +8345,8 @@ public class KnxDatapoint {
       // Simple Field (value)
       String value = (String) _value.getString();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString("", 8, "UTF-8", (String) (value));
+      /*TODO: migrate me*/ writeBuffer.writeString(
+          "", 8, (String) (value), WithOption.WithEncoding("UTF-8"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.WCHAR)) { // WCHAR
       // Reserved Field
       /*TODO: migrate me*/
@@ -8353,7 +8355,8 @@ public class KnxDatapoint {
       // Simple Field (value)
       String value = (String) _value.getString();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString("", 16, "UTF-16", (String) (value));
+      /*TODO: migrate me*/ writeBuffer.writeString(
+          "", 16, (String) (value), WithOption.WithEncoding("UTF-16"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.TIME)) { // TIME
       // Reserved Field
       /*TODO: migrate me*/
@@ -8903,7 +8906,8 @@ public class KnxDatapoint {
       // Simple Field (value)
       String value = (String) _value.getString();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString("", 8, "ASCII", (String) (value));
+      /*TODO: migrate me*/ writeBuffer.writeString(
+          "", 8, (String) (value), WithOption.WithEncoding("ASCII"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Char_8859_1)) { // STRING
       // Reserved Field
       /*TODO: migrate me*/
@@ -8912,7 +8916,8 @@ public class KnxDatapoint {
       // Simple Field (value)
       String value = (String) _value.getString();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString("", 8, "ISO-8859-1", (String) (value));
+      /*TODO: migrate me*/ writeBuffer.writeString(
+          "", 8, (String) (value), WithOption.WithEncoding("ISO-8859-1"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Scaling)) { // USINT
       // Reserved Field
       /*TODO: migrate me*/
@@ -10531,7 +10536,8 @@ public class KnxDatapoint {
       // Simple Field (value)
       String value = (String) _value.getString();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString("", 112, "ASCII", (String) (value));
+      /*TODO: migrate me*/ writeBuffer.writeString(
+          "", 112, (String) (value), WithOption.WithEncoding("ASCII"));
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_String_8859_1)) { // STRING
       // Reserved Field
@@ -10541,7 +10547,8 @@ public class KnxDatapoint {
       // Simple Field (value)
       String value = (String) _value.getString();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString("", 112, "ISO-8859-1", (String) (value));
+      /*TODO: migrate me*/ writeBuffer.writeString(
+          "", 112, (String) (value), WithOption.WithEncoding("ISO-8859-1"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_SceneNumber)) { // USINT
       // Reserved Field
       /*TODO: migrate me*/
@@ -12641,7 +12648,8 @@ public class KnxDatapoint {
       // Simple Field (value)
       String value = (String) _value.getString();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString("", 16, "ASCII", (String) (value));
+      /*TODO: migrate me*/ writeBuffer.writeString(
+          "", 16, (String) (value), WithOption.WithEncoding("ASCII"));
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_Tariff_ActiveEnergy)) { // Struct
       // Reserved Field

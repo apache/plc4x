@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.modbus.readwrite.*;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
@@ -179,7 +180,9 @@ public abstract class ModbusTag implements PlcTag, Serializable {
         writeBuffer.writeUnsignedInt("address", 16, address);
         writeBuffer.writeUnsignedInt("numberOfElements", 16, getNumberOfElements());
         String dataType = getDataType().name();
-        writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);
+        writeBuffer.writeString("dataType",
+            dataType.getBytes(StandardCharsets.UTF_8).length * 8,
+            dataType, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
 
         writeBuffer.popContext(getClass().getSimpleName());
     }

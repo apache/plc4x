@@ -317,7 +317,8 @@ public class AdsSymbolTableEntry implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeUnsignedByte(writeBuffer, 3));
+        writeUnsignedByte(writeBuffer, 3),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (flagExtendedFlags)
     writeSimpleField(
@@ -358,22 +359,35 @@ public class AdsSymbolTableEntry implements Message {
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Implicit Field (nameLength) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int nameLength = (int) (STR_LEN(getName()));
-    writeImplicitField("nameLength", nameLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "nameLength",
+        nameLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Implicit Field (dataTypeNameLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int dataTypeNameLength = (int) (STR_LEN(getDataTypeName()));
-    writeImplicitField("dataTypeNameLength", dataTypeNameLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "dataTypeNameLength",
+        dataTypeNameLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Implicit Field (commentLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int commentLength = (int) (STR_LEN(getComment()));
-    writeImplicitField("commentLength", commentLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "commentLength",
+        commentLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (name)
     writeSimpleField(
@@ -383,7 +397,11 @@ public class AdsSymbolTableEntry implements Message {
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Const Field (nameTerminator)
-    writeConstField("nameTerminator", NAMETERMINATOR, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "nameTerminator",
+        NAMETERMINATOR,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (dataTypeName)
     writeSimpleField(
@@ -394,7 +412,10 @@ public class AdsSymbolTableEntry implements Message {
 
     // Const Field (dataTypeNameTerminator)
     writeConstField(
-        "dataTypeNameTerminator", DATATYPENAMETERMINATOR, writeUnsignedShort(writeBuffer, 8));
+        "dataTypeNameTerminator",
+        DATATYPENAMETERMINATOR,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (comment)
     writeSimpleField(
@@ -404,10 +425,18 @@ public class AdsSymbolTableEntry implements Message {
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Const Field (commentTerminator)
-    writeConstField("commentTerminator", COMMENTTERMINATOR, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "commentTerminator",
+        COMMENTTERMINATOR,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Array Field (rest)
-    writeByteArrayField("rest", rest, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "rest",
+        rest,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("AdsSymbolTableEntry");
   }
