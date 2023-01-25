@@ -31,6 +31,7 @@ import org.apache.plc4x.java.s7.events.S7SysEvent;
 import org.apache.plc4x.java.s7.readwrite.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.readwrite.ModeTransitionType;
 import org.apache.plc4x.java.s7.utils.S7DiagnosticEventId;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -1932,9 +1933,9 @@ public class StaticHelper {
 
     public static String parseS7Char(ReadBuffer io, String encoding) throws ParseException {
         if ("UTF-8".equalsIgnoreCase(encoding)) {
-            return io.readString(8, encoding);
+            return io.readString(8, WithOption.WithEncoding(encoding));
         } else if ("UTF-16".equalsIgnoreCase(encoding)) {
-            return io.readString(16, encoding);
+            return io.readString(16, WithOption.WithEncoding(encoding));
         } else {
             throw new PlcRuntimeException("Unsupported encoding");
         }
