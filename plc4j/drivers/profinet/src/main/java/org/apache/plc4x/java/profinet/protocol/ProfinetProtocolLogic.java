@@ -28,6 +28,7 @@ import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.device.ProfinetChannel;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
 import org.apache.plc4x.java.profinet.device.ProfinetDeviceMessageHandler;
+import org.apache.plc4x.java.profinet.device.ProfinetSubscriptionHandle;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.profinet.tag.ProfinetTag;
@@ -205,10 +206,14 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
             for (String fieldName : subscriptionRequest.getTagNames()) {
                 final DefaultPlcSubscriptionTag fieldDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(fieldName);
+                String device = fieldDefaultPlcSubscription.getAddressString().split("\\.")[0].toUpperCase();
+                ProfinetSubscriptionHandle subscriptionHandle = driverContext.getConfiguration().getDevices().getConfiguredDevices().get(device).getDeviceContext().getSubscriptionHandle();
+                subscriptionHandle.addTag(fieldDefaultPlcSubscription.getAddressString(), fieldName);
+
                 if (!(fieldDefaultPlcSubscription.getTag() instanceof ProfinetTag)) {
                     values.put(fieldName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
                 } else {
-                    values.put(fieldName, new ResponseItem<>(PlcResponseCode.OK, driverContext.getSubscriptions().get(subscriptionId)));
+                    values.put(fieldName, new ResponseItem<>(PlcResponseCode.OK, subscriptionHandle));
                 }
             }
             return new DefaultPlcSubscriptionResponse(subscriptionRequest, values);

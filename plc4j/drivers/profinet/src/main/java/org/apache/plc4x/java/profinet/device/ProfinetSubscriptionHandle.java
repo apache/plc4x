@@ -21,15 +21,14 @@ package org.apache.plc4x.java.profinet.device;
 
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class ProfinetSubscriptionHandle extends DefaultPlcSubscriptionHandle {
@@ -37,6 +36,7 @@ public class ProfinetSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfinetSubscriptionHandle.class);
     private Set<Consumer<PlcSubscriptionEvent>> consumers = new HashSet<>();
     private PlcSubscriber plcSubscriber;
+    private Map<String, String> tags = new HashMap<>();
 
     public ProfinetSubscriptionHandle(PlcSubscriber plcSubscriber) {
         super(plcSubscriber);
@@ -58,5 +58,13 @@ public class ProfinetSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
     public Set<Consumer<PlcSubscriptionEvent>> getConsumers() {
         return consumers;
+    }
+
+    public void addTag(String address, String tag) {
+        this.tags.put(address, tag);
+    }
+
+    public Map<String, String> getTags() {
+        return tags;
     }
 }

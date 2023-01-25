@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
 import org.apache.plc4x.java.profinet.gsdml.*;
@@ -411,8 +412,17 @@ public class ProfinetDevice {
                 module.parseTags(tags, deviceContext.getDeviceName(), buffer);
             }
 
+            Set<Map.Entry<String, ResponseItem<PlcValue>>> entries = tags.entrySet();
+            Map<String, ResponseItem<PlcValue>> publishedTags = new HashMap<>();
+            for (Map.Entry<String, ResponseItem<PlcValue>> entry : tags.entrySet()) {
+                Map<String, String> consumerTags = deviceContext.getSubscriptionHandle().getTags();
+                if (consumerTags.containsKey(entry.getKey())) {
+                    publishedTags.put(consumerTags.get(entry.getKey()), entry.getValue());
+                }
+            }
+
             for (Consumer<PlcSubscriptionEvent> consumer : deviceContext.getSubscriptionHandle().getConsumers()) {
-                consumer.accept(new DefaultPlcSubscriptionEvent(Instant.now(), tags));
+                consumer.accept(new DefaultPlcSubscriptionEvent(Instant.now(), publishedTags));
             }
         } catch (ParseException e) {
             throw new RuntimeException(e);
