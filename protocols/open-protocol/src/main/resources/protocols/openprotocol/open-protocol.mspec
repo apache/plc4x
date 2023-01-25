@@ -24,110 +24,110 @@
     [const          uint 16     tcpDefaultPort 4545]
 ]
 
-[discriminatedType OpenProtocolMessage
-    [implicit      uint 32              length               'lengthInBytes'      encoding='"AsciiUint"']
-    [discriminator Mid                  mid                                                             ]
-    [simple        OpenProtocolRevision revision                                                        ]
-    [simple        uint 8               noAckFlag                                                       ]
-    [simple        uint 16              stationId                                 encoding='"AsciiUint"']
-    [simple        uint 16              spindleId                                 encoding='"AsciiUint"']
-    [simple        uint 16              sequenceNumber                            encoding='"AsciiUint"']
-    [simple        uint 8               numberOfMessageParts                      encoding='"AsciiUint"']
-    [simple        uint 8               messagePartNumber                         encoding='"AsciiUint"']
+[discriminatedType OpenProtocolMessage(OpenProtocolRevision connectionRevision)
+    [implicit      uint 32              length               'lengthInBytes - 1'                encoding='"ASCII"'                      ]
+    [discriminator Mid                  mid                                                     encoding='"ASCII"'                      ]
+    [optional      OpenProtocolRevision selectedRevision                                        encoding='"ASCII"' nullBytesHex='202020']
+    [optional      uint 8               noAckFlag                                               encoding='"ASCII"' nullBytesHex='20'    ]
+    [optional      uint 16              stationId                                               encoding='"ASCII"' nullBytesHex='2020'  ]
+    [optional      uint 16              spindleId                                               encoding='"ASCII"' nullBytesHex='2020'  ]
+    [optional      uint 16              sequenceNumber                                          encoding='"ASCII"' nullBytesHex='2020'  ]
+    [optional      uint 8               numberOfMessageParts                                    encoding='"ASCII"' nullBytesHex='20'    ]
+    [optional      uint 8               messagePartNumber                                       encoding='"ASCII"' nullBytesHex='20'    ]
     [typeSwitch mid
         ['ApplicationCommunicationStart' *ApplicationCommunicationStart
         ]
-        ['ApplicationCommunicationStartAcknowledge' *ApplicationCommunicationStartAcknowledge(OpenProtocolRevision revision)
-            [array ApplicationCommunicationStartAcknowledgeBlock blocks           count 'revision.numCommunicationStartAcknowledgeBlocks']
+        ['ApplicationCommunicationStartAcknowledge' *ApplicationCommunicationStartAcknowledge
+            [array ApplicationCommunicationStartAcknowledgeBlock blocks           count 'connectionRevision.numCommunicationStartAcknowledgeBlocks']
         ]
         ['ApplicationCommunicationStop' *ApplicationCommunicationStop
         ]
         ['ApplicationCommandError' *ApplicationCommandError
-            [simple Mid                  requestMid]
-            [simple Error                error     ]
+            [simple Mid                    requestMid                                           encoding='"ASCII"']
+            [simple Error                  error                                                encoding='"ASCII"']
         ]
         ['ApplicationCommandAccepted' *ApplicationCommandAccepted
-            [simple Mid                  requestMid]
+            [simple Mid                    requestMid                                           encoding='"ASCII"']
         ]
         ['ApplicationGenericDataRequest' *ApplicationGenericDataRequest
-            [simple   Mid                  requestMid                             ]
-            [simple   OpenProtocolRevision wantedRevision                         ]
-            [implicit uint 16              extraDataLength 'COUNT(extraData)'     ]
-            [array    byte                 extraData       count 'extraDataLength']
+            [simple   Mid                  requestMid                                           encoding='"ASCII"']
+            [simple   OpenProtocolRevision revision                                             encoding='"ASCII"']
+            [implicit uint 16              extraDataLength 'COUNT(extraData)'                   encoding='"ASCII"']
+            [array    byte                 extraData       count 'extraDataLength'                                    ]
         ]
     ]
-    [const         uint 8  end                  0x00                                     ]
+    [const         uint 8  end                  0x00                                                              ]
 ]
 
 [discriminatedType ApplicationCommunicationStartAcknowledgeBlock
-    [discriminator uint 16 blockType encoding='"AsciiUint"']
+    [discriminator uint 16 blockType encoding='"ASCII"']
     [typeSwitch blockType
         // Revision 1
         ['1' *CellId
-            [simple   uint 32    cellId                    encoding='"AsciiUint"']
+            [simple   uint 32    cellId                    encoding='"ASCII"']
         ]
         ['2' *ChannelId
-            [simple   uint 16    channelId                 encoding='"AsciiUint"']
+            [simple   uint 16    channelId                 encoding='"ASCII"']
         ]
         ['3' *ControllerName
-            [simple   string 200 controllerName            encoding='"ASCII"'    ]
+            [simple   string 200 controllerName            encoding='"ASCII"']
         ]
 
         // Additional Blocks for Revision 2
         ['4' *SupplierCode
-            [simple   uint 24    supplierCode              encoding='"AsciiUint"']
+            [simple   uint 24    supplierCode              encoding='"ASCII"']
         ]
 
         // Additional Blocks for Revision 3
         ['5' *OpenProtocolVersion
-            [simple   string 152 openProtocolVersion       encoding='"ASCII"'    ]
+            [simple   string 152 openProtocolVersion       encoding='"ASCII"']
         ]
         ['6' *ControllerSoftwareVersion
-            [simple   string 152 controllerSoftwareVersion encoding='"ASCII"'    ]
+            [simple   string 152 controllerSoftwareVersion encoding='"ASCII"']
         ]
         ['7' *ToolSoftwareVersion
-            [simple   string 152 toolSoftwareVersion       encoding='"ASCII"'    ]
+            [simple   string 152 toolSoftwareVersion       encoding='"ASCII"']
         ]
 
         // Additional Blocks for Revision 4
         ['8' *RbuType
-            [simple   string 192 rbuType                   encoding='"ASCII"'    ]
+            [simple   string 192 rbuType                   encoding='"ASCII"']
         ]
         ['9' *ControllerSerialNumber
-            [simple   string 80  controllerSerialNumber    encoding='"ASCII"'    ]
+            [simple   string 80  controllerSerialNumber    encoding='"ASCII"']
         ]
 
         // Additional Blocks for Revision 5
         ['10' *SystemType
-            [simple   string 24  systemType                encoding='"ASCII"'    ]
+            [simple   string 24  systemType                encoding='"ASCII"']
         ]
         ['11' *SystemSubtype
-            [simple   string 24  systemSubtype             encoding='"ASCII"'    ]
+            [simple   string 24  systemSubtype             encoding='"ASCII"']
         ]
 
         // Additional Blocks for Revision 6
         ['12' *SequenceNumberSupport
-            [reserved uint 7     '0x00'                                        ]
-            [simple   bit        sequenceNumberSupport                         ]
+            [reserved uint 7     '0x00'                                      ]
+            [simple   bit        sequenceNumberSupport                       ]
         ]
         ['13' *LinkingHandlingSupport
-            [reserved uint 7     '0x00'                                        ]
-            [simple   bit        linkingHandlingSupport                        ]
+            [reserved uint 7     '0x00'                                      ]
+            [simple   bit        linkingHandlingSupport                      ]
         ]
         ['14' *StationId
-            [simple   string 80  stationId                 encoding='"ASCII"'    ]
+            [simple   string 80  stationId                 encoding='"ASCII"']
         ]
         ['15' *StationName
-            [simple   string 200 stationName               encoding='"ASCII"'    ]
+            [simple   string 200 stationName               encoding='"ASCII"']
         ]
         ['16' *ClientId
-            [simple   uint 8     clientId                  encoding='"AsciiUint"']
+            [simple   uint 8     clientId                  encoding='"ASCII"']
         ]
     ]
 ]
 
 // Depending on the revision of the device, a different number of blocks are supported.
-[enum uint 24 OpenProtocolRevision(uint 8 numCommunicationStartAcknowledgeBlocks) encoding='"AsciiUint"'
+[enum uint 24 OpenProtocolRevision(uint 8 numCommunicationStartAcknowledgeBlocks) encoding='"ASCII"'
     ['1' Revision1                [       '3'                                   ]]
     ['2' Revision2                [       '4'                                   ]]
     ['3' Revision3                [       '7'                                   ]]
@@ -160,7 +160,7 @@
     [NewGroupsMessage                   ] // 2600 - 9999
 ]
 
-[enum uint 32 Mid   encoding='"AsciiUint"'
+[enum uint 32 Mid   encoding='"ASCII"'
     ['1' ApplicationCommunicationStart               ] // *
     ['2' ApplicationCommunicationStartAcknowledge    ] // *
     ['3' ApplicationCommunicationStop                ]
@@ -379,7 +379,7 @@
     ['9999' KeepAliveOpenProtocolCommunication          ] // *
 ]
 
-[enum uint 16 Error encoding='"AsciiUint"'
+[enum uint 16 Error encoding='"ASCII"'
     ['0'  NoError]
     ['1'  InvalidData]
     ['2'  ParameterSetIdNotPresent]

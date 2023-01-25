@@ -215,7 +215,11 @@ public class DceRpc_Packet implements Message {
     writeBuffer.pushContext("DceRpc_Packet");
 
     // Const Field (version)
-    writeConstField("version", VERSION, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "version",
+        VERSION,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (packetType)
     writeSimpleEnumField(
@@ -225,16 +229,22 @@ public class DceRpc_Packet implements Message {
         new DataWriterEnumDefault<>(
             DceRpc_PacketType::getValue,
             DceRpc_PacketType::name,
-            writeUnsignedShort(writeBuffer, 8)));
+            writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (boolean) false,
-        writeBoolean(writeBuffer));
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (broadcast)
-    writeConstField("broadcast", BROADCAST, writeBoolean(writeBuffer));
+    writeConstField(
+        "broadcast",
+        BROADCAST,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (idempotent)
     writeSimpleField(
@@ -244,7 +254,8 @@ public class DceRpc_Packet implements Message {
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (maybe)
-    writeConstField("maybe", MAYBE, writeBoolean(writeBuffer));
+    writeConstField(
+        "maybe", MAYBE, writeBoolean(writeBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (noFragmentAcknowledgeRequested)
     writeSimpleField(
@@ -254,7 +265,11 @@ public class DceRpc_Packet implements Message {
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (fragment)
-    writeConstField("fragment", FRAGMENT, writeBoolean(writeBuffer));
+    writeConstField(
+        "fragment",
+        FRAGMENT,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (lastFragment)
     writeSimpleField(
@@ -267,22 +282,29 @@ public class DceRpc_Packet implements Message {
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (boolean) false,
-        writeBoolean(writeBuffer));
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField2 != null ? reservedField2 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 6));
+        writeUnsignedShort(writeBuffer, 6),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (cancelWasPending)
-    writeConstField("cancelWasPending", CANCELWASPENDING, writeBoolean(writeBuffer));
+    writeConstField(
+        "cancelWasPending",
+        CANCELWASPENDING,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField3 != null ? reservedField3 : (boolean) false,
-        writeBoolean(writeBuffer));
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (integerEncoding)
     writeSimpleEnumField(
@@ -290,7 +312,8 @@ public class DceRpc_Packet implements Message {
         "IntegerEncoding",
         integerEncoding,
         new DataWriterEnumDefault<>(
-            IntegerEncoding::getValue, IntegerEncoding::name, writeUnsignedByte(writeBuffer, 4)));
+            IntegerEncoding::getValue, IntegerEncoding::name, writeUnsignedByte(writeBuffer, 4)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (characterEncoding)
     writeSimpleEnumField(
@@ -300,7 +323,8 @@ public class DceRpc_Packet implements Message {
         new DataWriterEnumDefault<>(
             CharacterEncoding::getValue,
             CharacterEncoding::name,
-            writeUnsignedByte(writeBuffer, 4)));
+            writeUnsignedByte(writeBuffer, 4)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (floatingPointEncoding)
     writeSimpleEnumField(
@@ -310,16 +334,22 @@ public class DceRpc_Packet implements Message {
         new DataWriterEnumDefault<>(
             FloatingPointEncoding::getValue,
             FloatingPointEncoding::name,
-            writeUnsignedShort(writeBuffer, 8)));
+            writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField4 != null ? reservedField4 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (serialHigh)
-    writeConstField("serialHigh", SERIALHIGH, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "serialHigh",
+        SERIALHIGH,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (objectUuid)
     writeSimpleField(
@@ -362,7 +392,14 @@ public class DceRpc_Packet implements Message {
                 : ByteOrder.LITTLE_ENDIAN)));
 
     // Const Field (interfaceVer)
-    writeConstField("interfaceVer", INTERFACEVER, writeUnsignedLong(writeBuffer, 32));
+    writeConstField(
+        "interfaceVer",
+        INTERFACEVER,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(
+            (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (sequenceNumber)
     writeSimpleField(
@@ -380,27 +417,70 @@ public class DceRpc_Packet implements Message {
         "DceRpc_Operation",
         operation,
         new DataWriterEnumDefault<>(
-            DceRpc_Operation::getValue, DceRpc_Operation::name, writeUnsignedInt(writeBuffer, 16)));
+            DceRpc_Operation::getValue, DceRpc_Operation::name, writeUnsignedInt(writeBuffer, 16)),
+        WithOption.WithByteOrder(
+            (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Const Field (interfaceHint)
-    writeConstField("interfaceHint", INTERFACEHINT, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "interfaceHint",
+        INTERFACEHINT,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Const Field (activityHint)
-    writeConstField("activityHint", ACTIVITYHINT, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "activityHint",
+        ACTIVITYHINT,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Implicit Field (lengthOfBody) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int lengthOfBody = (int) (getPayload().getLengthInBytes());
-    writeImplicitField("lengthOfBody", lengthOfBody, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "lengthOfBody",
+        lengthOfBody,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Const Field (fragmentNum)
-    writeConstField("fragmentNum", FRAGMENTNUM, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "fragmentNum",
+        FRAGMENTNUM,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Const Field (authProto)
-    writeConstField("authProto", AUTHPROTO, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "authProto",
+        AUTHPROTO,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Const Field (serialLow)
-    writeConstField("serialLow", SERIALLOW, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "serialLow",
+        SERIALLOW,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (payload)
     writeSimpleField(

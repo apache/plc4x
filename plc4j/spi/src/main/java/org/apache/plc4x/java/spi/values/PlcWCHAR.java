@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
@@ -312,7 +313,9 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         String valueString = value.toString();
-        writeBuffer.writeString(getClass().getSimpleName(), 16, StandardCharsets.UTF_8.name(), valueString);
+        writeBuffer.writeString(getClass().getSimpleName(),
+            16,
+            valueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
     }
 
 }

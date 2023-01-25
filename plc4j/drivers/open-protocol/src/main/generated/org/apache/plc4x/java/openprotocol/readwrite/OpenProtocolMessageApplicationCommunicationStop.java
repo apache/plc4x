@@ -43,22 +43,28 @@ public class OpenProtocolMessageApplicationCommunicationStop extends OpenProtoco
     return Mid.ApplicationCommunicationStop;
   }
 
+  // Arguments.
+  protected final OpenProtocolRevision connectionRevision;
+
   public OpenProtocolMessageApplicationCommunicationStop(
-      OpenProtocolRevision revision,
-      short noAckFlag,
-      int stationId,
-      int spindleId,
-      int sequenceNumber,
-      short numberOfMessageParts,
-      short messagePartNumber) {
+      OpenProtocolRevision selectedRevision,
+      Short noAckFlag,
+      Integer stationId,
+      Integer spindleId,
+      Integer sequenceNumber,
+      Short numberOfMessageParts,
+      Short messagePartNumber,
+      OpenProtocolRevision connectionRevision) {
     super(
-        revision,
+        selectedRevision,
         noAckFlag,
         stationId,
         spindleId,
         sequenceNumber,
         numberOfMessageParts,
-        messagePartNumber);
+        messagePartNumber,
+        connectionRevision);
+    this.connectionRevision = connectionRevision;
   }
 
   @Override
@@ -85,7 +91,7 @@ public class OpenProtocolMessageApplicationCommunicationStop extends OpenProtoco
   }
 
   public static OpenProtocolMessageApplicationCommunicationStopBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+      ReadBuffer readBuffer, OpenProtocolRevision connectionRevision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommunicationStop");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -93,32 +99,39 @@ public class OpenProtocolMessageApplicationCommunicationStop extends OpenProtoco
 
     readBuffer.closeContext("OpenProtocolMessageApplicationCommunicationStop");
     // Create the instance
-    return new OpenProtocolMessageApplicationCommunicationStopBuilder();
+    return new OpenProtocolMessageApplicationCommunicationStopBuilder(connectionRevision);
   }
 
   public static class OpenProtocolMessageApplicationCommunicationStopBuilder
       implements OpenProtocolMessage.OpenProtocolMessageBuilder {
+    private final OpenProtocolRevision connectionRevision;
 
-    public OpenProtocolMessageApplicationCommunicationStopBuilder() {}
+    public OpenProtocolMessageApplicationCommunicationStopBuilder(
+        OpenProtocolRevision connectionRevision) {
+
+      this.connectionRevision = connectionRevision;
+    }
 
     public OpenProtocolMessageApplicationCommunicationStop build(
-        OpenProtocolRevision revision,
-        short noAckFlag,
-        int stationId,
-        int spindleId,
-        int sequenceNumber,
-        short numberOfMessageParts,
-        short messagePartNumber) {
+        OpenProtocolRevision selectedRevision,
+        Short noAckFlag,
+        Integer stationId,
+        Integer spindleId,
+        Integer sequenceNumber,
+        Short numberOfMessageParts,
+        Short messagePartNumber,
+        OpenProtocolRevision connectionRevision) {
       OpenProtocolMessageApplicationCommunicationStop
           openProtocolMessageApplicationCommunicationStop =
               new OpenProtocolMessageApplicationCommunicationStop(
-                  revision,
+                  selectedRevision,
                   noAckFlag,
                   stationId,
                   spindleId,
                   sequenceNumber,
                   numberOfMessageParts,
-                  messagePartNumber);
+                  messagePartNumber,
+                  connectionRevision);
       return openProtocolMessageApplicationCommunicationStop;
     }
   }

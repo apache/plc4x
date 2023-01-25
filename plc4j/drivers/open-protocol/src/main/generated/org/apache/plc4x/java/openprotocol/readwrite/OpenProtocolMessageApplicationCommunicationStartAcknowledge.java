@@ -46,24 +46,30 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledge extends
   // Properties.
   protected final List<ApplicationCommunicationStartAcknowledgeBlock> blocks;
 
+  // Arguments.
+  protected final OpenProtocolRevision connectionRevision;
+
   public OpenProtocolMessageApplicationCommunicationStartAcknowledge(
-      OpenProtocolRevision revision,
-      short noAckFlag,
-      int stationId,
-      int spindleId,
-      int sequenceNumber,
-      short numberOfMessageParts,
-      short messagePartNumber,
-      List<ApplicationCommunicationStartAcknowledgeBlock> blocks) {
+      OpenProtocolRevision selectedRevision,
+      Short noAckFlag,
+      Integer stationId,
+      Integer spindleId,
+      Integer sequenceNumber,
+      Short numberOfMessageParts,
+      Short messagePartNumber,
+      List<ApplicationCommunicationStartAcknowledgeBlock> blocks,
+      OpenProtocolRevision connectionRevision) {
     super(
-        revision,
+        selectedRevision,
         noAckFlag,
         stationId,
         spindleId,
         sequenceNumber,
         numberOfMessageParts,
-        messagePartNumber);
+        messagePartNumber,
+        connectionRevision);
     this.blocks = blocks;
+    this.connectionRevision = connectionRevision;
   }
 
   public List<ApplicationCommunicationStartAcknowledgeBlock> getBlocks() {
@@ -106,7 +112,7 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledge extends
   }
 
   public static OpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder
-      staticParseBuilder(ReadBuffer readBuffer, OpenProtocolRevision revision)
+      staticParseBuilder(ReadBuffer readBuffer, OpenProtocolRevision connectionRevision)
           throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommunicationStartAcknowledge");
     PositionAware positionAware = readBuffer;
@@ -119,42 +125,48 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledge extends
             new DataReaderComplexDefault<>(
                 () -> ApplicationCommunicationStartAcknowledgeBlock.staticParse(readBuffer),
                 readBuffer),
-            revision.getNumCommunicationStartAcknowledgeBlocks());
+            connectionRevision.getNumCommunicationStartAcknowledgeBlocks());
 
     readBuffer.closeContext("OpenProtocolMessageApplicationCommunicationStartAcknowledge");
     // Create the instance
-    return new OpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder(blocks);
+    return new OpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder(
+        blocks, connectionRevision);
   }
 
   public static class OpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder
       implements OpenProtocolMessage.OpenProtocolMessageBuilder {
     private final List<ApplicationCommunicationStartAcknowledgeBlock> blocks;
+    private final OpenProtocolRevision connectionRevision;
 
     public OpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder(
-        List<ApplicationCommunicationStartAcknowledgeBlock> blocks) {
+        List<ApplicationCommunicationStartAcknowledgeBlock> blocks,
+        OpenProtocolRevision connectionRevision) {
 
       this.blocks = blocks;
+      this.connectionRevision = connectionRevision;
     }
 
     public OpenProtocolMessageApplicationCommunicationStartAcknowledge build(
-        OpenProtocolRevision revision,
-        short noAckFlag,
-        int stationId,
-        int spindleId,
-        int sequenceNumber,
-        short numberOfMessageParts,
-        short messagePartNumber) {
+        OpenProtocolRevision selectedRevision,
+        Short noAckFlag,
+        Integer stationId,
+        Integer spindleId,
+        Integer sequenceNumber,
+        Short numberOfMessageParts,
+        Short messagePartNumber,
+        OpenProtocolRevision connectionRevision) {
       OpenProtocolMessageApplicationCommunicationStartAcknowledge
           openProtocolMessageApplicationCommunicationStartAcknowledge =
               new OpenProtocolMessageApplicationCommunicationStartAcknowledge(
-                  revision,
+                  selectedRevision,
                   noAckFlag,
                   stationId,
                   spindleId,
                   sequenceNumber,
                   numberOfMessageParts,
                   messagePartNumber,
-                  blocks);
+                  blocks,
+                  connectionRevision);
       return openProtocolMessageApplicationCommunicationStartAcknowledge;
     }
   }

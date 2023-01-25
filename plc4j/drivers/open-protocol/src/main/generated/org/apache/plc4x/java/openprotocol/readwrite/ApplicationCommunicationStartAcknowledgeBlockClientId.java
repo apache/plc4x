@@ -64,10 +64,7 @@ public class ApplicationCommunicationStartAcknowledgeBlockClientId
 
     // Simple Field (clientId)
     writeSimpleField(
-        "clientId",
-        clientId,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithEncoding("AsciiUint"));
+        "clientId", clientId, writeUnsignedShort(writeBuffer, 8), WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("ApplicationCommunicationStartAcknowledgeBlockClientId");
   }
@@ -97,7 +94,7 @@ public class ApplicationCommunicationStartAcknowledgeBlockClientId
 
     short clientId =
         readSimpleField(
-            "clientId", readUnsignedShort(readBuffer, 8), WithOption.WithEncoding("AsciiUint"));
+            "clientId", readUnsignedShort(readBuffer, 8), WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("ApplicationCommunicationStartAcknowledgeBlockClientId");
     // Create the instance

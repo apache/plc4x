@@ -18,15 +18,19 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
-import org.apache.plc4x.java.spi.generation.ParseAssertException;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.WithReaderArgs;
+import org.apache.plc4x.java.spi.generation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FieldReaderOptional<T> implements FieldCommons {
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+public class FieldReaderOptional<T> implements FieldCommons, WithReaderWriterArgs {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderOptional.class);
 
@@ -35,6 +39,29 @@ public class FieldReaderOptional<T> implements FieldCommons {
         if (!condition) {
             LOGGER.debug("Condition doesn't match for field {}", logicalName);
             return null;
+        }
+
+        // Check if a nullByteHex is set.
+        // If it is, peek the equivalent number of bytes and compare.
+        // If they match, return null.
+        Optional<String> nullByteHexOptional = extractNullBytesHex(readerArgs);
+        if(nullByteHexOptional.isPresent()) {
+            String nullByteHex = nullByteHexOptional.get();
+            try {
+                byte[] nullBytes = Hex.decodeHex(nullByteHex);
+                ReadBuffer readBuffer = dataReader.getReadBuffer();
+                int pos = readBuffer.getPos();
+                byte[] curBytes = readBuffer.readByteArray("logicalName", nullBytes.length, readerArgs);
+                // Compare them, if they equal, return null, if not reset the position and try to read it again.
+                if (Arrays.equals(nullBytes, curBytes)) {
+                    // Abort with null
+                    return null;
+                } else {
+                    readBuffer.reset(pos);
+                }
+            } catch (DecoderException e) {
+                // Ignore.
+            }
         }
 
         int curPos = dataReader.getPos();
@@ -46,10 +73,11 @@ public class FieldReaderOptional<T> implements FieldCommons {
             LOGGER.debug("Assertion doesn't match for field {}. Resetting read position to {}", logicalName, curPos, e);
             dataReader.setPos(curPos);
             return null;
-        } catch (ParseException e) {
+        } catch (ArrayIndexOutOfBoundsException e) {
             LOGGER.debug("Not enough bytes for {}. Resetting read position to {}", logicalName, curPos, e);
             dataReader.setPos(curPos);
             return null;
         }
     }
+
 }

@@ -83,7 +83,8 @@ public class PnIoCm_Block_IoCrRes extends PnIoCm_Block implements Message {
         "PnIoCm_IoCrType",
         ioCrType,
         new DataWriterEnumDefault<>(
-            PnIoCm_IoCrType::getValue, PnIoCm_IoCrType::name, writeUnsignedInt(writeBuffer, 16)));
+            PnIoCm_IoCrType::getValue, PnIoCm_IoCrType::name, writeUnsignedInt(writeBuffer, 16)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (ioCrReference)
     writeSimpleField(

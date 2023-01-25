@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
@@ -233,7 +234,9 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         String valueString = value;
-        writeBuffer.writeString(getClass().getSimpleName(), valueString.getBytes(StandardCharsets.UTF_8).length*8,StandardCharsets.UTF_8.name(),valueString);
+        writeBuffer.writeString(getClass().getSimpleName(),
+            valueString.getBytes(StandardCharsets.UTF_8).length*8,
+            valueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
     }
 
 }

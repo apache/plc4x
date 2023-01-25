@@ -66,7 +66,11 @@ public class UnknownMessage extends KnxNetIpMessage implements Message {
     writeBuffer.pushContext("UnknownMessage");
 
     // Array Field (unknownData)
-    writeByteArrayField("unknownData", unknownData, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "unknownData",
+        unknownData,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("UnknownMessage");
   }

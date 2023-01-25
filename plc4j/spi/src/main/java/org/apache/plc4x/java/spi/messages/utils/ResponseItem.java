@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.spi.messages.utils;
 
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
@@ -47,7 +48,9 @@ public class ResponseItem<T> implements Serializable {
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("ResponseItem");
         String codeName = code.name();
-        writeBuffer.writeString("result", codeName.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), codeName);
+        writeBuffer.writeString("result",
+            codeName.getBytes(StandardCharsets.UTF_8).length * 8,
+            codeName, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
         if (value != null) {
             if (!(value instanceof Serializable)) {
                 throw new RuntimeException("Error serializing. Tag value doesn't implement XmlSerializable");

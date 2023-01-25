@@ -67,7 +67,7 @@ public class ApplicationCommunicationStartAcknowledgeBlockChannelId
         "channelId",
         channelId,
         writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithEncoding("AsciiUint"));
+        WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("ApplicationCommunicationStartAcknowledgeBlockChannelId");
   }
@@ -97,7 +97,7 @@ public class ApplicationCommunicationStartAcknowledgeBlockChannelId
 
     int channelId =
         readSimpleField(
-            "channelId", readUnsignedInt(readBuffer, 16), WithOption.WithEncoding("AsciiUint"));
+            "channelId", readUnsignedInt(readBuffer, 16), WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("ApplicationCommunicationStartAcknowledgeBlockChannelId");
     // Create the instance

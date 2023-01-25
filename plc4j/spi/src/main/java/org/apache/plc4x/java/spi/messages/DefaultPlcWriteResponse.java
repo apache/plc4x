@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
@@ -82,7 +83,9 @@ public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
             String tagName = tagEntry.getKey();
             final PlcResponseCode tagResponseCode = tagEntry.getValue();
             String result = tagResponseCode.name();
-            writeBuffer.writeString(tagName, result.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), result);
+            writeBuffer.writeString(tagName,
+                result.getBytes(StandardCharsets.UTF_8).length * 8,
+                result, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
         }
         writeBuffer.popContext("tags");
 

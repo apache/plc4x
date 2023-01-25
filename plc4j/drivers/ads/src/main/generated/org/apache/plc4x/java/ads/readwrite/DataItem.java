@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.time.*;
 import java.util.*;
 import org.apache.plc4x.java.api.value.*;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.EvaluationHelper;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -149,21 +150,21 @@ public class DataItem {
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 8, "UTF-8");
+          readBuffer.readString("", 8, WithOption.WithEncoding("UTF-8"));
 
       return new PlcCHAR(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WCHAR)) { // WCHAR
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 16, "UTF-16LE");
+          readBuffer.readString("", 16, WithOption.WithEncoding("UTF-16LE"));
 
       return new PlcWCHAR(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.STRING)) { // STRING
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", (stringLength) * (8), "UTF-8");
+          readBuffer.readString("", (stringLength) * (8), WithOption.WithEncoding("UTF-8"));
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
@@ -180,7 +181,8 @@ public class DataItem {
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", ((stringLength) * (8)) * (2), "UTF-16LE");
+          readBuffer.readString(
+              "", ((stringLength) * (8)) * (2), WithOption.WithEncoding("UTF-16LE"));
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
       {
@@ -353,18 +355,20 @@ public class DataItem {
       // Simple Field (value)
       String value = (String) _value.getString();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString("", 8, "UTF-8", (String) (value));
+      /*TODO: migrate me*/ writeBuffer.writeString(
+          "", 8, (String) (value), WithOption.WithEncoding("UTF-8"));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WCHAR)) { // WCHAR
       // Simple Field (value)
       String value = (String) _value.getString();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString("", 16, "UTF-16LE", (String) (value));
+      /*TODO: migrate me*/ writeBuffer.writeString(
+          "", 16, (String) (value), WithOption.WithEncoding("UTF-16LE"));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.STRING)) { // STRING
       // Simple Field (value)
       String value = (String) _value.getString();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeString(
-          "", (stringLength) * (8), "UTF-8", (String) (value));
+          "", (stringLength) * (8), (String) (value), WithOption.WithEncoding("UTF-8"));
       // Reserved Field
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
@@ -374,7 +378,7 @@ public class DataItem {
       String value = (String) _value.getString();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeString(
-          "", ((stringLength) * (8)) * (2), "UTF-16LE", (String) (value));
+          "", ((stringLength) * (8)) * (2), (String) (value), WithOption.WithEncoding("UTF-16LE"));
       // Reserved Field
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (int) 0x0000).intValue());

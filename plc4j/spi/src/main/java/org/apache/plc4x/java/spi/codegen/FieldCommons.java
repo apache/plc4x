@@ -44,23 +44,6 @@ public interface FieldCommons {
         return Optional.empty();
     }
 
-    default Optional<String> extractEncoding(WithReaderArgs... readerArgs) {
-        return extractEncoding(Stream.of(readerArgs).map(WithReaderWriterArgs.class::cast).toArray(WithReaderWriterArgs[]::new));
-    }
-
-    default Optional<String> extractEncoding(WithWriterArgs... writerArgs) {
-        return extractEncoding(Stream.of(writerArgs).map(WithReaderWriterArgs.class::cast).toArray(WithReaderWriterArgs[]::new));
-    }
-
-    default Optional<String> extractEncoding(WithReaderWriterArgs... readerWriterArgs) {
-        for (WithReaderWriterArgs arg : readerWriterArgs) {
-            if (arg instanceof withOptionEncoding) {
-                return Optional.of(((withOptionEncoding) arg).encoding());
-            }
-        }
-        return Optional.empty();
-    }
-
     default <T> T switchParseByteOrderIfNecessary(RunParseWrapped<T> runnable, ByteOrderAware byteOrderAware, ByteOrder wantedByteOrder) throws ParseException {
         Objects.requireNonNull(runnable);
         Objects.requireNonNull(byteOrderAware);

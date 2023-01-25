@@ -106,10 +106,18 @@ public class DF1SymbolMessageFrame extends DF1Symbol implements Message {
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (messageEnd)
-    writeConstField("messageEnd", MESSAGEEND, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "messageEnd",
+        MESSAGEEND,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (endTransaction)
-    writeConstField("endTransaction", ENDTRANSACTION, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "endTransaction",
+        ENDTRANSACTION,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Checksum Field (checksum) (Calculated)
     writeChecksumField(
@@ -117,7 +125,8 @@ public class DF1SymbolMessageFrame extends DF1Symbol implements Message {
         (int)
             (org.apache.plc4x.java.df1.readwrite.utils.StaticHelper.crcCheck(
                 destinationAddress, sourceAddress, command)),
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("DF1SymbolMessageFrame");
   }

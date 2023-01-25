@@ -263,7 +263,8 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws SerializationException {
+    public void writeString(String logicalName, int bitLength, String value, WithWriterArgs... writerArgs) throws SerializationException {
+        String encoding = extractEncoding(writerArgs).orElse("UTF-8");
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwStringKey, bitLength, writerArgs);

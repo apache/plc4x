@@ -89,7 +89,8 @@ public class ModbusAsciiADU extends ModbusADU implements Message {
         "crc",
         (short)
             (org.apache.plc4x.java.modbus.readwrite.utils.StaticHelper.asciiLrcCheck(address, pdu)),
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("ModbusAsciiADU");
   }

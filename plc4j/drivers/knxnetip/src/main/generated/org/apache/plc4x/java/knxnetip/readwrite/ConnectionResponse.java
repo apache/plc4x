@@ -96,21 +96,24 @@ public class ConnectionResponse extends KnxNetIpMessage implements Message {
         "Status",
         status,
         new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)));
+            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Optional Field (hpaiDataEndpoint) (Can be skipped, if the value is null)
     writeOptionalField(
         "hpaiDataEndpoint",
         hpaiDataEndpoint,
         new DataWriterComplexDefault<>(writeBuffer),
-        (getStatus()) == (Status.NO_ERROR));
+        (getStatus()) == (Status.NO_ERROR),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Optional Field (connectionResponseDataBlock) (Can be skipped, if the value is null)
     writeOptionalField(
         "connectionResponseDataBlock",
         connectionResponseDataBlock,
         new DataWriterComplexDefault<>(writeBuffer),
-        (getStatus()) == (Status.NO_ERROR));
+        (getStatus()) == (Status.NO_ERROR),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("ConnectionResponse");
   }

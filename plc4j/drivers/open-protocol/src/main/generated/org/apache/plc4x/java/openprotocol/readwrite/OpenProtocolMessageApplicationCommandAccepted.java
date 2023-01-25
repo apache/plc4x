@@ -46,24 +46,30 @@ public class OpenProtocolMessageApplicationCommandAccepted extends OpenProtocolM
   // Properties.
   protected final Mid requestMid;
 
+  // Arguments.
+  protected final OpenProtocolRevision connectionRevision;
+
   public OpenProtocolMessageApplicationCommandAccepted(
-      OpenProtocolRevision revision,
-      short noAckFlag,
-      int stationId,
-      int spindleId,
-      int sequenceNumber,
-      short numberOfMessageParts,
-      short messagePartNumber,
-      Mid requestMid) {
+      OpenProtocolRevision selectedRevision,
+      Short noAckFlag,
+      Integer stationId,
+      Integer spindleId,
+      Integer sequenceNumber,
+      Short numberOfMessageParts,
+      Short messagePartNumber,
+      Mid requestMid,
+      OpenProtocolRevision connectionRevision) {
     super(
-        revision,
+        selectedRevision,
         noAckFlag,
         stationId,
         spindleId,
         sequenceNumber,
         numberOfMessageParts,
-        messagePartNumber);
+        messagePartNumber,
+        connectionRevision);
     this.requestMid = requestMid;
+    this.connectionRevision = connectionRevision;
   }
 
   public Mid getRequestMid() {
@@ -82,7 +88,8 @@ public class OpenProtocolMessageApplicationCommandAccepted extends OpenProtocolM
         "requestMid",
         "Mid",
         requestMid,
-        new DataWriterEnumDefault<>(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)));
+        new DataWriterEnumDefault<>(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
+        WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("OpenProtocolMessageApplicationCommandAccepted");
   }
@@ -104,7 +111,7 @@ public class OpenProtocolMessageApplicationCommandAccepted extends OpenProtocolM
   }
 
   public static OpenProtocolMessageApplicationCommandAcceptedBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+      ReadBuffer readBuffer, OpenProtocolRevision connectionRevision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommandAccepted");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -114,40 +121,46 @@ public class OpenProtocolMessageApplicationCommandAccepted extends OpenProtocolM
         readEnumField(
             "requestMid",
             "Mid",
-            new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)));
+            new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
+            WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("OpenProtocolMessageApplicationCommandAccepted");
     // Create the instance
-    return new OpenProtocolMessageApplicationCommandAcceptedBuilder(requestMid);
+    return new OpenProtocolMessageApplicationCommandAcceptedBuilder(requestMid, connectionRevision);
   }
 
   public static class OpenProtocolMessageApplicationCommandAcceptedBuilder
       implements OpenProtocolMessage.OpenProtocolMessageBuilder {
     private final Mid requestMid;
+    private final OpenProtocolRevision connectionRevision;
 
-    public OpenProtocolMessageApplicationCommandAcceptedBuilder(Mid requestMid) {
+    public OpenProtocolMessageApplicationCommandAcceptedBuilder(
+        Mid requestMid, OpenProtocolRevision connectionRevision) {
 
       this.requestMid = requestMid;
+      this.connectionRevision = connectionRevision;
     }
 
     public OpenProtocolMessageApplicationCommandAccepted build(
-        OpenProtocolRevision revision,
-        short noAckFlag,
-        int stationId,
-        int spindleId,
-        int sequenceNumber,
-        short numberOfMessageParts,
-        short messagePartNumber) {
+        OpenProtocolRevision selectedRevision,
+        Short noAckFlag,
+        Integer stationId,
+        Integer spindleId,
+        Integer sequenceNumber,
+        Short numberOfMessageParts,
+        Short messagePartNumber,
+        OpenProtocolRevision connectionRevision) {
       OpenProtocolMessageApplicationCommandAccepted openProtocolMessageApplicationCommandAccepted =
           new OpenProtocolMessageApplicationCommandAccepted(
-              revision,
+              selectedRevision,
               noAckFlag,
               stationId,
               spindleId,
               sequenceNumber,
               numberOfMessageParts,
               messagePartNumber,
-              requestMid);
+              requestMid,
+              connectionRevision);
       return openProtocolMessageApplicationCommandAccepted;
     }
   }

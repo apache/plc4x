@@ -79,7 +79,11 @@ public class FirmataMessageAnalogIO extends FirmataMessage implements Message {
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (data)
-    writeSimpleTypeArrayField("data", data, writeSignedByte(writeBuffer, 8));
+    writeSimpleTypeArrayField(
+        "data",
+        data,
+        writeSignedByte(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("FirmataMessageAnalogIO");
   }

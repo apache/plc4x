@@ -53,7 +53,11 @@ public abstract class ApplicationCommunicationStartAcknowledgeBlock implements M
     writeBuffer.pushContext("ApplicationCommunicationStartAcknowledgeBlock");
 
     // Discriminator Field (blockType) (Used as input to a switch field)
-    writeDiscriminatorField("blockType", getBlockType(), writeUnsignedInt(writeBuffer, 16));
+    writeDiscriminatorField(
+        "blockType",
+        getBlockType(),
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithEncoding("ASCII"));
 
     // Switch field (Serialize the sub-type)
     serializeApplicationCommunicationStartAcknowledgeBlockChild(writeBuffer);
@@ -94,7 +98,7 @@ public abstract class ApplicationCommunicationStartAcknowledgeBlock implements M
 
     int blockType =
         readDiscriminatorField(
-            "blockType", readUnsignedInt(readBuffer, 16), WithOption.WithEncoding("AsciiUint"));
+            "blockType", readUnsignedInt(readBuffer, 16), WithOption.WithEncoding("ASCII"));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ApplicationCommunicationStartAcknowledgeBlockBuilder builder = null;

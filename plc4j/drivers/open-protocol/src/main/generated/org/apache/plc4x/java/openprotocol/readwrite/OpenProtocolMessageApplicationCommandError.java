@@ -47,26 +47,32 @@ public class OpenProtocolMessageApplicationCommandError extends OpenProtocolMess
   protected final Mid requestMid;
   protected final Error error;
 
+  // Arguments.
+  protected final OpenProtocolRevision connectionRevision;
+
   public OpenProtocolMessageApplicationCommandError(
-      OpenProtocolRevision revision,
-      short noAckFlag,
-      int stationId,
-      int spindleId,
-      int sequenceNumber,
-      short numberOfMessageParts,
-      short messagePartNumber,
+      OpenProtocolRevision selectedRevision,
+      Short noAckFlag,
+      Integer stationId,
+      Integer spindleId,
+      Integer sequenceNumber,
+      Short numberOfMessageParts,
+      Short messagePartNumber,
       Mid requestMid,
-      Error error) {
+      Error error,
+      OpenProtocolRevision connectionRevision) {
     super(
-        revision,
+        selectedRevision,
         noAckFlag,
         stationId,
         spindleId,
         sequenceNumber,
         numberOfMessageParts,
-        messagePartNumber);
+        messagePartNumber,
+        connectionRevision);
     this.requestMid = requestMid;
     this.error = error;
+    this.connectionRevision = connectionRevision;
   }
 
   public Mid getRequestMid() {
@@ -89,7 +95,8 @@ public class OpenProtocolMessageApplicationCommandError extends OpenProtocolMess
         "requestMid",
         "Mid",
         requestMid,
-        new DataWriterEnumDefault<>(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)));
+        new DataWriterEnumDefault<>(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
+        WithOption.WithEncoding("ASCII"));
 
     // Simple Field (error)
     writeSimpleEnumField(
@@ -97,7 +104,8 @@ public class OpenProtocolMessageApplicationCommandError extends OpenProtocolMess
         "Error",
         error,
         new DataWriterEnumDefault<>(
-            Error::getValue, Error::name, writeUnsignedInt(writeBuffer, 16)));
+            Error::getValue, Error::name, writeUnsignedInt(writeBuffer, 16)),
+        WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("OpenProtocolMessageApplicationCommandError");
   }
@@ -122,7 +130,7 @@ public class OpenProtocolMessageApplicationCommandError extends OpenProtocolMess
   }
 
   public static OpenProtocolMessageApplicationCommandErrorBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+      ReadBuffer readBuffer, OpenProtocolRevision connectionRevision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommandError");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -132,41 +140,48 @@ public class OpenProtocolMessageApplicationCommandError extends OpenProtocolMess
         readEnumField(
             "requestMid",
             "Mid",
-            new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)));
+            new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
+            WithOption.WithEncoding("ASCII"));
 
     Error error =
         readEnumField(
             "error",
             "Error",
-            new DataReaderEnumDefault<>(Error::enumForValue, readUnsignedInt(readBuffer, 16)));
+            new DataReaderEnumDefault<>(Error::enumForValue, readUnsignedInt(readBuffer, 16)),
+            WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("OpenProtocolMessageApplicationCommandError");
     // Create the instance
-    return new OpenProtocolMessageApplicationCommandErrorBuilder(requestMid, error);
+    return new OpenProtocolMessageApplicationCommandErrorBuilder(
+        requestMid, error, connectionRevision);
   }
 
   public static class OpenProtocolMessageApplicationCommandErrorBuilder
       implements OpenProtocolMessage.OpenProtocolMessageBuilder {
     private final Mid requestMid;
     private final Error error;
+    private final OpenProtocolRevision connectionRevision;
 
-    public OpenProtocolMessageApplicationCommandErrorBuilder(Mid requestMid, Error error) {
+    public OpenProtocolMessageApplicationCommandErrorBuilder(
+        Mid requestMid, Error error, OpenProtocolRevision connectionRevision) {
 
       this.requestMid = requestMid;
       this.error = error;
+      this.connectionRevision = connectionRevision;
     }
 
     public OpenProtocolMessageApplicationCommandError build(
-        OpenProtocolRevision revision,
-        short noAckFlag,
-        int stationId,
-        int spindleId,
-        int sequenceNumber,
-        short numberOfMessageParts,
-        short messagePartNumber) {
+        OpenProtocolRevision selectedRevision,
+        Short noAckFlag,
+        Integer stationId,
+        Integer spindleId,
+        Integer sequenceNumber,
+        Short numberOfMessageParts,
+        Short messagePartNumber,
+        OpenProtocolRevision connectionRevision) {
       OpenProtocolMessageApplicationCommandError openProtocolMessageApplicationCommandError =
           new OpenProtocolMessageApplicationCommandError(
-              revision,
+              selectedRevision,
               noAckFlag,
               stationId,
               spindleId,
@@ -174,7 +189,8 @@ public class OpenProtocolMessageApplicationCommandError extends OpenProtocolMess
               numberOfMessageParts,
               messagePartNumber,
               requestMid,
-              error);
+              error,
+              connectionRevision);
       return openProtocolMessageApplicationCommandError;
     }
   }

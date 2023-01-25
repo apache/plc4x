@@ -64,7 +64,7 @@ public class ApplicationCommunicationStartAcknowledgeBlockCellId
 
     // Simple Field (cellId)
     writeSimpleField(
-        "cellId", cellId, writeUnsignedLong(writeBuffer, 32), WithOption.WithEncoding("AsciiUint"));
+        "cellId", cellId, writeUnsignedLong(writeBuffer, 32), WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("ApplicationCommunicationStartAcknowledgeBlockCellId");
   }
@@ -94,7 +94,7 @@ public class ApplicationCommunicationStartAcknowledgeBlockCellId
 
     long cellId =
         readSimpleField(
-            "cellId", readUnsignedLong(readBuffer, 32), WithOption.WithEncoding("AsciiUint"));
+            "cellId", readUnsignedLong(readBuffer, 32), WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("ApplicationCommunicationStartAcknowledgeBlockCellId");
     // Create the instance

@@ -67,7 +67,7 @@ public class ApplicationCommunicationStartAcknowledgeBlockSupplierCode
         "supplierCode",
         supplierCode,
         writeUnsignedLong(writeBuffer, 24),
-        WithOption.WithEncoding("AsciiUint"));
+        WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("ApplicationCommunicationStartAcknowledgeBlockSupplierCode");
   }
@@ -97,7 +97,7 @@ public class ApplicationCommunicationStartAcknowledgeBlockSupplierCode
 
     long supplierCode =
         readSimpleField(
-            "supplierCode", readUnsignedLong(readBuffer, 24), WithOption.WithEncoding("AsciiUint"));
+            "supplierCode", readUnsignedLong(readBuffer, 24), WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("ApplicationCommunicationStartAcknowledgeBlockSupplierCode");
     // Create the instance

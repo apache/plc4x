@@ -88,7 +88,8 @@ public class ModbusRtuADU extends ModbusADU implements Message {
     writeChecksumField(
         "crc",
         (int) (org.apache.plc4x.java.modbus.readwrite.utils.StaticHelper.rtuCrcCheck(address, pdu)),
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("ModbusRtuADU");
   }

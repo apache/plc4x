@@ -77,7 +77,11 @@ public class BVLCForwardedNPDU extends BVLC implements Message {
     writeBuffer.pushContext("BVLCForwardedNPDU");
 
     // Array Field (ip)
-    writeSimpleTypeArrayField("ip", ip, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleTypeArrayField(
+        "ip",
+        ip,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (port)
     writeSimpleField(

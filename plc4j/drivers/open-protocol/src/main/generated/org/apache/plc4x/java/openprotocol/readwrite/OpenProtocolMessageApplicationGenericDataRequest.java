@@ -45,39 +45,45 @@ public class OpenProtocolMessageApplicationGenericDataRequest extends OpenProtoc
 
   // Properties.
   protected final Mid requestMid;
-  protected final OpenProtocolRevision wantedRevision;
+  protected final OpenProtocolRevision revision;
   protected final byte[] extraData;
 
+  // Arguments.
+  protected final OpenProtocolRevision connectionRevision;
+
   public OpenProtocolMessageApplicationGenericDataRequest(
-      OpenProtocolRevision revision,
-      short noAckFlag,
-      int stationId,
-      int spindleId,
-      int sequenceNumber,
-      short numberOfMessageParts,
-      short messagePartNumber,
+      OpenProtocolRevision selectedRevision,
+      Short noAckFlag,
+      Integer stationId,
+      Integer spindleId,
+      Integer sequenceNumber,
+      Short numberOfMessageParts,
+      Short messagePartNumber,
       Mid requestMid,
-      OpenProtocolRevision wantedRevision,
-      byte[] extraData) {
+      OpenProtocolRevision revision,
+      byte[] extraData,
+      OpenProtocolRevision connectionRevision) {
     super(
-        revision,
+        selectedRevision,
         noAckFlag,
         stationId,
         spindleId,
         sequenceNumber,
         numberOfMessageParts,
-        messagePartNumber);
+        messagePartNumber,
+        connectionRevision);
     this.requestMid = requestMid;
-    this.wantedRevision = wantedRevision;
+    this.revision = revision;
     this.extraData = extraData;
+    this.connectionRevision = connectionRevision;
   }
 
   public Mid getRequestMid() {
     return requestMid;
   }
 
-  public OpenProtocolRevision getWantedRevision() {
-    return wantedRevision;
+  public OpenProtocolRevision getRevision() {
+    return revision;
   }
 
   public byte[] getExtraData() {
@@ -96,22 +102,28 @@ public class OpenProtocolMessageApplicationGenericDataRequest extends OpenProtoc
         "requestMid",
         "Mid",
         requestMid,
-        new DataWriterEnumDefault<>(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)));
+        new DataWriterEnumDefault<>(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
+        WithOption.WithEncoding("ASCII"));
 
-    // Simple Field (wantedRevision)
+    // Simple Field (revision)
     writeSimpleEnumField(
-        "wantedRevision",
+        "revision",
         "OpenProtocolRevision",
-        wantedRevision,
+        revision,
         new DataWriterEnumDefault<>(
             OpenProtocolRevision::getValue,
             OpenProtocolRevision::name,
-            writeUnsignedLong(writeBuffer, 24)));
+            writeUnsignedLong(writeBuffer, 24)),
+        WithOption.WithEncoding("ASCII"));
 
     // Implicit Field (extraDataLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int extraDataLength = (int) (COUNT(getExtraData()));
-    writeImplicitField("extraDataLength", extraDataLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "extraDataLength",
+        extraDataLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithEncoding("ASCII"));
 
     // Array Field (extraData)
     writeByteArrayField("extraData", extraData, writeByteArray(writeBuffer, 8));
@@ -132,7 +144,7 @@ public class OpenProtocolMessageApplicationGenericDataRequest extends OpenProtoc
     // Simple field (requestMid)
     lengthInBits += 32;
 
-    // Simple field (wantedRevision)
+    // Simple field (revision)
     lengthInBits += 24;
 
     // Implicit Field (extraDataLength)
@@ -147,7 +159,7 @@ public class OpenProtocolMessageApplicationGenericDataRequest extends OpenProtoc
   }
 
   public static OpenProtocolMessageApplicationGenericDataRequestBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+      ReadBuffer readBuffer, OpenProtocolRevision connectionRevision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationGenericDataRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -157,51 +169,61 @@ public class OpenProtocolMessageApplicationGenericDataRequest extends OpenProtoc
         readEnumField(
             "requestMid",
             "Mid",
-            new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)));
+            new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
+            WithOption.WithEncoding("ASCII"));
 
-    OpenProtocolRevision wantedRevision =
+    OpenProtocolRevision revision =
         readEnumField(
-            "wantedRevision",
+            "revision",
             "OpenProtocolRevision",
             new DataReaderEnumDefault<>(
-                OpenProtocolRevision::enumForValue, readUnsignedLong(readBuffer, 24)));
+                OpenProtocolRevision::enumForValue, readUnsignedLong(readBuffer, 24)),
+            WithOption.WithEncoding("ASCII"));
 
-    int extraDataLength = readImplicitField("extraDataLength", readUnsignedInt(readBuffer, 16));
+    int extraDataLength =
+        readImplicitField(
+            "extraDataLength", readUnsignedInt(readBuffer, 16), WithOption.WithEncoding("ASCII"));
 
     byte[] extraData = readBuffer.readByteArray("extraData", Math.toIntExact(extraDataLength));
 
     readBuffer.closeContext("OpenProtocolMessageApplicationGenericDataRequest");
     // Create the instance
     return new OpenProtocolMessageApplicationGenericDataRequestBuilder(
-        requestMid, wantedRevision, extraData);
+        requestMid, revision, extraData, connectionRevision);
   }
 
   public static class OpenProtocolMessageApplicationGenericDataRequestBuilder
       implements OpenProtocolMessage.OpenProtocolMessageBuilder {
     private final Mid requestMid;
-    private final OpenProtocolRevision wantedRevision;
+    private final OpenProtocolRevision revision;
     private final byte[] extraData;
+    private final OpenProtocolRevision connectionRevision;
 
     public OpenProtocolMessageApplicationGenericDataRequestBuilder(
-        Mid requestMid, OpenProtocolRevision wantedRevision, byte[] extraData) {
+        Mid requestMid,
+        OpenProtocolRevision revision,
+        byte[] extraData,
+        OpenProtocolRevision connectionRevision) {
 
       this.requestMid = requestMid;
-      this.wantedRevision = wantedRevision;
+      this.revision = revision;
       this.extraData = extraData;
+      this.connectionRevision = connectionRevision;
     }
 
     public OpenProtocolMessageApplicationGenericDataRequest build(
-        OpenProtocolRevision revision,
-        short noAckFlag,
-        int stationId,
-        int spindleId,
-        int sequenceNumber,
-        short numberOfMessageParts,
-        short messagePartNumber) {
+        OpenProtocolRevision selectedRevision,
+        Short noAckFlag,
+        Integer stationId,
+        Integer spindleId,
+        Integer sequenceNumber,
+        Short numberOfMessageParts,
+        Short messagePartNumber,
+        OpenProtocolRevision connectionRevision) {
       OpenProtocolMessageApplicationGenericDataRequest
           openProtocolMessageApplicationGenericDataRequest =
               new OpenProtocolMessageApplicationGenericDataRequest(
-                  revision,
+                  selectedRevision,
                   noAckFlag,
                   stationId,
                   spindleId,
@@ -209,8 +231,9 @@ public class OpenProtocolMessageApplicationGenericDataRequest extends OpenProtoc
                   numberOfMessageParts,
                   messagePartNumber,
                   requestMid,
-                  wantedRevision,
-                  extraData);
+                  revision,
+                  extraData,
+                  connectionRevision);
       return openProtocolMessageApplicationGenericDataRequest;
     }
   }
@@ -226,7 +249,7 @@ public class OpenProtocolMessageApplicationGenericDataRequest extends OpenProtoc
     OpenProtocolMessageApplicationGenericDataRequest that =
         (OpenProtocolMessageApplicationGenericDataRequest) o;
     return (getRequestMid() == that.getRequestMid())
-        && (getWantedRevision() == that.getWantedRevision())
+        && (getRevision() == that.getRevision())
         && (getExtraData() == that.getExtraData())
         && super.equals(that)
         && true;
@@ -234,7 +257,7 @@ public class OpenProtocolMessageApplicationGenericDataRequest extends OpenProtoc
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getRequestMid(), getWantedRevision(), getExtraData());
+    return Objects.hash(super.hashCode(), getRequestMid(), getRevision(), getExtraData());
   }
 
   @Override

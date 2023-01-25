@@ -86,10 +86,15 @@ public class CANOpenFrame implements Message {
         "CANOpenService",
         service,
         new DataWriterEnumDefault<>(
-            CANOpenService::getValue, CANOpenService::name, writeUnsignedByte(writeBuffer, 4)));
+            CANOpenService::getValue, CANOpenService::name, writeUnsignedByte(writeBuffer, 4)),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Const Field (alignment)
-    writeConstField("alignment", ALIGNMENT, writeUnsignedByte(writeBuffer, 4));
+    writeConstField(
+        "alignment",
+        ALIGNMENT,
+        writeUnsignedByte(writeBuffer, 4),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (payload)
     writeSimpleField(
@@ -103,7 +108,8 @@ public class CANOpenFrame implements Message {
         "padding",
         (int) ((8) - ((payload.getLengthInBytes()))),
         (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("CANOpenFrame");
   }

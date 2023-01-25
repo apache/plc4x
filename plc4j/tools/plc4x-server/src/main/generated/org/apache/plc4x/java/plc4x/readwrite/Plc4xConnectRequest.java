@@ -64,7 +64,10 @@ public class Plc4xConnectRequest extends Plc4xMessage implements Message {
     // implicitly given by the objects content)
     short connectionStringLen = (short) (STR_LEN(getConnectionString()));
     writeImplicitField(
-        "connectionStringLen", connectionStringLen, writeUnsignedShort(writeBuffer, 8));
+        "connectionStringLen",
+        connectionStringLen,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (connectionString)
     writeSimpleField(

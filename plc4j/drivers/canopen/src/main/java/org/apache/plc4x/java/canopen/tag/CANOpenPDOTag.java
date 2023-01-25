@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenDataType;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenService;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
@@ -105,10 +106,14 @@ public class CANOpenPDOTag extends CANOpenTag implements CANOpenSubscriptionTag 
         writeBuffer.pushContext(getClass().getSimpleName());
 
         String serviceName = getService().name();
-        writeBuffer.writeString("service", serviceName.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), serviceName);
+        writeBuffer.writeString("service",
+            serviceName.getBytes(StandardCharsets.UTF_8).length * 8,
+            serviceName, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
         writeBuffer.writeInt("node",64, getNodeId());
         String dataTypeName = getCanOpenDataType().name();
-        writeBuffer.writeString("dataType", dataTypeName.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataTypeName);
+        writeBuffer.writeString("dataType",
+            dataTypeName.getBytes(StandardCharsets.UTF_8).length * 8,
+            dataTypeName, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
 
         writeBuffer.popContext(getClass().getSimpleName());
     }
