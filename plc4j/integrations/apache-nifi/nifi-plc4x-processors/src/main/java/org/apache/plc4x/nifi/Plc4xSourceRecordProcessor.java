@@ -136,20 +136,19 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		final AtomicLong nrOfRows = new AtomicLong(0L);
 		final StopWatch executeTime = new StopWatch(true);
 
+		String inputFileUUID = fileToProcess == null ? null : fileToProcess.getAttribute(CoreAttributes.UUID.key());
+		Map<String, String> inputFileAttrMap = fileToProcess == null ? null : fileToProcess.getAttributes();
+		FlowFile resultSetFF;
+		if (fileToProcess == null) {
+			resultSetFF = session.create();
+		} else {
+			resultSetFF = session.create(fileToProcess);
+		}
+		if (inputFileAttrMap != null) {
+			resultSetFF = session.putAllAttributes(resultSetFF, inputFileAttrMap);
+		}
+
 		try (PlcConnection connection = getConnectionManager().getConnection(getConnectionString())) {
-
-			String inputFileUUID = fileToProcess == null ? null : fileToProcess.getAttribute(CoreAttributes.UUID.key());
-			Map<String, String> inputFileAttrMap = fileToProcess == null ? null : fileToProcess.getAttributes();
-			FlowFile resultSetFF;
-			if (fileToProcess == null) {
-				resultSetFF = session.create();
-			} else {
-				resultSetFF = session.create(fileToProcess);
-			}
-			if (inputFileAttrMap != null) {
-				resultSetFF = session.putAllAttributes(resultSetFF, inputFileAttrMap);
-			}
-
 			PlcReadRequest.Builder builder = connection.readRequestBuilder();
 			getTags().forEach(tagName -> {
 				String address = getAddress(tagName);
@@ -179,33 +178,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 					throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
 				}
 			});
-			long executionTimeElapsed = executeTime.getElapsed(TimeUnit.MILLISECONDS);
-			final Map<String, String> attributesToAdd = new HashMap<>();
-			attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));
-			attributesToAdd.put(RESULT_QUERY_EXECUTION_TIME, String.valueOf(executionTimeElapsed));
-			if (inputFileUUID != null) {
-				attributesToAdd.put(INPUT_FLOWFILE_UUID, inputFileUUID);
-			}
-			attributesToAdd.putAll(plc4xWriter.getAttributesToAdd());
-			resultSetFF = session.putAllAttributes(resultSetFF, attributesToAdd);
-			plc4xWriter.updateCounters(session);
-			logger.info("{} contains {} records; transferring to 'success'", new Object[] { resultSetFF, nrOfRows.get() });
-			// Report a FETCH event if there was an incoming flow file, or a RECEIVE event
-			// otherwise
-			if (context.hasIncomingConnection()) {
-				session.getProvenanceReporter().fetch(resultSetFF, "Retrieved " + nrOfRows.get() + " rows", executionTimeElapsed);
-			} else {
-				session.getProvenanceReporter().receive(resultSetFF, "Retrieved " + nrOfRows.get() + " rows", executionTimeElapsed);
-			}
-			
-			session.transfer(resultSetFF, BasePlc4xProcessor.REL_SUCCESS);
-			// Need to remove the original input file if it exists
-			if (fileToProcess != null) {
-				session.remove(fileToProcess);
-				fileToProcess = null;
-			}
-			session.commitAsync();
-			
 		} catch (PlcConnectionException e) {
 			logger.error("Error getting the PLC connection", e);
 			throw new ProcessException("Got an a PlcConnectionException while trying to get a connection", e);
@@ -213,6 +185,32 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			logger.error("Got an error while trying to get a connection", e);
 			throw new ProcessException("Got an error while trying to get a connection", e);
 		}
+		
+		long executionTimeElapsed = executeTime.getElapsed(TimeUnit.MILLISECONDS);
+		final Map<String, String> attributesToAdd = new HashMap<>();
+		attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));
+		attributesToAdd.put(RESULT_QUERY_EXECUTION_TIME, String.valueOf(executionTimeElapsed));
+		if (inputFileUUID != null) {
+			attributesToAdd.put(INPUT_FLOWFILE_UUID, inputFileUUID);
+		}
+		attributesToAdd.putAll(plc4xWriter.getAttributesToAdd());
+		resultSetFF = session.putAllAttributes(resultSetFF, attributesToAdd);
+		plc4xWriter.updateCounters(session);
+		logger.info("{} contains {} records; transferring to 'success'", new Object[] { resultSetFF, nrOfRows.get() });
+		// Report a FETCH event if there was an incoming flow file, or a RECEIVE event
+		// otherwise
+		if (context.hasIncomingConnection()) {
+			session.getProvenanceReporter().fetch(resultSetFF, "Retrieved " + nrOfRows.get() + " rows", executionTimeElapsed);
+		} else {
+			session.getProvenanceReporter().receive(resultSetFF, "Retrieved " + nrOfRows.get() + " rows", executionTimeElapsed);
+		}
+		
+		session.transfer(resultSetFF, BasePlc4xProcessor.REL_SUCCESS);
+		// Need to remove the original input file if it exists
+		if (fileToProcess != null) {
+			session.remove(fileToProcess);
+			fileToProcess = null;
+		}
+		session.commitAsync();
 	}
-
 }

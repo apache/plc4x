@@ -99,6 +99,7 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 		final List<PropertyDescriptor> pds = new ArrayList<>();
 		pds.addAll(super.getSupportedPropertyDescriptors());
 		pds.add(PLC_RECORD_READER_FACTORY);
+		pds.add(PLC_WRITE_FUTURE_TIMEOUT_MILISECONDS);
 		this.properties = Collections.unmodifiableList(pds);
 	}
 
@@ -138,11 +139,15 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 
 			Record record = null;
 			
-			try (PlcConnection connection = getDriverManager().getConnection(getConnectionString())) {
-				while ((record = recordReader.nextRecord()) != null) {
+			
+			while ((record = recordReader.nextRecord()) != null) {
+				long nrOfRowsHere = 0L;
+				PlcWriteResponse plcWriteResponse = null;
+
+				try (PlcConnection connection = getConnectionManager().getConnection(getConnectionString())) {
 					PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
 					
-					long nrOfRowsHere = 0L;
+					
 					for (String tagName: getTags()){
 						String address = getAddress(tagName);
 						if (record.toMap().containsKey(tagName)) {
@@ -154,33 +159,36 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 					}
 					PlcWriteRequest writeRequest = builder.build();
 
-					final PlcWriteResponse plcWriteResponse = writeRequest.execute().get(
+					plcWriteResponse = writeRequest.execute().get(
 						context.getProperty(PLC_WRITE_FUTURE_TIMEOUT_MILISECONDS.getName()).asInteger(), TimeUnit.MILLISECONDS
 						);
-					PlcResponseCode code = null;
 
-					for (String tag : plcWriteResponse.getTagNames()) {
-						code = plcWriteResponse.getResponseCode(tag);
-						if (!code.equals(PlcResponseCode.OK)) {
-							logger.error("Not OK code when writing the data to PLC for tag " + tag 
-								+ " with value  " + record.getValue(tag).toString() 
-								+ " in addresss " + getAddress(tag));
-							throw new PlcException("Writing response code was " + code.name() + ", expected OK");
-						}
-					}
-					nrOfRows.getAndAdd(nrOfRowsHere);
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+					in.close();
+					logger.error("Exception writing the data to PLC", e);
+					session.transfer(originalFlowFile, REL_FAILURE);
+					session.remove(resultSetFF);
+					session.commitAsync();
+					throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
 				}
-				in.close();
-		
-			} catch (Exception e) {
-				in.close();
-				logger.error("Exception writing the data to PLC", e);
-				session.transfer(originalFlowFile, REL_FAILURE);
-				session.remove(resultSetFF);
-				session.commitAsync();
-				throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
-			}
+	
+				PlcResponseCode code = null;
 
+				for (String tag : plcWriteResponse.getTagNames()) {
+					code = plcWriteResponse.getResponseCode(tag);
+					if (!code.equals(PlcResponseCode.OK)) {
+						logger.error("Not OK code when writing the data to PLC for tag " + tag 
+							+ " with value  " + record.getValue(tag).toString() 
+							+ " in addresss " + getAddress(tag));
+						throw new PlcException("Writing response code was " + code.name() + ", expected OK");
+					}
+				}
+				nrOfRows.getAndAdd(nrOfRowsHere);
+			}
+			in.close();
+			
+		
 			long executionTimeElapsed = executeTime.getElapsed(TimeUnit.MILLISECONDS);
 			final Map<String, String> attributesToAdd = new HashMap<>();
 			attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));

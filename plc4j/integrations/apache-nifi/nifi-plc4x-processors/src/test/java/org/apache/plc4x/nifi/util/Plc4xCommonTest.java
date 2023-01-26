@@ -17,6 +17,7 @@
 
 package org.apache.plc4x.nifi.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -24,34 +25,62 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import org.apache.avro.Schema;
+import org.apache.avro.SchemaBuilder;
 import org.apache.avro.file.DataFileReader;
+import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.file.SeekableByteArrayInput;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.DatumReader;
+import org.apache.avro.io.DatumWriter;
 import org.apache.avro.util.Utf8;
 import org.apache.nifi.util.MockFlowFile;
 
 public class Plc4xCommonTest {
     public static Map<String, Object> originalMap = new HashMap<>();
     public static Map<String, String> addressMap = new HashMap<>();
-    public static Map<String, Class> typeMap = new HashMap<>();
+    public static Map<String, Class<?>> typeMap = new HashMap<>();
+
+    public static Schema schema = SchemaBuilder.builder()
+        .record("tests").fields()
+            .nullableBoolean("BOOL", true)
+            // .nullableBytes("BYTE", new byte[] {1,2})
+            // .nullableString("WORD", "4")
+            .nullableInt("SINT", -5)
+            .nullableString("USINT", "6")
+            .nullableInt("INT", 2000)
+            .nullableString("UINT", "3000")
+            .nullableString("DINT", "4000")
+            .nullableString("UDINT", "5000")
+            // .nullableString("DWORD", "0")
+            .nullableLong("LINT", 6000L)
+            .nullableString("ULINT", "7000")
+            // .nullableString("LWORD", "0")
+            .nullableFloat("REAL", 1.23456F)
+            .nullableDouble("LREAL", 2.34567)
+            .nullableString("CHAR", "c")
+            .nullableString("WCHAR", "d")
+            .nullableString("STRING", "this is a string")
+        .endRecord();
 
     static {
         // originalMap values are in the type needed to check type mapping between PlcType and Avro
         originalMap.put("BOOL", true);
         originalMap.put("BYTE", "\u0001");
         originalMap.put("WORD", "4");
-        originalMap.put("SINT", Short.valueOf((short)-5));
+        originalMap.put("SINT", -5);
         originalMap.put("USINT", "6");
         originalMap.put("INT", 2000);
         originalMap.put("UINT", "3000");
         originalMap.put("DINT", "4000");
         originalMap.put("UDINT", "5000");
-        originalMap.put("DWORD", "0");
+        originalMap.put("DWORD", Long.valueOf("0"));
         originalMap.put("LINT", 6000L);
         originalMap.put("ULINT", "7000");
-        originalMap.put("LWORD", "ab");
+        originalMap.put("LWORD", Long.valueOf("0"));
         originalMap.put("REAL", 1.23456F);
         originalMap.put("LREAL", 2.34567);
         originalMap.put("CHAR", "c");
@@ -126,5 +155,44 @@ public class Plc4xCommonTest {
                 }
             }
         });
+    }
+
+    public static GenericRecord getTestRecord() {
+        GenericRecord record = new GenericData.Record(schema);
+        record.put("BOOL", true);
+        // record.put("BYTE", "\u0001");
+        // record.put("WORD", "4");
+        record.put("SINT", -5);
+        record.put("USINT", "6");
+        record.put("INT", 2000);
+        record.put("UINT", "3000");
+        record.put("DINT", "4000");
+        record.put("UDINT", "5000");
+        // record.put("DWORD", "0");
+        record.put("LINT", 6000L);
+        record.put("ULINT", "7000");
+        // record.put("LWORD", "0");
+        record.put("REAL", 1.23456F);
+        record.put("LREAL", 2.34567);
+        record.put("CHAR", "c");
+        record.put("WCHAR", "d");
+        record.put("STRING", "this is a string");
+        return record;
+    }
+
+    public static byte[] encodeRecord(GenericRecord record){
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(schema);
+        DataFileWriter<GenericRecord> fileWriter = new DataFileWriter<GenericRecord>(writer);
+
+        try {
+            fileWriter.create(schema, out);
+            fileWriter.append(record);
+            fileWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return out.toByteArray();
     }
 }

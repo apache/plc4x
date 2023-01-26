@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.nifi;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -71,7 +72,10 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     protected Map<String, String> addressMap;
 
 
-    private final PlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder().build();
+    private final PlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder()
+        .withMaxLeaseTime(Duration.ofSeconds(10))
+        .withMaxWaitTime(Duration.ofSeconds(100)) 
+        .build();
 
     @Override
     protected void init(final ProcessorInitializationContext context) {
