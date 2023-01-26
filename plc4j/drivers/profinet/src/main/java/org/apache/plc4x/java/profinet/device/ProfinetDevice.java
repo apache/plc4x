@@ -61,6 +61,7 @@ public class ProfinetDevice {
 
     private final Logger logger = LoggerFactory.getLogger(ProfinetDevice.class);
     private static final int DEFAULT_NUMBER_OF_PORTS_TO_SCAN = 100;
+    private static final int MIN_CYCLE_NANO_SEC = 31250;
     private final BiFunction<String, String, ProfinetISO15745Profile> gsdHandler;
     private ProfinetDeviceContext deviceContext = new ProfinetDeviceContext();
     DatagramSocket socket = null;
@@ -153,21 +154,25 @@ public class ProfinetDevice {
         Starts the subscription, sending data from controller to device.
      */
     public void startSubscription(PlcSubscriber subscriber) {
-        deviceContext.setSubscriptionHandle(new ProfinetSubscriptionHandle(subscriber));
+        if (deviceContext.getSubscriptionHandle() == null) {
+            deviceContext.setSubscriptionHandle(new ProfinetSubscriptionHandle(subscriber));
+        }
         Function<Object, Boolean> subscription =
             message -> {
-                long lastTime = System.nanoTime();
-                while (true) {
+                boolean escape = false;
+                long startTime = System.nanoTime();
+                while (!escape) {
                     try {
-                        CyclicData cyclicData = new CyclicData(lastTime);
+                        CyclicData cyclicData = new CyclicData(startTime);
                         ProfinetMessageWrapper.sendPnioMessage(cyclicData, this);
 
-                        int sleepTime = (int) (deviceContext.getConfiguration().getSendClockFactor() * deviceContext.getConfiguration().getReductionRatio() * 0.03125);
+                        int sleepTime = (int) (deviceContext.getConfiguration().getSendClockFactor() * deviceContext.getConfiguration().getReductionRatio() * (MIN_CYCLE_NANO_SEC/1000000.0));
                         Thread.sleep(sleepTime);
                     } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                        escape = true;
                     }
                 }
+                return null;
             };
 
         Thread thread = new Thread(new ProfinetRunnable(null, subscription));
@@ -181,8 +186,8 @@ public class ProfinetDevice {
     public void stopSubscription() {
         for (Thread thread : threads) {
             thread.interrupt();
-            threads.remove(thread);
         }
+        threads.clear();
     }
 
     /*
@@ -222,96 +227,6 @@ public class ProfinetDevice {
         }
 
         return browseItems;
-    }
-
-    /*
-        Loop through each configured submodule and return a list of child tags.
-        Each child in itself can also contain configured submodules.
-     */
-    public Map<String, PlcBrowseItem> getChildTags() {
-        Map<String, PlcBrowseItem> children = new HashMap<>();
-
-        for (PnIoCm_Block_ExpectedSubmoduleReq ioData : deviceContext.getExpectedSubmoduleReq()) {
-            for (PnIoCm_ExpectedSubmoduleBlockReqApi api : ioData.getApis()) {
-
-                ProfinetDeviceAccessPointItem accessPointItem = findDeviceAccessPoint(api.getModuleIdentNumber());
-                // Add Module to list of Children
-                if (accessPointItem != null) {
-                    Map<String, PlcBrowseItem> moduleChildren = getDeviceAccessSubModules(accessPointItem);
-                    // Populate a map of protocol-dependent options.
-                    Map<String, PlcValue> options = new HashMap<>();
-                    options.put("name", new PlcSTRING(accessPointItem.getModuleInfo().getName().getTextId()));
-                    options.put("infotext", new PlcSTRING(accessPointItem.getModuleInfo().getInfoText().getTextId()));
-                    children.put(String.valueOf(api.getSlotNumber()), new DefaultPlcBrowseItem(ProfinetTag.of(accessPointItem.getModuleInfo().getName().getTextId()), accessPointItem.getModuleInfo().getName().getTextId(), false, false, true, moduleChildren, options));
-                }
-
-                ProfinetModuleItem module = findModule(api.getModuleIdentNumber());
-                // Add Module to list of Children
-                if (accessPointItem == null && module != null) {
-                    Map<String, PlcBrowseItem> moduleChildren = getModulesSubModules(module);
-                    // Populate a map of protocol-dependent options.
-                    Map<String, PlcValue> options = new HashMap<>();
-                    options.put("name", new PlcSTRING(module.getModuleInfo().getName().getTextId()));
-                    options.put("infotext", new PlcSTRING(module.getModuleInfo().getInfoText().getTextId()));
-                    children.put(String.valueOf(api.getSlotNumber()), new DefaultPlcBrowseItem(ProfinetTag.of(module.getModuleInfo().getName().getTextId()), module.getModuleInfo().getName().getTextId(), false, false, true, moduleChildren, options));
-                }
-            }
-        }
-        return children;
-    }
-
-    /*
-        Loop through an Access Point Item and return the configured submodules
-     */
-    public Map<String, PlcBrowseItem> getDeviceAccessSubModules(ProfinetDeviceAccessPointItem module) {
-        Map<String, PlcBrowseItem> children = new HashMap<>();
-
-        for (ProfinetVirtualSubmoduleItem virtualSubModuleItem : module.getVirtualSubmoduleList()) {
-            // Populate a map of protocol-dependent options.
-            Map<String, PlcValue> options = new HashMap<>();
-            options.put("name", new PlcSTRING(virtualSubModuleItem.getModuleInfo().getName().getTextId()));
-            options.put("infotext", new PlcSTRING(virtualSubModuleItem.getModuleInfo().getInfoText().getTextId()));
-            String childName = virtualSubModuleItem.getModuleInfo().getName().getTextId();
-            children.put(childName, new DefaultPlcBrowseItem(ProfinetTag.of(childName), childName,false, false, true, null, options));
-        }
-        return children;
-    }
-
-    /*
-        Loop through an Access Point Item and return the configured submodules
-     */
-    public Map<String, PlcBrowseItem> getModulesSubModules(ProfinetModuleItem module) {
-        Map<String, PlcBrowseItem> children = new HashMap<>();
-
-        for (ProfinetVirtualSubmoduleItem virtualSubModuleItem : module.getVirtualSubmoduleList()) {
-            // Populate a map of protocol-dependent options.
-            Map<String, PlcValue> options = new HashMap<>();
-            options.put("name", new PlcSTRING(virtualSubModuleItem.getModuleInfo().getName().getTextId()));
-            options.put("infotext", new PlcSTRING(virtualSubModuleItem.getModuleInfo().getInfoText().getTextId()));
-            String childName = virtualSubModuleItem.getModuleInfo().getName().getTextId();
-            children.put(childName, new DefaultPlcBrowseItem(ProfinetTag.of(childName), childName,false, false, true, null, options));
-        }
-        return children;
-    }
-
-    private ProfinetDeviceAccessPointItem findDeviceAccessPoint(long moduleIdentNumber) {
-        for (ProfinetDeviceAccessPointItem gsdModule : deviceContext.getGsdFile().getProfileBody().getApplicationProcess().getDeviceAccessPointList()) {
-            int moduleIdent = Integer.decode(gsdModule.getModuleIdentNumber());
-            if (moduleIdentNumber == moduleIdent) {
-                return gsdModule;
-            }
-        }
-        return null;
-    }
-
-    private ProfinetModuleItem findModule(long moduleIdentNumber) {
-        for (ProfinetModuleItem gsdModule : deviceContext.getGsdFile().getProfileBody().getApplicationProcess().getModuleList()) {
-            int moduleIdent = Integer.decode(gsdModule.getModuleIdentNumber());
-            if (moduleIdentNumber == moduleIdent) {
-                return gsdModule;
-            }
-        }
-        return null;
     }
 
     private int generateSessionKey() {
@@ -444,13 +359,17 @@ public class ProfinetDevice {
 
     public void handleAlarmResponse(PnDcp_Pdu_AlarmLow alarmPdu) {
         stopSubscription();
+        deviceContext.setFrameId(0x8001);
         logger.error("Received Alarm Low packet, attempting to re-connect");
-        try {
-            onConnect(deviceContext.getSubscriptionHandle().getPlcSubscriber());
-        } catch (ExecutionException | InterruptedException | TimeoutException e) {
-            // Failed to reconnect
-            throw new RuntimeException(e);
-        }
+        Thread thread = new Thread(new ProfinetRunnable(null, (subscriber) -> {
+            try {
+                return onConnect(deviceContext.getSubscriptionHandle().getPlcSubscriber());
+            } catch (ExecutionException | InterruptedException | TimeoutException e) {
+                throw new RuntimeException(e);
+            }
+        }));
+        threads.add(thread);
+        thread.start();
     }
 
     public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
@@ -610,27 +529,34 @@ public class ProfinetDevice {
         }
 
         public void handle(DceRpc_Packet dceRpc_packet) throws PlcException {
-            if ((dceRpc_packet.getOperation() == DceRpc_Operation.CONNECT) && (dceRpc_packet.getPacketType() == DceRpc_PacketType.RESPONSE)) {
-                if (dceRpc_packet.getPayload().getPacketType() == DceRpc_PacketType.RESPONSE) {
+            try {
+                if ((dceRpc_packet.getOperation() == DceRpc_Operation.CONNECT) && (dceRpc_packet.getPacketType() == DceRpc_PacketType.RESPONSE)) {
+                    if (dceRpc_packet.getPayload().getPacketType() == DceRpc_PacketType.RESPONSE) {
 
-                    // Get the remote MAC address and store it in the context.
-                    final PnIoCm_Packet_Res connectResponse = (PnIoCm_Packet_Res) dceRpc_packet.getPayload();
-                    if ((connectResponse.getBlocks().size() > 0) && (connectResponse.getBlocks().get(0) instanceof PnIoCm_Block_ArRes)) {
-                        final PnIoCm_Block_ArRes pnIoCm_block_arRes = (PnIoCm_Block_ArRes) connectResponse.getBlocks().get(0);
-                        responseHandled.complete(true);
-                        // Update the raw-socket transports filter expression.
-                        //((RawSocketChannel) channel).setRemoteMacAddress(org.pcap4j.util.MacAddress.getByAddress(macAddress.getAddress()));
+                        // Get the remote MAC address and store it in the context.
+                        final PnIoCm_Packet_Res connectResponse = (PnIoCm_Packet_Res) dceRpc_packet.getPayload();
+                        if ((connectResponse.getBlocks().size() > 0) && (connectResponse.getBlocks().get(0) instanceof PnIoCm_Block_ArRes)) {
+                            final PnIoCm_Block_ArRes pnIoCm_block_arRes = (PnIoCm_Block_ArRes) connectResponse.getBlocks().get(0);
+                            responseHandled.complete(true);
+                            // Update the raw-socket transports filter expression.
+                            //((RawSocketChannel) channel).setRemoteMacAddress(org.pcap4j.util.MacAddress.getByAddress(macAddress.getAddress()));
+                        } else {
+                            responseHandled.complete(true);
+                            handleAlarmResponse(null);
+                        }
                     } else {
-                        throw new PlcException("Unexpected type of first block.");
+                        throw new PlcException("Unexpected response");
                     }
+                } else if (dceRpc_packet.getPacketType() == DceRpc_PacketType.REJECT) {
+                    throw new PlcException("Device rejected connection request");
                 } else {
                     throw new PlcException("Unexpected response");
                 }
-            } else if (dceRpc_packet.getPacketType() == DceRpc_PacketType.REJECT) {
-                throw new PlcException("Device rejected connection request");
-            } else {
-                throw new PlcException("Unexpected response");
+            } catch (Exception e) {
+                responseHandled.complete(true);
+                handleAlarmResponse(null);
             }
+
         }
     }
 
@@ -873,7 +799,6 @@ public class ProfinetDevice {
         }
 
         public Ethernet_Frame create() {
-            int elapsedTime = (int) (System.nanoTime() - startTime) % 65536;
 
             WriteBufferByteBased buffer = new WriteBufferByteBased(deviceContext.getOutputReq().getDataLength());
             PnIoCm_IoCrBlockReqApi api = deviceContext.getOutputReq().getApis().get(0);
@@ -908,6 +833,8 @@ public class ProfinetDevice {
                 }
             }
 
+            int elapsedTime = (int) ((((System.nanoTime() - startTime)/(MIN_CYCLE_NANO_SEC))) % 65536);
+
             Ethernet_Frame test = new Ethernet_Frame(
                 deviceContext.getMacAddress(),
                 deviceContext.getLocalMacAddress(),
@@ -932,7 +859,7 @@ public class ProfinetDevice {
 
         @Override
         public void handle(Ethernet_Frame packet) throws PlcException {
-            logger.debug("Received a Write Parameter End Response");
+            throw new PlcException("There is no returned packet for cyclic data");
         }
     }
 }

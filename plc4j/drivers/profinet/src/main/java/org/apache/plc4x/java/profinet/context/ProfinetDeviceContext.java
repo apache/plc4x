@@ -485,7 +485,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         return frameId;
     }
 
-    public void setFrameId(int FrameId) {
+    public void setFrameId(int frameId) {
         this.frameId = frameId;
     }
 

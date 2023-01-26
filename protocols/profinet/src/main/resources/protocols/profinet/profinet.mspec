@@ -416,7 +416,7 @@
                     [simple uint 4  windowSize]
                     [simple uint 16 senSeqNum]
                     [simple uint 16 ackSeqNum]
-                    [implicit uint 16 varPartLen 'varPart.length']
+                    [implicit uint 16 varPartLen 'COUNT(varPart)']
                     [array    byte varPart                        length              'varPartLen']
                 ]
         ['DCP_Identify_ReqPDU' PnDcp_Pdu_IdentifyReq

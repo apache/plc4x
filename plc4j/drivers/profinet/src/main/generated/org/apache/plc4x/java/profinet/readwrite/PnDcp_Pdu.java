@@ -121,6 +121,8 @@ public abstract class PnDcp_Pdu implements Message {
       builder = PnDcp_Pdu_RealTimeCyclic.staticParseBuilder(readBuffer);
     } else if (EvaluationHelper.equals(frameId, PnDcp_FrameId.PTCP_DelayReqPDU)) {
       builder = PcDcp_Pdu_DelayReq.staticParseBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(frameId, PnDcp_FrameId.Alarm_Low)) {
+      builder = PnDcp_Pdu_AlarmLow.staticParseBuilder(readBuffer);
     } else if (EvaluationHelper.equals(frameId, PnDcp_FrameId.DCP_Identify_ReqPDU)) {
       builder = PnDcp_Pdu_IdentifyReq.staticParseBuilder(readBuffer);
     } else if (EvaluationHelper.equals(frameId, PnDcp_FrameId.DCP_Identify_ResPDU)) {

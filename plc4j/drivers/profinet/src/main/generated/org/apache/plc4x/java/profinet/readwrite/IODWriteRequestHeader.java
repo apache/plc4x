@@ -138,7 +138,11 @@ public class IODWriteRequestHeader extends PnIoCm_Block implements Message {
             ((((getIndex()) < (0x8000))
                 ? ((getLengthInBytes()) - (4)) - (getRecordDataLength())
                 : (getLengthInBytes()) - (4)));
-    writeImplicitField("blockLength", blockLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "blockLength",
+        blockLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (blockVersionHigh)
     writeSimpleField(
@@ -190,7 +194,11 @@ public class IODWriteRequestHeader extends PnIoCm_Block implements Message {
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (padField)
-    writeConstField("padField", PADFIELD, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "padField",
+        PADFIELD,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (index)
     writeSimpleField(
@@ -214,11 +222,16 @@ public class IODWriteRequestHeader extends PnIoCm_Block implements Message {
                 ? (((((((((64) - (6)) - (2)) - (16)) - (4)) - (2)) - (2)) - (2)) - (2)) - (4)
                 : (((((((((64) - (6)) - (2)) - (16)) - (4)) - (2)) - (2)) - (2)) - (2)) - (4))),
         (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Optional Field (userData) (Can be skipped, if the value is null)
     writeOptionalField(
-        "userData", userData, new DataWriterComplexDefault<>(writeBuffer), (getIndex()) < (0x8000));
+        "userData",
+        userData,
+        new DataWriterComplexDefault<>(writeBuffer),
+        (getIndex()) < (0x8000),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("IODWriteRequestHeader");
   }

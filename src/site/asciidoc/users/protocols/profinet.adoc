@@ -44,45 +44,58 @@ The executable will change based on your jdk you are using.
 
 <dependency>
   <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-driver-opcua</artifactId>
+  <artifactId>plc4j-driver-profinet</artifactId>
   <version>{current-last-released-version}</version>
 </dependency>
 
 ----
 
 |Default Transport:
-2+| `tcp`
+2+| `raw`
 
 |Compatible Transports:
-2+| - `tcp` (Default Port: 4840)
+2+| - `raw` - Profinet uses a bunch of protocols, LLDP, PN-DCP, PNIO over UDP or Profinet. It makes sense just to select the raw transport for this.
 
 
 3+|Supported Operations
 
-|| `read`      |The read interface allows for reading the full range of supported PLC4X data types in single and bulk requests
-|| `write`     |The write interface allows for writing the full range of supported PLC4X data types in single and bulk requests
-|| `subscribe` |Subscriptions are possible with events on event- and cyclic-basis
+|| `subscribe` |Only the subscription service is currently supported.
 
 
 3+|Options
 
-|| `discovery`  |   Controls the feature of the discovery endpoint of an OPC UA server which every server
-will propagate over an '<address>/discovery' endpoint. The most common issue here is that most servers are not correctly
-configured and propagate the wrong external IP or URL address. If that is the case you can disable the discovery by
-configuring it with a `false` value.
+|| `devices`  |   (Required) Allows you to specify the devices you would like to communicate to, their device access
+module (Taken from the GSD file) as well as a list of submodules.
 
-|| `username`  |   A username to authenticate to the OPCUA server with.
-|| `password`  |   A password to authenticate to the OPCUA server with. |
+This parameter has the format
+
+----
+[[{device-1},{device-access},({submodule-1},{submodule-2})],[{device-2},{device-access},({submodule-1},{submodule-2})],....]
+----
+
+For each available slot specified in the GFSD file a submodule needs to be in the connection string, however it can be left blank e.g.
+
+----
+[[{device},{device-access},({submodule-1},)]]
+----
+
+If there is no submodule configured.
+
+|| `gsddirectory`  |   The directory that is used to store any GSD files. This is used to lookup the GSD for device found.
+|| `sendclockfactor`  |   (Default 32) This is used to scale the frequency in which cyclic packets are sent. Increasing this slows down communication
+|| `reductionratio`  |   (Default 4) Is also used to scale the frequency. The formula to calculate the overall cycle time is Cycle Time = SendClockFactor * Reduction Ratio * 31.23us
+|| `watchdogfactor`  |   Used to specify the maximum number of cycles that is allowed to be missed by a device. An alarm is generated if this is exceeded
+|| `dataholdfactor`  |   Specifies the number of cycles a device will keep its outputs in a non-safe state when it hasn't received a cyclic packet. This must be equal to or be greater than the watchdog factor|
 
 |===
 
 === Connection String
 
-The OPC UA drivers uses the connection string
+The Profinet driver uses the connection string
 
 ----
 
-opcua:{transport}://{ip-address}:{port}?{options}
+profinet:raw://{ip-address}:{port}?{options}
 
 ----
 
@@ -90,25 +103,29 @@ An example of this connection string would be:-
 
 ----
 
-opcua:tcp://127.0.0.1:12686?discovery=true&username=admin&password=password
+profinet:raw://127.0.0.1?gsddirectory=/Profinet/GSD&devices=[[test-device-1,MOD_1,(SUBMOD_1,,SUBMOD_1,)],[test-device-2,MOD_1,(SUBMOD_1,,SUBMOD_1,)]]
 
 ----
 
-Note the transport, port and options fields are optional.
+Note the transport, port fields shouldn't have to be changed
 
 
 === Address Format
-To read, write and subscribe to data, the OPC UA driver uses the variable declaration string of the OPC UA server it is
-connecting to.
-It includes the namespace(`ns`) of the hierarchy tree followed by the type of identifier string(`s`), numeric(`i`),
-binary(`b`) or guid(`g`) and its address. The Data Type is an optional field, if it is not included a default data type
-is selected based on the datatype of the returned value. For Unsigned data types it needs to be included otherwise.
+The format of address will be in the format.
 
 ----
 
-ns={namespace-index};[s|i|g|b]={Identifier};{Data Type}
+device.slot.id.module_name.channel.bit:format
 
 ----
+
+An example would be
+
+----
+device-1.1.1.DIGITAL_INPUT.0.1:BOOL
+----
+
+Note:-
 
 ==== Data Types
 
@@ -135,44 +152,9 @@ The following data types are supported
 - WSTRING (utf-16)
 
 
-==== Example of a valid OPC UA address:
-
-The following are examples of valid addresses
-
-String address:
-----
-ns=2;s=HelloWorld/ScalarTypes/Boolean
-ns=2;s=HelloWorld/ScalarTypes/Boolean;BOOL
-----
-Numeric address
-----
-ns=1;i=1337
-ns=1;i=1337;DINT
-----
-GUID address:
-----
-ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a
-ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a;REAL
-----
-
-Note the Identifiers `s`,`i`,`b` and `g` specify the format of the address not the data type of the returned value.
-
 === Some useful tips
 
-The namespace (e.g. `ns=2`) within the address is specific to the server you are connecting to.
-
-
-=== More details on OPC UA
-
-https://opcfoundation.org/about/opc-technologies/opc-ua/[OPC UA]
-The OPC Unified Architecture (UA), released in 2008, is a platform independent service-oriented architecture that integrates all the functionality of the individual OPC Classic specifications into one extensible framework.
-
-This multi-layered approach accomplishes the original design specification goals of:
-
-* Functional equivalence: all COM OPC Classic specifications are mapped to UA
-* Platform independence: from an embedded micro-controller to cloud-based infrastructure
-* Secure: encryption, authentication, and auditing
-* Extensible: ability to add new features without affecting existing applications
-* Comprehensive information modeling: for defining complex information
+The GSD file contains all the information of what the addresses will end up being. The easiest approach is to use the browsing
+function of the Profinet driver to return a list of all available tags. Then only the address of interest can be selected.
 
 |===
