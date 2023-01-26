@@ -57,7 +57,11 @@ public abstract class FirmataMessage implements Message {
     writeBuffer.pushContext("FirmataMessage");
 
     // Discriminator Field (messageType) (Used as input to a switch field)
-    writeDiscriminatorField("messageType", getMessageType(), writeUnsignedByte(writeBuffer, 4));
+    writeDiscriminatorField(
+        "messageType",
+        getMessageType(),
+        writeUnsignedByte(writeBuffer, 4),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializeFirmataMessageChild(writeBuffer);

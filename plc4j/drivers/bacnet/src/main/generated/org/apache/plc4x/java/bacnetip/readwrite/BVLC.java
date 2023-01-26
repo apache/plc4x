@@ -63,15 +63,27 @@ public abstract class BVLC implements Message {
     writeBuffer.pushContext("BVLC");
 
     // Const Field (bacnetType)
-    writeConstField("bacnetType", BACNETTYPE, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "bacnetType",
+        BACNETTYPE,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Discriminator Field (bvlcFunction) (Used as input to a switch field)
-    writeDiscriminatorField("bvlcFunction", getBvlcFunction(), writeUnsignedShort(writeBuffer, 8));
+    writeDiscriminatorField(
+        "bvlcFunction",
+        getBvlcFunction(),
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (bvlcLength) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int bvlcLength = (int) (getLengthInBytes());
-    writeImplicitField("bvlcLength", bvlcLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "bvlcLength",
+        bvlcLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     int bvlcPayloadLength = getBvlcPayloadLength();

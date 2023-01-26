@@ -27,7 +27,9 @@
     </encoder>
   </appender>
 
-  <root level="error">
+  <logger name="org.apache.plc4x.java.utils.cache" level="debug"/>
+
+  <root level="info">
     <appender-ref ref="STDOUT" />
   </root>
 

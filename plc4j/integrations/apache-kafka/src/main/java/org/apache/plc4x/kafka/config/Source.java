@@ -18,16 +18,13 @@
  */
 package org.apache.plc4x.kafka.config;
 
-import org.apache.plc4x.java.PlcDriverManager;
-
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
-import org.apache.kafka.common.config.Config;
 import org.apache.kafka.common.config.ConfigException;
-import org.apache.kafka.common.config.ConfigValue;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
+
 import java.util.Map;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class Source extends AbstractConfig{
@@ -73,7 +70,7 @@ public class Source extends AbstractConfig{
                 String.format("Connection string shouldn't be null for source %s ", this.name));
         }
         try {
-            new PlcDriverManager().getDriverForUrl(connectionString);
+            new DefaultPlcDriverManager().getDriverForUrl(connectionString);
         } catch (Exception e) {
             throw new ConfigException(
                 String.format("Connection String format is incorrect %s ", SOURCES_CONFIG + "." + this.name + "." + CONNECTION_STRING_CONFIG + "=" + connectionString));

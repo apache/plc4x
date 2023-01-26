@@ -20,19 +20,15 @@ package org.apache.plc4x.java.spi.generation;
 
 import com.github.jinahya.bit.io.BufferByteOutput;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.io.MyDefaultBitOutput;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-import static org.apache.commons.lang3.ArrayUtils.subarray;
-
-public class WriteBufferByteBased implements WriteBuffer {
+public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
 
     private final ByteBuffer bb;
     private final MyDefaultBitOutput bo;
@@ -128,7 +124,29 @@ public class WriteBufferByteBased implements WriteBuffer {
             throw new SerializationException("unsigned short can only contain max 16 bits");
         }
         try {
-            bo.writeShort(true, bitLength, value);
+            String encoding = extractEncoding(writerArgs).orElse("default");
+            switch (encoding) {
+                case "ASCII":
+                    // AsciiUint can only decode values that have a multiple of 8 length.
+                    if (bitLength % 8 != 0) {
+                        throw new SerializationException("'ASCII' encoded fields must have a length that is a multiple of 8 bits long");
+                    }
+                    int charLen = bitLength / 8;
+                    int maxValue = (int) (Math.pow(10, charLen) - 1);
+                    if (value > maxValue) {
+                        throw new SerializationException("Provided value of " + value + " exceeds the max value of " + maxValue);
+                    }
+                    String stringValue = String.format("%0" + charLen + "d", value);
+                    for (byte curByte : stringValue.getBytes(StandardCharsets.US_ASCII)) {
+                        bo.writeByte(false, 8, curByte);
+                    }
+                    break;
+                case "default":
+                    bo.writeShort(true, bitLength, value);
+                    break;
+                default:
+                    throw new SerializationException("unsupported encoding '" + encoding + "'");
+            }
         } catch (IOException e) {
             throw new SerializationException("Error writing unsigned short", e);
         }
@@ -143,10 +161,32 @@ public class WriteBufferByteBased implements WriteBuffer {
             throw new SerializationException("unsigned int can only contain max 32 bits");
         }
         try {
-            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                value = Integer.reverseBytes(value) >> 16;
+            String encoding = extractEncoding(writerArgs).orElse("default");
+            switch (encoding) {
+                case "ASCII":
+                    // AsciiUint can only decode values that have a multiple of 8 length.
+                    if (bitLength % 8 != 0) {
+                        throw new SerializationException("'ASCII' encoded fields must have a length that is a multiple of 8 bits long");
+                    }
+                    int charLen = bitLength / 8;
+                    int maxValue = (int) (Math.pow(10, charLen) - 1);
+                    if (value > maxValue) {
+                        throw new SerializationException("Provided value of " + value + " exceeds the max value of " + maxValue);
+                    }
+                    String stringValue = String.format("%0" + charLen + "d", value);
+                    for (byte curByte : stringValue.getBytes(StandardCharsets.US_ASCII)) {
+                        bo.writeByte(false, 8, curByte);
+                    }
+                    break;
+                case "default":
+                    if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+                        value = Integer.reverseBytes(value) >> 16;
+                    }
+                    bo.writeInt(true, bitLength, value);
+                    break;
+                default:
+                    throw new SerializationException("unsupported encoding '" + encoding + "'");
             }
-            bo.writeInt(true, bitLength, value);
         } catch (IOException e) {
             throw new SerializationException("Error writing unsigned int", e);
         }
@@ -161,10 +201,32 @@ public class WriteBufferByteBased implements WriteBuffer {
             throw new SerializationException("unsigned long can only contain max 63 bits");
         }
         try {
-            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                value = Long.reverseBytes(value) >> 32;
+            String encoding = extractEncoding(writerArgs).orElse("default");
+            switch (encoding) {
+                case "ASCII":
+                    // AsciiUint can only decode values that have a multiple of 8 length.
+                    if (bitLength % 8 != 0) {
+                        throw new SerializationException("'ASCII' encoded fields must have a length that is a multiple of 8 bits long");
+                    }
+                    int charLen = bitLength / 8;
+                    int maxValue = (int) (Math.pow(10, charLen) - 1);
+                    if (value > maxValue) {
+                        throw new SerializationException("Provided value of " + value + " exceeds the max value of " + maxValue);
+                    }
+                    String stringValue = String.format("%0" + charLen + "d", value);
+                    for (byte curByte : stringValue.getBytes(StandardCharsets.US_ASCII)) {
+                        bo.writeByte(false, 8, curByte);
+                    }
+                    break;
+                case "default":
+                    if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+                        value = Long.reverseBytes(value) >> 32;
+                    }
+                    bo.writeLong(true, bitLength, value);
+                    break;
+                default:
+                    throw new SerializationException("unsupported encoding '" + encoding + "'");
             }
-            bo.writeLong(true, bitLength, value);
         } catch (IOException e) {
             throw new SerializationException("Error writing unsigned long", e);
         }
@@ -309,10 +371,15 @@ public class WriteBufferByteBased implements WriteBuffer {
      * 0-termination.
      */
     @Override
-    public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws SerializationException {
+    public void writeString(String logicalName, int bitLength, String value, WithWriterArgs... writerArgs) throws SerializationException {
         byte[] bytes;
+        String encoding = extractEncoding(writerArgs).orElse("UTF-8");
         encoding = encoding.replaceAll("[^a-zA-Z0-9]", "");
         switch (encoding.toUpperCase()) {
+            case "ASCII": {
+                bytes = value.getBytes(StandardCharsets.US_ASCII);
+                break;
+            }
             case "UTF8": {
                 bytes = value.getBytes(StandardCharsets.UTF_8);
                 break;

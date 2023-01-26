@@ -27,6 +27,7 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
@@ -136,11 +137,15 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
                 PlcList list = (PlcList) value;
                 for (PlcValue plcValue : list.getList()) {
                     String plcValueString = plcValue.getString();
-                    writeBuffer.writeString("value", plcValueString.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), plcValueString);
+                    writeBuffer.writeString("value",
+                        plcValueString.getBytes(StandardCharsets.UTF_8).length * 8,
+                        plcValueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
                 }
             } else {
                 String plcValueString = value.getString();
-                writeBuffer.writeString("value", plcValueString.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), plcValueString);
+                writeBuffer.writeString("value",
+                    plcValueString.getBytes(StandardCharsets.UTF_8).length * 8,
+                    plcValueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
             }
             writeBuffer.popContext(tagName);
         }

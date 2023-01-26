@@ -66,7 +66,8 @@ public class BVLCReadForeignDeviceTableAck extends BVLC implements Message {
     writeBuffer.pushContext("BVLCReadForeignDeviceTableAck");
 
     // Array Field (table)
-    writeComplexTypeArrayField("table", table, writeBuffer);
+    writeComplexTypeArrayField(
+        "table", table, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("BVLCReadForeignDeviceTableAck");
   }

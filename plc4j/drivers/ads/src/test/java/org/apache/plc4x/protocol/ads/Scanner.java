@@ -24,7 +24,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.plc4x.java.PlcDriverManager;
+
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.ads.readwrite.AdsDataType;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -58,7 +59,7 @@ public class Scanner {
         System.out.println("Launching connection " + connectionString);
 
         // Establish a connection to the plc using the url provided as first argument
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionString)) {
+        try (PlcConnection plcConnection = new DefaultPlcDriverManager().getConnection(connectionString)) {
             PlcConnectionMetadata metadata = plcConnection.getMetadata();
             System.out.println("read: " + metadata.canRead());
             System.out.println("write: " + metadata.canWrite());

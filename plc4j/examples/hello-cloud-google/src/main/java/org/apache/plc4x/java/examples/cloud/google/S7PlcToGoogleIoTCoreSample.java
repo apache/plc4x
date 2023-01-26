@@ -21,8 +21,8 @@ package org.apache.plc4x.java.examples.cloud.google;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.eclipse.paho.client.mqttv3.*;
@@ -236,7 +236,7 @@ public class S7PlcToGoogleIoTCoreSample {
 
         // Connect to Plc
         logger.info("Connecting to Plc");
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("s7://10.10.64.20/1/1")) {
+        try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection("s7://10.10.64.20/1/1")) {
             logger.info("Connected");
 
             PlcReadRequest readRequest = plcConnection.readRequestBuilder().addTagAddress("outputs", "OUTPUTS/0").build();

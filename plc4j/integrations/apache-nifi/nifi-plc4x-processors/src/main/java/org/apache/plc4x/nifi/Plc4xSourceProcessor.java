@@ -44,7 +44,7 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
     @Override
     public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
         // Get an instance of a component able to read from a PLC.
-        try(PlcConnection connection = getDriverManager().getConnection(getConnectionString())) {
+        try(PlcConnection connection = getConnectionManager().getConnection(getConnectionString())) {
 
             // Prepare the request.
             if (!connection.getMetadata().canRead()) {

@@ -25,8 +25,8 @@ import org.apache.kafka.connect.data.Date;
 import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.JobConfigurationTriggeredImplBuilder;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImplBuilder;
@@ -34,7 +34,7 @@ import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
-import org.apache.plc4x.java.utils.connectionpool2.PooledDriverManager;
+import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.apache.plc4x.kafka.config.Constants;
 import org.apache.plc4x.kafka.util.VersionUtil;
 import org.slf4j.Logger;
@@ -152,8 +152,8 @@ public class Plc4xSourceTask extends SourceTask {
         ScraperConfigurationTriggeredImpl scraperConfig = builder.build();
 
         try {
-            PlcDriverManager manager = new PooledDriverManager();
-            TriggerCollector triggerCollector = new TriggerCollectorImpl(manager);
+            PlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder().build();
+            TriggerCollector triggerCollector = new TriggerCollectorImpl(connectionManager);
             scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
                 try {
                     Long timestamp = System.currentTimeMillis();

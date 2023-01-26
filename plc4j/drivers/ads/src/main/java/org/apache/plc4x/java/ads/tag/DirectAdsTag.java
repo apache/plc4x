@@ -21,6 +21,7 @@ package org.apache.plc4x.java.ads.tag;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
@@ -177,8 +178,9 @@ public class DirectAdsTag implements AdsTag {
         writeBuffer.writeUnsignedLong("indexGroup", 32, getIndexGroup());
         writeBuffer.writeUnsignedLong("indexOffset", 32, getIndexOffset());
         writeBuffer.writeUnsignedLong("numberOfElements", 32, getNumberOfElements());
-        String plcDataType = getPlcDataType();
-        writeBuffer.writeString("dataType", plcDataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), plcDataType);
+        writeBuffer.writeString("dataType",
+            getPlcDataType().getBytes(StandardCharsets.UTF_8).length * 8,
+            getPlcDataType(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
 
         writeBuffer.popContext(getClass().getSimpleName());
     }

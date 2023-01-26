@@ -39,6 +39,7 @@
   </properties>
 
   <modules>
+    <module>hello-ads-telemetry</module>
     <module>hello-cloud-azure</module>
     <module>hello-cloud-google</module>
     <module>hello-discovery</module>

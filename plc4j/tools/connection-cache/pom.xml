@@ -30,7 +30,7 @@
   <artifactId>plc4j-connection-cache</artifactId>
 
   <name>PLC4J: Tools: Connection Cache</name>
-  <description>An implementation of a connection pool based on Apache Commons Pool.</description>
+  <description>An implementation of a connection cache.</description>
 
   <dependencies>
     <dependency>
@@ -40,10 +40,11 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-ads</artifactId>
+      <version>0.11.0-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-mock</artifactId>

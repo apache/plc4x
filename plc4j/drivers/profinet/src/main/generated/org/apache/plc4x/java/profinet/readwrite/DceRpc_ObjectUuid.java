@@ -104,7 +104,11 @@ public class DceRpc_ObjectUuid implements Message {
     writeConstField("data3", DATA3, writeUnsignedInt(writeBuffer, 16));
 
     // Const Field (data4)
-    writeConstField("data4", DATA4, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "data4",
+        DATA4,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (interfaceNumber)
     writeSimpleField(

@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.opcuaserver;
 
 import io.vavr.collection.List;
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -112,7 +112,7 @@ public class OpcuaPlcDriverTest {
         connectionStringValidSet.forEach(connectionAddress -> {
                 String connectionString = connectionAddress;
                 try {
-                    PlcConnection opcuaConnection = new PlcDriverManager().getConnection(connectionString);
+                    PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
                     assert opcuaConnection.isConnected();
                     opcuaConnection.close();
                     assert !opcuaConnection.isConnected();
@@ -132,7 +132,7 @@ public class OpcuaPlcDriverTest {
             discoveryParamValidSet.forEach(discoveryParam -> {
                 String connectionString = connectionAddress + paramSectionDivider + discoveryParam;
                 try {
-                    PlcConnection opcuaConnection = new PlcDriverManager().getConnection(connectionString);
+                    PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
                     assert opcuaConnection.isConnected();
                     opcuaConnection.close();
                     assert !opcuaConnection.isConnected();
@@ -150,7 +150,7 @@ public class OpcuaPlcDriverTest {
     @Test
     public void readVariables() throws Exception{
 
-            PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
+            PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
             assert opcuaConnection.isConnected();
 
             PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder();
@@ -199,7 +199,7 @@ public class OpcuaPlcDriverTest {
     @Test
     public void writeVariables() throws Exception {
 
-            PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
+            PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
             assert opcuaConnection.isConnected();
 
             PlcWriteRequest.Builder builder = opcuaConnection.writeRequestBuilder();

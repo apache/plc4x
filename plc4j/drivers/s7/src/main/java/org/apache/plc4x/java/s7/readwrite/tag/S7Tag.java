@@ -31,6 +31,7 @@ import org.apache.plc4x.java.s7.readwrite.S7Address;
 import org.apache.plc4x.java.s7.readwrite.S7AddressAny;
 import org.apache.plc4x.java.s7.readwrite.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.TransportSize;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
 import org.apache.plc4x.java.spi.utils.Serializable;
@@ -342,7 +343,9 @@ public class S7Tag implements PlcTag, Serializable {
         writeBuffer.pushContext(getClass().getSimpleName());
 
         String memoryArea = getMemoryArea().name();
-        writeBuffer.writeString("memoryArea", memoryArea.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), memoryArea);
+        writeBuffer.writeString("memoryArea",
+            memoryArea.getBytes(StandardCharsets.UTF_8).length * 8,
+            memoryArea, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
 
         writeBuffer.writeUnsignedInt("blockNumber", 16, getBlockNumber());
         writeBuffer.writeUnsignedInt("byteOffset", 16, getByteOffset());
@@ -350,7 +353,9 @@ public class S7Tag implements PlcTag, Serializable {
         writeBuffer.writeUnsignedInt("numElements", 16, getNumberOfElements());
 
         String dataType = getDataType().name();
-        writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);
+        writeBuffer.writeString("dataType",
+            dataType.getBytes(StandardCharsets.UTF_8).length * 8,
+            dataType, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
 
         writeBuffer.popContext(getClass().getSimpleName());
     }

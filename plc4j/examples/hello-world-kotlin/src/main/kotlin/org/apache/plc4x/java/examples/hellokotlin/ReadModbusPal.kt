@@ -18,13 +18,13 @@
  */
 package org.apache.plc4x.java.examples.hellokotlin;
 
-import org.apache.plc4x.java.PlcDriverManager
+import org.apache.plc4x.java.DefaultPlcDriverManager
 import org.apache.plc4x.java.api.types.PlcResponseCode
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
 fun main() {
-    PlcDriverManager()
+    DefaultPlcDriverManager()
         .getConnection("modbus-tcp://localhost:502")
         .use { conn ->
             if (!conn.metadata.canRead()) {

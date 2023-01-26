@@ -346,71 +346,96 @@ public abstract class AmsPacket implements Message {
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     AmsPacketBuilder builder = null;
-    if (EvaluationHelper.equals(commandId, CommandId.INVALID)
+    if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.INVALID)
         && EvaluationHelper.equals(response, (boolean) false)) {
       builder = AdsInvalidRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.INVALID)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.INVALID)
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder = AdsInvalidResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_READ_DEVICE_INFO)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_READ_DEVICE_INFO)
         && EvaluationHelper.equals(response, (boolean) false)) {
       builder = AdsReadDeviceInfoRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_READ_DEVICE_INFO)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_READ_DEVICE_INFO)
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder = AdsReadDeviceInfoResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_READ)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_READ)
         && EvaluationHelper.equals(response, (boolean) false)) {
       builder = AdsReadRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_READ)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_READ)
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder = AdsReadResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_WRITE)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_WRITE)
         && EvaluationHelper.equals(response, (boolean) false)) {
       builder = AdsWriteRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_WRITE)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_WRITE)
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder = AdsWriteResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_READ_STATE)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_READ_STATE)
         && EvaluationHelper.equals(response, (boolean) false)) {
       builder = AdsReadStateRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_READ_STATE)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_READ_STATE)
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder = AdsReadStateResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_WRITE_CONTROL)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_WRITE_CONTROL)
         && EvaluationHelper.equals(response, (boolean) false)) {
       builder = AdsWriteControlRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_WRITE_CONTROL)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_WRITE_CONTROL)
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder = AdsWriteControlResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_ADD_DEVICE_NOTIFICATION)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_ADD_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) false)) {
       builder = AdsAddDeviceNotificationRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_ADD_DEVICE_NOTIFICATION)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_ADD_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder = AdsAddDeviceNotificationResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_DELETE_DEVICE_NOTIFICATION)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_DELETE_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) false)) {
       builder = AdsDeleteDeviceNotificationRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_DELETE_DEVICE_NOTIFICATION)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_DELETE_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder = AdsDeleteDeviceNotificationResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_DEVICE_NOTIFICATION)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) false)) {
       builder = AdsDeviceNotificationRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_DEVICE_NOTIFICATION)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder = AdsDeviceNotificationResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_READ_WRITE)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_READ_WRITE)
         && EvaluationHelper.equals(response, (boolean) false)) {
       builder = AdsReadWriteRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_READ_WRITE)
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_READ_WRITE)
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder = AdsReadWriteResponse.staticParseBuilder(readBuffer);
+    } else {
+      builder = ErrorResponse.staticParseBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
           "Unsupported case for discriminated type"
               + " parameters ["
+              + "errorCode="
+              + errorCode
+              + " "
               + "commandId="
               + commandId
               + " "

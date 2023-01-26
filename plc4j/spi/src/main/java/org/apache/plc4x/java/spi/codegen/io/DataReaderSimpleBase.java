@@ -60,4 +60,9 @@ public abstract class DataReaderSimpleBase<T> implements DataReader<T> {
         readBuffer.closeContext(logicalName, readerArgs);
     }
 
+    @Override
+    public ReadBuffer getReadBuffer() {
+        return readBuffer;
+    }
+
 }

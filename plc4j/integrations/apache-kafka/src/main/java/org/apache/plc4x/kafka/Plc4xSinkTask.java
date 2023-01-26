@@ -26,11 +26,11 @@ import org.apache.kafka.connect.transforms.Transformation;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTask;
 import org.apache.kafka.connect.errors.RetriableException;
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.utils.connectionpool2.PooledDriverManager;
+import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.apache.plc4x.kafka.config.Constants;
 import org.apache.plc4x.kafka.util.VersionUtil;
 
@@ -109,7 +109,7 @@ public class Plc4xSinkTask extends SinkTask {
         return VersionUtil.getVersion();
     }
 
-    private PlcDriverManager driverManager;
+    private PlcConnectionManager connectionManager;
     private Transformation<SinkRecord> transformation;
     private String plc4xConnectionString;
     private String plc4xTopic;
@@ -148,7 +148,7 @@ public class Plc4xSinkTask extends SinkTask {
         }
 
         log.info("Creating Pooled PLC4x driver manager");
-        driverManager = new PooledDriverManager();
+        connectionManager = CachedPlcConnectionManager.getBuilder().build();
     }
 
     @Override
@@ -166,7 +166,7 @@ public class Plc4xSinkTask extends SinkTask {
 
         PlcConnection connection = null;
         try {
-            connection = driverManager.getConnection(plc4xConnectionString);
+            connection = connectionManager.getConnection(plc4xConnectionString);
         } catch (PlcConnectionException e) {
             log.warn("Failed to Open Connection {}", plc4xConnectionString);
             remainingRetries--;

@@ -130,7 +130,7 @@ public class MessageResolver {
         } catch (RuntimeException e) {
             throw new DriverTestsuiteException("Invalid or non existent package detected: " + driverPackage, e);
         }
-        String ioRootClassName = driverPackage + "." + typeName;
+        String ioRootClassName = driverPackage.replace("-", "") + "." + typeName;
         // make sure both type and it's IO are present
         Class<? extends Message> messageType = (Class<? extends Message>) Class.forName(ioRootClassName);
         Method staticParse = messageType.getMethod("staticParse", ReadBuffer.class, Object[].class);

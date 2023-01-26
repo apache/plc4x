@@ -450,48 +450,50 @@ func AmsPacketParseWithBuffer(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 	var _child AmsPacketChildSerializeRequirement
 	var typeSwitchError error
 	switch {
-	case commandId == CommandId_INVALID && response == bool(false): // AdsInvalidRequest
+	case errorCode == 0x00000000 && commandId == CommandId_INVALID && response == bool(false): // AdsInvalidRequest
 		_childTemp, typeSwitchError = AdsInvalidRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_INVALID && response == bool(true): // AdsInvalidResponse
+	case errorCode == 0x00000000 && commandId == CommandId_INVALID && response == bool(true): // AdsInvalidResponse
 		_childTemp, typeSwitchError = AdsInvalidResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(false): // AdsReadDeviceInfoRequest
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(false): // AdsReadDeviceInfoRequest
 		_childTemp, typeSwitchError = AdsReadDeviceInfoRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(true): // AdsReadDeviceInfoResponse
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(true): // AdsReadDeviceInfoResponse
 		_childTemp, typeSwitchError = AdsReadDeviceInfoResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_READ && response == bool(false): // AdsReadRequest
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ && response == bool(false): // AdsReadRequest
 		_childTemp, typeSwitchError = AdsReadRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_READ && response == bool(true): // AdsReadResponse
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ && response == bool(true): // AdsReadResponse
 		_childTemp, typeSwitchError = AdsReadResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_WRITE && response == bool(false): // AdsWriteRequest
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE && response == bool(false): // AdsWriteRequest
 		_childTemp, typeSwitchError = AdsWriteRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_WRITE && response == bool(true): // AdsWriteResponse
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE && response == bool(true): // AdsWriteResponse
 		_childTemp, typeSwitchError = AdsWriteResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_READ_STATE && response == bool(false): // AdsReadStateRequest
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_STATE && response == bool(false): // AdsReadStateRequest
 		_childTemp, typeSwitchError = AdsReadStateRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_READ_STATE && response == bool(true): // AdsReadStateResponse
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_STATE && response == bool(true): // AdsReadStateResponse
 		_childTemp, typeSwitchError = AdsReadStateResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_WRITE_CONTROL && response == bool(false): // AdsWriteControlRequest
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE_CONTROL && response == bool(false): // AdsWriteControlRequest
 		_childTemp, typeSwitchError = AdsWriteControlRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_WRITE_CONTROL && response == bool(true): // AdsWriteControlResponse
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE_CONTROL && response == bool(true): // AdsWriteControlResponse
 		_childTemp, typeSwitchError = AdsWriteControlResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(false): // AdsAddDeviceNotificationRequest
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(false): // AdsAddDeviceNotificationRequest
 		_childTemp, typeSwitchError = AdsAddDeviceNotificationRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(true): // AdsAddDeviceNotificationResponse
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(true): // AdsAddDeviceNotificationResponse
 		_childTemp, typeSwitchError = AdsAddDeviceNotificationResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(false): // AdsDeleteDeviceNotificationRequest
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(false): // AdsDeleteDeviceNotificationRequest
 		_childTemp, typeSwitchError = AdsDeleteDeviceNotificationRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(true): // AdsDeleteDeviceNotificationResponse
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(true): // AdsDeleteDeviceNotificationResponse
 		_childTemp, typeSwitchError = AdsDeleteDeviceNotificationResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(false): // AdsDeviceNotificationRequest
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(false): // AdsDeviceNotificationRequest
 		_childTemp, typeSwitchError = AdsDeviceNotificationRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(true): // AdsDeviceNotificationResponse
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(true): // AdsDeviceNotificationResponse
 		_childTemp, typeSwitchError = AdsDeviceNotificationResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_READ_WRITE && response == bool(false): // AdsReadWriteRequest
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_WRITE && response == bool(false): // AdsReadWriteRequest
 		_childTemp, typeSwitchError = AdsReadWriteRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_READ_WRITE && response == bool(true): // AdsReadWriteResponse
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_WRITE && response == bool(true): // AdsReadWriteResponse
 		_childTemp, typeSwitchError = AdsReadWriteResponseParseWithBuffer(readBuffer)
+	case true: // ErrorResponse
+		_childTemp, typeSwitchError = ErrorResponseParseWithBuffer(readBuffer)
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandId=%v, response=%v]", commandId, response)
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [errorCode=%v, commandId=%v, response=%v]", errorCode, commandId, response)
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of AmsPacket")

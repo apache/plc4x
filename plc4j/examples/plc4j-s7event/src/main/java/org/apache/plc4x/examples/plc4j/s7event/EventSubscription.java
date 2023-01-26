@@ -20,7 +20,7 @@ package org.apache.plc4x.examples.plc4j.s7event;
 
 import java.util.Map;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
@@ -42,7 +42,7 @@ public class EventSubscription {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-        try (PlcConnection connection = new PlcDriverManager().getConnection("s7://192.168.1.51?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://192.168.1.51?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
             final PlcSubscriptionRequest.Builder subscription = connection.subscriptionRequestBuilder();
 
             subscription.addEventTagAddress("myMODE", "MODE");

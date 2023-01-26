@@ -31,8 +31,8 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -83,7 +83,7 @@ public class MqttConnector {
         final Single<Mqtt3ConnAck> connAckSingle = client.connect().timeout(10, TimeUnit.SECONDS);
 
         // Connect to the PLC.
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(config.getPlcConfig().getConnection())) {
+        try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(config.getPlcConfig().getConnection())) {
 
             // Check if this connection support reading of data.
             if (!plcConnection.getMetadata().canRead()) {

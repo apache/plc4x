@@ -64,18 +64,27 @@ public class TPKTPacket implements Message {
     writeBuffer.pushContext("TPKTPacket");
 
     // Const Field (protocolId)
-    writeConstField("protocolId", PROTOCOLID, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "protocolId",
+        PROTOCOLID,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (len) (Used for parsing, but its value is not stored as it's implicitly given
     // by the objects content)
     int len = (int) ((getPayload().getLengthInBytes()) + (4));
-    writeImplicitField("len", len, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "len",
+        len,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (payload)
     writeSimpleField(
