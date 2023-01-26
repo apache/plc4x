@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.nifi;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,9 +42,13 @@ import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.util.StandardValidators;
 import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.PlcDriverManager;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.apache.plc4x.nifi.address.AddressesAccessStrategy;
 import org.apache.plc4x.nifi.address.AddressesAccessUtils;
+import org.apache.plc4x.nifi.record.SchemaCache;
 
 public abstract class BasePlc4xProcessor extends AbstractProcessor {
 
@@ -53,6 +58,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     protected String connectionString;
     protected Map<String, String> addressMap;
 
+    protected final SchemaCache schemaCache = new SchemaCache(0);
 
     private final PlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder().build();
 
@@ -69,6 +75,14 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         .addValidator(new Plc4xConnectionStringValidator())
         .build();
 	
+    public static final PropertyDescriptor PLC_SCHEMA_CACHE_SIZE = new PropertyDescriptor.Builder().name("plc4x-record-schema-cache-size")
+        .displayName("Schema Cache Size")
+		.description("Size of schema cache. Can improve performance when addresses change dynamically.")
+		.defaultValue("1")
+		.required(true)
+		.addValidator(StandardValidators.INTEGER_VALIDATOR)
+		.build();
+
     protected static final Relationship REL_SUCCESS = new Relationship.Builder()
 	    .name("success")
 	    .description("Successfully processed")
@@ -87,6 +101,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     	properties.add(PLC_CONNECTION_STRING);
         properties.add(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY);
         properties.add(AddressesAccessUtils.ADDRESS_TEXT_PROPERTY);
+        properties.add(PLC_SCHEMA_CACHE_SIZE);
         this.properties = Collections.unmodifiableList(properties);
 
     	
@@ -103,6 +118,10 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     
     public String getConnectionString() {
         return connectionString;
+    }
+
+    public SchemaCache getSchemaCache() {
+        return schemaCache;
     }
     
 	@Override
@@ -132,6 +151,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     @OnScheduled
     public void onScheduled(final ProcessContext context) {
 		connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
+        schemaCache.setCacheSize(context.getProperty(PLC_SCHEMA_CACHE_SIZE).asInteger());
     }
 
     @Override
@@ -174,6 +194,10 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 
     protected PlcConnectionManager getConnectionManager() {
         return connectionManager;
+    }
+
+    protected PlcDriver getDriver() throws PlcConnectionException {
+        return PlcDriverManager.getDefault().getDriverForUrl(connectionString);
     }
 
 }

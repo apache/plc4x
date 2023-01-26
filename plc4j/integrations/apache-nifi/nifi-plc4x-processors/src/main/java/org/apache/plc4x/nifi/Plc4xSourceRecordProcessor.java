@@ -52,9 +52,9 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.nifi.record.Plc4xWriter;
 import org.apache.plc4x.nifi.record.RecordPlc4xWriter;
-import org.apache.plc4x.nifi.record.SchemaCache;
 
 @Tags({ "plc4x-source" })
 @InputRequirement(InputRequirement.Requirement.INPUT_ALLOWED)
@@ -69,8 +69,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	public static final String INPUT_FLOWFILE_UUID = "input.flowfile.uuid";
 	public static final String RESULT_ERROR_MESSAGE = "plc4x.read.error.message";
 
-	public final SchemaCache schemaCache = new SchemaCache(0);
-
 	public static final PropertyDescriptor PLC_RECORD_WRITER_FACTORY = new PropertyDescriptor.Builder().name("plc4x-record-writer").displayName("Record Writer")
 		.description("Specifies the Controller Service to use for writing results to a FlowFile. The Record Writer may use Inherit Schema to emulate the inferred schema behavior, i.e. "
 				+ "an explicit schema need not be defined in the writer, and will be supplied by the same logic used to infer the schema from the column types.")
@@ -81,13 +79,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	public static final PropertyDescriptor PLC_READ_FUTURE_TIMEOUT_MILISECONDS = new PropertyDescriptor.Builder().name("plc4x-record-read-timeout").displayName("Read timeout (miliseconds)")
 		.description("Read timeout in miliseconds")
 		.defaultValue("10000")
-		.required(true)
-		.addValidator(StandardValidators.INTEGER_VALIDATOR)
-		.build();
-
-	public static final PropertyDescriptor PLC_SCHEMA_CACHE_SIZE = new PropertyDescriptor.Builder().name("plc4x-record-schema-cache-size").displayName("Read timeout (miliseconds)")
-		.description("Schema Cache Size")
-		.defaultValue("100")
 		.required(true)
 		.addValidator(StandardValidators.INTEGER_VALIDATOR)
 		.build();
@@ -107,16 +98,15 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		pds.addAll(super.getSupportedPropertyDescriptors());
 		pds.add(PLC_RECORD_WRITER_FACTORY);
 		pds.add(PLC_READ_FUTURE_TIMEOUT_MILISECONDS);
-		pds.add(PLC_SCHEMA_CACHE_SIZE);
 		this.properties = Collections.unmodifiableList(pds);
 	}
 
 	@OnScheduled
 	@Override
 	public void onScheduled(final ProcessContext context) {
+		super.onScheduled(context);
         super.connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
         this.readTimeout = context.getProperty(PLC_READ_FUTURE_TIMEOUT_MILISECONDS.getName()).asInteger();
-		schemaCache.setCacheSize(context.getProperty(PLC_SCHEMA_CACHE_SIZE).asInteger());
 	}
 	
 	@Override
@@ -157,11 +147,19 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 
 			PlcReadRequest.Builder builder = connection.readRequestBuilder();
 			Map<String,String> addressMap = getPlcAddressMap(context, fileToProcess);
-			final RecordSchema recordSchema = schemaCache.retrieveSchema(addressMap);
+			final RecordSchema recordSchema = getSchemaCache().retrieveSchema(addressMap);
+			final Map<String, PlcTag> tags = getSchemaCache().retrieveTags(addressMap);
 
-            for (Map.Entry<String,String> entry: addressMap.entrySet()){
-                builder.addTagAddress(entry.getKey(), entry.getValue());
-            }
+			if (tags != null){
+				for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
+					builder.addTag(tag.getKey(), tag.getValue());
+				}
+			} else {
+				for (Map.Entry<String,String> entry: addressMap.entrySet()){
+					builder.addTagAddress(entry.getKey(), entry.getValue());
+				}
+			}
+            
 			PlcReadRequest readRequest = builder.build();
 			final FlowFile originalFlowFile = fileToProcess;
 			resultSetFF = session.write(resultSetFF, out -> {
@@ -186,7 +184,12 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			});
 
 			if (recordSchema == null){
-				schemaCache.addSchema(addressMap, plc4xWriter.getRecordSchema());
+				getSchemaCache().addSchema(
+					addressMap, 
+					readRequest.getTagNames(),
+					readRequest.getTags(),
+					plc4xWriter.getRecordSchema()
+				);
 			}
 			long executionTimeElapsed = executeTime.getElapsed(TimeUnit.MILLISECONDS);
 			final Map<String, String> attributesToAdd = new HashMap<>();

@@ -33,6 +33,7 @@ import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.model.PlcTag;
 
 @TriggerSerially
 @Tags({"plc4x-sink"})
@@ -59,8 +60,16 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
             // Prepare the request.
             PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
             Map<String,String> addressMap = getPlcAddressMap(context, flowFile);
-            for (Map.Entry<String,String> entry: addressMap.entrySet()){
-                builder.addTagAddress(entry.getKey(), entry.getValue());
+            final Map<String, PlcTag> tags = getSchemaCache().retrieveTags(addressMap);
+
+            if (tags != null){
+                for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
+                    builder.addTag(tag.getKey(), tag.getValue());
+                }
+            } else {
+                for (Map.Entry<String,String> entry: addressMap.entrySet()){
+                    builder.addTagAddress(entry.getKey(), entry.getValue());
+                }
             }
            
             PlcWriteRequest writeRequest = builder.build();
@@ -70,6 +79,15 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
                 final PlcWriteResponse plcWriteResponse = writeRequest.execute().get();
                 // TODO: Evaluate the response and create flow files for successful and unsuccessful updates
                 session.transfer(flowFile, REL_SUCCESS);
+
+                if (tags == null){
+                    getSchemaCache().addSchema(
+                        addressMap, 
+                        writeRequest.getTagNames(),
+                        writeRequest.getTags(),
+                        null
+                    );
+                }
             } catch (Exception e) {
                 flowFile = session.putAttribute(flowFile, "exception", e.getLocalizedMessage());
                 session.transfer(flowFile, REL_FAILURE);

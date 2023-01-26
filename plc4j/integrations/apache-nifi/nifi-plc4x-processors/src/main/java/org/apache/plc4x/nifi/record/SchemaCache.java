@@ -18,6 +18,9 @@
  */
 package org.apache.plc4x.nifi.record;
 
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -25,9 +28,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import org.apache.nifi.serialization.record.RecordSchema;
+import org.apache.plc4x.java.api.model.PlcTag;
 
 public class SchemaCache {
-    private ConcurrentMap<String, RecordSchema> schemaMap = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, SchemaContainer> schemaMap = new ConcurrentHashMap<>();
     private AtomicReferenceArray<String> schemaAppendOrder = new AtomicReferenceArray<>(0);
     private final AtomicInteger lastSchemaPosition = new AtomicInteger(0);
     private final AtomicInteger cacheSize = new AtomicInteger(0);
@@ -42,14 +46,18 @@ public class SchemaCache {
         schemaMap = new ConcurrentHashMap<>();
     }
 
-    public void addSchema(final Map<String,String> schemaIdentifier, final RecordSchema schema) {
+    public void addSchema(final Map<String,String> schemaIdentifier, final LinkedHashSet<String> tagsNames, final List<PlcTag> tagsList,  final RecordSchema schema) {
         if (!schemaMap.containsKey(schemaIdentifier.toString())){
             if (lastSchemaPosition.get() == cacheSize.get()){
                 lastSchemaPosition.set(0);
             }
             removeSchema(schemaAppendOrder.get(lastSchemaPosition.get()));
 
-            schemaMap.put(schemaIdentifier.toString(), schema);
+            Map<String, PlcTag> tags = new HashMap<>();
+            for (int i=0; i<tagsNames.size(); i++){
+                tags.put(tagsNames.toArray(new String[]{})[i], tagsList.get(i));
+            }
+            schemaMap.put(schemaIdentifier.toString(), new SchemaContainer(tags, schema));
             schemaAppendOrder.set(lastSchemaPosition.get(), schemaIdentifier.toString());
             lastSchemaPosition.getAndAdd(1);
         }    
@@ -65,8 +73,33 @@ public class SchemaCache {
 
     public RecordSchema retrieveSchema(final Map<String,String> schemaIdentifier) { 
         if (schemaMap.containsKey(schemaIdentifier.toString())){
-            return schemaMap.get(schemaIdentifier.toString());
+            return schemaMap.get(schemaIdentifier.toString()).getSchema();
         }
         return null;
+    }
+
+    public Map<String, PlcTag> retrieveTags(final Map<String,String> schemaIdentifier) { 
+        if (schemaMap.containsKey(schemaIdentifier.toString())){
+            return schemaMap.get(schemaIdentifier.toString()).getTags();
+        }
+        return null;
+    }
+
+    public class SchemaContainer {
+        private RecordSchema schema;
+        private Map<String, PlcTag> tags;
+
+        public Map<String, PlcTag> getTags() {
+            return tags;
+        }
+
+        public RecordSchema getSchema() {
+            return schema;
+        }
+
+        SchemaContainer(Map<String, PlcTag> tags, RecordSchema schema){
+            this.tags = tags;
+            this.schema = schema;
+        }
     }
 }
