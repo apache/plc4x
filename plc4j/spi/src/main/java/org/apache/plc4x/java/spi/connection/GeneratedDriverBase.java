@@ -127,8 +127,6 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
             throw new PlcConnectionException("Unsupported configuration");
         }
 
-        //configuration.setTransportConfig(transportConfig);
-
         // Try to find a suitable transport-type for creating the communication channel.
         Transport transport = null;
         ServiceLoader<Transport> transportLoader = ServiceLoader.load(

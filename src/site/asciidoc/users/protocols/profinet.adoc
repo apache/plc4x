@@ -73,7 +73,7 @@ This parameter has the format
 [[{device-1},{device-access},({submodule-1},{submodule-2})],[{device-2},{device-access},({submodule-1},{submodule-2})],....]
 ----
 
-For each available slot specified in the GFSD file a submodule needs to be in the connection string, however it can be left blank e.g.
+For each available slot specified in the GSD file a submodule needs to be in the connection string, however it can be left blank e.g.
 
 ----
 [[{device},{device-access},({submodule-1},)]]

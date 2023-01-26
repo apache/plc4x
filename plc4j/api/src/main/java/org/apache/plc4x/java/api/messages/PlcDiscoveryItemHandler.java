@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import java.util.List;
-
 public interface PlcDiscoveryItemHandler {
 
     void handle(PlcDiscoveryItem discoveryItem);
