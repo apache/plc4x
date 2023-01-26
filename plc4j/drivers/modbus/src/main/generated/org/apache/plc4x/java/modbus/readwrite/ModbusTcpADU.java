@@ -92,12 +92,20 @@ public class ModbusTcpADU extends ModbusADU implements Message {
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (protocolIdentifier)
-    writeConstField("protocolIdentifier", PROTOCOLIDENTIFIER, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "protocolIdentifier",
+        PROTOCOLIDENTIFIER,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int length = (int) ((getPdu().getLengthInBytes()) + (1));
-    writeImplicitField("length", length, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "length",
+        length,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (unitIdentifier)
     writeSimpleField(

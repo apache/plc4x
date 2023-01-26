@@ -80,7 +80,8 @@ public class DisconnectRequest extends KnxNetIpMessage implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (hpaiControlEndpoint)
     writeSimpleField(

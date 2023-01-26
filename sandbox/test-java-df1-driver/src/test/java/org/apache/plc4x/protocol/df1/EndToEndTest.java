@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.protocol.df1;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -32,7 +32,7 @@ public class EndToEndTest {
     @Test
     @Disabled("Seems to cause problems on Windows if no COM4 is available")
     public void helloDf1() {
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection("df1:serial:///COM4")) {
+        try (PlcConnection plcConnection = new DefaultPlcDriverManager().getConnection("df1:serial:///COM4")) {
             PlcReadRequest request = plcConnection.readRequestBuilder()
                 .addTagAddress("hurz", "5:INTEGER")
                 .build();

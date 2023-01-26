@@ -23,8 +23,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
@@ -99,8 +99,12 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext(getClass().getSimpleName());
-        writeBuffer.writeString("address", tag.getAddressString().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), tag.getAddressString());
-        writeBuffer.writeString("name", name.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), name);
+        writeBuffer.writeString("address",
+            tag.getAddressString().getBytes(StandardCharsets.UTF_8).length * 8,
+            tag.getAddressString(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+        writeBuffer.writeString("name",
+            name.getBytes(StandardCharsets.UTF_8).length * 8,
+            name, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
         // TODO: Find out how to serialize an enum.
         //writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);
         if(children != null && !children.isEmpty()) {
@@ -116,7 +120,9 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
             writeBuffer.pushContext("options");
             for (Map.Entry<String, PlcValue> optionEntry : options.entrySet()) {
                 writeBuffer.pushContext("option");
-                writeBuffer.writeString("name", optionEntry.getKey().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), optionEntry.getKey());
+                writeBuffer.writeString("name",
+                    optionEntry.getKey().getBytes(StandardCharsets.UTF_8).length * 8,
+                    optionEntry.getKey(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
                 // TODO: Find out how to serialize a PlcValue
                 //writeBuffer.writeString("value", optionEntry.getValue().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), optionEntry.getValue());
                 ((DefaultPlcBrowseItem) optionEntry).serialize(writeBuffer);

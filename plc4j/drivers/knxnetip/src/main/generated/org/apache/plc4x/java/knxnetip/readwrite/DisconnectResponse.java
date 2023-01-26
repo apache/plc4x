@@ -80,7 +80,8 @@ public class DisconnectResponse extends KnxNetIpMessage implements Message {
         "Status",
         status,
         new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)));
+            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("DisconnectResponse");
   }

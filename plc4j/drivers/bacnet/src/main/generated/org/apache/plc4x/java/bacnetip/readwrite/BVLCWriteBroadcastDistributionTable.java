@@ -66,7 +66,8 @@ public class BVLCWriteBroadcastDistributionTable extends BVLC implements Message
     writeBuffer.pushContext("BVLCWriteBroadcastDistributionTable");
 
     // Array Field (table)
-    writeComplexTypeArrayField("table", table, writeBuffer);
+    writeComplexTypeArrayField(
+        "table", table, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("BVLCWriteBroadcastDistributionTable");
   }

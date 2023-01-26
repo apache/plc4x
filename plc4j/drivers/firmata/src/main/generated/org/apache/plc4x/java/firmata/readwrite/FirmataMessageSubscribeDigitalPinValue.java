@@ -84,7 +84,8 @@ public class FirmataMessageSubscribeDigitalPinValue extends FirmataMessage imple
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+        writeUnsignedShort(writeBuffer, 7),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (enable)
     writeSimpleField(

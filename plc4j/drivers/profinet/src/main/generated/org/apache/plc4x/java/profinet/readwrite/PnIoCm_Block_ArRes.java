@@ -97,7 +97,8 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
         "PnIoCm_ArType",
         arType,
         new DataWriterEnumDefault<>(
-            PnIoCm_ArType::getValue, PnIoCm_ArType::name, writeUnsignedInt(writeBuffer, 16)));
+            PnIoCm_ArType::getValue, PnIoCm_ArType::name, writeUnsignedInt(writeBuffer, 16)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (arUuid)
     writeSimpleField(

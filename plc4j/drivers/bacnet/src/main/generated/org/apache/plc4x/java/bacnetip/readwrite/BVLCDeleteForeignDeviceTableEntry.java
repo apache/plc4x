@@ -67,7 +67,11 @@ public class BVLCDeleteForeignDeviceTableEntry extends BVLC implements Message {
     writeBuffer.pushContext("BVLCDeleteForeignDeviceTableEntry");
 
     // Array Field (ip)
-    writeSimpleTypeArrayField("ip", ip, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleTypeArrayField(
+        "ip",
+        ip,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (port)
     writeSimpleField(

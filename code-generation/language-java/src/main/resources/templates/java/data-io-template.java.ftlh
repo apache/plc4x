@@ -50,6 +50,7 @@ import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.*;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.EvaluationHelper;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;

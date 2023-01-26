@@ -66,7 +66,8 @@ public class BVLCReadBroadcastDistributionTableAck extends BVLC implements Messa
     writeBuffer.pushContext("BVLCReadBroadcastDistributionTableAck");
 
     // Array Field (table)
-    writeComplexTypeArrayField("table", table, writeBuffer);
+    writeComplexTypeArrayField(
+        "table", table, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("BVLCReadBroadcastDistributionTableAck");
   }

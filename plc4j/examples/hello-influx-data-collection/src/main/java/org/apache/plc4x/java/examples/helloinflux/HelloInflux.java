@@ -26,7 +26,7 @@ import com.influxdb.client.write.Point;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
@@ -141,7 +141,7 @@ public class HelloInflux {
 
     private PlcConnection connectToPlc() throws PlcException {
         final PlcConnection connection =
-            new PlcDriverManager().getConnection(configuration.getString("plc.connectionString"));
+            new DefaultPlcDriverManager().getConnection(configuration.getString("plc.connectionString"));
         connection.connect();
         return connection;
     }

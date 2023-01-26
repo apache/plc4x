@@ -60,10 +60,18 @@ public abstract class DF1Symbol implements Message {
     writeBuffer.pushContext("DF1Symbol");
 
     // Const Field (messageStart)
-    writeConstField("messageStart", MESSAGESTART, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "messageStart",
+        MESSAGESTART,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Discriminator Field (symbolType) (Used as input to a switch field)
-    writeDiscriminatorField("symbolType", getSymbolType(), writeUnsignedShort(writeBuffer, 8));
+    writeDiscriminatorField(
+        "symbolType",
+        getSymbolType(),
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializeDF1SymbolChild(writeBuffer);

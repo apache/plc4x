@@ -21,7 +21,6 @@ package org.apache.plc4x.java.spi.generation;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
-import javax.xml.XMLConstants;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -195,7 +194,7 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
     }
 
     @Override
-    public String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs) {
+    public String readString(String logicalName, int bitLength, WithReaderArgs... readerArgs) {
         move(bitLength);
         return decode(logicalName, rwStringKey, bitLength);
     }

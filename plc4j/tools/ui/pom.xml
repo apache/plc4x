@@ -33,7 +33,7 @@
   <description>Utility used to execute PLC4X API calls in a GUI.</description>
 
   <properties>
-    <javafx.version>19</javafx.version>
+    <javafx.version>19.0.2.1</javafx.version>
   </properties>
 
   <build>

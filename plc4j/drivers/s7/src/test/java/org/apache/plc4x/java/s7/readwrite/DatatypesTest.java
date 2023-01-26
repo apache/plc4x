@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.s7.readwrite;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -26,7 +26,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 public class DatatypesTest {
 
     public static void main(String[] args) throws Exception {
-        try (PlcConnection connection = new PlcDriverManager().getConnection("s7://192.168.23.30")) {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://192.168.23.30")) {
             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
             builder.addTagAddress("bool-value-1", "%DB2:0.0:BOOL"); // true
             builder.addTagAddress("bool-value-2", "%DB2:2.1:BOOL"); // false

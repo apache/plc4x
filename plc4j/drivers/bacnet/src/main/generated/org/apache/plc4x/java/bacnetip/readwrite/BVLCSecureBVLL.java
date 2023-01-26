@@ -65,7 +65,11 @@ public class BVLCSecureBVLL extends BVLC implements Message {
     writeBuffer.pushContext("BVLCSecureBVLL");
 
     // Array Field (securityWrapper)
-    writeByteArrayField("securityWrapper", securityWrapper, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "securityWrapper",
+        securityWrapper,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("BVLCSecureBVLL");
   }

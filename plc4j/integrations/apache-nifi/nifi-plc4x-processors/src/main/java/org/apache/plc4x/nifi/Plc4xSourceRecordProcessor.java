@@ -141,7 +141,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		final AtomicLong nrOfRows = new AtomicLong(0L);
 		final StopWatch executeTime = new StopWatch(true);
 
-		try (PlcConnection connection = getDriverManager().getConnection(getConnectionString())) {
+		try (PlcConnection connection = getConnectionManager().getConnection(getConnectionString())) {
 
 			String inputFileUUID = fileToProcess == null ? null : fileToProcess.getAttribute(CoreAttributes.UUID.key());
 			Map<String, String> inputFileAttrMap = fileToProcess == null ? null : fileToProcess.getAttributes();

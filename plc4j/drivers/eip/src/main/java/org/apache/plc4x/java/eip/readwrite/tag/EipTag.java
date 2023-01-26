@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.eip.readwrite.CIPDataTypeCode;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
@@ -136,14 +137,20 @@ public class EipTag implements PlcTag, Serializable {
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext(getClass().getSimpleName());
 
-        writeBuffer.writeString("node", tag.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), tag);
+        writeBuffer.writeString("node",
+            tag.getBytes(StandardCharsets.UTF_8).length * 8,
+            tag, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
         if (type != null) {
-            writeBuffer.writeString("type", type.name().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), type.name());
+            writeBuffer.writeString("type",
+                type.name().getBytes(StandardCharsets.UTF_8).length * 8,
+                type.name(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
         }
         writeBuffer.writeUnsignedInt("elementNb", 16, elementNb);
         // TODO: remove this (not language agnostic)
         String defaultJavaType = (type == null ? Object.class : getPlcValueType().getDefaultJavaType()).getName();
-        writeBuffer.writeString("defaultJavaType", defaultJavaType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), defaultJavaType);
+        writeBuffer.writeString("defaultJavaType",
+            defaultJavaType.getBytes(StandardCharsets.UTF_8).length * 8,
+            defaultJavaType, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
 
         writeBuffer.popContext(getClass().getSimpleName());
     }

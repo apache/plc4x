@@ -64,10 +64,15 @@ public class PnIoCm_Block_ModuleDiff extends PnIoCm_Block implements Message {
     // Implicit Field (numberOfApis) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int numberOfApis = (int) (COUNT(getApis()));
-    writeImplicitField("numberOfApis", numberOfApis, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "numberOfApis",
+        numberOfApis,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (apis)
-    writeComplexTypeArrayField("apis", apis, writeBuffer);
+    writeComplexTypeArrayField(
+        "apis", apis, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnIoCm_Block_ModuleDiff");
   }

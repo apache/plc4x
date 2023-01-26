@@ -51,7 +51,7 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
         }
 
         // Get an instance of a component able to write to a PLC.
-        try(PlcConnection connection = getDriverManager().getConnection(getConnectionString())) {
+        try(PlcConnection connection = getConnectionManager().getConnection(getConnectionString())) {
             if (!connection.getMetadata().canWrite()) {
                 throw new ProcessException("Writing not supported by connection");
             }

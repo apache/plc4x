@@ -66,7 +66,8 @@ public class BVLCResult extends BVLC implements Message {
         "BVLCResultCode",
         code,
         new DataWriterEnumDefault<>(
-            BVLCResultCode::getValue, BVLCResultCode::name, writeUnsignedInt(writeBuffer, 16)));
+            BVLCResultCode::getValue, BVLCResultCode::name, writeUnsignedInt(writeBuffer, 16)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("BVLCResult");
   }

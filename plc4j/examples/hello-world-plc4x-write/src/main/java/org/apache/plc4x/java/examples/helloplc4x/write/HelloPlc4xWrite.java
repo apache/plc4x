@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.examples.helloplc4x.write;
 
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class HelloPlc4xWrite {
 
     public void run() throws Exception {
         // Establish a connection to the plc.
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(options.getConnectionString())) {
+        try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(options.getConnectionString())) {
 
             // Check if this connection support subscriptions.
             if (!plcConnection.getMetadata().canWrite()) {

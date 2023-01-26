@@ -40,7 +40,8 @@ import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.util.StandardValidators;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.apache.plc4x.nifi.address.AddressesAccessStrategy;
 import org.apache.plc4x.nifi.address.AddressesAccessUtils;
 
@@ -50,8 +51,10 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     protected Set<Relationship> relationships;
   
     protected String connectionString;
+    protected Map<String, String> addressMap;
 
-    private final PooledPlcDriverManager driverManager = new PooledPlcDriverManager();
+
+    private final PlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder().build();
 
     protected static final List<AllowableValue> addressAccessStrategy = Collections.unmodifiableList(Arrays.asList(
         AddressesAccessUtils.ADDRESS_PROPERTY,
@@ -100,10 +103,6 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     
     public String getConnectionString() {
         return connectionString;
-    }
-
-    protected PooledPlcDriverManager getDriverManager() {
-        return driverManager;
     }
     
 	@Override
@@ -173,6 +172,8 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         }
     }
 
-
+    protected PlcConnectionManager getConnectionManager() {
+        return connectionManager;
+    }
 
 }

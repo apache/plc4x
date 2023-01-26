@@ -68,12 +68,20 @@ public abstract class Plc4xMessage implements Message {
     writeBuffer.pushContext("Plc4xMessage");
 
     // Const Field (version)
-    writeConstField("version", VERSION, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "version",
+        VERSION,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (packetLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int packetLength = (int) (getLengthInBytes());
-    writeImplicitField("packetLength", packetLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "packetLength",
+        packetLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (requestId)
     writeSimpleField(
@@ -88,9 +96,8 @@ public abstract class Plc4xMessage implements Message {
         "Plc4xRequestType",
         getRequestType(),
         new DataWriterEnumDefault<>(
-            Plc4xRequestType::getValue,
-            Plc4xRequestType::name,
-            writeUnsignedShort(writeBuffer, 8)));
+            Plc4xRequestType::getValue, Plc4xRequestType::name, writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializePlc4xMessageChild(writeBuffer);
