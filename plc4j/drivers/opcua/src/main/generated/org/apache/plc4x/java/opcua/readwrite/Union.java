@@ -69,8 +69,8 @@ public class Union extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static UnionBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("Union");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -78,13 +78,13 @@ public class Union extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("Union");
     // Create the instance
-    return new UnionBuilder();
+    return new UnionBuilderImpl();
   }
 
-  public static class UnionBuilder
+  public static class UnionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public UnionBuilder() {}
+    public UnionBuilderImpl() {}
 
     public Union build() {
       Union union = new Union();

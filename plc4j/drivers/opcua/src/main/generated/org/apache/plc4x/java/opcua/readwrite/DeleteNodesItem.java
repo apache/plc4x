@@ -106,8 +106,8 @@ public class DeleteNodesItem extends ExtensionObjectDefinition implements Messag
     return lengthInBits;
   }
 
-  public static DeleteNodesItemBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DeleteNodesItem");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -126,16 +126,16 @@ public class DeleteNodesItem extends ExtensionObjectDefinition implements Messag
 
     readBuffer.closeContext("DeleteNodesItem");
     // Create the instance
-    return new DeleteNodesItemBuilder(nodeId, deleteTargetReferences, reservedField0);
+    return new DeleteNodesItemBuilderImpl(nodeId, deleteTargetReferences, reservedField0);
   }
 
-  public static class DeleteNodesItemBuilder
+  public static class DeleteNodesItemBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId nodeId;
     private final boolean deleteTargetReferences;
     private final Short reservedField0;
 
-    public DeleteNodesItemBuilder(
+    public DeleteNodesItemBuilderImpl(
         NodeId nodeId, boolean deleteTargetReferences, Short reservedField0) {
       this.nodeId = nodeId;
       this.deleteTargetReferences = deleteTargetReferences;

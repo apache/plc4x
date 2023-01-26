@@ -124,7 +124,7 @@ public class COTPPacketConnectionRequest extends COTPPacket implements Message {
     return lengthInBits;
   }
 
-  public static COTPPacketConnectionRequestBuilder staticParseBuilder(
+  public static COTPPacketBuilder staticParseCOTPPacketBuilder(
       ReadBuffer readBuffer, Integer cotpLen) throws ParseException {
     readBuffer.pullContext("COTPPacketConnectionRequest");
     PositionAware positionAware = readBuffer;
@@ -145,17 +145,18 @@ public class COTPPacketConnectionRequest extends COTPPacket implements Message {
 
     readBuffer.closeContext("COTPPacketConnectionRequest");
     // Create the instance
-    return new COTPPacketConnectionRequestBuilder(
+    return new COTPPacketConnectionRequestBuilderImpl(
         destinationReference, sourceReference, protocolClass, cotpLen);
   }
 
-  public static class COTPPacketConnectionRequestBuilder implements COTPPacket.COTPPacketBuilder {
+  public static class COTPPacketConnectionRequestBuilderImpl
+      implements COTPPacket.COTPPacketBuilder {
     private final int destinationReference;
     private final int sourceReference;
     private final COTPProtocolClass protocolClass;
     private final Integer cotpLen;
 
-    public COTPPacketConnectionRequestBuilder(
+    public COTPPacketConnectionRequestBuilderImpl(
         int destinationReference,
         int sourceReference,
         COTPProtocolClass protocolClass,

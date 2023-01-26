@@ -162,7 +162,7 @@ public class DF1SymbolMessageFrame extends DF1Symbol implements Message {
     return lengthInBits;
   }
 
-  public static DF1SymbolMessageFrameBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static DF1SymbolBuilder staticParseDF1SymbolBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("DF1SymbolMessageFrame");
     PositionAware positionAware = readBuffer;
@@ -212,15 +212,15 @@ public class DF1SymbolMessageFrame extends DF1Symbol implements Message {
 
     readBuffer.closeContext("DF1SymbolMessageFrame");
     // Create the instance
-    return new DF1SymbolMessageFrameBuilder(destinationAddress, sourceAddress, command);
+    return new DF1SymbolMessageFrameBuilderImpl(destinationAddress, sourceAddress, command);
   }
 
-  public static class DF1SymbolMessageFrameBuilder implements DF1Symbol.DF1SymbolBuilder {
+  public static class DF1SymbolMessageFrameBuilderImpl implements DF1Symbol.DF1SymbolBuilder {
     private final short destinationAddress;
     private final short sourceAddress;
     private final DF1Command command;
 
-    public DF1SymbolMessageFrameBuilder(
+    public DF1SymbolMessageFrameBuilderImpl(
         short destinationAddress, short sourceAddress, DF1Command command) {
 
       this.destinationAddress = destinationAddress;

@@ -95,7 +95,7 @@ public class ServiceCounterDataType extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static ServiceCounterDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ServiceCounterDataType");
     PositionAware positionAware = readBuffer;
@@ -108,15 +108,15 @@ public class ServiceCounterDataType extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("ServiceCounterDataType");
     // Create the instance
-    return new ServiceCounterDataTypeBuilder(totalCount, errorCount);
+    return new ServiceCounterDataTypeBuilderImpl(totalCount, errorCount);
   }
 
-  public static class ServiceCounterDataTypeBuilder
+  public static class ServiceCounterDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long totalCount;
     private final long errorCount;
 
-    public ServiceCounterDataTypeBuilder(long totalCount, long errorCount) {
+    public ServiceCounterDataTypeBuilderImpl(long totalCount, long errorCount) {
 
       this.totalCount = totalCount;
       this.errorCount = errorCount;

@@ -123,7 +123,7 @@ public class PnDcp_Block_DevicePropertiesDeviceVendor extends PnDcp_Block implem
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DevicePropertiesDeviceVendorBuilder staticParseBuilder(
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(
       ReadBuffer readBuffer, Integer blockLength) throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DevicePropertiesDeviceVendor");
     PositionAware positionAware = readBuffer;
@@ -145,17 +145,17 @@ public class PnDcp_Block_DevicePropertiesDeviceVendor extends PnDcp_Block implem
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesDeviceVendor");
     // Create the instance
-    return new PnDcp_Block_DevicePropertiesDeviceVendorBuilder(
+    return new PnDcp_Block_DevicePropertiesDeviceVendorBuilderImpl(
         deviceVendorValue, blockLength, reservedField0);
   }
 
-  public static class PnDcp_Block_DevicePropertiesDeviceVendorBuilder
+  public static class PnDcp_Block_DevicePropertiesDeviceVendorBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final byte[] deviceVendorValue;
     private final Integer blockLength;
     private final Integer reservedField0;
 
-    public PnDcp_Block_DevicePropertiesDeviceVendorBuilder(
+    public PnDcp_Block_DevicePropertiesDeviceVendorBuilderImpl(
         byte[] deviceVendorValue, Integer blockLength, Integer reservedField0) {
       this.deviceVendorValue = deviceVendorValue;
       this.blockLength = blockLength;

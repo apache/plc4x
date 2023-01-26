@@ -89,7 +89,7 @@ public class BACnetLogRecordLogDatumTimeChange extends BACnetLogRecordLogDatum i
     return lengthInBits;
   }
 
-  public static BACnetLogRecordLogDatumTimeChangeBuilder staticParseBuilder(
+  public static BACnetLogRecordLogDatumBuilder staticParseBACnetLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumTimeChange");
     PositionAware positionAware = readBuffer;
@@ -108,15 +108,15 @@ public class BACnetLogRecordLogDatumTimeChange extends BACnetLogRecordLogDatum i
 
     readBuffer.closeContext("BACnetLogRecordLogDatumTimeChange");
     // Create the instance
-    return new BACnetLogRecordLogDatumTimeChangeBuilder(timeChange, tagNumber);
+    return new BACnetLogRecordLogDatumTimeChangeBuilderImpl(timeChange, tagNumber);
   }
 
-  public static class BACnetLogRecordLogDatumTimeChangeBuilder
+  public static class BACnetLogRecordLogDatumTimeChangeBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagReal timeChange;
     private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumTimeChangeBuilder(
+    public BACnetLogRecordLogDatumTimeChangeBuilderImpl(
         BACnetContextTagReal timeChange, Short tagNumber) {
 
       this.timeChange = timeChange;

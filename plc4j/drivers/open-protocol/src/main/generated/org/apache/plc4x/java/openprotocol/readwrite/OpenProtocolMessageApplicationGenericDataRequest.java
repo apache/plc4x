@@ -158,7 +158,7 @@ public class OpenProtocolMessageApplicationGenericDataRequest extends OpenProtoc
     return lengthInBits;
   }
 
-  public static OpenProtocolMessageApplicationGenericDataRequestBuilder staticParseBuilder(
+  public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
       ReadBuffer readBuffer, OpenProtocolRevision connectionRevision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationGenericDataRequest");
     PositionAware positionAware = readBuffer;
@@ -188,18 +188,18 @@ public class OpenProtocolMessageApplicationGenericDataRequest extends OpenProtoc
 
     readBuffer.closeContext("OpenProtocolMessageApplicationGenericDataRequest");
     // Create the instance
-    return new OpenProtocolMessageApplicationGenericDataRequestBuilder(
+    return new OpenProtocolMessageApplicationGenericDataRequestBuilderImpl(
         requestMid, wantedRevision, extraData, connectionRevision);
   }
 
-  public static class OpenProtocolMessageApplicationGenericDataRequestBuilder
+  public static class OpenProtocolMessageApplicationGenericDataRequestBuilderImpl
       implements OpenProtocolMessage.OpenProtocolMessageBuilder {
     private final Mid requestMid;
     private final OpenProtocolRevision wantedRevision;
     private final byte[] extraData;
     private final OpenProtocolRevision connectionRevision;
 
-    public OpenProtocolMessageApplicationGenericDataRequestBuilder(
+    public OpenProtocolMessageApplicationGenericDataRequestBuilderImpl(
         Mid requestMid,
         OpenProtocolRevision wantedRevision,
         byte[] extraData,

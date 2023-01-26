@@ -100,7 +100,7 @@ public class ModbusPDUReportServerIdResponse extends ModbusPDU implements Messag
     return lengthInBits;
   }
 
-  public static ModbusPDUReportServerIdResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReportServerIdResponse");
     PositionAware positionAware = readBuffer;
@@ -113,13 +113,14 @@ public class ModbusPDUReportServerIdResponse extends ModbusPDU implements Messag
 
     readBuffer.closeContext("ModbusPDUReportServerIdResponse");
     // Create the instance
-    return new ModbusPDUReportServerIdResponseBuilder(value);
+    return new ModbusPDUReportServerIdResponseBuilderImpl(value);
   }
 
-  public static class ModbusPDUReportServerIdResponseBuilder implements ModbusPDU.ModbusPDUBuilder {
+  public static class ModbusPDUReportServerIdResponseBuilderImpl
+      implements ModbusPDU.ModbusPDUBuilder {
     private final byte[] value;
 
-    public ModbusPDUReportServerIdResponseBuilder(byte[] value) {
+    public ModbusPDUReportServerIdResponseBuilderImpl(byte[] value) {
 
       this.value = value;
     }

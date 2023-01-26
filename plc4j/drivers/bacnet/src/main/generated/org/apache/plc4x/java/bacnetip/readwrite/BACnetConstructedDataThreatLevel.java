@@ -109,7 +109,7 @@ public class BACnetConstructedDataThreatLevel extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataThreatLevelBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,16 +131,17 @@ public class BACnetConstructedDataThreatLevel extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataThreatLevel");
     // Create the instance
-    return new BACnetConstructedDataThreatLevelBuilder(threatLevel, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataThreatLevelBuilderImpl(
+        threatLevel, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataThreatLevelBuilder
+  public static class BACnetConstructedDataThreatLevelBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAccessThreatLevel threatLevel;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataThreatLevelBuilder(
+    public BACnetConstructedDataThreatLevelBuilderImpl(
         BACnetAccessThreatLevel threatLevel,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

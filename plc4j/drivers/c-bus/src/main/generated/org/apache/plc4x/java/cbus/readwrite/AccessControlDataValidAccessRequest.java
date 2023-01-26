@@ -106,7 +106,7 @@ public class AccessControlDataValidAccessRequest extends AccessControlData imple
     return lengthInBits;
   }
 
-  public static AccessControlDataValidAccessRequestBuilder staticParseBuilder(
+  public static AccessControlDataBuilder staticParseAccessControlDataBuilder(
       ReadBuffer readBuffer, AccessControlCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("AccessControlDataValidAccessRequest");
@@ -127,15 +127,15 @@ public class AccessControlDataValidAccessRequest extends AccessControlData imple
 
     readBuffer.closeContext("AccessControlDataValidAccessRequest");
     // Create the instance
-    return new AccessControlDataValidAccessRequestBuilder(accessControlDirection, data);
+    return new AccessControlDataValidAccessRequestBuilderImpl(accessControlDirection, data);
   }
 
-  public static class AccessControlDataValidAccessRequestBuilder
+  public static class AccessControlDataValidAccessRequestBuilderImpl
       implements AccessControlData.AccessControlDataBuilder {
     private final AccessControlDirection accessControlDirection;
     private final byte[] data;
 
-    public AccessControlDataValidAccessRequestBuilder(
+    public AccessControlDataValidAccessRequestBuilderImpl(
         AccessControlDirection accessControlDirection, byte[] data) {
 
       this.accessControlDirection = accessControlDirection;

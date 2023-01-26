@@ -92,8 +92,8 @@ public class BVLCSecureBVLL extends BVLC implements Message {
     return lengthInBits;
   }
 
-  public static BVLCSecureBVLLBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer bvlcPayloadLength) throws ParseException {
+  public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer, Integer bvlcPayloadLength)
+      throws ParseException {
     readBuffer.pullContext("BVLCSecureBVLL");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -107,14 +107,14 @@ public class BVLCSecureBVLL extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCSecureBVLL");
     // Create the instance
-    return new BVLCSecureBVLLBuilder(securityWrapper, bvlcPayloadLength);
+    return new BVLCSecureBVLLBuilderImpl(securityWrapper, bvlcPayloadLength);
   }
 
-  public static class BVLCSecureBVLLBuilder implements BVLC.BVLCBuilder {
+  public static class BVLCSecureBVLLBuilderImpl implements BVLC.BVLCBuilder {
     private final byte[] securityWrapper;
     private final Integer bvlcPayloadLength;
 
-    public BVLCSecureBVLLBuilder(byte[] securityWrapper, Integer bvlcPayloadLength) {
+    public BVLCSecureBVLLBuilderImpl(byte[] securityWrapper, Integer bvlcPayloadLength) {
 
       this.securityWrapper = securityWrapper;
       this.bvlcPayloadLength = bvlcPayloadLength;

@@ -122,7 +122,7 @@ public class BACnetEventParameterChangeOfStatusFlags extends BACnetEventParamete
     return lengthInBits;
   }
 
-  public static BACnetEventParameterChangeOfStatusFlagsBuilder staticParseBuilder(
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfStatusFlags");
     PositionAware positionAware = readBuffer;
@@ -164,18 +164,18 @@ public class BACnetEventParameterChangeOfStatusFlags extends BACnetEventParamete
 
     readBuffer.closeContext("BACnetEventParameterChangeOfStatusFlags");
     // Create the instance
-    return new BACnetEventParameterChangeOfStatusFlagsBuilder(
+    return new BACnetEventParameterChangeOfStatusFlagsBuilderImpl(
         openingTag, timeDelay, selectedFlags, closingTag);
   }
 
-  public static class BACnetEventParameterChangeOfStatusFlagsBuilder
+  public static class BACnetEventParameterChangeOfStatusFlagsBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
     private final BACnetStatusFlagsTagged selectedFlags;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterChangeOfStatusFlagsBuilder(
+    public BACnetEventParameterChangeOfStatusFlagsBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetStatusFlagsTagged selectedFlags,

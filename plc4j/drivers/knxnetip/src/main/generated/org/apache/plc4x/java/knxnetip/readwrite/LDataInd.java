@@ -121,7 +121,7 @@ public class LDataInd extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static LDataIndBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("LDataInd");
     PositionAware positionAware = readBuffer;
@@ -145,16 +145,17 @@ public class LDataInd extends CEMI implements Message {
 
     readBuffer.closeContext("LDataInd");
     // Create the instance
-    return new LDataIndBuilder(additionalInformationLength, additionalInformation, dataFrame, size);
+    return new LDataIndBuilderImpl(
+        additionalInformationLength, additionalInformation, dataFrame, size);
   }
 
-  public static class LDataIndBuilder implements CEMI.CEMIBuilder {
+  public static class LDataIndBuilderImpl implements CEMI.CEMIBuilder {
     private final short additionalInformationLength;
     private final List<CEMIAdditionalInformation> additionalInformation;
     private final LDataFrame dataFrame;
     private final Integer size;
 
-    public LDataIndBuilder(
+    public LDataIndBuilderImpl(
         short additionalInformationLength,
         List<CEMIAdditionalInformation> additionalInformation,
         LDataFrame dataFrame,

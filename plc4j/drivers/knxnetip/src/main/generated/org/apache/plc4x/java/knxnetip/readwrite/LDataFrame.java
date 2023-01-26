@@ -194,12 +194,12 @@ public abstract class LDataFrame implements Message {
     LDataFrameBuilder builder = null;
     if (EvaluationHelper.equals(notAckFrame, (boolean) true)
         && EvaluationHelper.equals(polling, (boolean) false)) {
-      builder = LDataExtended.staticParseBuilder(readBuffer);
+      builder = LDataExtended.staticParseLDataFrameBuilder(readBuffer);
     } else if (EvaluationHelper.equals(notAckFrame, (boolean) true)
         && EvaluationHelper.equals(polling, (boolean) true)) {
-      builder = LPollData.staticParseBuilder(readBuffer);
+      builder = LPollData.staticParseLDataFrameBuilder(readBuffer);
     } else if (EvaluationHelper.equals(notAckFrame, (boolean) false)) {
-      builder = LDataFrameACK.staticParseBuilder(readBuffer);
+      builder = LDataFrameACK.staticParseLDataFrameBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -220,7 +220,7 @@ public abstract class LDataFrame implements Message {
     return _lDataFrame;
   }
 
-  public static interface LDataFrameBuilder {
+  public interface LDataFrameBuilder {
     LDataFrame build(
         boolean frameType,
         boolean notRepeated,

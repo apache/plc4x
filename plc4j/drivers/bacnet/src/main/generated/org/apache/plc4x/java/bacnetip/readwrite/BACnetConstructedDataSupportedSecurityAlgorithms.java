@@ -105,7 +105,7 @@ public class BACnetConstructedDataSupportedSecurityAlgorithms extends BACnetCons
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSupportedSecurityAlgorithmsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,17 +132,17 @@ public class BACnetConstructedDataSupportedSecurityAlgorithms extends BACnetCons
 
     readBuffer.closeContext("BACnetConstructedDataSupportedSecurityAlgorithms");
     // Create the instance
-    return new BACnetConstructedDataSupportedSecurityAlgorithmsBuilder(
+    return new BACnetConstructedDataSupportedSecurityAlgorithmsBuilderImpl(
         supportedSecurityAlgorithms, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSupportedSecurityAlgorithmsBuilder
+  public static class BACnetConstructedDataSupportedSecurityAlgorithmsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetApplicationTagUnsignedInteger> supportedSecurityAlgorithms;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSupportedSecurityAlgorithmsBuilder(
+    public BACnetConstructedDataSupportedSecurityAlgorithmsBuilderImpl(
         List<BACnetApplicationTagUnsignedInteger> supportedSecurityAlgorithms,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

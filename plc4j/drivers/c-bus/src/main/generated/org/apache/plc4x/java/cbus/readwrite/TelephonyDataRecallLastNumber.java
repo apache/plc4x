@@ -119,7 +119,7 @@ public class TelephonyDataRecallLastNumber extends TelephonyData implements Mess
     return lengthInBits;
   }
 
-  public static TelephonyDataRecallLastNumberBuilder staticParseBuilder(
+  public static TelephonyDataBuilder staticParseTelephonyDataBuilder(
       ReadBuffer readBuffer, TelephonyCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("TelephonyDataRecallLastNumber");
@@ -141,15 +141,15 @@ public class TelephonyDataRecallLastNumber extends TelephonyData implements Mess
 
     readBuffer.closeContext("TelephonyDataRecallLastNumber");
     // Create the instance
-    return new TelephonyDataRecallLastNumberBuilder(recallLastNumberType, number);
+    return new TelephonyDataRecallLastNumberBuilderImpl(recallLastNumberType, number);
   }
 
-  public static class TelephonyDataRecallLastNumberBuilder
+  public static class TelephonyDataRecallLastNumberBuilderImpl
       implements TelephonyData.TelephonyDataBuilder {
     private final byte recallLastNumberType;
     private final String number;
 
-    public TelephonyDataRecallLastNumberBuilder(byte recallLastNumberType, String number) {
+    public TelephonyDataRecallLastNumberBuilderImpl(byte recallLastNumberType, String number) {
 
       this.recallLastNumberType = recallLastNumberType;
       this.number = number;

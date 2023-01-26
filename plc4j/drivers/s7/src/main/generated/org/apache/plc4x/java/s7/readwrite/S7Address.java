@@ -95,7 +95,7 @@ public abstract class S7Address implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     S7AddressBuilder builder = null;
     if (EvaluationHelper.equals(addressType, (short) 0x10)) {
-      builder = S7AddressAny.staticParseBuilder(readBuffer);
+      builder = S7AddressAny.staticParseS7AddressBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -112,7 +112,7 @@ public abstract class S7Address implements Message {
     return _s7Address;
   }
 
-  public static interface S7AddressBuilder {
+  public interface S7AddressBuilder {
     S7Address build();
   }
 

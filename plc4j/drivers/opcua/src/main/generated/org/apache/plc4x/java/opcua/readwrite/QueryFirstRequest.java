@@ -170,7 +170,7 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static QueryFirstRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("QueryFirstRequest");
     PositionAware positionAware = readBuffer;
@@ -216,7 +216,7 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("QueryFirstRequest");
     // Create the instance
-    return new QueryFirstRequestBuilder(
+    return new QueryFirstRequestBuilderImpl(
         requestHeader,
         view,
         noOfNodeTypes,
@@ -226,7 +226,7 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
         maxReferencesToReturn);
   }
 
-  public static class QueryFirstRequestBuilder
+  public static class QueryFirstRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final ExtensionObjectDefinition view;
@@ -236,7 +236,7 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
     private final long maxDataSetsToReturn;
     private final long maxReferencesToReturn;
 
-    public QueryFirstRequestBuilder(
+    public QueryFirstRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         ExtensionObjectDefinition view,
         int noOfNodeTypes,

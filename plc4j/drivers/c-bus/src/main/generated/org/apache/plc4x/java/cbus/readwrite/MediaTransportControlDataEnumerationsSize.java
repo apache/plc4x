@@ -151,7 +151,7 @@ public class MediaTransportControlDataEnumerationsSize extends MediaTransportCon
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataEnumerationsSizeBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataEnumerationsSize");
     PositionAware positionAware = readBuffer;
@@ -176,16 +176,16 @@ public class MediaTransportControlDataEnumerationsSize extends MediaTransportCon
 
     readBuffer.closeContext("MediaTransportControlDataEnumerationsSize");
     // Create the instance
-    return new MediaTransportControlDataEnumerationsSizeBuilder(sizeType, start, size);
+    return new MediaTransportControlDataEnumerationsSizeBuilderImpl(sizeType, start, size);
   }
 
-  public static class MediaTransportControlDataEnumerationsSizeBuilder
+  public static class MediaTransportControlDataEnumerationsSizeBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte sizeType;
     private final short start;
     private final short size;
 
-    public MediaTransportControlDataEnumerationsSizeBuilder(
+    public MediaTransportControlDataEnumerationsSizeBuilderImpl(
         byte sizeType, short start, short size) {
 
       this.sizeType = sizeType;

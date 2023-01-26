@@ -105,7 +105,7 @@ public class BACnetConstructedDataBBMDBroadcastDistributionTable extends BACnetC
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBBMDBroadcastDistributionTableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -129,17 +129,17 @@ public class BACnetConstructedDataBBMDBroadcastDistributionTable extends BACnetC
 
     readBuffer.closeContext("BACnetConstructedDataBBMDBroadcastDistributionTable");
     // Create the instance
-    return new BACnetConstructedDataBBMDBroadcastDistributionTableBuilder(
+    return new BACnetConstructedDataBBMDBroadcastDistributionTableBuilderImpl(
         bbmdBroadcastDistributionTable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBBMDBroadcastDistributionTableBuilder
+  public static class BACnetConstructedDataBBMDBroadcastDistributionTableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetBDTEntry> bbmdBroadcastDistributionTable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBBMDBroadcastDistributionTableBuilder(
+    public BACnetConstructedDataBBMDBroadcastDistributionTableBuilderImpl(
         List<BACnetBDTEntry> bbmdBroadcastDistributionTable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

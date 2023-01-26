@@ -111,7 +111,7 @@ public class ApduDataExtPropertyDescriptionRead extends ApduDataExt implements M
     return lengthInBits;
   }
 
-  public static ApduDataExtPropertyDescriptionReadBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtPropertyDescriptionRead");
     PositionAware positionAware = readBuffer;
@@ -126,17 +126,18 @@ public class ApduDataExtPropertyDescriptionRead extends ApduDataExt implements M
 
     readBuffer.closeContext("ApduDataExtPropertyDescriptionRead");
     // Create the instance
-    return new ApduDataExtPropertyDescriptionReadBuilder(objectIndex, propertyId, index, length);
+    return new ApduDataExtPropertyDescriptionReadBuilderImpl(
+        objectIndex, propertyId, index, length);
   }
 
-  public static class ApduDataExtPropertyDescriptionReadBuilder
+  public static class ApduDataExtPropertyDescriptionReadBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final short objectIndex;
     private final short propertyId;
     private final short index;
     private final Short length;
 
-    public ApduDataExtPropertyDescriptionReadBuilder(
+    public ApduDataExtPropertyDescriptionReadBuilderImpl(
         short objectIndex, short propertyId, short index, Short length) {
 
       this.objectIndex = objectIndex;

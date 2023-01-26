@@ -103,7 +103,7 @@ public class BACnetConstructedDataRoutingTable extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataRoutingTableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -127,17 +127,17 @@ public class BACnetConstructedDataRoutingTable extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataRoutingTable");
     // Create the instance
-    return new BACnetConstructedDataRoutingTableBuilder(
+    return new BACnetConstructedDataRoutingTableBuilderImpl(
         routingTable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataRoutingTableBuilder
+  public static class BACnetConstructedDataRoutingTableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetRouterEntry> routingTable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataRoutingTableBuilder(
+    public BACnetConstructedDataRoutingTableBuilderImpl(
         List<BACnetRouterEntry> routingTable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

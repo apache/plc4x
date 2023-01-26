@@ -214,7 +214,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static SetTriggeringResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SetTriggeringResponse");
     PositionAware positionAware = readBuffer;
@@ -266,7 +266,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("SetTriggeringResponse");
     // Create the instance
-    return new SetTriggeringResponseBuilder(
+    return new SetTriggeringResponseBuilderImpl(
         responseHeader,
         noOfAddResults,
         addResults,
@@ -278,7 +278,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
         removeDiagnosticInfos);
   }
 
-  public static class SetTriggeringResponseBuilder
+  public static class SetTriggeringResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfAddResults;
@@ -290,7 +290,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
     private final int noOfRemoveDiagnosticInfos;
     private final List<DiagnosticInfo> removeDiagnosticInfos;
 
-    public SetTriggeringResponseBuilder(
+    public SetTriggeringResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfAddResults,
         List<StatusCode> addResults,

@@ -135,8 +135,8 @@ public class ClockAndTimekeepingDataUpdateDate extends ClockAndTimekeepingData i
     return lengthInBits;
   }
 
-  public static ClockAndTimekeepingDataUpdateDateBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static ClockAndTimekeepingDataBuilder staticParseClockAndTimekeepingDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ClockAndTimekeepingDataUpdateDate");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -154,10 +154,11 @@ public class ClockAndTimekeepingDataUpdateDate extends ClockAndTimekeepingData i
 
     readBuffer.closeContext("ClockAndTimekeepingDataUpdateDate");
     // Create the instance
-    return new ClockAndTimekeepingDataUpdateDateBuilder(yearHigh, yearLow, month, day, dayOfWeek);
+    return new ClockAndTimekeepingDataUpdateDateBuilderImpl(
+        yearHigh, yearLow, month, day, dayOfWeek);
   }
 
-  public static class ClockAndTimekeepingDataUpdateDateBuilder
+  public static class ClockAndTimekeepingDataUpdateDateBuilderImpl
       implements ClockAndTimekeepingData.ClockAndTimekeepingDataBuilder {
     private final byte yearHigh;
     private final byte yearLow;
@@ -165,7 +166,7 @@ public class ClockAndTimekeepingDataUpdateDate extends ClockAndTimekeepingData i
     private final short day;
     private final short dayOfWeek;
 
-    public ClockAndTimekeepingDataUpdateDateBuilder(
+    public ClockAndTimekeepingDataUpdateDateBuilderImpl(
         byte yearHigh, byte yearLow, short month, short day, short dayOfWeek) {
 
       this.yearHigh = yearHigh;

@@ -85,8 +85,9 @@ public class ApplicationCommunicationStartAcknowledgeBlockRbuType
     return lengthInBits;
   }
 
-  public static ApplicationCommunicationStartAcknowledgeBlockRbuTypeBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static ApplicationCommunicationStartAcknowledgeBlockBuilder
+      staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("ApplicationCommunicationStartAcknowledgeBlockRbuType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -97,15 +98,15 @@ public class ApplicationCommunicationStartAcknowledgeBlockRbuType
 
     readBuffer.closeContext("ApplicationCommunicationStartAcknowledgeBlockRbuType");
     // Create the instance
-    return new ApplicationCommunicationStartAcknowledgeBlockRbuTypeBuilder(rbuType);
+    return new ApplicationCommunicationStartAcknowledgeBlockRbuTypeBuilderImpl(rbuType);
   }
 
-  public static class ApplicationCommunicationStartAcknowledgeBlockRbuTypeBuilder
+  public static class ApplicationCommunicationStartAcknowledgeBlockRbuTypeBuilderImpl
       implements ApplicationCommunicationStartAcknowledgeBlock
           .ApplicationCommunicationStartAcknowledgeBlockBuilder {
     private final String rbuType;
 
-    public ApplicationCommunicationStartAcknowledgeBlockRbuTypeBuilder(String rbuType) {
+    public ApplicationCommunicationStartAcknowledgeBlockRbuTypeBuilderImpl(String rbuType) {
 
       this.rbuType = rbuType;
     }

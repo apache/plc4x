@@ -157,7 +157,7 @@ public class BACnetEventParameterChangeOfLifeSavety extends BACnetEventParameter
     return lengthInBits;
   }
 
-  public static BACnetEventParameterChangeOfLifeSavetyBuilder staticParseBuilder(
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfLifeSavety");
     PositionAware positionAware = readBuffer;
@@ -217,7 +217,7 @@ public class BACnetEventParameterChangeOfLifeSavety extends BACnetEventParameter
 
     readBuffer.closeContext("BACnetEventParameterChangeOfLifeSavety");
     // Create the instance
-    return new BACnetEventParameterChangeOfLifeSavetyBuilder(
+    return new BACnetEventParameterChangeOfLifeSavetyBuilderImpl(
         openingTag,
         timeDelay,
         listOfLifeSavetyAlarmValues,
@@ -226,7 +226,7 @@ public class BACnetEventParameterChangeOfLifeSavety extends BACnetEventParameter
         closingTag);
   }
 
-  public static class BACnetEventParameterChangeOfLifeSavetyBuilder
+  public static class BACnetEventParameterChangeOfLifeSavetyBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
@@ -236,7 +236,7 @@ public class BACnetEventParameterChangeOfLifeSavety extends BACnetEventParameter
     private final BACnetDeviceObjectPropertyReferenceEnclosed modePropertyReference;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterChangeOfLifeSavetyBuilder(
+    public BACnetEventParameterChangeOfLifeSavetyBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues

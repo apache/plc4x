@@ -72,7 +72,7 @@ public class ApduDataExtDomainAddressResponse extends ApduDataExt implements Mes
     return lengthInBits;
   }
 
-  public static ApduDataExtDomainAddressResponseBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtDomainAddressResponse");
     PositionAware positionAware = readBuffer;
@@ -81,14 +81,14 @@ public class ApduDataExtDomainAddressResponse extends ApduDataExt implements Mes
 
     readBuffer.closeContext("ApduDataExtDomainAddressResponse");
     // Create the instance
-    return new ApduDataExtDomainAddressResponseBuilder(length);
+    return new ApduDataExtDomainAddressResponseBuilderImpl(length);
   }
 
-  public static class ApduDataExtDomainAddressResponseBuilder
+  public static class ApduDataExtDomainAddressResponseBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final Short length;
 
-    public ApduDataExtDomainAddressResponseBuilder(Short length) {
+    public ApduDataExtDomainAddressResponseBuilderImpl(Short length) {
 
       this.length = length;
     }

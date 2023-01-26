@@ -105,7 +105,7 @@ public class VariantSByte extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantSByteBuilder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantSByte");
     PositionAware positionAware = readBuffer;
@@ -121,14 +121,14 @@ public class VariantSByte extends Variant implements Message {
 
     readBuffer.closeContext("VariantSByte");
     // Create the instance
-    return new VariantSByteBuilder(arrayLength, value);
+    return new VariantSByteBuilderImpl(arrayLength, value);
   }
 
-  public static class VariantSByteBuilder implements Variant.VariantBuilder {
+  public static class VariantSByteBuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final byte[] value;
 
-    public VariantSByteBuilder(Integer arrayLength, byte[] value) {
+    public VariantSByteBuilderImpl(Integer arrayLength, byte[] value) {
 
       this.arrayLength = arrayLength;
       this.value = value;

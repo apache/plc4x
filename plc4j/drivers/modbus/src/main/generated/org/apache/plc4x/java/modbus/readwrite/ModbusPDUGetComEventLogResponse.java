@@ -137,7 +137,7 @@ public class ModbusPDUGetComEventLogResponse extends ModbusPDU implements Messag
     return lengthInBits;
   }
 
-  public static ModbusPDUGetComEventLogResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUGetComEventLogResponse");
     PositionAware positionAware = readBuffer;
@@ -156,16 +156,17 @@ public class ModbusPDUGetComEventLogResponse extends ModbusPDU implements Messag
 
     readBuffer.closeContext("ModbusPDUGetComEventLogResponse");
     // Create the instance
-    return new ModbusPDUGetComEventLogResponseBuilder(status, eventCount, messageCount, events);
+    return new ModbusPDUGetComEventLogResponseBuilderImpl(status, eventCount, messageCount, events);
   }
 
-  public static class ModbusPDUGetComEventLogResponseBuilder implements ModbusPDU.ModbusPDUBuilder {
+  public static class ModbusPDUGetComEventLogResponseBuilderImpl
+      implements ModbusPDU.ModbusPDUBuilder {
     private final int status;
     private final int eventCount;
     private final int messageCount;
     private final byte[] events;
 
-    public ModbusPDUGetComEventLogResponseBuilder(
+    public ModbusPDUGetComEventLogResponseBuilderImpl(
         int status, int eventCount, int messageCount, byte[] events) {
 
       this.status = status;

@@ -135,7 +135,7 @@ public class BACnetConstructedDataCarDoorStatus extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCarDoorStatusBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -173,18 +173,18 @@ public class BACnetConstructedDataCarDoorStatus extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataCarDoorStatus");
     // Create the instance
-    return new BACnetConstructedDataCarDoorStatusBuilder(
+    return new BACnetConstructedDataCarDoorStatusBuilderImpl(
         numberOfDataElements, carDoorStatus, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCarDoorStatusBuilder
+  public static class BACnetConstructedDataCarDoorStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetDoorStatusTagged> carDoorStatus;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCarDoorStatusBuilder(
+    public BACnetConstructedDataCarDoorStatusBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetDoorStatusTagged> carDoorStatus,
         Short tagNumber,

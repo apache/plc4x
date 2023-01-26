@@ -111,7 +111,7 @@ public class BACnetConstructedDataLastRestartReason extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLastRestartReasonBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -136,17 +136,17 @@ public class BACnetConstructedDataLastRestartReason extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataLastRestartReason");
     // Create the instance
-    return new BACnetConstructedDataLastRestartReasonBuilder(
+    return new BACnetConstructedDataLastRestartReasonBuilderImpl(
         lastRestartReason, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLastRestartReasonBuilder
+  public static class BACnetConstructedDataLastRestartReasonBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetRestartReasonTagged lastRestartReason;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLastRestartReasonBuilder(
+    public BACnetConstructedDataLastRestartReasonBuilderImpl(
         BACnetRestartReasonTagged lastRestartReason,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

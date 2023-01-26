@@ -167,8 +167,8 @@ public class MediaTransportControlDataRewind extends MediaTransportControlData i
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataRewindBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataRewind");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -192,14 +192,14 @@ public class MediaTransportControlDataRewind extends MediaTransportControlData i
 
     readBuffer.closeContext("MediaTransportControlDataRewind");
     // Create the instance
-    return new MediaTransportControlDataRewindBuilder(operation);
+    return new MediaTransportControlDataRewindBuilderImpl(operation);
   }
 
-  public static class MediaTransportControlDataRewindBuilder
+  public static class MediaTransportControlDataRewindBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte operation;
 
-    public MediaTransportControlDataRewindBuilder(byte operation) {
+    public MediaTransportControlDataRewindBuilderImpl(byte operation) {
 
       this.operation = operation;
     }

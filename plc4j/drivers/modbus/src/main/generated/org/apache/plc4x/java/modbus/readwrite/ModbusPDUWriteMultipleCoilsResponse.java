@@ -102,7 +102,7 @@ public class ModbusPDUWriteMultipleCoilsResponse extends ModbusPDU implements Me
     return lengthInBits;
   }
 
-  public static ModbusPDUWriteMultipleCoilsResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUWriteMultipleCoilsResponse");
     PositionAware positionAware = readBuffer;
@@ -115,15 +115,15 @@ public class ModbusPDUWriteMultipleCoilsResponse extends ModbusPDU implements Me
 
     readBuffer.closeContext("ModbusPDUWriteMultipleCoilsResponse");
     // Create the instance
-    return new ModbusPDUWriteMultipleCoilsResponseBuilder(startingAddress, quantity);
+    return new ModbusPDUWriteMultipleCoilsResponseBuilderImpl(startingAddress, quantity);
   }
 
-  public static class ModbusPDUWriteMultipleCoilsResponseBuilder
+  public static class ModbusPDUWriteMultipleCoilsResponseBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final int startingAddress;
     private final int quantity;
 
-    public ModbusPDUWriteMultipleCoilsResponseBuilder(int startingAddress, int quantity) {
+    public ModbusPDUWriteMultipleCoilsResponseBuilderImpl(int startingAddress, int quantity) {
 
       this.startingAddress = startingAddress;
       this.quantity = quantity;

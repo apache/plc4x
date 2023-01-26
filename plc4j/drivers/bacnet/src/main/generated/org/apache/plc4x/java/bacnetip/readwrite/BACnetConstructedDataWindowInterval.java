@@ -109,7 +109,7 @@ public class BACnetConstructedDataWindowInterval extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataWindowIntervalBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataWindowInterval extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataWindowInterval");
     // Create the instance
-    return new BACnetConstructedDataWindowIntervalBuilder(
+    return new BACnetConstructedDataWindowIntervalBuilderImpl(
         windowInterval, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataWindowIntervalBuilder
+  public static class BACnetConstructedDataWindowIntervalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger windowInterval;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataWindowIntervalBuilder(
+    public BACnetConstructedDataWindowIntervalBuilderImpl(
         BACnetApplicationTagUnsignedInteger windowInterval,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

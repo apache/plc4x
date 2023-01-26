@@ -83,7 +83,7 @@ public class BACnetPropertyStatesLightningInProgress extends BACnetPropertyState
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesLightningInProgressBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLightningInProgress");
     PositionAware positionAware = readBuffer;
@@ -103,14 +103,14 @@ public class BACnetPropertyStatesLightningInProgress extends BACnetPropertyState
 
     readBuffer.closeContext("BACnetPropertyStatesLightningInProgress");
     // Create the instance
-    return new BACnetPropertyStatesLightningInProgressBuilder(lightningInProgress);
+    return new BACnetPropertyStatesLightningInProgressBuilderImpl(lightningInProgress);
   }
 
-  public static class BACnetPropertyStatesLightningInProgressBuilder
+  public static class BACnetPropertyStatesLightningInProgressBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetLightingInProgressTagged lightningInProgress;
 
-    public BACnetPropertyStatesLightningInProgressBuilder(
+    public BACnetPropertyStatesLightningInProgressBuilderImpl(
         BACnetLightingInProgressTagged lightningInProgress) {
 
       this.lightningInProgress = lightningInProgress;

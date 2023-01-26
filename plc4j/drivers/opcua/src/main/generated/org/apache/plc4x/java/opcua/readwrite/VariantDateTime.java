@@ -105,7 +105,7 @@ public class VariantDateTime extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantDateTimeBuilder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantDateTime");
     PositionAware positionAware = readBuffer;
@@ -121,14 +121,14 @@ public class VariantDateTime extends Variant implements Message {
 
     readBuffer.closeContext("VariantDateTime");
     // Create the instance
-    return new VariantDateTimeBuilder(arrayLength, value);
+    return new VariantDateTimeBuilderImpl(arrayLength, value);
   }
 
-  public static class VariantDateTimeBuilder implements Variant.VariantBuilder {
+  public static class VariantDateTimeBuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final List<Long> value;
 
-    public VariantDateTimeBuilder(Integer arrayLength, List<Long> value) {
+    public VariantDateTimeBuilderImpl(Integer arrayLength, List<Long> value) {
 
       this.arrayLength = arrayLength;
       this.value = value;

@@ -111,7 +111,7 @@ public class BACnetConstructedDataTotalRecordCount extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTotalRecordCountBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,17 +137,17 @@ public class BACnetConstructedDataTotalRecordCount extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataTotalRecordCount");
     // Create the instance
-    return new BACnetConstructedDataTotalRecordCountBuilder(
+    return new BACnetConstructedDataTotalRecordCountBuilderImpl(
         totalRecordCount, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTotalRecordCountBuilder
+  public static class BACnetConstructedDataTotalRecordCountBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger totalRecordCount;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTotalRecordCountBuilder(
+    public BACnetConstructedDataTotalRecordCountBuilderImpl(
         BACnetApplicationTagUnsignedInteger totalRecordCount,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

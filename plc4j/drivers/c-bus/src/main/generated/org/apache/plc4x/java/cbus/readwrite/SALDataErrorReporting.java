@@ -83,7 +83,7 @@ public class SALDataErrorReporting extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataErrorReportingBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataErrorReporting");
     PositionAware positionAware = readBuffer;
@@ -98,13 +98,13 @@ public class SALDataErrorReporting extends SALData implements Message {
 
     readBuffer.closeContext("SALDataErrorReporting");
     // Create the instance
-    return new SALDataErrorReportingBuilder(errorReportingData);
+    return new SALDataErrorReportingBuilderImpl(errorReportingData);
   }
 
-  public static class SALDataErrorReportingBuilder implements SALData.SALDataBuilder {
+  public static class SALDataErrorReportingBuilderImpl implements SALData.SALDataBuilder {
     private final ErrorReportingData errorReportingData;
 
-    public SALDataErrorReportingBuilder(ErrorReportingData errorReportingData) {
+    public SALDataErrorReportingBuilderImpl(ErrorReportingData errorReportingData) {
 
       this.errorReportingData = errorReportingData;
     }

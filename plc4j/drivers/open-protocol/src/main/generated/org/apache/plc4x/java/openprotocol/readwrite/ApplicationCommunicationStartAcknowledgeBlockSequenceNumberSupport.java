@@ -96,8 +96,9 @@ public class ApplicationCommunicationStartAcknowledgeBlockSequenceNumberSupport
     return lengthInBits;
   }
 
-  public static ApplicationCommunicationStartAcknowledgeBlockSequenceNumberSupportBuilder
-      staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static ApplicationCommunicationStartAcknowledgeBlockBuilder
+      staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("ApplicationCommunicationStartAcknowledgeBlockSequenceNumberSupport");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -111,17 +112,17 @@ public class ApplicationCommunicationStartAcknowledgeBlockSequenceNumberSupport
 
     readBuffer.closeContext("ApplicationCommunicationStartAcknowledgeBlockSequenceNumberSupport");
     // Create the instance
-    return new ApplicationCommunicationStartAcknowledgeBlockSequenceNumberSupportBuilder(
+    return new ApplicationCommunicationStartAcknowledgeBlockSequenceNumberSupportBuilderImpl(
         sequenceNumberSupport, reservedField0);
   }
 
-  public static class ApplicationCommunicationStartAcknowledgeBlockSequenceNumberSupportBuilder
+  public static class ApplicationCommunicationStartAcknowledgeBlockSequenceNumberSupportBuilderImpl
       implements ApplicationCommunicationStartAcknowledgeBlock
           .ApplicationCommunicationStartAcknowledgeBlockBuilder {
     private final boolean sequenceNumberSupport;
     private final Short reservedField0;
 
-    public ApplicationCommunicationStartAcknowledgeBlockSequenceNumberSupportBuilder(
+    public ApplicationCommunicationStartAcknowledgeBlockSequenceNumberSupportBuilderImpl(
         boolean sequenceNumberSupport, Short reservedField0) {
       this.sequenceNumberSupport = sequenceNumberSupport;
       this.reservedField0 = reservedField0;

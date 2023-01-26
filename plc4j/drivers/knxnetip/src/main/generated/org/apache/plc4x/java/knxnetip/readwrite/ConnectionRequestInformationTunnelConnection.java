@@ -100,7 +100,7 @@ public class ConnectionRequestInformationTunnelConnection extends ConnectionRequ
     return lengthInBits;
   }
 
-  public static ConnectionRequestInformationTunnelConnectionBuilder staticParseBuilder(
+  public static ConnectionRequestInformationBuilder staticParseConnectionRequestInformationBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ConnectionRequestInformationTunnelConnection");
     PositionAware positionAware = readBuffer;
@@ -118,15 +118,15 @@ public class ConnectionRequestInformationTunnelConnection extends ConnectionRequ
 
     readBuffer.closeContext("ConnectionRequestInformationTunnelConnection");
     // Create the instance
-    return new ConnectionRequestInformationTunnelConnectionBuilder(knxLayer, reservedField0);
+    return new ConnectionRequestInformationTunnelConnectionBuilderImpl(knxLayer, reservedField0);
   }
 
-  public static class ConnectionRequestInformationTunnelConnectionBuilder
+  public static class ConnectionRequestInformationTunnelConnectionBuilderImpl
       implements ConnectionRequestInformation.ConnectionRequestInformationBuilder {
     private final KnxLayer knxLayer;
     private final Short reservedField0;
 
-    public ConnectionRequestInformationTunnelConnectionBuilder(
+    public ConnectionRequestInformationTunnelConnectionBuilderImpl(
         KnxLayer knxLayer, Short reservedField0) {
       this.knxLayer = knxLayer;
       this.reservedField0 = reservedField0;

@@ -149,7 +149,7 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
     return lengthInBits;
   }
 
-  public static AirConditioningDataZoneHumidityPlantStatusBuilder staticParseBuilder(
+  public static AirConditioningDataBuilder staticParseAirConditioningDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataZoneHumidityPlantStatus");
     PositionAware positionAware = readBuffer;
@@ -185,11 +185,11 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
 
     readBuffer.closeContext("AirConditioningDataZoneHumidityPlantStatus");
     // Create the instance
-    return new AirConditioningDataZoneHumidityPlantStatusBuilder(
+    return new AirConditioningDataZoneHumidityPlantStatusBuilderImpl(
         zoneGroup, zoneList, humidityType, humidityStatus, humidityErrorCode);
   }
 
-  public static class AirConditioningDataZoneHumidityPlantStatusBuilder
+  public static class AirConditioningDataZoneHumidityPlantStatusBuilderImpl
       implements AirConditioningData.AirConditioningDataBuilder {
     private final byte zoneGroup;
     private final HVACZoneList zoneList;
@@ -197,7 +197,7 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
     private final HVACHumidityStatusFlags humidityStatus;
     private final HVACHumidityError humidityErrorCode;
 
-    public AirConditioningDataZoneHumidityPlantStatusBuilder(
+    public AirConditioningDataZoneHumidityPlantStatusBuilderImpl(
         byte zoneGroup,
         HVACZoneList zoneList,
         HVACHumidityType humidityType,

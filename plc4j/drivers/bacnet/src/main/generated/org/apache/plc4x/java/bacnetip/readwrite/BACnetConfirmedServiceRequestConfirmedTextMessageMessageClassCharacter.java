@@ -92,8 +92,9 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharac
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+      staticParseBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext(
         "BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter");
     PositionAware positionAware = readBuffer;
@@ -115,17 +116,18 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharac
     readBuffer.closeContext(
         "BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter");
     // Create the instance
-    return new BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder(
+    return new BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilderImpl(
         characterValue, tagNumber);
   }
 
-  public static class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder
+  public static
+  class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilderImpl
       implements BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
           .BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
     private final BACnetContextTagCharacterString characterValue;
     private final Short tagNumber;
 
-    public BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder(
+    public BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilderImpl(
         BACnetContextTagCharacterString characterValue, Short tagNumber) {
 
       this.characterValue = characterValue;

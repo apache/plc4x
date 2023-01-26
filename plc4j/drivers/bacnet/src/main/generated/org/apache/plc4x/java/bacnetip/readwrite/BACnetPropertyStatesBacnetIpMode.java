@@ -81,7 +81,7 @@ public class BACnetPropertyStatesBacnetIpMode extends BACnetPropertyStates imple
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesBacnetIpModeBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesBacnetIpMode");
     PositionAware positionAware = readBuffer;
@@ -101,14 +101,14 @@ public class BACnetPropertyStatesBacnetIpMode extends BACnetPropertyStates imple
 
     readBuffer.closeContext("BACnetPropertyStatesBacnetIpMode");
     // Create the instance
-    return new BACnetPropertyStatesBacnetIpModeBuilder(bacnetIpMode);
+    return new BACnetPropertyStatesBacnetIpModeBuilderImpl(bacnetIpMode);
   }
 
-  public static class BACnetPropertyStatesBacnetIpModeBuilder
+  public static class BACnetPropertyStatesBacnetIpModeBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetIPModeTagged bacnetIpMode;
 
-    public BACnetPropertyStatesBacnetIpModeBuilder(BACnetIPModeTagged bacnetIpMode) {
+    public BACnetPropertyStatesBacnetIpModeBuilderImpl(BACnetIPModeTagged bacnetIpMode) {
 
       this.bacnetIpMode = bacnetIpMode;
     }

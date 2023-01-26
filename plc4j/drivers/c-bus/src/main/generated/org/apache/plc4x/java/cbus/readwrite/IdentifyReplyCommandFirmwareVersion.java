@@ -87,7 +87,7 @@ public class IdentifyReplyCommandFirmwareVersion extends IdentifyReplyCommand im
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandFirmwareVersionBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandFirmwareVersion");
     PositionAware positionAware = readBuffer;
@@ -98,15 +98,15 @@ public class IdentifyReplyCommandFirmwareVersion extends IdentifyReplyCommand im
 
     readBuffer.closeContext("IdentifyReplyCommandFirmwareVersion");
     // Create the instance
-    return new IdentifyReplyCommandFirmwareVersionBuilder(firmwareVersion, numBytes);
+    return new IdentifyReplyCommandFirmwareVersionBuilderImpl(firmwareVersion, numBytes);
   }
 
-  public static class IdentifyReplyCommandFirmwareVersionBuilder
+  public static class IdentifyReplyCommandFirmwareVersionBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final String firmwareVersion;
     private final Short numBytes;
 
-    public IdentifyReplyCommandFirmwareVersionBuilder(String firmwareVersion, Short numBytes) {
+    public IdentifyReplyCommandFirmwareVersionBuilderImpl(String firmwareVersion, Short numBytes) {
 
       this.firmwareVersion = firmwareVersion;
       this.numBytes = numBytes;

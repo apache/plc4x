@@ -89,7 +89,7 @@ public class BACnetServiceAckCreateObject extends BACnetServiceAck implements Me
     return lengthInBits;
   }
 
-  public static BACnetServiceAckCreateObjectBuilder staticParseBuilder(
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckCreateObject");
     PositionAware positionAware = readBuffer;
@@ -107,15 +107,15 @@ public class BACnetServiceAckCreateObject extends BACnetServiceAck implements Me
 
     readBuffer.closeContext("BACnetServiceAckCreateObject");
     // Create the instance
-    return new BACnetServiceAckCreateObjectBuilder(objectIdentifier, serviceAckLength);
+    return new BACnetServiceAckCreateObjectBuilderImpl(objectIdentifier, serviceAckLength);
   }
 
-  public static class BACnetServiceAckCreateObjectBuilder
+  public static class BACnetServiceAckCreateObjectBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetApplicationTagObjectIdentifier objectIdentifier;
     private final Long serviceAckLength;
 
-    public BACnetServiceAckCreateObjectBuilder(
+    public BACnetServiceAckCreateObjectBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectIdentifier, Long serviceAckLength) {
 
       this.objectIdentifier = objectIdentifier;

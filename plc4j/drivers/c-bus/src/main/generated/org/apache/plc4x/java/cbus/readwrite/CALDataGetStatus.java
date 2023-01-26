@@ -105,7 +105,7 @@ public class CALDataGetStatus extends CALData implements Message {
     return lengthInBits;
   }
 
-  public static CALDataGetStatusBuilder staticParseBuilder(
+  public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer, RequestContext requestContext) throws ParseException {
     readBuffer.pullContext("CALDataGetStatus");
     PositionAware positionAware = readBuffer;
@@ -122,15 +122,16 @@ public class CALDataGetStatus extends CALData implements Message {
 
     readBuffer.closeContext("CALDataGetStatus");
     // Create the instance
-    return new CALDataGetStatusBuilder(paramNo, count, requestContext);
+    return new CALDataGetStatusBuilderImpl(paramNo, count, requestContext);
   }
 
-  public static class CALDataGetStatusBuilder implements CALData.CALDataBuilder {
+  public static class CALDataGetStatusBuilderImpl implements CALData.CALDataBuilder {
     private final Parameter paramNo;
     private final short count;
     private final RequestContext requestContext;
 
-    public CALDataGetStatusBuilder(Parameter paramNo, short count, RequestContext requestContext) {
+    public CALDataGetStatusBuilderImpl(
+        Parameter paramNo, short count, RequestContext requestContext) {
 
       this.paramNo = paramNo;
       this.count = count;

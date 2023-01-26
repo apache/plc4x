@@ -195,9 +195,15 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         SwitchField switchField = null;
         Function<String, TypeReference> typeRefRetriever = null;
         if (thisType.isDiscriminatedComplexTypeDefinition()) {
-            ComplexTypeDefinition parentType = thisType.asDiscriminatedComplexTypeDefinition().orElseThrow().getParentType().orElseThrow();
-            switchField = parentType.getSwitchField().orElse(null);
-            typeRefRetriever = propertyName -> parentType.getTypeReferenceForProperty(propertyName).orElse(null);
+            DiscriminatedComplexTypeDefinition discriminatedComplexTypeDefinition = thisType.asDiscriminatedComplexTypeDefinition().orElseThrow();
+            switchField = discriminatedComplexTypeDefinition.getSwitchField().orElse(null);
+            typeRefRetriever = propertyName -> discriminatedComplexTypeDefinition.getTypeReferenceForProperty(propertyName).orElse(null);
+            // Please forgive us, we didn't know what we were doing.
+            if(switchField == null) {
+                ComplexTypeDefinition parentType = thisType.asDiscriminatedComplexTypeDefinition().orElseThrow().getParentType().orElseThrow();
+                switchField = parentType.getSwitchField().orElse(null);
+                typeRefRetriever = propertyName -> parentType.getTypeReferenceForProperty(propertyName).orElse(null);
+            }
         } else if (thisType.isDataIoTypeDefinition()) {
             final DefaultDataIoTypeDefinition dataIoTypeDefinition = (DefaultDataIoTypeDefinition) this.thisType;
             switchField = dataIoTypeDefinition.getSwitchField().orElseThrow();

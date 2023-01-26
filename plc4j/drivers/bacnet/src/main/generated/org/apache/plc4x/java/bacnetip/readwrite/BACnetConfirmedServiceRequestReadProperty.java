@@ -120,8 +120,9 @@ public class BACnetConfirmedServiceRequestReadProperty extends BACnetConfirmedSe
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestReadPropertyBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestReadProperty");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -162,18 +163,18 @@ public class BACnetConfirmedServiceRequestReadProperty extends BACnetConfirmedSe
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestReadProperty");
     // Create the instance
-    return new BACnetConfirmedServiceRequestReadPropertyBuilder(
+    return new BACnetConfirmedServiceRequestReadPropertyBuilderImpl(
         objectIdentifier, propertyIdentifier, arrayIndex, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestReadPropertyBuilder
+  public static class BACnetConfirmedServiceRequestReadPropertyBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagObjectIdentifier objectIdentifier;
     private final BACnetPropertyIdentifierTagged propertyIdentifier;
     private final BACnetContextTagUnsignedInteger arrayIndex;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestReadPropertyBuilder(
+    public BACnetConfirmedServiceRequestReadPropertyBuilderImpl(
         BACnetContextTagObjectIdentifier objectIdentifier,
         BACnetPropertyIdentifierTagged propertyIdentifier,
         BACnetContextTagUnsignedInteger arrayIndex,

@@ -109,8 +109,8 @@ public class RepublishRequest extends ExtensionObjectDefinition implements Messa
     return lengthInBits;
   }
 
-  public static RepublishRequestBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RepublishRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -130,16 +130,16 @@ public class RepublishRequest extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("RepublishRequest");
     // Create the instance
-    return new RepublishRequestBuilder(requestHeader, subscriptionId, retransmitSequenceNumber);
+    return new RepublishRequestBuilderImpl(requestHeader, subscriptionId, retransmitSequenceNumber);
   }
 
-  public static class RepublishRequestBuilder
+  public static class RepublishRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final long subscriptionId;
     private final long retransmitSequenceNumber;
 
-    public RepublishRequestBuilder(
+    public RepublishRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         long subscriptionId,
         long retransmitSequenceNumber) {

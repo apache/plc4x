@@ -149,7 +149,7 @@ public class BACnetNotificationParametersBufferReady extends BACnetNotificationP
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersBufferReadyBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -209,7 +209,7 @@ public class BACnetNotificationParametersBufferReady extends BACnetNotificationP
 
     readBuffer.closeContext("BACnetNotificationParametersBufferReady");
     // Create the instance
-    return new BACnetNotificationParametersBufferReadyBuilder(
+    return new BACnetNotificationParametersBufferReadyBuilderImpl(
         innerOpeningTag,
         bufferProperty,
         previousNotification,
@@ -219,7 +219,7 @@ public class BACnetNotificationParametersBufferReady extends BACnetNotificationP
         objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersBufferReadyBuilder
+  public static class BACnetNotificationParametersBufferReadyBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final BACnetDeviceObjectPropertyReferenceEnclosed bufferProperty;
@@ -229,7 +229,7 @@ public class BACnetNotificationParametersBufferReady extends BACnetNotificationP
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersBufferReadyBuilder(
+    public BACnetNotificationParametersBufferReadyBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetDeviceObjectPropertyReferenceEnclosed bufferProperty,
         BACnetContextTagUnsignedInteger previousNotification,

@@ -87,7 +87,7 @@ public class BACnetPriorityValueBitString extends BACnetPriorityValue implements
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueBitStringBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueBitString");
     PositionAware positionAware = readBuffer;
@@ -103,15 +103,15 @@ public class BACnetPriorityValueBitString extends BACnetPriorityValue implements
 
     readBuffer.closeContext("BACnetPriorityValueBitString");
     // Create the instance
-    return new BACnetPriorityValueBitStringBuilder(bitStringValue, objectTypeArgument);
+    return new BACnetPriorityValueBitStringBuilderImpl(bitStringValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueBitStringBuilder
+  public static class BACnetPriorityValueBitStringBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagBitString bitStringValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueBitStringBuilder(
+    public BACnetPriorityValueBitStringBuilderImpl(
         BACnetApplicationTagBitString bitStringValue, BACnetObjectType objectTypeArgument) {
 
       this.bitStringValue = bitStringValue;

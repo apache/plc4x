@@ -103,8 +103,8 @@ public class TelephonyDataRecallLastNumberRequest extends TelephonyData implemen
     return lengthInBits;
   }
 
-  public static TelephonyDataRecallLastNumberRequestBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static TelephonyDataBuilder staticParseTelephonyDataBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("TelephonyDataRecallLastNumberRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -120,14 +120,14 @@ public class TelephonyDataRecallLastNumberRequest extends TelephonyData implemen
 
     readBuffer.closeContext("TelephonyDataRecallLastNumberRequest");
     // Create the instance
-    return new TelephonyDataRecallLastNumberRequestBuilder(recallLastNumberType);
+    return new TelephonyDataRecallLastNumberRequestBuilderImpl(recallLastNumberType);
   }
 
-  public static class TelephonyDataRecallLastNumberRequestBuilder
+  public static class TelephonyDataRecallLastNumberRequestBuilderImpl
       implements TelephonyData.TelephonyDataBuilder {
     private final byte recallLastNumberType;
 
-    public TelephonyDataRecallLastNumberRequestBuilder(byte recallLastNumberType) {
+    public TelephonyDataRecallLastNumberRequestBuilderImpl(byte recallLastNumberType) {
 
       this.recallLastNumberType = recallLastNumberType;
     }

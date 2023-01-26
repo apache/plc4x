@@ -86,7 +86,7 @@ public class SALDataTemperatureBroadcast extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataTemperatureBroadcastBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataTemperatureBroadcast");
     PositionAware positionAware = readBuffer;
@@ -101,13 +101,14 @@ public class SALDataTemperatureBroadcast extends SALData implements Message {
 
     readBuffer.closeContext("SALDataTemperatureBroadcast");
     // Create the instance
-    return new SALDataTemperatureBroadcastBuilder(temperatureBroadcastData);
+    return new SALDataTemperatureBroadcastBuilderImpl(temperatureBroadcastData);
   }
 
-  public static class SALDataTemperatureBroadcastBuilder implements SALData.SALDataBuilder {
+  public static class SALDataTemperatureBroadcastBuilderImpl implements SALData.SALDataBuilder {
     private final TemperatureBroadcastData temperatureBroadcastData;
 
-    public SALDataTemperatureBroadcastBuilder(TemperatureBroadcastData temperatureBroadcastData) {
+    public SALDataTemperatureBroadcastBuilderImpl(
+        TemperatureBroadcastData temperatureBroadcastData) {
 
       this.temperatureBroadcastData = temperatureBroadcastData;
     }

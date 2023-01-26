@@ -144,7 +144,7 @@ public class SDOInitiateUploadResponse extends SDOResponse implements Message {
     return lengthInBits;
   }
 
-  public static SDOInitiateUploadResponseBuilder staticParseBuilder(
+  public static SDOResponseBuilder staticParseSDOResponseBuilder(
       ReadBuffer readBuffer, SDOResponseCommand command) throws ParseException {
     readBuffer.pullContext("SDOInitiateUploadResponse");
     PositionAware positionAware = readBuffer;
@@ -176,18 +176,19 @@ public class SDOInitiateUploadResponse extends SDOResponse implements Message {
 
     readBuffer.closeContext("SDOInitiateUploadResponse");
     // Create the instance
-    return new SDOInitiateUploadResponseBuilder(
+    return new SDOInitiateUploadResponseBuilderImpl(
         expedited, indicated, address, payload, reservedField0);
   }
 
-  public static class SDOInitiateUploadResponseBuilder implements SDOResponse.SDOResponseBuilder {
+  public static class SDOInitiateUploadResponseBuilderImpl
+      implements SDOResponse.SDOResponseBuilder {
     private final boolean expedited;
     private final boolean indicated;
     private final IndexAddress address;
     private final SDOInitiateUploadResponsePayload payload;
     private final Byte reservedField0;
 
-    public SDOInitiateUploadResponseBuilder(
+    public SDOInitiateUploadResponseBuilderImpl(
         boolean expedited,
         boolean indicated,
         IndexAddress address,

@@ -95,8 +95,8 @@ public class Range extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static RangeBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("Range");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -108,15 +108,15 @@ public class Range extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("Range");
     // Create the instance
-    return new RangeBuilder(low, high);
+    return new RangeBuilderImpl(low, high);
   }
 
-  public static class RangeBuilder
+  public static class RangeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final double low;
     private final double high;
 
-    public RangeBuilder(double low, double high) {
+    public RangeBuilderImpl(double low, double high) {
 
       this.low = low;
       this.high = high;

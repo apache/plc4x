@@ -81,8 +81,8 @@ public class BACnetChannelValueBoolean extends BACnetChannelValue implements Mes
     return lengthInBits;
   }
 
-  public static BACnetChannelValueBooleanBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueBoolean");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -97,14 +97,14 @@ public class BACnetChannelValueBoolean extends BACnetChannelValue implements Mes
 
     readBuffer.closeContext("BACnetChannelValueBoolean");
     // Create the instance
-    return new BACnetChannelValueBooleanBuilder(booleanValue);
+    return new BACnetChannelValueBooleanBuilderImpl(booleanValue);
   }
 
-  public static class BACnetChannelValueBooleanBuilder
+  public static class BACnetChannelValueBooleanBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagBoolean booleanValue;
 
-    public BACnetChannelValueBooleanBuilder(BACnetApplicationTagBoolean booleanValue) {
+    public BACnetChannelValueBooleanBuilderImpl(BACnetApplicationTagBoolean booleanValue) {
 
       this.booleanValue = booleanValue;
     }

@@ -80,7 +80,7 @@ public class MeteringDataGasConsumption extends MeteringData implements Message 
     return lengthInBits;
   }
 
-  public static MeteringDataGasConsumptionBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static MeteringDataBuilder staticParseMeteringDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("MeteringDataGasConsumption");
     PositionAware positionAware = readBuffer;
@@ -91,14 +91,14 @@ public class MeteringDataGasConsumption extends MeteringData implements Message 
 
     readBuffer.closeContext("MeteringDataGasConsumption");
     // Create the instance
-    return new MeteringDataGasConsumptionBuilder(mJ);
+    return new MeteringDataGasConsumptionBuilderImpl(mJ);
   }
 
-  public static class MeteringDataGasConsumptionBuilder
+  public static class MeteringDataGasConsumptionBuilderImpl
       implements MeteringData.MeteringDataBuilder {
     private final long mJ;
 
-    public MeteringDataGasConsumptionBuilder(long mJ) {
+    public MeteringDataGasConsumptionBuilderImpl(long mJ) {
 
       this.mJ = mJ;
     }

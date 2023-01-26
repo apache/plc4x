@@ -135,7 +135,7 @@ public class BACnetConstructedDataAccessDoors extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessDoorsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -170,18 +170,18 @@ public class BACnetConstructedDataAccessDoors extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataAccessDoors");
     // Create the instance
-    return new BACnetConstructedDataAccessDoorsBuilder(
+    return new BACnetConstructedDataAccessDoorsBuilderImpl(
         numberOfDataElements, accessDoors, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessDoorsBuilder
+  public static class BACnetConstructedDataAccessDoorsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetDeviceObjectReference> accessDoors;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessDoorsBuilder(
+    public BACnetConstructedDataAccessDoorsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetDeviceObjectReference> accessDoors,
         Short tagNumber,

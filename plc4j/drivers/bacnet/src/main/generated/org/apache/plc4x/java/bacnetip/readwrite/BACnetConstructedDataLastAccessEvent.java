@@ -110,7 +110,7 @@ public class BACnetConstructedDataLastAccessEvent extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLastAccessEventBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,17 +135,17 @@ public class BACnetConstructedDataLastAccessEvent extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataLastAccessEvent");
     // Create the instance
-    return new BACnetConstructedDataLastAccessEventBuilder(
+    return new BACnetConstructedDataLastAccessEventBuilderImpl(
         lastAccessEvent, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLastAccessEventBuilder
+  public static class BACnetConstructedDataLastAccessEventBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAccessEventTagged lastAccessEvent;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLastAccessEventBuilder(
+    public BACnetConstructedDataLastAccessEventBuilderImpl(
         BACnetAccessEventTagged lastAccessEvent,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

@@ -109,7 +109,7 @@ public class BACnetConstructedDataValueSource extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataValueSourceBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,16 +131,17 @@ public class BACnetConstructedDataValueSource extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataValueSource");
     // Create the instance
-    return new BACnetConstructedDataValueSourceBuilder(valueSource, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataValueSourceBuilderImpl(
+        valueSource, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataValueSourceBuilder
+  public static class BACnetConstructedDataValueSourceBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetValueSource valueSource;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataValueSourceBuilder(
+    public BACnetConstructedDataValueSourceBuilderImpl(
         BACnetValueSource valueSource,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

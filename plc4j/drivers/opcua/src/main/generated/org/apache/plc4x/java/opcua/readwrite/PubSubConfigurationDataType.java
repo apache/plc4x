@@ -160,7 +160,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     return lengthInBits;
   }
 
-  public static PubSubConfigurationDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("PubSubConfigurationDataType");
     PositionAware positionAware = readBuffer;
@@ -195,7 +195,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
 
     readBuffer.closeContext("PubSubConfigurationDataType");
     // Create the instance
-    return new PubSubConfigurationDataTypeBuilder(
+    return new PubSubConfigurationDataTypeBuilderImpl(
         noOfPublishedDataSets,
         publishedDataSets,
         noOfConnections,
@@ -204,7 +204,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
         reservedField0);
   }
 
-  public static class PubSubConfigurationDataTypeBuilder
+  public static class PubSubConfigurationDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int noOfPublishedDataSets;
     private final List<ExtensionObjectDefinition> publishedDataSets;
@@ -213,7 +213,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     private final boolean enabled;
     private final Short reservedField0;
 
-    public PubSubConfigurationDataTypeBuilder(
+    public PubSubConfigurationDataTypeBuilderImpl(
         int noOfPublishedDataSets,
         List<ExtensionObjectDefinition> publishedDataSets,
         int noOfConnections,

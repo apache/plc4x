@@ -109,7 +109,7 @@ public class BACnetConstructedDataIPv6Address extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIPv6AddressBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -133,16 +133,17 @@ public class BACnetConstructedDataIPv6Address extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataIPv6Address");
     // Create the instance
-    return new BACnetConstructedDataIPv6AddressBuilder(ipv6Address, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIPv6AddressBuilderImpl(
+        ipv6Address, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIPv6AddressBuilder
+  public static class BACnetConstructedDataIPv6AddressBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagOctetString ipv6Address;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIPv6AddressBuilder(
+    public BACnetConstructedDataIPv6AddressBuilderImpl(
         BACnetApplicationTagOctetString ipv6Address,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

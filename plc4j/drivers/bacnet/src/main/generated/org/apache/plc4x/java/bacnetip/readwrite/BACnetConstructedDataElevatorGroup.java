@@ -109,7 +109,7 @@ public class BACnetConstructedDataElevatorGroup extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataElevatorGroupBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataElevatorGroup extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataElevatorGroup");
     // Create the instance
-    return new BACnetConstructedDataElevatorGroupBuilder(
+    return new BACnetConstructedDataElevatorGroupBuilderImpl(
         elevatorGroup, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataElevatorGroupBuilder
+  public static class BACnetConstructedDataElevatorGroupBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagObjectIdentifier elevatorGroup;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataElevatorGroupBuilder(
+    public BACnetConstructedDataElevatorGroupBuilderImpl(
         BACnetApplicationTagObjectIdentifier elevatorGroup,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

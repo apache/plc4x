@@ -136,7 +136,7 @@ public class BACnetConstructedDataLandingDoorStatus extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLandingDoorStatusBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -171,18 +171,18 @@ public class BACnetConstructedDataLandingDoorStatus extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataLandingDoorStatus");
     // Create the instance
-    return new BACnetConstructedDataLandingDoorStatusBuilder(
+    return new BACnetConstructedDataLandingDoorStatusBuilderImpl(
         numberOfDataElements, landingDoorStatus, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLandingDoorStatusBuilder
+  public static class BACnetConstructedDataLandingDoorStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetLandingDoorStatus> landingDoorStatus;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLandingDoorStatusBuilder(
+    public BACnetConstructedDataLandingDoorStatusBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetLandingDoorStatus> landingDoorStatus,
         Short tagNumber,

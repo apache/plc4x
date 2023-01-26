@@ -193,8 +193,8 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
     return lengthInBits;
   }
 
-  public static OpcuaOpenResponseBuilder staticParseBuilder(ReadBuffer readBuffer, Boolean response)
-      throws ParseException {
+  public static MessagePDUBuilder staticParseMessagePDUBuilder(
+      ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("OpcuaOpenResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -245,7 +245,7 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
 
     readBuffer.closeContext("OpcuaOpenResponse");
     // Create the instance
-    return new OpcuaOpenResponseBuilder(
+    return new OpcuaOpenResponseBuilderImpl(
         chunk,
         secureChannelId,
         securityPolicyUri,
@@ -256,7 +256,7 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
         message);
   }
 
-  public static class OpcuaOpenResponseBuilder implements MessagePDU.MessagePDUBuilder {
+  public static class OpcuaOpenResponseBuilderImpl implements MessagePDU.MessagePDUBuilder {
     private final String chunk;
     private final int secureChannelId;
     private final PascalString securityPolicyUri;
@@ -266,7 +266,7 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
     private final int requestId;
     private final byte[] message;
 
-    public OpcuaOpenResponseBuilder(
+    public OpcuaOpenResponseBuilderImpl(
         String chunk,
         int secureChannelId,
         PascalString securityPolicyUri,

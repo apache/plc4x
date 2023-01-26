@@ -192,7 +192,7 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static CreateSessionRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CreateSessionRequest");
     PositionAware positionAware = readBuffer;
@@ -248,7 +248,7 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("CreateSessionRequest");
     // Create the instance
-    return new CreateSessionRequestBuilder(
+    return new CreateSessionRequestBuilderImpl(
         requestHeader,
         clientDescription,
         serverUri,
@@ -260,7 +260,7 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
         maxResponseMessageSize);
   }
 
-  public static class CreateSessionRequestBuilder
+  public static class CreateSessionRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final ExtensionObjectDefinition clientDescription;
@@ -272,7 +272,7 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
     private final double requestedSessionTimeout;
     private final long maxResponseMessageSize;
 
-    public CreateSessionRequestBuilder(
+    public CreateSessionRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         ExtensionObjectDefinition clientDescription,
         PascalString serverUri,

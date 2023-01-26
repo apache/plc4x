@@ -136,7 +136,7 @@ public class BACnetConstructedDataValueSourceArray extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataValueSourceArrayBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -175,18 +175,18 @@ public class BACnetConstructedDataValueSourceArray extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataValueSourceArray");
     // Create the instance
-    return new BACnetConstructedDataValueSourceArrayBuilder(
+    return new BACnetConstructedDataValueSourceArrayBuilderImpl(
         numberOfDataElements, vtClassesSupported, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataValueSourceArrayBuilder
+  public static class BACnetConstructedDataValueSourceArrayBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetValueSource> vtClassesSupported;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataValueSourceArrayBuilder(
+    public BACnetConstructedDataValueSourceArrayBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetValueSource> vtClassesSupported,
         Short tagNumber,

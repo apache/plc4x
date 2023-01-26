@@ -179,7 +179,7 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static ReferenceDescriptionBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ReferenceDescription");
     PositionAware positionAware = readBuffer;
@@ -228,7 +228,7 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("ReferenceDescription");
     // Create the instance
-    return new ReferenceDescriptionBuilder(
+    return new ReferenceDescriptionBuilderImpl(
         referenceTypeId,
         isForward,
         nodeId,
@@ -239,7 +239,7 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
         reservedField0);
   }
 
-  public static class ReferenceDescriptionBuilder
+  public static class ReferenceDescriptionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId referenceTypeId;
     private final boolean isForward;
@@ -250,7 +250,7 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
     private final ExpandedNodeId typeDefinition;
     private final Short reservedField0;
 
-    public ReferenceDescriptionBuilder(
+    public ReferenceDescriptionBuilderImpl(
         NodeId referenceTypeId,
         boolean isForward,
         ExpandedNodeId nodeId,

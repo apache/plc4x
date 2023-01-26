@@ -87,7 +87,7 @@ public class MediaTransportControlDataTrackName extends MediaTransportControlDat
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataTrackNameBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer, MediaTransportControlCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataTrackName");
@@ -102,14 +102,14 @@ public class MediaTransportControlDataTrackName extends MediaTransportControlDat
 
     readBuffer.closeContext("MediaTransportControlDataTrackName");
     // Create the instance
-    return new MediaTransportControlDataTrackNameBuilder(trackName);
+    return new MediaTransportControlDataTrackNameBuilderImpl(trackName);
   }
 
-  public static class MediaTransportControlDataTrackNameBuilder
+  public static class MediaTransportControlDataTrackNameBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final String trackName;
 
-    public MediaTransportControlDataTrackNameBuilder(String trackName) {
+    public MediaTransportControlDataTrackNameBuilderImpl(String trackName) {
 
       this.trackName = trackName;
     }

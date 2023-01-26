@@ -160,15 +160,17 @@ public abstract class TriggerControlData implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     TriggerControlDataBuilder builder = null;
     if (EvaluationHelper.equals(commandType, TriggerControlCommandType.TRIGGER_EVENT)) {
-      builder = TriggerControlDataTriggerEvent.staticParseBuilder(readBuffer);
+      builder = TriggerControlDataTriggerEvent.staticParseTriggerControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, TriggerControlCommandType.TRIGGER_MIN)) {
-      builder = TriggerControlDataTriggerMin.staticParseBuilder(readBuffer);
+      builder = TriggerControlDataTriggerMin.staticParseTriggerControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, TriggerControlCommandType.TRIGGER_MAX)) {
-      builder = TriggerControlDataTriggerMax.staticParseBuilder(readBuffer);
+      builder = TriggerControlDataTriggerMax.staticParseTriggerControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, TriggerControlCommandType.INDICATOR_KILL)) {
-      builder = TriggerControlDataIndicatorKill.staticParseBuilder(readBuffer);
+      builder = TriggerControlDataIndicatorKill.staticParseTriggerControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, TriggerControlCommandType.LABEL)) {
-      builder = TriggerControlDataLabel.staticParseBuilder(readBuffer, commandTypeContainer);
+      builder =
+          TriggerControlDataLabel.staticParseTriggerControlDataBuilder(
+              readBuffer, commandTypeContainer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -185,7 +187,7 @@ public abstract class TriggerControlData implements Message {
     return _triggerControlData;
   }
 
-  public static interface TriggerControlDataBuilder {
+  public interface TriggerControlDataBuilder {
     TriggerControlData build(
         TriggerControlCommandTypeContainer commandTypeContainer, byte triggerGroup);
   }

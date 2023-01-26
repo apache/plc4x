@@ -704,7 +704,7 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
     return lengthInBits;
   }
 
-  public static SessionDiagnosticsDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SessionDiagnosticsDataType");
     PositionAware positionAware = readBuffer;
@@ -975,7 +975,7 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
 
     readBuffer.closeContext("SessionDiagnosticsDataType");
     // Create the instance
-    return new SessionDiagnosticsDataTypeBuilder(
+    return new SessionDiagnosticsDataTypeBuilderImpl(
         sessionId,
         sessionName,
         clientDescription,
@@ -1022,7 +1022,7 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
         unregisterNodesCount);
   }
 
-  public static class SessionDiagnosticsDataTypeBuilder
+  public static class SessionDiagnosticsDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId sessionId;
     private final PascalString sessionName;
@@ -1069,7 +1069,7 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
     private final ExtensionObjectDefinition registerNodesCount;
     private final ExtensionObjectDefinition unregisterNodesCount;
 
-    public SessionDiagnosticsDataTypeBuilder(
+    public SessionDiagnosticsDataTypeBuilderImpl(
         NodeId sessionId,
         PascalString sessionName,
         ExtensionObjectDefinition clientDescription,

@@ -156,7 +156,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscription extends S7PayloadUs
     return lengthInBits;
   }
 
-  public static S7PayloadUserDataItemCpuFunctionMsgSubscriptionBuilder staticParseBuilder(
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
       ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionMsgSubscription");
     PositionAware positionAware = readBuffer;
@@ -182,11 +182,11 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscription extends S7PayloadUs
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionMsgSubscription");
     // Create the instance
-    return new S7PayloadUserDataItemCpuFunctionMsgSubscriptionBuilder(
+    return new S7PayloadUserDataItemCpuFunctionMsgSubscriptionBuilderImpl(
         Subscription, magicKey, Alarmtype, Reserve, reservedField0);
   }
 
-  public static class S7PayloadUserDataItemCpuFunctionMsgSubscriptionBuilder
+  public static class S7PayloadUserDataItemCpuFunctionMsgSubscriptionBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
     private final short Subscription;
     private final String magicKey;
@@ -194,7 +194,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscription extends S7PayloadUs
     private final Short Reserve;
     private final Short reservedField0;
 
-    public S7PayloadUserDataItemCpuFunctionMsgSubscriptionBuilder(
+    public S7PayloadUserDataItemCpuFunctionMsgSubscriptionBuilderImpl(
         short Subscription,
         String magicKey,
         AlarmStateType Alarmtype,

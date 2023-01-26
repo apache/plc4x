@@ -95,8 +95,8 @@ public class ModbusPDUError extends ModbusPDU implements Message {
     return lengthInBits;
   }
 
-  public static ModbusPDUErrorBuilder staticParseBuilder(ReadBuffer readBuffer, Boolean response)
-      throws ParseException {
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
+      ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUError");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -111,13 +111,13 @@ public class ModbusPDUError extends ModbusPDU implements Message {
 
     readBuffer.closeContext("ModbusPDUError");
     // Create the instance
-    return new ModbusPDUErrorBuilder(exceptionCode);
+    return new ModbusPDUErrorBuilderImpl(exceptionCode);
   }
 
-  public static class ModbusPDUErrorBuilder implements ModbusPDU.ModbusPDUBuilder {
+  public static class ModbusPDUErrorBuilderImpl implements ModbusPDU.ModbusPDUBuilder {
     private final ModbusErrorCode exceptionCode;
 
-    public ModbusPDUErrorBuilder(ModbusErrorCode exceptionCode) {
+    public ModbusPDUErrorBuilderImpl(ModbusErrorCode exceptionCode) {
 
       this.exceptionCode = exceptionCode;
     }

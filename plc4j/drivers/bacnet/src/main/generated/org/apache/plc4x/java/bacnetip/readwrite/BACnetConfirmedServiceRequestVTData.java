@@ -117,8 +117,9 @@ public class BACnetConfirmedServiceRequestVTData extends BACnetConfirmedServiceR
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestVTDataBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestVTData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -152,18 +153,18 @@ public class BACnetConfirmedServiceRequestVTData extends BACnetConfirmedServiceR
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestVTData");
     // Create the instance
-    return new BACnetConfirmedServiceRequestVTDataBuilder(
+    return new BACnetConfirmedServiceRequestVTDataBuilderImpl(
         vtSessionIdentifier, vtNewData, vtDataFlag, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestVTDataBuilder
+  public static class BACnetConfirmedServiceRequestVTDataBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetApplicationTagUnsignedInteger vtSessionIdentifier;
     private final BACnetApplicationTagOctetString vtNewData;
     private final BACnetApplicationTagUnsignedInteger vtDataFlag;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestVTDataBuilder(
+    public BACnetConfirmedServiceRequestVTDataBuilderImpl(
         BACnetApplicationTagUnsignedInteger vtSessionIdentifier,
         BACnetApplicationTagOctetString vtNewData,
         BACnetApplicationTagUnsignedInteger vtDataFlag,

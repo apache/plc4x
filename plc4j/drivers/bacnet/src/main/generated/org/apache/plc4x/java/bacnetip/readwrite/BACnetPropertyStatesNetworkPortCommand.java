@@ -83,7 +83,7 @@ public class BACnetPropertyStatesNetworkPortCommand extends BACnetPropertyStates
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesNetworkPortCommandBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesNetworkPortCommand");
     PositionAware positionAware = readBuffer;
@@ -103,14 +103,14 @@ public class BACnetPropertyStatesNetworkPortCommand extends BACnetPropertyStates
 
     readBuffer.closeContext("BACnetPropertyStatesNetworkPortCommand");
     // Create the instance
-    return new BACnetPropertyStatesNetworkPortCommandBuilder(networkPortCommand);
+    return new BACnetPropertyStatesNetworkPortCommandBuilderImpl(networkPortCommand);
   }
 
-  public static class BACnetPropertyStatesNetworkPortCommandBuilder
+  public static class BACnetPropertyStatesNetworkPortCommandBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetNetworkPortCommandTagged networkPortCommand;
 
-    public BACnetPropertyStatesNetworkPortCommandBuilder(
+    public BACnetPropertyStatesNetworkPortCommandBuilderImpl(
         BACnetNetworkPortCommandTagged networkPortCommand) {
 
       this.networkPortCommand = networkPortCommand;

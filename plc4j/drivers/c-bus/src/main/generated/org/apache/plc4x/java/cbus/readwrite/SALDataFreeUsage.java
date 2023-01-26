@@ -68,7 +68,7 @@ public class SALDataFreeUsage extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataFreeUsageBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataFreeUsage");
     PositionAware positionAware = readBuffer;
@@ -81,12 +81,12 @@ public class SALDataFreeUsage extends SALData implements Message {
 
     readBuffer.closeContext("SALDataFreeUsage");
     // Create the instance
-    return new SALDataFreeUsageBuilder();
+    return new SALDataFreeUsageBuilderImpl();
   }
 
-  public static class SALDataFreeUsageBuilder implements SALData.SALDataBuilder {
+  public static class SALDataFreeUsageBuilderImpl implements SALData.SALDataBuilder {
 
-    public SALDataFreeUsageBuilder() {}
+    public SALDataFreeUsageBuilderImpl() {}
 
     public SALDataFreeUsage build(SALData salData) {
       SALDataFreeUsage sALDataFreeUsage = new SALDataFreeUsage(salData);

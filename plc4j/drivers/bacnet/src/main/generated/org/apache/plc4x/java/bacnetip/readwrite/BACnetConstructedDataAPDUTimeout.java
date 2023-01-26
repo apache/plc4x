@@ -109,7 +109,7 @@ public class BACnetConstructedDataAPDUTimeout extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAPDUTimeoutBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,16 +134,17 @@ public class BACnetConstructedDataAPDUTimeout extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataAPDUTimeout");
     // Create the instance
-    return new BACnetConstructedDataAPDUTimeoutBuilder(apduTimeout, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAPDUTimeoutBuilderImpl(
+        apduTimeout, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAPDUTimeoutBuilder
+  public static class BACnetConstructedDataAPDUTimeoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger apduTimeout;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAPDUTimeoutBuilder(
+    public BACnetConstructedDataAPDUTimeoutBuilderImpl(
         BACnetApplicationTagUnsignedInteger apduTimeout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

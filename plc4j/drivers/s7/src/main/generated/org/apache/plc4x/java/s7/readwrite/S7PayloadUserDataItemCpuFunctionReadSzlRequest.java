@@ -108,7 +108,7 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlRequest extends S7PayloadUse
     return lengthInBits;
   }
 
-  public static S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder staticParseBuilder(
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
       ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest");
     PositionAware positionAware = readBuffer;
@@ -124,15 +124,15 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlRequest extends S7PayloadUse
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest");
     // Create the instance
-    return new S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder(szlId, szlIndex);
+    return new S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilderImpl(szlId, szlIndex);
   }
 
-  public static class S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder
+  public static class S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
     private final SzlId szlId;
     private final int szlIndex;
 
-    public S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder(SzlId szlId, int szlIndex) {
+    public S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilderImpl(SzlId szlId, int szlIndex) {
 
       this.szlId = szlId;
       this.szlIndex = szlIndex;

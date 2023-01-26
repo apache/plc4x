@@ -404,7 +404,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_Block_ArReqBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnIoCm_BlockBuilder staticParsePnIoCm_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_Block_ArReq");
     PositionAware positionAware = readBuffer;
@@ -539,7 +539,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
 
     readBuffer.closeContext("PnIoCm_Block_ArReq");
     // Create the instance
-    return new PnIoCm_Block_ArReqBuilder(
+    return new PnIoCm_Block_ArReqBuilderImpl(
         arType,
         arUuid,
         sessionKey,
@@ -561,7 +561,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         reservedField1);
   }
 
-  public static class PnIoCm_Block_ArReqBuilder implements PnIoCm_Block.PnIoCm_BlockBuilder {
+  public static class PnIoCm_Block_ArReqBuilderImpl implements PnIoCm_Block.PnIoCm_BlockBuilder {
     private final PnIoCm_ArType arType;
     private final Uuid arUuid;
     private final int sessionKey;
@@ -582,7 +582,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     private final Long reservedField0;
     private final Byte reservedField1;
 
-    public PnIoCm_Block_ArReqBuilder(
+    public PnIoCm_Block_ArReqBuilderImpl(
         PnIoCm_ArType arType,
         Uuid arUuid,
         int sessionKey,

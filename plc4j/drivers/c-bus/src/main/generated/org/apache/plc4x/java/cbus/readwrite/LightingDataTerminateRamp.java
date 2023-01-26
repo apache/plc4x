@@ -79,7 +79,7 @@ public class LightingDataTerminateRamp extends LightingData implements Message {
     return lengthInBits;
   }
 
-  public static LightingDataTerminateRampBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static LightingDataBuilder staticParseLightingDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("LightingDataTerminateRamp");
     PositionAware positionAware = readBuffer;
@@ -90,13 +90,14 @@ public class LightingDataTerminateRamp extends LightingData implements Message {
 
     readBuffer.closeContext("LightingDataTerminateRamp");
     // Create the instance
-    return new LightingDataTerminateRampBuilder(group);
+    return new LightingDataTerminateRampBuilderImpl(group);
   }
 
-  public static class LightingDataTerminateRampBuilder implements LightingData.LightingDataBuilder {
+  public static class LightingDataTerminateRampBuilderImpl
+      implements LightingData.LightingDataBuilder {
     private final byte group;
 
-    public LightingDataTerminateRampBuilder(byte group) {
+    public LightingDataTerminateRampBuilderImpl(byte group) {
 
       this.group = group;
     }

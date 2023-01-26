@@ -134,7 +134,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfDiscreteValueBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -179,11 +179,11 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValue");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfDiscreteValueBuilder(
+    return new BACnetNotificationParametersChangeOfDiscreteValueBuilderImpl(
         innerOpeningTag, newValue, statusFlags, innerClosingTag, tagNumber, objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersChangeOfDiscreteValueBuilder
+  public static class BACnetNotificationParametersChangeOfDiscreteValueBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final BACnetNotificationParametersChangeOfDiscreteValueNewValue newValue;
@@ -192,7 +192,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersChangeOfDiscreteValueBuilder(
+    public BACnetNotificationParametersChangeOfDiscreteValueBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetNotificationParametersChangeOfDiscreteValueNewValue newValue,
         BACnetStatusFlagsTagged statusFlags,

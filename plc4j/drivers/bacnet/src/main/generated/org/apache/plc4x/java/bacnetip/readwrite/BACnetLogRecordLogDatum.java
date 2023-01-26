@@ -166,27 +166,49 @@ public abstract class BACnetLogRecordLogDatum implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetLogRecordLogDatumBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetLogRecordLogDatumLogStatus.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetLogRecordLogDatumLogStatus.staticParseBACnetLogRecordLogDatumBuilder(
+              readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetLogRecordLogDatumBooleanValue.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetLogRecordLogDatumBooleanValue.staticParseBACnetLogRecordLogDatumBuilder(
+              readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetLogRecordLogDatumRealValue.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetLogRecordLogDatumRealValue.staticParseBACnetLogRecordLogDatumBuilder(
+              readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
-      builder = BACnetLogRecordLogDatumEnumeratedValue.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetLogRecordLogDatumEnumeratedValue.staticParseBACnetLogRecordLogDatumBuilder(
+              readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
-      builder = BACnetLogRecordLogDatumUnsignedValue.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetLogRecordLogDatumUnsignedValue.staticParseBACnetLogRecordLogDatumBuilder(
+              readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
-      builder = BACnetLogRecordLogDatumIntegerValue.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetLogRecordLogDatumIntegerValue.staticParseBACnetLogRecordLogDatumBuilder(
+              readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
-      builder = BACnetLogRecordLogDatumBitStringValue.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetLogRecordLogDatumBitStringValue.staticParseBACnetLogRecordLogDatumBuilder(
+              readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
-      builder = BACnetLogRecordLogDatumNullValue.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetLogRecordLogDatumNullValue.staticParseBACnetLogRecordLogDatumBuilder(
+              readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 8)) {
-      builder = BACnetLogRecordLogDatumFailure.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetLogRecordLogDatumFailure.staticParseBACnetLogRecordLogDatumBuilder(
+              readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
-      builder = BACnetLogRecordLogDatumTimeChange.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetLogRecordLogDatumTimeChange.staticParseBACnetLogRecordLogDatumBuilder(
+              readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 10)) {
-      builder = BACnetLogRecordLogDatumAnyValue.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetLogRecordLogDatumAnyValue.staticParseBACnetLogRecordLogDatumBuilder(
+              readBuffer, tagNumber);
     }
     if (builder == null) {
       throw new ParseException(
@@ -210,7 +232,7 @@ public abstract class BACnetLogRecordLogDatum implements Message {
     return _bACnetLogRecordLogDatum;
   }
 
-  public static interface BACnetLogRecordLogDatumBuilder {
+  public interface BACnetLogRecordLogDatumBuilder {
     BACnetLogRecordLogDatum build(
         BACnetOpeningTag openingTag,
         BACnetTagHeader peekedTagHeader,

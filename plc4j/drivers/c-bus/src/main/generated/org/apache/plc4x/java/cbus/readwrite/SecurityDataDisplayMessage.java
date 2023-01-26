@@ -83,7 +83,7 @@ public class SecurityDataDisplayMessage extends SecurityData implements Message 
     return lengthInBits;
   }
 
-  public static SecurityDataDisplayMessageBuilder staticParseBuilder(
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(
       ReadBuffer readBuffer, SecurityCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataDisplayMessage");
@@ -98,14 +98,14 @@ public class SecurityDataDisplayMessage extends SecurityData implements Message 
 
     readBuffer.closeContext("SecurityDataDisplayMessage");
     // Create the instance
-    return new SecurityDataDisplayMessageBuilder(message);
+    return new SecurityDataDisplayMessageBuilderImpl(message);
   }
 
-  public static class SecurityDataDisplayMessageBuilder
+  public static class SecurityDataDisplayMessageBuilderImpl
       implements SecurityData.SecurityDataBuilder {
     private final String message;
 
-    public SecurityDataDisplayMessageBuilder(String message) {
+    public SecurityDataDisplayMessageBuilderImpl(String message) {
 
       this.message = message;
     }

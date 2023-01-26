@@ -114,7 +114,7 @@ public class MediaTransportControlDataRepeatOnOff extends MediaTransportControlD
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataRepeatOnOffBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataRepeatOnOff");
     PositionAware positionAware = readBuffer;
@@ -131,14 +131,14 @@ public class MediaTransportControlDataRepeatOnOff extends MediaTransportControlD
 
     readBuffer.closeContext("MediaTransportControlDataRepeatOnOff");
     // Create the instance
-    return new MediaTransportControlDataRepeatOnOffBuilder(repeatType);
+    return new MediaTransportControlDataRepeatOnOffBuilderImpl(repeatType);
   }
 
-  public static class MediaTransportControlDataRepeatOnOffBuilder
+  public static class MediaTransportControlDataRepeatOnOffBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte repeatType;
 
-    public MediaTransportControlDataRepeatOnOffBuilder(byte repeatType) {
+    public MediaTransportControlDataRepeatOnOffBuilderImpl(byte repeatType) {
 
       this.repeatType = repeatType;
     }

@@ -86,7 +86,7 @@ public class SALDataMediaTransport extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataMediaTransportBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataMediaTransport");
     PositionAware positionAware = readBuffer;
@@ -101,13 +101,13 @@ public class SALDataMediaTransport extends SALData implements Message {
 
     readBuffer.closeContext("SALDataMediaTransport");
     // Create the instance
-    return new SALDataMediaTransportBuilder(mediaTransportControlData);
+    return new SALDataMediaTransportBuilderImpl(mediaTransportControlData);
   }
 
-  public static class SALDataMediaTransportBuilder implements SALData.SALDataBuilder {
+  public static class SALDataMediaTransportBuilderImpl implements SALData.SALDataBuilder {
     private final MediaTransportControlData mediaTransportControlData;
 
-    public SALDataMediaTransportBuilder(MediaTransportControlData mediaTransportControlData) {
+    public SALDataMediaTransportBuilderImpl(MediaTransportControlData mediaTransportControlData) {
 
       this.mediaTransportControlData = mediaTransportControlData;
     }

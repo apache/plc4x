@@ -110,7 +110,7 @@ public class BACnetConstructedDataBinaryLightingOutputPresentValue extends BACne
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBinaryLightingOutputPresentValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,17 +135,17 @@ public class BACnetConstructedDataBinaryLightingOutputPresentValue extends BACne
 
     readBuffer.closeContext("BACnetConstructedDataBinaryLightingOutputPresentValue");
     // Create the instance
-    return new BACnetConstructedDataBinaryLightingOutputPresentValueBuilder(
+    return new BACnetConstructedDataBinaryLightingOutputPresentValueBuilderImpl(
         presentValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBinaryLightingOutputPresentValueBuilder
+  public static class BACnetConstructedDataBinaryLightingOutputPresentValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetBinaryLightingPVTagged presentValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBinaryLightingOutputPresentValueBuilder(
+    public BACnetConstructedDataBinaryLightingOutputPresentValueBuilderImpl(
         BACnetBinaryLightingPVTagged presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

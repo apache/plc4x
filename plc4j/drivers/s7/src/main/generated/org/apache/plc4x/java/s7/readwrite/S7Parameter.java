@@ -114,25 +114,26 @@ public abstract class S7Parameter implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     S7ParameterBuilder builder = null;
     if (EvaluationHelper.equals(parameterType, (short) 0xF0)) {
-      builder = S7ParameterSetupCommunication.staticParseBuilder(readBuffer, messageType);
+      builder =
+          S7ParameterSetupCommunication.staticParseS7ParameterBuilder(readBuffer, messageType);
     } else if (EvaluationHelper.equals(parameterType, (short) 0x04)
         && EvaluationHelper.equals(messageType, (short) 0x01)) {
-      builder = S7ParameterReadVarRequest.staticParseBuilder(readBuffer, messageType);
+      builder = S7ParameterReadVarRequest.staticParseS7ParameterBuilder(readBuffer, messageType);
     } else if (EvaluationHelper.equals(parameterType, (short) 0x04)
         && EvaluationHelper.equals(messageType, (short) 0x03)) {
-      builder = S7ParameterReadVarResponse.staticParseBuilder(readBuffer, messageType);
+      builder = S7ParameterReadVarResponse.staticParseS7ParameterBuilder(readBuffer, messageType);
     } else if (EvaluationHelper.equals(parameterType, (short) 0x05)
         && EvaluationHelper.equals(messageType, (short) 0x01)) {
-      builder = S7ParameterWriteVarRequest.staticParseBuilder(readBuffer, messageType);
+      builder = S7ParameterWriteVarRequest.staticParseS7ParameterBuilder(readBuffer, messageType);
     } else if (EvaluationHelper.equals(parameterType, (short) 0x05)
         && EvaluationHelper.equals(messageType, (short) 0x03)) {
-      builder = S7ParameterWriteVarResponse.staticParseBuilder(readBuffer, messageType);
+      builder = S7ParameterWriteVarResponse.staticParseS7ParameterBuilder(readBuffer, messageType);
     } else if (EvaluationHelper.equals(parameterType, (short) 0x00)
         && EvaluationHelper.equals(messageType, (short) 0x07)) {
-      builder = S7ParameterUserData.staticParseBuilder(readBuffer, messageType);
+      builder = S7ParameterUserData.staticParseS7ParameterBuilder(readBuffer, messageType);
     } else if (EvaluationHelper.equals(parameterType, (short) 0x01)
         && EvaluationHelper.equals(messageType, (short) 0x07)) {
-      builder = S7ParameterModeTransition.staticParseBuilder(readBuffer, messageType);
+      builder = S7ParameterModeTransition.staticParseS7ParameterBuilder(readBuffer, messageType);
     }
     if (builder == null) {
       throw new ParseException(
@@ -152,7 +153,7 @@ public abstract class S7Parameter implements Message {
     return _s7Parameter;
   }
 
-  public static interface S7ParameterBuilder {
+  public interface S7ParameterBuilder {
     S7Parameter build();
   }
 

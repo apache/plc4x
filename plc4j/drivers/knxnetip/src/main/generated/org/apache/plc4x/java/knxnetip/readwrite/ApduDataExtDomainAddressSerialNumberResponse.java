@@ -72,7 +72,7 @@ public class ApduDataExtDomainAddressSerialNumberResponse extends ApduDataExt im
     return lengthInBits;
   }
 
-  public static ApduDataExtDomainAddressSerialNumberResponseBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtDomainAddressSerialNumberResponse");
     PositionAware positionAware = readBuffer;
@@ -81,14 +81,14 @@ public class ApduDataExtDomainAddressSerialNumberResponse extends ApduDataExt im
 
     readBuffer.closeContext("ApduDataExtDomainAddressSerialNumberResponse");
     // Create the instance
-    return new ApduDataExtDomainAddressSerialNumberResponseBuilder(length);
+    return new ApduDataExtDomainAddressSerialNumberResponseBuilderImpl(length);
   }
 
-  public static class ApduDataExtDomainAddressSerialNumberResponseBuilder
+  public static class ApduDataExtDomainAddressSerialNumberResponseBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final Short length;
 
-    public ApduDataExtDomainAddressSerialNumberResponseBuilder(Short length) {
+    public ApduDataExtDomainAddressSerialNumberResponseBuilderImpl(Short length) {
 
       this.length = length;
     }

@@ -88,7 +88,7 @@ public class RequestNull extends Request implements Message {
     return lengthInBits;
   }
 
-  public static RequestNullBuilder staticParseBuilder(
+  public static RequestBuilder staticParseRequestBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("RequestNull");
     PositionAware positionAware = readBuffer;
@@ -101,13 +101,13 @@ public class RequestNull extends Request implements Message {
 
     readBuffer.closeContext("RequestNull");
     // Create the instance
-    return new RequestNullBuilder(cBusOptions);
+    return new RequestNullBuilderImpl(cBusOptions);
   }
 
-  public static class RequestNullBuilder implements Request.RequestBuilder {
+  public static class RequestNullBuilderImpl implements Request.RequestBuilder {
     private final CBusOptions cBusOptions;
 
-    public RequestNullBuilder(CBusOptions cBusOptions) {
+    public RequestNullBuilderImpl(CBusOptions cBusOptions) {
 
       this.cBusOptions = cBusOptions;
     }

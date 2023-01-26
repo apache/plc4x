@@ -141,8 +141,9 @@ public class BACnetConfirmedServiceRequestSubscribeCOV extends BACnetConfirmedSe
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestSubscribeCOVBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestSubscribeCOV");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -196,7 +197,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOV extends BACnetConfirmedSe
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestSubscribeCOV");
     // Create the instance
-    return new BACnetConfirmedServiceRequestSubscribeCOVBuilder(
+    return new BACnetConfirmedServiceRequestSubscribeCOVBuilderImpl(
         subscriberProcessIdentifier,
         monitoredObjectIdentifier,
         issueConfirmed,
@@ -204,7 +205,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOV extends BACnetConfirmedSe
         serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestSubscribeCOVBuilder
+  public static class BACnetConfirmedServiceRequestSubscribeCOVBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagUnsignedInteger subscriberProcessIdentifier;
     private final BACnetContextTagObjectIdentifier monitoredObjectIdentifier;
@@ -212,7 +213,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOV extends BACnetConfirmedSe
     private final BACnetContextTagUnsignedInteger lifetimeInSeconds;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestSubscribeCOVBuilder(
+    public BACnetConfirmedServiceRequestSubscribeCOVBuilderImpl(
         BACnetContextTagUnsignedInteger subscriberProcessIdentifier,
         BACnetContextTagObjectIdentifier monitoredObjectIdentifier,
         BACnetContextTagBoolean issueConfirmed,

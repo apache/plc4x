@@ -95,8 +95,8 @@ public class DecimalDataType extends ExtensionObjectDefinition implements Messag
     return lengthInBits;
   }
 
-  public static DecimalDataTypeBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DecimalDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -112,15 +112,15 @@ public class DecimalDataType extends ExtensionObjectDefinition implements Messag
 
     readBuffer.closeContext("DecimalDataType");
     // Create the instance
-    return new DecimalDataTypeBuilder(scale, value);
+    return new DecimalDataTypeBuilderImpl(scale, value);
   }
 
-  public static class DecimalDataTypeBuilder
+  public static class DecimalDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final short scale;
     private final PascalByteString value;
 
-    public DecimalDataTypeBuilder(short scale, PascalByteString value) {
+    public DecimalDataTypeBuilderImpl(short scale, PascalByteString value) {
 
       this.scale = scale;
       this.value = value;

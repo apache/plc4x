@@ -72,7 +72,7 @@ public class TDataIndividualReq extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static TDataIndividualReqBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("TDataIndividualReq");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class TDataIndividualReq extends CEMI implements Message {
 
     readBuffer.closeContext("TDataIndividualReq");
     // Create the instance
-    return new TDataIndividualReqBuilder(size);
+    return new TDataIndividualReqBuilderImpl(size);
   }
 
-  public static class TDataIndividualReqBuilder implements CEMI.CEMIBuilder {
+  public static class TDataIndividualReqBuilderImpl implements CEMI.CEMIBuilder {
     private final Integer size;
 
-    public TDataIndividualReqBuilder(Integer size) {
+    public TDataIndividualReqBuilderImpl(Integer size) {
 
       this.size = size;
     }

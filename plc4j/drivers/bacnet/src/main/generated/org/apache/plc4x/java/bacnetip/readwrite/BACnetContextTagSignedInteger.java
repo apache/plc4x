@@ -101,7 +101,7 @@ public class BACnetContextTagSignedInteger extends BACnetContextTag implements M
     return lengthInBits;
   }
 
-  public static BACnetContextTagSignedIntegerBuilder staticParseBuilder(
+  public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer,
       Short tagNumberArgument,
       BACnetDataType dataType,
@@ -125,15 +125,15 @@ public class BACnetContextTagSignedInteger extends BACnetContextTag implements M
 
     readBuffer.closeContext("BACnetContextTagSignedInteger");
     // Create the instance
-    return new BACnetContextTagSignedIntegerBuilder(payload, tagNumberArgument);
+    return new BACnetContextTagSignedIntegerBuilderImpl(payload, tagNumberArgument);
   }
 
-  public static class BACnetContextTagSignedIntegerBuilder
+  public static class BACnetContextTagSignedIntegerBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadSignedInteger payload;
     private final Short tagNumberArgument;
 
-    public BACnetContextTagSignedIntegerBuilder(
+    public BACnetContextTagSignedIntegerBuilderImpl(
         BACnetTagPayloadSignedInteger payload, Short tagNumberArgument) {
 
       this.payload = payload;

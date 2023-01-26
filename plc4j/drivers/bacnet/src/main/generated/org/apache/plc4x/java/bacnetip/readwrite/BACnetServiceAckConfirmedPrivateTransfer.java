@@ -117,7 +117,7 @@ public class BACnetServiceAckConfirmedPrivateTransfer extends BACnetServiceAck i
     return lengthInBits;
   }
 
-  public static BACnetServiceAckConfirmedPrivateTransferBuilder staticParseBuilder(
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckConfirmedPrivateTransfer");
     PositionAware positionAware = readBuffer;
@@ -161,18 +161,18 @@ public class BACnetServiceAckConfirmedPrivateTransfer extends BACnetServiceAck i
 
     readBuffer.closeContext("BACnetServiceAckConfirmedPrivateTransfer");
     // Create the instance
-    return new BACnetServiceAckConfirmedPrivateTransferBuilder(
+    return new BACnetServiceAckConfirmedPrivateTransferBuilderImpl(
         vendorId, serviceNumber, resultBlock, serviceAckLength);
   }
 
-  public static class BACnetServiceAckConfirmedPrivateTransferBuilder
+  public static class BACnetServiceAckConfirmedPrivateTransferBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetVendorIdTagged vendorId;
     private final BACnetContextTagUnsignedInteger serviceNumber;
     private final BACnetConstructedData resultBlock;
     private final Long serviceAckLength;
 
-    public BACnetServiceAckConfirmedPrivateTransferBuilder(
+    public BACnetServiceAckConfirmedPrivateTransferBuilderImpl(
         BACnetVendorIdTagged vendorId,
         BACnetContextTagUnsignedInteger serviceNumber,
         BACnetConstructedData resultBlock,

@@ -123,7 +123,7 @@ public class PnDcp_Block_DevicePropertiesAliasName extends PnDcp_Block implement
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DevicePropertiesAliasNameBuilder staticParseBuilder(
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(
       ReadBuffer readBuffer, Integer blockLength) throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DevicePropertiesAliasName");
     PositionAware positionAware = readBuffer;
@@ -145,17 +145,17 @@ public class PnDcp_Block_DevicePropertiesAliasName extends PnDcp_Block implement
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesAliasName");
     // Create the instance
-    return new PnDcp_Block_DevicePropertiesAliasNameBuilder(
+    return new PnDcp_Block_DevicePropertiesAliasNameBuilderImpl(
         aliasNameValue, blockLength, reservedField0);
   }
 
-  public static class PnDcp_Block_DevicePropertiesAliasNameBuilder
+  public static class PnDcp_Block_DevicePropertiesAliasNameBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final byte[] aliasNameValue;
     private final Integer blockLength;
     private final Integer reservedField0;
 
-    public PnDcp_Block_DevicePropertiesAliasNameBuilder(
+    public PnDcp_Block_DevicePropertiesAliasNameBuilderImpl(
         byte[] aliasNameValue, Integer blockLength, Integer reservedField0) {
       this.aliasNameValue = aliasNameValue;
       this.blockLength = blockLength;

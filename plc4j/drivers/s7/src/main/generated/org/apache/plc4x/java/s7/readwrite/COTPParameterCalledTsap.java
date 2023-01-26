@@ -87,8 +87,8 @@ public class COTPParameterCalledTsap extends COTPParameter implements Message {
     return lengthInBits;
   }
 
-  public static COTPParameterCalledTsapBuilder staticParseBuilder(ReadBuffer readBuffer, Short rest)
-      throws ParseException {
+  public static COTPParameterBuilder staticParseCOTPParameterBuilder(
+      ReadBuffer readBuffer, Short rest) throws ParseException {
     readBuffer.pullContext("COTPParameterCalledTsap");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -98,14 +98,15 @@ public class COTPParameterCalledTsap extends COTPParameter implements Message {
 
     readBuffer.closeContext("COTPParameterCalledTsap");
     // Create the instance
-    return new COTPParameterCalledTsapBuilder(tsapId, rest);
+    return new COTPParameterCalledTsapBuilderImpl(tsapId, rest);
   }
 
-  public static class COTPParameterCalledTsapBuilder implements COTPParameter.COTPParameterBuilder {
+  public static class COTPParameterCalledTsapBuilderImpl
+      implements COTPParameter.COTPParameterBuilder {
     private final int tsapId;
     private final Short rest;
 
-    public COTPParameterCalledTsapBuilder(int tsapId, Short rest) {
+    public COTPParameterCalledTsapBuilderImpl(int tsapId, Short rest) {
 
       this.tsapId = tsapId;
       this.rest = rest;

@@ -115,15 +115,17 @@ public abstract class FirmataCommand implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     FirmataCommandBuilder builder = null;
     if (EvaluationHelper.equals(commandCode, (byte) 0x0)) {
-      builder = FirmataCommandSysex.staticParseBuilder(readBuffer, response);
+      builder = FirmataCommandSysex.staticParseFirmataCommandBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(commandCode, (byte) 0x4)) {
-      builder = FirmataCommandSetPinMode.staticParseBuilder(readBuffer, response);
+      builder = FirmataCommandSetPinMode.staticParseFirmataCommandBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(commandCode, (byte) 0x5)) {
-      builder = FirmataCommandSetDigitalPinValue.staticParseBuilder(readBuffer, response);
+      builder =
+          FirmataCommandSetDigitalPinValue.staticParseFirmataCommandBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(commandCode, (byte) 0x9)) {
-      builder = FirmataCommandProtocolVersion.staticParseBuilder(readBuffer, response);
+      builder =
+          FirmataCommandProtocolVersion.staticParseFirmataCommandBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(commandCode, (byte) 0xF)) {
-      builder = FirmataCommandSystemReset.staticParseBuilder(readBuffer, response);
+      builder = FirmataCommandSystemReset.staticParseFirmataCommandBuilder(readBuffer, response);
     }
     if (builder == null) {
       throw new ParseException(
@@ -141,7 +143,7 @@ public abstract class FirmataCommand implements Message {
     return _firmataCommand;
   }
 
-  public static interface FirmataCommandBuilder {
+  public interface FirmataCommandBuilder {
     FirmataCommand build(Boolean response);
   }
 

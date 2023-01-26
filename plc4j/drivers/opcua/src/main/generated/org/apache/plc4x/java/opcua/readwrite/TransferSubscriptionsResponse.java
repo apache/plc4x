@@ -148,7 +148,7 @@ public class TransferSubscriptionsResponse extends ExtensionObjectDefinition imp
     return lengthInBits;
   }
 
-  public static TransferSubscriptionsResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("TransferSubscriptionsResponse");
     PositionAware positionAware = readBuffer;
@@ -183,11 +183,11 @@ public class TransferSubscriptionsResponse extends ExtensionObjectDefinition imp
 
     readBuffer.closeContext("TransferSubscriptionsResponse");
     // Create the instance
-    return new TransferSubscriptionsResponseBuilder(
+    return new TransferSubscriptionsResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class TransferSubscriptionsResponseBuilder
+  public static class TransferSubscriptionsResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -195,7 +195,7 @@ public class TransferSubscriptionsResponse extends ExtensionObjectDefinition imp
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public TransferSubscriptionsResponseBuilder(
+    public TransferSubscriptionsResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<ExtensionObjectDefinition> results,

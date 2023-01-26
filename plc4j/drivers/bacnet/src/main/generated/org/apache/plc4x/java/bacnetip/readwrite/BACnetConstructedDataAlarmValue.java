@@ -109,7 +109,7 @@ public class BACnetConstructedDataAlarmValue extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAlarmValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,16 +134,16 @@ public class BACnetConstructedDataAlarmValue extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataAlarmValue");
     // Create the instance
-    return new BACnetConstructedDataAlarmValueBuilder(binaryPv, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAlarmValueBuilderImpl(binaryPv, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAlarmValueBuilder
+  public static class BACnetConstructedDataAlarmValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetBinaryPVTagged binaryPv;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAlarmValueBuilder(
+    public BACnetConstructedDataAlarmValueBuilderImpl(
         BACnetBinaryPVTagged binaryPv,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

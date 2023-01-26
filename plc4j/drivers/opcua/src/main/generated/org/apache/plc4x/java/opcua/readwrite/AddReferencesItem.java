@@ -167,7 +167,7 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static AddReferencesItemBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AddReferencesItem");
     PositionAware positionAware = readBuffer;
@@ -208,7 +208,7 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("AddReferencesItem");
     // Create the instance
-    return new AddReferencesItemBuilder(
+    return new AddReferencesItemBuilderImpl(
         sourceNodeId,
         referenceTypeId,
         isForward,
@@ -218,7 +218,7 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
         reservedField0);
   }
 
-  public static class AddReferencesItemBuilder
+  public static class AddReferencesItemBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId sourceNodeId;
     private final NodeId referenceTypeId;
@@ -228,7 +228,7 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
     private final NodeClass targetNodeClass;
     private final Short reservedField0;
 
-    public AddReferencesItemBuilder(
+    public AddReferencesItemBuilderImpl(
         NodeId sourceNodeId,
         NodeId referenceTypeId,
         boolean isForward,

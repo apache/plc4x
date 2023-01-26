@@ -72,7 +72,7 @@ public class LRawCon extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static LRawConBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("LRawCon");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class LRawCon extends CEMI implements Message {
 
     readBuffer.closeContext("LRawCon");
     // Create the instance
-    return new LRawConBuilder(size);
+    return new LRawConBuilderImpl(size);
   }
 
-  public static class LRawConBuilder implements CEMI.CEMIBuilder {
+  public static class LRawConBuilderImpl implements CEMI.CEMIBuilder {
     private final Integer size;
 
-    public LRawConBuilder(Integer size) {
+    public LRawConBuilderImpl(Integer size) {
 
       this.size = size;
     }

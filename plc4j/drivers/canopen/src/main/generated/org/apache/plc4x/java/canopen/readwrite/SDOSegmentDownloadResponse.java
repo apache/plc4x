@@ -103,7 +103,7 @@ public class SDOSegmentDownloadResponse extends SDOResponse implements Message {
     return lengthInBits;
   }
 
-  public static SDOSegmentDownloadResponseBuilder staticParseBuilder(
+  public static SDOResponseBuilder staticParseSDOResponseBuilder(
       ReadBuffer readBuffer, SDOResponseCommand command) throws ParseException {
     readBuffer.pullContext("SDOSegmentDownloadResponse");
     PositionAware positionAware = readBuffer;
@@ -120,15 +120,16 @@ public class SDOSegmentDownloadResponse extends SDOResponse implements Message {
 
     readBuffer.closeContext("SDOSegmentDownloadResponse");
     // Create the instance
-    return new SDOSegmentDownloadResponseBuilder(toggle, reservedField0, reservedField1);
+    return new SDOSegmentDownloadResponseBuilderImpl(toggle, reservedField0, reservedField1);
   }
 
-  public static class SDOSegmentDownloadResponseBuilder implements SDOResponse.SDOResponseBuilder {
+  public static class SDOSegmentDownloadResponseBuilderImpl
+      implements SDOResponse.SDOResponseBuilder {
     private final boolean toggle;
     private final Byte reservedField0;
     private final Long reservedField1;
 
-    public SDOSegmentDownloadResponseBuilder(
+    public SDOSegmentDownloadResponseBuilderImpl(
         boolean toggle, Byte reservedField0, Long reservedField1) {
       this.toggle = toggle;
       this.reservedField0 = reservedField0;

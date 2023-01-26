@@ -98,9 +98,10 @@ public class BACnetConfirmedServiceRequestVTClose extends BACnetConfirmedService
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestVTCloseBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength, Long serviceRequestPayloadLength)
-      throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength, Long serviceRequestPayloadLength)
+          throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestVTClose");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -118,17 +119,17 @@ public class BACnetConfirmedServiceRequestVTClose extends BACnetConfirmedService
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestVTClose");
     // Create the instance
-    return new BACnetConfirmedServiceRequestVTCloseBuilder(
+    return new BACnetConfirmedServiceRequestVTCloseBuilderImpl(
         listOfRemoteVtSessionIdentifiers, serviceRequestLength, serviceRequestPayloadLength);
   }
 
-  public static class BACnetConfirmedServiceRequestVTCloseBuilder
+  public static class BACnetConfirmedServiceRequestVTCloseBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final List<BACnetApplicationTagUnsignedInteger> listOfRemoteVtSessionIdentifiers;
     private final Long serviceRequestLength;
     private final Long serviceRequestPayloadLength;
 
-    public BACnetConfirmedServiceRequestVTCloseBuilder(
+    public BACnetConfirmedServiceRequestVTCloseBuilderImpl(
         List<BACnetApplicationTagUnsignedInteger> listOfRemoteVtSessionIdentifiers,
         Long serviceRequestLength,
         Long serviceRequestPayloadLength) {

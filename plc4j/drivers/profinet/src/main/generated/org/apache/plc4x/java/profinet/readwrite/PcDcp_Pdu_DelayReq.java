@@ -191,7 +191,7 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
     return lengthInBits;
   }
 
-  public static PcDcp_Pdu_DelayReqBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_PduBuilder staticParsePnDcp_PduBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PcDcp_Pdu_DelayReq");
     PositionAware positionAware = readBuffer;
@@ -235,7 +235,7 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
 
     readBuffer.closeContext("PcDcp_Pdu_DelayReq");
     // Create the instance
-    return new PcDcp_Pdu_DelayReqBuilder(
+    return new PcDcp_Pdu_DelayReqBuilderImpl(
         sequenceId,
         delayInNs,
         portMacAddress,
@@ -245,7 +245,7 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
         reservedField3);
   }
 
-  public static class PcDcp_Pdu_DelayReqBuilder implements PnDcp_Pdu.PnDcp_PduBuilder {
+  public static class PcDcp_Pdu_DelayReqBuilderImpl implements PnDcp_Pdu.PnDcp_PduBuilder {
     private final int sequenceId;
     private final long delayInNs;
     private final MacAddress portMacAddress;
@@ -254,7 +254,7 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
     private final Long reservedField2;
     private final Integer reservedField3;
 
-    public PcDcp_Pdu_DelayReqBuilder(
+    public PcDcp_Pdu_DelayReqBuilderImpl(
         int sequenceId,
         long delayInNs,
         MacAddress portMacAddress,

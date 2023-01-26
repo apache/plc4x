@@ -85,7 +85,7 @@ public class BACnetConstructedDataAlertEnrollmentAll extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAlertEnrollmentAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -104,15 +104,15 @@ public class BACnetConstructedDataAlertEnrollmentAll extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataAlertEnrollmentAll");
     // Create the instance
-    return new BACnetConstructedDataAlertEnrollmentAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAlertEnrollmentAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAlertEnrollmentAllBuilder
+  public static class BACnetConstructedDataAlertEnrollmentAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAlertEnrollmentAllBuilder(
+    public BACnetConstructedDataAlertEnrollmentAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
 
       this.tagNumber = tagNumber;

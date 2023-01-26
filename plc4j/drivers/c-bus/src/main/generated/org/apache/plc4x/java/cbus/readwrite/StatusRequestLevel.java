@@ -122,7 +122,7 @@ public class StatusRequestLevel extends StatusRequest implements Message {
     return lengthInBits;
   }
 
-  public static StatusRequestLevelBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static StatusRequestBuilder staticParseStatusRequestBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("StatusRequestLevel");
     PositionAware positionAware = readBuffer;
@@ -155,17 +155,17 @@ public class StatusRequestLevel extends StatusRequest implements Message {
 
     readBuffer.closeContext("StatusRequestLevel");
     // Create the instance
-    return new StatusRequestLevelBuilder(
+    return new StatusRequestLevelBuilderImpl(
         application, startingGroupAddressLabel, reservedField0, reservedField1);
   }
 
-  public static class StatusRequestLevelBuilder implements StatusRequest.StatusRequestBuilder {
+  public static class StatusRequestLevelBuilderImpl implements StatusRequest.StatusRequestBuilder {
     private final ApplicationIdContainer application;
     private final byte startingGroupAddressLabel;
     private final Byte reservedField0;
     private final Byte reservedField1;
 
-    public StatusRequestLevelBuilder(
+    public StatusRequestLevelBuilderImpl(
         ApplicationIdContainer application,
         byte startingGroupAddressLabel,
         Byte reservedField0,

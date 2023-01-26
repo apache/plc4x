@@ -109,9 +109,13 @@ public abstract class ConnectionRequestInformation implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ConnectionRequestInformationBuilder builder = null;
     if (EvaluationHelper.equals(connectionType, (short) 0x03)) {
-      builder = ConnectionRequestInformationDeviceManagement.staticParseBuilder(readBuffer);
+      builder =
+          ConnectionRequestInformationDeviceManagement
+              .staticParseConnectionRequestInformationBuilder(readBuffer);
     } else if (EvaluationHelper.equals(connectionType, (short) 0x04)) {
-      builder = ConnectionRequestInformationTunnelConnection.staticParseBuilder(readBuffer);
+      builder =
+          ConnectionRequestInformationTunnelConnection
+              .staticParseConnectionRequestInformationBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -128,7 +132,7 @@ public abstract class ConnectionRequestInformation implements Message {
     return _connectionRequestInformation;
   }
 
-  public static interface ConnectionRequestInformationBuilder {
+  public interface ConnectionRequestInformationBuilder {
     ConnectionRequestInformation build();
   }
 

@@ -147,7 +147,7 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static MonitoringParametersBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("MonitoringParameters");
     PositionAware positionAware = readBuffer;
@@ -173,11 +173,11 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("MonitoringParameters");
     // Create the instance
-    return new MonitoringParametersBuilder(
+    return new MonitoringParametersBuilderImpl(
         clientHandle, samplingInterval, filter, queueSize, discardOldest, reservedField0);
   }
 
-  public static class MonitoringParametersBuilder
+  public static class MonitoringParametersBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long clientHandle;
     private final double samplingInterval;
@@ -186,7 +186,7 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
     private final boolean discardOldest;
     private final Short reservedField0;
 
-    public MonitoringParametersBuilder(
+    public MonitoringParametersBuilderImpl(
         long clientHandle,
         double samplingInterval,
         ExtensionObject filter,

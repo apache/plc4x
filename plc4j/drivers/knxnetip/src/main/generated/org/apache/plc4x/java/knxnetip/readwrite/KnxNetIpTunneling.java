@@ -82,7 +82,7 @@ public class KnxNetIpTunneling extends ServiceId implements Message {
     return lengthInBits;
   }
 
-  public static KnxNetIpTunnelingBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static ServiceIdBuilder staticParseServiceIdBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("KnxNetIpTunneling");
     PositionAware positionAware = readBuffer;
@@ -93,13 +93,13 @@ public class KnxNetIpTunneling extends ServiceId implements Message {
 
     readBuffer.closeContext("KnxNetIpTunneling");
     // Create the instance
-    return new KnxNetIpTunnelingBuilder(version);
+    return new KnxNetIpTunnelingBuilderImpl(version);
   }
 
-  public static class KnxNetIpTunnelingBuilder implements ServiceId.ServiceIdBuilder {
+  public static class KnxNetIpTunnelingBuilderImpl implements ServiceId.ServiceIdBuilder {
     private final short version;
 
-    public KnxNetIpTunnelingBuilder(short version) {
+    public KnxNetIpTunnelingBuilderImpl(short version) {
 
       this.version = version;
     }

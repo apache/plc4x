@@ -72,7 +72,7 @@ public class SysexCommandAnalogMappingResponse extends SysexCommand implements M
     return lengthInBits;
   }
 
-  public static SysexCommandAnalogMappingResponseBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandAnalogMappingResponse");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class SysexCommandAnalogMappingResponse extends SysexCommand implements M
 
     readBuffer.closeContext("SysexCommandAnalogMappingResponse");
     // Create the instance
-    return new SysexCommandAnalogMappingResponseBuilder();
+    return new SysexCommandAnalogMappingResponseBuilderImpl();
   }
 
-  public static class SysexCommandAnalogMappingResponseBuilder
+  public static class SysexCommandAnalogMappingResponseBuilderImpl
       implements SysexCommand.SysexCommandBuilder {
 
-    public SysexCommandAnalogMappingResponseBuilder() {}
+    public SysexCommandAnalogMappingResponseBuilderImpl() {}
 
     public SysexCommandAnalogMappingResponse build() {
       SysexCommandAnalogMappingResponse sysexCommandAnalogMappingResponse =

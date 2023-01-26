@@ -117,7 +117,7 @@ public class ModbusAsciiADU extends ModbusADU implements Message {
     return lengthInBits;
   }
 
-  public static ModbusAsciiADUBuilder staticParseBuilder(
+  public static ModbusADUBuilder staticParseModbusADUBuilder(
       ReadBuffer readBuffer, DriverType driverType, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusAsciiADU");
     PositionAware positionAware = readBuffer;
@@ -148,15 +148,15 @@ public class ModbusAsciiADU extends ModbusADU implements Message {
 
     readBuffer.closeContext("ModbusAsciiADU");
     // Create the instance
-    return new ModbusAsciiADUBuilder(address, pdu, response);
+    return new ModbusAsciiADUBuilderImpl(address, pdu, response);
   }
 
-  public static class ModbusAsciiADUBuilder implements ModbusADU.ModbusADUBuilder {
+  public static class ModbusAsciiADUBuilderImpl implements ModbusADU.ModbusADUBuilder {
     private final short address;
     private final ModbusPDU pdu;
     private final Boolean response;
 
-    public ModbusAsciiADUBuilder(short address, ModbusPDU pdu, Boolean response) {
+    public ModbusAsciiADUBuilderImpl(short address, ModbusPDU pdu, Boolean response) {
 
       this.address = address;
       this.pdu = pdu;

@@ -78,7 +78,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     <#assign discriminatedChildType = type.asDiscriminatedComplexTypeDefinition().orElseThrow()>
     // Accessors for discriminator values.
     <#list discriminatedChildType.getDiscriminatorMap() as discriminatorName, discriminatorValue>
-        <#-- If the discriminator name matches that of another field, suppress the methods generation -->
+    <#-- If the discriminator name matches that of another field, suppress the methods generation -->
         <#if !discriminatedChildType.isNonDiscriminatorField(discriminatorName)><#--&& !discriminatedChildType.isParserArgument(discriminatorName)-->
             <#assign discriminatorType = helper.getDiscriminatorTypes()[discriminatorName]>
     public ${helper.getLanguageTypeNameForTypeReference(discriminatorType)} get${discriminatorName?cap_first}() {
@@ -226,14 +226,14 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 </#list>
 
     <#if outputFlavor != "passive">
+<#if type.isDiscriminatedParentTypeDefinition()>
+    protected abstract void serialize${type.name?cap_first}Child(WriteBuffer writeBuffer) throws SerializationException;
+
+</#if>
 <#if type.isDiscriminatedChildTypeDefinition()>
     @Override
     protected void serialize${type.parentType.orElseThrow().name}Child(WriteBuffer writeBuffer) throws SerializationException {
 <#else>
-    <#if type.isDiscriminatedParentTypeDefinition()>
-    abstract protected void serialize${type.name?cap_first}Child(WriteBuffer writeBuffer) throws SerializationException;
-
-    </#if>
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
 </#if>
         PositionAware positionAware = writeBuffer;
@@ -592,7 +592,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 <#-- Here come the actual parse and serialize methods that actually do the parsing and serlaizing -->
     <#assign hasParserArguments=parserArguments?has_content/>
     <#assign parserArgumentList><#if hasParserArguments><#list parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if></#assign>
-    public static ${type.name}<#if type.isDiscriminatedChildTypeDefinition()>Builder staticParseBuilder<#else> staticParse</#if>(ReadBuffer readBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) throws ParseException {
+    public static <#if type.isDiscriminatedChildTypeDefinition()>${type.parentType.orElseThrow().name}Builder staticParse${type.parentType.orElseThrow().name}Builder<#else>${type.name} staticParse</#if>(ReadBuffer readBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) throws ParseException {
         readBuffer.pullContext("${type.name}");
         PositionAware positionAware = readBuffer;
         int startPos = positionAware.getPos();
@@ -729,6 +729,8 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                                     true
                                 <#else>
                                     <#assign discriminatorExpression=switchField.discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
+                                    <#--${helper.info("discriminator-name {}", discriminatorExpression.discriminatorName)}
+                                    ${helper.info("discriminator-types {}", helper.getDiscriminatorTypes())}-->
                                     <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.discriminatorName]>
                                     EvaluationHelper.equals(
                                     ${helper.toParseExpression(switchField, discriminatorType, discriminatorExpression, parserArguments)},
@@ -747,7 +749,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                     <@compress single_line=true>
                         <#assign hasCaseParseArguments=case.allParserArguments.isPresent() && case.allParserArguments.orElseThrow()?has_content>
                         <#assign caseParseArguments><#if hasCaseParseArguments><#list case.allParserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if></#assign>
-                        builder = ${case.name}.staticParseBuilder(readBuffer<#if hasCaseParseArguments>, ${tracer.dive("case parse arguments")} ${caseParseArguments}</#if>);
+                        builder = ${case.name}.staticParse${type.name}Builder(readBuffer<#if hasCaseParseArguments>, ${tracer.dive("case parse arguments")} ${caseParseArguments}</#if>);
                     </@compress>
                     }<#sep> else </#sep>
                 </#list>
@@ -789,7 +791,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     readBuffer.closeContext("${type.name}");
     // Create the instance
     <#if type.isDiscriminatedChildTypeDefinition()>
-        return new ${type.name}Builder(
+        return new ${type.name}BuilderImpl(
         <#list type.propertyFields as field>
             ${field.name}<#sep>, </#sep>
         </#list>
@@ -802,6 +804,9 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         <#list reservedFields as reservedField>
             reservedField${reservedField?index}<#sep>, </#sep>
         </#list>
+        <#if type.parentType.isPresent() && type.isDiscriminatedChildTypeDefinition() && type.isDiscriminatedParentTypeDefinition()>
+            , builder
+        </#if>
         );
     <#elseif type.isDiscriminatedParentTypeDefinition()>
         ${type.name} _${type.name?uncap_first} = builder.build(
@@ -840,8 +845,14 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     }
 
     <#if type.isDiscriminatedParentTypeDefinition()>
-        public static interface ${type.name}Builder {
+        public interface ${type.name}Builder {
             ${type.name} build(
+        <#if type.parentType.isPresent() && type.isDiscriminatedChildTypeDefinition() && type.isDiscriminatedParentTypeDefinition()>
+            <#list type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().allPropertyFields as field>
+                ${helper.getLanguageTypeNameForField(field)} ${field.name}<#sep>, </#sep>
+            </#list>
+            <#if type.propertyFields?has_content || filteredParserArguments?has_content>,</#if>
+        </#if>
         <#list type.propertyFields as field>
             ${helper.getLanguageTypeNameForField(field)} ${field.name}<#sep>, </#sep>
             </#list>
@@ -856,7 +867,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     </#if>
     <#if type.isDiscriminatedChildTypeDefinition()>
-        public static class ${type.name}Builder implements ${type.parentType.orElseThrow().name}.${type.parentType.orElseThrow().name}Builder {
+        public static class ${type.name}BuilderImpl implements ${type.parentType.orElseThrow().name}.${type.parentType.orElseThrow().name}Builder {
         <#if type.propertyFields?has_content>
             <#list type.propertyFields as field>
         private final ${helper.getLanguageTypeNameForField(field)} ${field.name};
@@ -870,8 +881,11 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         <#list reservedFields as reservedField>
         private final ${helper.getLanguageTypeNameForTypeReference(reservedField.type, false)} reservedField${reservedField?index};
         </#list>
+        <#if type.parentType.isPresent() && type.isDiscriminatedChildTypeDefinition() && type.isDiscriminatedParentTypeDefinition()>
+        private final ${type.name}Builder builder;
+        </#if>
 
-        public ${type.name}Builder(
+        public ${type.name}BuilderImpl(
         <#list type.propertyFields as field>
             ${helper.getLanguageTypeNameForField(field)} ${field.name}<#sep>, </#sep>
         </#list>
@@ -885,6 +899,9 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         <#list reservedFields as reservedField>
             ${helper.getLanguageTypeNameForTypeReference(reservedField.type, false)} reservedField${reservedField?index}<#sep>, </#sep>
         </#list>
+        <#if type.parentType.isPresent() && type.isDiscriminatedChildTypeDefinition() && type.isDiscriminatedParentTypeDefinition()>
+            , ${type.name}Builder builder
+        </#if>
         ) {
         <#list type.propertyFields as field>
             this.${field.name} = ${field.name};
@@ -897,19 +914,39 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         <#list reservedFields as reservedField>
             this.reservedField${reservedField?index} = reservedField${reservedField?index};
         </#list>
+        <#if type.parentType.isPresent() && type.isDiscriminatedChildTypeDefinition() && type.isDiscriminatedParentTypeDefinition()>
+            this.builder = builder;
+        </#if>
         }
 
         public ${type.name} build(
-        <#list type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields as field>
+        <#list type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().allPropertyFields as field>
             ${helper.getLanguageTypeNameForField(field)} ${field.name}<#sep>, </#sep>
         </#list>
         <#if filteredParentParserArguments?has_content>
             <#if type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields?has_content>, </#if>
-                <#list filteredParentParserArguments as arg>
+            <#list filteredParentParserArguments as arg>
                 ${helper.getLanguageTypeNameForTypeReference(arg.type)} ${arg.name}<#sep>, </#sep>
+            </#list>
+        </#if>
+        ) {
+        <#if type.parentType.isPresent() && type.isDiscriminatedChildTypeDefinition() && type.isDiscriminatedParentTypeDefinition()>
+            return builder.build(
+            <#list type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().allPropertyFields as field>
+                ${field.name}<#sep>, </#sep>
+            </#list>
+            <#if type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().allPropertyFields?has_content>, </#if>
+            <#list type.propertyFields as field>
+                ${field.name}<#sep>, </#sep>
+            </#list>
+            <#if filteredParentParserArguments?has_content>
+                <#if type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().allPropertyFields?has_content>, </#if>
+                <#list filteredParentParserArguments as arg>
+                    ${arg.name}<#sep>, </#sep>
                 </#list>
             </#if>
-        ) {
+            );
+        <#else>
             ${type.name} ${type.name?uncap_first} = new ${type.name}(
             <#list type.allPropertyFields as field>
                 ${field.name}<#sep>, </#sep>
@@ -924,6 +961,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
             ${type.name?uncap_first}.reservedField${reservedField?index} = reservedField${reservedField?index};
         </#list>
             return ${type.name?uncap_first};
+        </#if>
         }
     }
 

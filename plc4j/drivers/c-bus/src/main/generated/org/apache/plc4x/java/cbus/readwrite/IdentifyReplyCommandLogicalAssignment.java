@@ -94,7 +94,7 @@ public class IdentifyReplyCommandLogicalAssignment extends IdentifyReplyCommand 
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandLogicalAssignmentBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandLogicalAssignment");
     PositionAware positionAware = readBuffer;
@@ -110,15 +110,15 @@ public class IdentifyReplyCommandLogicalAssignment extends IdentifyReplyCommand 
 
     readBuffer.closeContext("IdentifyReplyCommandLogicalAssignment");
     // Create the instance
-    return new IdentifyReplyCommandLogicalAssignmentBuilder(logicAssigment, numBytes);
+    return new IdentifyReplyCommandLogicalAssignmentBuilderImpl(logicAssigment, numBytes);
   }
 
-  public static class IdentifyReplyCommandLogicalAssignmentBuilder
+  public static class IdentifyReplyCommandLogicalAssignmentBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final List<LogicAssignment> logicAssigment;
     private final Short numBytes;
 
-    public IdentifyReplyCommandLogicalAssignmentBuilder(
+    public IdentifyReplyCommandLogicalAssignmentBuilderImpl(
         List<LogicAssignment> logicAssigment, Short numBytes) {
 
       this.logicAssigment = logicAssigment;

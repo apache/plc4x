@@ -85,7 +85,7 @@ public class BACnetConstructedDataLifeSafetyZoneAll extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLifeSafetyZoneAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -104,15 +104,15 @@ public class BACnetConstructedDataLifeSafetyZoneAll extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataLifeSafetyZoneAll");
     // Create the instance
-    return new BACnetConstructedDataLifeSafetyZoneAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLifeSafetyZoneAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLifeSafetyZoneAllBuilder
+  public static class BACnetConstructedDataLifeSafetyZoneAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLifeSafetyZoneAllBuilder(
+    public BACnetConstructedDataLifeSafetyZoneAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
 
       this.tagNumber = tagNumber;

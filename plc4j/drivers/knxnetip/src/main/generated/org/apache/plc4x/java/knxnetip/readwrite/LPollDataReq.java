@@ -72,7 +72,7 @@ public class LPollDataReq extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static LPollDataReqBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("LPollDataReq");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class LPollDataReq extends CEMI implements Message {
 
     readBuffer.closeContext("LPollDataReq");
     // Create the instance
-    return new LPollDataReqBuilder(size);
+    return new LPollDataReqBuilderImpl(size);
   }
 
-  public static class LPollDataReqBuilder implements CEMI.CEMIBuilder {
+  public static class LPollDataReqBuilderImpl implements CEMI.CEMIBuilder {
     private final Integer size;
 
-    public LPollDataReqBuilder(Integer size) {
+    public LPollDataReqBuilderImpl(Integer size) {
 
       this.size = size;
     }

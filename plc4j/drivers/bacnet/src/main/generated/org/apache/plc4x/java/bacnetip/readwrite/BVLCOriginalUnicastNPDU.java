@@ -90,8 +90,8 @@ public class BVLCOriginalUnicastNPDU extends BVLC implements Message {
     return lengthInBits;
   }
 
-  public static BVLCOriginalUnicastNPDUBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer bvlcPayloadLength) throws ParseException {
+  public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer, Integer bvlcPayloadLength)
+      throws ParseException {
     readBuffer.pullContext("BVLCOriginalUnicastNPDU");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -106,14 +106,14 @@ public class BVLCOriginalUnicastNPDU extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCOriginalUnicastNPDU");
     // Create the instance
-    return new BVLCOriginalUnicastNPDUBuilder(npdu, bvlcPayloadLength);
+    return new BVLCOriginalUnicastNPDUBuilderImpl(npdu, bvlcPayloadLength);
   }
 
-  public static class BVLCOriginalUnicastNPDUBuilder implements BVLC.BVLCBuilder {
+  public static class BVLCOriginalUnicastNPDUBuilderImpl implements BVLC.BVLCBuilder {
     private final NPDU npdu;
     private final Integer bvlcPayloadLength;
 
-    public BVLCOriginalUnicastNPDUBuilder(NPDU npdu, Integer bvlcPayloadLength) {
+    public BVLCOriginalUnicastNPDUBuilderImpl(NPDU npdu, Integer bvlcPayloadLength) {
 
       this.npdu = npdu;
       this.bvlcPayloadLength = bvlcPayloadLength;

@@ -80,7 +80,7 @@ public class SecurityDataZoneUnsealed extends SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityDataZoneUnsealedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataZoneUnsealed");
     PositionAware positionAware = readBuffer;
@@ -91,13 +91,14 @@ public class SecurityDataZoneUnsealed extends SecurityData implements Message {
 
     readBuffer.closeContext("SecurityDataZoneUnsealed");
     // Create the instance
-    return new SecurityDataZoneUnsealedBuilder(zoneNumber);
+    return new SecurityDataZoneUnsealedBuilderImpl(zoneNumber);
   }
 
-  public static class SecurityDataZoneUnsealedBuilder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataZoneUnsealedBuilderImpl
+      implements SecurityData.SecurityDataBuilder {
     private final short zoneNumber;
 
-    public SecurityDataZoneUnsealedBuilder(short zoneNumber) {
+    public SecurityDataZoneUnsealedBuilderImpl(short zoneNumber) {
 
       this.zoneNumber = zoneNumber;
     }

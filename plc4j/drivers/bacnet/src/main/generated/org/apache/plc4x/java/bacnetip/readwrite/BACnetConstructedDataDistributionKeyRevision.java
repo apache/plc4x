@@ -113,7 +113,7 @@ public class BACnetConstructedDataDistributionKeyRevision extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDistributionKeyRevisionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -139,17 +139,17 @@ public class BACnetConstructedDataDistributionKeyRevision extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataDistributionKeyRevision");
     // Create the instance
-    return new BACnetConstructedDataDistributionKeyRevisionBuilder(
+    return new BACnetConstructedDataDistributionKeyRevisionBuilderImpl(
         distributionKeyRevision, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDistributionKeyRevisionBuilder
+  public static class BACnetConstructedDataDistributionKeyRevisionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger distributionKeyRevision;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDistributionKeyRevisionBuilder(
+    public BACnetConstructedDataDistributionKeyRevisionBuilderImpl(
         BACnetApplicationTagUnsignedInteger distributionKeyRevision,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

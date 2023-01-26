@@ -137,7 +137,7 @@ public class MonitoredItemCreateResult extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static MonitoredItemCreateResultBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("MonitoredItemCreateResult");
     PositionAware positionAware = readBuffer;
@@ -164,11 +164,11 @@ public class MonitoredItemCreateResult extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("MonitoredItemCreateResult");
     // Create the instance
-    return new MonitoredItemCreateResultBuilder(
+    return new MonitoredItemCreateResultBuilderImpl(
         statusCode, monitoredItemId, revisedSamplingInterval, revisedQueueSize, filterResult);
   }
 
-  public static class MonitoredItemCreateResultBuilder
+  public static class MonitoredItemCreateResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final long monitoredItemId;
@@ -176,7 +176,7 @@ public class MonitoredItemCreateResult extends ExtensionObjectDefinition impleme
     private final long revisedQueueSize;
     private final ExtensionObject filterResult;
 
-    public MonitoredItemCreateResultBuilder(
+    public MonitoredItemCreateResultBuilderImpl(
         StatusCode statusCode,
         long monitoredItemId,
         double revisedSamplingInterval,

@@ -126,7 +126,7 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static CallMethodRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CallMethodRequest");
     PositionAware positionAware = readBuffer;
@@ -153,17 +153,17 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("CallMethodRequest");
     // Create the instance
-    return new CallMethodRequestBuilder(objectId, methodId, noOfInputArguments, inputArguments);
+    return new CallMethodRequestBuilderImpl(objectId, methodId, noOfInputArguments, inputArguments);
   }
 
-  public static class CallMethodRequestBuilder
+  public static class CallMethodRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId objectId;
     private final NodeId methodId;
     private final int noOfInputArguments;
     private final List<Variant> inputArguments;
 
-    public CallMethodRequestBuilder(
+    public CallMethodRequestBuilderImpl(
         NodeId objectId, NodeId methodId, int noOfInputArguments, List<Variant> inputArguments) {
 
       this.objectId = objectId;

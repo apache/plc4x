@@ -79,7 +79,7 @@ public class LightingDataOn extends LightingData implements Message {
     return lengthInBits;
   }
 
-  public static LightingDataOnBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static LightingDataBuilder staticParseLightingDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("LightingDataOn");
     PositionAware positionAware = readBuffer;
@@ -90,13 +90,13 @@ public class LightingDataOn extends LightingData implements Message {
 
     readBuffer.closeContext("LightingDataOn");
     // Create the instance
-    return new LightingDataOnBuilder(group);
+    return new LightingDataOnBuilderImpl(group);
   }
 
-  public static class LightingDataOnBuilder implements LightingData.LightingDataBuilder {
+  public static class LightingDataOnBuilderImpl implements LightingData.LightingDataBuilder {
     private final byte group;
 
-    public LightingDataOnBuilder(byte group) {
+    public LightingDataOnBuilderImpl(byte group) {
 
       this.group = group;
     }

@@ -181,7 +181,7 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static CreateSubscriptionRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CreateSubscriptionRequest");
     PositionAware positionAware = readBuffer;
@@ -216,7 +216,7 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("CreateSubscriptionRequest");
     // Create the instance
-    return new CreateSubscriptionRequestBuilder(
+    return new CreateSubscriptionRequestBuilderImpl(
         requestHeader,
         requestedPublishingInterval,
         requestedLifetimeCount,
@@ -227,7 +227,7 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
         reservedField0);
   }
 
-  public static class CreateSubscriptionRequestBuilder
+  public static class CreateSubscriptionRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final double requestedPublishingInterval;
@@ -238,7 +238,7 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
     private final short priority;
     private final Short reservedField0;
 
-    public CreateSubscriptionRequestBuilder(
+    public CreateSubscriptionRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         double requestedPublishingInterval,
         long requestedLifetimeCount,

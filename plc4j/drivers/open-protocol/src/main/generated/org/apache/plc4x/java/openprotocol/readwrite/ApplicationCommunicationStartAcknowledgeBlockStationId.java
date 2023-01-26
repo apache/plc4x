@@ -85,8 +85,9 @@ public class ApplicationCommunicationStartAcknowledgeBlockStationId
     return lengthInBits;
   }
 
-  public static ApplicationCommunicationStartAcknowledgeBlockStationIdBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static ApplicationCommunicationStartAcknowledgeBlockBuilder
+      staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("ApplicationCommunicationStartAcknowledgeBlockStationId");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -97,15 +98,15 @@ public class ApplicationCommunicationStartAcknowledgeBlockStationId
 
     readBuffer.closeContext("ApplicationCommunicationStartAcknowledgeBlockStationId");
     // Create the instance
-    return new ApplicationCommunicationStartAcknowledgeBlockStationIdBuilder(stationId);
+    return new ApplicationCommunicationStartAcknowledgeBlockStationIdBuilderImpl(stationId);
   }
 
-  public static class ApplicationCommunicationStartAcknowledgeBlockStationIdBuilder
+  public static class ApplicationCommunicationStartAcknowledgeBlockStationIdBuilderImpl
       implements ApplicationCommunicationStartAcknowledgeBlock
           .ApplicationCommunicationStartAcknowledgeBlockBuilder {
     private final String stationId;
 
-    public ApplicationCommunicationStartAcknowledgeBlockStationIdBuilder(String stationId) {
+    public ApplicationCommunicationStartAcknowledgeBlockStationIdBuilderImpl(String stationId) {
 
       this.stationId = stationId;
     }

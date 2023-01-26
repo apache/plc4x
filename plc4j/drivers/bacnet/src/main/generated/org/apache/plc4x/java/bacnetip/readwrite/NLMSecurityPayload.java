@@ -100,8 +100,8 @@ public class NLMSecurityPayload extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMSecurityPayloadBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMSecurityPayload");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -113,15 +113,15 @@ public class NLMSecurityPayload extends NLM implements Message {
 
     readBuffer.closeContext("NLMSecurityPayload");
     // Create the instance
-    return new NLMSecurityPayloadBuilder(payloadLength, payload, apduLength);
+    return new NLMSecurityPayloadBuilderImpl(payloadLength, payload, apduLength);
   }
 
-  public static class NLMSecurityPayloadBuilder implements NLM.NLMBuilder {
+  public static class NLMSecurityPayloadBuilderImpl implements NLM.NLMBuilder {
     private final int payloadLength;
     private final byte[] payload;
     private final Integer apduLength;
 
-    public NLMSecurityPayloadBuilder(int payloadLength, byte[] payload, Integer apduLength) {
+    public NLMSecurityPayloadBuilderImpl(int payloadLength, byte[] payload, Integer apduLength) {
 
       this.payloadLength = payloadLength;
       this.payload = payload;

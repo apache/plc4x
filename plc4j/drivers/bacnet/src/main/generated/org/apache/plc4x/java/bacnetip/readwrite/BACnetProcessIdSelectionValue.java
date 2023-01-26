@@ -82,8 +82,8 @@ public class BACnetProcessIdSelectionValue extends BACnetProcessIdSelection impl
     return lengthInBits;
   }
 
-  public static BACnetProcessIdSelectionValueBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetProcessIdSelectionBuilder staticParseBACnetProcessIdSelectionBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetProcessIdSelectionValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -100,14 +100,14 @@ public class BACnetProcessIdSelectionValue extends BACnetProcessIdSelection impl
 
     readBuffer.closeContext("BACnetProcessIdSelectionValue");
     // Create the instance
-    return new BACnetProcessIdSelectionValueBuilder(processIdentifier);
+    return new BACnetProcessIdSelectionValueBuilderImpl(processIdentifier);
   }
 
-  public static class BACnetProcessIdSelectionValueBuilder
+  public static class BACnetProcessIdSelectionValueBuilderImpl
       implements BACnetProcessIdSelection.BACnetProcessIdSelectionBuilder {
     private final BACnetApplicationTagUnsignedInteger processIdentifier;
 
-    public BACnetProcessIdSelectionValueBuilder(
+    public BACnetProcessIdSelectionValueBuilderImpl(
         BACnetApplicationTagUnsignedInteger processIdentifier) {
 
       this.processIdentifier = processIdentifier;

@@ -111,14 +111,13 @@ public class BACnetConstructedDataBinaryLightingOutputRelinquishDefault
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBinaryLightingOutputRelinquishDefaultBuilder
-      staticParseBuilder(
-          ReadBuffer readBuffer,
-          Short tagNumber,
-          BACnetObjectType objectTypeArgument,
-          BACnetPropertyIdentifier propertyIdentifierArgument,
-          BACnetTagPayloadUnsignedInteger arrayIndexArgument)
-          throws ParseException {
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
+      ReadBuffer readBuffer,
+      Short tagNumber,
+      BACnetObjectType objectTypeArgument,
+      BACnetPropertyIdentifier propertyIdentifierArgument,
+      BACnetTagPayloadUnsignedInteger arrayIndexArgument)
+      throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataBinaryLightingOutputRelinquishDefault");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -137,17 +136,17 @@ public class BACnetConstructedDataBinaryLightingOutputRelinquishDefault
 
     readBuffer.closeContext("BACnetConstructedDataBinaryLightingOutputRelinquishDefault");
     // Create the instance
-    return new BACnetConstructedDataBinaryLightingOutputRelinquishDefaultBuilder(
+    return new BACnetConstructedDataBinaryLightingOutputRelinquishDefaultBuilderImpl(
         relinquishDefault, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBinaryLightingOutputRelinquishDefaultBuilder
+  public static class BACnetConstructedDataBinaryLightingOutputRelinquishDefaultBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetBinaryLightingPVTagged relinquishDefault;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBinaryLightingOutputRelinquishDefaultBuilder(
+    public BACnetConstructedDataBinaryLightingOutputRelinquishDefaultBuilderImpl(
         BACnetBinaryLightingPVTagged relinquishDefault,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

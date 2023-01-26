@@ -109,7 +109,7 @@ public class BACnetConstructedDataZoneTo extends BACnetConstructedData implement
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataZoneToBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,16 +131,16 @@ public class BACnetConstructedDataZoneTo extends BACnetConstructedData implement
 
     readBuffer.closeContext("BACnetConstructedDataZoneTo");
     // Create the instance
-    return new BACnetConstructedDataZoneToBuilder(zoneTo, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataZoneToBuilderImpl(zoneTo, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataZoneToBuilder
+  public static class BACnetConstructedDataZoneToBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference zoneTo;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataZoneToBuilder(
+    public BACnetConstructedDataZoneToBuilderImpl(
         BACnetDeviceObjectReference zoneTo,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

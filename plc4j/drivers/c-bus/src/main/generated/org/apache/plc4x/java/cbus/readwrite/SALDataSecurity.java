@@ -82,7 +82,7 @@ public class SALDataSecurity extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataSecurityBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataSecurity");
     PositionAware positionAware = readBuffer;
@@ -96,13 +96,13 @@ public class SALDataSecurity extends SALData implements Message {
 
     readBuffer.closeContext("SALDataSecurity");
     // Create the instance
-    return new SALDataSecurityBuilder(securityData);
+    return new SALDataSecurityBuilderImpl(securityData);
   }
 
-  public static class SALDataSecurityBuilder implements SALData.SALDataBuilder {
+  public static class SALDataSecurityBuilderImpl implements SALData.SALDataBuilder {
     private final SecurityData securityData;
 
-    public SALDataSecurityBuilder(SecurityData securityData) {
+    public SALDataSecurityBuilderImpl(SecurityData securityData) {
 
       this.securityData = securityData;
     }

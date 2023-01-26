@@ -454,7 +454,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_Block_IoCrReqBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnIoCm_BlockBuilder staticParsePnIoCm_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_Block_IoCrReq");
     PositionAware positionAware = readBuffer;
@@ -607,7 +607,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
 
     readBuffer.closeContext("PnIoCm_Block_IoCrReq");
     // Create the instance
-    return new PnIoCm_Block_IoCrReqBuilder(
+    return new PnIoCm_Block_IoCrReqBuilderImpl(
         ioCrType,
         ioCrReference,
         lt,
@@ -632,7 +632,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
         reservedField1);
   }
 
-  public static class PnIoCm_Block_IoCrReqBuilder implements PnIoCm_Block.PnIoCm_BlockBuilder {
+  public static class PnIoCm_Block_IoCrReqBuilderImpl implements PnIoCm_Block.PnIoCm_BlockBuilder {
     private final PnIoCm_IoCrType ioCrType;
     private final int ioCrReference;
     private final int lt;
@@ -656,7 +656,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     private final Long reservedField0;
     private final Short reservedField1;
 
-    public PnIoCm_Block_IoCrReqBuilder(
+    public PnIoCm_Block_IoCrReqBuilderImpl(
         PnIoCm_IoCrType ioCrType,
         int ioCrReference,
         int lt,

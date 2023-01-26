@@ -81,8 +81,8 @@ public class BACnetOptionalREALValue extends BACnetOptionalREAL implements Messa
     return lengthInBits;
   }
 
-  public static BACnetOptionalREALValueBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetOptionalREALBuilder staticParseBACnetOptionalREALBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetOptionalREALValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -97,14 +97,14 @@ public class BACnetOptionalREALValue extends BACnetOptionalREAL implements Messa
 
     readBuffer.closeContext("BACnetOptionalREALValue");
     // Create the instance
-    return new BACnetOptionalREALValueBuilder(realValue);
+    return new BACnetOptionalREALValueBuilderImpl(realValue);
   }
 
-  public static class BACnetOptionalREALValueBuilder
+  public static class BACnetOptionalREALValueBuilderImpl
       implements BACnetOptionalREAL.BACnetOptionalREALBuilder {
     private final BACnetApplicationTagReal realValue;
 
-    public BACnetOptionalREALValueBuilder(BACnetApplicationTagReal realValue) {
+    public BACnetOptionalREALValueBuilderImpl(BACnetApplicationTagReal realValue) {
 
       this.realValue = realValue;
     }

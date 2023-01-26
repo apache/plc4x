@@ -171,7 +171,7 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static FieldTargetDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("FieldTargetDataType");
     PositionAware positionAware = readBuffer;
@@ -214,7 +214,7 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("FieldTargetDataType");
     // Create the instance
-    return new FieldTargetDataTypeBuilder(
+    return new FieldTargetDataTypeBuilderImpl(
         dataSetFieldId,
         receiverIndexRange,
         targetNodeId,
@@ -224,7 +224,7 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
         overrideValue);
   }
 
-  public static class FieldTargetDataTypeBuilder
+  public static class FieldTargetDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final GuidValue dataSetFieldId;
     private final PascalString receiverIndexRange;
@@ -234,7 +234,7 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
     private final OverrideValueHandling overrideValueHandling;
     private final Variant overrideValue;
 
-    public FieldTargetDataTypeBuilder(
+    public FieldTargetDataTypeBuilderImpl(
         GuidValue dataSetFieldId,
         PascalString receiverIndexRange,
         NodeId targetNodeId,

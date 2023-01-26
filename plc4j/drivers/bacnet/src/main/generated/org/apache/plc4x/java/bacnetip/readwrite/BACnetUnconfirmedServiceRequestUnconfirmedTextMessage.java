@@ -137,8 +137,9 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
+  public static BACnetUnconfirmedServiceRequestBuilder
+      staticParseBACnetUnconfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestUnconfirmedTextMessage");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -189,11 +190,11 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestUnconfirmedTextMessage");
     // Create the instance
-    return new BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder(
+    return new BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilderImpl(
         textMessageSourceDevice, messageClass, messagePriority, message, serviceRequestLength);
   }
 
-  public static class BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder
+  public static class BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilderImpl
       implements BACnetUnconfirmedServiceRequest.BACnetUnconfirmedServiceRequestBuilder {
     private final BACnetContextTagObjectIdentifier textMessageSourceDevice;
     private final BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass messageClass;
@@ -202,7 +203,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
     private final BACnetContextTagCharacterString message;
     private final Integer serviceRequestLength;
 
-    public BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder(
+    public BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilderImpl(
         BACnetContextTagObjectIdentifier textMessageSourceDevice,
         BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass messageClass,
         BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged messagePriority,

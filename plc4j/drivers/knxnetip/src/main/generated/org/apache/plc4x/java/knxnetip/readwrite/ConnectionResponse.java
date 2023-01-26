@@ -147,7 +147,7 @@ public class ConnectionResponse extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static ConnectionResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ConnectionResponse");
     PositionAware positionAware = readBuffer;
@@ -185,17 +185,18 @@ public class ConnectionResponse extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("ConnectionResponse");
     // Create the instance
-    return new ConnectionResponseBuilder(
+    return new ConnectionResponseBuilderImpl(
         communicationChannelId, status, hpaiDataEndpoint, connectionResponseDataBlock);
   }
 
-  public static class ConnectionResponseBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class ConnectionResponseBuilderImpl
+      implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final short communicationChannelId;
     private final Status status;
     private final HPAIDataEndpoint hpaiDataEndpoint;
     private final ConnectionResponseDataBlock connectionResponseDataBlock;
 
-    public ConnectionResponseBuilder(
+    public ConnectionResponseBuilderImpl(
         short communicationChannelId,
         Status status,
         HPAIDataEndpoint hpaiDataEndpoint,

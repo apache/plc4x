@@ -173,50 +173,59 @@ public abstract class BACnetContextTag implements Message {
     BACnetContextTagBuilder builder = null;
     if (EvaluationHelper.equals(dataType, BACnetDataType.NULL)) {
       builder =
-          BACnetContextTagNull.staticParseBuilder(readBuffer, tagNumberArgument, dataType, header);
+          BACnetContextTagNull.staticParseBACnetContextTagBuilder(
+              readBuffer, tagNumberArgument, dataType, header);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.BOOLEAN)) {
       builder =
-          BACnetContextTagBoolean.staticParseBuilder(
+          BACnetContextTagBoolean.staticParseBACnetContextTagBuilder(
               readBuffer, tagNumberArgument, dataType, header);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.UNSIGNED_INTEGER)) {
       builder =
-          BACnetContextTagUnsignedInteger.staticParseBuilder(
+          BACnetContextTagUnsignedInteger.staticParseBACnetContextTagBuilder(
               readBuffer, tagNumberArgument, dataType, header);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.SIGNED_INTEGER)) {
       builder =
-          BACnetContextTagSignedInteger.staticParseBuilder(
+          BACnetContextTagSignedInteger.staticParseBACnetContextTagBuilder(
               readBuffer, tagNumberArgument, dataType, header);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.REAL)) {
-      builder = BACnetContextTagReal.staticParseBuilder(readBuffer, tagNumberArgument, dataType);
+      builder =
+          BACnetContextTagReal.staticParseBACnetContextTagBuilder(
+              readBuffer, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.DOUBLE)) {
-      builder = BACnetContextTagDouble.staticParseBuilder(readBuffer, tagNumberArgument, dataType);
+      builder =
+          BACnetContextTagDouble.staticParseBACnetContextTagBuilder(
+              readBuffer, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.OCTET_STRING)) {
       builder =
-          BACnetContextTagOctetString.staticParseBuilder(
+          BACnetContextTagOctetString.staticParseBACnetContextTagBuilder(
               readBuffer, tagNumberArgument, dataType, header);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.CHARACTER_STRING)) {
       builder =
-          BACnetContextTagCharacterString.staticParseBuilder(
+          BACnetContextTagCharacterString.staticParseBACnetContextTagBuilder(
               readBuffer, tagNumberArgument, dataType, header);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.BIT_STRING)) {
       builder =
-          BACnetContextTagBitString.staticParseBuilder(
+          BACnetContextTagBitString.staticParseBACnetContextTagBuilder(
               readBuffer, tagNumberArgument, dataType, header);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.ENUMERATED)) {
       builder =
-          BACnetContextTagEnumerated.staticParseBuilder(
+          BACnetContextTagEnumerated.staticParseBACnetContextTagBuilder(
               readBuffer, tagNumberArgument, dataType, header);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.DATE)) {
-      builder = BACnetContextTagDate.staticParseBuilder(readBuffer, tagNumberArgument, dataType);
+      builder =
+          BACnetContextTagDate.staticParseBACnetContextTagBuilder(
+              readBuffer, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.TIME)) {
-      builder = BACnetContextTagTime.staticParseBuilder(readBuffer, tagNumberArgument, dataType);
+      builder =
+          BACnetContextTagTime.staticParseBACnetContextTagBuilder(
+              readBuffer, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.BACNET_OBJECT_IDENTIFIER)) {
       builder =
-          BACnetContextTagObjectIdentifier.staticParseBuilder(
+          BACnetContextTagObjectIdentifier.staticParseBACnetContextTagBuilder(
               readBuffer, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.UNKNOWN)) {
       builder =
-          BACnetContextTagUnknown.staticParseBuilder(
+          BACnetContextTagUnknown.staticParseBACnetContextTagBuilder(
               readBuffer, tagNumberArgument, dataType, actualLength);
     }
     if (builder == null) {
@@ -234,7 +243,7 @@ public abstract class BACnetContextTag implements Message {
     return _bACnetContextTag;
   }
 
-  public static interface BACnetContextTagBuilder {
+  public interface BACnetContextTagBuilder {
     BACnetContextTag build(BACnetTagHeader header, Short tagNumberArgument);
   }
 

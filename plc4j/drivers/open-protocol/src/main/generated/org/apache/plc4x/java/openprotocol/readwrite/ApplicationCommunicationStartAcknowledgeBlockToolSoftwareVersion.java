@@ -89,8 +89,9 @@ public class ApplicationCommunicationStartAcknowledgeBlockToolSoftwareVersion
     return lengthInBits;
   }
 
-  public static ApplicationCommunicationStartAcknowledgeBlockToolSoftwareVersionBuilder
-      staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static ApplicationCommunicationStartAcknowledgeBlockBuilder
+      staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("ApplicationCommunicationStartAcknowledgeBlockToolSoftwareVersion");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -102,16 +103,16 @@ public class ApplicationCommunicationStartAcknowledgeBlockToolSoftwareVersion
 
     readBuffer.closeContext("ApplicationCommunicationStartAcknowledgeBlockToolSoftwareVersion");
     // Create the instance
-    return new ApplicationCommunicationStartAcknowledgeBlockToolSoftwareVersionBuilder(
+    return new ApplicationCommunicationStartAcknowledgeBlockToolSoftwareVersionBuilderImpl(
         toolSoftwareVersion);
   }
 
-  public static class ApplicationCommunicationStartAcknowledgeBlockToolSoftwareVersionBuilder
+  public static class ApplicationCommunicationStartAcknowledgeBlockToolSoftwareVersionBuilderImpl
       implements ApplicationCommunicationStartAcknowledgeBlock
           .ApplicationCommunicationStartAcknowledgeBlockBuilder {
     private final String toolSoftwareVersion;
 
-    public ApplicationCommunicationStartAcknowledgeBlockToolSoftwareVersionBuilder(
+    public ApplicationCommunicationStartAcknowledgeBlockToolSoftwareVersionBuilderImpl(
         String toolSoftwareVersion) {
 
       this.toolSoftwareVersion = toolSoftwareVersion;

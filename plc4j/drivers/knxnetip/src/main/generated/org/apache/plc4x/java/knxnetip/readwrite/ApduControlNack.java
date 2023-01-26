@@ -68,7 +68,7 @@ public class ApduControlNack extends ApduControl implements Message {
     return lengthInBits;
   }
 
-  public static ApduControlNackBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static ApduControlBuilder staticParseApduControlBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ApduControlNack");
     PositionAware positionAware = readBuffer;
@@ -77,12 +77,12 @@ public class ApduControlNack extends ApduControl implements Message {
 
     readBuffer.closeContext("ApduControlNack");
     // Create the instance
-    return new ApduControlNackBuilder();
+    return new ApduControlNackBuilderImpl();
   }
 
-  public static class ApduControlNackBuilder implements ApduControl.ApduControlBuilder {
+  public static class ApduControlNackBuilderImpl implements ApduControl.ApduControlBuilder {
 
-    public ApduControlNackBuilder() {}
+    public ApduControlNackBuilderImpl() {}
 
     public ApduControlNack build() {
       ApduControlNack apduControlNack = new ApduControlNack();

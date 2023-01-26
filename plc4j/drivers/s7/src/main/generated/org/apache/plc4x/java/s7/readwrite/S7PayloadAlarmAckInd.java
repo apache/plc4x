@@ -94,7 +94,7 @@ public class S7PayloadAlarmAckInd extends S7PayloadUserDataItem implements Messa
     return lengthInBits;
   }
 
-  public static S7PayloadAlarmAckIndBuilder staticParseBuilder(
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
       ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadAlarmAckInd");
     PositionAware positionAware = readBuffer;
@@ -109,14 +109,14 @@ public class S7PayloadAlarmAckInd extends S7PayloadUserDataItem implements Messa
 
     readBuffer.closeContext("S7PayloadAlarmAckInd");
     // Create the instance
-    return new S7PayloadAlarmAckIndBuilder(alarmMessage);
+    return new S7PayloadAlarmAckIndBuilderImpl(alarmMessage);
   }
 
-  public static class S7PayloadAlarmAckIndBuilder
+  public static class S7PayloadAlarmAckIndBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
     private final AlarmMessageAckPushType alarmMessage;
 
-    public S7PayloadAlarmAckIndBuilder(AlarmMessageAckPushType alarmMessage) {
+    public S7PayloadAlarmAckIndBuilderImpl(AlarmMessageAckPushType alarmMessage) {
 
       this.alarmMessage = alarmMessage;
     }

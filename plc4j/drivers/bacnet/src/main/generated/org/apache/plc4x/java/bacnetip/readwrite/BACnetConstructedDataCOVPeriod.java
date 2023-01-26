@@ -109,7 +109,7 @@ public class BACnetConstructedDataCOVPeriod extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCOVPeriodBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,16 +134,16 @@ public class BACnetConstructedDataCOVPeriod extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataCOVPeriod");
     // Create the instance
-    return new BACnetConstructedDataCOVPeriodBuilder(covPeriod, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCOVPeriodBuilderImpl(covPeriod, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCOVPeriodBuilder
+  public static class BACnetConstructedDataCOVPeriodBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger covPeriod;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCOVPeriodBuilder(
+    public BACnetConstructedDataCOVPeriodBuilderImpl(
         BACnetApplicationTagUnsignedInteger covPeriod,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

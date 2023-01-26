@@ -72,7 +72,7 @@ public class PnDcp_Block_ALLSelector extends PnDcp_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_Block_ALLSelectorBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Block_ALLSelector");
     PositionAware positionAware = readBuffer;
@@ -81,12 +81,12 @@ public class PnDcp_Block_ALLSelector extends PnDcp_Block implements Message {
 
     readBuffer.closeContext("PnDcp_Block_ALLSelector");
     // Create the instance
-    return new PnDcp_Block_ALLSelectorBuilder();
+    return new PnDcp_Block_ALLSelectorBuilderImpl();
   }
 
-  public static class PnDcp_Block_ALLSelectorBuilder implements PnDcp_Block.PnDcp_BlockBuilder {
+  public static class PnDcp_Block_ALLSelectorBuilderImpl implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_ALLSelectorBuilder() {}
+    public PnDcp_Block_ALLSelectorBuilderImpl() {}
 
     public PnDcp_Block_ALLSelector build() {
       PnDcp_Block_ALLSelector pnDcp_Block_ALLSelector = new PnDcp_Block_ALLSelector();

@@ -102,7 +102,7 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
     return lengthInBits;
   }
 
-  public static IdentityMappingRuleTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("IdentityMappingRuleType");
     PositionAware positionAware = readBuffer;
@@ -123,15 +123,15 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
 
     readBuffer.closeContext("IdentityMappingRuleType");
     // Create the instance
-    return new IdentityMappingRuleTypeBuilder(criteriaType, criteria);
+    return new IdentityMappingRuleTypeBuilderImpl(criteriaType, criteria);
   }
 
-  public static class IdentityMappingRuleTypeBuilder
+  public static class IdentityMappingRuleTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final IdentityCriteriaType criteriaType;
     private final PascalString criteria;
 
-    public IdentityMappingRuleTypeBuilder(
+    public IdentityMappingRuleTypeBuilderImpl(
         IdentityCriteriaType criteriaType, PascalString criteria) {
 
       this.criteriaType = criteriaType;

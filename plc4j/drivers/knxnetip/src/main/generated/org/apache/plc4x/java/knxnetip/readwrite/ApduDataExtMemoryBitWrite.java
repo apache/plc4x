@@ -72,7 +72,7 @@ public class ApduDataExtMemoryBitWrite extends ApduDataExt implements Message {
     return lengthInBits;
   }
 
-  public static ApduDataExtMemoryBitWriteBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtMemoryBitWrite");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,14 @@ public class ApduDataExtMemoryBitWrite extends ApduDataExt implements Message {
 
     readBuffer.closeContext("ApduDataExtMemoryBitWrite");
     // Create the instance
-    return new ApduDataExtMemoryBitWriteBuilder(length);
+    return new ApduDataExtMemoryBitWriteBuilderImpl(length);
   }
 
-  public static class ApduDataExtMemoryBitWriteBuilder implements ApduDataExt.ApduDataExtBuilder {
+  public static class ApduDataExtMemoryBitWriteBuilderImpl
+      implements ApduDataExt.ApduDataExtBuilder {
     private final Short length;
 
-    public ApduDataExtMemoryBitWriteBuilder(Short length) {
+    public ApduDataExtMemoryBitWriteBuilderImpl(Short length) {
 
       this.length = length;
     }

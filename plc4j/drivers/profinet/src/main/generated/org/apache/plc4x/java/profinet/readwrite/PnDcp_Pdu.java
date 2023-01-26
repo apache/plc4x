@@ -118,13 +118,13 @@ public abstract class PnDcp_Pdu implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PnDcp_PduBuilder builder = null;
     if (EvaluationHelper.equals(frameId, PnDcp_FrameId.RT_CLASS_1)) {
-      builder = PnDcp_Pdu_RealTimeCyclic.staticParseBuilder(readBuffer);
+      builder = PnDcp_Pdu_RealTimeCyclic.staticParsePnDcp_PduBuilder(readBuffer);
     } else if (EvaluationHelper.equals(frameId, PnDcp_FrameId.PTCP_DelayReqPDU)) {
-      builder = PcDcp_Pdu_DelayReq.staticParseBuilder(readBuffer);
+      builder = PcDcp_Pdu_DelayReq.staticParsePnDcp_PduBuilder(readBuffer);
     } else if (EvaluationHelper.equals(frameId, PnDcp_FrameId.DCP_Identify_ReqPDU)) {
-      builder = PnDcp_Pdu_IdentifyReq.staticParseBuilder(readBuffer);
+      builder = PnDcp_Pdu_IdentifyReq.staticParsePnDcp_PduBuilder(readBuffer);
     } else if (EvaluationHelper.equals(frameId, PnDcp_FrameId.DCP_Identify_ResPDU)) {
-      builder = PnDcp_Pdu_IdentifyRes.staticParseBuilder(readBuffer);
+      builder = PnDcp_Pdu_IdentifyRes.staticParsePnDcp_PduBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -137,7 +137,7 @@ public abstract class PnDcp_Pdu implements Message {
     return _pnDcp_Pdu;
   }
 
-  public static interface PnDcp_PduBuilder {
+  public interface PnDcp_PduBuilder {
     PnDcp_Pdu build(int frameIdValue);
   }
 

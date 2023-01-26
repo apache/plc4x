@@ -104,7 +104,7 @@ public class BACnetConstructedDataEscalatorFaultSignals extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEscalatorFaultSignalsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,17 +131,17 @@ public class BACnetConstructedDataEscalatorFaultSignals extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataEscalatorFaultSignals");
     // Create the instance
-    return new BACnetConstructedDataEscalatorFaultSignalsBuilder(
+    return new BACnetConstructedDataEscalatorFaultSignalsBuilderImpl(
         faultSignals, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEscalatorFaultSignalsBuilder
+  public static class BACnetConstructedDataEscalatorFaultSignalsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetEscalatorFaultTagged> faultSignals;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEscalatorFaultSignalsBuilder(
+    public BACnetConstructedDataEscalatorFaultSignalsBuilderImpl(
         List<BACnetEscalatorFaultTagged> faultSignals,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

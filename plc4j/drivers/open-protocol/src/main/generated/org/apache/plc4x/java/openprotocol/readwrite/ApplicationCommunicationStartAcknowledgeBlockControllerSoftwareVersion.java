@@ -91,8 +91,9 @@ public class ApplicationCommunicationStartAcknowledgeBlockControllerSoftwareVers
     return lengthInBits;
   }
 
-  public static ApplicationCommunicationStartAcknowledgeBlockControllerSoftwareVersionBuilder
-      staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static ApplicationCommunicationStartAcknowledgeBlockBuilder
+      staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext(
         "ApplicationCommunicationStartAcknowledgeBlockControllerSoftwareVersion");
     PositionAware positionAware = readBuffer;
@@ -108,16 +109,17 @@ public class ApplicationCommunicationStartAcknowledgeBlockControllerSoftwareVers
     readBuffer.closeContext(
         "ApplicationCommunicationStartAcknowledgeBlockControllerSoftwareVersion");
     // Create the instance
-    return new ApplicationCommunicationStartAcknowledgeBlockControllerSoftwareVersionBuilder(
+    return new ApplicationCommunicationStartAcknowledgeBlockControllerSoftwareVersionBuilderImpl(
         controllerSoftwareVersion);
   }
 
-  public static class ApplicationCommunicationStartAcknowledgeBlockControllerSoftwareVersionBuilder
+  public static
+  class ApplicationCommunicationStartAcknowledgeBlockControllerSoftwareVersionBuilderImpl
       implements ApplicationCommunicationStartAcknowledgeBlock
           .ApplicationCommunicationStartAcknowledgeBlockBuilder {
     private final String controllerSoftwareVersion;
 
-    public ApplicationCommunicationStartAcknowledgeBlockControllerSoftwareVersionBuilder(
+    public ApplicationCommunicationStartAcknowledgeBlockControllerSoftwareVersionBuilderImpl(
         String controllerSoftwareVersion) {
 
       this.controllerSoftwareVersion = controllerSoftwareVersion;

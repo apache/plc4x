@@ -126,7 +126,7 @@ public class DeleteMonitoredItemsRequest extends ExtensionObjectDefinition imple
     return lengthInBits;
   }
 
-  public static DeleteMonitoredItemsRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DeleteMonitoredItemsRequest");
     PositionAware positionAware = readBuffer;
@@ -151,18 +151,18 @@ public class DeleteMonitoredItemsRequest extends ExtensionObjectDefinition imple
 
     readBuffer.closeContext("DeleteMonitoredItemsRequest");
     // Create the instance
-    return new DeleteMonitoredItemsRequestBuilder(
+    return new DeleteMonitoredItemsRequestBuilderImpl(
         requestHeader, subscriptionId, noOfMonitoredItemIds, monitoredItemIds);
   }
 
-  public static class DeleteMonitoredItemsRequestBuilder
+  public static class DeleteMonitoredItemsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final long subscriptionId;
     private final int noOfMonitoredItemIds;
     private final List<Long> monitoredItemIds;
 
-    public DeleteMonitoredItemsRequestBuilder(
+    public DeleteMonitoredItemsRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         long subscriptionId,
         int noOfMonitoredItemIds,

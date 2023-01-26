@@ -111,7 +111,7 @@ public class BACnetConstructedDataExtendedTimeEnable extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataExtendedTimeEnableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataExtendedTimeEnable extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataExtendedTimeEnable");
     // Create the instance
-    return new BACnetConstructedDataExtendedTimeEnableBuilder(
+    return new BACnetConstructedDataExtendedTimeEnableBuilderImpl(
         extendedTimeEnable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataExtendedTimeEnableBuilder
+  public static class BACnetConstructedDataExtendedTimeEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean extendedTimeEnable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataExtendedTimeEnableBuilder(
+    public BACnetConstructedDataExtendedTimeEnableBuilderImpl(
         BACnetApplicationTagBoolean extendedTimeEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

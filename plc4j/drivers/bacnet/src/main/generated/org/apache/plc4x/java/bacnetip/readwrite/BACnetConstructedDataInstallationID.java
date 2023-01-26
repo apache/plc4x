@@ -109,7 +109,7 @@ public class BACnetConstructedDataInstallationID extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataInstallationIDBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataInstallationID extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataInstallationID");
     // Create the instance
-    return new BACnetConstructedDataInstallationIDBuilder(
+    return new BACnetConstructedDataInstallationIDBuilderImpl(
         installationId, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataInstallationIDBuilder
+  public static class BACnetConstructedDataInstallationIDBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger installationId;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataInstallationIDBuilder(
+    public BACnetConstructedDataInstallationIDBuilderImpl(
         BACnetApplicationTagUnsignedInteger installationId,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

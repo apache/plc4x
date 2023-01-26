@@ -148,8 +148,9 @@ public class BACnetConfirmedServiceRequestWriteProperty extends BACnetConfirmedS
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestWritePropertyBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestWriteProperty");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -216,7 +217,7 @@ public class BACnetConfirmedServiceRequestWriteProperty extends BACnetConfirmedS
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestWriteProperty");
     // Create the instance
-    return new BACnetConfirmedServiceRequestWritePropertyBuilder(
+    return new BACnetConfirmedServiceRequestWritePropertyBuilderImpl(
         objectIdentifier,
         propertyIdentifier,
         arrayIndex,
@@ -225,7 +226,7 @@ public class BACnetConfirmedServiceRequestWriteProperty extends BACnetConfirmedS
         serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestWritePropertyBuilder
+  public static class BACnetConfirmedServiceRequestWritePropertyBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagObjectIdentifier objectIdentifier;
     private final BACnetPropertyIdentifierTagged propertyIdentifier;
@@ -234,7 +235,7 @@ public class BACnetConfirmedServiceRequestWriteProperty extends BACnetConfirmedS
     private final BACnetContextTagUnsignedInteger priority;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestWritePropertyBuilder(
+    public BACnetConfirmedServiceRequestWritePropertyBuilderImpl(
         BACnetContextTagObjectIdentifier objectIdentifier,
         BACnetPropertyIdentifierTagged propertyIdentifier,
         BACnetContextTagUnsignedInteger arrayIndex,

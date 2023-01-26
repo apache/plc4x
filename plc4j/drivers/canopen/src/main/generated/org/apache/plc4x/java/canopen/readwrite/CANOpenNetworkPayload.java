@@ -111,7 +111,7 @@ public class CANOpenNetworkPayload extends CANOpenPayload implements Message {
     return lengthInBits;
   }
 
-  public static CANOpenNetworkPayloadBuilder staticParseBuilder(
+  public static CANOpenPayloadBuilder staticParseCANOpenPayloadBuilder(
       ReadBuffer readBuffer, CANOpenService service) throws ParseException {
     readBuffer.pullContext("CANOpenNetworkPayload");
     PositionAware positionAware = readBuffer;
@@ -132,15 +132,17 @@ public class CANOpenNetworkPayload extends CANOpenPayload implements Message {
 
     readBuffer.closeContext("CANOpenNetworkPayload");
     // Create the instance
-    return new CANOpenNetworkPayloadBuilder(request, node, reservedField0);
+    return new CANOpenNetworkPayloadBuilderImpl(request, node, reservedField0);
   }
 
-  public static class CANOpenNetworkPayloadBuilder implements CANOpenPayload.CANOpenPayloadBuilder {
+  public static class CANOpenNetworkPayloadBuilderImpl
+      implements CANOpenPayload.CANOpenPayloadBuilder {
     private final NMTStateRequest request;
     private final short node;
     private final Byte reservedField0;
 
-    public CANOpenNetworkPayloadBuilder(NMTStateRequest request, short node, Byte reservedField0) {
+    public CANOpenNetworkPayloadBuilderImpl(
+        NMTStateRequest request, short node, Byte reservedField0) {
       this.request = request;
       this.node = node;
       this.reservedField0 = reservedField0;

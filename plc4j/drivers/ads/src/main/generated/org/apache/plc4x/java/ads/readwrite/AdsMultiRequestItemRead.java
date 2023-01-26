@@ -107,7 +107,7 @@ public class AdsMultiRequestItemRead extends AdsMultiRequestItem implements Mess
     return lengthInBits;
   }
 
-  public static AdsMultiRequestItemReadBuilder staticParseBuilder(
+  public static AdsMultiRequestItemBuilder staticParseAdsMultiRequestItemBuilder(
       ReadBuffer readBuffer, Long indexGroup) throws ParseException {
     readBuffer.pullContext("AdsMultiRequestItemRead");
     PositionAware positionAware = readBuffer;
@@ -122,16 +122,16 @@ public class AdsMultiRequestItemRead extends AdsMultiRequestItem implements Mess
 
     readBuffer.closeContext("AdsMultiRequestItemRead");
     // Create the instance
-    return new AdsMultiRequestItemReadBuilder(itemIndexGroup, itemIndexOffset, itemReadLength);
+    return new AdsMultiRequestItemReadBuilderImpl(itemIndexGroup, itemIndexOffset, itemReadLength);
   }
 
-  public static class AdsMultiRequestItemReadBuilder
+  public static class AdsMultiRequestItemReadBuilderImpl
       implements AdsMultiRequestItem.AdsMultiRequestItemBuilder {
     private final long itemIndexGroup;
     private final long itemIndexOffset;
     private final long itemReadLength;
 
-    public AdsMultiRequestItemReadBuilder(
+    public AdsMultiRequestItemReadBuilderImpl(
         long itemIndexGroup, long itemIndexOffset, long itemReadLength) {
 
       this.itemIndexGroup = itemIndexGroup;

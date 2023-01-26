@@ -187,7 +187,7 @@ public class AirConditioningDataHumidityScheduleEntry extends AirConditioningDat
     return lengthInBits;
   }
 
-  public static AirConditioningDataHumidityScheduleEntryBuilder staticParseBuilder(
+  public static AirConditioningDataBuilder staticParseAirConditioningDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataHumidityScheduleEntry");
     PositionAware positionAware = readBuffer;
@@ -231,11 +231,11 @@ public class AirConditioningDataHumidityScheduleEntry extends AirConditioningDat
 
     readBuffer.closeContext("AirConditioningDataHumidityScheduleEntry");
     // Create the instance
-    return new AirConditioningDataHumidityScheduleEntryBuilder(
+    return new AirConditioningDataHumidityScheduleEntryBuilderImpl(
         zoneGroup, zoneList, entry, format, humidityModeAndFlags, startTime, level, rawLevel);
   }
 
-  public static class AirConditioningDataHumidityScheduleEntryBuilder
+  public static class AirConditioningDataHumidityScheduleEntryBuilderImpl
       implements AirConditioningData.AirConditioningDataBuilder {
     private final byte zoneGroup;
     private final HVACZoneList zoneList;
@@ -246,7 +246,7 @@ public class AirConditioningDataHumidityScheduleEntry extends AirConditioningDat
     private final HVACHumidity level;
     private final HVACRawLevels rawLevel;
 
-    public AirConditioningDataHumidityScheduleEntryBuilder(
+    public AirConditioningDataHumidityScheduleEntryBuilderImpl(
         byte zoneGroup,
         HVACZoneList zoneList,
         short entry,

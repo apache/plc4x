@@ -113,9 +113,9 @@ public abstract class BACnetClientCOV implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetClientCOVBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0x4)) {
-      builder = BACnetClientCOVObject.staticParseBuilder(readBuffer);
+      builder = BACnetClientCOVObject.staticParseBACnetClientCOVBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x0)) {
-      builder = BACnetClientCOVNone.staticParseBuilder(readBuffer);
+      builder = BACnetClientCOVNone.staticParseBACnetClientCOVBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -132,7 +132,7 @@ public abstract class BACnetClientCOV implements Message {
     return _bACnetClientCOV;
   }
 
-  public static interface BACnetClientCOVBuilder {
+  public interface BACnetClientCOVBuilder {
     BACnetClientCOV build(BACnetTagHeader peekedTagHeader);
   }
 

@@ -111,9 +111,8 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledge extends
     return lengthInBits;
   }
 
-  public static OpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder
-      staticParseBuilder(ReadBuffer readBuffer, OpenProtocolRevision connectionRevision)
-          throws ParseException {
+  public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
+      ReadBuffer readBuffer, OpenProtocolRevision connectionRevision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommunicationStartAcknowledge");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -129,16 +128,16 @@ public class OpenProtocolMessageApplicationCommunicationStartAcknowledge extends
 
     readBuffer.closeContext("OpenProtocolMessageApplicationCommunicationStartAcknowledge");
     // Create the instance
-    return new OpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder(
+    return new OpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilderImpl(
         blocks, connectionRevision);
   }
 
-  public static class OpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder
+  public static class OpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilderImpl
       implements OpenProtocolMessage.OpenProtocolMessageBuilder {
     private final List<ApplicationCommunicationStartAcknowledgeBlock> blocks;
     private final OpenProtocolRevision connectionRevision;
 
-    public OpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilder(
+    public OpenProtocolMessageApplicationCommunicationStartAcknowledgeBuilderImpl(
         List<ApplicationCommunicationStartAcknowledgeBlock> blocks,
         OpenProtocolRevision connectionRevision) {
 

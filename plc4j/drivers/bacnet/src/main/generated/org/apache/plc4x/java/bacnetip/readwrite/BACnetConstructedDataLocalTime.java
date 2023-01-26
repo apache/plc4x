@@ -109,7 +109,7 @@ public class BACnetConstructedDataLocalTime extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLocalTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,16 +132,16 @@ public class BACnetConstructedDataLocalTime extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataLocalTime");
     // Create the instance
-    return new BACnetConstructedDataLocalTimeBuilder(localTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLocalTimeBuilderImpl(localTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLocalTimeBuilder
+  public static class BACnetConstructedDataLocalTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagTime localTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLocalTimeBuilder(
+    public BACnetConstructedDataLocalTimeBuilderImpl(
         BACnetApplicationTagTime localTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

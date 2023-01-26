@@ -133,7 +133,7 @@ public class RequestDirectCommandAccess extends Request implements Message {
     return lengthInBits;
   }
 
-  public static RequestDirectCommandAccessBuilder staticParseBuilder(
+  public static RequestBuilder staticParseRequestBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("RequestDirectCommandAccess");
     PositionAware positionAware = readBuffer;
@@ -159,15 +159,15 @@ public class RequestDirectCommandAccess extends Request implements Message {
 
     readBuffer.closeContext("RequestDirectCommandAccess");
     // Create the instance
-    return new RequestDirectCommandAccessBuilder(calData, alpha, cBusOptions);
+    return new RequestDirectCommandAccessBuilderImpl(calData, alpha, cBusOptions);
   }
 
-  public static class RequestDirectCommandAccessBuilder implements Request.RequestBuilder {
+  public static class RequestDirectCommandAccessBuilderImpl implements Request.RequestBuilder {
     private final CALData calData;
     private final Alpha alpha;
     private final CBusOptions cBusOptions;
 
-    public RequestDirectCommandAccessBuilder(
+    public RequestDirectCommandAccessBuilderImpl(
         CALData calData, Alpha alpha, CBusOptions cBusOptions) {
 
       this.calData = calData;

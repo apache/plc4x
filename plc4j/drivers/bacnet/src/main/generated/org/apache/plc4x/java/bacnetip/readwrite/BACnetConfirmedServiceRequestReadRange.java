@@ -136,8 +136,9 @@ public class BACnetConfirmedServiceRequestReadRange extends BACnetConfirmedServi
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestReadRangeBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestReadRange");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -185,11 +186,11 @@ public class BACnetConfirmedServiceRequestReadRange extends BACnetConfirmedServi
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestReadRange");
     // Create the instance
-    return new BACnetConfirmedServiceRequestReadRangeBuilder(
+    return new BACnetConfirmedServiceRequestReadRangeBuilderImpl(
         objectIdentifier, propertyIdentifier, propertyArrayIndex, readRange, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestReadRangeBuilder
+  public static class BACnetConfirmedServiceRequestReadRangeBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagObjectIdentifier objectIdentifier;
     private final BACnetPropertyIdentifierTagged propertyIdentifier;
@@ -197,7 +198,7 @@ public class BACnetConfirmedServiceRequestReadRange extends BACnetConfirmedServi
     private final BACnetConfirmedServiceRequestReadRangeRange readRange;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestReadRangeBuilder(
+    public BACnetConfirmedServiceRequestReadRangeBuilderImpl(
         BACnetContextTagObjectIdentifier objectIdentifier,
         BACnetPropertyIdentifierTagged propertyIdentifier,
         BACnetContextTagUnsignedInteger propertyArrayIndex,

@@ -110,7 +110,7 @@ public class BACnetConstructedDataPositiveIntegerValueMinPresValue extends BACne
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,17 +135,17 @@ public class BACnetConstructedDataPositiveIntegerValueMinPresValue extends BACne
 
     readBuffer.closeContext("BACnetConstructedDataPositiveIntegerValueMinPresValue");
     // Create the instance
-    return new BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder(
+    return new BACnetConstructedDataPositiveIntegerValueMinPresValueBuilderImpl(
         minPresValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder
+  public static class BACnetConstructedDataPositiveIntegerValueMinPresValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger minPresValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder(
+    public BACnetConstructedDataPositiveIntegerValueMinPresValueBuilderImpl(
         BACnetApplicationTagUnsignedInteger minPresValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

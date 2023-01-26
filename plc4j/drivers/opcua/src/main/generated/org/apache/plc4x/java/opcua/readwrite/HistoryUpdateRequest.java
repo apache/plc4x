@@ -117,7 +117,7 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static HistoryUpdateRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryUpdateRequest");
     PositionAware positionAware = readBuffer;
@@ -143,17 +143,17 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("HistoryUpdateRequest");
     // Create the instance
-    return new HistoryUpdateRequestBuilder(
+    return new HistoryUpdateRequestBuilderImpl(
         requestHeader, noOfHistoryUpdateDetails, historyUpdateDetails);
   }
 
-  public static class HistoryUpdateRequestBuilder
+  public static class HistoryUpdateRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfHistoryUpdateDetails;
     private final List<ExtensionObject> historyUpdateDetails;
 
-    public HistoryUpdateRequestBuilder(
+    public HistoryUpdateRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfHistoryUpdateDetails,
         List<ExtensionObject> historyUpdateDetails) {

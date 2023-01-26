@@ -124,7 +124,7 @@ public class ModbusPDUWriteMultipleCoilsRequest extends ModbusPDU implements Mes
     return lengthInBits;
   }
 
-  public static ModbusPDUWriteMultipleCoilsRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUWriteMultipleCoilsRequest");
     PositionAware positionAware = readBuffer;
@@ -141,16 +141,16 @@ public class ModbusPDUWriteMultipleCoilsRequest extends ModbusPDU implements Mes
 
     readBuffer.closeContext("ModbusPDUWriteMultipleCoilsRequest");
     // Create the instance
-    return new ModbusPDUWriteMultipleCoilsRequestBuilder(startingAddress, quantity, value);
+    return new ModbusPDUWriteMultipleCoilsRequestBuilderImpl(startingAddress, quantity, value);
   }
 
-  public static class ModbusPDUWriteMultipleCoilsRequestBuilder
+  public static class ModbusPDUWriteMultipleCoilsRequestBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final int startingAddress;
     private final int quantity;
     private final byte[] value;
 
-    public ModbusPDUWriteMultipleCoilsRequestBuilder(
+    public ModbusPDUWriteMultipleCoilsRequestBuilderImpl(
         int startingAddress, int quantity, byte[] value) {
 
       this.startingAddress = startingAddress;

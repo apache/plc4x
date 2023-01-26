@@ -199,8 +199,8 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
     return lengthInBits;
   }
 
-  public static S7ParameterUserDataItemCPUFunctionsBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static S7ParameterUserDataItemBuilder staticParseS7ParameterUserDataItemBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("S7ParameterUserDataItemCPUFunctions");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -231,7 +231,7 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
 
     readBuffer.closeContext("S7ParameterUserDataItemCPUFunctions");
     // Create the instance
-    return new S7ParameterUserDataItemCPUFunctionsBuilder(
+    return new S7ParameterUserDataItemCPUFunctionsBuilderImpl(
         method,
         cpuFunctionType,
         cpuFunctionGroup,
@@ -242,7 +242,7 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
         errorCode);
   }
 
-  public static class S7ParameterUserDataItemCPUFunctionsBuilder
+  public static class S7ParameterUserDataItemCPUFunctionsBuilderImpl
       implements S7ParameterUserDataItem.S7ParameterUserDataItemBuilder {
     private final short method;
     private final byte cpuFunctionType;
@@ -253,7 +253,7 @@ public class S7ParameterUserDataItemCPUFunctions extends S7ParameterUserDataItem
     private final Short lastDataUnit;
     private final Integer errorCode;
 
-    public S7ParameterUserDataItemCPUFunctionsBuilder(
+    public S7ParameterUserDataItemCPUFunctionsBuilderImpl(
         short method,
         byte cpuFunctionType,
         byte cpuFunctionGroup,

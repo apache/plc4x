@@ -96,8 +96,9 @@ public class ApplicationCommunicationStartAcknowledgeBlockLinkingHandlingSupport
     return lengthInBits;
   }
 
-  public static ApplicationCommunicationStartAcknowledgeBlockLinkingHandlingSupportBuilder
-      staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static ApplicationCommunicationStartAcknowledgeBlockBuilder
+      staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("ApplicationCommunicationStartAcknowledgeBlockLinkingHandlingSupport");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -111,17 +112,17 @@ public class ApplicationCommunicationStartAcknowledgeBlockLinkingHandlingSupport
 
     readBuffer.closeContext("ApplicationCommunicationStartAcknowledgeBlockLinkingHandlingSupport");
     // Create the instance
-    return new ApplicationCommunicationStartAcknowledgeBlockLinkingHandlingSupportBuilder(
+    return new ApplicationCommunicationStartAcknowledgeBlockLinkingHandlingSupportBuilderImpl(
         linkingHandlingSupport, reservedField0);
   }
 
-  public static class ApplicationCommunicationStartAcknowledgeBlockLinkingHandlingSupportBuilder
+  public static class ApplicationCommunicationStartAcknowledgeBlockLinkingHandlingSupportBuilderImpl
       implements ApplicationCommunicationStartAcknowledgeBlock
           .ApplicationCommunicationStartAcknowledgeBlockBuilder {
     private final boolean linkingHandlingSupport;
     private final Short reservedField0;
 
-    public ApplicationCommunicationStartAcknowledgeBlockLinkingHandlingSupportBuilder(
+    public ApplicationCommunicationStartAcknowledgeBlockLinkingHandlingSupportBuilderImpl(
         boolean linkingHandlingSupport, Short reservedField0) {
       this.linkingHandlingSupport = linkingHandlingSupport;
       this.reservedField0 = reservedField0;

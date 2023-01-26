@@ -99,7 +99,7 @@ public class FirmataCommandProtocolVersion extends FirmataCommand implements Mes
     return lengthInBits;
   }
 
-  public static FirmataCommandProtocolVersionBuilder staticParseBuilder(
+  public static FirmataCommandBuilder staticParseFirmataCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataCommandProtocolVersion");
     PositionAware positionAware = readBuffer;
@@ -112,16 +112,16 @@ public class FirmataCommandProtocolVersion extends FirmataCommand implements Mes
 
     readBuffer.closeContext("FirmataCommandProtocolVersion");
     // Create the instance
-    return new FirmataCommandProtocolVersionBuilder(majorVersion, minorVersion, response);
+    return new FirmataCommandProtocolVersionBuilderImpl(majorVersion, minorVersion, response);
   }
 
-  public static class FirmataCommandProtocolVersionBuilder
+  public static class FirmataCommandProtocolVersionBuilderImpl
       implements FirmataCommand.FirmataCommandBuilder {
     private final short majorVersion;
     private final short minorVersion;
     private final Boolean response;
 
-    public FirmataCommandProtocolVersionBuilder(
+    public FirmataCommandProtocolVersionBuilderImpl(
         short majorVersion, short minorVersion, Boolean response) {
 
       this.majorVersion = majorVersion;

@@ -110,7 +110,7 @@ public class BACnetConstructedDataLightingCommand extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLightingCommandBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,17 +132,17 @@ public class BACnetConstructedDataLightingCommand extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataLightingCommand");
     // Create the instance
-    return new BACnetConstructedDataLightingCommandBuilder(
+    return new BACnetConstructedDataLightingCommandBuilderImpl(
         lightingCommand, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLightingCommandBuilder
+  public static class BACnetConstructedDataLightingCommandBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLightingCommand lightingCommand;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLightingCommandBuilder(
+    public BACnetConstructedDataLightingCommandBuilderImpl(
         BACnetLightingCommand lightingCommand,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

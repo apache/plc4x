@@ -97,7 +97,7 @@ public class MediaTransportControlDataSetSelection extends MediaTransportControl
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataSetSelectionBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataSetSelection");
     PositionAware positionAware = readBuffer;
@@ -110,15 +110,15 @@ public class MediaTransportControlDataSetSelection extends MediaTransportControl
 
     readBuffer.closeContext("MediaTransportControlDataSetSelection");
     // Create the instance
-    return new MediaTransportControlDataSetSelectionBuilder(selectionHi, selectionLo);
+    return new MediaTransportControlDataSetSelectionBuilderImpl(selectionHi, selectionLo);
   }
 
-  public static class MediaTransportControlDataSetSelectionBuilder
+  public static class MediaTransportControlDataSetSelectionBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte selectionHi;
     private final byte selectionLo;
 
-    public MediaTransportControlDataSetSelectionBuilder(byte selectionHi, byte selectionLo) {
+    public MediaTransportControlDataSetSelectionBuilderImpl(byte selectionHi, byte selectionLo) {
 
       this.selectionHi = selectionHi;
       this.selectionLo = selectionLo;

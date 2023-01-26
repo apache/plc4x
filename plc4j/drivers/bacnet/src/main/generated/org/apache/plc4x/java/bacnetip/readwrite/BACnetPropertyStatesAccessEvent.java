@@ -81,7 +81,7 @@ public class BACnetPropertyStatesAccessEvent extends BACnetPropertyStates implem
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesAccessEventBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesAccessEvent");
     PositionAware positionAware = readBuffer;
@@ -101,14 +101,14 @@ public class BACnetPropertyStatesAccessEvent extends BACnetPropertyStates implem
 
     readBuffer.closeContext("BACnetPropertyStatesAccessEvent");
     // Create the instance
-    return new BACnetPropertyStatesAccessEventBuilder(accessEvent);
+    return new BACnetPropertyStatesAccessEventBuilderImpl(accessEvent);
   }
 
-  public static class BACnetPropertyStatesAccessEventBuilder
+  public static class BACnetPropertyStatesAccessEventBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetAccessEventTagged accessEvent;
 
-    public BACnetPropertyStatesAccessEventBuilder(BACnetAccessEventTagged accessEvent) {
+    public BACnetPropertyStatesAccessEventBuilderImpl(BACnetAccessEventTagged accessEvent) {
 
       this.accessEvent = accessEvent;
     }

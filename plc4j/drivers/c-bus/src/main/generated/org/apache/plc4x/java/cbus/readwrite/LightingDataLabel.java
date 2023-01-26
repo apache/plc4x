@@ -130,7 +130,7 @@ public class LightingDataLabel extends LightingData implements Message {
     return lengthInBits;
   }
 
-  public static LightingDataLabelBuilder staticParseBuilder(
+  public static LightingDataBuilder staticParseLightingDataBuilder(
       ReadBuffer readBuffer, LightingCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("LightingDataLabel");
@@ -163,16 +163,16 @@ public class LightingDataLabel extends LightingData implements Message {
 
     readBuffer.closeContext("LightingDataLabel");
     // Create the instance
-    return new LightingDataLabelBuilder(group, labelOptions, language, data);
+    return new LightingDataLabelBuilderImpl(group, labelOptions, language, data);
   }
 
-  public static class LightingDataLabelBuilder implements LightingData.LightingDataBuilder {
+  public static class LightingDataLabelBuilderImpl implements LightingData.LightingDataBuilder {
     private final byte group;
     private final LightingLabelOptions labelOptions;
     private final Language language;
     private final byte[] data;
 
-    public LightingDataLabelBuilder(
+    public LightingDataLabelBuilderImpl(
         byte group, LightingLabelOptions labelOptions, Language language, byte[] data) {
 
       this.group = group;

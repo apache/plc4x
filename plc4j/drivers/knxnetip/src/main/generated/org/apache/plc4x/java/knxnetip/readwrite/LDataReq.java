@@ -121,7 +121,7 @@ public class LDataReq extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static LDataReqBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("LDataReq");
     PositionAware positionAware = readBuffer;
@@ -145,16 +145,17 @@ public class LDataReq extends CEMI implements Message {
 
     readBuffer.closeContext("LDataReq");
     // Create the instance
-    return new LDataReqBuilder(additionalInformationLength, additionalInformation, dataFrame, size);
+    return new LDataReqBuilderImpl(
+        additionalInformationLength, additionalInformation, dataFrame, size);
   }
 
-  public static class LDataReqBuilder implements CEMI.CEMIBuilder {
+  public static class LDataReqBuilderImpl implements CEMI.CEMIBuilder {
     private final short additionalInformationLength;
     private final List<CEMIAdditionalInformation> additionalInformation;
     private final LDataFrame dataFrame;
     private final Integer size;
 
-    public LDataReqBuilder(
+    public LDataReqBuilderImpl(
         short additionalInformationLength,
         List<CEMIAdditionalInformation> additionalInformation,
         LDataFrame dataFrame,

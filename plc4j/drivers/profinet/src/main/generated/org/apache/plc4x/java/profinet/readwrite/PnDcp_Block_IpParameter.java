@@ -179,7 +179,7 @@ public class PnDcp_Block_IpParameter extends PnDcp_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_Block_IpParameterBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Block_IpParameter");
     PositionAware positionAware = readBuffer;
@@ -206,7 +206,7 @@ public class PnDcp_Block_IpParameter extends PnDcp_Block implements Message {
 
     readBuffer.closeContext("PnDcp_Block_IpParameter");
     // Create the instance
-    return new PnDcp_Block_IpParameterBuilder(
+    return new PnDcp_Block_IpParameterBuilderImpl(
         ipConflictDetected,
         setViaDhcp,
         setManually,
@@ -217,7 +217,7 @@ public class PnDcp_Block_IpParameter extends PnDcp_Block implements Message {
         reservedField1);
   }
 
-  public static class PnDcp_Block_IpParameterBuilder implements PnDcp_Block.PnDcp_BlockBuilder {
+  public static class PnDcp_Block_IpParameterBuilderImpl implements PnDcp_Block.PnDcp_BlockBuilder {
     private final boolean ipConflictDetected;
     private final boolean setViaDhcp;
     private final boolean setManually;
@@ -227,7 +227,7 @@ public class PnDcp_Block_IpParameter extends PnDcp_Block implements Message {
     private final Short reservedField0;
     private final Short reservedField1;
 
-    public PnDcp_Block_IpParameterBuilder(
+    public PnDcp_Block_IpParameterBuilderImpl(
         boolean ipConflictDetected,
         boolean setViaDhcp,
         boolean setManually,

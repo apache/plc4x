@@ -151,7 +151,7 @@ public class APDUSegmentAck extends APDU implements Message {
     return lengthInBits;
   }
 
-  public static APDUSegmentAckBuilder staticParseBuilder(ReadBuffer readBuffer, Integer apduLength)
+  public static APDUBuilder staticParseAPDUBuilder(ReadBuffer readBuffer, Integer apduLength)
       throws ParseException {
     readBuffer.pullContext("APDUSegmentAck");
     PositionAware positionAware = readBuffer;
@@ -173,7 +173,7 @@ public class APDUSegmentAck extends APDU implements Message {
 
     readBuffer.closeContext("APDUSegmentAck");
     // Create the instance
-    return new APDUSegmentAckBuilder(
+    return new APDUSegmentAckBuilderImpl(
         negativeAck,
         server,
         originalInvokeId,
@@ -183,7 +183,7 @@ public class APDUSegmentAck extends APDU implements Message {
         reservedField0);
   }
 
-  public static class APDUSegmentAckBuilder implements APDU.APDUBuilder {
+  public static class APDUSegmentAckBuilderImpl implements APDU.APDUBuilder {
     private final boolean negativeAck;
     private final boolean server;
     private final short originalInvokeId;
@@ -192,7 +192,7 @@ public class APDUSegmentAck extends APDU implements Message {
     private final Integer apduLength;
     private final Byte reservedField0;
 
-    public APDUSegmentAckBuilder(
+    public APDUSegmentAckBuilderImpl(
         boolean negativeAck,
         boolean server,
         short originalInvokeId,

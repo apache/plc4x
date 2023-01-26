@@ -92,8 +92,8 @@ public class COTPParameterTpduSize extends COTPParameter implements Message {
     return lengthInBits;
   }
 
-  public static COTPParameterTpduSizeBuilder staticParseBuilder(ReadBuffer readBuffer, Short rest)
-      throws ParseException {
+  public static COTPParameterBuilder staticParseCOTPParameterBuilder(
+      ReadBuffer readBuffer, Short rest) throws ParseException {
     readBuffer.pullContext("COTPParameterTpduSize");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -108,14 +108,15 @@ public class COTPParameterTpduSize extends COTPParameter implements Message {
 
     readBuffer.closeContext("COTPParameterTpduSize");
     // Create the instance
-    return new COTPParameterTpduSizeBuilder(tpduSize, rest);
+    return new COTPParameterTpduSizeBuilderImpl(tpduSize, rest);
   }
 
-  public static class COTPParameterTpduSizeBuilder implements COTPParameter.COTPParameterBuilder {
+  public static class COTPParameterTpduSizeBuilderImpl
+      implements COTPParameter.COTPParameterBuilder {
     private final COTPTpduSize tpduSize;
     private final Short rest;
 
-    public COTPParameterTpduSizeBuilder(COTPTpduSize tpduSize, Short rest) {
+    public COTPParameterTpduSizeBuilderImpl(COTPTpduSize tpduSize, Short rest) {
 
       this.tpduSize = tpduSize;
       this.rest = rest;

@@ -75,7 +75,7 @@ public class RequestEmpty extends Request implements Message {
     return lengthInBits;
   }
 
-  public static RequestEmptyBuilder staticParseBuilder(
+  public static RequestBuilder staticParseRequestBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("RequestEmpty");
     PositionAware positionAware = readBuffer;
@@ -84,13 +84,13 @@ public class RequestEmpty extends Request implements Message {
 
     readBuffer.closeContext("RequestEmpty");
     // Create the instance
-    return new RequestEmptyBuilder(cBusOptions);
+    return new RequestEmptyBuilderImpl(cBusOptions);
   }
 
-  public static class RequestEmptyBuilder implements Request.RequestBuilder {
+  public static class RequestEmptyBuilderImpl implements Request.RequestBuilder {
     private final CBusOptions cBusOptions;
 
-    public RequestEmptyBuilder(CBusOptions cBusOptions) {
+    public RequestEmptyBuilderImpl(CBusOptions cBusOptions) {
 
       this.cBusOptions = cBusOptions;
     }

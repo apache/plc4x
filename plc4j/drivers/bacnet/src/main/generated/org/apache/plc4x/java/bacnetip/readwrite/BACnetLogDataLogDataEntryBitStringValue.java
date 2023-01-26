@@ -82,7 +82,7 @@ public class BACnetLogDataLogDataEntryBitStringValue extends BACnetLogDataLogDat
     return lengthInBits;
   }
 
-  public static BACnetLogDataLogDataEntryBitStringValueBuilder staticParseBuilder(
+  public static BACnetLogDataLogDataEntryBuilder staticParseBACnetLogDataLogDataEntryBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryBitStringValue");
     PositionAware positionAware = readBuffer;
@@ -101,14 +101,14 @@ public class BACnetLogDataLogDataEntryBitStringValue extends BACnetLogDataLogDat
 
     readBuffer.closeContext("BACnetLogDataLogDataEntryBitStringValue");
     // Create the instance
-    return new BACnetLogDataLogDataEntryBitStringValueBuilder(bitStringValue);
+    return new BACnetLogDataLogDataEntryBitStringValueBuilderImpl(bitStringValue);
   }
 
-  public static class BACnetLogDataLogDataEntryBitStringValueBuilder
+  public static class BACnetLogDataLogDataEntryBitStringValueBuilderImpl
       implements BACnetLogDataLogDataEntry.BACnetLogDataLogDataEntryBuilder {
     private final BACnetContextTagBitString bitStringValue;
 
-    public BACnetLogDataLogDataEntryBitStringValueBuilder(
+    public BACnetLogDataLogDataEntryBitStringValueBuilderImpl(
         BACnetContextTagBitString bitStringValue) {
 
       this.bitStringValue = bitStringValue;

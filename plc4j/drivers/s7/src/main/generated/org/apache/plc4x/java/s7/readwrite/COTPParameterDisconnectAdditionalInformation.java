@@ -89,7 +89,7 @@ public class COTPParameterDisconnectAdditionalInformation extends COTPParameter 
     return lengthInBits;
   }
 
-  public static COTPParameterDisconnectAdditionalInformationBuilder staticParseBuilder(
+  public static COTPParameterBuilder staticParseCOTPParameterBuilder(
       ReadBuffer readBuffer, Short rest) throws ParseException {
     readBuffer.pullContext("COTPParameterDisconnectAdditionalInformation");
     PositionAware positionAware = readBuffer;
@@ -100,15 +100,15 @@ public class COTPParameterDisconnectAdditionalInformation extends COTPParameter 
 
     readBuffer.closeContext("COTPParameterDisconnectAdditionalInformation");
     // Create the instance
-    return new COTPParameterDisconnectAdditionalInformationBuilder(data, rest);
+    return new COTPParameterDisconnectAdditionalInformationBuilderImpl(data, rest);
   }
 
-  public static class COTPParameterDisconnectAdditionalInformationBuilder
+  public static class COTPParameterDisconnectAdditionalInformationBuilderImpl
       implements COTPParameter.COTPParameterBuilder {
     private final byte[] data;
     private final Short rest;
 
-    public COTPParameterDisconnectAdditionalInformationBuilder(byte[] data, Short rest) {
+    public COTPParameterDisconnectAdditionalInformationBuilderImpl(byte[] data, Short rest) {
 
       this.data = data;
       this.rest = rest;

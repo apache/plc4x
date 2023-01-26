@@ -88,7 +88,7 @@ public class CANOpenHeartbeatPayload extends CANOpenPayload implements Message {
     return lengthInBits;
   }
 
-  public static CANOpenHeartbeatPayloadBuilder staticParseBuilder(
+  public static CANOpenPayloadBuilder staticParseCANOpenPayloadBuilder(
       ReadBuffer readBuffer, CANOpenService service) throws ParseException {
     readBuffer.pullContext("CANOpenHeartbeatPayload");
     PositionAware positionAware = readBuffer;
@@ -103,14 +103,14 @@ public class CANOpenHeartbeatPayload extends CANOpenPayload implements Message {
 
     readBuffer.closeContext("CANOpenHeartbeatPayload");
     // Create the instance
-    return new CANOpenHeartbeatPayloadBuilder(state);
+    return new CANOpenHeartbeatPayloadBuilderImpl(state);
   }
 
-  public static class CANOpenHeartbeatPayloadBuilder
+  public static class CANOpenHeartbeatPayloadBuilderImpl
       implements CANOpenPayload.CANOpenPayloadBuilder {
     private final NMTState state;
 
-    public CANOpenHeartbeatPayloadBuilder(NMTState state) {
+    public CANOpenHeartbeatPayloadBuilderImpl(NMTState state) {
 
       this.state = state;
     }

@@ -125,7 +125,7 @@ public class ModbusPDUWriteMultipleHoldingRegistersRequest extends ModbusPDU imp
     return lengthInBits;
   }
 
-  public static ModbusPDUWriteMultipleHoldingRegistersRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUWriteMultipleHoldingRegistersRequest");
     PositionAware positionAware = readBuffer;
@@ -142,17 +142,17 @@ public class ModbusPDUWriteMultipleHoldingRegistersRequest extends ModbusPDU imp
 
     readBuffer.closeContext("ModbusPDUWriteMultipleHoldingRegistersRequest");
     // Create the instance
-    return new ModbusPDUWriteMultipleHoldingRegistersRequestBuilder(
+    return new ModbusPDUWriteMultipleHoldingRegistersRequestBuilderImpl(
         startingAddress, quantity, value);
   }
 
-  public static class ModbusPDUWriteMultipleHoldingRegistersRequestBuilder
+  public static class ModbusPDUWriteMultipleHoldingRegistersRequestBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final int startingAddress;
     private final int quantity;
     private final byte[] value;
 
-    public ModbusPDUWriteMultipleHoldingRegistersRequestBuilder(
+    public ModbusPDUWriteMultipleHoldingRegistersRequestBuilderImpl(
         int startingAddress, int quantity, byte[] value) {
 
       this.startingAddress = startingAddress;

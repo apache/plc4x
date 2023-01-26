@@ -82,7 +82,7 @@ public class KnxNetObjectServer extends ServiceId implements Message {
     return lengthInBits;
   }
 
-  public static KnxNetObjectServerBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static ServiceIdBuilder staticParseServiceIdBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("KnxNetObjectServer");
     PositionAware positionAware = readBuffer;
@@ -93,13 +93,13 @@ public class KnxNetObjectServer extends ServiceId implements Message {
 
     readBuffer.closeContext("KnxNetObjectServer");
     // Create the instance
-    return new KnxNetObjectServerBuilder(version);
+    return new KnxNetObjectServerBuilderImpl(version);
   }
 
-  public static class KnxNetObjectServerBuilder implements ServiceId.ServiceIdBuilder {
+  public static class KnxNetObjectServerBuilderImpl implements ServiceId.ServiceIdBuilder {
     private final short version;
 
-    public KnxNetObjectServerBuilder(short version) {
+    public KnxNetObjectServerBuilderImpl(short version) {
 
       this.version = version;
     }

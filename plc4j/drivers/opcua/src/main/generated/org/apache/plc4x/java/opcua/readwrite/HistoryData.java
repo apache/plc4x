@@ -101,8 +101,8 @@ public class HistoryData extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static HistoryDataBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -118,15 +118,15 @@ public class HistoryData extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("HistoryData");
     // Create the instance
-    return new HistoryDataBuilder(noOfDataValues, dataValues);
+    return new HistoryDataBuilderImpl(noOfDataValues, dataValues);
   }
 
-  public static class HistoryDataBuilder
+  public static class HistoryDataBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int noOfDataValues;
     private final List<DataValue> dataValues;
 
-    public HistoryDataBuilder(int noOfDataValues, List<DataValue> dataValues) {
+    public HistoryDataBuilderImpl(int noOfDataValues, List<DataValue> dataValues) {
 
       this.noOfDataValues = noOfDataValues;
       this.dataValues = dataValues;

@@ -200,7 +200,7 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static DataTypeSchemaHeaderBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DataTypeSchemaHeader");
     PositionAware positionAware = readBuffer;
@@ -254,7 +254,7 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("DataTypeSchemaHeader");
     // Create the instance
-    return new DataTypeSchemaHeaderBuilder(
+    return new DataTypeSchemaHeaderBuilderImpl(
         noOfNamespaces,
         namespaces,
         noOfStructureDataTypes,
@@ -265,7 +265,7 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
         simpleDataTypes);
   }
 
-  public static class DataTypeSchemaHeaderBuilder
+  public static class DataTypeSchemaHeaderBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int noOfNamespaces;
     private final List<PascalString> namespaces;
@@ -276,7 +276,7 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
     private final int noOfSimpleDataTypes;
     private final List<DataTypeDescription> simpleDataTypes;
 
-    public DataTypeSchemaHeaderBuilder(
+    public DataTypeSchemaHeaderBuilderImpl(
         int noOfNamespaces,
         List<PascalString> namespaces,
         int noOfStructureDataTypes,

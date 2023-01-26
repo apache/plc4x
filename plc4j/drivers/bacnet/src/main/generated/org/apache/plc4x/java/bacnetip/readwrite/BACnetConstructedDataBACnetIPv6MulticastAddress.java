@@ -111,7 +111,7 @@ public class BACnetConstructedDataBACnetIPv6MulticastAddress extends BACnetConst
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBACnetIPv6MulticastAddressBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -136,17 +136,17 @@ public class BACnetConstructedDataBACnetIPv6MulticastAddress extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataBACnetIPv6MulticastAddress");
     // Create the instance
-    return new BACnetConstructedDataBACnetIPv6MulticastAddressBuilder(
+    return new BACnetConstructedDataBACnetIPv6MulticastAddressBuilderImpl(
         ipv6MulticastAddress, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBACnetIPv6MulticastAddressBuilder
+  public static class BACnetConstructedDataBACnetIPv6MulticastAddressBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagOctetString ipv6MulticastAddress;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBACnetIPv6MulticastAddressBuilder(
+    public BACnetConstructedDataBACnetIPv6MulticastAddressBuilderImpl(
         BACnetApplicationTagOctetString ipv6MulticastAddress,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

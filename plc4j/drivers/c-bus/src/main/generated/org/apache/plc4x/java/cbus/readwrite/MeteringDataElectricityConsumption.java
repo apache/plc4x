@@ -80,7 +80,7 @@ public class MeteringDataElectricityConsumption extends MeteringData implements 
     return lengthInBits;
   }
 
-  public static MeteringDataElectricityConsumptionBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static MeteringDataBuilder staticParseMeteringDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("MeteringDataElectricityConsumption");
     PositionAware positionAware = readBuffer;
@@ -91,14 +91,14 @@ public class MeteringDataElectricityConsumption extends MeteringData implements 
 
     readBuffer.closeContext("MeteringDataElectricityConsumption");
     // Create the instance
-    return new MeteringDataElectricityConsumptionBuilder(kWhr);
+    return new MeteringDataElectricityConsumptionBuilderImpl(kWhr);
   }
 
-  public static class MeteringDataElectricityConsumptionBuilder
+  public static class MeteringDataElectricityConsumptionBuilderImpl
       implements MeteringData.MeteringDataBuilder {
     private final long kWhr;
 
-    public MeteringDataElectricityConsumptionBuilder(long kWhr) {
+    public MeteringDataElectricityConsumptionBuilderImpl(long kWhr) {
 
       this.kWhr = kWhr;
     }

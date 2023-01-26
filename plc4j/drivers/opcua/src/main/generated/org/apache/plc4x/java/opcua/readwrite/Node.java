@@ -277,8 +277,8 @@ public class Node extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static NodeBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("Node");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -352,7 +352,7 @@ public class Node extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("Node");
     // Create the instance
-    return new NodeBuilder(
+    return new NodeBuilderImpl(
         nodeId,
         nodeClass,
         browseName,
@@ -369,7 +369,7 @@ public class Node extends ExtensionObjectDefinition implements Message {
         references);
   }
 
-  public static class NodeBuilder
+  public static class NodeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId nodeId;
     private final NodeClass nodeClass;
@@ -386,7 +386,7 @@ public class Node extends ExtensionObjectDefinition implements Message {
     private final int noOfReferences;
     private final List<ExtensionObjectDefinition> references;
 
-    public NodeBuilder(
+    public NodeBuilderImpl(
         NodeId nodeId,
         NodeClass nodeClass,
         QualifiedName browseName,

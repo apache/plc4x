@@ -123,7 +123,7 @@ public class ModbusPDUReadDeviceIdentificationRequest extends ModbusPDU implemen
     return lengthInBits;
   }
 
-  public static ModbusPDUReadDeviceIdentificationRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadDeviceIdentificationRequest");
     PositionAware positionAware = readBuffer;
@@ -147,15 +147,15 @@ public class ModbusPDUReadDeviceIdentificationRequest extends ModbusPDU implemen
 
     readBuffer.closeContext("ModbusPDUReadDeviceIdentificationRequest");
     // Create the instance
-    return new ModbusPDUReadDeviceIdentificationRequestBuilder(level, objectId);
+    return new ModbusPDUReadDeviceIdentificationRequestBuilderImpl(level, objectId);
   }
 
-  public static class ModbusPDUReadDeviceIdentificationRequestBuilder
+  public static class ModbusPDUReadDeviceIdentificationRequestBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final ModbusDeviceInformationLevel level;
     private final short objectId;
 
-    public ModbusPDUReadDeviceIdentificationRequestBuilder(
+    public ModbusPDUReadDeviceIdentificationRequestBuilderImpl(
         ModbusDeviceInformationLevel level, short objectId) {
 
       this.level = level;

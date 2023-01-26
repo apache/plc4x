@@ -124,8 +124,8 @@ public class BVLCForwardedNPDU extends BVLC implements Message {
     return lengthInBits;
   }
 
-  public static BVLCForwardedNPDUBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer bvlcPayloadLength) throws ParseException {
+  public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer, Integer bvlcPayloadLength)
+      throws ParseException {
     readBuffer.pullContext("BVLCForwardedNPDU");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -153,16 +153,16 @@ public class BVLCForwardedNPDU extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCForwardedNPDU");
     // Create the instance
-    return new BVLCForwardedNPDUBuilder(ip, port, npdu, bvlcPayloadLength);
+    return new BVLCForwardedNPDUBuilderImpl(ip, port, npdu, bvlcPayloadLength);
   }
 
-  public static class BVLCForwardedNPDUBuilder implements BVLC.BVLCBuilder {
+  public static class BVLCForwardedNPDUBuilderImpl implements BVLC.BVLCBuilder {
     private final List<Short> ip;
     private final int port;
     private final NPDU npdu;
     private final Integer bvlcPayloadLength;
 
-    public BVLCForwardedNPDUBuilder(
+    public BVLCForwardedNPDUBuilderImpl(
         List<Short> ip, int port, NPDU npdu, Integer bvlcPayloadLength) {
 
       this.ip = ip;

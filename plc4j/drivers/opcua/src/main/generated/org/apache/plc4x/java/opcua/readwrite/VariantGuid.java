@@ -109,7 +109,7 @@ public class VariantGuid extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantGuidBuilder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantGuid");
     PositionAware positionAware = readBuffer;
@@ -127,14 +127,14 @@ public class VariantGuid extends Variant implements Message {
 
     readBuffer.closeContext("VariantGuid");
     // Create the instance
-    return new VariantGuidBuilder(arrayLength, value);
+    return new VariantGuidBuilderImpl(arrayLength, value);
   }
 
-  public static class VariantGuidBuilder implements Variant.VariantBuilder {
+  public static class VariantGuidBuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final List<GuidValue> value;
 
-    public VariantGuidBuilder(Integer arrayLength, List<GuidValue> value) {
+    public VariantGuidBuilderImpl(Integer arrayLength, List<GuidValue> value) {
 
       this.arrayLength = arrayLength;
       this.value = value;

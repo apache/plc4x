@@ -110,7 +110,7 @@ public class BACnetConstructedDataIntegerValueCOVIncrement extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIntegerValueCOVIncrementBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,17 +135,17 @@ public class BACnetConstructedDataIntegerValueCOVIncrement extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataIntegerValueCOVIncrement");
     // Create the instance
-    return new BACnetConstructedDataIntegerValueCOVIncrementBuilder(
+    return new BACnetConstructedDataIntegerValueCOVIncrementBuilderImpl(
         covIncrement, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIntegerValueCOVIncrementBuilder
+  public static class BACnetConstructedDataIntegerValueCOVIncrementBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger covIncrement;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIntegerValueCOVIncrementBuilder(
+    public BACnetConstructedDataIntegerValueCOVIncrementBuilderImpl(
         BACnetApplicationTagUnsignedInteger covIncrement,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

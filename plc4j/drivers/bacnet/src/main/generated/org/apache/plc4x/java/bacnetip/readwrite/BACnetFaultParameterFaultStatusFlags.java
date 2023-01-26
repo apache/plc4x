@@ -109,7 +109,7 @@ public class BACnetFaultParameterFaultStatusFlags extends BACnetFaultParameter i
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultStatusFlagsBuilder staticParseBuilder(
+  public static BACnetFaultParameterBuilder staticParseBACnetFaultParameterBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultStatusFlags");
     PositionAware positionAware = readBuffer;
@@ -139,17 +139,17 @@ public class BACnetFaultParameterFaultStatusFlags extends BACnetFaultParameter i
 
     readBuffer.closeContext("BACnetFaultParameterFaultStatusFlags");
     // Create the instance
-    return new BACnetFaultParameterFaultStatusFlagsBuilder(
+    return new BACnetFaultParameterFaultStatusFlagsBuilderImpl(
         openingTag, statusFlagsReference, closingTag);
   }
 
-  public static class BACnetFaultParameterFaultStatusFlagsBuilder
+  public static class BACnetFaultParameterFaultStatusFlagsBuilderImpl
       implements BACnetFaultParameter.BACnetFaultParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetDeviceObjectPropertyReferenceEnclosed statusFlagsReference;
     private final BACnetClosingTag closingTag;
 
-    public BACnetFaultParameterFaultStatusFlagsBuilder(
+    public BACnetFaultParameterFaultStatusFlagsBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetDeviceObjectPropertyReferenceEnclosed statusFlagsReference,
         BACnetClosingTag closingTag) {

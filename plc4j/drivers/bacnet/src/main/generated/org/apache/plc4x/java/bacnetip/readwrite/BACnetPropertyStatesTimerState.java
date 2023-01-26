@@ -81,7 +81,7 @@ public class BACnetPropertyStatesTimerState extends BACnetPropertyStates impleme
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesTimerStateBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesTimerState");
     PositionAware positionAware = readBuffer;
@@ -101,14 +101,14 @@ public class BACnetPropertyStatesTimerState extends BACnetPropertyStates impleme
 
     readBuffer.closeContext("BACnetPropertyStatesTimerState");
     // Create the instance
-    return new BACnetPropertyStatesTimerStateBuilder(timerState);
+    return new BACnetPropertyStatesTimerStateBuilderImpl(timerState);
   }
 
-  public static class BACnetPropertyStatesTimerStateBuilder
+  public static class BACnetPropertyStatesTimerStateBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetTimerStateTagged timerState;
 
-    public BACnetPropertyStatesTimerStateBuilder(BACnetTimerStateTagged timerState) {
+    public BACnetPropertyStatesTimerStateBuilderImpl(BACnetTimerStateTagged timerState) {
 
       this.timerState = timerState;
     }

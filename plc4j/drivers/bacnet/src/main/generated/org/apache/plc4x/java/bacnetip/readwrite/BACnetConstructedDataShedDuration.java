@@ -109,7 +109,7 @@ public class BACnetConstructedDataShedDuration extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataShedDurationBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataShedDuration extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataShedDuration");
     // Create the instance
-    return new BACnetConstructedDataShedDurationBuilder(
+    return new BACnetConstructedDataShedDurationBuilderImpl(
         shedDuration, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataShedDurationBuilder
+  public static class BACnetConstructedDataShedDurationBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger shedDuration;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataShedDurationBuilder(
+    public BACnetConstructedDataShedDurationBuilderImpl(
         BACnetApplicationTagUnsignedInteger shedDuration,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

@@ -127,7 +127,7 @@ public class LevelInformationNormal extends LevelInformation implements Message 
     return lengthInBits;
   }
 
-  public static LevelInformationNormalBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static LevelInformationBuilder staticParseLevelInformationBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("LevelInformationNormal");
     PositionAware positionAware = readBuffer;
@@ -158,15 +158,15 @@ public class LevelInformationNormal extends LevelInformation implements Message 
 
     readBuffer.closeContext("LevelInformationNormal");
     // Create the instance
-    return new LevelInformationNormalBuilder(pair1, pair2);
+    return new LevelInformationNormalBuilderImpl(pair1, pair2);
   }
 
-  public static class LevelInformationNormalBuilder
+  public static class LevelInformationNormalBuilderImpl
       implements LevelInformation.LevelInformationBuilder {
     private final LevelInformationNibblePair pair1;
     private final LevelInformationNibblePair pair2;
 
-    public LevelInformationNormalBuilder(
+    public LevelInformationNormalBuilderImpl(
         LevelInformationNibblePair pair1, LevelInformationNibblePair pair2) {
 
       this.pair1 = pair1;

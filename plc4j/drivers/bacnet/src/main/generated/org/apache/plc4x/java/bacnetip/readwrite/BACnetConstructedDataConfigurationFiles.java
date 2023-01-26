@@ -136,7 +136,7 @@ public class BACnetConstructedDataConfigurationFiles extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataConfigurationFilesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -174,18 +174,18 @@ public class BACnetConstructedDataConfigurationFiles extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataConfigurationFiles");
     // Create the instance
-    return new BACnetConstructedDataConfigurationFilesBuilder(
+    return new BACnetConstructedDataConfigurationFilesBuilderImpl(
         numberOfDataElements, configurationFiles, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataConfigurationFilesBuilder
+  public static class BACnetConstructedDataConfigurationFilesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagObjectIdentifier> configurationFiles;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataConfigurationFilesBuilder(
+    public BACnetConstructedDataConfigurationFilesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagObjectIdentifier> configurationFiles,
         Short tagNumber,

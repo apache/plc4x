@@ -109,7 +109,7 @@ public class BACnetConstructedDataCarDoorZone extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCarDoorZoneBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,16 +132,17 @@ public class BACnetConstructedDataCarDoorZone extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataCarDoorZone");
     // Create the instance
-    return new BACnetConstructedDataCarDoorZoneBuilder(carDoorZone, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCarDoorZoneBuilderImpl(
+        carDoorZone, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCarDoorZoneBuilder
+  public static class BACnetConstructedDataCarDoorZoneBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean carDoorZone;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCarDoorZoneBuilder(
+    public BACnetConstructedDataCarDoorZoneBuilderImpl(
         BACnetApplicationTagBoolean carDoorZone,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

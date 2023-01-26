@@ -116,8 +116,8 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static WriteRequestBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("WriteRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -142,16 +142,16 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("WriteRequest");
     // Create the instance
-    return new WriteRequestBuilder(requestHeader, noOfNodesToWrite, nodesToWrite);
+    return new WriteRequestBuilderImpl(requestHeader, noOfNodesToWrite, nodesToWrite);
   }
 
-  public static class WriteRequestBuilder
+  public static class WriteRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfNodesToWrite;
     private final List<ExtensionObjectDefinition> nodesToWrite;
 
-    public WriteRequestBuilder(
+    public WriteRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfNodesToWrite,
         List<ExtensionObjectDefinition> nodesToWrite) {

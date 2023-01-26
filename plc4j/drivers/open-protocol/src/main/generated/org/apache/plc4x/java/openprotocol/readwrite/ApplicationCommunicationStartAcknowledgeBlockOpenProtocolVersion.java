@@ -89,8 +89,9 @@ public class ApplicationCommunicationStartAcknowledgeBlockOpenProtocolVersion
     return lengthInBits;
   }
 
-  public static ApplicationCommunicationStartAcknowledgeBlockOpenProtocolVersionBuilder
-      staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static ApplicationCommunicationStartAcknowledgeBlockBuilder
+      staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("ApplicationCommunicationStartAcknowledgeBlockOpenProtocolVersion");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -102,16 +103,16 @@ public class ApplicationCommunicationStartAcknowledgeBlockOpenProtocolVersion
 
     readBuffer.closeContext("ApplicationCommunicationStartAcknowledgeBlockOpenProtocolVersion");
     // Create the instance
-    return new ApplicationCommunicationStartAcknowledgeBlockOpenProtocolVersionBuilder(
+    return new ApplicationCommunicationStartAcknowledgeBlockOpenProtocolVersionBuilderImpl(
         openProtocolVersion);
   }
 
-  public static class ApplicationCommunicationStartAcknowledgeBlockOpenProtocolVersionBuilder
+  public static class ApplicationCommunicationStartAcknowledgeBlockOpenProtocolVersionBuilderImpl
       implements ApplicationCommunicationStartAcknowledgeBlock
           .ApplicationCommunicationStartAcknowledgeBlockBuilder {
     private final String openProtocolVersion;
 
-    public ApplicationCommunicationStartAcknowledgeBlockOpenProtocolVersionBuilder(
+    public ApplicationCommunicationStartAcknowledgeBlockOpenProtocolVersionBuilderImpl(
         String openProtocolVersion) {
 
       this.openProtocolVersion = openProtocolVersion;

@@ -72,7 +72,7 @@ public class MFuncPropCon extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static MFuncPropConBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("MFuncPropCon");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class MFuncPropCon extends CEMI implements Message {
 
     readBuffer.closeContext("MFuncPropCon");
     // Create the instance
-    return new MFuncPropConBuilder(size);
+    return new MFuncPropConBuilderImpl(size);
   }
 
-  public static class MFuncPropConBuilder implements CEMI.CEMIBuilder {
+  public static class MFuncPropConBuilderImpl implements CEMI.CEMIBuilder {
     private final Integer size;
 
-    public MFuncPropConBuilder(Integer size) {
+    public MFuncPropConBuilderImpl(Integer size) {
 
       this.size = size;
     }

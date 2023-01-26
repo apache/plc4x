@@ -72,7 +72,7 @@ public class SysexCommandStringData extends SysexCommand implements Message {
     return lengthInBits;
   }
 
-  public static SysexCommandStringDataBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandStringData");
     PositionAware positionAware = readBuffer;
@@ -81,12 +81,13 @@ public class SysexCommandStringData extends SysexCommand implements Message {
 
     readBuffer.closeContext("SysexCommandStringData");
     // Create the instance
-    return new SysexCommandStringDataBuilder();
+    return new SysexCommandStringDataBuilderImpl();
   }
 
-  public static class SysexCommandStringDataBuilder implements SysexCommand.SysexCommandBuilder {
+  public static class SysexCommandStringDataBuilderImpl
+      implements SysexCommand.SysexCommandBuilder {
 
-    public SysexCommandStringDataBuilder() {}
+    public SysexCommandStringDataBuilderImpl() {}
 
     public SysexCommandStringData build() {
       SysexCommandStringData sysexCommandStringData = new SysexCommandStringData();

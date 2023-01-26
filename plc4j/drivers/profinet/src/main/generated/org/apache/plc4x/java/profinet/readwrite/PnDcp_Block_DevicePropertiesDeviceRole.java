@@ -144,8 +144,8 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DevicePropertiesDeviceRoleBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DevicePropertiesDeviceRole");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -167,7 +167,7 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesDeviceRole");
     // Create the instance
-    return new PnDcp_Block_DevicePropertiesDeviceRoleBuilder(
+    return new PnDcp_Block_DevicePropertiesDeviceRoleBuilderImpl(
         pnioSupervisor,
         pnioMultidevive,
         pnioController,
@@ -176,7 +176,7 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
         reservedField1);
   }
 
-  public static class PnDcp_Block_DevicePropertiesDeviceRoleBuilder
+  public static class PnDcp_Block_DevicePropertiesDeviceRoleBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final boolean pnioSupervisor;
     private final boolean pnioMultidevive;
@@ -185,7 +185,7 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
     private final Long reservedField0;
     private final Short reservedField1;
 
-    public PnDcp_Block_DevicePropertiesDeviceRoleBuilder(
+    public PnDcp_Block_DevicePropertiesDeviceRoleBuilderImpl(
         boolean pnioSupervisor,
         boolean pnioMultidevive,
         boolean pnioController,

@@ -124,8 +124,8 @@ public class BACnetEventParameterCommandFailure extends BACnetEventParameter imp
     return lengthInBits;
   }
 
-  public static BACnetEventParameterCommandFailureBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterCommandFailure");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -166,18 +166,18 @@ public class BACnetEventParameterCommandFailure extends BACnetEventParameter imp
 
     readBuffer.closeContext("BACnetEventParameterCommandFailure");
     // Create the instance
-    return new BACnetEventParameterCommandFailureBuilder(
+    return new BACnetEventParameterCommandFailureBuilderImpl(
         openingTag, timeDelay, feedbackPropertyReference, closingTag);
   }
 
-  public static class BACnetEventParameterCommandFailureBuilder
+  public static class BACnetEventParameterCommandFailureBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
     private final BACnetDeviceObjectPropertyReferenceEnclosed feedbackPropertyReference;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterCommandFailureBuilder(
+    public BACnetEventParameterCommandFailureBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetDeviceObjectPropertyReferenceEnclosed feedbackPropertyReference,

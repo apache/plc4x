@@ -108,7 +108,7 @@ public class TunnelingRequest extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static TunnelingRequestBuilder staticParseBuilder(
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(
       ReadBuffer readBuffer, Integer totalLength) throws ParseException {
     readBuffer.pullContext("TunnelingRequest");
     PositionAware positionAware = readBuffer;
@@ -137,15 +137,16 @@ public class TunnelingRequest extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("TunnelingRequest");
     // Create the instance
-    return new TunnelingRequestBuilder(tunnelingRequestDataBlock, cemi, totalLength);
+    return new TunnelingRequestBuilderImpl(tunnelingRequestDataBlock, cemi, totalLength);
   }
 
-  public static class TunnelingRequestBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class TunnelingRequestBuilderImpl
+      implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final TunnelingRequestDataBlock tunnelingRequestDataBlock;
     private final CEMI cemi;
     private final Integer totalLength;
 
-    public TunnelingRequestBuilder(
+    public TunnelingRequestBuilderImpl(
         TunnelingRequestDataBlock tunnelingRequestDataBlock, CEMI cemi, Integer totalLength) {
 
       this.tunnelingRequestDataBlock = tunnelingRequestDataBlock;

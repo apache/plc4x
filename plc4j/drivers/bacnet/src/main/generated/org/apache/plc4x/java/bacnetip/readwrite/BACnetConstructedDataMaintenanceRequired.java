@@ -111,7 +111,7 @@ public class BACnetConstructedDataMaintenanceRequired extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMaintenanceRequiredBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -136,17 +136,17 @@ public class BACnetConstructedDataMaintenanceRequired extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataMaintenanceRequired");
     // Create the instance
-    return new BACnetConstructedDataMaintenanceRequiredBuilder(
+    return new BACnetConstructedDataMaintenanceRequiredBuilderImpl(
         maintenanceRequired, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMaintenanceRequiredBuilder
+  public static class BACnetConstructedDataMaintenanceRequiredBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetMaintenanceTagged maintenanceRequired;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMaintenanceRequiredBuilder(
+    public BACnetConstructedDataMaintenanceRequiredBuilderImpl(
         BACnetMaintenanceTagged maintenanceRequired,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

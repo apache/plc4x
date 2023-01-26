@@ -82,8 +82,8 @@ public class BACnetChannelValueOctetString extends BACnetChannelValue implements
     return lengthInBits;
   }
 
-  public static BACnetChannelValueOctetStringBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueOctetString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -99,14 +99,15 @@ public class BACnetChannelValueOctetString extends BACnetChannelValue implements
 
     readBuffer.closeContext("BACnetChannelValueOctetString");
     // Create the instance
-    return new BACnetChannelValueOctetStringBuilder(octetStringValue);
+    return new BACnetChannelValueOctetStringBuilderImpl(octetStringValue);
   }
 
-  public static class BACnetChannelValueOctetStringBuilder
+  public static class BACnetChannelValueOctetStringBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagOctetString octetStringValue;
 
-    public BACnetChannelValueOctetStringBuilder(BACnetApplicationTagOctetString octetStringValue) {
+    public BACnetChannelValueOctetStringBuilderImpl(
+        BACnetApplicationTagOctetString octetStringValue) {
 
       this.octetStringValue = octetStringValue;
     }

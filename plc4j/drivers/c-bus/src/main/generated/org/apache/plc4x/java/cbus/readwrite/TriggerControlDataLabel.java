@@ -135,7 +135,7 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
     return lengthInBits;
   }
 
-  public static TriggerControlDataLabelBuilder staticParseBuilder(
+  public static TriggerControlDataBuilder staticParseTriggerControlDataBuilder(
       ReadBuffer readBuffer, TriggerControlCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("TriggerControlDataLabel");
@@ -169,18 +169,18 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
 
     readBuffer.closeContext("TriggerControlDataLabel");
     // Create the instance
-    return new TriggerControlDataLabelBuilder(
+    return new TriggerControlDataLabelBuilderImpl(
         triggerControlOptions, actionSelector, language, data);
   }
 
-  public static class TriggerControlDataLabelBuilder
+  public static class TriggerControlDataLabelBuilderImpl
       implements TriggerControlData.TriggerControlDataBuilder {
     private final TriggerControlLabelOptions triggerControlOptions;
     private final byte actionSelector;
     private final Language language;
     private final byte[] data;
 
-    public TriggerControlDataLabelBuilder(
+    public TriggerControlDataLabelBuilderImpl(
         TriggerControlLabelOptions triggerControlOptions,
         byte actionSelector,
         Language language,

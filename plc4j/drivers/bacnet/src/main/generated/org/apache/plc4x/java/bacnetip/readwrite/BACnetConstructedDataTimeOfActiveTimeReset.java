@@ -113,7 +113,7 @@ public class BACnetConstructedDataTimeOfActiveTimeReset extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTimeOfActiveTimeResetBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,17 +135,17 @@ public class BACnetConstructedDataTimeOfActiveTimeReset extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataTimeOfActiveTimeReset");
     // Create the instance
-    return new BACnetConstructedDataTimeOfActiveTimeResetBuilder(
+    return new BACnetConstructedDataTimeOfActiveTimeResetBuilderImpl(
         timeOfActiveTimeReset, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTimeOfActiveTimeResetBuilder
+  public static class BACnetConstructedDataTimeOfActiveTimeResetBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime timeOfActiveTimeReset;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTimeOfActiveTimeResetBuilder(
+    public BACnetConstructedDataTimeOfActiveTimeResetBuilderImpl(
         BACnetDateTime timeOfActiveTimeReset,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

@@ -84,7 +84,7 @@ public class BACnetConstructedDataAccumulatorAll extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccumulatorAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -103,15 +103,15 @@ public class BACnetConstructedDataAccumulatorAll extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataAccumulatorAll");
     // Create the instance
-    return new BACnetConstructedDataAccumulatorAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAccumulatorAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccumulatorAllBuilder
+  public static class BACnetConstructedDataAccumulatorAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccumulatorAllBuilder(
+    public BACnetConstructedDataAccumulatorAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
 
       this.tagNumber = tagNumber;

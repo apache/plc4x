@@ -105,7 +105,7 @@ public class BACnetConstructedDataUTCTimeSynchronizationRecipients extends BACne
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -129,17 +129,17 @@ public class BACnetConstructedDataUTCTimeSynchronizationRecipients extends BACne
 
     readBuffer.closeContext("BACnetConstructedDataUTCTimeSynchronizationRecipients");
     // Create the instance
-    return new BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder(
+    return new BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilderImpl(
         utcTimeSynchronizationRecipients, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder
+  public static class BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetRecipient> utcTimeSynchronizationRecipients;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder(
+    public BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilderImpl(
         List<BACnetRecipient> utcTimeSynchronizationRecipients,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

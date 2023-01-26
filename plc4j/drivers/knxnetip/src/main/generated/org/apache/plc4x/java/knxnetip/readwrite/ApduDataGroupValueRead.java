@@ -83,8 +83,8 @@ public class ApduDataGroupValueRead extends ApduData implements Message {
     return lengthInBits;
   }
 
-  public static ApduDataGroupValueReadBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short dataLength) throws ParseException {
+  public static ApduDataBuilder staticParseApduDataBuilder(ReadBuffer readBuffer, Short dataLength)
+      throws ParseException {
     readBuffer.pullContext("ApduDataGroupValueRead");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -95,14 +95,14 @@ public class ApduDataGroupValueRead extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataGroupValueRead");
     // Create the instance
-    return new ApduDataGroupValueReadBuilder(dataLength, reservedField0);
+    return new ApduDataGroupValueReadBuilderImpl(dataLength, reservedField0);
   }
 
-  public static class ApduDataGroupValueReadBuilder implements ApduData.ApduDataBuilder {
+  public static class ApduDataGroupValueReadBuilderImpl implements ApduData.ApduDataBuilder {
     private final Short dataLength;
     private final Short reservedField0;
 
-    public ApduDataGroupValueReadBuilder(Short dataLength, Short reservedField0) {
+    public ApduDataGroupValueReadBuilderImpl(Short dataLength, Short reservedField0) {
       this.dataLength = dataLength;
       this.reservedField0 = reservedField0;
     }

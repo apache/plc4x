@@ -109,7 +109,7 @@ public class BACnetConstructedDataDutyWindow extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDutyWindowBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,16 +134,17 @@ public class BACnetConstructedDataDutyWindow extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataDutyWindow");
     // Create the instance
-    return new BACnetConstructedDataDutyWindowBuilder(dutyWindow, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDutyWindowBuilderImpl(
+        dutyWindow, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDutyWindowBuilder
+  public static class BACnetConstructedDataDutyWindowBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger dutyWindow;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDutyWindowBuilder(
+    public BACnetConstructedDataDutyWindowBuilderImpl(
         BACnetApplicationTagUnsignedInteger dutyWindow,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

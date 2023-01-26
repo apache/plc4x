@@ -94,7 +94,7 @@ public class BACnetServiceAckReadPropertyMultiple extends BACnetServiceAck imple
     return lengthInBits;
   }
 
-  public static BACnetServiceAckReadPropertyMultipleBuilder staticParseBuilder(
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
       ReadBuffer readBuffer, Long serviceAckLength, Long serviceAckPayloadLength)
       throws ParseException {
     readBuffer.pullContext("BACnetServiceAckReadPropertyMultiple");
@@ -111,17 +111,17 @@ public class BACnetServiceAckReadPropertyMultiple extends BACnetServiceAck imple
 
     readBuffer.closeContext("BACnetServiceAckReadPropertyMultiple");
     // Create the instance
-    return new BACnetServiceAckReadPropertyMultipleBuilder(
+    return new BACnetServiceAckReadPropertyMultipleBuilderImpl(
         data, serviceAckLength, serviceAckPayloadLength);
   }
 
-  public static class BACnetServiceAckReadPropertyMultipleBuilder
+  public static class BACnetServiceAckReadPropertyMultipleBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final List<BACnetReadAccessResult> data;
     private final Long serviceAckLength;
     private final Long serviceAckPayloadLength;
 
-    public BACnetServiceAckReadPropertyMultipleBuilder(
+    public BACnetServiceAckReadPropertyMultipleBuilderImpl(
         List<BACnetReadAccessResult> data, Long serviceAckLength, Long serviceAckPayloadLength) {
 
       this.data = data;

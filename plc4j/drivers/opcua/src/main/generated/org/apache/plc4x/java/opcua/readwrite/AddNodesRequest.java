@@ -116,8 +116,8 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
     return lengthInBits;
   }
 
-  public static AddNodesRequestBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AddNodesRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -142,16 +142,16 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
 
     readBuffer.closeContext("AddNodesRequest");
     // Create the instance
-    return new AddNodesRequestBuilder(requestHeader, noOfNodesToAdd, nodesToAdd);
+    return new AddNodesRequestBuilderImpl(requestHeader, noOfNodesToAdd, nodesToAdd);
   }
 
-  public static class AddNodesRequestBuilder
+  public static class AddNodesRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfNodesToAdd;
     private final List<ExtensionObjectDefinition> nodesToAdd;
 
-    public AddNodesRequestBuilder(
+    public AddNodesRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfNodesToAdd,
         List<ExtensionObjectDefinition> nodesToAdd) {

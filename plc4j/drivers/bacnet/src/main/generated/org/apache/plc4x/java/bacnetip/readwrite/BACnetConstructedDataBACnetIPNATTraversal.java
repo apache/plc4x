@@ -111,7 +111,7 @@ public class BACnetConstructedDataBACnetIPNATTraversal extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBACnetIPNATTraversalBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataBACnetIPNATTraversal extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataBACnetIPNATTraversal");
     // Create the instance
-    return new BACnetConstructedDataBACnetIPNATTraversalBuilder(
+    return new BACnetConstructedDataBACnetIPNATTraversalBuilderImpl(
         bacnetIPNATTraversal, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBACnetIPNATTraversalBuilder
+  public static class BACnetConstructedDataBACnetIPNATTraversalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean bacnetIPNATTraversal;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBACnetIPNATTraversalBuilder(
+    public BACnetConstructedDataBACnetIPNATTraversalBuilderImpl(
         BACnetApplicationTagBoolean bacnetIPNATTraversal,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

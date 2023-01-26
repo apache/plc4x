@@ -191,7 +191,7 @@ public class CALDataStatusExtended extends CALData implements Message {
     return lengthInBits;
   }
 
-  public static CALDataStatusExtendedBuilder staticParseBuilder(
+  public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer,
       RequestContext requestContext,
       CALCommandTypeContainer commandTypeContainer)
@@ -247,11 +247,11 @@ public class CALDataStatusExtended extends CALData implements Message {
 
     readBuffer.closeContext("CALDataStatusExtended");
     // Create the instance
-    return new CALDataStatusExtendedBuilder(
+    return new CALDataStatusExtendedBuilderImpl(
         coding, application, blockStart, statusBytes, levelInformation, requestContext);
   }
 
-  public static class CALDataStatusExtendedBuilder implements CALData.CALDataBuilder {
+  public static class CALDataStatusExtendedBuilderImpl implements CALData.CALDataBuilder {
     private final StatusCoding coding;
     private final ApplicationIdContainer application;
     private final short blockStart;
@@ -259,7 +259,7 @@ public class CALDataStatusExtended extends CALData implements Message {
     private final List<LevelInformation> levelInformation;
     private final RequestContext requestContext;
 
-    public CALDataStatusExtendedBuilder(
+    public CALDataStatusExtendedBuilderImpl(
         StatusCoding coding,
         ApplicationIdContainer application,
         short blockStart,

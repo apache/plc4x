@@ -109,7 +109,7 @@ public class BACnetConstructedDataStopTime extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataStopTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -130,16 +130,16 @@ public class BACnetConstructedDataStopTime extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataStopTime");
     // Create the instance
-    return new BACnetConstructedDataStopTimeBuilder(stopTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataStopTimeBuilderImpl(stopTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataStopTimeBuilder
+  public static class BACnetConstructedDataStopTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime stopTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataStopTimeBuilder(
+    public BACnetConstructedDataStopTimeBuilderImpl(
         BACnetDateTime stopTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

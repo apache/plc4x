@@ -113,7 +113,7 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
     return lengthInBits;
   }
 
-  public static RedundantServerDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RedundantServerDataType");
     PositionAware positionAware = readBuffer;
@@ -136,16 +136,16 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
 
     readBuffer.closeContext("RedundantServerDataType");
     // Create the instance
-    return new RedundantServerDataTypeBuilder(serverId, serviceLevel, serverState);
+    return new RedundantServerDataTypeBuilderImpl(serverId, serviceLevel, serverState);
   }
 
-  public static class RedundantServerDataTypeBuilder
+  public static class RedundantServerDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString serverId;
     private final short serviceLevel;
     private final ServerState serverState;
 
-    public RedundantServerDataTypeBuilder(
+    public RedundantServerDataTypeBuilderImpl(
         PascalString serverId, short serviceLevel, ServerState serverState) {
 
       this.serverId = serverId;

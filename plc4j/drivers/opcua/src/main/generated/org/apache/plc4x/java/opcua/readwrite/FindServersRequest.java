@@ -161,7 +161,7 @@ public class FindServersRequest extends ExtensionObjectDefinition implements Mes
     return lengthInBits;
   }
 
-  public static FindServersRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("FindServersRequest");
     PositionAware positionAware = readBuffer;
@@ -198,11 +198,11 @@ public class FindServersRequest extends ExtensionObjectDefinition implements Mes
 
     readBuffer.closeContext("FindServersRequest");
     // Create the instance
-    return new FindServersRequestBuilder(
+    return new FindServersRequestBuilderImpl(
         requestHeader, endpointUrl, noOfLocaleIds, localeIds, noOfServerUris, serverUris);
   }
 
-  public static class FindServersRequestBuilder
+  public static class FindServersRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final PascalString endpointUrl;
@@ -211,7 +211,7 @@ public class FindServersRequest extends ExtensionObjectDefinition implements Mes
     private final int noOfServerUris;
     private final List<PascalString> serverUris;
 
-    public FindServersRequestBuilder(
+    public FindServersRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         PascalString endpointUrl,
         int noOfLocaleIds,

@@ -72,8 +72,8 @@ public class ApduDataUserMessage extends ApduData implements Message {
     return lengthInBits;
   }
 
-  public static ApduDataUserMessageBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short dataLength) throws ParseException {
+  public static ApduDataBuilder staticParseApduDataBuilder(ReadBuffer readBuffer, Short dataLength)
+      throws ParseException {
     readBuffer.pullContext("ApduDataUserMessage");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -81,13 +81,13 @@ public class ApduDataUserMessage extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataUserMessage");
     // Create the instance
-    return new ApduDataUserMessageBuilder(dataLength);
+    return new ApduDataUserMessageBuilderImpl(dataLength);
   }
 
-  public static class ApduDataUserMessageBuilder implements ApduData.ApduDataBuilder {
+  public static class ApduDataUserMessageBuilderImpl implements ApduData.ApduDataBuilder {
     private final Short dataLength;
 
-    public ApduDataUserMessageBuilder(Short dataLength) {
+    public ApduDataUserMessageBuilderImpl(Short dataLength) {
 
       this.dataLength = dataLength;
     }

@@ -134,8 +134,8 @@ public class BACnetEventParameterUnsignedRange extends BACnetEventParameter impl
     return lengthInBits;
   }
 
-  public static BACnetEventParameterUnsignedRangeBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterUnsignedRange");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -191,11 +191,11 @@ public class BACnetEventParameterUnsignedRange extends BACnetEventParameter impl
 
     readBuffer.closeContext("BACnetEventParameterUnsignedRange");
     // Create the instance
-    return new BACnetEventParameterUnsignedRangeBuilder(
+    return new BACnetEventParameterUnsignedRangeBuilderImpl(
         openingTag, timeDelay, lowLimit, highLimit, closingTag);
   }
 
-  public static class BACnetEventParameterUnsignedRangeBuilder
+  public static class BACnetEventParameterUnsignedRangeBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
@@ -203,7 +203,7 @@ public class BACnetEventParameterUnsignedRange extends BACnetEventParameter impl
     private final BACnetContextTagUnsignedInteger highLimit;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterUnsignedRangeBuilder(
+    public BACnetEventParameterUnsignedRangeBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetContextTagUnsignedInteger lowLimit,

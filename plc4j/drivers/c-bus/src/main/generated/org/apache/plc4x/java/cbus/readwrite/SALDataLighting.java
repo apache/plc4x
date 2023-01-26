@@ -82,7 +82,7 @@ public class SALDataLighting extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataLightingBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataLighting");
     PositionAware positionAware = readBuffer;
@@ -96,13 +96,13 @@ public class SALDataLighting extends SALData implements Message {
 
     readBuffer.closeContext("SALDataLighting");
     // Create the instance
-    return new SALDataLightingBuilder(lightingData);
+    return new SALDataLightingBuilderImpl(lightingData);
   }
 
-  public static class SALDataLightingBuilder implements SALData.SALDataBuilder {
+  public static class SALDataLightingBuilderImpl implements SALData.SALDataBuilder {
     private final LightingData lightingData;
 
-    public SALDataLightingBuilder(LightingData lightingData) {
+    public SALDataLightingBuilderImpl(LightingData lightingData) {
 
       this.lightingData = lightingData;
     }

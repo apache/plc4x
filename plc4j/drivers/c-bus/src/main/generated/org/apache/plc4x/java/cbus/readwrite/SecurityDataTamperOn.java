@@ -65,7 +65,7 @@ public class SecurityDataTamperOn extends SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityDataTamperOnBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataTamperOn");
     PositionAware positionAware = readBuffer;
@@ -74,12 +74,12 @@ public class SecurityDataTamperOn extends SecurityData implements Message {
 
     readBuffer.closeContext("SecurityDataTamperOn");
     // Create the instance
-    return new SecurityDataTamperOnBuilder();
+    return new SecurityDataTamperOnBuilderImpl();
   }
 
-  public static class SecurityDataTamperOnBuilder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataTamperOnBuilderImpl implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataTamperOnBuilder() {}
+    public SecurityDataTamperOnBuilderImpl() {}
 
     public SecurityDataTamperOn build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

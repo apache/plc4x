@@ -117,9 +117,13 @@ public abstract class BACnetSpecialEventPeriod implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetSpecialEventPeriodBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetSpecialEventPeriodCalendarEntry.staticParseBuilder(readBuffer);
+      builder =
+          BACnetSpecialEventPeriodCalendarEntry.staticParseBACnetSpecialEventPeriodBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetSpecialEventPeriodCalendarReference.staticParseBuilder(readBuffer);
+      builder =
+          BACnetSpecialEventPeriodCalendarReference.staticParseBACnetSpecialEventPeriodBuilder(
+              readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -136,7 +140,7 @@ public abstract class BACnetSpecialEventPeriod implements Message {
     return _bACnetSpecialEventPeriod;
   }
 
-  public static interface BACnetSpecialEventPeriodBuilder {
+  public interface BACnetSpecialEventPeriodBuilder {
     BACnetSpecialEventPeriod build(BACnetTagHeader peekedTagHeader);
   }
 

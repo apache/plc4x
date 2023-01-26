@@ -150,7 +150,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     return lengthInBits;
   }
 
-  public static ContentFilterElementResultBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ContentFilterElementResult");
     PositionAware positionAware = readBuffer;
@@ -183,7 +183,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
 
     readBuffer.closeContext("ContentFilterElementResult");
     // Create the instance
-    return new ContentFilterElementResultBuilder(
+    return new ContentFilterElementResultBuilderImpl(
         statusCode,
         noOfOperandStatusCodes,
         operandStatusCodes,
@@ -191,7 +191,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
         operandDiagnosticInfos);
   }
 
-  public static class ContentFilterElementResultBuilder
+  public static class ContentFilterElementResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final int noOfOperandStatusCodes;
@@ -199,7 +199,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     private final int noOfOperandDiagnosticInfos;
     private final List<DiagnosticInfo> operandDiagnosticInfos;
 
-    public ContentFilterElementResultBuilder(
+    public ContentFilterElementResultBuilderImpl(
         StatusCode statusCode,
         int noOfOperandStatusCodes,
         List<StatusCode> operandStatusCodes,

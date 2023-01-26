@@ -109,7 +109,7 @@ public class BACnetConstructedDataTimerState extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTimerStateBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,16 +134,17 @@ public class BACnetConstructedDataTimerState extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataTimerState");
     // Create the instance
-    return new BACnetConstructedDataTimerStateBuilder(timerState, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTimerStateBuilderImpl(
+        timerState, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTimerStateBuilder
+  public static class BACnetConstructedDataTimerStateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetTimerStateTagged timerState;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTimerStateBuilder(
+    public BACnetConstructedDataTimerStateBuilderImpl(
         BACnetTimerStateTagged timerState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

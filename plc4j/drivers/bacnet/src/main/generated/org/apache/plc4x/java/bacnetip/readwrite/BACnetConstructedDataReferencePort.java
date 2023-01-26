@@ -109,7 +109,7 @@ public class BACnetConstructedDataReferencePort extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataReferencePortBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataReferencePort extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataReferencePort");
     // Create the instance
-    return new BACnetConstructedDataReferencePortBuilder(
+    return new BACnetConstructedDataReferencePortBuilderImpl(
         referencePort, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataReferencePortBuilder
+  public static class BACnetConstructedDataReferencePortBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger referencePort;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataReferencePortBuilder(
+    public BACnetConstructedDataReferencePortBuilderImpl(
         BACnetApplicationTagUnsignedInteger referencePort,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

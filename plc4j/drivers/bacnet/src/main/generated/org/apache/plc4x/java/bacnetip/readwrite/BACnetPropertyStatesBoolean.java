@@ -81,7 +81,7 @@ public class BACnetPropertyStatesBoolean extends BACnetPropertyStates implements
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesBooleanBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesBoolean");
     PositionAware positionAware = readBuffer;
@@ -102,14 +102,14 @@ public class BACnetPropertyStatesBoolean extends BACnetPropertyStates implements
 
     readBuffer.closeContext("BACnetPropertyStatesBoolean");
     // Create the instance
-    return new BACnetPropertyStatesBooleanBuilder(booleanValue);
+    return new BACnetPropertyStatesBooleanBuilderImpl(booleanValue);
   }
 
-  public static class BACnetPropertyStatesBooleanBuilder
+  public static class BACnetPropertyStatesBooleanBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetContextTagBoolean booleanValue;
 
-    public BACnetPropertyStatesBooleanBuilder(BACnetContextTagBoolean booleanValue) {
+    public BACnetPropertyStatesBooleanBuilderImpl(BACnetContextTagBoolean booleanValue) {
 
       this.booleanValue = booleanValue;
     }

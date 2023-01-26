@@ -72,7 +72,7 @@ public class ApduDataExtReadRouterMemoryResponse extends ApduDataExt implements 
     return lengthInBits;
   }
 
-  public static ApduDataExtReadRouterMemoryResponseBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtReadRouterMemoryResponse");
     PositionAware positionAware = readBuffer;
@@ -81,14 +81,14 @@ public class ApduDataExtReadRouterMemoryResponse extends ApduDataExt implements 
 
     readBuffer.closeContext("ApduDataExtReadRouterMemoryResponse");
     // Create the instance
-    return new ApduDataExtReadRouterMemoryResponseBuilder(length);
+    return new ApduDataExtReadRouterMemoryResponseBuilderImpl(length);
   }
 
-  public static class ApduDataExtReadRouterMemoryResponseBuilder
+  public static class ApduDataExtReadRouterMemoryResponseBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final Short length;
 
-    public ApduDataExtReadRouterMemoryResponseBuilder(Short length) {
+    public ApduDataExtReadRouterMemoryResponseBuilderImpl(Short length) {
 
       this.length = length;
     }

@@ -115,7 +115,7 @@ public class DisconnectRequest extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static DisconnectRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("DisconnectRequest");
     PositionAware positionAware = readBuffer;
@@ -144,16 +144,17 @@ public class DisconnectRequest extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("DisconnectRequest");
     // Create the instance
-    return new DisconnectRequestBuilder(
+    return new DisconnectRequestBuilderImpl(
         communicationChannelId, hpaiControlEndpoint, reservedField0);
   }
 
-  public static class DisconnectRequestBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class DisconnectRequestBuilderImpl
+      implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final short communicationChannelId;
     private final HPAIControlEndpoint hpaiControlEndpoint;
     private final Short reservedField0;
 
-    public DisconnectRequestBuilder(
+    public DisconnectRequestBuilderImpl(
         short communicationChannelId,
         HPAIControlEndpoint hpaiControlEndpoint,
         Short reservedField0) {

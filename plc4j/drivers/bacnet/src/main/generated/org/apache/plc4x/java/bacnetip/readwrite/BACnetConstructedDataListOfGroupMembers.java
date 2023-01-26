@@ -104,7 +104,7 @@ public class BACnetConstructedDataListOfGroupMembers extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataListOfGroupMembersBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -128,17 +128,17 @@ public class BACnetConstructedDataListOfGroupMembers extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataListOfGroupMembers");
     // Create the instance
-    return new BACnetConstructedDataListOfGroupMembersBuilder(
+    return new BACnetConstructedDataListOfGroupMembersBuilderImpl(
         listOfGroupMembers, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataListOfGroupMembersBuilder
+  public static class BACnetConstructedDataListOfGroupMembersBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetReadAccessSpecification> listOfGroupMembers;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataListOfGroupMembersBuilder(
+    public BACnetConstructedDataListOfGroupMembersBuilderImpl(
         List<BACnetReadAccessSpecification> listOfGroupMembers,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

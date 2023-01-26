@@ -95,7 +95,7 @@ public class TelephonyDataRinging extends TelephonyData implements Message {
     return lengthInBits;
   }
 
-  public static TelephonyDataRingingBuilder staticParseBuilder(
+  public static TelephonyDataBuilder staticParseTelephonyDataBuilder(
       ReadBuffer readBuffer, TelephonyCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("TelephonyDataRinging");
@@ -111,14 +111,15 @@ public class TelephonyDataRinging extends TelephonyData implements Message {
 
     readBuffer.closeContext("TelephonyDataRinging");
     // Create the instance
-    return new TelephonyDataRingingBuilder(number, reservedField0);
+    return new TelephonyDataRingingBuilderImpl(number, reservedField0);
   }
 
-  public static class TelephonyDataRingingBuilder implements TelephonyData.TelephonyDataBuilder {
+  public static class TelephonyDataRingingBuilderImpl
+      implements TelephonyData.TelephonyDataBuilder {
     private final String number;
     private final Byte reservedField0;
 
-    public TelephonyDataRingingBuilder(String number, Byte reservedField0) {
+    public TelephonyDataRingingBuilderImpl(String number, Byte reservedField0) {
       this.number = number;
       this.reservedField0 = reservedField0;
     }

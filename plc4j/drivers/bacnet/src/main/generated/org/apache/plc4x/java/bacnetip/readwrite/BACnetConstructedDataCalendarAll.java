@@ -84,7 +84,7 @@ public class BACnetConstructedDataCalendarAll extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCalendarAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -103,15 +103,15 @@ public class BACnetConstructedDataCalendarAll extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataCalendarAll");
     // Create the instance
-    return new BACnetConstructedDataCalendarAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCalendarAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCalendarAllBuilder
+  public static class BACnetConstructedDataCalendarAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCalendarAllBuilder(
+    public BACnetConstructedDataCalendarAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
 
       this.tagNumber = tagNumber;

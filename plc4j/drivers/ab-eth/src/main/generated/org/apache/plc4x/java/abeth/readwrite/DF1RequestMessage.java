@@ -170,7 +170,7 @@ public abstract class DF1RequestMessage implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     DF1RequestMessageBuilder builder = null;
     if (EvaluationHelper.equals(commandCode, (short) 0x0F)) {
-      builder = DF1CommandRequestMessage.staticParseBuilder(readBuffer);
+      builder = DF1CommandRequestMessage.staticParseDF1RequestMessageBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -189,7 +189,7 @@ public abstract class DF1RequestMessage implements Message {
     return _dF1RequestMessage;
   }
 
-  public static interface DF1RequestMessageBuilder {
+  public interface DF1RequestMessageBuilder {
     DF1RequestMessage build(
         short destinationAddress, short sourceAddress, short status, int transactionCounter);
   }

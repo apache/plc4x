@@ -106,8 +106,8 @@ public class TimeZoneDataType extends ExtensionObjectDefinition implements Messa
     return lengthInBits;
   }
 
-  public static TimeZoneDataTypeBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("TimeZoneDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -123,16 +123,16 @@ public class TimeZoneDataType extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("TimeZoneDataType");
     // Create the instance
-    return new TimeZoneDataTypeBuilder(offset, daylightSavingInOffset, reservedField0);
+    return new TimeZoneDataTypeBuilderImpl(offset, daylightSavingInOffset, reservedField0);
   }
 
-  public static class TimeZoneDataTypeBuilder
+  public static class TimeZoneDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final short offset;
     private final boolean daylightSavingInOffset;
     private final Short reservedField0;
 
-    public TimeZoneDataTypeBuilder(
+    public TimeZoneDataTypeBuilderImpl(
         short offset, boolean daylightSavingInOffset, Short reservedField0) {
       this.offset = offset;
       this.daylightSavingInOffset = daylightSavingInOffset;

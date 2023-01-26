@@ -137,7 +137,7 @@ public class LBusmonInd extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static LBusmonIndBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("LBusmonInd");
     PositionAware positionAware = readBuffer;
@@ -164,18 +164,18 @@ public class LBusmonInd extends CEMI implements Message {
 
     readBuffer.closeContext("LBusmonInd");
     // Create the instance
-    return new LBusmonIndBuilder(
+    return new LBusmonIndBuilderImpl(
         additionalInformationLength, additionalInformation, dataFrame, crc, size);
   }
 
-  public static class LBusmonIndBuilder implements CEMI.CEMIBuilder {
+  public static class LBusmonIndBuilderImpl implements CEMI.CEMIBuilder {
     private final short additionalInformationLength;
     private final List<CEMIAdditionalInformation> additionalInformation;
     private final LDataFrame dataFrame;
     private final Short crc;
     private final Integer size;
 
-    public LBusmonIndBuilder(
+    public LBusmonIndBuilderImpl(
         short additionalInformationLength,
         List<CEMIAdditionalInformation> additionalInformation,
         LDataFrame dataFrame,

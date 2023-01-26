@@ -113,7 +113,7 @@ public class BACnetConstructedDataTrendLogLogDeviceObjectProperty extends BACnet
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -136,17 +136,17 @@ public class BACnetConstructedDataTrendLogLogDeviceObjectProperty extends BACnet
 
     readBuffer.closeContext("BACnetConstructedDataTrendLogLogDeviceObjectProperty");
     // Create the instance
-    return new BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder(
+    return new BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilderImpl(
         logDeviceObjectProperty, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder
+  public static class BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectPropertyReference logDeviceObjectProperty;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder(
+    public BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilderImpl(
         BACnetDeviceObjectPropertyReference logDeviceObjectProperty,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

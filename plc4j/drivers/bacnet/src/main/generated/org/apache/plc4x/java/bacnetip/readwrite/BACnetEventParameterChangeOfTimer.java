@@ -135,8 +135,8 @@ public class BACnetEventParameterChangeOfTimer extends BACnetEventParameter impl
     return lengthInBits;
   }
 
-  public static BACnetEventParameterChangeOfTimerBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfTimer");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -186,11 +186,11 @@ public class BACnetEventParameterChangeOfTimer extends BACnetEventParameter impl
 
     readBuffer.closeContext("BACnetEventParameterChangeOfTimer");
     // Create the instance
-    return new BACnetEventParameterChangeOfTimerBuilder(
+    return new BACnetEventParameterChangeOfTimerBuilderImpl(
         openingTag, timeDelay, alarmValues, updateTimeReference, closingTag);
   }
 
-  public static class BACnetEventParameterChangeOfTimerBuilder
+  public static class BACnetEventParameterChangeOfTimerBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
@@ -198,7 +198,7 @@ public class BACnetEventParameterChangeOfTimer extends BACnetEventParameter impl
     private final BACnetDeviceObjectPropertyReferenceEnclosed updateTimeReference;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterChangeOfTimerBuilder(
+    public BACnetEventParameterChangeOfTimerBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetEventParameterChangeOfTimerAlarmValue alarmValues,

@@ -82,7 +82,7 @@ public class SecurityDataOff extends SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityDataOffBuilder staticParseBuilder(
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(
       ReadBuffer readBuffer, SecurityCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataOff");
@@ -96,13 +96,13 @@ public class SecurityDataOff extends SecurityData implements Message {
 
     readBuffer.closeContext("SecurityDataOff");
     // Create the instance
-    return new SecurityDataOffBuilder(data);
+    return new SecurityDataOffBuilderImpl(data);
   }
 
-  public static class SecurityDataOffBuilder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataOffBuilderImpl implements SecurityData.SecurityDataBuilder {
     private final byte[] data;
 
-    public SecurityDataOffBuilder(byte[] data) {
+    public SecurityDataOffBuilderImpl(byte[] data) {
 
       this.data = data;
     }

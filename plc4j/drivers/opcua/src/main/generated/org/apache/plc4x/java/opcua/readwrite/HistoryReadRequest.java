@@ -175,7 +175,7 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
     return lengthInBits;
   }
 
-  public static HistoryReadRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryReadRequest");
     PositionAware positionAware = readBuffer;
@@ -220,7 +220,7 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
 
     readBuffer.closeContext("HistoryReadRequest");
     // Create the instance
-    return new HistoryReadRequestBuilder(
+    return new HistoryReadRequestBuilderImpl(
         requestHeader,
         historyReadDetails,
         timestampsToReturn,
@@ -230,7 +230,7 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
         reservedField0);
   }
 
-  public static class HistoryReadRequestBuilder
+  public static class HistoryReadRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final ExtensionObject historyReadDetails;
@@ -240,7 +240,7 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
     private final List<ExtensionObjectDefinition> nodesToRead;
     private final Short reservedField0;
 
-    public HistoryReadRequestBuilder(
+    public HistoryReadRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         ExtensionObject historyReadDetails,
         TimestampsToReturn timestampsToReturn,

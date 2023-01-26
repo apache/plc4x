@@ -91,8 +91,8 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
     return lengthInBits;
   }
 
-  public static S7VarRequestParameterItemAddressBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static S7VarRequestParameterItemBuilder staticParseS7VarRequestParameterItemBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("S7VarRequestParameterItemAddress");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -107,14 +107,14 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
 
     readBuffer.closeContext("S7VarRequestParameterItemAddress");
     // Create the instance
-    return new S7VarRequestParameterItemAddressBuilder(address);
+    return new S7VarRequestParameterItemAddressBuilderImpl(address);
   }
 
-  public static class S7VarRequestParameterItemAddressBuilder
+  public static class S7VarRequestParameterItemAddressBuilderImpl
       implements S7VarRequestParameterItem.S7VarRequestParameterItemBuilder {
     private final S7Address address;
 
-    public S7VarRequestParameterItemAddressBuilder(S7Address address) {
+    public S7VarRequestParameterItemAddressBuilderImpl(S7Address address) {
 
       this.address = address;
     }

@@ -89,7 +89,7 @@ public class IdentifyReplyCommandMaximumLevels extends IdentifyReplyCommand impl
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandMaximumLevelsBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandMaximumLevels");
     PositionAware positionAware = readBuffer;
@@ -100,15 +100,15 @@ public class IdentifyReplyCommandMaximumLevels extends IdentifyReplyCommand impl
 
     readBuffer.closeContext("IdentifyReplyCommandMaximumLevels");
     // Create the instance
-    return new IdentifyReplyCommandMaximumLevelsBuilder(maximumLevels, numBytes);
+    return new IdentifyReplyCommandMaximumLevelsBuilderImpl(maximumLevels, numBytes);
   }
 
-  public static class IdentifyReplyCommandMaximumLevelsBuilder
+  public static class IdentifyReplyCommandMaximumLevelsBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] maximumLevels;
     private final Short numBytes;
 
-    public IdentifyReplyCommandMaximumLevelsBuilder(byte[] maximumLevels, Short numBytes) {
+    public IdentifyReplyCommandMaximumLevelsBuilderImpl(byte[] maximumLevels, Short numBytes) {
 
       this.maximumLevels = maximumLevels;
       this.numBytes = numBytes;

@@ -155,8 +155,8 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
     return lengthInBits;
   }
 
-  public static NodeReferenceBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("NodeReference");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -188,7 +188,7 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("NodeReference");
     // Create the instance
-    return new NodeReferenceBuilder(
+    return new NodeReferenceBuilderImpl(
         nodeId,
         referenceTypeId,
         isForward,
@@ -197,7 +197,7 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
         reservedField0);
   }
 
-  public static class NodeReferenceBuilder
+  public static class NodeReferenceBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId nodeId;
     private final NodeId referenceTypeId;
@@ -206,7 +206,7 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
     private final List<NodeId> referencedNodeIds;
     private final Short reservedField0;
 
-    public NodeReferenceBuilder(
+    public NodeReferenceBuilderImpl(
         NodeId nodeId,
         NodeId referenceTypeId,
         boolean isForward,

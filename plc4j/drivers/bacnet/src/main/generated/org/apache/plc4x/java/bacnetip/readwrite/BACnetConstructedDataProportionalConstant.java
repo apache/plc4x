@@ -111,7 +111,7 @@ public class BACnetConstructedDataProportionalConstant extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataProportionalConstantBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataProportionalConstant extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataProportionalConstant");
     // Create the instance
-    return new BACnetConstructedDataProportionalConstantBuilder(
+    return new BACnetConstructedDataProportionalConstantBuilderImpl(
         proportionalConstant, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataProportionalConstantBuilder
+  public static class BACnetConstructedDataProportionalConstantBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal proportionalConstant;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataProportionalConstantBuilder(
+    public BACnetConstructedDataProportionalConstantBuilderImpl(
         BACnetApplicationTagReal proportionalConstant,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

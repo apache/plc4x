@@ -149,7 +149,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     return lengthInBits;
   }
 
-  public static RegisterServer2ResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RegisterServer2Response");
     PositionAware positionAware = readBuffer;
@@ -183,7 +183,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
 
     readBuffer.closeContext("RegisterServer2Response");
     // Create the instance
-    return new RegisterServer2ResponseBuilder(
+    return new RegisterServer2ResponseBuilderImpl(
         responseHeader,
         noOfConfigurationResults,
         configurationResults,
@@ -191,7 +191,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
         diagnosticInfos);
   }
 
-  public static class RegisterServer2ResponseBuilder
+  public static class RegisterServer2ResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfConfigurationResults;
@@ -199,7 +199,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public RegisterServer2ResponseBuilder(
+    public RegisterServer2ResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfConfigurationResults,
         List<StatusCode> configurationResults,

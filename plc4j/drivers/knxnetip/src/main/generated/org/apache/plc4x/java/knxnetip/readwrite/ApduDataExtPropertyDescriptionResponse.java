@@ -217,7 +217,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
     return lengthInBits;
   }
 
-  public static ApduDataExtPropertyDescriptionResponseBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtPropertyDescriptionResponse");
     PositionAware positionAware = readBuffer;
@@ -263,7 +263,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
 
     readBuffer.closeContext("ApduDataExtPropertyDescriptionResponse");
     // Create the instance
-    return new ApduDataExtPropertyDescriptionResponseBuilder(
+    return new ApduDataExtPropertyDescriptionResponseBuilderImpl(
         objectIndex,
         propertyId,
         index,
@@ -277,7 +277,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
         reservedField1);
   }
 
-  public static class ApduDataExtPropertyDescriptionResponseBuilder
+  public static class ApduDataExtPropertyDescriptionResponseBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final short objectIndex;
     private final short propertyId;
@@ -291,7 +291,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
     private final Byte reservedField0;
     private final Byte reservedField1;
 
-    public ApduDataExtPropertyDescriptionResponseBuilder(
+    public ApduDataExtPropertyDescriptionResponseBuilderImpl(
         short objectIndex,
         short propertyId,
         short index,

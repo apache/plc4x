@@ -72,7 +72,7 @@ public class MPropInfoInd extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static MPropInfoIndBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("MPropInfoInd");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class MPropInfoInd extends CEMI implements Message {
 
     readBuffer.closeContext("MPropInfoInd");
     // Create the instance
-    return new MPropInfoIndBuilder(size);
+    return new MPropInfoIndBuilderImpl(size);
   }
 
-  public static class MPropInfoIndBuilder implements CEMI.CEMIBuilder {
+  public static class MPropInfoIndBuilderImpl implements CEMI.CEMIBuilder {
     private final Integer size;
 
-    public MPropInfoIndBuilder(Integer size) {
+    public MPropInfoIndBuilderImpl(Integer size) {
 
       this.size = size;
     }

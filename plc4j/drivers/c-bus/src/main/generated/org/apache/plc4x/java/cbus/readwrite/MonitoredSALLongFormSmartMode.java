@@ -208,7 +208,7 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
     return lengthInBits;
   }
 
-  public static MonitoredSALLongFormSmartModeBuilder staticParseBuilder(
+  public static MonitoredSALBuilder staticParseMonitoredSALBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("MonitoredSALLongFormSmartMode");
     PositionAware positionAware = readBuffer;
@@ -263,7 +263,7 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
 
     readBuffer.closeContext("MonitoredSALLongFormSmartMode");
     // Create the instance
-    return new MonitoredSALLongFormSmartModeBuilder(
+    return new MonitoredSALLongFormSmartModeBuilderImpl(
         terminatingByte,
         unitAddress,
         bridgeAddress,
@@ -275,7 +275,7 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
         reservedField0);
   }
 
-  public static class MonitoredSALLongFormSmartModeBuilder
+  public static class MonitoredSALLongFormSmartModeBuilderImpl
       implements MonitoredSAL.MonitoredSALBuilder {
     private final long terminatingByte;
     private final UnitAddress unitAddress;
@@ -287,7 +287,7 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
     private final CBusOptions cBusOptions;
     private final Byte reservedField0;
 
-    public MonitoredSALLongFormSmartModeBuilder(
+    public MonitoredSALLongFormSmartModeBuilderImpl(
         long terminatingByte,
         UnitAddress unitAddress,
         BridgeAddress bridgeAddress,

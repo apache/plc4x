@@ -113,7 +113,7 @@ public class BACnetConstructedDataApplicationSoftwareVersion extends BACnetConst
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataApplicationSoftwareVersionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -139,17 +139,17 @@ public class BACnetConstructedDataApplicationSoftwareVersion extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataApplicationSoftwareVersion");
     // Create the instance
-    return new BACnetConstructedDataApplicationSoftwareVersionBuilder(
+    return new BACnetConstructedDataApplicationSoftwareVersionBuilderImpl(
         applicationSoftwareVersion, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataApplicationSoftwareVersionBuilder
+  public static class BACnetConstructedDataApplicationSoftwareVersionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString applicationSoftwareVersion;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataApplicationSoftwareVersionBuilder(
+    public BACnetConstructedDataApplicationSoftwareVersionBuilderImpl(
         BACnetApplicationTagCharacterString applicationSoftwareVersion,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

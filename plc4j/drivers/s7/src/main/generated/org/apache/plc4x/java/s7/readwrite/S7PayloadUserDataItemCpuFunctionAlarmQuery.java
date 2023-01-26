@@ -203,7 +203,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQuery extends S7PayloadUserDat
     return lengthInBits;
   }
 
-  public static S7PayloadUserDataItemCpuFunctionAlarmQueryBuilder staticParseBuilder(
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
       ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionAlarmQuery");
     PositionAware positionAware = readBuffer;
@@ -261,11 +261,11 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQuery extends S7PayloadUserDat
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionAlarmQuery");
     // Create the instance
-    return new S7PayloadUserDataItemCpuFunctionAlarmQueryBuilder(
+    return new S7PayloadUserDataItemCpuFunctionAlarmQueryBuilderImpl(
         syntaxId, queryType, alarmType, reservedField0, reservedField1);
   }
 
-  public static class S7PayloadUserDataItemCpuFunctionAlarmQueryBuilder
+  public static class S7PayloadUserDataItemCpuFunctionAlarmQueryBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
     private final SyntaxIdType syntaxId;
     private final QueryType queryType;
@@ -273,7 +273,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQuery extends S7PayloadUserDat
     private final Short reservedField0;
     private final Short reservedField1;
 
-    public S7PayloadUserDataItemCpuFunctionAlarmQueryBuilder(
+    public S7PayloadUserDataItemCpuFunctionAlarmQueryBuilderImpl(
         SyntaxIdType syntaxId,
         QueryType queryType,
         AlarmType alarmType,

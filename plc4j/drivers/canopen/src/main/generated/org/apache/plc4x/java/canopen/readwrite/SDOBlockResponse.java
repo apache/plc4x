@@ -82,7 +82,7 @@ public class SDOBlockResponse extends SDOResponse implements Message {
     return lengthInBits;
   }
 
-  public static SDOBlockResponseBuilder staticParseBuilder(
+  public static SDOResponseBuilder staticParseSDOResponseBuilder(
       ReadBuffer readBuffer, SDOResponseCommand command) throws ParseException {
     readBuffer.pullContext("SDOBlockResponse");
     PositionAware positionAware = readBuffer;
@@ -96,13 +96,13 @@ public class SDOBlockResponse extends SDOResponse implements Message {
 
     readBuffer.closeContext("SDOBlockResponse");
     // Create the instance
-    return new SDOBlockResponseBuilder(block);
+    return new SDOBlockResponseBuilderImpl(block);
   }
 
-  public static class SDOBlockResponseBuilder implements SDOResponse.SDOResponseBuilder {
+  public static class SDOBlockResponseBuilderImpl implements SDOResponse.SDOResponseBuilder {
     private final SDOBlockData block;
 
-    public SDOBlockResponseBuilder(SDOBlockData block) {
+    public SDOBlockResponseBuilderImpl(SDOBlockData block) {
 
       this.block = block;
     }

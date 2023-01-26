@@ -103,7 +103,7 @@ public class BACnetConstructedDataEntryPoints extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEntryPointsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -127,16 +127,17 @@ public class BACnetConstructedDataEntryPoints extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataEntryPoints");
     // Create the instance
-    return new BACnetConstructedDataEntryPointsBuilder(entryPoints, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEntryPointsBuilderImpl(
+        entryPoints, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEntryPointsBuilder
+  public static class BACnetConstructedDataEntryPointsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDeviceObjectReference> entryPoints;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEntryPointsBuilder(
+    public BACnetConstructedDataEntryPointsBuilderImpl(
         List<BACnetDeviceObjectReference> entryPoints,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

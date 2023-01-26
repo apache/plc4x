@@ -138,8 +138,8 @@ public class MediaTransportControlDataEnumerateCategoriesSelectionTracks
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder
-      staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataEnumerateCategoriesSelectionTracks");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -162,16 +162,16 @@ public class MediaTransportControlDataEnumerateCategoriesSelectionTracks
 
     readBuffer.closeContext("MediaTransportControlDataEnumerateCategoriesSelectionTracks");
     // Create the instance
-    return new MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder(
+    return new MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilderImpl(
         enumerateType, start);
   }
 
-  public static class MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder
+  public static class MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte enumerateType;
     private final short start;
 
-    public MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder(
+    public MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilderImpl(
         byte enumerateType, short start) {
 
       this.enumerateType = enumerateType;

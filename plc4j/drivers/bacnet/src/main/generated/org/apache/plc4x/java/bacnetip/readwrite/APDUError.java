@@ -132,7 +132,7 @@ public class APDUError extends APDU implements Message {
     return lengthInBits;
   }
 
-  public static APDUErrorBuilder staticParseBuilder(ReadBuffer readBuffer, Integer apduLength)
+  public static APDUBuilder staticParseAPDUBuilder(ReadBuffer readBuffer, Integer apduLength)
       throws ParseException {
     readBuffer.pullContext("APDUError");
     PositionAware positionAware = readBuffer;
@@ -162,17 +162,18 @@ public class APDUError extends APDU implements Message {
 
     readBuffer.closeContext("APDUError");
     // Create the instance
-    return new APDUErrorBuilder(originalInvokeId, errorChoice, error, apduLength, reservedField0);
+    return new APDUErrorBuilderImpl(
+        originalInvokeId, errorChoice, error, apduLength, reservedField0);
   }
 
-  public static class APDUErrorBuilder implements APDU.APDUBuilder {
+  public static class APDUErrorBuilderImpl implements APDU.APDUBuilder {
     private final short originalInvokeId;
     private final BACnetConfirmedServiceChoice errorChoice;
     private final BACnetError error;
     private final Integer apduLength;
     private final Byte reservedField0;
 
-    public APDUErrorBuilder(
+    public APDUErrorBuilderImpl(
         short originalInvokeId,
         BACnetConfirmedServiceChoice errorChoice,
         BACnetError error,

@@ -111,8 +111,8 @@ public class NLMChallengeRequest extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMChallengeRequestBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMChallengeRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -126,17 +126,17 @@ public class NLMChallengeRequest extends NLM implements Message {
 
     readBuffer.closeContext("NLMChallengeRequest");
     // Create the instance
-    return new NLMChallengeRequestBuilder(
+    return new NLMChallengeRequestBuilderImpl(
         messageChallenge, originalMessageId, originalTimestamp, apduLength);
   }
 
-  public static class NLMChallengeRequestBuilder implements NLM.NLMBuilder {
+  public static class NLMChallengeRequestBuilderImpl implements NLM.NLMBuilder {
     private final byte messageChallenge;
     private final long originalMessageId;
     private final long originalTimestamp;
     private final Integer apduLength;
 
-    public NLMChallengeRequestBuilder(
+    public NLMChallengeRequestBuilderImpl(
         byte messageChallenge, long originalMessageId, long originalTimestamp, Integer apduLength) {
 
       this.messageChallenge = messageChallenge;

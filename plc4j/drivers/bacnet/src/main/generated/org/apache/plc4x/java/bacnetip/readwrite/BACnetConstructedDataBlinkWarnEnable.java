@@ -110,7 +110,7 @@ public class BACnetConstructedDataBlinkWarnEnable extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBlinkWarnEnableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -133,17 +133,17 @@ public class BACnetConstructedDataBlinkWarnEnable extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataBlinkWarnEnable");
     // Create the instance
-    return new BACnetConstructedDataBlinkWarnEnableBuilder(
+    return new BACnetConstructedDataBlinkWarnEnableBuilderImpl(
         blinkWarnEnable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBlinkWarnEnableBuilder
+  public static class BACnetConstructedDataBlinkWarnEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean blinkWarnEnable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBlinkWarnEnableBuilder(
+    public BACnetConstructedDataBlinkWarnEnableBuilderImpl(
         BACnetApplicationTagBoolean blinkWarnEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

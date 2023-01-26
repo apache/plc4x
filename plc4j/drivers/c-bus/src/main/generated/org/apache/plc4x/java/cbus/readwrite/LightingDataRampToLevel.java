@@ -92,7 +92,7 @@ public class LightingDataRampToLevel extends LightingData implements Message {
     return lengthInBits;
   }
 
-  public static LightingDataRampToLevelBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static LightingDataBuilder staticParseLightingDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("LightingDataRampToLevel");
     PositionAware positionAware = readBuffer;
@@ -105,14 +105,15 @@ public class LightingDataRampToLevel extends LightingData implements Message {
 
     readBuffer.closeContext("LightingDataRampToLevel");
     // Create the instance
-    return new LightingDataRampToLevelBuilder(group, level);
+    return new LightingDataRampToLevelBuilderImpl(group, level);
   }
 
-  public static class LightingDataRampToLevelBuilder implements LightingData.LightingDataBuilder {
+  public static class LightingDataRampToLevelBuilderImpl
+      implements LightingData.LightingDataBuilder {
     private final byte group;
     private final byte level;
 
-    public LightingDataRampToLevelBuilder(byte group, byte level) {
+    public LightingDataRampToLevelBuilderImpl(byte group, byte level) {
 
       this.group = group;
       this.level = level;

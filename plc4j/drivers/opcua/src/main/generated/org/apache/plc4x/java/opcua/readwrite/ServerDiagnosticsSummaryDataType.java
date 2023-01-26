@@ -243,7 +243,7 @@ public class ServerDiagnosticsSummaryDataType extends ExtensionObjectDefinition 
     return lengthInBits;
   }
 
-  public static ServerDiagnosticsSummaryDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ServerDiagnosticsSummaryDataType");
     PositionAware positionAware = readBuffer;
@@ -286,7 +286,7 @@ public class ServerDiagnosticsSummaryDataType extends ExtensionObjectDefinition 
 
     readBuffer.closeContext("ServerDiagnosticsSummaryDataType");
     // Create the instance
-    return new ServerDiagnosticsSummaryDataTypeBuilder(
+    return new ServerDiagnosticsSummaryDataTypeBuilderImpl(
         serverViewCount,
         currentSessionCount,
         cumulatedSessionCount,
@@ -301,7 +301,7 @@ public class ServerDiagnosticsSummaryDataType extends ExtensionObjectDefinition 
         rejectedRequestsCount);
   }
 
-  public static class ServerDiagnosticsSummaryDataTypeBuilder
+  public static class ServerDiagnosticsSummaryDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long serverViewCount;
     private final long currentSessionCount;
@@ -316,7 +316,7 @@ public class ServerDiagnosticsSummaryDataType extends ExtensionObjectDefinition 
     private final long securityRejectedRequestsCount;
     private final long rejectedRequestsCount;
 
-    public ServerDiagnosticsSummaryDataTypeBuilder(
+    public ServerDiagnosticsSummaryDataTypeBuilderImpl(
         long serverViewCount,
         long currentSessionCount,
         long cumulatedSessionCount,

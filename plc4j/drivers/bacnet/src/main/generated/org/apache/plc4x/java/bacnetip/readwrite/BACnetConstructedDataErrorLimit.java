@@ -109,7 +109,7 @@ public class BACnetConstructedDataErrorLimit extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataErrorLimitBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,16 +132,17 @@ public class BACnetConstructedDataErrorLimit extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataErrorLimit");
     // Create the instance
-    return new BACnetConstructedDataErrorLimitBuilder(errorLimit, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataErrorLimitBuilderImpl(
+        errorLimit, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataErrorLimitBuilder
+  public static class BACnetConstructedDataErrorLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal errorLimit;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataErrorLimitBuilder(
+    public BACnetConstructedDataErrorLimitBuilderImpl(
         BACnetApplicationTagReal errorLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

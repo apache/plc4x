@@ -88,7 +88,7 @@ public class BACnetContextTagOctetString extends BACnetContextTag implements Mes
     return lengthInBits;
   }
 
-  public static BACnetContextTagOctetStringBuilder staticParseBuilder(
+  public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer,
       Short tagNumberArgument,
       BACnetDataType dataType,
@@ -110,15 +110,15 @@ public class BACnetContextTagOctetString extends BACnetContextTag implements Mes
 
     readBuffer.closeContext("BACnetContextTagOctetString");
     // Create the instance
-    return new BACnetContextTagOctetStringBuilder(payload, tagNumberArgument);
+    return new BACnetContextTagOctetStringBuilderImpl(payload, tagNumberArgument);
   }
 
-  public static class BACnetContextTagOctetStringBuilder
+  public static class BACnetContextTagOctetStringBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadOctetString payload;
     private final Short tagNumberArgument;
 
-    public BACnetContextTagOctetStringBuilder(
+    public BACnetContextTagOctetStringBuilderImpl(
         BACnetTagPayloadOctetString payload, Short tagNumberArgument) {
 
       this.payload = payload;

@@ -81,8 +81,8 @@ public class AirConditioningDataRefresh extends AirConditioningData implements M
     return lengthInBits;
   }
 
-  public static AirConditioningDataRefreshBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static AirConditioningDataBuilder staticParseAirConditioningDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataRefresh");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -92,14 +92,14 @@ public class AirConditioningDataRefresh extends AirConditioningData implements M
 
     readBuffer.closeContext("AirConditioningDataRefresh");
     // Create the instance
-    return new AirConditioningDataRefreshBuilder(zoneGroup);
+    return new AirConditioningDataRefreshBuilderImpl(zoneGroup);
   }
 
-  public static class AirConditioningDataRefreshBuilder
+  public static class AirConditioningDataRefreshBuilderImpl
       implements AirConditioningData.AirConditioningDataBuilder {
     private final byte zoneGroup;
 
-    public AirConditioningDataRefreshBuilder(byte zoneGroup) {
+    public AirConditioningDataRefreshBuilderImpl(byte zoneGroup) {
 
       this.zoneGroup = zoneGroup;
     }

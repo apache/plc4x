@@ -101,7 +101,7 @@ public class ParameterValueSerialNumber extends ParameterValue implements Messag
     return lengthInBits;
   }
 
-  public static ParameterValueSerialNumberBuilder staticParseBuilder(
+  public static ParameterValueBuilder staticParseParameterValueBuilder(
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueSerialNumber");
     PositionAware positionAware = readBuffer;
@@ -121,16 +121,16 @@ public class ParameterValueSerialNumber extends ParameterValue implements Messag
 
     readBuffer.closeContext("ParameterValueSerialNumber");
     // Create the instance
-    return new ParameterValueSerialNumberBuilder(value, data, numBytes);
+    return new ParameterValueSerialNumberBuilderImpl(value, data, numBytes);
   }
 
-  public static class ParameterValueSerialNumberBuilder
+  public static class ParameterValueSerialNumberBuilderImpl
       implements ParameterValue.ParameterValueBuilder {
     private final SerialNumber value;
     private final byte[] data;
     private final Short numBytes;
 
-    public ParameterValueSerialNumberBuilder(SerialNumber value, byte[] data, Short numBytes) {
+    public ParameterValueSerialNumberBuilderImpl(SerialNumber value, byte[] data, Short numBytes) {
 
       this.value = value;
       this.data = data;

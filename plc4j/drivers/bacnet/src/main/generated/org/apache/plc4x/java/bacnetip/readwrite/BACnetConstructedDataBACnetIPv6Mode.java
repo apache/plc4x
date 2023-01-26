@@ -109,7 +109,7 @@ public class BACnetConstructedDataBACnetIPv6Mode extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBACnetIPv6ModeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataBACnetIPv6Mode extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataBACnetIPv6Mode");
     // Create the instance
-    return new BACnetConstructedDataBACnetIPv6ModeBuilder(
+    return new BACnetConstructedDataBACnetIPv6ModeBuilderImpl(
         bacnetIpv6Mode, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBACnetIPv6ModeBuilder
+  public static class BACnetConstructedDataBACnetIPv6ModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetIPModeTagged bacnetIpv6Mode;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBACnetIPv6ModeBuilder(
+    public BACnetConstructedDataBACnetIPv6ModeBuilderImpl(
         BACnetIPModeTagged bacnetIpv6Mode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

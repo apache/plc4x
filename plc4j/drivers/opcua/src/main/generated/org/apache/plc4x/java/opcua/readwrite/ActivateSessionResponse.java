@@ -161,7 +161,7 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
     return lengthInBits;
   }
 
-  public static ActivateSessionResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ActivateSessionResponse");
     PositionAware positionAware = readBuffer;
@@ -200,11 +200,11 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
 
     readBuffer.closeContext("ActivateSessionResponse");
     // Create the instance
-    return new ActivateSessionResponseBuilder(
+    return new ActivateSessionResponseBuilderImpl(
         responseHeader, serverNonce, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class ActivateSessionResponseBuilder
+  public static class ActivateSessionResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final PascalByteString serverNonce;
@@ -213,7 +213,7 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public ActivateSessionResponseBuilder(
+    public ActivateSessionResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         PascalByteString serverNonce,
         int noOfResults,

@@ -110,7 +110,7 @@ public class FirmataCommandSetDigitalPinValue extends FirmataCommand implements 
     return lengthInBits;
   }
 
-  public static FirmataCommandSetDigitalPinValueBuilder staticParseBuilder(
+  public static FirmataCommandBuilder staticParseFirmataCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataCommandSetDigitalPinValue");
     PositionAware positionAware = readBuffer;
@@ -126,17 +126,17 @@ public class FirmataCommandSetDigitalPinValue extends FirmataCommand implements 
 
     readBuffer.closeContext("FirmataCommandSetDigitalPinValue");
     // Create the instance
-    return new FirmataCommandSetDigitalPinValueBuilder(pin, on, response, reservedField0);
+    return new FirmataCommandSetDigitalPinValueBuilderImpl(pin, on, response, reservedField0);
   }
 
-  public static class FirmataCommandSetDigitalPinValueBuilder
+  public static class FirmataCommandSetDigitalPinValueBuilderImpl
       implements FirmataCommand.FirmataCommandBuilder {
     private final short pin;
     private final boolean on;
     private final Boolean response;
     private final Short reservedField0;
 
-    public FirmataCommandSetDigitalPinValueBuilder(
+    public FirmataCommandSetDigitalPinValueBuilderImpl(
         short pin, boolean on, Boolean response, Short reservedField0) {
       this.pin = pin;
       this.on = on;

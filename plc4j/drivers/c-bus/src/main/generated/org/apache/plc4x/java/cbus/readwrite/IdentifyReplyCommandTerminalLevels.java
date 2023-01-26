@@ -89,7 +89,7 @@ public class IdentifyReplyCommandTerminalLevels extends IdentifyReplyCommand imp
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandTerminalLevelsBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandTerminalLevels");
     PositionAware positionAware = readBuffer;
@@ -100,15 +100,15 @@ public class IdentifyReplyCommandTerminalLevels extends IdentifyReplyCommand imp
 
     readBuffer.closeContext("IdentifyReplyCommandTerminalLevels");
     // Create the instance
-    return new IdentifyReplyCommandTerminalLevelsBuilder(terminalLevels, numBytes);
+    return new IdentifyReplyCommandTerminalLevelsBuilderImpl(terminalLevels, numBytes);
   }
 
-  public static class IdentifyReplyCommandTerminalLevelsBuilder
+  public static class IdentifyReplyCommandTerminalLevelsBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] terminalLevels;
     private final Short numBytes;
 
-    public IdentifyReplyCommandTerminalLevelsBuilder(byte[] terminalLevels, Short numBytes) {
+    public IdentifyReplyCommandTerminalLevelsBuilderImpl(byte[] terminalLevels, Short numBytes) {
 
       this.terminalLevels = terminalLevels;
       this.numBytes = numBytes;

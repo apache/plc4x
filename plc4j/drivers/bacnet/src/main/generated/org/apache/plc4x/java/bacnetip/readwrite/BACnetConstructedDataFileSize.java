@@ -109,7 +109,7 @@ public class BACnetConstructedDataFileSize extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFileSizeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,16 +134,16 @@ public class BACnetConstructedDataFileSize extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataFileSize");
     // Create the instance
-    return new BACnetConstructedDataFileSizeBuilder(fileSize, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataFileSizeBuilderImpl(fileSize, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFileSizeBuilder
+  public static class BACnetConstructedDataFileSizeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger fileSize;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFileSizeBuilder(
+    public BACnetConstructedDataFileSizeBuilderImpl(
         BACnetApplicationTagUnsignedInteger fileSize,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

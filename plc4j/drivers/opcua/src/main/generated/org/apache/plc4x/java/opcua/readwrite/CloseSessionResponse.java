@@ -83,7 +83,7 @@ public class CloseSessionResponse extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static CloseSessionResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CloseSessionResponse");
     PositionAware positionAware = readBuffer;
@@ -99,14 +99,14 @@ public class CloseSessionResponse extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("CloseSessionResponse");
     // Create the instance
-    return new CloseSessionResponseBuilder(responseHeader);
+    return new CloseSessionResponseBuilderImpl(responseHeader);
   }
 
-  public static class CloseSessionResponseBuilder
+  public static class CloseSessionResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
 
-    public CloseSessionResponseBuilder(ExtensionObjectDefinition responseHeader) {
+    public CloseSessionResponseBuilderImpl(ExtensionObjectDefinition responseHeader) {
 
       this.responseHeader = responseHeader;
     }

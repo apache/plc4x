@@ -65,7 +65,7 @@ public class MeteringDataMeasureOil extends MeteringData implements Message {
     return lengthInBits;
   }
 
-  public static MeteringDataMeasureOilBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static MeteringDataBuilder staticParseMeteringDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("MeteringDataMeasureOil");
     PositionAware positionAware = readBuffer;
@@ -74,12 +74,13 @@ public class MeteringDataMeasureOil extends MeteringData implements Message {
 
     readBuffer.closeContext("MeteringDataMeasureOil");
     // Create the instance
-    return new MeteringDataMeasureOilBuilder();
+    return new MeteringDataMeasureOilBuilderImpl();
   }
 
-  public static class MeteringDataMeasureOilBuilder implements MeteringData.MeteringDataBuilder {
+  public static class MeteringDataMeasureOilBuilderImpl
+      implements MeteringData.MeteringDataBuilder {
 
-    public MeteringDataMeasureOilBuilder() {}
+    public MeteringDataMeasureOilBuilderImpl() {}
 
     public MeteringDataMeasureOil build(
         MeteringCommandTypeContainer commandTypeContainer, byte argument) {

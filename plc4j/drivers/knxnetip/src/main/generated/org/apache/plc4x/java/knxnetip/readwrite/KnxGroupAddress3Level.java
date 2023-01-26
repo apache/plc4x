@@ -107,7 +107,7 @@ public class KnxGroupAddress3Level extends KnxGroupAddress implements Message {
     return lengthInBits;
   }
 
-  public static KnxGroupAddress3LevelBuilder staticParseBuilder(
+  public static KnxGroupAddressBuilder staticParseKnxGroupAddressBuilder(
       ReadBuffer readBuffer, Byte numLevels) throws ParseException {
     readBuffer.pullContext("KnxGroupAddress3Level");
     PositionAware positionAware = readBuffer;
@@ -122,16 +122,16 @@ public class KnxGroupAddress3Level extends KnxGroupAddress implements Message {
 
     readBuffer.closeContext("KnxGroupAddress3Level");
     // Create the instance
-    return new KnxGroupAddress3LevelBuilder(mainGroup, middleGroup, subGroup);
+    return new KnxGroupAddress3LevelBuilderImpl(mainGroup, middleGroup, subGroup);
   }
 
-  public static class KnxGroupAddress3LevelBuilder
+  public static class KnxGroupAddress3LevelBuilderImpl
       implements KnxGroupAddress.KnxGroupAddressBuilder {
     private final short mainGroup;
     private final byte middleGroup;
     private final short subGroup;
 
-    public KnxGroupAddress3LevelBuilder(short mainGroup, byte middleGroup, short subGroup) {
+    public KnxGroupAddress3LevelBuilderImpl(short mainGroup, byte middleGroup, short subGroup) {
 
       this.mainGroup = mainGroup;
       this.middleGroup = middleGroup;

@@ -111,7 +111,7 @@ public class BACnetConstructedDataLifeSafetyZoneMaintenanceRequired extends BACn
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataLifeSafetyZoneMaintenanceRequired extends BACn
 
     readBuffer.closeContext("BACnetConstructedDataLifeSafetyZoneMaintenanceRequired");
     // Create the instance
-    return new BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder(
+    return new BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilderImpl(
         maintenanceRequired, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder
+  public static class BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean maintenanceRequired;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder(
+    public BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilderImpl(
         BACnetApplicationTagBoolean maintenanceRequired,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

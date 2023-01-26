@@ -101,7 +101,7 @@ public class TelephonyDataIsolateSecondaryOutlet extends TelephonyData implement
     return lengthInBits;
   }
 
-  public static TelephonyDataIsolateSecondaryOutletBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static TelephonyDataBuilder staticParseTelephonyDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TelephonyDataIsolateSecondaryOutlet");
     PositionAware positionAware = readBuffer;
@@ -116,14 +116,14 @@ public class TelephonyDataIsolateSecondaryOutlet extends TelephonyData implement
 
     readBuffer.closeContext("TelephonyDataIsolateSecondaryOutlet");
     // Create the instance
-    return new TelephonyDataIsolateSecondaryOutletBuilder(isolateStatus);
+    return new TelephonyDataIsolateSecondaryOutletBuilderImpl(isolateStatus);
   }
 
-  public static class TelephonyDataIsolateSecondaryOutletBuilder
+  public static class TelephonyDataIsolateSecondaryOutletBuilderImpl
       implements TelephonyData.TelephonyDataBuilder {
     private final byte isolateStatus;
 
-    public TelephonyDataIsolateSecondaryOutletBuilder(byte isolateStatus) {
+    public TelephonyDataIsolateSecondaryOutletBuilderImpl(byte isolateStatus) {
 
       this.isolateStatus = isolateStatus;
     }

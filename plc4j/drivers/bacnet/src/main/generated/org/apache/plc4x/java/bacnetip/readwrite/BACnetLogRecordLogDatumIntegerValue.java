@@ -90,7 +90,7 @@ public class BACnetLogRecordLogDatumIntegerValue extends BACnetLogRecordLogDatum
     return lengthInBits;
   }
 
-  public static BACnetLogRecordLogDatumIntegerValueBuilder staticParseBuilder(
+  public static BACnetLogRecordLogDatumBuilder staticParseBACnetLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumIntegerValue");
     PositionAware positionAware = readBuffer;
@@ -111,15 +111,15 @@ public class BACnetLogRecordLogDatumIntegerValue extends BACnetLogRecordLogDatum
 
     readBuffer.closeContext("BACnetLogRecordLogDatumIntegerValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumIntegerValueBuilder(integerValue, tagNumber);
+    return new BACnetLogRecordLogDatumIntegerValueBuilderImpl(integerValue, tagNumber);
   }
 
-  public static class BACnetLogRecordLogDatumIntegerValueBuilder
+  public static class BACnetLogRecordLogDatumIntegerValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagSignedInteger integerValue;
     private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumIntegerValueBuilder(
+    public BACnetLogRecordLogDatumIntegerValueBuilderImpl(
         BACnetContextTagSignedInteger integerValue, Short tagNumber) {
 
       this.integerValue = integerValue;

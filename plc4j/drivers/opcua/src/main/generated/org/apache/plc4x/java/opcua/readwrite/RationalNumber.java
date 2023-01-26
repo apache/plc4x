@@ -95,8 +95,8 @@ public class RationalNumber extends ExtensionObjectDefinition implements Message
     return lengthInBits;
   }
 
-  public static RationalNumberBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RationalNumber");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -108,15 +108,15 @@ public class RationalNumber extends ExtensionObjectDefinition implements Message
 
     readBuffer.closeContext("RationalNumber");
     // Create the instance
-    return new RationalNumberBuilder(numerator, denominator);
+    return new RationalNumberBuilderImpl(numerator, denominator);
   }
 
-  public static class RationalNumberBuilder
+  public static class RationalNumberBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int numerator;
     private final long denominator;
 
-    public RationalNumberBuilder(int numerator, long denominator) {
+    public RationalNumberBuilderImpl(int numerator, long denominator) {
 
       this.numerator = numerator;
       this.denominator = denominator;

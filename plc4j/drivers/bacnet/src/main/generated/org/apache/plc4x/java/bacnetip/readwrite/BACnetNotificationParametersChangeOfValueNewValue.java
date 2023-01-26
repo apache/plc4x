@@ -167,12 +167,14 @@ public abstract class BACnetNotificationParametersChangeOfValueNewValue implemen
     BACnetNotificationParametersChangeOfValueNewValueBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
       builder =
-          BACnetNotificationParametersChangeOfValueNewValueChangedBits.staticParseBuilder(
-              readBuffer, tagNumber, peekedTagNumber);
+          BACnetNotificationParametersChangeOfValueNewValueChangedBits
+              .staticParseBACnetNotificationParametersChangeOfValueNewValueBuilder(
+                  readBuffer, tagNumber, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetNotificationParametersChangeOfValueNewValueChangedValue.staticParseBuilder(
-              readBuffer, tagNumber, peekedTagNumber);
+          BACnetNotificationParametersChangeOfValueNewValueChangedValue
+              .staticParseBACnetNotificationParametersChangeOfValueNewValueBuilder(
+                  readBuffer, tagNumber, peekedTagNumber);
     }
     if (builder == null) {
       throw new ParseException(
@@ -197,7 +199,7 @@ public abstract class BACnetNotificationParametersChangeOfValueNewValue implemen
     return _bACnetNotificationParametersChangeOfValueNewValue;
   }
 
-  public static interface BACnetNotificationParametersChangeOfValueNewValueBuilder {
+  public interface BACnetNotificationParametersChangeOfValueNewValueBuilder {
     BACnetNotificationParametersChangeOfValueNewValue build(
         BACnetOpeningTag openingTag,
         BACnetTagHeader peekedTagHeader,

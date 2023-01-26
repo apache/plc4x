@@ -89,7 +89,7 @@ public class IdentifyReplyCommandGAVValuesStored extends IdentifyReplyCommand im
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandGAVValuesStoredBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandGAVValuesStored");
     PositionAware positionAware = readBuffer;
@@ -100,15 +100,15 @@ public class IdentifyReplyCommandGAVValuesStored extends IdentifyReplyCommand im
 
     readBuffer.closeContext("IdentifyReplyCommandGAVValuesStored");
     // Create the instance
-    return new IdentifyReplyCommandGAVValuesStoredBuilder(values, numBytes);
+    return new IdentifyReplyCommandGAVValuesStoredBuilderImpl(values, numBytes);
   }
 
-  public static class IdentifyReplyCommandGAVValuesStoredBuilder
+  public static class IdentifyReplyCommandGAVValuesStoredBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] values;
     private final Short numBytes;
 
-    public IdentifyReplyCommandGAVValuesStoredBuilder(byte[] values, Short numBytes) {
+    public IdentifyReplyCommandGAVValuesStoredBuilderImpl(byte[] values, Short numBytes) {
 
       this.values = values;
       this.numBytes = numBytes;

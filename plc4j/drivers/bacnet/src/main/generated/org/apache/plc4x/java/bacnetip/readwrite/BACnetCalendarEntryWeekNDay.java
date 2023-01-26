@@ -81,8 +81,8 @@ public class BACnetCalendarEntryWeekNDay extends BACnetCalendarEntry implements 
     return lengthInBits;
   }
 
-  public static BACnetCalendarEntryWeekNDayBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetCalendarEntryBuilder staticParseBACnetCalendarEntryBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetCalendarEntryWeekNDay");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -99,14 +99,14 @@ public class BACnetCalendarEntryWeekNDay extends BACnetCalendarEntry implements 
 
     readBuffer.closeContext("BACnetCalendarEntryWeekNDay");
     // Create the instance
-    return new BACnetCalendarEntryWeekNDayBuilder(weekNDay);
+    return new BACnetCalendarEntryWeekNDayBuilderImpl(weekNDay);
   }
 
-  public static class BACnetCalendarEntryWeekNDayBuilder
+  public static class BACnetCalendarEntryWeekNDayBuilderImpl
       implements BACnetCalendarEntry.BACnetCalendarEntryBuilder {
     private final BACnetWeekNDayTagged weekNDay;
 
-    public BACnetCalendarEntryWeekNDayBuilder(BACnetWeekNDayTagged weekNDay) {
+    public BACnetCalendarEntryWeekNDayBuilderImpl(BACnetWeekNDayTagged weekNDay) {
 
       this.weekNDay = weekNDay;
     }

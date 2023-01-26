@@ -109,7 +109,7 @@ public class BACnetConstructedDataDoorAlarmState extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDoorAlarmStateBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataDoorAlarmState extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataDoorAlarmState");
     // Create the instance
-    return new BACnetConstructedDataDoorAlarmStateBuilder(
+    return new BACnetConstructedDataDoorAlarmStateBuilderImpl(
         doorAlarmState, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDoorAlarmStateBuilder
+  public static class BACnetConstructedDataDoorAlarmStateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDoorAlarmStateTagged doorAlarmState;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDoorAlarmStateBuilder(
+    public BACnetConstructedDataDoorAlarmStateBuilderImpl(
         BACnetDoorAlarmStateTagged doorAlarmState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

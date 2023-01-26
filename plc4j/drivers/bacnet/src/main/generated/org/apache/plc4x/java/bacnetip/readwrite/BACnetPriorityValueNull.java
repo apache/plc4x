@@ -87,7 +87,7 @@ public class BACnetPriorityValueNull extends BACnetPriorityValue implements Mess
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueNullBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueNull");
     PositionAware positionAware = readBuffer;
@@ -103,15 +103,15 @@ public class BACnetPriorityValueNull extends BACnetPriorityValue implements Mess
 
     readBuffer.closeContext("BACnetPriorityValueNull");
     // Create the instance
-    return new BACnetPriorityValueNullBuilder(nullValue, objectTypeArgument);
+    return new BACnetPriorityValueNullBuilderImpl(nullValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueNullBuilder
+  public static class BACnetPriorityValueNullBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagNull nullValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueNullBuilder(
+    public BACnetPriorityValueNullBuilderImpl(
         BACnetApplicationTagNull nullValue, BACnetObjectType objectTypeArgument) {
 
       this.nullValue = nullValue;

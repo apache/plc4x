@@ -72,8 +72,8 @@ public class ApduDataExtKeyWrite extends ApduDataExt implements Message {
     return lengthInBits;
   }
 
-  public static ApduDataExtKeyWriteBuilder staticParseBuilder(ReadBuffer readBuffer, Short length)
-      throws ParseException {
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
+      ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtKeyWrite");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -81,13 +81,13 @@ public class ApduDataExtKeyWrite extends ApduDataExt implements Message {
 
     readBuffer.closeContext("ApduDataExtKeyWrite");
     // Create the instance
-    return new ApduDataExtKeyWriteBuilder(length);
+    return new ApduDataExtKeyWriteBuilderImpl(length);
   }
 
-  public static class ApduDataExtKeyWriteBuilder implements ApduDataExt.ApduDataExtBuilder {
+  public static class ApduDataExtKeyWriteBuilderImpl implements ApduDataExt.ApduDataExtBuilder {
     private final Short length;
 
-    public ApduDataExtKeyWriteBuilder(Short length) {
+    public ApduDataExtKeyWriteBuilderImpl(Short length) {
 
       this.length = length;
     }

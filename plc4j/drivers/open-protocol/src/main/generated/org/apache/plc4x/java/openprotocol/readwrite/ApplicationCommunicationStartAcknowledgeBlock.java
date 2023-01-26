@@ -103,58 +103,69 @@ public abstract class ApplicationCommunicationStartAcknowledgeBlock implements M
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ApplicationCommunicationStartAcknowledgeBlockBuilder builder = null;
     if (EvaluationHelper.equals(blockType, (int) 1)) {
-      builder = ApplicationCommunicationStartAcknowledgeBlockCellId.staticParseBuilder(readBuffer);
+      builder =
+          ApplicationCommunicationStartAcknowledgeBlockCellId
+              .staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (int) 2)) {
       builder =
-          ApplicationCommunicationStartAcknowledgeBlockChannelId.staticParseBuilder(readBuffer);
+          ApplicationCommunicationStartAcknowledgeBlockChannelId
+              .staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (int) 3)) {
       builder =
-          ApplicationCommunicationStartAcknowledgeBlockControllerName.staticParseBuilder(
-              readBuffer);
+          ApplicationCommunicationStartAcknowledgeBlockControllerName
+              .staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (int) 4)) {
       builder =
-          ApplicationCommunicationStartAcknowledgeBlockSupplierCode.staticParseBuilder(readBuffer);
+          ApplicationCommunicationStartAcknowledgeBlockSupplierCode
+              .staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (int) 5)) {
       builder =
-          ApplicationCommunicationStartAcknowledgeBlockOpenProtocolVersion.staticParseBuilder(
-              readBuffer);
+          ApplicationCommunicationStartAcknowledgeBlockOpenProtocolVersion
+              .staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (int) 6)) {
       builder =
-          ApplicationCommunicationStartAcknowledgeBlockControllerSoftwareVersion.staticParseBuilder(
-              readBuffer);
+          ApplicationCommunicationStartAcknowledgeBlockControllerSoftwareVersion
+              .staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (int) 7)) {
       builder =
-          ApplicationCommunicationStartAcknowledgeBlockToolSoftwareVersion.staticParseBuilder(
-              readBuffer);
+          ApplicationCommunicationStartAcknowledgeBlockToolSoftwareVersion
+              .staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (int) 8)) {
-      builder = ApplicationCommunicationStartAcknowledgeBlockRbuType.staticParseBuilder(readBuffer);
+      builder =
+          ApplicationCommunicationStartAcknowledgeBlockRbuType
+              .staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (int) 9)) {
       builder =
-          ApplicationCommunicationStartAcknowledgeBlockControllerSerialNumber.staticParseBuilder(
-              readBuffer);
+          ApplicationCommunicationStartAcknowledgeBlockControllerSerialNumber
+              .staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (int) 10)) {
       builder =
-          ApplicationCommunicationStartAcknowledgeBlockSystemType.staticParseBuilder(readBuffer);
+          ApplicationCommunicationStartAcknowledgeBlockSystemType
+              .staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (int) 11)) {
       builder =
-          ApplicationCommunicationStartAcknowledgeBlockSystemSubtype.staticParseBuilder(readBuffer);
+          ApplicationCommunicationStartAcknowledgeBlockSystemSubtype
+              .staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (int) 12)) {
       builder =
-          ApplicationCommunicationStartAcknowledgeBlockSequenceNumberSupport.staticParseBuilder(
-              readBuffer);
+          ApplicationCommunicationStartAcknowledgeBlockSequenceNumberSupport
+              .staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (int) 13)) {
       builder =
-          ApplicationCommunicationStartAcknowledgeBlockLinkingHandlingSupport.staticParseBuilder(
-              readBuffer);
+          ApplicationCommunicationStartAcknowledgeBlockLinkingHandlingSupport
+              .staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (int) 14)) {
       builder =
-          ApplicationCommunicationStartAcknowledgeBlockStationId.staticParseBuilder(readBuffer);
+          ApplicationCommunicationStartAcknowledgeBlockStationId
+              .staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (int) 15)) {
       builder =
-          ApplicationCommunicationStartAcknowledgeBlockStationName.staticParseBuilder(readBuffer);
+          ApplicationCommunicationStartAcknowledgeBlockStationName
+              .staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, (int) 16)) {
       builder =
-          ApplicationCommunicationStartAcknowledgeBlockClientId.staticParseBuilder(readBuffer);
+          ApplicationCommunicationStartAcknowledgeBlockClientId
+              .staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -172,7 +183,7 @@ public abstract class ApplicationCommunicationStartAcknowledgeBlock implements M
     return _applicationCommunicationStartAcknowledgeBlock;
   }
 
-  public static interface ApplicationCommunicationStartAcknowledgeBlockBuilder {
+  public interface ApplicationCommunicationStartAcknowledgeBlockBuilder {
     ApplicationCommunicationStartAcknowledgeBlock build();
   }
 

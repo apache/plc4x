@@ -80,7 +80,7 @@ public class SecurityDataArmReadyNotReady extends SecurityData implements Messag
     return lengthInBits;
   }
 
-  public static SecurityDataArmReadyNotReadyBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataArmReadyNotReady");
     PositionAware positionAware = readBuffer;
@@ -91,14 +91,14 @@ public class SecurityDataArmReadyNotReady extends SecurityData implements Messag
 
     readBuffer.closeContext("SecurityDataArmReadyNotReady");
     // Create the instance
-    return new SecurityDataArmReadyNotReadyBuilder(zoneNumber);
+    return new SecurityDataArmReadyNotReadyBuilderImpl(zoneNumber);
   }
 
-  public static class SecurityDataArmReadyNotReadyBuilder
+  public static class SecurityDataArmReadyNotReadyBuilderImpl
       implements SecurityData.SecurityDataBuilder {
     private final short zoneNumber;
 
-    public SecurityDataArmReadyNotReadyBuilder(short zoneNumber) {
+    public SecurityDataArmReadyNotReadyBuilderImpl(short zoneNumber) {
 
       this.zoneNumber = zoneNumber;
     }

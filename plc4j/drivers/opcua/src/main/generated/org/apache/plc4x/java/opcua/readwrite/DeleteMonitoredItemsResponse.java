@@ -148,7 +148,7 @@ public class DeleteMonitoredItemsResponse extends ExtensionObjectDefinition impl
     return lengthInBits;
   }
 
-  public static DeleteMonitoredItemsResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DeleteMonitoredItemsResponse");
     PositionAware positionAware = readBuffer;
@@ -181,11 +181,11 @@ public class DeleteMonitoredItemsResponse extends ExtensionObjectDefinition impl
 
     readBuffer.closeContext("DeleteMonitoredItemsResponse");
     // Create the instance
-    return new DeleteMonitoredItemsResponseBuilder(
+    return new DeleteMonitoredItemsResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class DeleteMonitoredItemsResponseBuilder
+  public static class DeleteMonitoredItemsResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -193,7 +193,7 @@ public class DeleteMonitoredItemsResponse extends ExtensionObjectDefinition impl
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public DeleteMonitoredItemsResponseBuilder(
+    public DeleteMonitoredItemsResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<StatusCode> results,

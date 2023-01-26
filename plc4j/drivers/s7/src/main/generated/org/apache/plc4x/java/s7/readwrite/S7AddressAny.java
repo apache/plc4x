@@ -169,7 +169,7 @@ public class S7AddressAny extends S7Address implements Message {
     return lengthInBits;
   }
 
-  public static S7AddressAnyBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static S7AddressBuilder staticParseS7AddressBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("S7AddressAny");
     PositionAware positionAware = readBuffer;
@@ -202,11 +202,11 @@ public class S7AddressAny extends S7Address implements Message {
 
     readBuffer.closeContext("S7AddressAny");
     // Create the instance
-    return new S7AddressAnyBuilder(
+    return new S7AddressAnyBuilderImpl(
         transportSize, numberOfElements, dbNumber, area, byteAddress, bitAddress, reservedField0);
   }
 
-  public static class S7AddressAnyBuilder implements S7Address.S7AddressBuilder {
+  public static class S7AddressAnyBuilderImpl implements S7Address.S7AddressBuilder {
     private final TransportSize transportSize;
     private final int numberOfElements;
     private final int dbNumber;
@@ -215,7 +215,7 @@ public class S7AddressAny extends S7Address implements Message {
     private final byte bitAddress;
     private final Short reservedField0;
 
-    public S7AddressAnyBuilder(
+    public S7AddressAnyBuilderImpl(
         TransportSize transportSize,
         int numberOfElements,
         int dbNumber,

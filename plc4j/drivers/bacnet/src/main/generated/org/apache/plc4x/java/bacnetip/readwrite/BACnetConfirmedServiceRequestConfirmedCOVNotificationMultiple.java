@@ -153,8 +153,9 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -210,7 +211,7 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple");
     // Create the instance
-    return new BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder(
+    return new BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilderImpl(
         subscriberProcessIdentifier,
         initiatingDeviceIdentifier,
         timeRemaining,
@@ -219,7 +220,7 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
         serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder
+  public static class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagUnsignedInteger subscriberProcessIdentifier;
     private final BACnetContextTagObjectIdentifier initiatingDeviceIdentifier;
@@ -228,7 +229,7 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
     private final ListOfCovNotificationsList listOfCovNotifications;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder(
+    public BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilderImpl(
         BACnetContextTagUnsignedInteger subscriberProcessIdentifier,
         BACnetContextTagObjectIdentifier initiatingDeviceIdentifier,
         BACnetContextTagUnsignedInteger timeRemaining,

@@ -110,7 +110,7 @@ public class DeviceConfigurationRequest extends KnxNetIpMessage implements Messa
     return lengthInBits;
   }
 
-  public static DeviceConfigurationRequestBuilder staticParseBuilder(
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(
       ReadBuffer readBuffer, Integer totalLength) throws ParseException {
     readBuffer.pullContext("DeviceConfigurationRequest");
     PositionAware positionAware = readBuffer;
@@ -140,17 +140,17 @@ public class DeviceConfigurationRequest extends KnxNetIpMessage implements Messa
 
     readBuffer.closeContext("DeviceConfigurationRequest");
     // Create the instance
-    return new DeviceConfigurationRequestBuilder(
+    return new DeviceConfigurationRequestBuilderImpl(
         deviceConfigurationRequestDataBlock, cemi, totalLength);
   }
 
-  public static class DeviceConfigurationRequestBuilder
+  public static class DeviceConfigurationRequestBuilderImpl
       implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final DeviceConfigurationRequestDataBlock deviceConfigurationRequestDataBlock;
     private final CEMI cemi;
     private final Integer totalLength;
 
-    public DeviceConfigurationRequestBuilder(
+    public DeviceConfigurationRequestBuilderImpl(
         DeviceConfigurationRequestDataBlock deviceConfigurationRequestDataBlock,
         CEMI cemi,
         Integer totalLength) {

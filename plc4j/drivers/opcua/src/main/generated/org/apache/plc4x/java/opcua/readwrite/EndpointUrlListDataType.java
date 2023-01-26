@@ -101,7 +101,7 @@ public class EndpointUrlListDataType extends ExtensionObjectDefinition implement
     return lengthInBits;
   }
 
-  public static EndpointUrlListDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("EndpointUrlListDataType");
     PositionAware positionAware = readBuffer;
@@ -118,15 +118,15 @@ public class EndpointUrlListDataType extends ExtensionObjectDefinition implement
 
     readBuffer.closeContext("EndpointUrlListDataType");
     // Create the instance
-    return new EndpointUrlListDataTypeBuilder(noOfEndpointUrlList, endpointUrlList);
+    return new EndpointUrlListDataTypeBuilderImpl(noOfEndpointUrlList, endpointUrlList);
   }
 
-  public static class EndpointUrlListDataTypeBuilder
+  public static class EndpointUrlListDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int noOfEndpointUrlList;
     private final List<PascalString> endpointUrlList;
 
-    public EndpointUrlListDataTypeBuilder(
+    public EndpointUrlListDataTypeBuilderImpl(
         int noOfEndpointUrlList, List<PascalString> endpointUrlList) {
 
       this.noOfEndpointUrlList = noOfEndpointUrlList;

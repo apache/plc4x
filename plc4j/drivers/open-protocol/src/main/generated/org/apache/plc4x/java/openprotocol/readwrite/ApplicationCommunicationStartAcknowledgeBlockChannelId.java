@@ -88,8 +88,9 @@ public class ApplicationCommunicationStartAcknowledgeBlockChannelId
     return lengthInBits;
   }
 
-  public static ApplicationCommunicationStartAcknowledgeBlockChannelIdBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static ApplicationCommunicationStartAcknowledgeBlockBuilder
+      staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("ApplicationCommunicationStartAcknowledgeBlockChannelId");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -101,15 +102,15 @@ public class ApplicationCommunicationStartAcknowledgeBlockChannelId
 
     readBuffer.closeContext("ApplicationCommunicationStartAcknowledgeBlockChannelId");
     // Create the instance
-    return new ApplicationCommunicationStartAcknowledgeBlockChannelIdBuilder(channelId);
+    return new ApplicationCommunicationStartAcknowledgeBlockChannelIdBuilderImpl(channelId);
   }
 
-  public static class ApplicationCommunicationStartAcknowledgeBlockChannelIdBuilder
+  public static class ApplicationCommunicationStartAcknowledgeBlockChannelIdBuilderImpl
       implements ApplicationCommunicationStartAcknowledgeBlock
           .ApplicationCommunicationStartAcknowledgeBlockBuilder {
     private final int channelId;
 
-    public ApplicationCommunicationStartAcknowledgeBlockChannelIdBuilder(int channelId) {
+    public ApplicationCommunicationStartAcknowledgeBlockChannelIdBuilderImpl(int channelId) {
 
       this.channelId = channelId;
     }

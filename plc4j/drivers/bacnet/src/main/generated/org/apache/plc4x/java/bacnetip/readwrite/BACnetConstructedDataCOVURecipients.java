@@ -103,7 +103,7 @@ public class BACnetConstructedDataCOVURecipients extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCOVURecipientsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -127,17 +127,17 @@ public class BACnetConstructedDataCOVURecipients extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataCOVURecipients");
     // Create the instance
-    return new BACnetConstructedDataCOVURecipientsBuilder(
+    return new BACnetConstructedDataCOVURecipientsBuilderImpl(
         covuRecipients, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCOVURecipientsBuilder
+  public static class BACnetConstructedDataCOVURecipientsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetRecipient> covuRecipients;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCOVURecipientsBuilder(
+    public BACnetConstructedDataCOVURecipientsBuilderImpl(
         List<BACnetRecipient> covuRecipients,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

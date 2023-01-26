@@ -110,7 +110,7 @@ public class BACnetConstructedDataNetworkPortMaxMaster extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNetworkPortMaxMasterBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,17 +135,17 @@ public class BACnetConstructedDataNetworkPortMaxMaster extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataNetworkPortMaxMaster");
     // Create the instance
-    return new BACnetConstructedDataNetworkPortMaxMasterBuilder(
+    return new BACnetConstructedDataNetworkPortMaxMasterBuilderImpl(
         maxMaster, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNetworkPortMaxMasterBuilder
+  public static class BACnetConstructedDataNetworkPortMaxMasterBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger maxMaster;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNetworkPortMaxMasterBuilder(
+    public BACnetConstructedDataNetworkPortMaxMasterBuilderImpl(
         BACnetApplicationTagUnsignedInteger maxMaster,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

@@ -160,7 +160,7 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersFloatingLimitBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -226,7 +226,7 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
 
     readBuffer.closeContext("BACnetNotificationParametersFloatingLimit");
     // Create the instance
-    return new BACnetNotificationParametersFloatingLimitBuilder(
+    return new BACnetNotificationParametersFloatingLimitBuilderImpl(
         innerOpeningTag,
         referenceValue,
         statusFlags,
@@ -237,7 +237,7 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
         objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersFloatingLimitBuilder
+  public static class BACnetNotificationParametersFloatingLimitBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final BACnetContextTagReal referenceValue;
@@ -248,7 +248,7 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersFloatingLimitBuilder(
+    public BACnetNotificationParametersFloatingLimitBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetContextTagReal referenceValue,
         BACnetStatusFlagsTagged statusFlags,

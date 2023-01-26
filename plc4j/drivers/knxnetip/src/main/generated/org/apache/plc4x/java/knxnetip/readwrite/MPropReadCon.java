@@ -153,7 +153,7 @@ public class MPropReadCon extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static MPropReadConBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("MPropReadCon");
     PositionAware positionAware = readBuffer;
@@ -175,11 +175,11 @@ public class MPropReadCon extends CEMI implements Message {
 
     readBuffer.closeContext("MPropReadCon");
     // Create the instance
-    return new MPropReadConBuilder(
+    return new MPropReadConBuilderImpl(
         interfaceObjectType, objectInstance, propertyId, numberOfElements, startIndex, data, size);
   }
 
-  public static class MPropReadConBuilder implements CEMI.CEMIBuilder {
+  public static class MPropReadConBuilderImpl implements CEMI.CEMIBuilder {
     private final int interfaceObjectType;
     private final short objectInstance;
     private final short propertyId;
@@ -188,7 +188,7 @@ public class MPropReadCon extends CEMI implements Message {
     private final int data;
     private final Integer size;
 
-    public MPropReadConBuilder(
+    public MPropReadConBuilderImpl(
         int interfaceObjectType,
         short objectInstance,
         short propertyId,

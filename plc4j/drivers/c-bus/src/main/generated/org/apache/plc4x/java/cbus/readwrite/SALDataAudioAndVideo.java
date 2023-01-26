@@ -82,7 +82,7 @@ public class SALDataAudioAndVideo extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataAudioAndVideoBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataAudioAndVideo");
     PositionAware positionAware = readBuffer;
@@ -96,13 +96,13 @@ public class SALDataAudioAndVideo extends SALData implements Message {
 
     readBuffer.closeContext("SALDataAudioAndVideo");
     // Create the instance
-    return new SALDataAudioAndVideoBuilder(audioVideoData);
+    return new SALDataAudioAndVideoBuilderImpl(audioVideoData);
   }
 
-  public static class SALDataAudioAndVideoBuilder implements SALData.SALDataBuilder {
+  public static class SALDataAudioAndVideoBuilderImpl implements SALData.SALDataBuilder {
     private final LightingData audioVideoData;
 
-    public SALDataAudioAndVideoBuilder(LightingData audioVideoData) {
+    public SALDataAudioAndVideoBuilderImpl(LightingData audioVideoData) {
 
       this.audioVideoData = audioVideoData;
     }

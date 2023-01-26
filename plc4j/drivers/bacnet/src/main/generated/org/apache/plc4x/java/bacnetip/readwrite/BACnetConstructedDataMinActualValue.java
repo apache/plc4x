@@ -109,7 +109,7 @@ public class BACnetConstructedDataMinActualValue extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMinActualValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,17 +132,17 @@ public class BACnetConstructedDataMinActualValue extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataMinActualValue");
     // Create the instance
-    return new BACnetConstructedDataMinActualValueBuilder(
+    return new BACnetConstructedDataMinActualValueBuilderImpl(
         minActualValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMinActualValueBuilder
+  public static class BACnetConstructedDataMinActualValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal minActualValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMinActualValueBuilder(
+    public BACnetConstructedDataMinActualValueBuilderImpl(
         BACnetApplicationTagReal minActualValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

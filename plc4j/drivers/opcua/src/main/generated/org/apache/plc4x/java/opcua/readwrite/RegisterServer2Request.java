@@ -130,7 +130,7 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static RegisterServer2RequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RegisterServer2Request");
     PositionAware positionAware = readBuffer;
@@ -163,18 +163,18 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("RegisterServer2Request");
     // Create the instance
-    return new RegisterServer2RequestBuilder(
+    return new RegisterServer2RequestBuilderImpl(
         requestHeader, server, noOfDiscoveryConfiguration, discoveryConfiguration);
   }
 
-  public static class RegisterServer2RequestBuilder
+  public static class RegisterServer2RequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final ExtensionObjectDefinition server;
     private final int noOfDiscoveryConfiguration;
     private final List<ExtensionObject> discoveryConfiguration;
 
-    public RegisterServer2RequestBuilder(
+    public RegisterServer2RequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         ExtensionObjectDefinition server,
         int noOfDiscoveryConfiguration,

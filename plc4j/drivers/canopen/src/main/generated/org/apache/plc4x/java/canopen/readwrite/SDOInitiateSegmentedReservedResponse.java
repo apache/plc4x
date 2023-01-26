@@ -89,9 +89,10 @@ public class SDOInitiateSegmentedReservedResponse extends SDOInitiateUploadRespo
     return lengthInBits;
   }
 
-  public static SDOInitiateSegmentedReservedResponseBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Boolean expedited, Boolean indicated, Byte size)
-      throws ParseException {
+  public static SDOInitiateUploadResponsePayloadBuilder
+      staticParseSDOInitiateUploadResponsePayloadBuilder(
+          ReadBuffer readBuffer, Boolean expedited, Boolean indicated, Byte size)
+          throws ParseException {
     readBuffer.pullContext("SDOInitiateSegmentedReservedResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -102,15 +103,15 @@ public class SDOInitiateSegmentedReservedResponse extends SDOInitiateUploadRespo
 
     readBuffer.closeContext("SDOInitiateSegmentedReservedResponse");
     // Create the instance
-    return new SDOInitiateSegmentedReservedResponseBuilder(size, reservedField0);
+    return new SDOInitiateSegmentedReservedResponseBuilderImpl(size, reservedField0);
   }
 
-  public static class SDOInitiateSegmentedReservedResponseBuilder
+  public static class SDOInitiateSegmentedReservedResponseBuilderImpl
       implements SDOInitiateUploadResponsePayload.SDOInitiateUploadResponsePayloadBuilder {
     private final Byte size;
     private final Integer reservedField0;
 
-    public SDOInitiateSegmentedReservedResponseBuilder(Byte size, Integer reservedField0) {
+    public SDOInitiateSegmentedReservedResponseBuilderImpl(Byte size, Integer reservedField0) {
       this.size = size;
       this.reservedField0 = reservedField0;
     }

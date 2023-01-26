@@ -111,7 +111,7 @@ public class BACnetConstructedDataLocalForwardingOnly extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLocalForwardingOnlyBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataLocalForwardingOnly extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataLocalForwardingOnly");
     // Create the instance
-    return new BACnetConstructedDataLocalForwardingOnlyBuilder(
+    return new BACnetConstructedDataLocalForwardingOnlyBuilderImpl(
         localForwardingOnly, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLocalForwardingOnlyBuilder
+  public static class BACnetConstructedDataLocalForwardingOnlyBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean localForwardingOnly;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLocalForwardingOnlyBuilder(
+    public BACnetConstructedDataLocalForwardingOnlyBuilderImpl(
         BACnetApplicationTagBoolean localForwardingOnly,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

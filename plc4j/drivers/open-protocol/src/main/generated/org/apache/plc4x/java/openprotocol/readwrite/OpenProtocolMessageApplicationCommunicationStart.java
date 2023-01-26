@@ -90,7 +90,7 @@ public class OpenProtocolMessageApplicationCommunicationStart extends OpenProtoc
     return lengthInBits;
   }
 
-  public static OpenProtocolMessageApplicationCommunicationStartBuilder staticParseBuilder(
+  public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
       ReadBuffer readBuffer, OpenProtocolRevision connectionRevision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommunicationStart");
     PositionAware positionAware = readBuffer;
@@ -99,14 +99,14 @@ public class OpenProtocolMessageApplicationCommunicationStart extends OpenProtoc
 
     readBuffer.closeContext("OpenProtocolMessageApplicationCommunicationStart");
     // Create the instance
-    return new OpenProtocolMessageApplicationCommunicationStartBuilder(connectionRevision);
+    return new OpenProtocolMessageApplicationCommunicationStartBuilderImpl(connectionRevision);
   }
 
-  public static class OpenProtocolMessageApplicationCommunicationStartBuilder
+  public static class OpenProtocolMessageApplicationCommunicationStartBuilderImpl
       implements OpenProtocolMessage.OpenProtocolMessageBuilder {
     private final OpenProtocolRevision connectionRevision;
 
-    public OpenProtocolMessageApplicationCommunicationStartBuilder(
+    public OpenProtocolMessageApplicationCommunicationStartBuilderImpl(
         OpenProtocolRevision connectionRevision) {
 
       this.connectionRevision = connectionRevision;

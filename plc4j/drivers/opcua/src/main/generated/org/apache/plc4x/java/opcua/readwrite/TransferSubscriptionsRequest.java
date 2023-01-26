@@ -137,7 +137,7 @@ public class TransferSubscriptionsRequest extends ExtensionObjectDefinition impl
     return lengthInBits;
   }
 
-  public static TransferSubscriptionsRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("TransferSubscriptionsRequest");
     PositionAware positionAware = readBuffer;
@@ -164,11 +164,11 @@ public class TransferSubscriptionsRequest extends ExtensionObjectDefinition impl
 
     readBuffer.closeContext("TransferSubscriptionsRequest");
     // Create the instance
-    return new TransferSubscriptionsRequestBuilder(
+    return new TransferSubscriptionsRequestBuilderImpl(
         requestHeader, noOfSubscriptionIds, subscriptionIds, sendInitialValues, reservedField0);
   }
 
-  public static class TransferSubscriptionsRequestBuilder
+  public static class TransferSubscriptionsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfSubscriptionIds;
@@ -176,7 +176,7 @@ public class TransferSubscriptionsRequest extends ExtensionObjectDefinition impl
     private final boolean sendInitialValues;
     private final Short reservedField0;
 
-    public TransferSubscriptionsRequestBuilder(
+    public TransferSubscriptionsRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfSubscriptionIds,
         List<Long> subscriptionIds,

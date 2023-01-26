@@ -102,7 +102,7 @@ public class ModbusPDUReadDiscreteInputsRequest extends ModbusPDU implements Mes
     return lengthInBits;
   }
 
-  public static ModbusPDUReadDiscreteInputsRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadDiscreteInputsRequest");
     PositionAware positionAware = readBuffer;
@@ -115,15 +115,15 @@ public class ModbusPDUReadDiscreteInputsRequest extends ModbusPDU implements Mes
 
     readBuffer.closeContext("ModbusPDUReadDiscreteInputsRequest");
     // Create the instance
-    return new ModbusPDUReadDiscreteInputsRequestBuilder(startingAddress, quantity);
+    return new ModbusPDUReadDiscreteInputsRequestBuilderImpl(startingAddress, quantity);
   }
 
-  public static class ModbusPDUReadDiscreteInputsRequestBuilder
+  public static class ModbusPDUReadDiscreteInputsRequestBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final int startingAddress;
     private final int quantity;
 
-    public ModbusPDUReadDiscreteInputsRequestBuilder(int startingAddress, int quantity) {
+    public ModbusPDUReadDiscreteInputsRequestBuilderImpl(int startingAddress, int quantity) {
 
       this.startingAddress = startingAddress;
       this.quantity = quantity;

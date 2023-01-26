@@ -104,8 +104,7 @@ public class BVLCDeleteForeignDeviceTableEntry extends BVLC implements Message {
     return lengthInBits;
   }
 
-  public static BVLCDeleteForeignDeviceTableEntryBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BVLCDeleteForeignDeviceTableEntry");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -126,14 +125,14 @@ public class BVLCDeleteForeignDeviceTableEntry extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCDeleteForeignDeviceTableEntry");
     // Create the instance
-    return new BVLCDeleteForeignDeviceTableEntryBuilder(ip, port);
+    return new BVLCDeleteForeignDeviceTableEntryBuilderImpl(ip, port);
   }
 
-  public static class BVLCDeleteForeignDeviceTableEntryBuilder implements BVLC.BVLCBuilder {
+  public static class BVLCDeleteForeignDeviceTableEntryBuilderImpl implements BVLC.BVLCBuilder {
     private final List<Short> ip;
     private final int port;
 
-    public BVLCDeleteForeignDeviceTableEntryBuilder(List<Short> ip, int port) {
+    public BVLCDeleteForeignDeviceTableEntryBuilderImpl(List<Short> ip, int port) {
 
       this.ip = ip;
       this.port = port;

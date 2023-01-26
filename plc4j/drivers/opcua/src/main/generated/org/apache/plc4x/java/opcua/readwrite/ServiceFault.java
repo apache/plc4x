@@ -83,8 +83,8 @@ public class ServiceFault extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static ServiceFaultBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ServiceFault");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -99,14 +99,14 @@ public class ServiceFault extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("ServiceFault");
     // Create the instance
-    return new ServiceFaultBuilder(responseHeader);
+    return new ServiceFaultBuilderImpl(responseHeader);
   }
 
-  public static class ServiceFaultBuilder
+  public static class ServiceFaultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
 
-    public ServiceFaultBuilder(ExtensionObjectDefinition responseHeader) {
+    public ServiceFaultBuilderImpl(ExtensionObjectDefinition responseHeader) {
 
       this.responseHeader = responseHeader;
     }

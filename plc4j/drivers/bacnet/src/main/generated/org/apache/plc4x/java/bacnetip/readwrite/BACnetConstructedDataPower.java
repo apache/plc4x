@@ -109,7 +109,7 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPowerBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,16 +132,16 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
 
     readBuffer.closeContext("BACnetConstructedDataPower");
     // Create the instance
-    return new BACnetConstructedDataPowerBuilder(power, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPowerBuilderImpl(power, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPowerBuilder
+  public static class BACnetConstructedDataPowerBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal power;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPowerBuilder(
+    public BACnetConstructedDataPowerBuilderImpl(
         BACnetApplicationTagReal power,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

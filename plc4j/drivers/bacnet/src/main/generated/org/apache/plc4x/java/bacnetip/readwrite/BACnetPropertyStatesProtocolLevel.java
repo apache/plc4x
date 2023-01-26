@@ -81,7 +81,7 @@ public class BACnetPropertyStatesProtocolLevel extends BACnetPropertyStates impl
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesProtocolLevelBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesProtocolLevel");
     PositionAware positionAware = readBuffer;
@@ -101,14 +101,14 @@ public class BACnetPropertyStatesProtocolLevel extends BACnetPropertyStates impl
 
     readBuffer.closeContext("BACnetPropertyStatesProtocolLevel");
     // Create the instance
-    return new BACnetPropertyStatesProtocolLevelBuilder(protocolLevel);
+    return new BACnetPropertyStatesProtocolLevelBuilderImpl(protocolLevel);
   }
 
-  public static class BACnetPropertyStatesProtocolLevelBuilder
+  public static class BACnetPropertyStatesProtocolLevelBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetProtocolLevelTagged protocolLevel;
 
-    public BACnetPropertyStatesProtocolLevelBuilder(BACnetProtocolLevelTagged protocolLevel) {
+    public BACnetPropertyStatesProtocolLevelBuilderImpl(BACnetProtocolLevelTagged protocolLevel) {
 
       this.protocolLevel = protocolLevel;
     }

@@ -111,7 +111,7 @@ public class BACnetConstructedDataFullDutyBaseline extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFullDutyBaselineBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataFullDutyBaseline extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataFullDutyBaseline");
     // Create the instance
-    return new BACnetConstructedDataFullDutyBaselineBuilder(
+    return new BACnetConstructedDataFullDutyBaselineBuilderImpl(
         fullDutyBaseLine, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFullDutyBaselineBuilder
+  public static class BACnetConstructedDataFullDutyBaselineBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal fullDutyBaseLine;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFullDutyBaselineBuilder(
+    public BACnetConstructedDataFullDutyBaselineBuilderImpl(
         BACnetApplicationTagReal fullDutyBaseLine,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

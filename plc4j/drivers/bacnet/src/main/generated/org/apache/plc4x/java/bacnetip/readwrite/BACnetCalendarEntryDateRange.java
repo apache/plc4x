@@ -81,8 +81,8 @@ public class BACnetCalendarEntryDateRange extends BACnetCalendarEntry implements
     return lengthInBits;
   }
 
-  public static BACnetCalendarEntryDateRangeBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetCalendarEntryBuilder staticParseBACnetCalendarEntryBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetCalendarEntryDateRange");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -96,14 +96,14 @@ public class BACnetCalendarEntryDateRange extends BACnetCalendarEntry implements
 
     readBuffer.closeContext("BACnetCalendarEntryDateRange");
     // Create the instance
-    return new BACnetCalendarEntryDateRangeBuilder(dateRange);
+    return new BACnetCalendarEntryDateRangeBuilderImpl(dateRange);
   }
 
-  public static class BACnetCalendarEntryDateRangeBuilder
+  public static class BACnetCalendarEntryDateRangeBuilderImpl
       implements BACnetCalendarEntry.BACnetCalendarEntryBuilder {
     private final BACnetDateRangeEnclosed dateRange;
 
-    public BACnetCalendarEntryDateRangeBuilder(BACnetDateRangeEnclosed dateRange) {
+    public BACnetCalendarEntryDateRangeBuilderImpl(BACnetDateRangeEnclosed dateRange) {
 
       this.dateRange = dateRange;
     }

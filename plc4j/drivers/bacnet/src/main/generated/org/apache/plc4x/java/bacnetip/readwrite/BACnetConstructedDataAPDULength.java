@@ -109,7 +109,7 @@ public class BACnetConstructedDataAPDULength extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAPDULengthBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,16 +134,17 @@ public class BACnetConstructedDataAPDULength extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataAPDULength");
     // Create the instance
-    return new BACnetConstructedDataAPDULengthBuilder(apduLength, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAPDULengthBuilderImpl(
+        apduLength, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAPDULengthBuilder
+  public static class BACnetConstructedDataAPDULengthBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger apduLength;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAPDULengthBuilder(
+    public BACnetConstructedDataAPDULengthBuilderImpl(
         BACnetApplicationTagUnsignedInteger apduLength,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

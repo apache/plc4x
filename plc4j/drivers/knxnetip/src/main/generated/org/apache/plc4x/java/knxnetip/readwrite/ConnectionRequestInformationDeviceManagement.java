@@ -70,7 +70,7 @@ public class ConnectionRequestInformationDeviceManagement extends ConnectionRequ
     return lengthInBits;
   }
 
-  public static ConnectionRequestInformationDeviceManagementBuilder staticParseBuilder(
+  public static ConnectionRequestInformationBuilder staticParseConnectionRequestInformationBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ConnectionRequestInformationDeviceManagement");
     PositionAware positionAware = readBuffer;
@@ -79,13 +79,13 @@ public class ConnectionRequestInformationDeviceManagement extends ConnectionRequ
 
     readBuffer.closeContext("ConnectionRequestInformationDeviceManagement");
     // Create the instance
-    return new ConnectionRequestInformationDeviceManagementBuilder();
+    return new ConnectionRequestInformationDeviceManagementBuilderImpl();
   }
 
-  public static class ConnectionRequestInformationDeviceManagementBuilder
+  public static class ConnectionRequestInformationDeviceManagementBuilderImpl
       implements ConnectionRequestInformation.ConnectionRequestInformationBuilder {
 
-    public ConnectionRequestInformationDeviceManagementBuilder() {}
+    public ConnectionRequestInformationDeviceManagementBuilderImpl() {}
 
     public ConnectionRequestInformationDeviceManagement build() {
       ConnectionRequestInformationDeviceManagement connectionRequestInformationDeviceManagement =

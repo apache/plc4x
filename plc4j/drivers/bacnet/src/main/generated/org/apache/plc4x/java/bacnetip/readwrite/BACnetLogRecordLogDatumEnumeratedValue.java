@@ -91,7 +91,7 @@ public class BACnetLogRecordLogDatumEnumeratedValue extends BACnetLogRecordLogDa
     return lengthInBits;
   }
 
-  public static BACnetLogRecordLogDatumEnumeratedValueBuilder staticParseBuilder(
+  public static BACnetLogRecordLogDatumBuilder staticParseBACnetLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumEnumeratedValue");
     PositionAware positionAware = readBuffer;
@@ -110,15 +110,15 @@ public class BACnetLogRecordLogDatumEnumeratedValue extends BACnetLogRecordLogDa
 
     readBuffer.closeContext("BACnetLogRecordLogDatumEnumeratedValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumEnumeratedValueBuilder(enumeratedValue, tagNumber);
+    return new BACnetLogRecordLogDatumEnumeratedValueBuilderImpl(enumeratedValue, tagNumber);
   }
 
-  public static class BACnetLogRecordLogDatumEnumeratedValueBuilder
+  public static class BACnetLogRecordLogDatumEnumeratedValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagEnumerated enumeratedValue;
     private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumEnumeratedValueBuilder(
+    public BACnetLogRecordLogDatumEnumeratedValueBuilderImpl(
         BACnetContextTagEnumerated enumeratedValue, Short tagNumber) {
 
       this.enumeratedValue = enumeratedValue;

@@ -113,7 +113,7 @@ public class BACnetConstructedDataDeployedProfileLocation extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDeployedProfileLocationBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -139,17 +139,17 @@ public class BACnetConstructedDataDeployedProfileLocation extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataDeployedProfileLocation");
     // Create the instance
-    return new BACnetConstructedDataDeployedProfileLocationBuilder(
+    return new BACnetConstructedDataDeployedProfileLocationBuilderImpl(
         deployedProfileLocation, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDeployedProfileLocationBuilder
+  public static class BACnetConstructedDataDeployedProfileLocationBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString deployedProfileLocation;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDeployedProfileLocationBuilder(
+    public BACnetConstructedDataDeployedProfileLocationBuilderImpl(
         BACnetApplicationTagCharacterString deployedProfileLocation,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

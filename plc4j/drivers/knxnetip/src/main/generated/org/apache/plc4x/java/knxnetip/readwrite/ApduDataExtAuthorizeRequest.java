@@ -100,7 +100,7 @@ public class ApduDataExtAuthorizeRequest extends ApduDataExt implements Message 
     return lengthInBits;
   }
 
-  public static ApduDataExtAuthorizeRequestBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtAuthorizeRequest");
     PositionAware positionAware = readBuffer;
@@ -113,15 +113,16 @@ public class ApduDataExtAuthorizeRequest extends ApduDataExt implements Message 
 
     readBuffer.closeContext("ApduDataExtAuthorizeRequest");
     // Create the instance
-    return new ApduDataExtAuthorizeRequestBuilder(level, data, length);
+    return new ApduDataExtAuthorizeRequestBuilderImpl(level, data, length);
   }
 
-  public static class ApduDataExtAuthorizeRequestBuilder implements ApduDataExt.ApduDataExtBuilder {
+  public static class ApduDataExtAuthorizeRequestBuilderImpl
+      implements ApduDataExt.ApduDataExtBuilder {
     private final short level;
     private final byte[] data;
     private final Short length;
 
-    public ApduDataExtAuthorizeRequestBuilder(short level, byte[] data, Short length) {
+    public ApduDataExtAuthorizeRequestBuilderImpl(short level, byte[] data, Short length) {
 
       this.level = level;
       this.data = data;

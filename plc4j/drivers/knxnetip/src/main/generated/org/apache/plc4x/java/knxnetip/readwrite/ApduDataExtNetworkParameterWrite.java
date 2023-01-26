@@ -72,7 +72,7 @@ public class ApduDataExtNetworkParameterWrite extends ApduDataExt implements Mes
     return lengthInBits;
   }
 
-  public static ApduDataExtNetworkParameterWriteBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtNetworkParameterWrite");
     PositionAware positionAware = readBuffer;
@@ -81,14 +81,14 @@ public class ApduDataExtNetworkParameterWrite extends ApduDataExt implements Mes
 
     readBuffer.closeContext("ApduDataExtNetworkParameterWrite");
     // Create the instance
-    return new ApduDataExtNetworkParameterWriteBuilder(length);
+    return new ApduDataExtNetworkParameterWriteBuilderImpl(length);
   }
 
-  public static class ApduDataExtNetworkParameterWriteBuilder
+  public static class ApduDataExtNetworkParameterWriteBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final Short length;
 
-    public ApduDataExtNetworkParameterWriteBuilder(Short length) {
+    public ApduDataExtNetworkParameterWriteBuilderImpl(Short length) {
 
       this.length = length;
     }

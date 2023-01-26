@@ -91,7 +91,7 @@ public class FirmataMessageCommand extends FirmataMessage implements Message {
     return lengthInBits;
   }
 
-  public static FirmataMessageCommandBuilder staticParseBuilder(
+  public static FirmataMessageBuilder staticParseFirmataMessageBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataMessageCommand");
     PositionAware positionAware = readBuffer;
@@ -107,14 +107,15 @@ public class FirmataMessageCommand extends FirmataMessage implements Message {
 
     readBuffer.closeContext("FirmataMessageCommand");
     // Create the instance
-    return new FirmataMessageCommandBuilder(command, response);
+    return new FirmataMessageCommandBuilderImpl(command, response);
   }
 
-  public static class FirmataMessageCommandBuilder implements FirmataMessage.FirmataMessageBuilder {
+  public static class FirmataMessageCommandBuilderImpl
+      implements FirmataMessage.FirmataMessageBuilder {
     private final FirmataCommand command;
     private final Boolean response;
 
-    public FirmataMessageCommandBuilder(FirmataCommand command, Boolean response) {
+    public FirmataMessageCommandBuilderImpl(FirmataCommand command, Boolean response) {
 
       this.command = command;
       this.response = response;

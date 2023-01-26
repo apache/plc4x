@@ -99,7 +99,7 @@ public class S7MessageResponseData extends S7Message implements Message {
     return lengthInBits;
   }
 
-  public static S7MessageResponseDataBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static S7MessageBuilder staticParseS7MessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("S7MessageResponseData");
     PositionAware positionAware = readBuffer;
@@ -112,14 +112,14 @@ public class S7MessageResponseData extends S7Message implements Message {
 
     readBuffer.closeContext("S7MessageResponseData");
     // Create the instance
-    return new S7MessageResponseDataBuilder(errorClass, errorCode);
+    return new S7MessageResponseDataBuilderImpl(errorClass, errorCode);
   }
 
-  public static class S7MessageResponseDataBuilder implements S7Message.S7MessageBuilder {
+  public static class S7MessageResponseDataBuilderImpl implements S7Message.S7MessageBuilder {
     private final short errorClass;
     private final short errorCode;
 
-    public S7MessageResponseDataBuilder(short errorClass, short errorCode) {
+    public S7MessageResponseDataBuilderImpl(short errorClass, short errorCode) {
 
       this.errorClass = errorClass;
       this.errorCode = errorCode;

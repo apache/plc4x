@@ -84,7 +84,7 @@ public class ConnectionResponseDataBlockTunnelConnection extends ConnectionRespo
     return lengthInBits;
   }
 
-  public static ConnectionResponseDataBlockTunnelConnectionBuilder staticParseBuilder(
+  public static ConnectionResponseDataBlockBuilder staticParseConnectionResponseDataBlockBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ConnectionResponseDataBlockTunnelConnection");
     PositionAware positionAware = readBuffer;
@@ -98,14 +98,14 @@ public class ConnectionResponseDataBlockTunnelConnection extends ConnectionRespo
 
     readBuffer.closeContext("ConnectionResponseDataBlockTunnelConnection");
     // Create the instance
-    return new ConnectionResponseDataBlockTunnelConnectionBuilder(knxAddress);
+    return new ConnectionResponseDataBlockTunnelConnectionBuilderImpl(knxAddress);
   }
 
-  public static class ConnectionResponseDataBlockTunnelConnectionBuilder
+  public static class ConnectionResponseDataBlockTunnelConnectionBuilderImpl
       implements ConnectionResponseDataBlock.ConnectionResponseDataBlockBuilder {
     private final KnxAddress knxAddress;
 
-    public ConnectionResponseDataBlockTunnelConnectionBuilder(KnxAddress knxAddress) {
+    public ConnectionResponseDataBlockTunnelConnectionBuilderImpl(KnxAddress knxAddress) {
 
       this.knxAddress = knxAddress;
     }

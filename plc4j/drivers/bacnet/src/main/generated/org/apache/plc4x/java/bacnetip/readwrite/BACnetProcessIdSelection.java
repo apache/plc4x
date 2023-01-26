@@ -113,9 +113,10 @@ public abstract class BACnetProcessIdSelection implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetProcessIdSelectionBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetProcessIdSelectionNull.staticParseBuilder(readBuffer);
+      builder = BACnetProcessIdSelectionNull.staticParseBACnetProcessIdSelectionBuilder(readBuffer);
     } else if (true) {
-      builder = BACnetProcessIdSelectionValue.staticParseBuilder(readBuffer);
+      builder =
+          BACnetProcessIdSelectionValue.staticParseBACnetProcessIdSelectionBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -132,7 +133,7 @@ public abstract class BACnetProcessIdSelection implements Message {
     return _bACnetProcessIdSelection;
   }
 
-  public static interface BACnetProcessIdSelectionBuilder {
+  public interface BACnetProcessIdSelectionBuilder {
     BACnetProcessIdSelection build(BACnetTagHeader peekedTagHeader);
   }
 

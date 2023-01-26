@@ -87,8 +87,8 @@ public class COTPParameterChecksum extends COTPParameter implements Message {
     return lengthInBits;
   }
 
-  public static COTPParameterChecksumBuilder staticParseBuilder(ReadBuffer readBuffer, Short rest)
-      throws ParseException {
+  public static COTPParameterBuilder staticParseCOTPParameterBuilder(
+      ReadBuffer readBuffer, Short rest) throws ParseException {
     readBuffer.pullContext("COTPParameterChecksum");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -98,14 +98,15 @@ public class COTPParameterChecksum extends COTPParameter implements Message {
 
     readBuffer.closeContext("COTPParameterChecksum");
     // Create the instance
-    return new COTPParameterChecksumBuilder(crc, rest);
+    return new COTPParameterChecksumBuilderImpl(crc, rest);
   }
 
-  public static class COTPParameterChecksumBuilder implements COTPParameter.COTPParameterBuilder {
+  public static class COTPParameterChecksumBuilderImpl
+      implements COTPParameter.COTPParameterBuilder {
     private final short crc;
     private final Short rest;
 
-    public COTPParameterChecksumBuilder(short crc, Short rest) {
+    public COTPParameterChecksumBuilderImpl(short crc, Short rest) {
 
       this.crc = crc;
       this.rest = rest;

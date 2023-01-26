@@ -104,7 +104,7 @@ public class MediaTransportControlDataNextPreviousCategory extends MediaTranspor
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataNextPreviousCategoryBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataNextPreviousCategory");
     PositionAware positionAware = readBuffer;
@@ -119,14 +119,14 @@ public class MediaTransportControlDataNextPreviousCategory extends MediaTranspor
 
     readBuffer.closeContext("MediaTransportControlDataNextPreviousCategory");
     // Create the instance
-    return new MediaTransportControlDataNextPreviousCategoryBuilder(operation);
+    return new MediaTransportControlDataNextPreviousCategoryBuilderImpl(operation);
   }
 
-  public static class MediaTransportControlDataNextPreviousCategoryBuilder
+  public static class MediaTransportControlDataNextPreviousCategoryBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte operation;
 
-    public MediaTransportControlDataNextPreviousCategoryBuilder(byte operation) {
+    public MediaTransportControlDataNextPreviousCategoryBuilderImpl(byte operation) {
 
       this.operation = operation;
     }

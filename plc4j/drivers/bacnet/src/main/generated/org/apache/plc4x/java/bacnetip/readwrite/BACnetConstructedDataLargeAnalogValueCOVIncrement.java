@@ -110,7 +110,7 @@ public class BACnetConstructedDataLargeAnalogValueCOVIncrement extends BACnetCon
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -133,17 +133,17 @@ public class BACnetConstructedDataLargeAnalogValueCOVIncrement extends BACnetCon
 
     readBuffer.closeContext("BACnetConstructedDataLargeAnalogValueCOVIncrement");
     // Create the instance
-    return new BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder(
+    return new BACnetConstructedDataLargeAnalogValueCOVIncrementBuilderImpl(
         covIncrement, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder
+  public static class BACnetConstructedDataLargeAnalogValueCOVIncrementBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagDouble covIncrement;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder(
+    public BACnetConstructedDataLargeAnalogValueCOVIncrementBuilderImpl(
         BACnetApplicationTagDouble covIncrement,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

@@ -98,8 +98,9 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByTime
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetConfirmedServiceRequestReadRangeRangeBuilder
+      staticParseBACnetConfirmedServiceRequestReadRangeRangeBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestReadRangeRangeByTime");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -122,16 +123,16 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByTime
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestReadRangeRangeByTime");
     // Create the instance
-    return new BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder(referenceTime, count);
+    return new BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilderImpl(referenceTime, count);
   }
 
-  public static class BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder
+  public static class BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilderImpl
       implements BACnetConfirmedServiceRequestReadRangeRange
           .BACnetConfirmedServiceRequestReadRangeRangeBuilder {
     private final BACnetDateTime referenceTime;
     private final BACnetApplicationTagSignedInteger count;
 
-    public BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder(
+    public BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilderImpl(
         BACnetDateTime referenceTime, BACnetApplicationTagSignedInteger count) {
 
       this.referenceTime = referenceTime;

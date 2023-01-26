@@ -93,7 +93,7 @@ public class BACnetServiceAckRequestKey extends BACnetServiceAck implements Mess
     return lengthInBits;
   }
 
-  public static BACnetServiceAckRequestKeyBuilder staticParseBuilder(
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
       ReadBuffer readBuffer, Long serviceAckLength, Long serviceAckPayloadLength)
       throws ParseException {
     readBuffer.pullContext("BACnetServiceAckRequestKey");
@@ -106,17 +106,17 @@ public class BACnetServiceAckRequestKey extends BACnetServiceAck implements Mess
 
     readBuffer.closeContext("BACnetServiceAckRequestKey");
     // Create the instance
-    return new BACnetServiceAckRequestKeyBuilder(
+    return new BACnetServiceAckRequestKeyBuilderImpl(
         bytesOfRemovedService, serviceAckLength, serviceAckPayloadLength);
   }
 
-  public static class BACnetServiceAckRequestKeyBuilder
+  public static class BACnetServiceAckRequestKeyBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final byte[] bytesOfRemovedService;
     private final Long serviceAckLength;
     private final Long serviceAckPayloadLength;
 
-    public BACnetServiceAckRequestKeyBuilder(
+    public BACnetServiceAckRequestKeyBuilderImpl(
         byte[] bytesOfRemovedService, Long serviceAckLength, Long serviceAckPayloadLength) {
 
       this.bytesOfRemovedService = bytesOfRemovedService;

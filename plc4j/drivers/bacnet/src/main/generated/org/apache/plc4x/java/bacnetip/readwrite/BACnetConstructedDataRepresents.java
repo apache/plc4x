@@ -109,7 +109,7 @@ public class BACnetConstructedDataRepresents extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataRepresentsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,16 +131,17 @@ public class BACnetConstructedDataRepresents extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataRepresents");
     // Create the instance
-    return new BACnetConstructedDataRepresentsBuilder(represents, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataRepresentsBuilderImpl(
+        represents, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataRepresentsBuilder
+  public static class BACnetConstructedDataRepresentsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference represents;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataRepresentsBuilder(
+    public BACnetConstructedDataRepresentsBuilderImpl(
         BACnetDeviceObjectReference represents,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

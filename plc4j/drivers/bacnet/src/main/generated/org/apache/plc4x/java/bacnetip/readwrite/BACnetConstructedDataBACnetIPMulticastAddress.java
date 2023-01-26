@@ -111,7 +111,7 @@ public class BACnetConstructedDataBACnetIPMulticastAddress extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBACnetIPMulticastAddressBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,17 +135,17 @@ public class BACnetConstructedDataBACnetIPMulticastAddress extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataBACnetIPMulticastAddress");
     // Create the instance
-    return new BACnetConstructedDataBACnetIPMulticastAddressBuilder(
+    return new BACnetConstructedDataBACnetIPMulticastAddressBuilderImpl(
         ipMulticastAddress, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBACnetIPMulticastAddressBuilder
+  public static class BACnetConstructedDataBACnetIPMulticastAddressBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagOctetString ipMulticastAddress;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBACnetIPMulticastAddressBuilder(
+    public BACnetConstructedDataBACnetIPMulticastAddressBuilderImpl(
         BACnetApplicationTagOctetString ipMulticastAddress,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

@@ -94,8 +94,9 @@ public class BACnetConfirmedServiceRequestGetEventInformation extends BACnetConf
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestGetEventInformationBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestGetEventInformation");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -115,16 +116,16 @@ public class BACnetConfirmedServiceRequestGetEventInformation extends BACnetConf
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestGetEventInformation");
     // Create the instance
-    return new BACnetConfirmedServiceRequestGetEventInformationBuilder(
+    return new BACnetConfirmedServiceRequestGetEventInformationBuilderImpl(
         lastReceivedObjectIdentifier, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestGetEventInformationBuilder
+  public static class BACnetConfirmedServiceRequestGetEventInformationBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagObjectIdentifier lastReceivedObjectIdentifier;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestGetEventInformationBuilder(
+    public BACnetConfirmedServiceRequestGetEventInformationBuilderImpl(
         BACnetContextTagObjectIdentifier lastReceivedObjectIdentifier, Long serviceRequestLength) {
 
       this.lastReceivedObjectIdentifier = lastReceivedObjectIdentifier;

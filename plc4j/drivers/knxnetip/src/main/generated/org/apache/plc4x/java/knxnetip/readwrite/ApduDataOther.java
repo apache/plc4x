@@ -86,7 +86,7 @@ public class ApduDataOther extends ApduData implements Message {
     return lengthInBits;
   }
 
-  public static ApduDataOtherBuilder staticParseBuilder(ReadBuffer readBuffer, Short dataLength)
+  public static ApduDataBuilder staticParseApduDataBuilder(ReadBuffer readBuffer, Short dataLength)
       throws ParseException {
     readBuffer.pullContext("ApduDataOther");
     PositionAware positionAware = readBuffer;
@@ -101,14 +101,14 @@ public class ApduDataOther extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataOther");
     // Create the instance
-    return new ApduDataOtherBuilder(extendedApdu, dataLength);
+    return new ApduDataOtherBuilderImpl(extendedApdu, dataLength);
   }
 
-  public static class ApduDataOtherBuilder implements ApduData.ApduDataBuilder {
+  public static class ApduDataOtherBuilderImpl implements ApduData.ApduDataBuilder {
     private final ApduDataExt extendedApdu;
     private final Short dataLength;
 
-    public ApduDataOtherBuilder(ApduDataExt extendedApdu, Short dataLength) {
+    public ApduDataOtherBuilderImpl(ApduDataExt extendedApdu, Short dataLength) {
 
       this.extendedApdu = extendedApdu;
       this.dataLength = dataLength;

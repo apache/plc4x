@@ -109,7 +109,7 @@ public class BACnetConstructedDataBitMask extends BACnetConstructedData implemen
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBitMaskBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,16 +132,16 @@ public class BACnetConstructedDataBitMask extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataBitMask");
     // Create the instance
-    return new BACnetConstructedDataBitMaskBuilder(bitString, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBitMaskBuilderImpl(bitString, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBitMaskBuilder
+  public static class BACnetConstructedDataBitMaskBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBitString bitString;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBitMaskBuilder(
+    public BACnetConstructedDataBitMaskBuilderImpl(
         BACnetApplicationTagBitString bitString,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

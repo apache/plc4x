@@ -83,8 +83,9 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
+      staticParseBACnetUnconfirmedServiceRequestWhoHasObjectBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -104,15 +105,15 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier");
     // Create the instance
-    return new BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder(objectIdentifier);
+    return new BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilderImpl(objectIdentifier);
   }
 
-  public static class BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder
+  public static class BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilderImpl
       implements BACnetUnconfirmedServiceRequestWhoHasObject
           .BACnetUnconfirmedServiceRequestWhoHasObjectBuilder {
     private final BACnetContextTagObjectIdentifier objectIdentifier;
 
-    public BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder(
+    public BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilderImpl(
         BACnetContextTagObjectIdentifier objectIdentifier) {
 
       this.objectIdentifier = objectIdentifier;

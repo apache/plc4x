@@ -80,7 +80,7 @@ public class MeteringDataOtherWaterConsumption extends MeteringData implements M
     return lengthInBits;
   }
 
-  public static MeteringDataOtherWaterConsumptionBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static MeteringDataBuilder staticParseMeteringDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("MeteringDataOtherWaterConsumption");
     PositionAware positionAware = readBuffer;
@@ -91,14 +91,14 @@ public class MeteringDataOtherWaterConsumption extends MeteringData implements M
 
     readBuffer.closeContext("MeteringDataOtherWaterConsumption");
     // Create the instance
-    return new MeteringDataOtherWaterConsumptionBuilder(kL);
+    return new MeteringDataOtherWaterConsumptionBuilderImpl(kL);
   }
 
-  public static class MeteringDataOtherWaterConsumptionBuilder
+  public static class MeteringDataOtherWaterConsumptionBuilderImpl
       implements MeteringData.MeteringDataBuilder {
     private final long kL;
 
-    public MeteringDataOtherWaterConsumptionBuilder(long kL) {
+    public MeteringDataOtherWaterConsumptionBuilderImpl(long kL) {
 
       this.kL = kL;
     }

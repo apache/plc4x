@@ -82,8 +82,9 @@ public class BACnetFaultParameterFaultExtendedParametersEntryDouble
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetFaultParameterFaultExtendedParametersEntryBuilder
+      staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryDouble");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -98,15 +99,15 @@ public class BACnetFaultParameterFaultExtendedParametersEntryDouble
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtendedParametersEntryDouble");
     // Create the instance
-    return new BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder(doubleValue);
+    return new BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilderImpl(doubleValue);
   }
 
-  public static class BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
+  public static class BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilderImpl
       implements BACnetFaultParameterFaultExtendedParametersEntry
           .BACnetFaultParameterFaultExtendedParametersEntryBuilder {
     private final BACnetApplicationTagDouble doubleValue;
 
-    public BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder(
+    public BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilderImpl(
         BACnetApplicationTagDouble doubleValue) {
 
       this.doubleValue = doubleValue;

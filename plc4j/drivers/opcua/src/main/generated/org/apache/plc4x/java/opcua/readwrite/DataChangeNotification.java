@@ -143,7 +143,7 @@ public class DataChangeNotification extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static DataChangeNotificationBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DataChangeNotification");
     PositionAware positionAware = readBuffer;
@@ -173,18 +173,18 @@ public class DataChangeNotification extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("DataChangeNotification");
     // Create the instance
-    return new DataChangeNotificationBuilder(
+    return new DataChangeNotificationBuilderImpl(
         noOfMonitoredItems, monitoredItems, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class DataChangeNotificationBuilder
+  public static class DataChangeNotificationBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int noOfMonitoredItems;
     private final List<ExtensionObjectDefinition> monitoredItems;
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public DataChangeNotificationBuilder(
+    public DataChangeNotificationBuilderImpl(
         int noOfMonitoredItems,
         List<ExtensionObjectDefinition> monitoredItems,
         int noOfDiagnosticInfos,

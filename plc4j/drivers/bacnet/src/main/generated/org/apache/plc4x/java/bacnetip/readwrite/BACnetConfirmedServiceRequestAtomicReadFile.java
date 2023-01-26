@@ -103,8 +103,9 @@ public class BACnetConfirmedServiceRequestAtomicReadFile extends BACnetConfirmed
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestAtomicReadFileBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestAtomicReadFile");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -130,17 +131,17 @@ public class BACnetConfirmedServiceRequestAtomicReadFile extends BACnetConfirmed
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestAtomicReadFile");
     // Create the instance
-    return new BACnetConfirmedServiceRequestAtomicReadFileBuilder(
+    return new BACnetConfirmedServiceRequestAtomicReadFileBuilderImpl(
         fileIdentifier, accessMethod, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestAtomicReadFileBuilder
+  public static class BACnetConfirmedServiceRequestAtomicReadFileBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetApplicationTagObjectIdentifier fileIdentifier;
     private final BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord accessMethod;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestAtomicReadFileBuilder(
+    public BACnetConfirmedServiceRequestAtomicReadFileBuilderImpl(
         BACnetApplicationTagObjectIdentifier fileIdentifier,
         BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord accessMethod,
         Long serviceRequestLength) {

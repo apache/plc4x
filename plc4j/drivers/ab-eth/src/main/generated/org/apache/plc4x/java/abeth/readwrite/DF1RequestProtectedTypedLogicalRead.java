@@ -136,7 +136,7 @@ public class DF1RequestProtectedTypedLogicalRead extends DF1RequestCommand imple
     return lengthInBits;
   }
 
-  public static DF1RequestProtectedTypedLogicalReadBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static DF1RequestCommandBuilder staticParseDF1RequestCommandBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("DF1RequestProtectedTypedLogicalRead");
     PositionAware positionAware = readBuffer;
@@ -155,11 +155,11 @@ public class DF1RequestProtectedTypedLogicalRead extends DF1RequestCommand imple
 
     readBuffer.closeContext("DF1RequestProtectedTypedLogicalRead");
     // Create the instance
-    return new DF1RequestProtectedTypedLogicalReadBuilder(
+    return new DF1RequestProtectedTypedLogicalReadBuilderImpl(
         byteSize, fileNumber, fileType, elementNumber, subElementNumber);
   }
 
-  public static class DF1RequestProtectedTypedLogicalReadBuilder
+  public static class DF1RequestProtectedTypedLogicalReadBuilderImpl
       implements DF1RequestCommand.DF1RequestCommandBuilder {
     private final short byteSize;
     private final short fileNumber;
@@ -167,7 +167,7 @@ public class DF1RequestProtectedTypedLogicalRead extends DF1RequestCommand imple
     private final short elementNumber;
     private final short subElementNumber;
 
-    public DF1RequestProtectedTypedLogicalReadBuilder(
+    public DF1RequestProtectedTypedLogicalReadBuilderImpl(
         short byteSize,
         short fileNumber,
         short fileType,

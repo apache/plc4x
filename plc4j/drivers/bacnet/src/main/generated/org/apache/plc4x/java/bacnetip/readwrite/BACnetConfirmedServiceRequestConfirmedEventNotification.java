@@ -262,8 +262,9 @@ public class BACnetConfirmedServiceRequestConfirmedEventNotification
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestConfirmedEventNotification");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -406,7 +407,7 @@ public class BACnetConfirmedServiceRequestConfirmedEventNotification
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestConfirmedEventNotification");
     // Create the instance
-    return new BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder(
+    return new BACnetConfirmedServiceRequestConfirmedEventNotificationBuilderImpl(
         processIdentifier,
         initiatingDeviceIdentifier,
         eventObjectIdentifier,
@@ -423,7 +424,7 @@ public class BACnetConfirmedServiceRequestConfirmedEventNotification
         serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder
+  public static class BACnetConfirmedServiceRequestConfirmedEventNotificationBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagUnsignedInteger processIdentifier;
     private final BACnetContextTagObjectIdentifier initiatingDeviceIdentifier;
@@ -440,7 +441,7 @@ public class BACnetConfirmedServiceRequestConfirmedEventNotification
     private final BACnetNotificationParameters eventValues;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder(
+    public BACnetConfirmedServiceRequestConfirmedEventNotificationBuilderImpl(
         BACnetContextTagUnsignedInteger processIdentifier,
         BACnetContextTagObjectIdentifier initiatingDeviceIdentifier,
         BACnetContextTagObjectIdentifier eventObjectIdentifier,

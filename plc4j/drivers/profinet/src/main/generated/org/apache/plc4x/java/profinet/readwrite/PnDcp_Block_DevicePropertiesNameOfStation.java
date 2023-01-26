@@ -123,7 +123,7 @@ public class PnDcp_Block_DevicePropertiesNameOfStation extends PnDcp_Block imple
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DevicePropertiesNameOfStationBuilder staticParseBuilder(
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(
       ReadBuffer readBuffer, Integer blockLength) throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DevicePropertiesNameOfStation");
     PositionAware positionAware = readBuffer;
@@ -145,17 +145,17 @@ public class PnDcp_Block_DevicePropertiesNameOfStation extends PnDcp_Block imple
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesNameOfStation");
     // Create the instance
-    return new PnDcp_Block_DevicePropertiesNameOfStationBuilder(
+    return new PnDcp_Block_DevicePropertiesNameOfStationBuilderImpl(
         nameOfStation, blockLength, reservedField0);
   }
 
-  public static class PnDcp_Block_DevicePropertiesNameOfStationBuilder
+  public static class PnDcp_Block_DevicePropertiesNameOfStationBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final byte[] nameOfStation;
     private final Integer blockLength;
     private final Integer reservedField0;
 
-    public PnDcp_Block_DevicePropertiesNameOfStationBuilder(
+    public PnDcp_Block_DevicePropertiesNameOfStationBuilderImpl(
         byte[] nameOfStation, Integer blockLength, Integer reservedField0) {
       this.nameOfStation = nameOfStation;
       this.blockLength = blockLength;

@@ -110,8 +110,8 @@ public class PnDcp_Block_DevicePropertiesDeviceInstance extends PnDcp_Block impl
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DevicePropertiesDeviceInstanceBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DevicePropertiesDeviceInstance");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -128,17 +128,17 @@ public class PnDcp_Block_DevicePropertiesDeviceInstance extends PnDcp_Block impl
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesDeviceInstance");
     // Create the instance
-    return new PnDcp_Block_DevicePropertiesDeviceInstanceBuilder(
+    return new PnDcp_Block_DevicePropertiesDeviceInstanceBuilderImpl(
         deviceInstanceHigh, deviceInstanceLow, reservedField0);
   }
 
-  public static class PnDcp_Block_DevicePropertiesDeviceInstanceBuilder
+  public static class PnDcp_Block_DevicePropertiesDeviceInstanceBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final short deviceInstanceHigh;
     private final short deviceInstanceLow;
     private final Integer reservedField0;
 
-    public PnDcp_Block_DevicePropertiesDeviceInstanceBuilder(
+    public PnDcp_Block_DevicePropertiesDeviceInstanceBuilderImpl(
         short deviceInstanceHigh, short deviceInstanceLow, Integer reservedField0) {
       this.deviceInstanceHigh = deviceInstanceHigh;
       this.deviceInstanceLow = deviceInstanceLow;

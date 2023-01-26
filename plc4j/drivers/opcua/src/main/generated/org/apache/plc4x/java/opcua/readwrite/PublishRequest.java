@@ -120,8 +120,8 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
     return lengthInBits;
   }
 
-  public static PublishRequestBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("PublishRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -147,17 +147,17 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
 
     readBuffer.closeContext("PublishRequest");
     // Create the instance
-    return new PublishRequestBuilder(
+    return new PublishRequestBuilderImpl(
         requestHeader, noOfSubscriptionAcknowledgements, subscriptionAcknowledgements);
   }
 
-  public static class PublishRequestBuilder
+  public static class PublishRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfSubscriptionAcknowledgements;
     private final List<ExtensionObjectDefinition> subscriptionAcknowledgements;
 
-    public PublishRequestBuilder(
+    public PublishRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfSubscriptionAcknowledgements,
         List<ExtensionObjectDefinition> subscriptionAcknowledgements) {

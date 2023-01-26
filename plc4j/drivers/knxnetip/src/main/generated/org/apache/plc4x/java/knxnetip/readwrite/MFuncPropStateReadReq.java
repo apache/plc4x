@@ -72,7 +72,7 @@ public class MFuncPropStateReadReq extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static MFuncPropStateReadReqBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("MFuncPropStateReadReq");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class MFuncPropStateReadReq extends CEMI implements Message {
 
     readBuffer.closeContext("MFuncPropStateReadReq");
     // Create the instance
-    return new MFuncPropStateReadReqBuilder(size);
+    return new MFuncPropStateReadReqBuilderImpl(size);
   }
 
-  public static class MFuncPropStateReadReqBuilder implements CEMI.CEMIBuilder {
+  public static class MFuncPropStateReadReqBuilderImpl implements CEMI.CEMIBuilder {
     private final Integer size;
 
-    public MFuncPropStateReadReqBuilder(Integer size) {
+    public MFuncPropStateReadReqBuilderImpl(Integer size) {
 
       this.size = size;
     }

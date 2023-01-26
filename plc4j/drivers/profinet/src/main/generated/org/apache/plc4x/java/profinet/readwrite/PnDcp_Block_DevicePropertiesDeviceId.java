@@ -109,8 +109,8 @@ public class PnDcp_Block_DevicePropertiesDeviceId extends PnDcp_Block implements
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DevicePropertiesDeviceIdBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DevicePropertiesDeviceId");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -125,16 +125,16 @@ public class PnDcp_Block_DevicePropertiesDeviceId extends PnDcp_Block implements
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesDeviceId");
     // Create the instance
-    return new PnDcp_Block_DevicePropertiesDeviceIdBuilder(vendorId, deviceId, reservedField0);
+    return new PnDcp_Block_DevicePropertiesDeviceIdBuilderImpl(vendorId, deviceId, reservedField0);
   }
 
-  public static class PnDcp_Block_DevicePropertiesDeviceIdBuilder
+  public static class PnDcp_Block_DevicePropertiesDeviceIdBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final int vendorId;
     private final int deviceId;
     private final Integer reservedField0;
 
-    public PnDcp_Block_DevicePropertiesDeviceIdBuilder(
+    public PnDcp_Block_DevicePropertiesDeviceIdBuilderImpl(
         int vendorId, int deviceId, Integer reservedField0) {
       this.vendorId = vendorId;
       this.deviceId = deviceId;

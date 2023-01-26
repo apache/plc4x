@@ -121,7 +121,7 @@ public class AdsReadResponse extends AmsPacket implements Message {
     return lengthInBits;
   }
 
-  public static AdsReadResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsReadResponse");
     PositionAware positionAware = readBuffer;
@@ -141,14 +141,14 @@ public class AdsReadResponse extends AmsPacket implements Message {
 
     readBuffer.closeContext("AdsReadResponse");
     // Create the instance
-    return new AdsReadResponseBuilder(result, data);
+    return new AdsReadResponseBuilderImpl(result, data);
   }
 
-  public static class AdsReadResponseBuilder implements AmsPacket.AmsPacketBuilder {
+  public static class AdsReadResponseBuilderImpl implements AmsPacket.AmsPacketBuilder {
     private final ReturnCode result;
     private final byte[] data;
 
-    public AdsReadResponseBuilder(ReturnCode result, byte[] data) {
+    public AdsReadResponseBuilderImpl(ReturnCode result, byte[] data) {
 
       this.result = result;
       this.data = data;

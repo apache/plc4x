@@ -102,7 +102,7 @@ public class ModbusPDUDiagnosticRequest extends ModbusPDU implements Message {
     return lengthInBits;
   }
 
-  public static ModbusPDUDiagnosticRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUDiagnosticRequest");
     PositionAware positionAware = readBuffer;
@@ -115,14 +115,14 @@ public class ModbusPDUDiagnosticRequest extends ModbusPDU implements Message {
 
     readBuffer.closeContext("ModbusPDUDiagnosticRequest");
     // Create the instance
-    return new ModbusPDUDiagnosticRequestBuilder(subFunction, data);
+    return new ModbusPDUDiagnosticRequestBuilderImpl(subFunction, data);
   }
 
-  public static class ModbusPDUDiagnosticRequestBuilder implements ModbusPDU.ModbusPDUBuilder {
+  public static class ModbusPDUDiagnosticRequestBuilderImpl implements ModbusPDU.ModbusPDUBuilder {
     private final int subFunction;
     private final int data;
 
-    public ModbusPDUDiagnosticRequestBuilder(int subFunction, int data) {
+    public ModbusPDUDiagnosticRequestBuilderImpl(int subFunction, int data) {
 
       this.subFunction = subFunction;
       this.data = data;

@@ -110,7 +110,7 @@ public class SysexCommandPinStateResponse extends SysexCommand implements Messag
     return lengthInBits;
   }
 
-  public static SysexCommandPinStateResponseBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandPinStateResponse");
     PositionAware positionAware = readBuffer;
@@ -125,16 +125,16 @@ public class SysexCommandPinStateResponse extends SysexCommand implements Messag
 
     readBuffer.closeContext("SysexCommandPinStateResponse");
     // Create the instance
-    return new SysexCommandPinStateResponseBuilder(pin, pinMode, pinState);
+    return new SysexCommandPinStateResponseBuilderImpl(pin, pinMode, pinState);
   }
 
-  public static class SysexCommandPinStateResponseBuilder
+  public static class SysexCommandPinStateResponseBuilderImpl
       implements SysexCommand.SysexCommandBuilder {
     private final short pin;
     private final short pinMode;
     private final short pinState;
 
-    public SysexCommandPinStateResponseBuilder(short pin, short pinMode, short pinState) {
+    public SysexCommandPinStateResponseBuilderImpl(short pin, short pinMode, short pinState) {
 
       this.pin = pin;
       this.pinMode = pinMode;

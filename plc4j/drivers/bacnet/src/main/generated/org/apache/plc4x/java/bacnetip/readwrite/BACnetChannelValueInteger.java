@@ -81,8 +81,8 @@ public class BACnetChannelValueInteger extends BACnetChannelValue implements Mes
     return lengthInBits;
   }
 
-  public static BACnetChannelValueIntegerBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueInteger");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -99,14 +99,14 @@ public class BACnetChannelValueInteger extends BACnetChannelValue implements Mes
 
     readBuffer.closeContext("BACnetChannelValueInteger");
     // Create the instance
-    return new BACnetChannelValueIntegerBuilder(integerValue);
+    return new BACnetChannelValueIntegerBuilderImpl(integerValue);
   }
 
-  public static class BACnetChannelValueIntegerBuilder
+  public static class BACnetChannelValueIntegerBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagSignedInteger integerValue;
 
-    public BACnetChannelValueIntegerBuilder(BACnetApplicationTagSignedInteger integerValue) {
+    public BACnetChannelValueIntegerBuilderImpl(BACnetApplicationTagSignedInteger integerValue) {
 
       this.integerValue = integerValue;
     }

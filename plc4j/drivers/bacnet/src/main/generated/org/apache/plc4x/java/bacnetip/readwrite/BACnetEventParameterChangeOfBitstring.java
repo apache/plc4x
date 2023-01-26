@@ -137,7 +137,7 @@ public class BACnetEventParameterChangeOfBitstring extends BACnetEventParameter 
     return lengthInBits;
   }
 
-  public static BACnetEventParameterChangeOfBitstringBuilder staticParseBuilder(
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfBitstring");
     PositionAware positionAware = readBuffer;
@@ -189,11 +189,11 @@ public class BACnetEventParameterChangeOfBitstring extends BACnetEventParameter 
 
     readBuffer.closeContext("BACnetEventParameterChangeOfBitstring");
     // Create the instance
-    return new BACnetEventParameterChangeOfBitstringBuilder(
+    return new BACnetEventParameterChangeOfBitstringBuilderImpl(
         openingTag, timeDelay, bitmask, listOfBitstringValues, closingTag);
   }
 
-  public static class BACnetEventParameterChangeOfBitstringBuilder
+  public static class BACnetEventParameterChangeOfBitstringBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
@@ -201,7 +201,7 @@ public class BACnetEventParameterChangeOfBitstring extends BACnetEventParameter 
     private final BACnetEventParameterChangeOfBitstringListOfBitstringValues listOfBitstringValues;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterChangeOfBitstringBuilder(
+    public BACnetEventParameterChangeOfBitstringBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetContextTagBitString bitmask,

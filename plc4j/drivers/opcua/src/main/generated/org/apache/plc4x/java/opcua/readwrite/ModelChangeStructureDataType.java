@@ -107,7 +107,7 @@ public class ModelChangeStructureDataType extends ExtensionObjectDefinition impl
     return lengthInBits;
   }
 
-  public static ModelChangeStructureDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ModelChangeStructureDataType");
     PositionAware positionAware = readBuffer;
@@ -128,16 +128,17 @@ public class ModelChangeStructureDataType extends ExtensionObjectDefinition impl
 
     readBuffer.closeContext("ModelChangeStructureDataType");
     // Create the instance
-    return new ModelChangeStructureDataTypeBuilder(affected, affectedType, verb);
+    return new ModelChangeStructureDataTypeBuilderImpl(affected, affectedType, verb);
   }
 
-  public static class ModelChangeStructureDataTypeBuilder
+  public static class ModelChangeStructureDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId affected;
     private final NodeId affectedType;
     private final short verb;
 
-    public ModelChangeStructureDataTypeBuilder(NodeId affected, NodeId affectedType, short verb) {
+    public ModelChangeStructureDataTypeBuilderImpl(
+        NodeId affected, NodeId affectedType, short verb) {
 
       this.affected = affected;
       this.affectedType = affectedType;

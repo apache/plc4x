@@ -96,7 +96,7 @@ public class IssuedIdentityToken extends UserIdentityTokenDefinition implements 
     return lengthInBits;
   }
 
-  public static IssuedIdentityTokenBuilder staticParseBuilder(
+  public static UserIdentityTokenDefinitionBuilder staticParseUserIdentityTokenDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("IssuedIdentityToken");
     PositionAware positionAware = readBuffer;
@@ -116,15 +116,15 @@ public class IssuedIdentityToken extends UserIdentityTokenDefinition implements 
 
     readBuffer.closeContext("IssuedIdentityToken");
     // Create the instance
-    return new IssuedIdentityTokenBuilder(tokenData, encryptionAlgorithm);
+    return new IssuedIdentityTokenBuilderImpl(tokenData, encryptionAlgorithm);
   }
 
-  public static class IssuedIdentityTokenBuilder
+  public static class IssuedIdentityTokenBuilderImpl
       implements UserIdentityTokenDefinition.UserIdentityTokenDefinitionBuilder {
     private final PascalByteString tokenData;
     private final PascalString encryptionAlgorithm;
 
-    public IssuedIdentityTokenBuilder(
+    public IssuedIdentityTokenBuilderImpl(
         PascalByteString tokenData, PascalString encryptionAlgorithm) {
 
       this.tokenData = tokenData;

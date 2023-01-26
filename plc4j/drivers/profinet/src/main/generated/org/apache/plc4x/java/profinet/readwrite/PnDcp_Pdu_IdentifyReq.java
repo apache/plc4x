@@ -172,7 +172,7 @@ public class PnDcp_Pdu_IdentifyReq extends PnDcp_Pdu implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_Pdu_IdentifyReqBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_PduBuilder staticParsePnDcp_PduBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Pdu_IdentifyReq");
     PositionAware positionAware = readBuffer;
@@ -209,18 +209,18 @@ public class PnDcp_Pdu_IdentifyReq extends PnDcp_Pdu implements Message {
 
     readBuffer.closeContext("PnDcp_Pdu_IdentifyReq");
     // Create the instance
-    return new PnDcp_Pdu_IdentifyReqBuilder(
+    return new PnDcp_Pdu_IdentifyReqBuilderImpl(
         xid, responseDelay, blocks, reservedField0, reservedField1);
   }
 
-  public static class PnDcp_Pdu_IdentifyReqBuilder implements PnDcp_Pdu.PnDcp_PduBuilder {
+  public static class PnDcp_Pdu_IdentifyReqBuilderImpl implements PnDcp_Pdu.PnDcp_PduBuilder {
     private final long xid;
     private final int responseDelay;
     private final List<PnDcp_Block> blocks;
     private final Short reservedField0;
     private final Byte reservedField1;
 
-    public PnDcp_Pdu_IdentifyReqBuilder(
+    public PnDcp_Pdu_IdentifyReqBuilderImpl(
         long xid,
         int responseDelay,
         List<PnDcp_Block> blocks,

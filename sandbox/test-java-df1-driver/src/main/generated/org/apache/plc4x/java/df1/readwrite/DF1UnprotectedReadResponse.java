@@ -87,7 +87,7 @@ public class DF1UnprotectedReadResponse extends DF1Command implements Message {
     return lengthInBits;
   }
 
-  public static DF1UnprotectedReadResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static DF1CommandBuilder staticParseDF1CommandBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("DF1UnprotectedReadResponse");
     PositionAware positionAware = readBuffer;
@@ -108,13 +108,14 @@ public class DF1UnprotectedReadResponse extends DF1Command implements Message {
 
     readBuffer.closeContext("DF1UnprotectedReadResponse");
     // Create the instance
-    return new DF1UnprotectedReadResponseBuilder(data);
+    return new DF1UnprotectedReadResponseBuilderImpl(data);
   }
 
-  public static class DF1UnprotectedReadResponseBuilder implements DF1Command.DF1CommandBuilder {
+  public static class DF1UnprotectedReadResponseBuilderImpl
+      implements DF1Command.DF1CommandBuilder {
     private final byte[] data;
 
-    public DF1UnprotectedReadResponseBuilder(byte[] data) {
+    public DF1UnprotectedReadResponseBuilderImpl(byte[] data) {
 
       this.data = data;
     }

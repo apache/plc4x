@@ -114,9 +114,13 @@ public abstract class BACnetLandingCallStatusCommand implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetLandingCallStatusCommandBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetLandingCallStatusCommandDirection.staticParseBuilder(readBuffer);
+      builder =
+          BACnetLandingCallStatusCommandDirection.staticParseBACnetLandingCallStatusCommandBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetLandingCallStatusCommandDestination.staticParseBuilder(readBuffer);
+      builder =
+          BACnetLandingCallStatusCommandDestination
+              .staticParseBACnetLandingCallStatusCommandBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -133,7 +137,7 @@ public abstract class BACnetLandingCallStatusCommand implements Message {
     return _bACnetLandingCallStatusCommand;
   }
 
-  public static interface BACnetLandingCallStatusCommandBuilder {
+  public interface BACnetLandingCallStatusCommandBuilder {
     BACnetLandingCallStatusCommand build(BACnetTagHeader peekedTagHeader);
   }
 

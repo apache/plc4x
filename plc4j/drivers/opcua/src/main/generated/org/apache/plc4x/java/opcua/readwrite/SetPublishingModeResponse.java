@@ -148,7 +148,7 @@ public class SetPublishingModeResponse extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static SetPublishingModeResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SetPublishingModeResponse");
     PositionAware positionAware = readBuffer;
@@ -181,11 +181,11 @@ public class SetPublishingModeResponse extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("SetPublishingModeResponse");
     // Create the instance
-    return new SetPublishingModeResponseBuilder(
+    return new SetPublishingModeResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class SetPublishingModeResponseBuilder
+  public static class SetPublishingModeResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -193,7 +193,7 @@ public class SetPublishingModeResponse extends ExtensionObjectDefinition impleme
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public SetPublishingModeResponseBuilder(
+    public SetPublishingModeResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<StatusCode> results,

@@ -194,7 +194,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static ActivateSessionRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ActivateSessionRequest");
     PositionAware positionAware = readBuffer;
@@ -249,7 +249,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("ActivateSessionRequest");
     // Create the instance
-    return new ActivateSessionRequestBuilder(
+    return new ActivateSessionRequestBuilderImpl(
         requestHeader,
         clientSignature,
         noOfClientSoftwareCertificates,
@@ -260,7 +260,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
         userTokenSignature);
   }
 
-  public static class ActivateSessionRequestBuilder
+  public static class ActivateSessionRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final ExtensionObjectDefinition clientSignature;
@@ -271,7 +271,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     private final ExtensionObject userIdentityToken;
     private final ExtensionObjectDefinition userTokenSignature;
 
-    public ActivateSessionRequestBuilder(
+    public ActivateSessionRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         ExtensionObjectDefinition clientSignature,
         int noOfClientSoftwareCertificates,

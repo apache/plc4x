@@ -97,7 +97,7 @@ public class RepublishResponse extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static RepublishResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RepublishResponse");
     PositionAware positionAware = readBuffer;
@@ -120,15 +120,15 @@ public class RepublishResponse extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("RepublishResponse");
     // Create the instance
-    return new RepublishResponseBuilder(responseHeader, notificationMessage);
+    return new RepublishResponseBuilderImpl(responseHeader, notificationMessage);
   }
 
-  public static class RepublishResponseBuilder
+  public static class RepublishResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final ExtensionObjectDefinition notificationMessage;
 
-    public RepublishResponseBuilder(
+    public RepublishResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader, ExtensionObjectDefinition notificationMessage) {
 
       this.responseHeader = responseHeader;

@@ -81,8 +81,8 @@ public class BACnetChannelValueDouble extends BACnetChannelValue implements Mess
     return lengthInBits;
   }
 
-  public static BACnetChannelValueDoubleBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueDouble");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -97,14 +97,14 @@ public class BACnetChannelValueDouble extends BACnetChannelValue implements Mess
 
     readBuffer.closeContext("BACnetChannelValueDouble");
     // Create the instance
-    return new BACnetChannelValueDoubleBuilder(doubleValue);
+    return new BACnetChannelValueDoubleBuilderImpl(doubleValue);
   }
 
-  public static class BACnetChannelValueDoubleBuilder
+  public static class BACnetChannelValueDoubleBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagDouble doubleValue;
 
-    public BACnetChannelValueDoubleBuilder(BACnetApplicationTagDouble doubleValue) {
+    public BACnetChannelValueDoubleBuilderImpl(BACnetApplicationTagDouble doubleValue) {
 
       this.doubleValue = doubleValue;
     }

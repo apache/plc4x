@@ -109,7 +109,7 @@ public class BACnetConstructedDataInactiveText extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataInactiveTextBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataInactiveText extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataInactiveText");
     // Create the instance
-    return new BACnetConstructedDataInactiveTextBuilder(
+    return new BACnetConstructedDataInactiveTextBuilderImpl(
         inactiveText, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataInactiveTextBuilder
+  public static class BACnetConstructedDataInactiveTextBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString inactiveText;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataInactiveTextBuilder(
+    public BACnetConstructedDataInactiveTextBuilderImpl(
         BACnetApplicationTagCharacterString inactiveText,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

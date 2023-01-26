@@ -109,7 +109,7 @@ public class BACnetEventParameterChangeOfDiscreteValue extends BACnetEventParame
     return lengthInBits;
   }
 
-  public static BACnetEventParameterChangeOfDiscreteValueBuilder staticParseBuilder(
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfDiscreteValue");
     PositionAware positionAware = readBuffer;
@@ -142,16 +142,17 @@ public class BACnetEventParameterChangeOfDiscreteValue extends BACnetEventParame
 
     readBuffer.closeContext("BACnetEventParameterChangeOfDiscreteValue");
     // Create the instance
-    return new BACnetEventParameterChangeOfDiscreteValueBuilder(openingTag, timeDelay, closingTag);
+    return new BACnetEventParameterChangeOfDiscreteValueBuilderImpl(
+        openingTag, timeDelay, closingTag);
   }
 
-  public static class BACnetEventParameterChangeOfDiscreteValueBuilder
+  public static class BACnetEventParameterChangeOfDiscreteValueBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterChangeOfDiscreteValueBuilder(
+    public BACnetEventParameterChangeOfDiscreteValueBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetClosingTag closingTag) {

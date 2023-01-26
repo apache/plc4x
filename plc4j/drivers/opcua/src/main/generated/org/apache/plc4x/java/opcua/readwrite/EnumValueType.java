@@ -107,8 +107,8 @@ public class EnumValueType extends ExtensionObjectDefinition implements Message 
     return lengthInBits;
   }
 
-  public static EnumValueTypeBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("EnumValueType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -130,16 +130,17 @@ public class EnumValueType extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("EnumValueType");
     // Create the instance
-    return new EnumValueTypeBuilder(value, displayName, description);
+    return new EnumValueTypeBuilderImpl(value, displayName, description);
   }
 
-  public static class EnumValueTypeBuilder
+  public static class EnumValueTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long value;
     private final LocalizedText displayName;
     private final LocalizedText description;
 
-    public EnumValueTypeBuilder(long value, LocalizedText displayName, LocalizedText description) {
+    public EnumValueTypeBuilderImpl(
+        long value, LocalizedText displayName, LocalizedText description) {
 
       this.value = value;
       this.displayName = displayName;

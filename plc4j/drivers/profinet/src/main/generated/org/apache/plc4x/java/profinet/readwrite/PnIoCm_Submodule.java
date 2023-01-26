@@ -219,9 +219,9 @@ public abstract class PnIoCm_Submodule implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PnIoCm_SubmoduleBuilder builder = null;
     if (EvaluationHelper.equals(submoduleType, PnIoCm_SubmoduleType.NO_INPUT_NO_OUTPUT_DATA)) {
-      builder = PnIoCm_Submodule_NoInputNoOutputData.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Submodule_NoInputNoOutputData.staticParsePnIoCm_SubmoduleBuilder(readBuffer);
     } else if (EvaluationHelper.equals(submoduleType, PnIoCm_SubmoduleType.INPUT_AND_OUTPUT_DATA)) {
-      builder = PnIoCm_Submodule_InputAndOutputData.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Submodule_InputAndOutputData.staticParsePnIoCm_SubmoduleBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -246,7 +246,7 @@ public abstract class PnIoCm_Submodule implements Message {
     return _pnIoCm_Submodule;
   }
 
-  public static interface PnIoCm_SubmoduleBuilder {
+  public interface PnIoCm_SubmoduleBuilder {
     PnIoCm_Submodule build(
         int slotNumber,
         long submoduleIdentNumber,

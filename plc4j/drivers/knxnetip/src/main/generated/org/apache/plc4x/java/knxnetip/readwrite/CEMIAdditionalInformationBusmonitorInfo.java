@@ -163,7 +163,7 @@ public class CEMIAdditionalInformationBusmonitorInfo extends CEMIAdditionalInfor
     return lengthInBits;
   }
 
-  public static CEMIAdditionalInformationBusmonitorInfoBuilder staticParseBuilder(
+  public static CEMIAdditionalInformationBuilder staticParseCEMIAdditionalInformationBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CEMIAdditionalInformationBusmonitorInfo");
     PositionAware positionAware = readBuffer;
@@ -188,11 +188,11 @@ public class CEMIAdditionalInformationBusmonitorInfo extends CEMIAdditionalInfor
 
     readBuffer.closeContext("CEMIAdditionalInformationBusmonitorInfo");
     // Create the instance
-    return new CEMIAdditionalInformationBusmonitorInfoBuilder(
+    return new CEMIAdditionalInformationBusmonitorInfoBuilderImpl(
         frameErrorFlag, bitErrorFlag, parityErrorFlag, unknownFlag, lostFlag, sequenceNumber);
   }
 
-  public static class CEMIAdditionalInformationBusmonitorInfoBuilder
+  public static class CEMIAdditionalInformationBusmonitorInfoBuilderImpl
       implements CEMIAdditionalInformation.CEMIAdditionalInformationBuilder {
     private final boolean frameErrorFlag;
     private final boolean bitErrorFlag;
@@ -201,7 +201,7 @@ public class CEMIAdditionalInformationBusmonitorInfo extends CEMIAdditionalInfor
     private final boolean lostFlag;
     private final byte sequenceNumber;
 
-    public CEMIAdditionalInformationBusmonitorInfoBuilder(
+    public CEMIAdditionalInformationBusmonitorInfoBuilderImpl(
         boolean frameErrorFlag,
         boolean bitErrorFlag,
         boolean parityErrorFlag,

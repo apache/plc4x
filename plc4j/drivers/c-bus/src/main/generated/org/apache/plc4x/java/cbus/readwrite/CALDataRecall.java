@@ -105,7 +105,7 @@ public class CALDataRecall extends CALData implements Message {
     return lengthInBits;
   }
 
-  public static CALDataRecallBuilder staticParseBuilder(
+  public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer, RequestContext requestContext) throws ParseException {
     readBuffer.pullContext("CALDataRecall");
     PositionAware positionAware = readBuffer;
@@ -122,15 +122,15 @@ public class CALDataRecall extends CALData implements Message {
 
     readBuffer.closeContext("CALDataRecall");
     // Create the instance
-    return new CALDataRecallBuilder(paramNo, count, requestContext);
+    return new CALDataRecallBuilderImpl(paramNo, count, requestContext);
   }
 
-  public static class CALDataRecallBuilder implements CALData.CALDataBuilder {
+  public static class CALDataRecallBuilderImpl implements CALData.CALDataBuilder {
     private final Parameter paramNo;
     private final short count;
     private final RequestContext requestContext;
 
-    public CALDataRecallBuilder(Parameter paramNo, short count, RequestContext requestContext) {
+    public CALDataRecallBuilderImpl(Parameter paramNo, short count, RequestContext requestContext) {
 
       this.paramNo = paramNo;
       this.count = count;

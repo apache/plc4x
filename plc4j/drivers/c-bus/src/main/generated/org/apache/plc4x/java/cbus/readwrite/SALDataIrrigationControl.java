@@ -85,7 +85,7 @@ public class SALDataIrrigationControl extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataIrrigationControlBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataIrrigationControl");
     PositionAware positionAware = readBuffer;
@@ -99,13 +99,13 @@ public class SALDataIrrigationControl extends SALData implements Message {
 
     readBuffer.closeContext("SALDataIrrigationControl");
     // Create the instance
-    return new SALDataIrrigationControlBuilder(irrigationControlData);
+    return new SALDataIrrigationControlBuilderImpl(irrigationControlData);
   }
 
-  public static class SALDataIrrigationControlBuilder implements SALData.SALDataBuilder {
+  public static class SALDataIrrigationControlBuilderImpl implements SALData.SALDataBuilder {
     private final LightingData irrigationControlData;
 
-    public SALDataIrrigationControlBuilder(LightingData irrigationControlData) {
+    public SALDataIrrigationControlBuilderImpl(LightingData irrigationControlData) {
 
       this.irrigationControlData = irrigationControlData;
     }

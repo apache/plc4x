@@ -109,7 +109,7 @@ public class VariantString extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantStringBuilder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantString");
     PositionAware positionAware = readBuffer;
@@ -127,14 +127,14 @@ public class VariantString extends Variant implements Message {
 
     readBuffer.closeContext("VariantString");
     // Create the instance
-    return new VariantStringBuilder(arrayLength, value);
+    return new VariantStringBuilderImpl(arrayLength, value);
   }
 
-  public static class VariantStringBuilder implements Variant.VariantBuilder {
+  public static class VariantStringBuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final List<PascalString> value;
 
-    public VariantStringBuilder(Integer arrayLength, List<PascalString> value) {
+    public VariantStringBuilderImpl(Integer arrayLength, List<PascalString> value) {
 
       this.arrayLength = arrayLength;
       this.value = value;

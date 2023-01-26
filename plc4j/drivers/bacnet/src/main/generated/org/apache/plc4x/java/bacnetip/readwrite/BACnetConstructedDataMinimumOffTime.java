@@ -109,7 +109,7 @@ public class BACnetConstructedDataMinimumOffTime extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMinimumOffTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataMinimumOffTime extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataMinimumOffTime");
     // Create the instance
-    return new BACnetConstructedDataMinimumOffTimeBuilder(
+    return new BACnetConstructedDataMinimumOffTimeBuilderImpl(
         minimumOffTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMinimumOffTimeBuilder
+  public static class BACnetConstructedDataMinimumOffTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger minimumOffTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMinimumOffTimeBuilder(
+    public BACnetConstructedDataMinimumOffTimeBuilderImpl(
         BACnetApplicationTagUnsignedInteger minimumOffTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

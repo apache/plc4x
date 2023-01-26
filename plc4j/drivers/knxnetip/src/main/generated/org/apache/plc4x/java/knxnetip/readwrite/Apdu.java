@@ -142,9 +142,9 @@ public abstract class Apdu implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ApduBuilder builder = null;
     if (EvaluationHelper.equals(control, (byte) 1)) {
-      builder = ApduControlContainer.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduControlContainer.staticParseApduBuilder(readBuffer, dataLength);
     } else if (EvaluationHelper.equals(control, (byte) 0)) {
-      builder = ApduDataContainer.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduDataContainer.staticParseApduBuilder(readBuffer, dataLength);
     }
     if (builder == null) {
       throw new ParseException(
@@ -157,7 +157,7 @@ public abstract class Apdu implements Message {
     return _apdu;
   }
 
-  public static interface ApduBuilder {
+  public interface ApduBuilder {
     Apdu build(boolean numbered, byte counter, Short dataLength);
   }
 

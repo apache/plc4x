@@ -98,7 +98,7 @@ public class FirmataCommandSysex extends FirmataCommand implements Message {
     return lengthInBits;
   }
 
-  public static FirmataCommandSysexBuilder staticParseBuilder(
+  public static FirmataCommandBuilder staticParseFirmataCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataCommandSysex");
     PositionAware positionAware = readBuffer;
@@ -116,15 +116,16 @@ public class FirmataCommandSysex extends FirmataCommand implements Message {
 
     readBuffer.closeContext("FirmataCommandSysex");
     // Create the instance
-    return new FirmataCommandSysexBuilder(command, response, reservedField0);
+    return new FirmataCommandSysexBuilderImpl(command, response, reservedField0);
   }
 
-  public static class FirmataCommandSysexBuilder implements FirmataCommand.FirmataCommandBuilder {
+  public static class FirmataCommandSysexBuilderImpl
+      implements FirmataCommand.FirmataCommandBuilder {
     private final SysexCommand command;
     private final Boolean response;
     private final Short reservedField0;
 
-    public FirmataCommandSysexBuilder(
+    public FirmataCommandSysexBuilderImpl(
         SysexCommand command, Boolean response, Short reservedField0) {
       this.command = command;
       this.response = response;

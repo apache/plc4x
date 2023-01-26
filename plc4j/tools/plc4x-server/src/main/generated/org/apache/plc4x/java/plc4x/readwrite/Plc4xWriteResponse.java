@@ -141,7 +141,7 @@ public class Plc4xWriteResponse extends Plc4xMessage implements Message {
     return lengthInBits;
   }
 
-  public static Plc4xWriteResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static Plc4xMessageBuilder staticParsePlc4xMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("Plc4xWriteResponse");
     PositionAware positionAware = readBuffer;
@@ -178,15 +178,15 @@ public class Plc4xWriteResponse extends Plc4xMessage implements Message {
 
     readBuffer.closeContext("Plc4xWriteResponse");
     // Create the instance
-    return new Plc4xWriteResponseBuilder(connectionId, responseCode, tags);
+    return new Plc4xWriteResponseBuilderImpl(connectionId, responseCode, tags);
   }
 
-  public static class Plc4xWriteResponseBuilder implements Plc4xMessage.Plc4xMessageBuilder {
+  public static class Plc4xWriteResponseBuilderImpl implements Plc4xMessage.Plc4xMessageBuilder {
     private final int connectionId;
     private final Plc4xResponseCode responseCode;
     private final List<Plc4xTagResponse> tags;
 
-    public Plc4xWriteResponseBuilder(
+    public Plc4xWriteResponseBuilderImpl(
         int connectionId, Plc4xResponseCode responseCode, List<Plc4xTagResponse> tags) {
 
       this.connectionId = connectionId;

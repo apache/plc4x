@@ -89,8 +89,9 @@ public class ApplicationCommunicationStartAcknowledgeBlockControllerSerialNumber
     return lengthInBits;
   }
 
-  public static ApplicationCommunicationStartAcknowledgeBlockControllerSerialNumberBuilder
-      staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static ApplicationCommunicationStartAcknowledgeBlockBuilder
+      staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("ApplicationCommunicationStartAcknowledgeBlockControllerSerialNumber");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -102,16 +103,16 @@ public class ApplicationCommunicationStartAcknowledgeBlockControllerSerialNumber
 
     readBuffer.closeContext("ApplicationCommunicationStartAcknowledgeBlockControllerSerialNumber");
     // Create the instance
-    return new ApplicationCommunicationStartAcknowledgeBlockControllerSerialNumberBuilder(
+    return new ApplicationCommunicationStartAcknowledgeBlockControllerSerialNumberBuilderImpl(
         controllerSerialNumber);
   }
 
-  public static class ApplicationCommunicationStartAcknowledgeBlockControllerSerialNumberBuilder
+  public static class ApplicationCommunicationStartAcknowledgeBlockControllerSerialNumberBuilderImpl
       implements ApplicationCommunicationStartAcknowledgeBlock
           .ApplicationCommunicationStartAcknowledgeBlockBuilder {
     private final String controllerSerialNumber;
 
-    public ApplicationCommunicationStartAcknowledgeBlockControllerSerialNumberBuilder(
+    public ApplicationCommunicationStartAcknowledgeBlockControllerSerialNumberBuilderImpl(
         String controllerSerialNumber) {
 
       this.controllerSerialNumber = controllerSerialNumber;

@@ -103,7 +103,7 @@ public class BACnetConstructedDataDateList extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDateListBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -127,16 +127,16 @@ public class BACnetConstructedDataDateList extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataDateList");
     // Create the instance
-    return new BACnetConstructedDataDateListBuilder(dateList, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDateListBuilderImpl(dateList, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDateListBuilder
+  public static class BACnetConstructedDataDateListBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetCalendarEntry> dateList;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDateListBuilder(
+    public BACnetConstructedDataDateListBuilderImpl(
         List<BACnetCalendarEntry> dateList,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

@@ -105,8 +105,8 @@ public class NodeIdFourByte extends NodeIdTypeDefinition implements Message {
     return lengthInBits;
   }
 
-  public static NodeIdFourByteBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static NodeIdTypeDefinitionBuilder staticParseNodeIdTypeDefinitionBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("NodeIdFourByte");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -119,15 +119,15 @@ public class NodeIdFourByte extends NodeIdTypeDefinition implements Message {
 
     readBuffer.closeContext("NodeIdFourByte");
     // Create the instance
-    return new NodeIdFourByteBuilder(namespaceIndex, id);
+    return new NodeIdFourByteBuilderImpl(namespaceIndex, id);
   }
 
-  public static class NodeIdFourByteBuilder
+  public static class NodeIdFourByteBuilderImpl
       implements NodeIdTypeDefinition.NodeIdTypeDefinitionBuilder {
     private final short namespaceIndex;
     private final int id;
 
-    public NodeIdFourByteBuilder(short namespaceIndex, int id) {
+    public NodeIdFourByteBuilderImpl(short namespaceIndex, int id) {
 
       this.namespaceIndex = namespaceIndex;
       this.id = id;

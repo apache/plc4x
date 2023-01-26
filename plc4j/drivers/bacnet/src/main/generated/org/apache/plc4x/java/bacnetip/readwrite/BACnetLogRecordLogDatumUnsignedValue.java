@@ -90,7 +90,7 @@ public class BACnetLogRecordLogDatumUnsignedValue extends BACnetLogRecordLogDatu
     return lengthInBits;
   }
 
-  public static BACnetLogRecordLogDatumUnsignedValueBuilder staticParseBuilder(
+  public static BACnetLogRecordLogDatumBuilder staticParseBACnetLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumUnsignedValue");
     PositionAware positionAware = readBuffer;
@@ -111,15 +111,15 @@ public class BACnetLogRecordLogDatumUnsignedValue extends BACnetLogRecordLogDatu
 
     readBuffer.closeContext("BACnetLogRecordLogDatumUnsignedValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumUnsignedValueBuilder(unsignedValue, tagNumber);
+    return new BACnetLogRecordLogDatumUnsignedValueBuilderImpl(unsignedValue, tagNumber);
   }
 
-  public static class BACnetLogRecordLogDatumUnsignedValueBuilder
+  public static class BACnetLogRecordLogDatumUnsignedValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagUnsignedInteger unsignedValue;
     private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumUnsignedValueBuilder(
+    public BACnetLogRecordLogDatumUnsignedValueBuilderImpl(
         BACnetContextTagUnsignedInteger unsignedValue, Short tagNumber) {
 
       this.unsignedValue = unsignedValue;

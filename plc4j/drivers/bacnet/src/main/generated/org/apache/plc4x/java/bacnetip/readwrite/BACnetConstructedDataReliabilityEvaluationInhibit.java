@@ -113,7 +113,7 @@ public class BACnetConstructedDataReliabilityEvaluationInhibit extends BACnetCon
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataReliabilityEvaluationInhibitBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,17 +137,17 @@ public class BACnetConstructedDataReliabilityEvaluationInhibit extends BACnetCon
 
     readBuffer.closeContext("BACnetConstructedDataReliabilityEvaluationInhibit");
     // Create the instance
-    return new BACnetConstructedDataReliabilityEvaluationInhibitBuilder(
+    return new BACnetConstructedDataReliabilityEvaluationInhibitBuilderImpl(
         reliabilityEvaluationInhibit, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataReliabilityEvaluationInhibitBuilder
+  public static class BACnetConstructedDataReliabilityEvaluationInhibitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean reliabilityEvaluationInhibit;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataReliabilityEvaluationInhibitBuilder(
+    public BACnetConstructedDataReliabilityEvaluationInhibitBuilderImpl(
         BACnetApplicationTagBoolean reliabilityEvaluationInhibit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

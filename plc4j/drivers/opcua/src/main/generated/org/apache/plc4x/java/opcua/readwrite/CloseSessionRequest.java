@@ -106,7 +106,7 @@ public class CloseSessionRequest extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static CloseSessionRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CloseSessionRequest");
     PositionAware positionAware = readBuffer;
@@ -127,16 +127,16 @@ public class CloseSessionRequest extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("CloseSessionRequest");
     // Create the instance
-    return new CloseSessionRequestBuilder(requestHeader, deleteSubscriptions, reservedField0);
+    return new CloseSessionRequestBuilderImpl(requestHeader, deleteSubscriptions, reservedField0);
   }
 
-  public static class CloseSessionRequestBuilder
+  public static class CloseSessionRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final boolean deleteSubscriptions;
     private final Short reservedField0;
 
-    public CloseSessionRequestBuilder(
+    public CloseSessionRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         boolean deleteSubscriptions,
         Short reservedField0) {

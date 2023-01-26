@@ -235,13 +235,17 @@ public abstract class CIPEncapsulationPacket implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     CIPEncapsulationPacketBuilder builder = null;
     if (EvaluationHelper.equals(commandType, (int) 0x0101)) {
-      builder = CIPEncapsulationConnectionRequest.staticParseBuilder(readBuffer);
+      builder =
+          CIPEncapsulationConnectionRequest.staticParseCIPEncapsulationPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, (int) 0x0201)) {
-      builder = CIPEncapsulationConnectionResponse.staticParseBuilder(readBuffer);
+      builder =
+          CIPEncapsulationConnectionResponse.staticParseCIPEncapsulationPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, (int) 0x0107)) {
-      builder = CIPEncapsulationReadRequest.staticParseBuilder(readBuffer);
+      builder = CIPEncapsulationReadRequest.staticParseCIPEncapsulationPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, (int) 0x0207)) {
-      builder = CIPEncapsulationReadResponse.staticParseBuilder(readBuffer, packetLen);
+      builder =
+          CIPEncapsulationReadResponse.staticParseCIPEncapsulationPacketBuilder(
+              readBuffer, packetLen);
     }
     if (builder == null) {
       throw new ParseException(
@@ -260,7 +264,7 @@ public abstract class CIPEncapsulationPacket implements Message {
     return _cIPEncapsulationPacket;
   }
 
-  public static interface CIPEncapsulationPacketBuilder {
+  public interface CIPEncapsulationPacketBuilder {
     CIPEncapsulationPacket build(
         long sessionHandle, long status, List<Short> senderContext, long options);
   }

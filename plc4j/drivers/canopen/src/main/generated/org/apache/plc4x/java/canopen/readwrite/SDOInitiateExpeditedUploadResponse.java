@@ -104,9 +104,10 @@ public class SDOInitiateExpeditedUploadResponse extends SDOInitiateUploadRespons
     return lengthInBits;
   }
 
-  public static SDOInitiateExpeditedUploadResponseBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Boolean expedited, Boolean indicated, Byte size)
-      throws ParseException {
+  public static SDOInitiateUploadResponsePayloadBuilder
+      staticParseSDOInitiateUploadResponsePayloadBuilder(
+          ReadBuffer readBuffer, Boolean expedited, Boolean indicated, Byte size)
+          throws ParseException {
     readBuffer.pullContext("SDOInitiateExpeditedUploadResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -118,15 +119,15 @@ public class SDOInitiateExpeditedUploadResponse extends SDOInitiateUploadRespons
 
     readBuffer.closeContext("SDOInitiateExpeditedUploadResponse");
     // Create the instance
-    return new SDOInitiateExpeditedUploadResponseBuilder(data, size);
+    return new SDOInitiateExpeditedUploadResponseBuilderImpl(data, size);
   }
 
-  public static class SDOInitiateExpeditedUploadResponseBuilder
+  public static class SDOInitiateExpeditedUploadResponseBuilderImpl
       implements SDOInitiateUploadResponsePayload.SDOInitiateUploadResponsePayloadBuilder {
     private final byte[] data;
     private final Byte size;
 
-    public SDOInitiateExpeditedUploadResponseBuilder(byte[] data, Byte size) {
+    public SDOInitiateExpeditedUploadResponseBuilderImpl(byte[] data, Byte size) {
 
       this.data = data;
       this.size = size;

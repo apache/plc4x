@@ -165,7 +165,7 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
     return lengthInBits;
   }
 
-  public static MonitoredSALShortFormBasicModeBuilder staticParseBuilder(
+  public static MonitoredSALBuilder staticParseMonitoredSALBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("MonitoredSALShortFormBasicMode");
     PositionAware positionAware = readBuffer;
@@ -200,11 +200,11 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
 
     readBuffer.closeContext("MonitoredSALShortFormBasicMode");
     // Create the instance
-    return new MonitoredSALShortFormBasicModeBuilder(
+    return new MonitoredSALShortFormBasicModeBuilderImpl(
         counts, bridgeCount, networkNumber, noCounts, application, salData, cBusOptions);
   }
 
-  public static class MonitoredSALShortFormBasicModeBuilder
+  public static class MonitoredSALShortFormBasicModeBuilderImpl
       implements MonitoredSAL.MonitoredSALBuilder {
     private final byte counts;
     private final Short bridgeCount;
@@ -214,7 +214,7 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
     private final SALData salData;
     private final CBusOptions cBusOptions;
 
-    public MonitoredSALShortFormBasicModeBuilder(
+    public MonitoredSALShortFormBasicModeBuilderImpl(
         byte counts,
         Short bridgeCount,
         Short networkNumber,

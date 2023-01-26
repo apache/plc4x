@@ -519,7 +519,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
     return lengthInBits;
   }
 
-  public static SubscriptionDiagnosticsDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SubscriptionDiagnosticsDataType");
     PositionAware positionAware = readBuffer;
@@ -617,7 +617,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
 
     readBuffer.closeContext("SubscriptionDiagnosticsDataType");
     // Create the instance
-    return new SubscriptionDiagnosticsDataTypeBuilder(
+    return new SubscriptionDiagnosticsDataTypeBuilderImpl(
         sessionId,
         subscriptionId,
         priority,
@@ -652,7 +652,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
         reservedField0);
   }
 
-  public static class SubscriptionDiagnosticsDataTypeBuilder
+  public static class SubscriptionDiagnosticsDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId sessionId;
     private final long subscriptionId;
@@ -687,7 +687,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
     private final long eventQueueOverFlowCount;
     private final Short reservedField0;
 
-    public SubscriptionDiagnosticsDataTypeBuilder(
+    public SubscriptionDiagnosticsDataTypeBuilderImpl(
         NodeId sessionId,
         long subscriptionId,
         short priority,

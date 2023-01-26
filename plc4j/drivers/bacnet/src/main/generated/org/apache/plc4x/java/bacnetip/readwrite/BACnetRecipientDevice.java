@@ -81,7 +81,7 @@ public class BACnetRecipientDevice extends BACnetRecipient implements Message {
     return lengthInBits;
   }
 
-  public static BACnetRecipientDeviceBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetRecipientBuilder staticParseBACnetRecipientBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetRecipientDevice");
     PositionAware positionAware = readBuffer;
@@ -102,14 +102,14 @@ public class BACnetRecipientDevice extends BACnetRecipient implements Message {
 
     readBuffer.closeContext("BACnetRecipientDevice");
     // Create the instance
-    return new BACnetRecipientDeviceBuilder(deviceValue);
+    return new BACnetRecipientDeviceBuilderImpl(deviceValue);
   }
 
-  public static class BACnetRecipientDeviceBuilder
+  public static class BACnetRecipientDeviceBuilderImpl
       implements BACnetRecipient.BACnetRecipientBuilder {
     private final BACnetContextTagObjectIdentifier deviceValue;
 
-    public BACnetRecipientDeviceBuilder(BACnetContextTagObjectIdentifier deviceValue) {
+    public BACnetRecipientDeviceBuilderImpl(BACnetContextTagObjectIdentifier deviceValue) {
 
       this.deviceValue = deviceValue;
     }

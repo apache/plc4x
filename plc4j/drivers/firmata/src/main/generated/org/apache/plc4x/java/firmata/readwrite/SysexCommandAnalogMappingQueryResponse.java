@@ -86,7 +86,7 @@ public class SysexCommandAnalogMappingQueryResponse extends SysexCommand impleme
     return lengthInBits;
   }
 
-  public static SysexCommandAnalogMappingQueryResponseBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandAnalogMappingQueryResponse");
     PositionAware positionAware = readBuffer;
@@ -97,14 +97,14 @@ public class SysexCommandAnalogMappingQueryResponse extends SysexCommand impleme
 
     readBuffer.closeContext("SysexCommandAnalogMappingQueryResponse");
     // Create the instance
-    return new SysexCommandAnalogMappingQueryResponseBuilder(pin);
+    return new SysexCommandAnalogMappingQueryResponseBuilderImpl(pin);
   }
 
-  public static class SysexCommandAnalogMappingQueryResponseBuilder
+  public static class SysexCommandAnalogMappingQueryResponseBuilderImpl
       implements SysexCommand.SysexCommandBuilder {
     private final short pin;
 
-    public SysexCommandAnalogMappingQueryResponseBuilder(short pin) {
+    public SysexCommandAnalogMappingQueryResponseBuilderImpl(short pin) {
 
       this.pin = pin;
     }

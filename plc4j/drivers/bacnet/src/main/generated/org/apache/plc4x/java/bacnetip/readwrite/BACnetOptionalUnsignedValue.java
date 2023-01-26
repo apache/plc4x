@@ -81,8 +81,8 @@ public class BACnetOptionalUnsignedValue extends BACnetOptionalUnsigned implemen
     return lengthInBits;
   }
 
-  public static BACnetOptionalUnsignedValueBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetOptionalUnsignedBuilder staticParseBACnetOptionalUnsignedBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetOptionalUnsignedValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -99,14 +99,15 @@ public class BACnetOptionalUnsignedValue extends BACnetOptionalUnsigned implemen
 
     readBuffer.closeContext("BACnetOptionalUnsignedValue");
     // Create the instance
-    return new BACnetOptionalUnsignedValueBuilder(unsignedValue);
+    return new BACnetOptionalUnsignedValueBuilderImpl(unsignedValue);
   }
 
-  public static class BACnetOptionalUnsignedValueBuilder
+  public static class BACnetOptionalUnsignedValueBuilderImpl
       implements BACnetOptionalUnsigned.BACnetOptionalUnsignedBuilder {
     private final BACnetApplicationTagUnsignedInteger unsignedValue;
 
-    public BACnetOptionalUnsignedValueBuilder(BACnetApplicationTagUnsignedInteger unsignedValue) {
+    public BACnetOptionalUnsignedValueBuilderImpl(
+        BACnetApplicationTagUnsignedInteger unsignedValue) {
 
       this.unsignedValue = unsignedValue;
     }

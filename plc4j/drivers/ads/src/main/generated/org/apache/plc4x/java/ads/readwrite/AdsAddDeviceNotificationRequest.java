@@ -185,7 +185,7 @@ public class AdsAddDeviceNotificationRequest extends AmsPacket implements Messag
     return lengthInBits;
   }
 
-  public static AdsAddDeviceNotificationRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsAddDeviceNotificationRequest");
     PositionAware positionAware = readBuffer;
@@ -219,7 +219,7 @@ public class AdsAddDeviceNotificationRequest extends AmsPacket implements Messag
 
     readBuffer.closeContext("AdsAddDeviceNotificationRequest");
     // Create the instance
-    return new AdsAddDeviceNotificationRequestBuilder(
+    return new AdsAddDeviceNotificationRequestBuilderImpl(
         indexGroup,
         indexOffset,
         length,
@@ -230,7 +230,8 @@ public class AdsAddDeviceNotificationRequest extends AmsPacket implements Messag
         reservedField1);
   }
 
-  public static class AdsAddDeviceNotificationRequestBuilder implements AmsPacket.AmsPacketBuilder {
+  public static class AdsAddDeviceNotificationRequestBuilderImpl
+      implements AmsPacket.AmsPacketBuilder {
     private final long indexGroup;
     private final long indexOffset;
     private final long length;
@@ -240,7 +241,7 @@ public class AdsAddDeviceNotificationRequest extends AmsPacket implements Messag
     private final BigInteger reservedField0;
     private final BigInteger reservedField1;
 
-    public AdsAddDeviceNotificationRequestBuilder(
+    public AdsAddDeviceNotificationRequestBuilderImpl(
         long indexGroup,
         long indexOffset,
         long length,

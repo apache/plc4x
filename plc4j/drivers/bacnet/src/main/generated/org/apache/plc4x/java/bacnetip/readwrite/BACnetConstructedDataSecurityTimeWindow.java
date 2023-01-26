@@ -111,7 +111,7 @@ public class BACnetConstructedDataSecurityTimeWindow extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSecurityTimeWindowBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,17 +137,17 @@ public class BACnetConstructedDataSecurityTimeWindow extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataSecurityTimeWindow");
     // Create the instance
-    return new BACnetConstructedDataSecurityTimeWindowBuilder(
+    return new BACnetConstructedDataSecurityTimeWindowBuilderImpl(
         securityTimeWindow, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSecurityTimeWindowBuilder
+  public static class BACnetConstructedDataSecurityTimeWindowBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger securityTimeWindow;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSecurityTimeWindowBuilder(
+    public BACnetConstructedDataSecurityTimeWindowBuilderImpl(
         BACnetApplicationTagUnsignedInteger securityTimeWindow,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

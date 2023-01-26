@@ -72,7 +72,7 @@ public class ApduDataExtWriteRouterStatusRequest extends ApduDataExt implements 
     return lengthInBits;
   }
 
-  public static ApduDataExtWriteRouterStatusRequestBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtWriteRouterStatusRequest");
     PositionAware positionAware = readBuffer;
@@ -81,14 +81,14 @@ public class ApduDataExtWriteRouterStatusRequest extends ApduDataExt implements 
 
     readBuffer.closeContext("ApduDataExtWriteRouterStatusRequest");
     // Create the instance
-    return new ApduDataExtWriteRouterStatusRequestBuilder(length);
+    return new ApduDataExtWriteRouterStatusRequestBuilderImpl(length);
   }
 
-  public static class ApduDataExtWriteRouterStatusRequestBuilder
+  public static class ApduDataExtWriteRouterStatusRequestBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final Short length;
 
-    public ApduDataExtWriteRouterStatusRequestBuilder(Short length) {
+    public ApduDataExtWriteRouterStatusRequestBuilderImpl(Short length) {
 
       this.length = length;
     }

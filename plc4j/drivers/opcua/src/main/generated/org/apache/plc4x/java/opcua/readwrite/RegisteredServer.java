@@ -231,8 +231,8 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     return lengthInBits;
   }
 
-  public static RegisteredServerBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RegisteredServer");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -288,7 +288,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("RegisteredServer");
     // Create the instance
-    return new RegisteredServerBuilder(
+    return new RegisteredServerBuilderImpl(
         serverUri,
         productUri,
         noOfServerNames,
@@ -302,7 +302,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
         reservedField0);
   }
 
-  public static class RegisteredServerBuilder
+  public static class RegisteredServerBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString serverUri;
     private final PascalString productUri;
@@ -316,7 +316,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     private final boolean isOnline;
     private final Short reservedField0;
 
-    public RegisteredServerBuilder(
+    public RegisteredServerBuilderImpl(
         PascalString serverUri,
         PascalString productUri,
         int noOfServerNames,

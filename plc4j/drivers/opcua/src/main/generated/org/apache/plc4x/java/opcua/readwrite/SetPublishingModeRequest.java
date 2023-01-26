@@ -137,7 +137,7 @@ public class SetPublishingModeRequest extends ExtensionObjectDefinition implemen
     return lengthInBits;
   }
 
-  public static SetPublishingModeRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SetPublishingModeRequest");
     PositionAware positionAware = readBuffer;
@@ -164,11 +164,11 @@ public class SetPublishingModeRequest extends ExtensionObjectDefinition implemen
 
     readBuffer.closeContext("SetPublishingModeRequest");
     // Create the instance
-    return new SetPublishingModeRequestBuilder(
+    return new SetPublishingModeRequestBuilderImpl(
         requestHeader, publishingEnabled, noOfSubscriptionIds, subscriptionIds, reservedField0);
   }
 
-  public static class SetPublishingModeRequestBuilder
+  public static class SetPublishingModeRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final boolean publishingEnabled;
@@ -176,7 +176,7 @@ public class SetPublishingModeRequest extends ExtensionObjectDefinition implemen
     private final List<Long> subscriptionIds;
     private final Short reservedField0;
 
-    public SetPublishingModeRequestBuilder(
+    public SetPublishingModeRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         boolean publishingEnabled,
         int noOfSubscriptionIds,

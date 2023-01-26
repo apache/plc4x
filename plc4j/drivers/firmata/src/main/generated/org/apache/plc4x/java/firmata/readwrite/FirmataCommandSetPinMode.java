@@ -104,7 +104,7 @@ public class FirmataCommandSetPinMode extends FirmataCommand implements Message 
     return lengthInBits;
   }
 
-  public static FirmataCommandSetPinModeBuilder staticParseBuilder(
+  public static FirmataCommandBuilder staticParseFirmataCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataCommandSetPinMode");
     PositionAware positionAware = readBuffer;
@@ -121,16 +121,16 @@ public class FirmataCommandSetPinMode extends FirmataCommand implements Message 
 
     readBuffer.closeContext("FirmataCommandSetPinMode");
     // Create the instance
-    return new FirmataCommandSetPinModeBuilder(pin, mode, response);
+    return new FirmataCommandSetPinModeBuilderImpl(pin, mode, response);
   }
 
-  public static class FirmataCommandSetPinModeBuilder
+  public static class FirmataCommandSetPinModeBuilderImpl
       implements FirmataCommand.FirmataCommandBuilder {
     private final short pin;
     private final PinMode mode;
     private final Boolean response;
 
-    public FirmataCommandSetPinModeBuilder(short pin, PinMode mode, Boolean response) {
+    public FirmataCommandSetPinModeBuilderImpl(short pin, PinMode mode, Boolean response) {
 
       this.pin = pin;
       this.mode = mode;

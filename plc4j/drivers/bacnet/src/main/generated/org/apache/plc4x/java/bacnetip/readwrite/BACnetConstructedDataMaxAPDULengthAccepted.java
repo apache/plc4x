@@ -113,7 +113,7 @@ public class BACnetConstructedDataMaxAPDULengthAccepted extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMaxAPDULengthAcceptedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -139,17 +139,17 @@ public class BACnetConstructedDataMaxAPDULengthAccepted extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataMaxAPDULengthAccepted");
     // Create the instance
-    return new BACnetConstructedDataMaxAPDULengthAcceptedBuilder(
+    return new BACnetConstructedDataMaxAPDULengthAcceptedBuilderImpl(
         maxApduLengthAccepted, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMaxAPDULengthAcceptedBuilder
+  public static class BACnetConstructedDataMaxAPDULengthAcceptedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger maxApduLengthAccepted;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMaxAPDULengthAcceptedBuilder(
+    public BACnetConstructedDataMaxAPDULengthAcceptedBuilderImpl(
         BACnetApplicationTagUnsignedInteger maxApduLengthAccepted,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

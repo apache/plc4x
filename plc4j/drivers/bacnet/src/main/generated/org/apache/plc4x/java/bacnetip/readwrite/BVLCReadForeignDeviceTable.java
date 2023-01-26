@@ -68,8 +68,7 @@ public class BVLCReadForeignDeviceTable extends BVLC implements Message {
     return lengthInBits;
   }
 
-  public static BVLCReadForeignDeviceTableBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BVLCReadForeignDeviceTable");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -77,12 +76,12 @@ public class BVLCReadForeignDeviceTable extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCReadForeignDeviceTable");
     // Create the instance
-    return new BVLCReadForeignDeviceTableBuilder();
+    return new BVLCReadForeignDeviceTableBuilderImpl();
   }
 
-  public static class BVLCReadForeignDeviceTableBuilder implements BVLC.BVLCBuilder {
+  public static class BVLCReadForeignDeviceTableBuilderImpl implements BVLC.BVLCBuilder {
 
-    public BVLCReadForeignDeviceTableBuilder() {}
+    public BVLCReadForeignDeviceTableBuilderImpl() {}
 
     public BVLCReadForeignDeviceTable build() {
       BVLCReadForeignDeviceTable bVLCReadForeignDeviceTable = new BVLCReadForeignDeviceTable();

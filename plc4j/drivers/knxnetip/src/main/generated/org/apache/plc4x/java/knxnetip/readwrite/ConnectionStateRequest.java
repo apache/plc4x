@@ -116,7 +116,7 @@ public class ConnectionStateRequest extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static ConnectionStateRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ConnectionStateRequest");
     PositionAware positionAware = readBuffer;
@@ -145,17 +145,17 @@ public class ConnectionStateRequest extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("ConnectionStateRequest");
     // Create the instance
-    return new ConnectionStateRequestBuilder(
+    return new ConnectionStateRequestBuilderImpl(
         communicationChannelId, hpaiControlEndpoint, reservedField0);
   }
 
-  public static class ConnectionStateRequestBuilder
+  public static class ConnectionStateRequestBuilderImpl
       implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final short communicationChannelId;
     private final HPAIControlEndpoint hpaiControlEndpoint;
     private final Short reservedField0;
 
-    public ConnectionStateRequestBuilder(
+    public ConnectionStateRequestBuilderImpl(
         short communicationChannelId,
         HPAIControlEndpoint hpaiControlEndpoint,
         Short reservedField0) {

@@ -137,9 +137,11 @@ public abstract class S7DataAlarmMessage implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     S7DataAlarmMessageBuilder builder = null;
     if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x04)) {
-      builder = S7MessageObjectRequest.staticParseBuilder(readBuffer, cpuFunctionType);
+      builder =
+          S7MessageObjectRequest.staticParseS7DataAlarmMessageBuilder(readBuffer, cpuFunctionType);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x08)) {
-      builder = S7MessageObjectResponse.staticParseBuilder(readBuffer, cpuFunctionType);
+      builder =
+          S7MessageObjectResponse.staticParseS7DataAlarmMessageBuilder(readBuffer, cpuFunctionType);
     }
     if (builder == null) {
       throw new ParseException(
@@ -156,7 +158,7 @@ public abstract class S7DataAlarmMessage implements Message {
     return _s7DataAlarmMessage;
   }
 
-  public static interface S7DataAlarmMessageBuilder {
+  public interface S7DataAlarmMessageBuilder {
     S7DataAlarmMessage build();
   }
 

@@ -169,12 +169,14 @@ public abstract class BACnetConfirmedServiceRequestConfirmedTextMessageMessageCl
     BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
       builder =
-          BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric
+              .staticParseBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder(
+                  readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
+              .staticParseBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder(
+                  readBuffer, tagNumber);
     }
     if (builder == null) {
       throw new ParseException(
@@ -199,7 +201,7 @@ public abstract class BACnetConfirmedServiceRequestConfirmedTextMessageMessageCl
     return _bACnetConfirmedServiceRequestConfirmedTextMessageMessageClass;
   }
 
-  public static interface BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
+  public interface BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
     BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass build(
         BACnetOpeningTag openingTag,
         BACnetTagHeader peekedTagHeader,

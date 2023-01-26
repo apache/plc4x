@@ -148,7 +148,7 @@ public class DeleteReferencesResponse extends ExtensionObjectDefinition implemen
     return lengthInBits;
   }
 
-  public static DeleteReferencesResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DeleteReferencesResponse");
     PositionAware positionAware = readBuffer;
@@ -181,11 +181,11 @@ public class DeleteReferencesResponse extends ExtensionObjectDefinition implemen
 
     readBuffer.closeContext("DeleteReferencesResponse");
     // Create the instance
-    return new DeleteReferencesResponseBuilder(
+    return new DeleteReferencesResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class DeleteReferencesResponseBuilder
+  public static class DeleteReferencesResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -193,7 +193,7 @@ public class DeleteReferencesResponse extends ExtensionObjectDefinition implemen
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public DeleteReferencesResponseBuilder(
+    public DeleteReferencesResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<StatusCode> results,

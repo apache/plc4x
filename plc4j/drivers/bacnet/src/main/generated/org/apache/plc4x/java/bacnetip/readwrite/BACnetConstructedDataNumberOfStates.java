@@ -109,7 +109,7 @@ public class BACnetConstructedDataNumberOfStates extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNumberOfStatesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataNumberOfStates extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataNumberOfStates");
     // Create the instance
-    return new BACnetConstructedDataNumberOfStatesBuilder(
+    return new BACnetConstructedDataNumberOfStatesBuilderImpl(
         numberOfState, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNumberOfStatesBuilder
+  public static class BACnetConstructedDataNumberOfStatesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfState;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNumberOfStatesBuilder(
+    public BACnetConstructedDataNumberOfStatesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

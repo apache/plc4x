@@ -110,7 +110,7 @@ public class BACnetConstructedDataAccessEventTime extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessEventTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,17 +132,17 @@ public class BACnetConstructedDataAccessEventTime extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataAccessEventTime");
     // Create the instance
-    return new BACnetConstructedDataAccessEventTimeBuilder(
+    return new BACnetConstructedDataAccessEventTimeBuilderImpl(
         accessEventTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessEventTimeBuilder
+  public static class BACnetConstructedDataAccessEventTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetTimeStamp accessEventTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessEventTimeBuilder(
+    public BACnetConstructedDataAccessEventTimeBuilderImpl(
         BACnetTimeStamp accessEventTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

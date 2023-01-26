@@ -85,8 +85,9 @@ public class ApplicationCommunicationStartAcknowledgeBlockCellId
     return lengthInBits;
   }
 
-  public static ApplicationCommunicationStartAcknowledgeBlockCellIdBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static ApplicationCommunicationStartAcknowledgeBlockBuilder
+      staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("ApplicationCommunicationStartAcknowledgeBlockCellId");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -98,15 +99,15 @@ public class ApplicationCommunicationStartAcknowledgeBlockCellId
 
     readBuffer.closeContext("ApplicationCommunicationStartAcknowledgeBlockCellId");
     // Create the instance
-    return new ApplicationCommunicationStartAcknowledgeBlockCellIdBuilder(cellId);
+    return new ApplicationCommunicationStartAcknowledgeBlockCellIdBuilderImpl(cellId);
   }
 
-  public static class ApplicationCommunicationStartAcknowledgeBlockCellIdBuilder
+  public static class ApplicationCommunicationStartAcknowledgeBlockCellIdBuilderImpl
       implements ApplicationCommunicationStartAcknowledgeBlock
           .ApplicationCommunicationStartAcknowledgeBlockBuilder {
     private final long cellId;
 
-    public ApplicationCommunicationStartAcknowledgeBlockCellIdBuilder(long cellId) {
+    public ApplicationCommunicationStartAcknowledgeBlockCellIdBuilderImpl(long cellId) {
 
       this.cellId = cellId;
     }

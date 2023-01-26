@@ -123,7 +123,7 @@ public class ApduDataExtPropertyValueRead extends ApduDataExt implements Message
     return lengthInBits;
   }
 
-  public static ApduDataExtPropertyValueReadBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtPropertyValueRead");
     PositionAware positionAware = readBuffer;
@@ -140,10 +140,11 @@ public class ApduDataExtPropertyValueRead extends ApduDataExt implements Message
 
     readBuffer.closeContext("ApduDataExtPropertyValueRead");
     // Create the instance
-    return new ApduDataExtPropertyValueReadBuilder(objectIndex, propertyId, count, index, length);
+    return new ApduDataExtPropertyValueReadBuilderImpl(
+        objectIndex, propertyId, count, index, length);
   }
 
-  public static class ApduDataExtPropertyValueReadBuilder
+  public static class ApduDataExtPropertyValueReadBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final short objectIndex;
     private final short propertyId;
@@ -151,7 +152,7 @@ public class ApduDataExtPropertyValueRead extends ApduDataExt implements Message
     private final int index;
     private final Short length;
 
-    public ApduDataExtPropertyValueReadBuilder(
+    public ApduDataExtPropertyValueReadBuilderImpl(
         short objectIndex, short propertyId, byte count, int index, Short length) {
 
       this.objectIndex = objectIndex;

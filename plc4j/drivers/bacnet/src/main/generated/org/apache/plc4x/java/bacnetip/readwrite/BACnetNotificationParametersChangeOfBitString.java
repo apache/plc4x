@@ -135,7 +135,7 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfBitStringBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -181,7 +181,7 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfBitString");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfBitStringBuilder(
+    return new BACnetNotificationParametersChangeOfBitStringBuilderImpl(
         innerOpeningTag,
         changeOfBitString,
         statusFlags,
@@ -190,7 +190,7 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
         objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersChangeOfBitStringBuilder
+  public static class BACnetNotificationParametersChangeOfBitStringBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final BACnetContextTagBitString changeOfBitString;
@@ -199,7 +199,7 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersChangeOfBitStringBuilder(
+    public BACnetNotificationParametersChangeOfBitStringBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetContextTagBitString changeOfBitString,
         BACnetStatusFlagsTagged statusFlags,

@@ -102,7 +102,7 @@ public class ModbusPDUGetComEventCounterResponse extends ModbusPDU implements Me
     return lengthInBits;
   }
 
-  public static ModbusPDUGetComEventCounterResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUGetComEventCounterResponse");
     PositionAware positionAware = readBuffer;
@@ -115,15 +115,15 @@ public class ModbusPDUGetComEventCounterResponse extends ModbusPDU implements Me
 
     readBuffer.closeContext("ModbusPDUGetComEventCounterResponse");
     // Create the instance
-    return new ModbusPDUGetComEventCounterResponseBuilder(status, eventCount);
+    return new ModbusPDUGetComEventCounterResponseBuilderImpl(status, eventCount);
   }
 
-  public static class ModbusPDUGetComEventCounterResponseBuilder
+  public static class ModbusPDUGetComEventCounterResponseBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final int status;
     private final int eventCount;
 
-    public ModbusPDUGetComEventCounterResponseBuilder(int status, int eventCount) {
+    public ModbusPDUGetComEventCounterResponseBuilderImpl(int status, int eventCount) {
 
       this.status = status;
       this.eventCount = eventCount;

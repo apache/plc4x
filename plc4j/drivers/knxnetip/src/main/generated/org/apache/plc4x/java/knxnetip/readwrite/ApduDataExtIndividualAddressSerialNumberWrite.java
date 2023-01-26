@@ -72,7 +72,7 @@ public class ApduDataExtIndividualAddressSerialNumberWrite extends ApduDataExt i
     return lengthInBits;
   }
 
-  public static ApduDataExtIndividualAddressSerialNumberWriteBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtIndividualAddressSerialNumberWrite");
     PositionAware positionAware = readBuffer;
@@ -81,14 +81,14 @@ public class ApduDataExtIndividualAddressSerialNumberWrite extends ApduDataExt i
 
     readBuffer.closeContext("ApduDataExtIndividualAddressSerialNumberWrite");
     // Create the instance
-    return new ApduDataExtIndividualAddressSerialNumberWriteBuilder(length);
+    return new ApduDataExtIndividualAddressSerialNumberWriteBuilderImpl(length);
   }
 
-  public static class ApduDataExtIndividualAddressSerialNumberWriteBuilder
+  public static class ApduDataExtIndividualAddressSerialNumberWriteBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final Short length;
 
-    public ApduDataExtIndividualAddressSerialNumberWriteBuilder(Short length) {
+    public ApduDataExtIndividualAddressSerialNumberWriteBuilderImpl(Short length) {
 
       this.length = length;
     }

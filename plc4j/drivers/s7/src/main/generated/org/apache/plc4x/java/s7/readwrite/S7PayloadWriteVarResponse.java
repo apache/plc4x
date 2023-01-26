@@ -96,7 +96,7 @@ public class S7PayloadWriteVarResponse extends S7Payload implements Message {
     return lengthInBits;
   }
 
-  public static S7PayloadWriteVarResponseBuilder staticParseBuilder(
+  public static S7PayloadBuilder staticParseS7PayloadBuilder(
       ReadBuffer readBuffer, Short messageType, S7Parameter parameter) throws ParseException {
     readBuffer.pullContext("S7PayloadWriteVarResponse");
     PositionAware positionAware = readBuffer;
@@ -112,14 +112,14 @@ public class S7PayloadWriteVarResponse extends S7Payload implements Message {
 
     readBuffer.closeContext("S7PayloadWriteVarResponse");
     // Create the instance
-    return new S7PayloadWriteVarResponseBuilder(items, parameter);
+    return new S7PayloadWriteVarResponseBuilderImpl(items, parameter);
   }
 
-  public static class S7PayloadWriteVarResponseBuilder implements S7Payload.S7PayloadBuilder {
+  public static class S7PayloadWriteVarResponseBuilderImpl implements S7Payload.S7PayloadBuilder {
     private final List<S7VarPayloadStatusItem> items;
     private final S7Parameter parameter;
 
-    public S7PayloadWriteVarResponseBuilder(
+    public S7PayloadWriteVarResponseBuilderImpl(
         List<S7VarPayloadStatusItem> items, S7Parameter parameter) {
 
       this.items = items;

@@ -137,8 +137,9 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessage extends BACnetCon
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestConfirmedTextMessageBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestConfirmedTextMessage");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -189,11 +190,11 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessage extends BACnetCon
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestConfirmedTextMessage");
     // Create the instance
-    return new BACnetConfirmedServiceRequestConfirmedTextMessageBuilder(
+    return new BACnetConfirmedServiceRequestConfirmedTextMessageBuilderImpl(
         textMessageSourceDevice, messageClass, messagePriority, message, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestConfirmedTextMessageBuilder
+  public static class BACnetConfirmedServiceRequestConfirmedTextMessageBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagObjectIdentifier textMessageSourceDevice;
     private final BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass messageClass;
@@ -202,7 +203,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessage extends BACnetCon
     private final BACnetContextTagCharacterString message;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestConfirmedTextMessageBuilder(
+    public BACnetConfirmedServiceRequestConfirmedTextMessageBuilderImpl(
         BACnetContextTagObjectIdentifier textMessageSourceDevice,
         BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass messageClass,
         BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged messagePriority,

@@ -152,8 +152,9 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotification
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestConfirmedCOVNotification");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -220,7 +221,7 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotification
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestConfirmedCOVNotification");
     // Create the instance
-    return new BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder(
+    return new BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilderImpl(
         subscriberProcessIdentifier,
         initiatingDeviceIdentifier,
         monitoredObjectIdentifier,
@@ -229,7 +230,7 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotification
         serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+  public static class BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagUnsignedInteger subscriberProcessIdentifier;
     private final BACnetContextTagObjectIdentifier initiatingDeviceIdentifier;
@@ -238,7 +239,7 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotification
     private final BACnetPropertyValues listOfValues;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder(
+    public BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilderImpl(
         BACnetContextTagUnsignedInteger subscriberProcessIdentifier,
         BACnetContextTagObjectIdentifier initiatingDeviceIdentifier,
         BACnetContextTagObjectIdentifier monitoredObjectIdentifier,

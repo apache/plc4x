@@ -110,7 +110,7 @@ public class BACnetConstructedDataIPDHCPLeaseTime extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIPDHCPLeaseTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,17 +135,17 @@ public class BACnetConstructedDataIPDHCPLeaseTime extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataIPDHCPLeaseTime");
     // Create the instance
-    return new BACnetConstructedDataIPDHCPLeaseTimeBuilder(
+    return new BACnetConstructedDataIPDHCPLeaseTimeBuilderImpl(
         ipDhcpLeaseTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIPDHCPLeaseTimeBuilder
+  public static class BACnetConstructedDataIPDHCPLeaseTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger ipDhcpLeaseTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIPDHCPLeaseTimeBuilder(
+    public BACnetConstructedDataIPDHCPLeaseTimeBuilderImpl(
         BACnetApplicationTagUnsignedInteger ipDhcpLeaseTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

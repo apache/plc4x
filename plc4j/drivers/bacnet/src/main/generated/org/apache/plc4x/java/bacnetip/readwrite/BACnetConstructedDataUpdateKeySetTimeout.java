@@ -111,7 +111,7 @@ public class BACnetConstructedDataUpdateKeySetTimeout extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataUpdateKeySetTimeoutBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,17 +137,17 @@ public class BACnetConstructedDataUpdateKeySetTimeout extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataUpdateKeySetTimeout");
     // Create the instance
-    return new BACnetConstructedDataUpdateKeySetTimeoutBuilder(
+    return new BACnetConstructedDataUpdateKeySetTimeoutBuilderImpl(
         updateKeySetTimeout, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataUpdateKeySetTimeoutBuilder
+  public static class BACnetConstructedDataUpdateKeySetTimeoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger updateKeySetTimeout;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataUpdateKeySetTimeoutBuilder(
+    public BACnetConstructedDataUpdateKeySetTimeoutBuilderImpl(
         BACnetApplicationTagUnsignedInteger updateKeySetTimeout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

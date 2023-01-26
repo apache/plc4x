@@ -259,7 +259,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     return lengthInBits;
   }
 
-  public static PubSubConnectionDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("PubSubConnectionDataType");
     PositionAware positionAware = readBuffer;
@@ -335,7 +335,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
 
     readBuffer.closeContext("PubSubConnectionDataType");
     // Create the instance
-    return new PubSubConnectionDataTypeBuilder(
+    return new PubSubConnectionDataTypeBuilderImpl(
         name,
         enabled,
         publisherId,
@@ -351,7 +351,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
         reservedField0);
   }
 
-  public static class PubSubConnectionDataTypeBuilder
+  public static class PubSubConnectionDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString name;
     private final boolean enabled;
@@ -367,7 +367,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     private final List<PubSubGroupDataType> readerGroups;
     private final Short reservedField0;
 
-    public PubSubConnectionDataTypeBuilder(
+    public PubSubConnectionDataTypeBuilderImpl(
         PascalString name,
         boolean enabled,
         Variant publisherId,

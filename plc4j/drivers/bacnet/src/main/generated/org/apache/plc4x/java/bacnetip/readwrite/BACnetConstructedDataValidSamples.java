@@ -109,7 +109,7 @@ public class BACnetConstructedDataValidSamples extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataValidSamplesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataValidSamples extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataValidSamples");
     // Create the instance
-    return new BACnetConstructedDataValidSamplesBuilder(
+    return new BACnetConstructedDataValidSamplesBuilderImpl(
         validSamples, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataValidSamplesBuilder
+  public static class BACnetConstructedDataValidSamplesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger validSamples;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataValidSamplesBuilder(
+    public BACnetConstructedDataValidSamplesBuilderImpl(
         BACnetApplicationTagUnsignedInteger validSamples,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

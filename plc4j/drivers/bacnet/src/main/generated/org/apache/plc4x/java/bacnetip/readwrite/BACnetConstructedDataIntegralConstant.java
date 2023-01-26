@@ -111,7 +111,7 @@ public class BACnetConstructedDataIntegralConstant extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIntegralConstantBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataIntegralConstant extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataIntegralConstant");
     // Create the instance
-    return new BACnetConstructedDataIntegralConstantBuilder(
+    return new BACnetConstructedDataIntegralConstantBuilderImpl(
         integralConstant, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIntegralConstantBuilder
+  public static class BACnetConstructedDataIntegralConstantBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal integralConstant;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIntegralConstantBuilder(
+    public BACnetConstructedDataIntegralConstantBuilderImpl(
         BACnetApplicationTagReal integralConstant,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

@@ -82,7 +82,7 @@ public class BACnetLogDataLogDataEntryUnsignedValue extends BACnetLogDataLogData
     return lengthInBits;
   }
 
-  public static BACnetLogDataLogDataEntryUnsignedValueBuilder staticParseBuilder(
+  public static BACnetLogDataLogDataEntryBuilder staticParseBACnetLogDataLogDataEntryBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryUnsignedValue");
     PositionAware positionAware = readBuffer;
@@ -103,14 +103,14 @@ public class BACnetLogDataLogDataEntryUnsignedValue extends BACnetLogDataLogData
 
     readBuffer.closeContext("BACnetLogDataLogDataEntryUnsignedValue");
     // Create the instance
-    return new BACnetLogDataLogDataEntryUnsignedValueBuilder(unsignedValue);
+    return new BACnetLogDataLogDataEntryUnsignedValueBuilderImpl(unsignedValue);
   }
 
-  public static class BACnetLogDataLogDataEntryUnsignedValueBuilder
+  public static class BACnetLogDataLogDataEntryUnsignedValueBuilderImpl
       implements BACnetLogDataLogDataEntry.BACnetLogDataLogDataEntryBuilder {
     private final BACnetContextTagUnsignedInteger unsignedValue;
 
-    public BACnetLogDataLogDataEntryUnsignedValueBuilder(
+    public BACnetLogDataLogDataEntryUnsignedValueBuilderImpl(
         BACnetContextTagUnsignedInteger unsignedValue) {
 
       this.unsignedValue = unsignedValue;

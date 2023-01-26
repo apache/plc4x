@@ -171,23 +171,23 @@ public abstract class PnIoCm_Block implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PnIoCm_BlockBuilder builder = null;
     if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.AR_BLOCK_REQ)) {
-      builder = PnIoCm_Block_ArReq.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Block_ArReq.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.AR_BLOCK_RES)) {
-      builder = PnIoCm_Block_ArRes.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Block_ArRes.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IO_CR_BLOCK_REQ)) {
-      builder = PnIoCm_Block_IoCrReq.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Block_IoCrReq.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IO_CR_BLOCK_RES)) {
-      builder = PnIoCm_Block_IoCrRes.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Block_IoCrRes.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.ALARM_CR_BLOCK_REQ)) {
-      builder = PnIoCm_Block_AlarmCrReq.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Block_AlarmCrReq.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.ALARM_CR_BLOCK_RES)) {
-      builder = PnIoCm_Block_AlarmCrRes.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Block_AlarmCrRes.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.EXPECTED_SUBMODULE_BLOCK_REQ)) {
-      builder = PnIoCm_Block_ExpectedSubmoduleReq.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Block_ExpectedSubmoduleReq.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.MODULE_DIFF_BLOCK)) {
-      builder = PnIoCm_Block_ModuleDiff.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Block_ModuleDiff.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.AR_SERVER_BLOCK)) {
-      builder = PnIoCm_Block_ArServer.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Block_ArServer.staticParsePnIoCm_BlockBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -204,7 +204,7 @@ public abstract class PnIoCm_Block implements Message {
     return _pnIoCm_Block;
   }
 
-  public static interface PnIoCm_BlockBuilder {
+  public interface PnIoCm_BlockBuilder {
     PnIoCm_Block build(short blockVersionHigh, short blockVersionLow);
   }
 

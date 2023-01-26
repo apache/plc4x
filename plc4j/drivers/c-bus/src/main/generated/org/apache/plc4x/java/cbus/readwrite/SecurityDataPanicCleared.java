@@ -66,7 +66,7 @@ public class SecurityDataPanicCleared extends SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityDataPanicClearedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataPanicCleared");
     PositionAware positionAware = readBuffer;
@@ -75,12 +75,13 @@ public class SecurityDataPanicCleared extends SecurityData implements Message {
 
     readBuffer.closeContext("SecurityDataPanicCleared");
     // Create the instance
-    return new SecurityDataPanicClearedBuilder();
+    return new SecurityDataPanicClearedBuilderImpl();
   }
 
-  public static class SecurityDataPanicClearedBuilder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataPanicClearedBuilderImpl
+      implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataPanicClearedBuilder() {}
+    public SecurityDataPanicClearedBuilderImpl() {}
 
     public SecurityDataPanicCleared build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

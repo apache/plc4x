@@ -89,7 +89,7 @@ public class BACnetTimerStateChangeValueEnumerated extends BACnetTimerStateChang
     return lengthInBits;
   }
 
-  public static BACnetTimerStateChangeValueEnumeratedBuilder staticParseBuilder(
+  public static BACnetTimerStateChangeValueBuilder staticParseBACnetTimerStateChangeValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueEnumerated");
     PositionAware positionAware = readBuffer;
@@ -105,15 +105,16 @@ public class BACnetTimerStateChangeValueEnumerated extends BACnetTimerStateChang
 
     readBuffer.closeContext("BACnetTimerStateChangeValueEnumerated");
     // Create the instance
-    return new BACnetTimerStateChangeValueEnumeratedBuilder(enumeratedValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueEnumeratedBuilderImpl(
+        enumeratedValue, objectTypeArgument);
   }
 
-  public static class BACnetTimerStateChangeValueEnumeratedBuilder
+  public static class BACnetTimerStateChangeValueEnumeratedBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagEnumerated enumeratedValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueEnumeratedBuilder(
+    public BACnetTimerStateChangeValueEnumeratedBuilderImpl(
         BACnetApplicationTagEnumerated enumeratedValue, BACnetObjectType objectTypeArgument) {
 
       this.enumeratedValue = enumeratedValue;

@@ -80,7 +80,7 @@ public class BACnetValueSourceAddress extends BACnetValueSource implements Messa
     return lengthInBits;
   }
 
-  public static BACnetValueSourceAddressBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetValueSourceBuilder staticParseBACnetValueSourceBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetValueSourceAddress");
     PositionAware positionAware = readBuffer;
@@ -95,14 +95,14 @@ public class BACnetValueSourceAddress extends BACnetValueSource implements Messa
 
     readBuffer.closeContext("BACnetValueSourceAddress");
     // Create the instance
-    return new BACnetValueSourceAddressBuilder(address);
+    return new BACnetValueSourceAddressBuilderImpl(address);
   }
 
-  public static class BACnetValueSourceAddressBuilder
+  public static class BACnetValueSourceAddressBuilderImpl
       implements BACnetValueSource.BACnetValueSourceBuilder {
     private final BACnetAddressEnclosed address;
 
-    public BACnetValueSourceAddressBuilder(BACnetAddressEnclosed address) {
+    public BACnetValueSourceAddressBuilderImpl(BACnetAddressEnclosed address) {
 
       this.address = address;
     }

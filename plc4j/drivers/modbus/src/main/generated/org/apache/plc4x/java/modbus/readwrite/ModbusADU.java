@@ -116,11 +116,11 @@ public abstract class ModbusADU implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ModbusADUBuilder builder = null;
     if (EvaluationHelper.equals(driverType, DriverType.MODBUS_TCP)) {
-      builder = ModbusTcpADU.staticParseBuilder(readBuffer, driverType, response);
+      builder = ModbusTcpADU.staticParseModbusADUBuilder(readBuffer, driverType, response);
     } else if (EvaluationHelper.equals(driverType, DriverType.MODBUS_RTU)) {
-      builder = ModbusRtuADU.staticParseBuilder(readBuffer, driverType, response);
+      builder = ModbusRtuADU.staticParseModbusADUBuilder(readBuffer, driverType, response);
     } else if (EvaluationHelper.equals(driverType, DriverType.MODBUS_ASCII)) {
-      builder = ModbusAsciiADU.staticParseBuilder(readBuffer, driverType, response);
+      builder = ModbusAsciiADU.staticParseModbusADUBuilder(readBuffer, driverType, response);
     }
     if (builder == null) {
       throw new ParseException(
@@ -138,7 +138,7 @@ public abstract class ModbusADU implements Message {
     return _modbusADU;
   }
 
-  public static interface ModbusADUBuilder {
+  public interface ModbusADUBuilder {
     ModbusADU build(Boolean response);
   }
 

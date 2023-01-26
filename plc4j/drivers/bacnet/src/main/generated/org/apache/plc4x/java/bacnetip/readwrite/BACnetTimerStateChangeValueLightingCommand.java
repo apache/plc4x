@@ -89,7 +89,7 @@ public class BACnetTimerStateChangeValueLightingCommand extends BACnetTimerState
     return lengthInBits;
   }
 
-  public static BACnetTimerStateChangeValueLightingCommandBuilder staticParseBuilder(
+  public static BACnetTimerStateChangeValueBuilder staticParseBACnetTimerStateChangeValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueLightingCommand");
     PositionAware positionAware = readBuffer;
@@ -105,16 +105,16 @@ public class BACnetTimerStateChangeValueLightingCommand extends BACnetTimerState
 
     readBuffer.closeContext("BACnetTimerStateChangeValueLightingCommand");
     // Create the instance
-    return new BACnetTimerStateChangeValueLightingCommandBuilder(
+    return new BACnetTimerStateChangeValueLightingCommandBuilderImpl(
         ligthingCommandValue, objectTypeArgument);
   }
 
-  public static class BACnetTimerStateChangeValueLightingCommandBuilder
+  public static class BACnetTimerStateChangeValueLightingCommandBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetLightingCommandEnclosed ligthingCommandValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueLightingCommandBuilder(
+    public BACnetTimerStateChangeValueLightingCommandBuilderImpl(
         BACnetLightingCommandEnclosed ligthingCommandValue, BACnetObjectType objectTypeArgument) {
 
       this.ligthingCommandValue = ligthingCommandValue;

@@ -84,7 +84,7 @@ public class BACnetConstructedDataLiftAll extends BACnetConstructedData implemen
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLiftAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -103,15 +103,15 @@ public class BACnetConstructedDataLiftAll extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataLiftAll");
     // Create the instance
-    return new BACnetConstructedDataLiftAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLiftAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLiftAllBuilder
+  public static class BACnetConstructedDataLiftAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLiftAllBuilder(
+    public BACnetConstructedDataLiftAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
 
       this.tagNumber = tagNumber;

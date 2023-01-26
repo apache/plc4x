@@ -68,7 +68,7 @@ public class DF1SymbolMessageFrameACK extends DF1Symbol implements Message {
     return lengthInBits;
   }
 
-  public static DF1SymbolMessageFrameACKBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static DF1SymbolBuilder staticParseDF1SymbolBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("DF1SymbolMessageFrameACK");
     PositionAware positionAware = readBuffer;
@@ -77,12 +77,12 @@ public class DF1SymbolMessageFrameACK extends DF1Symbol implements Message {
 
     readBuffer.closeContext("DF1SymbolMessageFrameACK");
     // Create the instance
-    return new DF1SymbolMessageFrameACKBuilder();
+    return new DF1SymbolMessageFrameACKBuilderImpl();
   }
 
-  public static class DF1SymbolMessageFrameACKBuilder implements DF1Symbol.DF1SymbolBuilder {
+  public static class DF1SymbolMessageFrameACKBuilderImpl implements DF1Symbol.DF1SymbolBuilder {
 
-    public DF1SymbolMessageFrameACKBuilder() {}
+    public DF1SymbolMessageFrameACKBuilderImpl() {}
 
     public DF1SymbolMessageFrameACK build() {
       DF1SymbolMessageFrameACK dF1SymbolMessageFrameACK = new DF1SymbolMessageFrameACK();

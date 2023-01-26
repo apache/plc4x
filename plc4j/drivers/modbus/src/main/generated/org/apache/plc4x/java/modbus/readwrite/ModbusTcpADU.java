@@ -152,7 +152,7 @@ public class ModbusTcpADU extends ModbusADU implements Message {
     return lengthInBits;
   }
 
-  public static ModbusTcpADUBuilder staticParseBuilder(
+  public static ModbusADUBuilder staticParseModbusADUBuilder(
       ReadBuffer readBuffer, DriverType driverType, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusTcpADU");
     PositionAware positionAware = readBuffer;
@@ -193,16 +193,16 @@ public class ModbusTcpADU extends ModbusADU implements Message {
 
     readBuffer.closeContext("ModbusTcpADU");
     // Create the instance
-    return new ModbusTcpADUBuilder(transactionIdentifier, unitIdentifier, pdu, response);
+    return new ModbusTcpADUBuilderImpl(transactionIdentifier, unitIdentifier, pdu, response);
   }
 
-  public static class ModbusTcpADUBuilder implements ModbusADU.ModbusADUBuilder {
+  public static class ModbusTcpADUBuilderImpl implements ModbusADU.ModbusADUBuilder {
     private final int transactionIdentifier;
     private final short unitIdentifier;
     private final ModbusPDU pdu;
     private final Boolean response;
 
-    public ModbusTcpADUBuilder(
+    public ModbusTcpADUBuilderImpl(
         int transactionIdentifier, short unitIdentifier, ModbusPDU pdu, Boolean response) {
 
       this.transactionIdentifier = transactionIdentifier;

@@ -198,13 +198,13 @@ public abstract class S7Message implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     S7MessageBuilder builder = null;
     if (EvaluationHelper.equals(messageType, (short) 0x01)) {
-      builder = S7MessageRequest.staticParseBuilder(readBuffer);
+      builder = S7MessageRequest.staticParseS7MessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(messageType, (short) 0x02)) {
-      builder = S7MessageResponse.staticParseBuilder(readBuffer);
+      builder = S7MessageResponse.staticParseS7MessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(messageType, (short) 0x03)) {
-      builder = S7MessageResponseData.staticParseBuilder(readBuffer);
+      builder = S7MessageResponseData.staticParseS7MessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(messageType, (short) 0x07)) {
-      builder = S7MessageUserData.staticParseBuilder(readBuffer);
+      builder = S7MessageUserData.staticParseS7MessageBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -239,7 +239,7 @@ public abstract class S7Message implements Message {
     return _s7Message;
   }
 
-  public static interface S7MessageBuilder {
+  public interface S7MessageBuilder {
     S7Message build(int tpduReference, S7Parameter parameter, S7Payload payload);
   }
 

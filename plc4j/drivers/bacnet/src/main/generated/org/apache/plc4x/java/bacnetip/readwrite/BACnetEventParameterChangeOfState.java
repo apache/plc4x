@@ -121,8 +121,8 @@ public class BACnetEventParameterChangeOfState extends BACnetEventParameter impl
     return lengthInBits;
   }
 
-  public static BACnetEventParameterChangeOfStateBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfState");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -163,18 +163,18 @@ public class BACnetEventParameterChangeOfState extends BACnetEventParameter impl
 
     readBuffer.closeContext("BACnetEventParameterChangeOfState");
     // Create the instance
-    return new BACnetEventParameterChangeOfStateBuilder(
+    return new BACnetEventParameterChangeOfStateBuilderImpl(
         openingTag, timeDelay, listOfValues, closingTag);
   }
 
-  public static class BACnetEventParameterChangeOfStateBuilder
+  public static class BACnetEventParameterChangeOfStateBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
     private final BACnetEventParameterChangeOfStateListOfValues listOfValues;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterChangeOfStateBuilder(
+    public BACnetEventParameterChangeOfStateBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetEventParameterChangeOfStateListOfValues listOfValues,

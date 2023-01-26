@@ -94,9 +94,10 @@ public class BACnetConfirmedServiceRequestAuthenticate extends BACnetConfirmedSe
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestAuthenticateBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength, Long serviceRequestPayloadLength)
-      throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength, Long serviceRequestPayloadLength)
+          throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestAuthenticate");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -108,17 +109,17 @@ public class BACnetConfirmedServiceRequestAuthenticate extends BACnetConfirmedSe
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestAuthenticate");
     // Create the instance
-    return new BACnetConfirmedServiceRequestAuthenticateBuilder(
+    return new BACnetConfirmedServiceRequestAuthenticateBuilderImpl(
         bytesOfRemovedService, serviceRequestLength, serviceRequestPayloadLength);
   }
 
-  public static class BACnetConfirmedServiceRequestAuthenticateBuilder
+  public static class BACnetConfirmedServiceRequestAuthenticateBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final byte[] bytesOfRemovedService;
     private final Long serviceRequestLength;
     private final Long serviceRequestPayloadLength;
 
-    public BACnetConfirmedServiceRequestAuthenticateBuilder(
+    public BACnetConfirmedServiceRequestAuthenticateBuilderImpl(
         byte[] bytesOfRemovedService, Long serviceRequestLength, Long serviceRequestPayloadLength) {
 
       this.bytesOfRemovedService = bytesOfRemovedService;

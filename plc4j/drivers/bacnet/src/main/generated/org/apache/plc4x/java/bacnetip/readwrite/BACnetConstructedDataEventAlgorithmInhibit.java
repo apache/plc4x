@@ -113,7 +113,7 @@ public class BACnetConstructedDataEventAlgorithmInhibit extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEventAlgorithmInhibitBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -136,17 +136,17 @@ public class BACnetConstructedDataEventAlgorithmInhibit extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataEventAlgorithmInhibit");
     // Create the instance
-    return new BACnetConstructedDataEventAlgorithmInhibitBuilder(
+    return new BACnetConstructedDataEventAlgorithmInhibitBuilderImpl(
         eventAlgorithmInhibit, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEventAlgorithmInhibitBuilder
+  public static class BACnetConstructedDataEventAlgorithmInhibitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean eventAlgorithmInhibit;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEventAlgorithmInhibitBuilder(
+    public BACnetConstructedDataEventAlgorithmInhibitBuilderImpl(
         BACnetApplicationTagBoolean eventAlgorithmInhibit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

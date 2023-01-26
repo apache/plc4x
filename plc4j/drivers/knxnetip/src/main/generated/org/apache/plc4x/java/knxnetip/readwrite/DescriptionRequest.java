@@ -87,7 +87,7 @@ public class DescriptionRequest extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static DescriptionRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("DescriptionRequest");
     PositionAware positionAware = readBuffer;
@@ -103,13 +103,14 @@ public class DescriptionRequest extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("DescriptionRequest");
     // Create the instance
-    return new DescriptionRequestBuilder(hpaiControlEndpoint);
+    return new DescriptionRequestBuilderImpl(hpaiControlEndpoint);
   }
 
-  public static class DescriptionRequestBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class DescriptionRequestBuilderImpl
+      implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final HPAIControlEndpoint hpaiControlEndpoint;
 
-    public DescriptionRequestBuilder(HPAIControlEndpoint hpaiControlEndpoint) {
+    public DescriptionRequestBuilderImpl(HPAIControlEndpoint hpaiControlEndpoint) {
 
       this.hpaiControlEndpoint = hpaiControlEndpoint;
     }

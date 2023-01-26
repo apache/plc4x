@@ -91,7 +91,7 @@ public class BACnetTimerStateChangeValueObjectidentifier extends BACnetTimerStat
     return lengthInBits;
   }
 
-  public static BACnetTimerStateChangeValueObjectidentifierBuilder staticParseBuilder(
+  public static BACnetTimerStateChangeValueBuilder staticParseBACnetTimerStateChangeValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueObjectidentifier");
     PositionAware positionAware = readBuffer;
@@ -109,16 +109,16 @@ public class BACnetTimerStateChangeValueObjectidentifier extends BACnetTimerStat
 
     readBuffer.closeContext("BACnetTimerStateChangeValueObjectidentifier");
     // Create the instance
-    return new BACnetTimerStateChangeValueObjectidentifierBuilder(
+    return new BACnetTimerStateChangeValueObjectidentifierBuilderImpl(
         objectidentifierValue, objectTypeArgument);
   }
 
-  public static class BACnetTimerStateChangeValueObjectidentifierBuilder
+  public static class BACnetTimerStateChangeValueObjectidentifierBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagObjectIdentifier objectidentifierValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueObjectidentifierBuilder(
+    public BACnetTimerStateChangeValueObjectidentifierBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectidentifierValue,
         BACnetObjectType objectTypeArgument) {
 

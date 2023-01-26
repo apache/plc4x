@@ -136,7 +136,7 @@ public class BACnetConstructedDataSupportedFormatClasses extends BACnetConstruct
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSupportedFormatClassesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -174,18 +174,18 @@ public class BACnetConstructedDataSupportedFormatClasses extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataSupportedFormatClasses");
     // Create the instance
-    return new BACnetConstructedDataSupportedFormatClassesBuilder(
+    return new BACnetConstructedDataSupportedFormatClassesBuilderImpl(
         numberOfDataElements, supportedFormats, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSupportedFormatClassesBuilder
+  public static class BACnetConstructedDataSupportedFormatClassesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagUnsignedInteger> supportedFormats;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSupportedFormatClassesBuilder(
+    public BACnetConstructedDataSupportedFormatClassesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagUnsignedInteger> supportedFormats,
         Short tagNumber,

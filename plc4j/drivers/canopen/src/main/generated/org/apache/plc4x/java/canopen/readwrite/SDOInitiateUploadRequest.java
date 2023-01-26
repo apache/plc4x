@@ -103,7 +103,7 @@ public class SDOInitiateUploadRequest extends SDORequest implements Message {
     return lengthInBits;
   }
 
-  public static SDOInitiateUploadRequestBuilder staticParseBuilder(
+  public static SDORequestBuilder staticParseSDORequestBuilder(
       ReadBuffer readBuffer, SDORequestCommand command) throws ParseException {
     readBuffer.pullContext("SDOInitiateUploadRequest");
     PositionAware positionAware = readBuffer;
@@ -123,15 +123,15 @@ public class SDOInitiateUploadRequest extends SDORequest implements Message {
 
     readBuffer.closeContext("SDOInitiateUploadRequest");
     // Create the instance
-    return new SDOInitiateUploadRequestBuilder(address, reservedField0, reservedField1);
+    return new SDOInitiateUploadRequestBuilderImpl(address, reservedField0, reservedField1);
   }
 
-  public static class SDOInitiateUploadRequestBuilder implements SDORequest.SDORequestBuilder {
+  public static class SDOInitiateUploadRequestBuilderImpl implements SDORequest.SDORequestBuilder {
     private final IndexAddress address;
     private final Short reservedField0;
     private final Integer reservedField1;
 
-    public SDOInitiateUploadRequestBuilder(
+    public SDOInitiateUploadRequestBuilderImpl(
         IndexAddress address, Short reservedField0, Integer reservedField1) {
       this.address = address;
       this.reservedField0 = reservedField0;

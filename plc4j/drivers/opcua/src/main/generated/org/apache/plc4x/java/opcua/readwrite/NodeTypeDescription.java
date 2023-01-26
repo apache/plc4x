@@ -141,7 +141,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static NodeTypeDescriptionBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("NodeTypeDescription");
     PositionAware positionAware = readBuffer;
@@ -171,11 +171,11 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("NodeTypeDescription");
     // Create the instance
-    return new NodeTypeDescriptionBuilder(
+    return new NodeTypeDescriptionBuilderImpl(
         typeDefinitionNode, includeSubTypes, noOfDataToReturn, dataToReturn, reservedField0);
   }
 
-  public static class NodeTypeDescriptionBuilder
+  public static class NodeTypeDescriptionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExpandedNodeId typeDefinitionNode;
     private final boolean includeSubTypes;
@@ -183,7 +183,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
     private final List<ExtensionObjectDefinition> dataToReturn;
     private final Short reservedField0;
 
-    public NodeTypeDescriptionBuilder(
+    public NodeTypeDescriptionBuilderImpl(
         ExpandedNodeId typeDefinitionNode,
         boolean includeSubTypes,
         int noOfDataToReturn,

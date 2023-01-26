@@ -130,8 +130,8 @@ public class BrowseResult extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static BrowseResultBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("BrowseResult");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -160,17 +160,17 @@ public class BrowseResult extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("BrowseResult");
     // Create the instance
-    return new BrowseResultBuilder(statusCode, continuationPoint, noOfReferences, references);
+    return new BrowseResultBuilderImpl(statusCode, continuationPoint, noOfReferences, references);
   }
 
-  public static class BrowseResultBuilder
+  public static class BrowseResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final PascalByteString continuationPoint;
     private final int noOfReferences;
     private final List<ExtensionObjectDefinition> references;
 
-    public BrowseResultBuilder(
+    public BrowseResultBuilderImpl(
         StatusCode statusCode,
         PascalByteString continuationPoint,
         int noOfReferences,

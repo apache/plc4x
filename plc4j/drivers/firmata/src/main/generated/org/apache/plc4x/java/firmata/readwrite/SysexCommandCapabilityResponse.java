@@ -72,7 +72,7 @@ public class SysexCommandCapabilityResponse extends SysexCommand implements Mess
     return lengthInBits;
   }
 
-  public static SysexCommandCapabilityResponseBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandCapabilityResponse");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class SysexCommandCapabilityResponse extends SysexCommand implements Mess
 
     readBuffer.closeContext("SysexCommandCapabilityResponse");
     // Create the instance
-    return new SysexCommandCapabilityResponseBuilder();
+    return new SysexCommandCapabilityResponseBuilderImpl();
   }
 
-  public static class SysexCommandCapabilityResponseBuilder
+  public static class SysexCommandCapabilityResponseBuilderImpl
       implements SysexCommand.SysexCommandBuilder {
 
-    public SysexCommandCapabilityResponseBuilder() {}
+    public SysexCommandCapabilityResponseBuilderImpl() {}
 
     public SysexCommandCapabilityResponse build() {
       SysexCommandCapabilityResponse sysexCommandCapabilityResponse =

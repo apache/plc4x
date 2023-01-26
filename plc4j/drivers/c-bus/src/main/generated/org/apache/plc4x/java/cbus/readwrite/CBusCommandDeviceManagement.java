@@ -114,7 +114,7 @@ public class CBusCommandDeviceManagement extends CBusCommand implements Message 
     return lengthInBits;
   }
 
-  public static CBusCommandDeviceManagementBuilder staticParseBuilder(
+  public static CBusCommandBuilder staticParseCBusCommandBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusCommandDeviceManagement");
     PositionAware positionAware = readBuffer;
@@ -134,15 +134,16 @@ public class CBusCommandDeviceManagement extends CBusCommand implements Message 
 
     readBuffer.closeContext("CBusCommandDeviceManagement");
     // Create the instance
-    return new CBusCommandDeviceManagementBuilder(paramNo, parameterValue, cBusOptions);
+    return new CBusCommandDeviceManagementBuilderImpl(paramNo, parameterValue, cBusOptions);
   }
 
-  public static class CBusCommandDeviceManagementBuilder implements CBusCommand.CBusCommandBuilder {
+  public static class CBusCommandDeviceManagementBuilderImpl
+      implements CBusCommand.CBusCommandBuilder {
     private final Parameter paramNo;
     private final byte parameterValue;
     private final CBusOptions cBusOptions;
 
-    public CBusCommandDeviceManagementBuilder(
+    public CBusCommandDeviceManagementBuilderImpl(
         Parameter paramNo, byte parameterValue, CBusOptions cBusOptions) {
 
       this.paramNo = paramNo;

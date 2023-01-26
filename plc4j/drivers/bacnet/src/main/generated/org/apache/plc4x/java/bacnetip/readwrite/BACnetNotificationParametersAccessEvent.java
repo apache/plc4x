@@ -191,7 +191,7 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersAccessEventBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -270,7 +270,7 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
 
     readBuffer.closeContext("BACnetNotificationParametersAccessEvent");
     // Create the instance
-    return new BACnetNotificationParametersAccessEventBuilder(
+    return new BACnetNotificationParametersAccessEventBuilderImpl(
         innerOpeningTag,
         accessEvent,
         statusFlags,
@@ -283,7 +283,7 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
         objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersAccessEventBuilder
+  public static class BACnetNotificationParametersAccessEventBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final BACnetAccessEventTagged accessEvent;
@@ -296,7 +296,7 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersAccessEventBuilder(
+    public BACnetNotificationParametersAccessEventBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetAccessEventTagged accessEvent,
         BACnetStatusFlagsTagged statusFlags,

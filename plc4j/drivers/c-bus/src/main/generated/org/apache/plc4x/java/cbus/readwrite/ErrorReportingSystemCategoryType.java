@@ -108,33 +108,39 @@ public abstract class ErrorReportingSystemCategoryType implements Message {
     if (EvaluationHelper.equals(
         errorReportingSystemCategoryClass, ErrorReportingSystemCategoryClass.INPUT_UNITS)) {
       builder =
-          ErrorReportingSystemCategoryTypeInputUnits.staticParseBuilder(
-              readBuffer, errorReportingSystemCategoryClass);
+          ErrorReportingSystemCategoryTypeInputUnits
+              .staticParseErrorReportingSystemCategoryTypeBuilder(
+                  readBuffer, errorReportingSystemCategoryClass);
     } else if (EvaluationHelper.equals(
         errorReportingSystemCategoryClass, ErrorReportingSystemCategoryClass.SUPPORT_UNITS)) {
       builder =
-          ErrorReportingSystemCategoryTypeSupportUnits.staticParseBuilder(
-              readBuffer, errorReportingSystemCategoryClass);
+          ErrorReportingSystemCategoryTypeSupportUnits
+              .staticParseErrorReportingSystemCategoryTypeBuilder(
+                  readBuffer, errorReportingSystemCategoryClass);
     } else if (EvaluationHelper.equals(
         errorReportingSystemCategoryClass,
         ErrorReportingSystemCategoryClass.BUILDING_MANAGEMENT_SYSTEMS)) {
       builder =
-          ErrorReportingSystemCategoryTypeBuildingManagementSystems.staticParseBuilder(
-              readBuffer, errorReportingSystemCategoryClass);
+          ErrorReportingSystemCategoryTypeBuildingManagementSystems
+              .staticParseErrorReportingSystemCategoryTypeBuilder(
+                  readBuffer, errorReportingSystemCategoryClass);
     } else if (EvaluationHelper.equals(
         errorReportingSystemCategoryClass, ErrorReportingSystemCategoryClass.OUTPUT_UNITS)) {
       builder =
-          ErrorReportingSystemCategoryTypeOutputUnits.staticParseBuilder(
-              readBuffer, errorReportingSystemCategoryClass);
+          ErrorReportingSystemCategoryTypeOutputUnits
+              .staticParseErrorReportingSystemCategoryTypeBuilder(
+                  readBuffer, errorReportingSystemCategoryClass);
     } else if (EvaluationHelper.equals(
         errorReportingSystemCategoryClass, ErrorReportingSystemCategoryClass.CLIMATE_CONTROLLERS)) {
       builder =
-          ErrorReportingSystemCategoryTypeClimateControllers.staticParseBuilder(
-              readBuffer, errorReportingSystemCategoryClass);
+          ErrorReportingSystemCategoryTypeClimateControllers
+              .staticParseErrorReportingSystemCategoryTypeBuilder(
+                  readBuffer, errorReportingSystemCategoryClass);
     } else if (true) {
       builder =
-          ErrorReportingSystemCategoryTypeReserved.staticParseBuilder(
-              readBuffer, errorReportingSystemCategoryClass);
+          ErrorReportingSystemCategoryTypeReserved
+              .staticParseErrorReportingSystemCategoryTypeBuilder(
+                  readBuffer, errorReportingSystemCategoryClass);
     }
     if (builder == null) {
       throw new ParseException(
@@ -151,7 +157,7 @@ public abstract class ErrorReportingSystemCategoryType implements Message {
     return _errorReportingSystemCategoryType;
   }
 
-  public static interface ErrorReportingSystemCategoryTypeBuilder {
+  public interface ErrorReportingSystemCategoryTypeBuilder {
     ErrorReportingSystemCategoryType build();
   }
 

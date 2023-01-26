@@ -109,7 +109,7 @@ public class BACnetConstructedDataBias extends BACnetConstructedData implements 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBiasBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,16 +132,16 @@ public class BACnetConstructedDataBias extends BACnetConstructedData implements 
 
     readBuffer.closeContext("BACnetConstructedDataBias");
     // Create the instance
-    return new BACnetConstructedDataBiasBuilder(bias, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBiasBuilderImpl(bias, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBiasBuilder
+  public static class BACnetConstructedDataBiasBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal bias;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBiasBuilder(
+    public BACnetConstructedDataBiasBuilderImpl(
         BACnetApplicationTagReal bias,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

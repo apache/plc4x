@@ -335,35 +335,35 @@ public abstract class OpenProtocolMessage implements Message {
     OpenProtocolMessageBuilder builder = null;
     if (EvaluationHelper.equals(mid, Mid.ApplicationCommunicationStart)) {
       builder =
-          OpenProtocolMessageApplicationCommunicationStart.staticParseBuilder(
+          OpenProtocolMessageApplicationCommunicationStart.staticParseOpenProtocolMessageBuilder(
               readBuffer, connectionRevision);
     } else if (EvaluationHelper.equals(mid, Mid.ApplicationCommunicationStartAcknowledge)) {
       builder =
-          OpenProtocolMessageApplicationCommunicationStartAcknowledge.staticParseBuilder(
-              readBuffer, connectionRevision);
+          OpenProtocolMessageApplicationCommunicationStartAcknowledge
+              .staticParseOpenProtocolMessageBuilder(readBuffer, connectionRevision);
     } else if (EvaluationHelper.equals(mid, Mid.ApplicationCommunicationStop)) {
       builder =
-          OpenProtocolMessageApplicationCommunicationStop.staticParseBuilder(
+          OpenProtocolMessageApplicationCommunicationStop.staticParseOpenProtocolMessageBuilder(
               readBuffer, connectionRevision);
     } else if (EvaluationHelper.equals(mid, Mid.ApplicationCommandError)) {
       builder =
-          OpenProtocolMessageApplicationCommandError.staticParseBuilder(
+          OpenProtocolMessageApplicationCommandError.staticParseOpenProtocolMessageBuilder(
               readBuffer, connectionRevision);
     } else if (EvaluationHelper.equals(mid, Mid.ApplicationCommandAccepted)) {
       builder =
-          OpenProtocolMessageApplicationCommandAccepted.staticParseBuilder(
+          OpenProtocolMessageApplicationCommandAccepted.staticParseOpenProtocolMessageBuilder(
               readBuffer, connectionRevision);
     } else if (EvaluationHelper.equals(mid, Mid.ApplicationGenericDataRequest)) {
       builder =
-          OpenProtocolMessageApplicationGenericDataRequest.staticParseBuilder(
+          OpenProtocolMessageApplicationGenericDataRequest.staticParseOpenProtocolMessageBuilder(
               readBuffer, connectionRevision);
     } else if (EvaluationHelper.equals(mid, Mid.ApplicationGenericSubscription)) {
       builder =
-          OpenProtocolMessageApplicationGenericSubscription.staticParseBuilder(
+          OpenProtocolMessageApplicationGenericSubscription.staticParseOpenProtocolMessageBuilder(
               readBuffer, connectionRevision);
     } else if (EvaluationHelper.equals(mid, Mid.ApplicationGenericUnsubscribe)) {
       builder =
-          OpenProtocolMessageApplicationGenericUnsubscribe.staticParseBuilder(
+          OpenProtocolMessageApplicationGenericUnsubscribe.staticParseOpenProtocolMessageBuilder(
               readBuffer, connectionRevision);
     }
     if (builder == null) {
@@ -388,7 +388,7 @@ public abstract class OpenProtocolMessage implements Message {
     return _openProtocolMessage;
   }
 
-  public static interface OpenProtocolMessageBuilder {
+  public interface OpenProtocolMessageBuilder {
     OpenProtocolMessage build(
         OpenProtocolRevision selectedRevision,
         Short noAckFlag,

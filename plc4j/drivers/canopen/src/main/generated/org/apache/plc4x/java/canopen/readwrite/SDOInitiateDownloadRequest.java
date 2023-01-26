@@ -144,7 +144,7 @@ public class SDOInitiateDownloadRequest extends SDORequest implements Message {
     return lengthInBits;
   }
 
-  public static SDOInitiateDownloadRequestBuilder staticParseBuilder(
+  public static SDORequestBuilder staticParseSDORequestBuilder(
       ReadBuffer readBuffer, SDORequestCommand command) throws ParseException {
     readBuffer.pullContext("SDOInitiateDownloadRequest");
     PositionAware positionAware = readBuffer;
@@ -176,18 +176,19 @@ public class SDOInitiateDownloadRequest extends SDORequest implements Message {
 
     readBuffer.closeContext("SDOInitiateDownloadRequest");
     // Create the instance
-    return new SDOInitiateDownloadRequestBuilder(
+    return new SDOInitiateDownloadRequestBuilderImpl(
         expedited, indicated, address, payload, reservedField0);
   }
 
-  public static class SDOInitiateDownloadRequestBuilder implements SDORequest.SDORequestBuilder {
+  public static class SDOInitiateDownloadRequestBuilderImpl
+      implements SDORequest.SDORequestBuilder {
     private final boolean expedited;
     private final boolean indicated;
     private final IndexAddress address;
     private final SDOInitiateUploadResponsePayload payload;
     private final Byte reservedField0;
 
-    public SDOInitiateDownloadRequestBuilder(
+    public SDOInitiateDownloadRequestBuilderImpl(
         boolean expedited,
         boolean indicated,
         IndexAddress address,

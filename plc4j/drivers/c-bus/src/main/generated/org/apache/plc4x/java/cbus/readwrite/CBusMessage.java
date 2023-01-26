@@ -138,11 +138,11 @@ public abstract class CBusMessage implements Message {
     CBusMessageBuilder builder = null;
     if (EvaluationHelper.equals(isResponse, (boolean) false)) {
       builder =
-          CBusMessageToServer.staticParseBuilder(
+          CBusMessageToServer.staticParseCBusMessageBuilder(
               readBuffer, isResponse, requestContext, cBusOptions);
     } else if (EvaluationHelper.equals(isResponse, (boolean) true)) {
       builder =
-          CBusMessageToClient.staticParseBuilder(
+          CBusMessageToClient.staticParseCBusMessageBuilder(
               readBuffer, isResponse, requestContext, cBusOptions);
     }
     if (builder == null) {
@@ -161,7 +161,7 @@ public abstract class CBusMessage implements Message {
     return _cBusMessage;
   }
 
-  public static interface CBusMessageBuilder {
+  public interface CBusMessageBuilder {
     CBusMessage build(RequestContext requestContext, CBusOptions cBusOptions);
   }
 

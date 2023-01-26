@@ -84,7 +84,7 @@ public class TelephonyDataDivert extends TelephonyData implements Message {
     return lengthInBits;
   }
 
-  public static TelephonyDataDivertBuilder staticParseBuilder(
+  public static TelephonyDataBuilder staticParseTelephonyDataBuilder(
       ReadBuffer readBuffer, TelephonyCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("TelephonyDataDivert");
@@ -98,13 +98,13 @@ public class TelephonyDataDivert extends TelephonyData implements Message {
 
     readBuffer.closeContext("TelephonyDataDivert");
     // Create the instance
-    return new TelephonyDataDivertBuilder(number);
+    return new TelephonyDataDivertBuilderImpl(number);
   }
 
-  public static class TelephonyDataDivertBuilder implements TelephonyData.TelephonyDataBuilder {
+  public static class TelephonyDataDivertBuilderImpl implements TelephonyData.TelephonyDataBuilder {
     private final String number;
 
-    public TelephonyDataDivertBuilder(String number) {
+    public TelephonyDataDivertBuilderImpl(String number) {
 
       this.number = number;
     }

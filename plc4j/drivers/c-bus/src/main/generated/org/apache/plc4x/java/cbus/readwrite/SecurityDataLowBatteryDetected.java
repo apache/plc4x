@@ -66,7 +66,7 @@ public class SecurityDataLowBatteryDetected extends SecurityData implements Mess
     return lengthInBits;
   }
 
-  public static SecurityDataLowBatteryDetectedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataLowBatteryDetected");
     PositionAware positionAware = readBuffer;
@@ -75,13 +75,13 @@ public class SecurityDataLowBatteryDetected extends SecurityData implements Mess
 
     readBuffer.closeContext("SecurityDataLowBatteryDetected");
     // Create the instance
-    return new SecurityDataLowBatteryDetectedBuilder();
+    return new SecurityDataLowBatteryDetectedBuilderImpl();
   }
 
-  public static class SecurityDataLowBatteryDetectedBuilder
+  public static class SecurityDataLowBatteryDetectedBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataLowBatteryDetectedBuilder() {}
+    public SecurityDataLowBatteryDetectedBuilderImpl() {}
 
     public SecurityDataLowBatteryDetected build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

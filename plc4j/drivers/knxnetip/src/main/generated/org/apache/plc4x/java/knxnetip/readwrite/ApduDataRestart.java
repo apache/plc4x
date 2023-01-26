@@ -72,7 +72,7 @@ public class ApduDataRestart extends ApduData implements Message {
     return lengthInBits;
   }
 
-  public static ApduDataRestartBuilder staticParseBuilder(ReadBuffer readBuffer, Short dataLength)
+  public static ApduDataBuilder staticParseApduDataBuilder(ReadBuffer readBuffer, Short dataLength)
       throws ParseException {
     readBuffer.pullContext("ApduDataRestart");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class ApduDataRestart extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataRestart");
     // Create the instance
-    return new ApduDataRestartBuilder(dataLength);
+    return new ApduDataRestartBuilderImpl(dataLength);
   }
 
-  public static class ApduDataRestartBuilder implements ApduData.ApduDataBuilder {
+  public static class ApduDataRestartBuilderImpl implements ApduData.ApduDataBuilder {
     private final Short dataLength;
 
-    public ApduDataRestartBuilder(Short dataLength) {
+    public ApduDataRestartBuilderImpl(Short dataLength) {
 
       this.dataLength = dataLength;
     }

@@ -164,7 +164,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
     return lengthInBits;
   }
 
-  public static OpenSecureChannelRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("OpenSecureChannelRequest");
     PositionAware positionAware = readBuffer;
@@ -205,7 +205,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
 
     readBuffer.closeContext("OpenSecureChannelRequest");
     // Create the instance
-    return new OpenSecureChannelRequestBuilder(
+    return new OpenSecureChannelRequestBuilderImpl(
         requestHeader,
         clientProtocolVersion,
         requestType,
@@ -214,7 +214,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
         requestedLifetime);
   }
 
-  public static class OpenSecureChannelRequestBuilder
+  public static class OpenSecureChannelRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final long clientProtocolVersion;
@@ -223,7 +223,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
     private final PascalByteString clientNonce;
     private final long requestedLifetime;
 
-    public OpenSecureChannelRequestBuilder(
+    public OpenSecureChannelRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         long clientProtocolVersion,
         SecurityTokenRequestType requestType,

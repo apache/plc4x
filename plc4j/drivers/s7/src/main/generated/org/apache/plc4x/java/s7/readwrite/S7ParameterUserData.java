@@ -100,7 +100,7 @@ public class S7ParameterUserData extends S7Parameter implements Message {
     return lengthInBits;
   }
 
-  public static S7ParameterUserDataBuilder staticParseBuilder(
+  public static S7ParameterBuilder staticParseS7ParameterBuilder(
       ReadBuffer readBuffer, Short messageType) throws ParseException {
     readBuffer.pullContext("S7ParameterUserData");
     PositionAware positionAware = readBuffer;
@@ -118,13 +118,13 @@ public class S7ParameterUserData extends S7Parameter implements Message {
 
     readBuffer.closeContext("S7ParameterUserData");
     // Create the instance
-    return new S7ParameterUserDataBuilder(items);
+    return new S7ParameterUserDataBuilderImpl(items);
   }
 
-  public static class S7ParameterUserDataBuilder implements S7Parameter.S7ParameterBuilder {
+  public static class S7ParameterUserDataBuilderImpl implements S7Parameter.S7ParameterBuilder {
     private final List<S7ParameterUserDataItem> items;
 
-    public S7ParameterUserDataBuilder(List<S7ParameterUserDataItem> items) {
+    public S7ParameterUserDataBuilderImpl(List<S7ParameterUserDataItem> items) {
 
       this.items = items;
     }

@@ -110,7 +110,7 @@ public class BACnetConstructedDataDefaultFadeTime extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDefaultFadeTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,17 +135,17 @@ public class BACnetConstructedDataDefaultFadeTime extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataDefaultFadeTime");
     // Create the instance
-    return new BACnetConstructedDataDefaultFadeTimeBuilder(
+    return new BACnetConstructedDataDefaultFadeTimeBuilderImpl(
         defaultFadeTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDefaultFadeTimeBuilder
+  public static class BACnetConstructedDataDefaultFadeTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger defaultFadeTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDefaultFadeTimeBuilder(
+    public BACnetConstructedDataDefaultFadeTimeBuilderImpl(
         BACnetApplicationTagUnsignedInteger defaultFadeTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

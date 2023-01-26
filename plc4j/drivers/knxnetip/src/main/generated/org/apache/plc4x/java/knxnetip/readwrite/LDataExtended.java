@@ -167,7 +167,7 @@ public class LDataExtended extends LDataFrame implements Message {
     return lengthInBits;
   }
 
-  public static LDataExtendedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static LDataFrameBuilder staticParseLDataFrameBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("LDataExtended");
     PositionAware positionAware = readBuffer;
@@ -198,11 +198,11 @@ public class LDataExtended extends LDataFrame implements Message {
 
     readBuffer.closeContext("LDataExtended");
     // Create the instance
-    return new LDataExtendedBuilder(
+    return new LDataExtendedBuilderImpl(
         groupAddress, hopCount, extendedFrameFormat, sourceAddress, destinationAddress, apdu);
   }
 
-  public static class LDataExtendedBuilder implements LDataFrame.LDataFrameBuilder {
+  public static class LDataExtendedBuilderImpl implements LDataFrame.LDataFrameBuilder {
     private final boolean groupAddress;
     private final byte hopCount;
     private final byte extendedFrameFormat;
@@ -210,7 +210,7 @@ public class LDataExtended extends LDataFrame implements Message {
     private final byte[] destinationAddress;
     private final Apdu apdu;
 
-    public LDataExtendedBuilder(
+    public LDataExtendedBuilderImpl(
         boolean groupAddress,
         byte hopCount,
         byte extendedFrameFormat,

@@ -123,8 +123,8 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
     return lengthInBits;
   }
 
-  public static QueryNextRequestBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("QueryNextRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -151,18 +151,18 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("QueryNextRequest");
     // Create the instance
-    return new QueryNextRequestBuilder(
+    return new QueryNextRequestBuilderImpl(
         requestHeader, releaseContinuationPoint, continuationPoint, reservedField0);
   }
 
-  public static class QueryNextRequestBuilder
+  public static class QueryNextRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final boolean releaseContinuationPoint;
     private final PascalByteString continuationPoint;
     private final Short reservedField0;
 
-    public QueryNextRequestBuilder(
+    public QueryNextRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         boolean releaseContinuationPoint,
         PascalByteString continuationPoint,

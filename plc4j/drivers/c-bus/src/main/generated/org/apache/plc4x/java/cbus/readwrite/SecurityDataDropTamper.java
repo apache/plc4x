@@ -65,7 +65,7 @@ public class SecurityDataDropTamper extends SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityDataDropTamperBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataDropTamper");
     PositionAware positionAware = readBuffer;
@@ -74,12 +74,13 @@ public class SecurityDataDropTamper extends SecurityData implements Message {
 
     readBuffer.closeContext("SecurityDataDropTamper");
     // Create the instance
-    return new SecurityDataDropTamperBuilder();
+    return new SecurityDataDropTamperBuilderImpl();
   }
 
-  public static class SecurityDataDropTamperBuilder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataDropTamperBuilderImpl
+      implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataDropTamperBuilder() {}
+    public SecurityDataDropTamperBuilderImpl() {}
 
     public SecurityDataDropTamper build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

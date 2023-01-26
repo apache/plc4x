@@ -90,8 +90,9 @@ public class BACnetEventParameterChangeOfValueCivCriteriaBitmask
     return lengthInBits;
   }
 
-  public static BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetEventParameterChangeOfValueCivCriteriaBuilder
+      staticParseBACnetEventParameterChangeOfValueCivCriteriaBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -109,16 +110,16 @@ public class BACnetEventParameterChangeOfValueCivCriteriaBitmask
 
     readBuffer.closeContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask");
     // Create the instance
-    return new BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder(bitmask, tagNumber);
+    return new BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilderImpl(bitmask, tagNumber);
   }
 
-  public static class BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder
+  public static class BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilderImpl
       implements BACnetEventParameterChangeOfValueCivCriteria
           .BACnetEventParameterChangeOfValueCivCriteriaBuilder {
     private final BACnetContextTagBitString bitmask;
     private final Short tagNumber;
 
-    public BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder(
+    public BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilderImpl(
         BACnetContextTagBitString bitmask, Short tagNumber) {
 
       this.bitmask = bitmask;

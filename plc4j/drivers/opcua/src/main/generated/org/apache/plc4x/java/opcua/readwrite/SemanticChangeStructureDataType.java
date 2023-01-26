@@ -95,7 +95,7 @@ public class SemanticChangeStructureDataType extends ExtensionObjectDefinition i
     return lengthInBits;
   }
 
-  public static SemanticChangeStructureDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SemanticChangeStructureDataType");
     PositionAware positionAware = readBuffer;
@@ -114,15 +114,15 @@ public class SemanticChangeStructureDataType extends ExtensionObjectDefinition i
 
     readBuffer.closeContext("SemanticChangeStructureDataType");
     // Create the instance
-    return new SemanticChangeStructureDataTypeBuilder(affected, affectedType);
+    return new SemanticChangeStructureDataTypeBuilderImpl(affected, affectedType);
   }
 
-  public static class SemanticChangeStructureDataTypeBuilder
+  public static class SemanticChangeStructureDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId affected;
     private final NodeId affectedType;
 
-    public SemanticChangeStructureDataTypeBuilder(NodeId affected, NodeId affectedType) {
+    public SemanticChangeStructureDataTypeBuilderImpl(NodeId affected, NodeId affectedType) {
 
       this.affected = affected;
       this.affectedType = affectedType;

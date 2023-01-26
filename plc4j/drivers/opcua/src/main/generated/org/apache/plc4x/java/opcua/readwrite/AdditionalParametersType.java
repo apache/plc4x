@@ -101,7 +101,7 @@ public class AdditionalParametersType extends ExtensionObjectDefinition implemen
     return lengthInBits;
   }
 
-  public static AdditionalParametersTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AdditionalParametersType");
     PositionAware positionAware = readBuffer;
@@ -120,15 +120,15 @@ public class AdditionalParametersType extends ExtensionObjectDefinition implemen
 
     readBuffer.closeContext("AdditionalParametersType");
     // Create the instance
-    return new AdditionalParametersTypeBuilder(noOfParameters, parameters);
+    return new AdditionalParametersTypeBuilderImpl(noOfParameters, parameters);
   }
 
-  public static class AdditionalParametersTypeBuilder
+  public static class AdditionalParametersTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int noOfParameters;
     private final List<ExtensionObjectDefinition> parameters;
 
-    public AdditionalParametersTypeBuilder(
+    public AdditionalParametersTypeBuilderImpl(
         int noOfParameters, List<ExtensionObjectDefinition> parameters) {
 
       this.noOfParameters = noOfParameters;

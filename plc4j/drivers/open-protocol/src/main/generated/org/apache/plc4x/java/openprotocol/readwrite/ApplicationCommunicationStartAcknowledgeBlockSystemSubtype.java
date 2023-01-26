@@ -88,8 +88,9 @@ public class ApplicationCommunicationStartAcknowledgeBlockSystemSubtype
     return lengthInBits;
   }
 
-  public static ApplicationCommunicationStartAcknowledgeBlockSystemSubtypeBuilder
-      staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static ApplicationCommunicationStartAcknowledgeBlockBuilder
+      staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("ApplicationCommunicationStartAcknowledgeBlockSystemSubtype");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -101,15 +102,16 @@ public class ApplicationCommunicationStartAcknowledgeBlockSystemSubtype
 
     readBuffer.closeContext("ApplicationCommunicationStartAcknowledgeBlockSystemSubtype");
     // Create the instance
-    return new ApplicationCommunicationStartAcknowledgeBlockSystemSubtypeBuilder(systemSubtype);
+    return new ApplicationCommunicationStartAcknowledgeBlockSystemSubtypeBuilderImpl(systemSubtype);
   }
 
-  public static class ApplicationCommunicationStartAcknowledgeBlockSystemSubtypeBuilder
+  public static class ApplicationCommunicationStartAcknowledgeBlockSystemSubtypeBuilderImpl
       implements ApplicationCommunicationStartAcknowledgeBlock
           .ApplicationCommunicationStartAcknowledgeBlockBuilder {
     private final String systemSubtype;
 
-    public ApplicationCommunicationStartAcknowledgeBlockSystemSubtypeBuilder(String systemSubtype) {
+    public ApplicationCommunicationStartAcknowledgeBlockSystemSubtypeBuilderImpl(
+        String systemSubtype) {
 
       this.systemSubtype = systemSubtype;
     }

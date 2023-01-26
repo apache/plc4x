@@ -109,7 +109,7 @@ public class BACnetConstructedDataLockout extends BACnetConstructedData implemen
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLockoutBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,16 +132,16 @@ public class BACnetConstructedDataLockout extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataLockout");
     // Create the instance
-    return new BACnetConstructedDataLockoutBuilder(lockout, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLockoutBuilderImpl(lockout, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLockoutBuilder
+  public static class BACnetConstructedDataLockoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean lockout;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLockoutBuilder(
+    public BACnetConstructedDataLockoutBuilderImpl(
         BACnetApplicationTagBoolean lockout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

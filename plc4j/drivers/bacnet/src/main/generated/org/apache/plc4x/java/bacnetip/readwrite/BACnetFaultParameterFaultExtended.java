@@ -135,8 +135,8 @@ public class BACnetFaultParameterFaultExtended extends BACnetFaultParameter impl
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetFaultParameterBuilder staticParseBACnetFaultParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtended");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -186,11 +186,11 @@ public class BACnetFaultParameterFaultExtended extends BACnetFaultParameter impl
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtended");
     // Create the instance
-    return new BACnetFaultParameterFaultExtendedBuilder(
+    return new BACnetFaultParameterFaultExtendedBuilderImpl(
         openingTag, vendorId, extendedFaultType, parameters, closingTag);
   }
 
-  public static class BACnetFaultParameterFaultExtendedBuilder
+  public static class BACnetFaultParameterFaultExtendedBuilderImpl
       implements BACnetFaultParameter.BACnetFaultParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetVendorIdTagged vendorId;
@@ -198,7 +198,7 @@ public class BACnetFaultParameterFaultExtended extends BACnetFaultParameter impl
     private final BACnetFaultParameterFaultExtendedParameters parameters;
     private final BACnetClosingTag closingTag;
 
-    public BACnetFaultParameterFaultExtendedBuilder(
+    public BACnetFaultParameterFaultExtendedBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetVendorIdTagged vendorId,
         BACnetContextTagUnsignedInteger extendedFaultType,

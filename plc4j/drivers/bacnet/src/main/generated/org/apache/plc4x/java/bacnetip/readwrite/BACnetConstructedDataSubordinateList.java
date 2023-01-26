@@ -135,7 +135,7 @@ public class BACnetConstructedDataSubordinateList extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSubordinateListBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -170,18 +170,18 @@ public class BACnetConstructedDataSubordinateList extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataSubordinateList");
     // Create the instance
-    return new BACnetConstructedDataSubordinateListBuilder(
+    return new BACnetConstructedDataSubordinateListBuilderImpl(
         numberOfDataElements, subordinateList, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSubordinateListBuilder
+  public static class BACnetConstructedDataSubordinateListBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetDeviceObjectReference> subordinateList;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSubordinateListBuilder(
+    public BACnetConstructedDataSubordinateListBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetDeviceObjectReference> subordinateList,
         Short tagNumber,

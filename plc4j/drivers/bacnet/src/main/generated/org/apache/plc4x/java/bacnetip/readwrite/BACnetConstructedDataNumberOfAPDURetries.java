@@ -111,7 +111,7 @@ public class BACnetConstructedDataNumberOfAPDURetries extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNumberOfAPDURetriesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,17 +137,17 @@ public class BACnetConstructedDataNumberOfAPDURetries extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataNumberOfAPDURetries");
     // Create the instance
-    return new BACnetConstructedDataNumberOfAPDURetriesBuilder(
+    return new BACnetConstructedDataNumberOfAPDURetriesBuilderImpl(
         numberOfApduRetries, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNumberOfAPDURetriesBuilder
+  public static class BACnetConstructedDataNumberOfAPDURetriesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfApduRetries;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNumberOfAPDURetriesBuilder(
+    public BACnetConstructedDataNumberOfAPDURetriesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfApduRetries,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

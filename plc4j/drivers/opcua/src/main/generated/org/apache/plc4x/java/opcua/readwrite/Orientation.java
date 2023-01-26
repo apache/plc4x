@@ -69,8 +69,8 @@ public class Orientation extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static OrientationBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("Orientation");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -78,13 +78,13 @@ public class Orientation extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("Orientation");
     // Create the instance
-    return new OrientationBuilder();
+    return new OrientationBuilderImpl();
   }
 
-  public static class OrientationBuilder
+  public static class OrientationBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public OrientationBuilder() {}
+    public OrientationBuilderImpl() {}
 
     public Orientation build() {
       Orientation orientation = new Orientation();

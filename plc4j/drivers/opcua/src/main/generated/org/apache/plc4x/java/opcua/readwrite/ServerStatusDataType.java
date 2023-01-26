@@ -155,7 +155,7 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static ServerStatusDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ServerStatusDataType");
     PositionAware positionAware = readBuffer;
@@ -191,11 +191,11 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("ServerStatusDataType");
     // Create the instance
-    return new ServerStatusDataTypeBuilder(
+    return new ServerStatusDataTypeBuilderImpl(
         startTime, currentTime, state, buildInfo, secondsTillShutdown, shutdownReason);
   }
 
-  public static class ServerStatusDataTypeBuilder
+  public static class ServerStatusDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long startTime;
     private final long currentTime;
@@ -204,7 +204,7 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
     private final long secondsTillShutdown;
     private final LocalizedText shutdownReason;
 
-    public ServerStatusDataTypeBuilder(
+    public ServerStatusDataTypeBuilderImpl(
         long startTime,
         long currentTime,
         ServerState state,

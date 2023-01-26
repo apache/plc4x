@@ -121,7 +121,7 @@ public class S7ParameterSetupCommunication extends S7Parameter implements Messag
     return lengthInBits;
   }
 
-  public static S7ParameterSetupCommunicationBuilder staticParseBuilder(
+  public static S7ParameterBuilder staticParseS7ParameterBuilder(
       ReadBuffer readBuffer, Short messageType) throws ParseException {
     readBuffer.pullContext("S7ParameterSetupCommunication");
     PositionAware positionAware = readBuffer;
@@ -139,18 +139,18 @@ public class S7ParameterSetupCommunication extends S7Parameter implements Messag
 
     readBuffer.closeContext("S7ParameterSetupCommunication");
     // Create the instance
-    return new S7ParameterSetupCommunicationBuilder(
+    return new S7ParameterSetupCommunicationBuilderImpl(
         maxAmqCaller, maxAmqCallee, pduLength, reservedField0);
   }
 
-  public static class S7ParameterSetupCommunicationBuilder
+  public static class S7ParameterSetupCommunicationBuilderImpl
       implements S7Parameter.S7ParameterBuilder {
     private final int maxAmqCaller;
     private final int maxAmqCallee;
     private final int pduLength;
     private final Short reservedField0;
 
-    public S7ParameterSetupCommunicationBuilder(
+    public S7ParameterSetupCommunicationBuilderImpl(
         int maxAmqCaller, int maxAmqCallee, int pduLength, Short reservedField0) {
       this.maxAmqCaller = maxAmqCaller;
       this.maxAmqCallee = maxAmqCallee;

@@ -110,7 +110,7 @@ public class BACnetConstructedDataAccumulatorMinPresValue extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccumulatorMinPresValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,17 +135,17 @@ public class BACnetConstructedDataAccumulatorMinPresValue extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataAccumulatorMinPresValue");
     // Create the instance
-    return new BACnetConstructedDataAccumulatorMinPresValueBuilder(
+    return new BACnetConstructedDataAccumulatorMinPresValueBuilderImpl(
         minPresValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccumulatorMinPresValueBuilder
+  public static class BACnetConstructedDataAccumulatorMinPresValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger minPresValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccumulatorMinPresValueBuilder(
+    public BACnetConstructedDataAccumulatorMinPresValueBuilderImpl(
         BACnetApplicationTagUnsignedInteger minPresValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

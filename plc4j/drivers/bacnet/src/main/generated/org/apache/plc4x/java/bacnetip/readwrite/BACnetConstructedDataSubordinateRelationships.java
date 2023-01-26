@@ -136,7 +136,7 @@ public class BACnetConstructedDataSubordinateRelationships extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSubordinateRelationshipsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -174,18 +174,18 @@ public class BACnetConstructedDataSubordinateRelationships extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataSubordinateRelationships");
     // Create the instance
-    return new BACnetConstructedDataSubordinateRelationshipsBuilder(
+    return new BACnetConstructedDataSubordinateRelationshipsBuilderImpl(
         numberOfDataElements, subordinateRelationships, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSubordinateRelationshipsBuilder
+  public static class BACnetConstructedDataSubordinateRelationshipsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetRelationshipTagged> subordinateRelationships;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSubordinateRelationshipsBuilder(
+    public BACnetConstructedDataSubordinateRelationshipsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetRelationshipTagged> subordinateRelationships,
         Short tagNumber,

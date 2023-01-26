@@ -113,7 +113,7 @@ public class BACnetConstructedDataProtocolServicesSupported extends BACnetConstr
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataProtocolServicesSupportedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -139,17 +139,17 @@ public class BACnetConstructedDataProtocolServicesSupported extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataProtocolServicesSupported");
     // Create the instance
-    return new BACnetConstructedDataProtocolServicesSupportedBuilder(
+    return new BACnetConstructedDataProtocolServicesSupportedBuilderImpl(
         protocolServicesSupported, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataProtocolServicesSupportedBuilder
+  public static class BACnetConstructedDataProtocolServicesSupportedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetServicesSupportedTagged protocolServicesSupported;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataProtocolServicesSupportedBuilder(
+    public BACnetConstructedDataProtocolServicesSupportedBuilderImpl(
         BACnetServicesSupportedTagged protocolServicesSupported,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

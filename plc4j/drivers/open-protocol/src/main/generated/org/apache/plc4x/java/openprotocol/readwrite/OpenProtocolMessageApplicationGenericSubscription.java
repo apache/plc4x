@@ -158,7 +158,7 @@ public class OpenProtocolMessageApplicationGenericSubscription extends OpenProto
     return lengthInBits;
   }
 
-  public static OpenProtocolMessageApplicationGenericSubscriptionBuilder staticParseBuilder(
+  public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
       ReadBuffer readBuffer, OpenProtocolRevision connectionRevision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationGenericSubscription");
     PositionAware positionAware = readBuffer;
@@ -188,18 +188,18 @@ public class OpenProtocolMessageApplicationGenericSubscription extends OpenProto
 
     readBuffer.closeContext("OpenProtocolMessageApplicationGenericSubscription");
     // Create the instance
-    return new OpenProtocolMessageApplicationGenericSubscriptionBuilder(
+    return new OpenProtocolMessageApplicationGenericSubscriptionBuilderImpl(
         subscriptionMid, wantedRevision, extraData, connectionRevision);
   }
 
-  public static class OpenProtocolMessageApplicationGenericSubscriptionBuilder
+  public static class OpenProtocolMessageApplicationGenericSubscriptionBuilderImpl
       implements OpenProtocolMessage.OpenProtocolMessageBuilder {
     private final Mid subscriptionMid;
     private final OpenProtocolRevision wantedRevision;
     private final byte[] extraData;
     private final OpenProtocolRevision connectionRevision;
 
-    public OpenProtocolMessageApplicationGenericSubscriptionBuilder(
+    public OpenProtocolMessageApplicationGenericSubscriptionBuilderImpl(
         Mid subscriptionMid,
         OpenProtocolRevision wantedRevision,
         byte[] extraData,

@@ -111,7 +111,7 @@ public class BACnetConstructedDataFileAccessMethod extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFileAccessMethodBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -136,17 +136,17 @@ public class BACnetConstructedDataFileAccessMethod extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataFileAccessMethod");
     // Create the instance
-    return new BACnetConstructedDataFileAccessMethodBuilder(
+    return new BACnetConstructedDataFileAccessMethodBuilderImpl(
         fileAccessMethod, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFileAccessMethodBuilder
+  public static class BACnetConstructedDataFileAccessMethodBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetFileAccessMethodTagged fileAccessMethod;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFileAccessMethodBuilder(
+    public BACnetConstructedDataFileAccessMethodBuilderImpl(
         BACnetFileAccessMethodTagged fileAccessMethod,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

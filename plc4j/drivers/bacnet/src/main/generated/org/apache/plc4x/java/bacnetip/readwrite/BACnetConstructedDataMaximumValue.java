@@ -109,7 +109,7 @@ public class BACnetConstructedDataMaximumValue extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMaximumValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,17 +132,17 @@ public class BACnetConstructedDataMaximumValue extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataMaximumValue");
     // Create the instance
-    return new BACnetConstructedDataMaximumValueBuilder(
+    return new BACnetConstructedDataMaximumValueBuilderImpl(
         maximumValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMaximumValueBuilder
+  public static class BACnetConstructedDataMaximumValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal maximumValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMaximumValueBuilder(
+    public BACnetConstructedDataMaximumValueBuilderImpl(
         BACnetApplicationTagReal maximumValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

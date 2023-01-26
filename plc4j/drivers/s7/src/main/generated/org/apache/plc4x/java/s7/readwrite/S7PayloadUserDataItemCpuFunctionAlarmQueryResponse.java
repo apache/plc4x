@@ -157,7 +157,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
     return lengthInBits;
   }
 
-  public static S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder staticParseBuilder(
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
       ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse");
     PositionAware positionAware = readBuffer;
@@ -195,17 +195,17 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryResponse extends S7Payloa
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse");
     // Create the instance
-    return new S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder(
+    return new S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilderImpl(
         pudicfReturnCode, pudicftransportSize, reservedField0);
   }
 
-  public static class S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder
+  public static class S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
     private final DataTransportErrorCode pudicfReturnCode;
     private final DataTransportSize pudicftransportSize;
     private final Short reservedField0;
 
-    public S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilder(
+    public S7PayloadUserDataItemCpuFunctionAlarmQueryResponseBuilderImpl(
         DataTransportErrorCode pudicfReturnCode,
         DataTransportSize pudicftransportSize,
         Short reservedField0) {

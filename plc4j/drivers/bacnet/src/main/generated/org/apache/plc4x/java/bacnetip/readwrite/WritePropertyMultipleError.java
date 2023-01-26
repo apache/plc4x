@@ -98,7 +98,7 @@ public class WritePropertyMultipleError extends BACnetError implements Message {
     return lengthInBits;
   }
 
-  public static WritePropertyMultipleErrorBuilder staticParseBuilder(
+  public static BACnetErrorBuilder staticParseBACnetErrorBuilder(
       ReadBuffer readBuffer, BACnetConfirmedServiceChoice errorChoice) throws ParseException {
     readBuffer.pullContext("WritePropertyMultipleError");
     PositionAware positionAware = readBuffer;
@@ -120,14 +120,15 @@ public class WritePropertyMultipleError extends BACnetError implements Message {
 
     readBuffer.closeContext("WritePropertyMultipleError");
     // Create the instance
-    return new WritePropertyMultipleErrorBuilder(errorType, firstFailedWriteAttempt);
+    return new WritePropertyMultipleErrorBuilderImpl(errorType, firstFailedWriteAttempt);
   }
 
-  public static class WritePropertyMultipleErrorBuilder implements BACnetError.BACnetErrorBuilder {
+  public static class WritePropertyMultipleErrorBuilderImpl
+      implements BACnetError.BACnetErrorBuilder {
     private final ErrorEnclosed errorType;
     private final BACnetObjectPropertyReferenceEnclosed firstFailedWriteAttempt;
 
-    public WritePropertyMultipleErrorBuilder(
+    public WritePropertyMultipleErrorBuilderImpl(
         ErrorEnclosed errorType, BACnetObjectPropertyReferenceEnclosed firstFailedWriteAttempt) {
 
       this.errorType = errorType;

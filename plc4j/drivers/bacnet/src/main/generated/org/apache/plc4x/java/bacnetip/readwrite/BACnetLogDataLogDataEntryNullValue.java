@@ -82,8 +82,8 @@ public class BACnetLogDataLogDataEntryNullValue extends BACnetLogDataLogDataEntr
     return lengthInBits;
   }
 
-  public static BACnetLogDataLogDataEntryNullValueBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetLogDataLogDataEntryBuilder staticParseBACnetLogDataLogDataEntryBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryNullValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -101,14 +101,14 @@ public class BACnetLogDataLogDataEntryNullValue extends BACnetLogDataLogDataEntr
 
     readBuffer.closeContext("BACnetLogDataLogDataEntryNullValue");
     // Create the instance
-    return new BACnetLogDataLogDataEntryNullValueBuilder(nullValue);
+    return new BACnetLogDataLogDataEntryNullValueBuilderImpl(nullValue);
   }
 
-  public static class BACnetLogDataLogDataEntryNullValueBuilder
+  public static class BACnetLogDataLogDataEntryNullValueBuilderImpl
       implements BACnetLogDataLogDataEntry.BACnetLogDataLogDataEntryBuilder {
     private final BACnetContextTagNull nullValue;
 
-    public BACnetLogDataLogDataEntryNullValueBuilder(BACnetContextTagNull nullValue) {
+    public BACnetLogDataLogDataEntryNullValueBuilderImpl(BACnetContextTagNull nullValue) {
 
       this.nullValue = nullValue;
     }

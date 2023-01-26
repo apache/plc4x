@@ -90,8 +90,8 @@ public class BACnetApplicationTagReal extends BACnetApplicationTag implements Me
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagRealBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagReal");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -106,14 +106,14 @@ public class BACnetApplicationTagReal extends BACnetApplicationTag implements Me
 
     readBuffer.closeContext("BACnetApplicationTagReal");
     // Create the instance
-    return new BACnetApplicationTagRealBuilder(payload);
+    return new BACnetApplicationTagRealBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagRealBuilder
+  public static class BACnetApplicationTagRealBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadReal payload;
 
-    public BACnetApplicationTagRealBuilder(BACnetTagPayloadReal payload) {
+    public BACnetApplicationTagRealBuilderImpl(BACnetTagPayloadReal payload) {
 
       this.payload = payload;
     }

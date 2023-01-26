@@ -187,7 +187,7 @@ public class AirConditioningDataSetPlantHumidityLevel extends AirConditioningDat
     return lengthInBits;
   }
 
-  public static AirConditioningDataSetPlantHumidityLevelBuilder staticParseBuilder(
+  public static AirConditioningDataBuilder staticParseAirConditioningDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataSetPlantHumidityLevel");
     PositionAware positionAware = readBuffer;
@@ -235,11 +235,11 @@ public class AirConditioningDataSetPlantHumidityLevel extends AirConditioningDat
 
     readBuffer.closeContext("AirConditioningDataSetPlantHumidityLevel");
     // Create the instance
-    return new AirConditioningDataSetPlantHumidityLevelBuilder(
+    return new AirConditioningDataSetPlantHumidityLevelBuilderImpl(
         zoneGroup, zoneList, humidityModeAndFlags, humidityType, level, rawLevel, auxLevel);
   }
 
-  public static class AirConditioningDataSetPlantHumidityLevelBuilder
+  public static class AirConditioningDataSetPlantHumidityLevelBuilderImpl
       implements AirConditioningData.AirConditioningDataBuilder {
     private final byte zoneGroup;
     private final HVACZoneList zoneList;
@@ -249,7 +249,7 @@ public class AirConditioningDataSetPlantHumidityLevel extends AirConditioningDat
     private final HVACRawLevels rawLevel;
     private final HVACAuxiliaryLevel auxLevel;
 
-    public AirConditioningDataSetPlantHumidityLevelBuilder(
+    public AirConditioningDataSetPlantHumidityLevelBuilderImpl(
         byte zoneGroup,
         HVACZoneList zoneList,
         HVACHumidityModeAndFlags humidityModeAndFlags,

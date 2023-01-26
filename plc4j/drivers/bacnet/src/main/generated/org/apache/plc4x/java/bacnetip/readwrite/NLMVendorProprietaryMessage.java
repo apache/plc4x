@@ -106,8 +106,8 @@ public class NLMVendorProprietaryMessage extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMVendorProprietaryMessageBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMVendorProprietaryMessage");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -127,15 +127,15 @@ public class NLMVendorProprietaryMessage extends NLM implements Message {
 
     readBuffer.closeContext("NLMVendorProprietaryMessage");
     // Create the instance
-    return new NLMVendorProprietaryMessageBuilder(vendorId, proprietaryMessage, apduLength);
+    return new NLMVendorProprietaryMessageBuilderImpl(vendorId, proprietaryMessage, apduLength);
   }
 
-  public static class NLMVendorProprietaryMessageBuilder implements NLM.NLMBuilder {
+  public static class NLMVendorProprietaryMessageBuilderImpl implements NLM.NLMBuilder {
     private final BACnetVendorId vendorId;
     private final byte[] proprietaryMessage;
     private final Integer apduLength;
 
-    public NLMVendorProprietaryMessageBuilder(
+    public NLMVendorProprietaryMessageBuilderImpl(
         BACnetVendorId vendorId, byte[] proprietaryMessage, Integer apduLength) {
 
       this.vendorId = vendorId;

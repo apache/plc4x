@@ -135,7 +135,7 @@ public class BACnetConstructedDataPriority extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPriorityBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -177,18 +177,18 @@ public class BACnetConstructedDataPriority extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataPriority");
     // Create the instance
-    return new BACnetConstructedDataPriorityBuilder(
+    return new BACnetConstructedDataPriorityBuilderImpl(
         numberOfDataElements, priority, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPriorityBuilder
+  public static class BACnetConstructedDataPriorityBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagUnsignedInteger> priority;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPriorityBuilder(
+    public BACnetConstructedDataPriorityBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagUnsignedInteger> priority,
         Short tagNumber,

@@ -90,7 +90,7 @@ public class BACnetLogRecordLogDatumBitStringValue extends BACnetLogRecordLogDat
     return lengthInBits;
   }
 
-  public static BACnetLogRecordLogDatumBitStringValueBuilder staticParseBuilder(
+  public static BACnetLogRecordLogDatumBuilder staticParseBACnetLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumBitStringValue");
     PositionAware positionAware = readBuffer;
@@ -109,15 +109,15 @@ public class BACnetLogRecordLogDatumBitStringValue extends BACnetLogRecordLogDat
 
     readBuffer.closeContext("BACnetLogRecordLogDatumBitStringValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumBitStringValueBuilder(bitStringValue, tagNumber);
+    return new BACnetLogRecordLogDatumBitStringValueBuilderImpl(bitStringValue, tagNumber);
   }
 
-  public static class BACnetLogRecordLogDatumBitStringValueBuilder
+  public static class BACnetLogRecordLogDatumBitStringValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagBitString bitStringValue;
     private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumBitStringValueBuilder(
+    public BACnetLogRecordLogDatumBitStringValueBuilderImpl(
         BACnetContextTagBitString bitStringValue, Short tagNumber) {
 
       this.bitStringValue = bitStringValue;

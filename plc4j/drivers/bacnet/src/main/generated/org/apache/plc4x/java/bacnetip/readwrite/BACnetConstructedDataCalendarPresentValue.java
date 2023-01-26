@@ -110,7 +110,7 @@ public class BACnetConstructedDataCalendarPresentValue extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCalendarPresentValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -133,17 +133,17 @@ public class BACnetConstructedDataCalendarPresentValue extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataCalendarPresentValue");
     // Create the instance
-    return new BACnetConstructedDataCalendarPresentValueBuilder(
+    return new BACnetConstructedDataCalendarPresentValueBuilderImpl(
         presentValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCalendarPresentValueBuilder
+  public static class BACnetConstructedDataCalendarPresentValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean presentValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCalendarPresentValueBuilder(
+    public BACnetConstructedDataCalendarPresentValueBuilderImpl(
         BACnetApplicationTagBoolean presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

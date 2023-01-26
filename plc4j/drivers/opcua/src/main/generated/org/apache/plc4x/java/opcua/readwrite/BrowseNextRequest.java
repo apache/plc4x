@@ -142,7 +142,7 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static BrowseNextRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("BrowseNextRequest");
     PositionAware positionAware = readBuffer;
@@ -174,7 +174,7 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("BrowseNextRequest");
     // Create the instance
-    return new BrowseNextRequestBuilder(
+    return new BrowseNextRequestBuilderImpl(
         requestHeader,
         releaseContinuationPoints,
         noOfContinuationPoints,
@@ -182,7 +182,7 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
         reservedField0);
   }
 
-  public static class BrowseNextRequestBuilder
+  public static class BrowseNextRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final boolean releaseContinuationPoints;
@@ -190,7 +190,7 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
     private final List<PascalByteString> continuationPoints;
     private final Short reservedField0;
 
-    public BrowseNextRequestBuilder(
+    public BrowseNextRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         boolean releaseContinuationPoints,
         int noOfContinuationPoints,

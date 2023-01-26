@@ -119,8 +119,8 @@ public class ReferenceNode extends ExtensionObjectDefinition implements Message 
     return lengthInBits;
   }
 
-  public static ReferenceNodeBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ReferenceNode");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -144,17 +144,17 @@ public class ReferenceNode extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("ReferenceNode");
     // Create the instance
-    return new ReferenceNodeBuilder(referenceTypeId, isInverse, targetId, reservedField0);
+    return new ReferenceNodeBuilderImpl(referenceTypeId, isInverse, targetId, reservedField0);
   }
 
-  public static class ReferenceNodeBuilder
+  public static class ReferenceNodeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId referenceTypeId;
     private final boolean isInverse;
     private final ExpandedNodeId targetId;
     private final Short reservedField0;
 
-    public ReferenceNodeBuilder(
+    public ReferenceNodeBuilderImpl(
         NodeId referenceTypeId, boolean isInverse, ExpandedNodeId targetId, Short reservedField0) {
       this.referenceTypeId = referenceTypeId;
       this.isInverse = isInverse;

@@ -100,8 +100,8 @@ public class ApduDataDeviceDescriptorResponse extends ApduData implements Messag
     return lengthInBits;
   }
 
-  public static ApduDataDeviceDescriptorResponseBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short dataLength) throws ParseException {
+  public static ApduDataBuilder staticParseApduDataBuilder(ReadBuffer readBuffer, Short dataLength)
+      throws ParseException {
     readBuffer.pullContext("ApduDataDeviceDescriptorResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -115,15 +115,16 @@ public class ApduDataDeviceDescriptorResponse extends ApduData implements Messag
 
     readBuffer.closeContext("ApduDataDeviceDescriptorResponse");
     // Create the instance
-    return new ApduDataDeviceDescriptorResponseBuilder(descriptorType, data, dataLength);
+    return new ApduDataDeviceDescriptorResponseBuilderImpl(descriptorType, data, dataLength);
   }
 
-  public static class ApduDataDeviceDescriptorResponseBuilder implements ApduData.ApduDataBuilder {
+  public static class ApduDataDeviceDescriptorResponseBuilderImpl
+      implements ApduData.ApduDataBuilder {
     private final short descriptorType;
     private final byte[] data;
     private final Short dataLength;
 
-    public ApduDataDeviceDescriptorResponseBuilder(
+    public ApduDataDeviceDescriptorResponseBuilderImpl(
         short descriptorType, byte[] data, Short dataLength) {
 
       this.descriptorType = descriptorType;

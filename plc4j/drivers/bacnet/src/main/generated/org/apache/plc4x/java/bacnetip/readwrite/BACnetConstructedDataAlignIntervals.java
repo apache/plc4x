@@ -109,7 +109,7 @@ public class BACnetConstructedDataAlignIntervals extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAlignIntervalsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,17 +132,17 @@ public class BACnetConstructedDataAlignIntervals extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataAlignIntervals");
     // Create the instance
-    return new BACnetConstructedDataAlignIntervalsBuilder(
+    return new BACnetConstructedDataAlignIntervalsBuilderImpl(
         alignIntervals, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAlignIntervalsBuilder
+  public static class BACnetConstructedDataAlignIntervalsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean alignIntervals;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAlignIntervalsBuilder(
+    public BACnetConstructedDataAlignIntervalsBuilderImpl(
         BACnetApplicationTagBoolean alignIntervals,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

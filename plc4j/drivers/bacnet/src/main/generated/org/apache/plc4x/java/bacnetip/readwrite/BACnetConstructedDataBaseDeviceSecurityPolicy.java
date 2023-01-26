@@ -113,7 +113,7 @@ public class BACnetConstructedDataBaseDeviceSecurityPolicy extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBaseDeviceSecurityPolicyBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -138,17 +138,17 @@ public class BACnetConstructedDataBaseDeviceSecurityPolicy extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataBaseDeviceSecurityPolicy");
     // Create the instance
-    return new BACnetConstructedDataBaseDeviceSecurityPolicyBuilder(
+    return new BACnetConstructedDataBaseDeviceSecurityPolicyBuilderImpl(
         baseDeviceSecurityPolicy, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBaseDeviceSecurityPolicyBuilder
+  public static class BACnetConstructedDataBaseDeviceSecurityPolicyBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetSecurityLevelTagged baseDeviceSecurityPolicy;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBaseDeviceSecurityPolicyBuilder(
+    public BACnetConstructedDataBaseDeviceSecurityPolicyBuilderImpl(
         BACnetSecurityLevelTagged baseDeviceSecurityPolicy,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

@@ -184,7 +184,7 @@ public class AirConditioningDataSetPlantHvacLevel extends AirConditioningData im
     return lengthInBits;
   }
 
-  public static AirConditioningDataSetPlantHvacLevelBuilder staticParseBuilder(
+  public static AirConditioningDataBuilder staticParseAirConditioningDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataSetPlantHvacLevel");
     PositionAware positionAware = readBuffer;
@@ -232,11 +232,11 @@ public class AirConditioningDataSetPlantHvacLevel extends AirConditioningData im
 
     readBuffer.closeContext("AirConditioningDataSetPlantHvacLevel");
     // Create the instance
-    return new AirConditioningDataSetPlantHvacLevelBuilder(
+    return new AirConditioningDataSetPlantHvacLevelBuilderImpl(
         zoneGroup, zoneList, hvacModeAndFlags, hvacType, level, rawLevel, auxLevel);
   }
 
-  public static class AirConditioningDataSetPlantHvacLevelBuilder
+  public static class AirConditioningDataSetPlantHvacLevelBuilderImpl
       implements AirConditioningData.AirConditioningDataBuilder {
     private final byte zoneGroup;
     private final HVACZoneList zoneList;
@@ -246,7 +246,7 @@ public class AirConditioningDataSetPlantHvacLevel extends AirConditioningData im
     private final HVACRawLevels rawLevel;
     private final HVACAuxiliaryLevel auxLevel;
 
-    public AirConditioningDataSetPlantHvacLevelBuilder(
+    public AirConditioningDataSetPlantHvacLevelBuilderImpl(
         byte zoneGroup,
         HVACZoneList zoneList,
         HVACModeAndFlags hvacModeAndFlags,

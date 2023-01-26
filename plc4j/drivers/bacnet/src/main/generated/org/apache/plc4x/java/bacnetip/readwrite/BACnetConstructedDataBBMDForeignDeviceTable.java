@@ -104,7 +104,7 @@ public class BACnetConstructedDataBBMDForeignDeviceTable extends BACnetConstruct
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBBMDForeignDeviceTableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -128,17 +128,17 @@ public class BACnetConstructedDataBBMDForeignDeviceTable extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataBBMDForeignDeviceTable");
     // Create the instance
-    return new BACnetConstructedDataBBMDForeignDeviceTableBuilder(
+    return new BACnetConstructedDataBBMDForeignDeviceTableBuilderImpl(
         bbmdForeignDeviceTable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBBMDForeignDeviceTableBuilder
+  public static class BACnetConstructedDataBBMDForeignDeviceTableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetBDTEntry> bbmdForeignDeviceTable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBBMDForeignDeviceTableBuilder(
+    public BACnetConstructedDataBBMDForeignDeviceTableBuilderImpl(
         List<BACnetBDTEntry> bbmdForeignDeviceTable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

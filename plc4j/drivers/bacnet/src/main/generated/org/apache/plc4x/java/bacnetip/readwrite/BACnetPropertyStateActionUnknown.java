@@ -81,7 +81,7 @@ public class BACnetPropertyStateActionUnknown extends BACnetPropertyStates imple
     return lengthInBits;
   }
 
-  public static BACnetPropertyStateActionUnknownBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStateActionUnknown");
     PositionAware positionAware = readBuffer;
@@ -102,14 +102,14 @@ public class BACnetPropertyStateActionUnknown extends BACnetPropertyStates imple
 
     readBuffer.closeContext("BACnetPropertyStateActionUnknown");
     // Create the instance
-    return new BACnetPropertyStateActionUnknownBuilder(unknownValue);
+    return new BACnetPropertyStateActionUnknownBuilderImpl(unknownValue);
   }
 
-  public static class BACnetPropertyStateActionUnknownBuilder
+  public static class BACnetPropertyStateActionUnknownBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetContextTagUnknown unknownValue;
 
-    public BACnetPropertyStateActionUnknownBuilder(BACnetContextTagUnknown unknownValue) {
+    public BACnetPropertyStateActionUnknownBuilderImpl(BACnetContextTagUnknown unknownValue) {
 
       this.unknownValue = unknownValue;
     }

@@ -91,7 +91,7 @@ public class BACnetServiceAckVTOpen extends BACnetServiceAck implements Message 
     return lengthInBits;
   }
 
-  public static BACnetServiceAckVTOpenBuilder staticParseBuilder(
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckVTOpen");
     PositionAware positionAware = readBuffer;
@@ -109,15 +109,15 @@ public class BACnetServiceAckVTOpen extends BACnetServiceAck implements Message 
 
     readBuffer.closeContext("BACnetServiceAckVTOpen");
     // Create the instance
-    return new BACnetServiceAckVTOpenBuilder(remoteVtSessionIdentifier, serviceAckLength);
+    return new BACnetServiceAckVTOpenBuilderImpl(remoteVtSessionIdentifier, serviceAckLength);
   }
 
-  public static class BACnetServiceAckVTOpenBuilder
+  public static class BACnetServiceAckVTOpenBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetApplicationTagUnsignedInteger remoteVtSessionIdentifier;
     private final Long serviceAckLength;
 
-    public BACnetServiceAckVTOpenBuilder(
+    public BACnetServiceAckVTOpenBuilderImpl(
         BACnetApplicationTagUnsignedInteger remoteVtSessionIdentifier, Long serviceAckLength) {
 
       this.remoteVtSessionIdentifier = remoteVtSessionIdentifier;

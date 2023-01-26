@@ -110,7 +110,7 @@ public class BACnetFaultParameterFaultCharacterString extends BACnetFaultParamet
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultCharacterStringBuilder staticParseBuilder(
+  public static BACnetFaultParameterBuilder staticParseBACnetFaultParameterBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultCharacterString");
     PositionAware positionAware = readBuffer;
@@ -140,17 +140,17 @@ public class BACnetFaultParameterFaultCharacterString extends BACnetFaultParamet
 
     readBuffer.closeContext("BACnetFaultParameterFaultCharacterString");
     // Create the instance
-    return new BACnetFaultParameterFaultCharacterStringBuilder(
+    return new BACnetFaultParameterFaultCharacterStringBuilderImpl(
         openingTag, listOfFaultValues, closingTag);
   }
 
-  public static class BACnetFaultParameterFaultCharacterStringBuilder
+  public static class BACnetFaultParameterFaultCharacterStringBuilderImpl
       implements BACnetFaultParameter.BACnetFaultParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetFaultParameterFaultCharacterStringListOfFaultValues listOfFaultValues;
     private final BACnetClosingTag closingTag;
 
-    public BACnetFaultParameterFaultCharacterStringBuilder(
+    public BACnetFaultParameterFaultCharacterStringBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetFaultParameterFaultCharacterStringListOfFaultValues listOfFaultValues,
         BACnetClosingTag closingTag) {

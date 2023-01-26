@@ -111,7 +111,7 @@ public class BACnetConstructedDataBackupFailureTimeout extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBackupFailureTimeoutBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,17 +137,17 @@ public class BACnetConstructedDataBackupFailureTimeout extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataBackupFailureTimeout");
     // Create the instance
-    return new BACnetConstructedDataBackupFailureTimeoutBuilder(
+    return new BACnetConstructedDataBackupFailureTimeoutBuilderImpl(
         backupFailureTimeout, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBackupFailureTimeoutBuilder
+  public static class BACnetConstructedDataBackupFailureTimeoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger backupFailureTimeout;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBackupFailureTimeoutBuilder(
+    public BACnetConstructedDataBackupFailureTimeoutBuilderImpl(
         BACnetApplicationTagUnsignedInteger backupFailureTimeout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

@@ -102,7 +102,7 @@ public class BACnetServiceAckAtomicReadFile extends BACnetServiceAck implements 
     return lengthInBits;
   }
 
-  public static BACnetServiceAckAtomicReadFileBuilder staticParseBuilder(
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckAtomicReadFile");
     PositionAware positionAware = readBuffer;
@@ -125,16 +125,16 @@ public class BACnetServiceAckAtomicReadFile extends BACnetServiceAck implements 
 
     readBuffer.closeContext("BACnetServiceAckAtomicReadFile");
     // Create the instance
-    return new BACnetServiceAckAtomicReadFileBuilder(endOfFile, accessMethod, serviceAckLength);
+    return new BACnetServiceAckAtomicReadFileBuilderImpl(endOfFile, accessMethod, serviceAckLength);
   }
 
-  public static class BACnetServiceAckAtomicReadFileBuilder
+  public static class BACnetServiceAckAtomicReadFileBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetApplicationTagBoolean endOfFile;
     private final BACnetServiceAckAtomicReadFileStreamOrRecord accessMethod;
     private final Long serviceAckLength;
 
-    public BACnetServiceAckAtomicReadFileBuilder(
+    public BACnetServiceAckAtomicReadFileBuilderImpl(
         BACnetApplicationTagBoolean endOfFile,
         BACnetServiceAckAtomicReadFileStreamOrRecord accessMethod,
         Long serviceAckLength) {

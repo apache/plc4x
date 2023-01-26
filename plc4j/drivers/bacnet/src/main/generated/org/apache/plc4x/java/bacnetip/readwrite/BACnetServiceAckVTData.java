@@ -116,7 +116,7 @@ public class BACnetServiceAckVTData extends BACnetServiceAck implements Message 
     return lengthInBits;
   }
 
-  public static BACnetServiceAckVTDataBuilder staticParseBuilder(
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckVTData");
     PositionAware positionAware = readBuffer;
@@ -151,18 +151,18 @@ public class BACnetServiceAckVTData extends BACnetServiceAck implements Message 
 
     readBuffer.closeContext("BACnetServiceAckVTData");
     // Create the instance
-    return new BACnetServiceAckVTDataBuilder(
+    return new BACnetServiceAckVTDataBuilderImpl(
         vtSessionIdentifier, vtNewData, vtDataFlag, serviceAckLength);
   }
 
-  public static class BACnetServiceAckVTDataBuilder
+  public static class BACnetServiceAckVTDataBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetApplicationTagUnsignedInteger vtSessionIdentifier;
     private final BACnetApplicationTagOctetString vtNewData;
     private final BACnetApplicationTagUnsignedInteger vtDataFlag;
     private final Long serviceAckLength;
 
-    public BACnetServiceAckVTDataBuilder(
+    public BACnetServiceAckVTDataBuilderImpl(
         BACnetApplicationTagUnsignedInteger vtSessionIdentifier,
         BACnetApplicationTagOctetString vtNewData,
         BACnetApplicationTagUnsignedInteger vtDataFlag,

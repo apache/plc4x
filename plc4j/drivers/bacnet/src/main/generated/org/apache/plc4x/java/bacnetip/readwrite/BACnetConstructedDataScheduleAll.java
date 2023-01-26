@@ -84,7 +84,7 @@ public class BACnetConstructedDataScheduleAll extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataScheduleAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -103,15 +103,15 @@ public class BACnetConstructedDataScheduleAll extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataScheduleAll");
     // Create the instance
-    return new BACnetConstructedDataScheduleAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataScheduleAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataScheduleAllBuilder
+  public static class BACnetConstructedDataScheduleAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataScheduleAllBuilder(
+    public BACnetConstructedDataScheduleAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
 
       this.tagNumber = tagNumber;

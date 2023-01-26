@@ -110,7 +110,7 @@ public class BACnetConstructedDataLargeAnalogValueResolution extends BACnetConst
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLargeAnalogValueResolutionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -133,17 +133,17 @@ public class BACnetConstructedDataLargeAnalogValueResolution extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataLargeAnalogValueResolution");
     // Create the instance
-    return new BACnetConstructedDataLargeAnalogValueResolutionBuilder(
+    return new BACnetConstructedDataLargeAnalogValueResolutionBuilderImpl(
         resolution, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLargeAnalogValueResolutionBuilder
+  public static class BACnetConstructedDataLargeAnalogValueResolutionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagDouble resolution;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLargeAnalogValueResolutionBuilder(
+    public BACnetConstructedDataLargeAnalogValueResolutionBuilderImpl(
         BACnetApplicationTagDouble resolution,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

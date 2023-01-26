@@ -88,7 +88,7 @@ public class BACnetPriorityValueOctetString extends BACnetPriorityValue implemen
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueOctetStringBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueOctetString");
     PositionAware positionAware = readBuffer;
@@ -105,15 +105,15 @@ public class BACnetPriorityValueOctetString extends BACnetPriorityValue implemen
 
     readBuffer.closeContext("BACnetPriorityValueOctetString");
     // Create the instance
-    return new BACnetPriorityValueOctetStringBuilder(octetStringValue, objectTypeArgument);
+    return new BACnetPriorityValueOctetStringBuilderImpl(octetStringValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueOctetStringBuilder
+  public static class BACnetPriorityValueOctetStringBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagOctetString octetStringValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueOctetStringBuilder(
+    public BACnetPriorityValueOctetStringBuilderImpl(
         BACnetApplicationTagOctetString octetStringValue, BACnetObjectType objectTypeArgument) {
 
       this.octetStringValue = octetStringValue;

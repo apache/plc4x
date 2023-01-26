@@ -84,7 +84,7 @@ public class CBusCommandPointToPoint extends CBusCommand implements Message {
     return lengthInBits;
   }
 
-  public static CBusCommandPointToPointBuilder staticParseBuilder(
+  public static CBusCommandBuilder staticParseCBusCommandBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusCommandPointToPoint");
     PositionAware positionAware = readBuffer;
@@ -100,14 +100,14 @@ public class CBusCommandPointToPoint extends CBusCommand implements Message {
 
     readBuffer.closeContext("CBusCommandPointToPoint");
     // Create the instance
-    return new CBusCommandPointToPointBuilder(command, cBusOptions);
+    return new CBusCommandPointToPointBuilderImpl(command, cBusOptions);
   }
 
-  public static class CBusCommandPointToPointBuilder implements CBusCommand.CBusCommandBuilder {
+  public static class CBusCommandPointToPointBuilderImpl implements CBusCommand.CBusCommandBuilder {
     private final CBusPointToPointCommand command;
     private final CBusOptions cBusOptions;
 
-    public CBusCommandPointToPointBuilder(
+    public CBusCommandPointToPointBuilderImpl(
         CBusPointToPointCommand command, CBusOptions cBusOptions) {
 
       this.command = command;

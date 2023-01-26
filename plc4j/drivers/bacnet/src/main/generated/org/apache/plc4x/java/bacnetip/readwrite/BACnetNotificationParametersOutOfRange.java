@@ -160,7 +160,7 @@ public class BACnetNotificationParametersOutOfRange extends BACnetNotificationPa
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersOutOfRangeBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -226,7 +226,7 @@ public class BACnetNotificationParametersOutOfRange extends BACnetNotificationPa
 
     readBuffer.closeContext("BACnetNotificationParametersOutOfRange");
     // Create the instance
-    return new BACnetNotificationParametersOutOfRangeBuilder(
+    return new BACnetNotificationParametersOutOfRangeBuilderImpl(
         innerOpeningTag,
         exceedingValue,
         statusFlags,
@@ -237,7 +237,7 @@ public class BACnetNotificationParametersOutOfRange extends BACnetNotificationPa
         objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersOutOfRangeBuilder
+  public static class BACnetNotificationParametersOutOfRangeBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final BACnetContextTagReal exceedingValue;
@@ -248,7 +248,7 @@ public class BACnetNotificationParametersOutOfRange extends BACnetNotificationPa
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersOutOfRangeBuilder(
+    public BACnetNotificationParametersOutOfRangeBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetContextTagReal exceedingValue,
         BACnetStatusFlagsTagged statusFlags,

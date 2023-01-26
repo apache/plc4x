@@ -70,8 +70,8 @@ public class CIPEncapsulationConnectionRequest extends CIPEncapsulationPacket im
     return lengthInBits;
   }
 
-  public static CIPEncapsulationConnectionRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static CIPEncapsulationPacketBuilder staticParseCIPEncapsulationPacketBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CIPEncapsulationConnectionRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -79,13 +79,13 @@ public class CIPEncapsulationConnectionRequest extends CIPEncapsulationPacket im
 
     readBuffer.closeContext("CIPEncapsulationConnectionRequest");
     // Create the instance
-    return new CIPEncapsulationConnectionRequestBuilder();
+    return new CIPEncapsulationConnectionRequestBuilderImpl();
   }
 
-  public static class CIPEncapsulationConnectionRequestBuilder
+  public static class CIPEncapsulationConnectionRequestBuilderImpl
       implements CIPEncapsulationPacket.CIPEncapsulationPacketBuilder {
 
-    public CIPEncapsulationConnectionRequestBuilder() {}
+    public CIPEncapsulationConnectionRequestBuilderImpl() {}
 
     public CIPEncapsulationConnectionRequest build(
         long sessionHandle, long status, List<Short> senderContext, long options) {

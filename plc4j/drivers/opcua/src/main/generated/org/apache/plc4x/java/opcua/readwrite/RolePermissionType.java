@@ -100,7 +100,7 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
     return lengthInBits;
   }
 
-  public static RolePermissionTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RolePermissionType");
     PositionAware positionAware = readBuffer;
@@ -121,15 +121,15 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
 
     readBuffer.closeContext("RolePermissionType");
     // Create the instance
-    return new RolePermissionTypeBuilder(roleId, permissions);
+    return new RolePermissionTypeBuilderImpl(roleId, permissions);
   }
 
-  public static class RolePermissionTypeBuilder
+  public static class RolePermissionTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId roleId;
     private final PermissionType permissions;
 
-    public RolePermissionTypeBuilder(NodeId roleId, PermissionType permissions) {
+    public RolePermissionTypeBuilderImpl(NodeId roleId, PermissionType permissions) {
 
       this.roleId = roleId;
       this.permissions = permissions;

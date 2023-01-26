@@ -112,51 +112,51 @@ public abstract class CEMI implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     CEMIBuilder builder = null;
     if (EvaluationHelper.equals(messageCode, (short) 0x2B)) {
-      builder = LBusmonInd.staticParseBuilder(readBuffer, size);
+      builder = LBusmonInd.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0x11)) {
-      builder = LDataReq.staticParseBuilder(readBuffer, size);
+      builder = LDataReq.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0x29)) {
-      builder = LDataInd.staticParseBuilder(readBuffer, size);
+      builder = LDataInd.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0x2E)) {
-      builder = LDataCon.staticParseBuilder(readBuffer, size);
+      builder = LDataCon.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0x10)) {
-      builder = LRawReq.staticParseBuilder(readBuffer, size);
+      builder = LRawReq.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0x2D)) {
-      builder = LRawInd.staticParseBuilder(readBuffer, size);
+      builder = LRawInd.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0x2F)) {
-      builder = LRawCon.staticParseBuilder(readBuffer, size);
+      builder = LRawCon.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0x13)) {
-      builder = LPollDataReq.staticParseBuilder(readBuffer, size);
+      builder = LPollDataReq.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0x25)) {
-      builder = LPollDataCon.staticParseBuilder(readBuffer, size);
+      builder = LPollDataCon.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0x41)) {
-      builder = TDataConnectedReq.staticParseBuilder(readBuffer, size);
+      builder = TDataConnectedReq.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0x89)) {
-      builder = TDataConnectedInd.staticParseBuilder(readBuffer, size);
+      builder = TDataConnectedInd.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0x4A)) {
-      builder = TDataIndividualReq.staticParseBuilder(readBuffer, size);
+      builder = TDataIndividualReq.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0x94)) {
-      builder = TDataIndividualInd.staticParseBuilder(readBuffer, size);
+      builder = TDataIndividualInd.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0xFC)) {
-      builder = MPropReadReq.staticParseBuilder(readBuffer, size);
+      builder = MPropReadReq.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0xFB)) {
-      builder = MPropReadCon.staticParseBuilder(readBuffer, size);
+      builder = MPropReadCon.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0xF6)) {
-      builder = MPropWriteReq.staticParseBuilder(readBuffer, size);
+      builder = MPropWriteReq.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0xF5)) {
-      builder = MPropWriteCon.staticParseBuilder(readBuffer, size);
+      builder = MPropWriteCon.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0xF7)) {
-      builder = MPropInfoInd.staticParseBuilder(readBuffer, size);
+      builder = MPropInfoInd.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0xF8)) {
-      builder = MFuncPropCommandReq.staticParseBuilder(readBuffer, size);
+      builder = MFuncPropCommandReq.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0xF9)) {
-      builder = MFuncPropStateReadReq.staticParseBuilder(readBuffer, size);
+      builder = MFuncPropStateReadReq.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0xFA)) {
-      builder = MFuncPropCon.staticParseBuilder(readBuffer, size);
+      builder = MFuncPropCon.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0xF1)) {
-      builder = MResetReq.staticParseBuilder(readBuffer, size);
+      builder = MResetReq.staticParseCEMIBuilder(readBuffer, size);
     } else if (EvaluationHelper.equals(messageCode, (short) 0xF0)) {
-      builder = MResetInd.staticParseBuilder(readBuffer, size);
+      builder = MResetInd.staticParseCEMIBuilder(readBuffer, size);
     }
     if (builder == null) {
       throw new ParseException(
@@ -174,7 +174,7 @@ public abstract class CEMI implements Message {
     return _cEMI;
   }
 
-  public static interface CEMIBuilder {
+  public interface CEMIBuilder {
     CEMI build(Integer size);
   }
 

@@ -148,7 +148,7 @@ public class SetMonitoringModeResponse extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static SetMonitoringModeResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SetMonitoringModeResponse");
     PositionAware positionAware = readBuffer;
@@ -181,11 +181,11 @@ public class SetMonitoringModeResponse extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("SetMonitoringModeResponse");
     // Create the instance
-    return new SetMonitoringModeResponseBuilder(
+    return new SetMonitoringModeResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class SetMonitoringModeResponseBuilder
+  public static class SetMonitoringModeResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -193,7 +193,7 @@ public class SetMonitoringModeResponse extends ExtensionObjectDefinition impleme
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public SetMonitoringModeResponseBuilder(
+    public SetMonitoringModeResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<StatusCode> results,

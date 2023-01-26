@@ -83,8 +83,8 @@ public class Ethernet_FramePayload_PnDcp extends Ethernet_FramePayload implement
     return lengthInBits;
   }
 
-  public static Ethernet_FramePayload_PnDcpBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static Ethernet_FramePayloadBuilder staticParseEthernet_FramePayloadBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Ethernet_FramePayload_PnDcp");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -97,14 +97,14 @@ public class Ethernet_FramePayload_PnDcp extends Ethernet_FramePayload implement
 
     readBuffer.closeContext("Ethernet_FramePayload_PnDcp");
     // Create the instance
-    return new Ethernet_FramePayload_PnDcpBuilder(pdu);
+    return new Ethernet_FramePayload_PnDcpBuilderImpl(pdu);
   }
 
-  public static class Ethernet_FramePayload_PnDcpBuilder
+  public static class Ethernet_FramePayload_PnDcpBuilderImpl
       implements Ethernet_FramePayload.Ethernet_FramePayloadBuilder {
     private final PnDcp_Pdu pdu;
 
-    public Ethernet_FramePayload_PnDcpBuilder(PnDcp_Pdu pdu) {
+    public Ethernet_FramePayload_PnDcpBuilderImpl(PnDcp_Pdu pdu) {
 
       this.pdu = pdu;
     }

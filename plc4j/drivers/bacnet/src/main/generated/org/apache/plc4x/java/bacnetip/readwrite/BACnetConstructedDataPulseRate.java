@@ -109,7 +109,7 @@ public class BACnetConstructedDataPulseRate extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPulseRateBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,16 +134,16 @@ public class BACnetConstructedDataPulseRate extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataPulseRate");
     // Create the instance
-    return new BACnetConstructedDataPulseRateBuilder(pulseRate, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPulseRateBuilderImpl(pulseRate, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPulseRateBuilder
+  public static class BACnetConstructedDataPulseRateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger pulseRate;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPulseRateBuilder(
+    public BACnetConstructedDataPulseRateBuilderImpl(
         BACnetApplicationTagUnsignedInteger pulseRate,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

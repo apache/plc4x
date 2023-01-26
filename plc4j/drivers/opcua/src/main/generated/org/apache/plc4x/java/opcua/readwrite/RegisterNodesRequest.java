@@ -116,7 +116,7 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static RegisterNodesRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RegisterNodesRequest");
     PositionAware positionAware = readBuffer;
@@ -140,16 +140,16 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("RegisterNodesRequest");
     // Create the instance
-    return new RegisterNodesRequestBuilder(requestHeader, noOfNodesToRegister, nodesToRegister);
+    return new RegisterNodesRequestBuilderImpl(requestHeader, noOfNodesToRegister, nodesToRegister);
   }
 
-  public static class RegisterNodesRequestBuilder
+  public static class RegisterNodesRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfNodesToRegister;
     private final List<NodeId> nodesToRegister;
 
-    public RegisterNodesRequestBuilder(
+    public RegisterNodesRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfNodesToRegister,
         List<NodeId> nodesToRegister) {

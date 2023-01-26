@@ -143,8 +143,8 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
     return lengthInBits;
   }
 
-  public static ServerOnNetworkBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ServerOnNetwork");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -173,11 +173,11 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
 
     readBuffer.closeContext("ServerOnNetwork");
     // Create the instance
-    return new ServerOnNetworkBuilder(
+    return new ServerOnNetworkBuilderImpl(
         recordId, serverName, discoveryUrl, noOfServerCapabilities, serverCapabilities);
   }
 
-  public static class ServerOnNetworkBuilder
+  public static class ServerOnNetworkBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long recordId;
     private final PascalString serverName;
@@ -185,7 +185,7 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
     private final int noOfServerCapabilities;
     private final List<PascalString> serverCapabilities;
 
-    public ServerOnNetworkBuilder(
+    public ServerOnNetworkBuilderImpl(
         long recordId,
         PascalString serverName,
         PascalString discoveryUrl,

@@ -72,7 +72,7 @@ public class ApduDataExtDomainAddressSelectiveRead extends ApduDataExt implement
     return lengthInBits;
   }
 
-  public static ApduDataExtDomainAddressSelectiveReadBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtDomainAddressSelectiveRead");
     PositionAware positionAware = readBuffer;
@@ -81,14 +81,14 @@ public class ApduDataExtDomainAddressSelectiveRead extends ApduDataExt implement
 
     readBuffer.closeContext("ApduDataExtDomainAddressSelectiveRead");
     // Create the instance
-    return new ApduDataExtDomainAddressSelectiveReadBuilder(length);
+    return new ApduDataExtDomainAddressSelectiveReadBuilderImpl(length);
   }
 
-  public static class ApduDataExtDomainAddressSelectiveReadBuilder
+  public static class ApduDataExtDomainAddressSelectiveReadBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final Short length;
 
-    public ApduDataExtDomainAddressSelectiveReadBuilder(Short length) {
+    public ApduDataExtDomainAddressSelectiveReadBuilderImpl(Short length) {
 
       this.length = length;
     }

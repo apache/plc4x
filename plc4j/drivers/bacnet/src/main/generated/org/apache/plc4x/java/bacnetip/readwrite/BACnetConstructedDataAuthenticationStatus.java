@@ -111,7 +111,7 @@ public class BACnetConstructedDataAuthenticationStatus extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAuthenticationStatusBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,17 +137,17 @@ public class BACnetConstructedDataAuthenticationStatus extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataAuthenticationStatus");
     // Create the instance
-    return new BACnetConstructedDataAuthenticationStatusBuilder(
+    return new BACnetConstructedDataAuthenticationStatusBuilderImpl(
         authenticationStatus, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAuthenticationStatusBuilder
+  public static class BACnetConstructedDataAuthenticationStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAuthenticationStatusTagged authenticationStatus;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAuthenticationStatusBuilder(
+    public BACnetConstructedDataAuthenticationStatusBuilderImpl(
         BACnetAuthenticationStatusTagged authenticationStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

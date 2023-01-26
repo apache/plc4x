@@ -215,13 +215,20 @@ public abstract class DceRpc_InterfaceUuid implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     DceRpc_InterfaceUuidBuilder builder = null;
     if (EvaluationHelper.equals(interfaceType, (long) 0xDEA00001L)) {
-      builder = DceRpc_InterfaceUuid_DeviceInterface.staticParseBuilder(readBuffer);
+      builder =
+          DceRpc_InterfaceUuid_DeviceInterface.staticParseDceRpc_InterfaceUuidBuilder(readBuffer);
     } else if (EvaluationHelper.equals(interfaceType, (long) 0xDEA00002L)) {
-      builder = DceRpc_InterfaceUuid_ControllerInterface.staticParseBuilder(readBuffer);
+      builder =
+          DceRpc_InterfaceUuid_ControllerInterface.staticParseDceRpc_InterfaceUuidBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(interfaceType, (long) 0xDEA00003L)) {
-      builder = DceRpc_InterfaceUuid_SupervisorInterface.staticParseBuilder(readBuffer);
+      builder =
+          DceRpc_InterfaceUuid_SupervisorInterface.staticParseDceRpc_InterfaceUuidBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(interfaceType, (long) 0xDEA00004L)) {
-      builder = DceRpc_InterfaceUuid_ParameterInterface.staticParseBuilder(readBuffer);
+      builder =
+          DceRpc_InterfaceUuid_ParameterInterface.staticParseDceRpc_InterfaceUuidBuilder(
+              readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -238,7 +245,7 @@ public abstract class DceRpc_InterfaceUuid implements Message {
     return _dceRpc_InterfaceUuid;
   }
 
-  public static interface DceRpc_InterfaceUuidBuilder {
+  public interface DceRpc_InterfaceUuidBuilder {
     DceRpc_InterfaceUuid build();
   }
 

@@ -110,7 +110,7 @@ public class BACnetConstructedDataMultiStateOutputInterfaceValue extends BACnetC
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMultiStateOutputInterfaceValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,17 +132,17 @@ public class BACnetConstructedDataMultiStateOutputInterfaceValue extends BACnetC
 
     readBuffer.closeContext("BACnetConstructedDataMultiStateOutputInterfaceValue");
     // Create the instance
-    return new BACnetConstructedDataMultiStateOutputInterfaceValueBuilder(
+    return new BACnetConstructedDataMultiStateOutputInterfaceValueBuilderImpl(
         interfaceValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMultiStateOutputInterfaceValueBuilder
+  public static class BACnetConstructedDataMultiStateOutputInterfaceValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetOptionalBinaryPV interfaceValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMultiStateOutputInterfaceValueBuilder(
+    public BACnetConstructedDataMultiStateOutputInterfaceValueBuilderImpl(
         BACnetOptionalBinaryPV interfaceValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

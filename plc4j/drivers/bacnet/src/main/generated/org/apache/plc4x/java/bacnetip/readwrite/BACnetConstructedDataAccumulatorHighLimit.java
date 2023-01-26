@@ -110,7 +110,7 @@ public class BACnetConstructedDataAccumulatorHighLimit extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccumulatorHighLimitBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,17 +135,17 @@ public class BACnetConstructedDataAccumulatorHighLimit extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataAccumulatorHighLimit");
     // Create the instance
-    return new BACnetConstructedDataAccumulatorHighLimitBuilder(
+    return new BACnetConstructedDataAccumulatorHighLimitBuilderImpl(
         highLimit, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccumulatorHighLimitBuilder
+  public static class BACnetConstructedDataAccumulatorHighLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger highLimit;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccumulatorHighLimitBuilder(
+    public BACnetConstructedDataAccumulatorHighLimitBuilderImpl(
         BACnetApplicationTagUnsignedInteger highLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

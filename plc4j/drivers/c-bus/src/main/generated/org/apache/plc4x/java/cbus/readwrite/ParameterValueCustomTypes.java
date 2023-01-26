@@ -87,7 +87,7 @@ public class ParameterValueCustomTypes extends ParameterValue implements Message
     return lengthInBits;
   }
 
-  public static ParameterValueCustomTypesBuilder staticParseBuilder(
+  public static ParameterValueBuilder staticParseParameterValueBuilder(
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueCustomTypes");
     PositionAware positionAware = readBuffer;
@@ -102,15 +102,15 @@ public class ParameterValueCustomTypes extends ParameterValue implements Message
 
     readBuffer.closeContext("ParameterValueCustomTypes");
     // Create the instance
-    return new ParameterValueCustomTypesBuilder(value, numBytes);
+    return new ParameterValueCustomTypesBuilderImpl(value, numBytes);
   }
 
-  public static class ParameterValueCustomTypesBuilder
+  public static class ParameterValueCustomTypesBuilderImpl
       implements ParameterValue.ParameterValueBuilder {
     private final CustomTypes value;
     private final Short numBytes;
 
-    public ParameterValueCustomTypesBuilder(CustomTypes value, Short numBytes) {
+    public ParameterValueCustomTypesBuilderImpl(CustomTypes value, Short numBytes) {
 
       this.value = value;
       this.numBytes = numBytes;

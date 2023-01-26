@@ -191,7 +191,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_Pdu_RealTimeCyclicBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_PduBuilder staticParsePnDcp_PduBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Pdu_RealTimeCyclic");
     PositionAware positionAware = readBuffer;
@@ -224,7 +224,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
 
     readBuffer.closeContext("PnDcp_Pdu_RealTimeCyclic");
     // Create the instance
-    return new PnDcp_Pdu_RealTimeCyclicBuilder(
+    return new PnDcp_Pdu_RealTimeCyclicBuilderImpl(
         cycleCounter,
         ignore,
         stationProblemIndicatorOk,
@@ -237,7 +237,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
         reservedField2);
   }
 
-  public static class PnDcp_Pdu_RealTimeCyclicBuilder implements PnDcp_Pdu.PnDcp_PduBuilder {
+  public static class PnDcp_Pdu_RealTimeCyclicBuilderImpl implements PnDcp_Pdu.PnDcp_PduBuilder {
     private final int cycleCounter;
     private final boolean ignore;
     private final boolean stationProblemIndicatorOk;
@@ -249,7 +249,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     private final Boolean reservedField1;
     private final Short reservedField2;
 
-    public PnDcp_Pdu_RealTimeCyclicBuilder(
+    public PnDcp_Pdu_RealTimeCyclicBuilderImpl(
         int cycleCounter,
         boolean ignore,
         boolean stationProblemIndicatorOk,

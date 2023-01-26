@@ -89,7 +89,7 @@ public class ParameterValueRaw extends ParameterValue implements Message {
     return lengthInBits;
   }
 
-  public static ParameterValueRawBuilder staticParseBuilder(
+  public static ParameterValueBuilder staticParseParameterValueBuilder(
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueRaw");
     PositionAware positionAware = readBuffer;
@@ -100,14 +100,14 @@ public class ParameterValueRaw extends ParameterValue implements Message {
 
     readBuffer.closeContext("ParameterValueRaw");
     // Create the instance
-    return new ParameterValueRawBuilder(data, numBytes);
+    return new ParameterValueRawBuilderImpl(data, numBytes);
   }
 
-  public static class ParameterValueRawBuilder implements ParameterValue.ParameterValueBuilder {
+  public static class ParameterValueRawBuilderImpl implements ParameterValue.ParameterValueBuilder {
     private final byte[] data;
     private final Short numBytes;
 
-    public ParameterValueRawBuilder(byte[] data, Short numBytes) {
+    public ParameterValueRawBuilderImpl(byte[] data, Short numBytes) {
 
       this.data = data;
       this.numBytes = numBytes;

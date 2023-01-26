@@ -167,7 +167,7 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
     return lengthInBits;
   }
 
-  public static S7MessageObjectRequestBuilder staticParseBuilder(
+  public static S7DataAlarmMessageBuilder staticParseS7DataAlarmMessageBuilder(
       ReadBuffer readBuffer, Byte cpuFunctionType) throws ParseException {
     readBuffer.pullContext("S7MessageObjectRequest");
     PositionAware positionAware = readBuffer;
@@ -208,11 +208,11 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
 
     readBuffer.closeContext("S7MessageObjectRequest");
     // Create the instance
-    return new S7MessageObjectRequestBuilder(
+    return new S7MessageObjectRequestBuilderImpl(
         syntaxId, queryType, alarmType, reservedField0, reservedField1);
   }
 
-  public static class S7MessageObjectRequestBuilder
+  public static class S7MessageObjectRequestBuilderImpl
       implements S7DataAlarmMessage.S7DataAlarmMessageBuilder {
     private final SyntaxIdType syntaxId;
     private final QueryType queryType;
@@ -220,7 +220,7 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
     private final Short reservedField0;
     private final Short reservedField1;
 
-    public S7MessageObjectRequestBuilder(
+    public S7MessageObjectRequestBuilderImpl(
         SyntaxIdType syntaxId,
         QueryType queryType,
         AlarmType alarmType,

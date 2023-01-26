@@ -104,7 +104,7 @@ public class BACnetConstructedDataLifeSafetyAlarmValues extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLifeSafetyAlarmValuesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,17 +131,17 @@ public class BACnetConstructedDataLifeSafetyAlarmValues extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataLifeSafetyAlarmValues");
     // Create the instance
-    return new BACnetConstructedDataLifeSafetyAlarmValuesBuilder(
+    return new BACnetConstructedDataLifeSafetyAlarmValuesBuilderImpl(
         alarmValues, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLifeSafetyAlarmValuesBuilder
+  public static class BACnetConstructedDataLifeSafetyAlarmValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetLifeSafetyStateTagged> alarmValues;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLifeSafetyAlarmValuesBuilder(
+    public BACnetConstructedDataLifeSafetyAlarmValuesBuilderImpl(
         List<BACnetLifeSafetyStateTagged> alarmValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

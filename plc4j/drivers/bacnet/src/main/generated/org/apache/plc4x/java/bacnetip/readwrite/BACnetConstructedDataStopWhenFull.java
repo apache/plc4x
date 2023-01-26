@@ -109,7 +109,7 @@ public class BACnetConstructedDataStopWhenFull extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataStopWhenFullBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,17 +132,17 @@ public class BACnetConstructedDataStopWhenFull extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataStopWhenFull");
     // Create the instance
-    return new BACnetConstructedDataStopWhenFullBuilder(
+    return new BACnetConstructedDataStopWhenFullBuilderImpl(
         stopWhenFull, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataStopWhenFullBuilder
+  public static class BACnetConstructedDataStopWhenFullBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean stopWhenFull;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataStopWhenFullBuilder(
+    public BACnetConstructedDataStopWhenFullBuilderImpl(
         BACnetApplicationTagBoolean stopWhenFull,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

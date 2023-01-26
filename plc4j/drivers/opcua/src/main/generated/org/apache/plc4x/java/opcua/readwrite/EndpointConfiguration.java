@@ -200,7 +200,7 @@ public class EndpointConfiguration extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static EndpointConfigurationBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("EndpointConfiguration");
     PositionAware positionAware = readBuffer;
@@ -231,7 +231,7 @@ public class EndpointConfiguration extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("EndpointConfiguration");
     // Create the instance
-    return new EndpointConfigurationBuilder(
+    return new EndpointConfigurationBuilderImpl(
         operationTimeout,
         useBinaryEncoding,
         maxStringLength,
@@ -244,7 +244,7 @@ public class EndpointConfiguration extends ExtensionObjectDefinition implements 
         reservedField0);
   }
 
-  public static class EndpointConfigurationBuilder
+  public static class EndpointConfigurationBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int operationTimeout;
     private final boolean useBinaryEncoding;
@@ -257,7 +257,7 @@ public class EndpointConfiguration extends ExtensionObjectDefinition implements 
     private final int securityTokenLifetime;
     private final Short reservedField0;
 
-    public EndpointConfigurationBuilder(
+    public EndpointConfigurationBuilderImpl(
         int operationTimeout,
         boolean useBinaryEncoding,
         int maxStringLength,

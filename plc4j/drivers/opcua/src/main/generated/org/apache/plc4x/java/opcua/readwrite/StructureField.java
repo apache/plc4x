@@ -189,8 +189,8 @@ public class StructureField extends ExtensionObjectDefinition implements Message
     return lengthInBits;
   }
 
-  public static StructureFieldBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("StructureField");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -229,7 +229,7 @@ public class StructureField extends ExtensionObjectDefinition implements Message
 
     readBuffer.closeContext("StructureField");
     // Create the instance
-    return new StructureFieldBuilder(
+    return new StructureFieldBuilderImpl(
         name,
         description,
         dataType,
@@ -241,7 +241,7 @@ public class StructureField extends ExtensionObjectDefinition implements Message
         reservedField0);
   }
 
-  public static class StructureFieldBuilder
+  public static class StructureFieldBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString name;
     private final LocalizedText description;
@@ -253,7 +253,7 @@ public class StructureField extends ExtensionObjectDefinition implements Message
     private final boolean isOptional;
     private final Short reservedField0;
 
-    public StructureFieldBuilder(
+    public StructureFieldBuilderImpl(
         PascalString name,
         LocalizedText description,
         NodeId dataType,

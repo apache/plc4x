@@ -149,8 +149,8 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
     return lengthInBits;
   }
 
-  public static ParsingResultBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ParsingResult");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -181,7 +181,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("ParsingResult");
     // Create the instance
-    return new ParsingResultBuilder(
+    return new ParsingResultBuilderImpl(
         statusCode,
         noOfDataStatusCodes,
         dataStatusCodes,
@@ -189,7 +189,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
         dataDiagnosticInfos);
   }
 
-  public static class ParsingResultBuilder
+  public static class ParsingResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final int noOfDataStatusCodes;
@@ -197,7 +197,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
     private final int noOfDataDiagnosticInfos;
     private final List<DiagnosticInfo> dataDiagnosticInfos;
 
-    public ParsingResultBuilder(
+    public ParsingResultBuilderImpl(
         StatusCode statusCode,
         int noOfDataStatusCodes,
         List<StatusCode> dataStatusCodes,

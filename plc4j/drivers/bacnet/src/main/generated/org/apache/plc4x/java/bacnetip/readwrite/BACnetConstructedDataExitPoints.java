@@ -103,7 +103,7 @@ public class BACnetConstructedDataExitPoints extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataExitPointsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -127,16 +127,17 @@ public class BACnetConstructedDataExitPoints extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataExitPoints");
     // Create the instance
-    return new BACnetConstructedDataExitPointsBuilder(exitPoints, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataExitPointsBuilderImpl(
+        exitPoints, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataExitPointsBuilder
+  public static class BACnetConstructedDataExitPointsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDeviceObjectReference> exitPoints;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataExitPointsBuilder(
+    public BACnetConstructedDataExitPointsBuilderImpl(
         List<BACnetDeviceObjectReference> exitPoints,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

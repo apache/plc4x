@@ -107,7 +107,8 @@ public class NodeIdGuid extends NodeIdTypeDefinition implements Message {
     return lengthInBits;
   }
 
-  public static NodeIdGuidBuilder staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static NodeIdTypeDefinitionBuilder staticParseNodeIdTypeDefinitionBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("NodeIdGuid");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -120,15 +121,15 @@ public class NodeIdGuid extends NodeIdTypeDefinition implements Message {
 
     readBuffer.closeContext("NodeIdGuid");
     // Create the instance
-    return new NodeIdGuidBuilder(namespaceIndex, id);
+    return new NodeIdGuidBuilderImpl(namespaceIndex, id);
   }
 
-  public static class NodeIdGuidBuilder
+  public static class NodeIdGuidBuilderImpl
       implements NodeIdTypeDefinition.NodeIdTypeDefinitionBuilder {
     private final int namespaceIndex;
     private final byte[] id;
 
-    public NodeIdGuidBuilder(int namespaceIndex, byte[] id) {
+    public NodeIdGuidBuilderImpl(int namespaceIndex, byte[] id) {
 
       this.namespaceIndex = namespaceIndex;
       this.id = id;

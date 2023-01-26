@@ -117,7 +117,7 @@ public class Plc4xReadRequest extends Plc4xMessage implements Message {
     return lengthInBits;
   }
 
-  public static Plc4xReadRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static Plc4xMessageBuilder staticParsePlc4xMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("Plc4xReadRequest");
     PositionAware positionAware = readBuffer;
@@ -146,14 +146,14 @@ public class Plc4xReadRequest extends Plc4xMessage implements Message {
 
     readBuffer.closeContext("Plc4xReadRequest");
     // Create the instance
-    return new Plc4xReadRequestBuilder(connectionId, tags);
+    return new Plc4xReadRequestBuilderImpl(connectionId, tags);
   }
 
-  public static class Plc4xReadRequestBuilder implements Plc4xMessage.Plc4xMessageBuilder {
+  public static class Plc4xReadRequestBuilderImpl implements Plc4xMessage.Plc4xMessageBuilder {
     private final int connectionId;
     private final List<Plc4xTagRequest> tags;
 
-    public Plc4xReadRequestBuilder(int connectionId, List<Plc4xTagRequest> tags) {
+    public Plc4xReadRequestBuilderImpl(int connectionId, List<Plc4xTagRequest> tags) {
 
       this.connectionId = connectionId;
       this.tags = tags;

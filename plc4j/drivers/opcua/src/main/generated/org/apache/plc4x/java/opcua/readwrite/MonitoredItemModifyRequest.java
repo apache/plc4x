@@ -97,7 +97,7 @@ public class MonitoredItemModifyRequest extends ExtensionObjectDefinition implem
     return lengthInBits;
   }
 
-  public static MonitoredItemModifyRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("MonitoredItemModifyRequest");
     PositionAware positionAware = readBuffer;
@@ -115,15 +115,15 @@ public class MonitoredItemModifyRequest extends ExtensionObjectDefinition implem
 
     readBuffer.closeContext("MonitoredItemModifyRequest");
     // Create the instance
-    return new MonitoredItemModifyRequestBuilder(monitoredItemId, requestedParameters);
+    return new MonitoredItemModifyRequestBuilderImpl(monitoredItemId, requestedParameters);
   }
 
-  public static class MonitoredItemModifyRequestBuilder
+  public static class MonitoredItemModifyRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long monitoredItemId;
     private final ExtensionObjectDefinition requestedParameters;
 
-    public MonitoredItemModifyRequestBuilder(
+    public MonitoredItemModifyRequestBuilderImpl(
         long monitoredItemId, ExtensionObjectDefinition requestedParameters) {
 
       this.monitoredItemId = monitoredItemId;

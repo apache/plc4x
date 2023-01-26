@@ -113,7 +113,7 @@ public class BACnetConstructedDataProcessIdentifierFilter extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataProcessIdentifierFilterBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,17 +135,17 @@ public class BACnetConstructedDataProcessIdentifierFilter extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataProcessIdentifierFilter");
     // Create the instance
-    return new BACnetConstructedDataProcessIdentifierFilterBuilder(
+    return new BACnetConstructedDataProcessIdentifierFilterBuilderImpl(
         processIdentifierFilter, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataProcessIdentifierFilterBuilder
+  public static class BACnetConstructedDataProcessIdentifierFilterBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetProcessIdSelection processIdentifierFilter;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataProcessIdentifierFilterBuilder(
+    public BACnetConstructedDataProcessIdentifierFilterBuilderImpl(
         BACnetProcessIdSelection processIdentifierFilter,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

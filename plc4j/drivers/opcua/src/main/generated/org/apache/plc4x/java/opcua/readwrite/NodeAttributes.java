@@ -137,8 +137,8 @@ public class NodeAttributes extends ExtensionObjectDefinition implements Message
     return lengthInBits;
   }
 
-  public static NodeAttributesBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("NodeAttributes");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -165,11 +165,11 @@ public class NodeAttributes extends ExtensionObjectDefinition implements Message
 
     readBuffer.closeContext("NodeAttributes");
     // Create the instance
-    return new NodeAttributesBuilder(
+    return new NodeAttributesBuilderImpl(
         specifiedAttributes, displayName, description, writeMask, userWriteMask);
   }
 
-  public static class NodeAttributesBuilder
+  public static class NodeAttributesBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long specifiedAttributes;
     private final LocalizedText displayName;
@@ -177,7 +177,7 @@ public class NodeAttributes extends ExtensionObjectDefinition implements Message
     private final long writeMask;
     private final long userWriteMask;
 
-    public NodeAttributesBuilder(
+    public NodeAttributesBuilderImpl(
         long specifiedAttributes,
         LocalizedText displayName,
         LocalizedText description,

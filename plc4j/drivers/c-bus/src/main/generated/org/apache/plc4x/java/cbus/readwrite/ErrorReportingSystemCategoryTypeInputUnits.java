@@ -92,9 +92,11 @@ public class ErrorReportingSystemCategoryTypeInputUnits extends ErrorReportingSy
     return lengthInBits;
   }
 
-  public static ErrorReportingSystemCategoryTypeInputUnitsBuilder staticParseBuilder(
-      ReadBuffer readBuffer, ErrorReportingSystemCategoryClass errorReportingSystemCategoryClass)
-      throws ParseException {
+  public static ErrorReportingSystemCategoryTypeBuilder
+      staticParseErrorReportingSystemCategoryTypeBuilder(
+          ReadBuffer readBuffer,
+          ErrorReportingSystemCategoryClass errorReportingSystemCategoryClass)
+          throws ParseException {
     readBuffer.pullContext("ErrorReportingSystemCategoryTypeInputUnits");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -110,14 +112,14 @@ public class ErrorReportingSystemCategoryTypeInputUnits extends ErrorReportingSy
 
     readBuffer.closeContext("ErrorReportingSystemCategoryTypeInputUnits");
     // Create the instance
-    return new ErrorReportingSystemCategoryTypeInputUnitsBuilder(categoryForType);
+    return new ErrorReportingSystemCategoryTypeInputUnitsBuilderImpl(categoryForType);
   }
 
-  public static class ErrorReportingSystemCategoryTypeInputUnitsBuilder
+  public static class ErrorReportingSystemCategoryTypeInputUnitsBuilderImpl
       implements ErrorReportingSystemCategoryType.ErrorReportingSystemCategoryTypeBuilder {
     private final ErrorReportingSystemCategoryTypeForInputUnits categoryForType;
 
-    public ErrorReportingSystemCategoryTypeInputUnitsBuilder(
+    public ErrorReportingSystemCategoryTypeInputUnitsBuilderImpl(
         ErrorReportingSystemCategoryTypeForInputUnits categoryForType) {
 
       this.categoryForType = categoryForType;

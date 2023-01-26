@@ -104,7 +104,7 @@ public class BACnetConstructedDataAccessZoneAlarmValues extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessZoneAlarmValuesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,17 +131,17 @@ public class BACnetConstructedDataAccessZoneAlarmValues extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataAccessZoneAlarmValues");
     // Create the instance
-    return new BACnetConstructedDataAccessZoneAlarmValuesBuilder(
+    return new BACnetConstructedDataAccessZoneAlarmValuesBuilderImpl(
         alarmValues, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessZoneAlarmValuesBuilder
+  public static class BACnetConstructedDataAccessZoneAlarmValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetAccessZoneOccupancyStateTagged> alarmValues;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessZoneAlarmValuesBuilder(
+    public BACnetConstructedDataAccessZoneAlarmValuesBuilderImpl(
         List<BACnetAccessZoneOccupancyStateTagged> alarmValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

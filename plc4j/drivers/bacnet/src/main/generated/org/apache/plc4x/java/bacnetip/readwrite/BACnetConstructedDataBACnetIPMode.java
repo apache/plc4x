@@ -109,7 +109,7 @@ public class BACnetConstructedDataBACnetIPMode extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBACnetIPModeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataBACnetIPMode extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataBACnetIPMode");
     // Create the instance
-    return new BACnetConstructedDataBACnetIPModeBuilder(
+    return new BACnetConstructedDataBACnetIPModeBuilderImpl(
         bacnetIpMode, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBACnetIPModeBuilder
+  public static class BACnetConstructedDataBACnetIPModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetIPModeTagged bacnetIpMode;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBACnetIPModeBuilder(
+    public BACnetConstructedDataBACnetIPModeBuilderImpl(
         BACnetIPModeTagged bacnetIpMode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

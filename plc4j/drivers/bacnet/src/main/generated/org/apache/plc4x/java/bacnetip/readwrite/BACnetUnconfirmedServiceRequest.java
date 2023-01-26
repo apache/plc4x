@@ -127,59 +127,62 @@ public abstract class BACnetUnconfirmedServiceRequest implements Message {
     BACnetUnconfirmedServiceRequestBuilder builder = null;
     if (EvaluationHelper.equals(serviceChoice, BACnetUnconfirmedServiceChoice.I_AM)) {
       builder =
-          BACnetUnconfirmedServiceRequestIAm.staticParseBuilder(readBuffer, serviceRequestLength);
+          BACnetUnconfirmedServiceRequestIAm.staticParseBACnetUnconfirmedServiceRequestBuilder(
+              readBuffer, serviceRequestLength);
     } else if (EvaluationHelper.equals(serviceChoice, BACnetUnconfirmedServiceChoice.I_HAVE)) {
       builder =
-          BACnetUnconfirmedServiceRequestIHave.staticParseBuilder(readBuffer, serviceRequestLength);
+          BACnetUnconfirmedServiceRequestIHave.staticParseBACnetUnconfirmedServiceRequestBuilder(
+              readBuffer, serviceRequestLength);
     } else if (EvaluationHelper.equals(
         serviceChoice, BACnetUnconfirmedServiceChoice.UNCONFIRMED_COV_NOTIFICATION)) {
       builder =
-          BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification.staticParseBuilder(
-              readBuffer, serviceRequestLength);
+          BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
+              .staticParseBACnetUnconfirmedServiceRequestBuilder(readBuffer, serviceRequestLength);
     } else if (EvaluationHelper.equals(
         serviceChoice, BACnetUnconfirmedServiceChoice.UNCONFIRMED_EVENT_NOTIFICATION)) {
       builder =
-          BACnetUnconfirmedServiceRequestUnconfirmedEventNotification.staticParseBuilder(
-              readBuffer, serviceRequestLength);
+          BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
+              .staticParseBACnetUnconfirmedServiceRequestBuilder(readBuffer, serviceRequestLength);
     } else if (EvaluationHelper.equals(
         serviceChoice, BACnetUnconfirmedServiceChoice.UNCONFIRMED_PRIVATE_TRANSFER)) {
       builder =
-          BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer.staticParseBuilder(
-              readBuffer, serviceRequestLength);
+          BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
+              .staticParseBACnetUnconfirmedServiceRequestBuilder(readBuffer, serviceRequestLength);
     } else if (EvaluationHelper.equals(
         serviceChoice, BACnetUnconfirmedServiceChoice.UNCONFIRMED_TEXT_MESSAGE)) {
       builder =
-          BACnetUnconfirmedServiceRequestUnconfirmedTextMessage.staticParseBuilder(
-              readBuffer, serviceRequestLength);
+          BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
+              .staticParseBACnetUnconfirmedServiceRequestBuilder(readBuffer, serviceRequestLength);
     } else if (EvaluationHelper.equals(
         serviceChoice, BACnetUnconfirmedServiceChoice.TIME_SYNCHRONIZATION)) {
       builder =
-          BACnetUnconfirmedServiceRequestTimeSynchronization.staticParseBuilder(
-              readBuffer, serviceRequestLength);
+          BACnetUnconfirmedServiceRequestTimeSynchronization
+              .staticParseBACnetUnconfirmedServiceRequestBuilder(readBuffer, serviceRequestLength);
     } else if (EvaluationHelper.equals(serviceChoice, BACnetUnconfirmedServiceChoice.WHO_HAS)) {
       builder =
-          BACnetUnconfirmedServiceRequestWhoHas.staticParseBuilder(
+          BACnetUnconfirmedServiceRequestWhoHas.staticParseBACnetUnconfirmedServiceRequestBuilder(
               readBuffer, serviceRequestLength);
     } else if (EvaluationHelper.equals(serviceChoice, BACnetUnconfirmedServiceChoice.WHO_IS)) {
       builder =
-          BACnetUnconfirmedServiceRequestWhoIs.staticParseBuilder(readBuffer, serviceRequestLength);
+          BACnetUnconfirmedServiceRequestWhoIs.staticParseBACnetUnconfirmedServiceRequestBuilder(
+              readBuffer, serviceRequestLength);
     } else if (EvaluationHelper.equals(
         serviceChoice, BACnetUnconfirmedServiceChoice.UTC_TIME_SYNCHRONIZATION)) {
       builder =
-          BACnetUnconfirmedServiceRequestUTCTimeSynchronization.staticParseBuilder(
-              readBuffer, serviceRequestLength);
+          BACnetUnconfirmedServiceRequestUTCTimeSynchronization
+              .staticParseBACnetUnconfirmedServiceRequestBuilder(readBuffer, serviceRequestLength);
     } else if (EvaluationHelper.equals(serviceChoice, BACnetUnconfirmedServiceChoice.WRITE_GROUP)) {
       builder =
-          BACnetUnconfirmedServiceRequestWriteGroup.staticParseBuilder(
-              readBuffer, serviceRequestLength);
+          BACnetUnconfirmedServiceRequestWriteGroup
+              .staticParseBACnetUnconfirmedServiceRequestBuilder(readBuffer, serviceRequestLength);
     } else if (EvaluationHelper.equals(
         serviceChoice, BACnetUnconfirmedServiceChoice.UNCONFIRMED_COV_NOTIFICATION_MULTIPLE)) {
       builder =
-          BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple.staticParseBuilder(
-              readBuffer, serviceRequestLength);
+          BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
+              .staticParseBACnetUnconfirmedServiceRequestBuilder(readBuffer, serviceRequestLength);
     } else if (true) {
       builder =
-          BACnetUnconfirmedServiceRequestUnknown.staticParseBuilder(
+          BACnetUnconfirmedServiceRequestUnknown.staticParseBACnetUnconfirmedServiceRequestBuilder(
               readBuffer, serviceRequestLength);
     }
     if (builder == null) {
@@ -199,7 +202,7 @@ public abstract class BACnetUnconfirmedServiceRequest implements Message {
     return _bACnetUnconfirmedServiceRequest;
   }
 
-  public static interface BACnetUnconfirmedServiceRequestBuilder {
+  public interface BACnetUnconfirmedServiceRequestBuilder {
     BACnetUnconfirmedServiceRequest build(Integer serviceRequestLength);
   }
 

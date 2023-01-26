@@ -140,7 +140,7 @@ public class MPropReadReq extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static MPropReadReqBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("MPropReadReq");
     PositionAware positionAware = readBuffer;
@@ -160,11 +160,11 @@ public class MPropReadReq extends CEMI implements Message {
 
     readBuffer.closeContext("MPropReadReq");
     // Create the instance
-    return new MPropReadReqBuilder(
+    return new MPropReadReqBuilderImpl(
         interfaceObjectType, objectInstance, propertyId, numberOfElements, startIndex, size);
   }
 
-  public static class MPropReadReqBuilder implements CEMI.CEMIBuilder {
+  public static class MPropReadReqBuilderImpl implements CEMI.CEMIBuilder {
     private final int interfaceObjectType;
     private final short objectInstance;
     private final short propertyId;
@@ -172,7 +172,7 @@ public class MPropReadReq extends CEMI implements Message {
     private final int startIndex;
     private final Integer size;
 
-    public MPropReadReqBuilder(
+    public MPropReadReqBuilderImpl(
         int interfaceObjectType,
         short objectInstance,
         short propertyId,

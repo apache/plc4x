@@ -149,7 +149,7 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
     return lengthInBits;
   }
 
-  public static CreateMonitoredItemsRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CreateMonitoredItemsRequest");
     PositionAware positionAware = readBuffer;
@@ -184,11 +184,11 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
 
     readBuffer.closeContext("CreateMonitoredItemsRequest");
     // Create the instance
-    return new CreateMonitoredItemsRequestBuilder(
+    return new CreateMonitoredItemsRequestBuilderImpl(
         requestHeader, subscriptionId, timestampsToReturn, noOfItemsToCreate, itemsToCreate);
   }
 
-  public static class CreateMonitoredItemsRequestBuilder
+  public static class CreateMonitoredItemsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final long subscriptionId;
@@ -196,7 +196,7 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
     private final int noOfItemsToCreate;
     private final List<ExtensionObjectDefinition> itemsToCreate;
 
-    public CreateMonitoredItemsRequestBuilder(
+    public CreateMonitoredItemsRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         long subscriptionId,
         TimestampsToReturn timestampsToReturn,

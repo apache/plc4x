@@ -109,7 +109,7 @@ public class BACnetConstructedDataAccessEventTag extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessEventTagBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataAccessEventTag extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataAccessEventTag");
     // Create the instance
-    return new BACnetConstructedDataAccessEventTagBuilder(
+    return new BACnetConstructedDataAccessEventTagBuilderImpl(
         accessEventTag, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessEventTagBuilder
+  public static class BACnetConstructedDataAccessEventTagBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger accessEventTag;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessEventTagBuilder(
+    public BACnetConstructedDataAccessEventTagBuilderImpl(
         BACnetApplicationTagUnsignedInteger accessEventTag,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

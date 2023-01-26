@@ -104,7 +104,7 @@ public class BACnetConstructedDataManualSlaveAddressBinding extends BACnetConstr
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataManualSlaveAddressBindingBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -128,17 +128,17 @@ public class BACnetConstructedDataManualSlaveAddressBinding extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataManualSlaveAddressBinding");
     // Create the instance
-    return new BACnetConstructedDataManualSlaveAddressBindingBuilder(
+    return new BACnetConstructedDataManualSlaveAddressBindingBuilderImpl(
         manualSlaveAddressBinding, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataManualSlaveAddressBindingBuilder
+  public static class BACnetConstructedDataManualSlaveAddressBindingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetAddressBinding> manualSlaveAddressBinding;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataManualSlaveAddressBindingBuilder(
+    public BACnetConstructedDataManualSlaveAddressBindingBuilderImpl(
         List<BACnetAddressBinding> manualSlaveAddressBinding,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

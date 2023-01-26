@@ -109,7 +109,7 @@ public class BACnetConstructedDataPolarity extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPolarityBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,16 +134,16 @@ public class BACnetConstructedDataPolarity extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataPolarity");
     // Create the instance
-    return new BACnetConstructedDataPolarityBuilder(polarity, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPolarityBuilderImpl(polarity, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPolarityBuilder
+  public static class BACnetConstructedDataPolarityBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetPolarityTagged polarity;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPolarityBuilder(
+    public BACnetConstructedDataPolarityBuilderImpl(
         BACnetPolarityTagged polarity,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

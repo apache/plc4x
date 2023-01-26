@@ -123,7 +123,7 @@ public class AirConditioningDataSetHvacLowerGuardLimit extends AirConditioningDa
     return lengthInBits;
   }
 
-  public static AirConditioningDataSetHvacLowerGuardLimitBuilder staticParseBuilder(
+  public static AirConditioningDataBuilder staticParseAirConditioningDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataSetHvacLowerGuardLimit");
     PositionAware positionAware = readBuffer;
@@ -151,18 +151,18 @@ public class AirConditioningDataSetHvacLowerGuardLimit extends AirConditioningDa
 
     readBuffer.closeContext("AirConditioningDataSetHvacLowerGuardLimit");
     // Create the instance
-    return new AirConditioningDataSetHvacLowerGuardLimitBuilder(
+    return new AirConditioningDataSetHvacLowerGuardLimitBuilderImpl(
         zoneGroup, zoneList, limit, hvacModeAndFlags);
   }
 
-  public static class AirConditioningDataSetHvacLowerGuardLimitBuilder
+  public static class AirConditioningDataSetHvacLowerGuardLimitBuilderImpl
       implements AirConditioningData.AirConditioningDataBuilder {
     private final byte zoneGroup;
     private final HVACZoneList zoneList;
     private final HVACTemperature limit;
     private final HVACModeAndFlags hvacModeAndFlags;
 
-    public AirConditioningDataSetHvacLowerGuardLimitBuilder(
+    public AirConditioningDataSetHvacLowerGuardLimitBuilderImpl(
         byte zoneGroup,
         HVACZoneList zoneList,
         HVACTemperature limit,

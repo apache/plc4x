@@ -113,7 +113,7 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,17 +137,17 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataBBMDAcceptFDRegistrations");
     // Create the instance
-    return new BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder(
+    return new BACnetConstructedDataBBMDAcceptFDRegistrationsBuilderImpl(
         bbmdAcceptFDRegistrations, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder
+  public static class BACnetConstructedDataBBMDAcceptFDRegistrationsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean bbmdAcceptFDRegistrations;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder(
+    public BACnetConstructedDataBBMDAcceptFDRegistrationsBuilderImpl(
         BACnetApplicationTagBoolean bbmdAcceptFDRegistrations,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

@@ -111,7 +111,7 @@ public class BACnetConstructedDataOperationExpected extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataOperationExpectedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,17 +137,17 @@ public class BACnetConstructedDataOperationExpected extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataOperationExpected");
     // Create the instance
-    return new BACnetConstructedDataOperationExpectedBuilder(
+    return new BACnetConstructedDataOperationExpectedBuilderImpl(
         lifeSafetyOperations, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataOperationExpectedBuilder
+  public static class BACnetConstructedDataOperationExpectedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLifeSafetyOperationTagged lifeSafetyOperations;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataOperationExpectedBuilder(
+    public BACnetConstructedDataOperationExpectedBuilderImpl(
         BACnetLifeSafetyOperationTagged lifeSafetyOperations,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

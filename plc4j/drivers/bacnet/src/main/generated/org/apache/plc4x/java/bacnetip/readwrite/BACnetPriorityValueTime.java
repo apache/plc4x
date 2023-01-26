@@ -87,7 +87,7 @@ public class BACnetPriorityValueTime extends BACnetPriorityValue implements Mess
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueTimeBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueTime");
     PositionAware positionAware = readBuffer;
@@ -103,15 +103,15 @@ public class BACnetPriorityValueTime extends BACnetPriorityValue implements Mess
 
     readBuffer.closeContext("BACnetPriorityValueTime");
     // Create the instance
-    return new BACnetPriorityValueTimeBuilder(timeValue, objectTypeArgument);
+    return new BACnetPriorityValueTimeBuilderImpl(timeValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueTimeBuilder
+  public static class BACnetPriorityValueTimeBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagTime timeValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueTimeBuilder(
+    public BACnetPriorityValueTimeBuilderImpl(
         BACnetApplicationTagTime timeValue, BACnetObjectType objectTypeArgument) {
 
       this.timeValue = timeValue;

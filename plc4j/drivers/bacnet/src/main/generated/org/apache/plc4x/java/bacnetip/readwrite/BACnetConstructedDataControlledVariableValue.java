@@ -113,7 +113,7 @@ public class BACnetConstructedDataControlledVariableValue extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataControlledVariableValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -136,17 +136,17 @@ public class BACnetConstructedDataControlledVariableValue extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataControlledVariableValue");
     // Create the instance
-    return new BACnetConstructedDataControlledVariableValueBuilder(
+    return new BACnetConstructedDataControlledVariableValueBuilderImpl(
         controlledVariableValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataControlledVariableValueBuilder
+  public static class BACnetConstructedDataControlledVariableValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal controlledVariableValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataControlledVariableValueBuilder(
+    public BACnetConstructedDataControlledVariableValueBuilderImpl(
         BACnetApplicationTagReal controlledVariableValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

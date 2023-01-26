@@ -113,7 +113,7 @@ public class BACnetConstructedDataSegmentationSupported extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSegmentationSupportedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -138,17 +138,17 @@ public class BACnetConstructedDataSegmentationSupported extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataSegmentationSupported");
     // Create the instance
-    return new BACnetConstructedDataSegmentationSupportedBuilder(
+    return new BACnetConstructedDataSegmentationSupportedBuilderImpl(
         segmentationSupported, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSegmentationSupportedBuilder
+  public static class BACnetConstructedDataSegmentationSupportedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetSegmentationTagged segmentationSupported;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSegmentationSupportedBuilder(
+    public BACnetConstructedDataSegmentationSupportedBuilderImpl(
         BACnetSegmentationTagged segmentationSupported,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

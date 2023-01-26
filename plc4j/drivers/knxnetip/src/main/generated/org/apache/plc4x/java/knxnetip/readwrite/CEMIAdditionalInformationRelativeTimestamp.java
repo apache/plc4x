@@ -98,7 +98,7 @@ public class CEMIAdditionalInformationRelativeTimestamp extends CEMIAdditionalIn
     return lengthInBits;
   }
 
-  public static CEMIAdditionalInformationRelativeTimestampBuilder staticParseBuilder(
+  public static CEMIAdditionalInformationBuilder staticParseCEMIAdditionalInformationBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CEMIAdditionalInformationRelativeTimestamp");
     PositionAware positionAware = readBuffer;
@@ -119,14 +119,15 @@ public class CEMIAdditionalInformationRelativeTimestamp extends CEMIAdditionalIn
 
     readBuffer.closeContext("CEMIAdditionalInformationRelativeTimestamp");
     // Create the instance
-    return new CEMIAdditionalInformationRelativeTimestampBuilder(relativeTimestamp);
+    return new CEMIAdditionalInformationRelativeTimestampBuilderImpl(relativeTimestamp);
   }
 
-  public static class CEMIAdditionalInformationRelativeTimestampBuilder
+  public static class CEMIAdditionalInformationRelativeTimestampBuilderImpl
       implements CEMIAdditionalInformation.CEMIAdditionalInformationBuilder {
     private final RelativeTimestamp relativeTimestamp;
 
-    public CEMIAdditionalInformationRelativeTimestampBuilder(RelativeTimestamp relativeTimestamp) {
+    public CEMIAdditionalInformationRelativeTimestampBuilderImpl(
+        RelativeTimestamp relativeTimestamp) {
 
       this.relativeTimestamp = relativeTimestamp;
     }

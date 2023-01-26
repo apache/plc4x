@@ -113,7 +113,7 @@ public class BACnetConstructedDataAllowGroupDelayInhibit extends BACnetConstruct
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAllowGroupDelayInhibitBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -136,17 +136,17 @@ public class BACnetConstructedDataAllowGroupDelayInhibit extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataAllowGroupDelayInhibit");
     // Create the instance
-    return new BACnetConstructedDataAllowGroupDelayInhibitBuilder(
+    return new BACnetConstructedDataAllowGroupDelayInhibitBuilderImpl(
         allowGroupDelayInhibit, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAllowGroupDelayInhibitBuilder
+  public static class BACnetConstructedDataAllowGroupDelayInhibitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean allowGroupDelayInhibit;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAllowGroupDelayInhibitBuilder(
+    public BACnetConstructedDataAllowGroupDelayInhibitBuilderImpl(
         BACnetApplicationTagBoolean allowGroupDelayInhibit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

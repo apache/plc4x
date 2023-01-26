@@ -143,7 +143,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
     return lengthInBits;
   }
 
-  public static FindServersOnNetworkRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("FindServersOnNetworkRequest");
     PositionAware positionAware = readBuffer;
@@ -173,7 +173,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
 
     readBuffer.closeContext("FindServersOnNetworkRequest");
     // Create the instance
-    return new FindServersOnNetworkRequestBuilder(
+    return new FindServersOnNetworkRequestBuilderImpl(
         requestHeader,
         startingRecordId,
         maxRecordsToReturn,
@@ -181,7 +181,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
         serverCapabilityFilter);
   }
 
-  public static class FindServersOnNetworkRequestBuilder
+  public static class FindServersOnNetworkRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final long startingRecordId;
@@ -189,7 +189,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
     private final int noOfServerCapabilityFilter;
     private final List<PascalString> serverCapabilityFilter;
 
-    public FindServersOnNetworkRequestBuilder(
+    public FindServersOnNetworkRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         long startingRecordId,
         long maxRecordsToReturn,

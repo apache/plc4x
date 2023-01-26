@@ -72,8 +72,8 @@ public class ApduDataExtLinkWrite extends ApduDataExt implements Message {
     return lengthInBits;
   }
 
-  public static ApduDataExtLinkWriteBuilder staticParseBuilder(ReadBuffer readBuffer, Short length)
-      throws ParseException {
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
+      ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtLinkWrite");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -81,13 +81,13 @@ public class ApduDataExtLinkWrite extends ApduDataExt implements Message {
 
     readBuffer.closeContext("ApduDataExtLinkWrite");
     // Create the instance
-    return new ApduDataExtLinkWriteBuilder(length);
+    return new ApduDataExtLinkWriteBuilderImpl(length);
   }
 
-  public static class ApduDataExtLinkWriteBuilder implements ApduDataExt.ApduDataExtBuilder {
+  public static class ApduDataExtLinkWriteBuilderImpl implements ApduDataExt.ApduDataExtBuilder {
     private final Short length;
 
-    public ApduDataExtLinkWriteBuilder(Short length) {
+    public ApduDataExtLinkWriteBuilderImpl(Short length) {
 
       this.length = length;
     }

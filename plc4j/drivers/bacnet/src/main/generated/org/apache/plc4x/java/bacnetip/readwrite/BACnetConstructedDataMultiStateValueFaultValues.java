@@ -104,7 +104,7 @@ public class BACnetConstructedDataMultiStateValueFaultValues extends BACnetConst
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMultiStateValueFaultValuesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,17 +131,17 @@ public class BACnetConstructedDataMultiStateValueFaultValues extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataMultiStateValueFaultValues");
     // Create the instance
-    return new BACnetConstructedDataMultiStateValueFaultValuesBuilder(
+    return new BACnetConstructedDataMultiStateValueFaultValuesBuilderImpl(
         faultValues, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMultiStateValueFaultValuesBuilder
+  public static class BACnetConstructedDataMultiStateValueFaultValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetApplicationTagUnsignedInteger> faultValues;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMultiStateValueFaultValuesBuilder(
+    public BACnetConstructedDataMultiStateValueFaultValuesBuilderImpl(
         List<BACnetApplicationTagUnsignedInteger> faultValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

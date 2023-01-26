@@ -105,7 +105,7 @@ public class VariantFloat extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantFloatBuilder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantFloat");
     PositionAware positionAware = readBuffer;
@@ -121,14 +121,14 @@ public class VariantFloat extends Variant implements Message {
 
     readBuffer.closeContext("VariantFloat");
     // Create the instance
-    return new VariantFloatBuilder(arrayLength, value);
+    return new VariantFloatBuilderImpl(arrayLength, value);
   }
 
-  public static class VariantFloatBuilder implements Variant.VariantBuilder {
+  public static class VariantFloatBuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final List<Float> value;
 
-    public VariantFloatBuilder(Integer arrayLength, List<Float> value) {
+    public VariantFloatBuilderImpl(Integer arrayLength, List<Float> value) {
 
       this.arrayLength = arrayLength;
       this.value = value;

@@ -123,7 +123,7 @@ public class MediaTransportControlDataTotalTracks extends MediaTransportControlD
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataTotalTracksBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataTotalTracks");
     PositionAware positionAware = readBuffer;
@@ -140,18 +140,18 @@ public class MediaTransportControlDataTotalTracks extends MediaTransportControlD
 
     readBuffer.closeContext("MediaTransportControlDataTotalTracks");
     // Create the instance
-    return new MediaTransportControlDataTotalTracksBuilder(
+    return new MediaTransportControlDataTotalTracksBuilderImpl(
         totalTracksMSB, totalTracksMMSB, totalTracksMLSB, totalTracksLSB);
   }
 
-  public static class MediaTransportControlDataTotalTracksBuilder
+  public static class MediaTransportControlDataTotalTracksBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte totalTracksMSB;
     private final byte totalTracksMMSB;
     private final byte totalTracksMLSB;
     private final byte totalTracksLSB;
 
-    public MediaTransportControlDataTotalTracksBuilder(
+    public MediaTransportControlDataTotalTracksBuilderImpl(
         byte totalTracksMSB, byte totalTracksMMSB, byte totalTracksMLSB, byte totalTracksLSB) {
 
       this.totalTracksMSB = totalTracksMSB;

@@ -111,7 +111,7 @@ public class BACnetConstructedDataAckedTransitions extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAckedTransitionsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -136,17 +136,17 @@ public class BACnetConstructedDataAckedTransitions extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataAckedTransitions");
     // Create the instance
-    return new BACnetConstructedDataAckedTransitionsBuilder(
+    return new BACnetConstructedDataAckedTransitionsBuilderImpl(
         ackedTransitions, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAckedTransitionsBuilder
+  public static class BACnetConstructedDataAckedTransitionsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEventTransitionBitsTagged ackedTransitions;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAckedTransitionsBuilder(
+    public BACnetConstructedDataAckedTransitionsBuilderImpl(
         BACnetEventTransitionBitsTagged ackedTransitions,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

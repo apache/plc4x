@@ -109,7 +109,7 @@ public class BACnetConstructedDataIPDHCPEnable extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIPDHCPEnableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,17 +132,17 @@ public class BACnetConstructedDataIPDHCPEnable extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataIPDHCPEnable");
     // Create the instance
-    return new BACnetConstructedDataIPDHCPEnableBuilder(
+    return new BACnetConstructedDataIPDHCPEnableBuilderImpl(
         ipDhcpEnable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIPDHCPEnableBuilder
+  public static class BACnetConstructedDataIPDHCPEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean ipDhcpEnable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIPDHCPEnableBuilder(
+    public BACnetConstructedDataIPDHCPEnableBuilderImpl(
         BACnetApplicationTagBoolean ipDhcpEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

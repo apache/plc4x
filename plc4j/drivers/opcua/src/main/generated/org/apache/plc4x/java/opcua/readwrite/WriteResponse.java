@@ -148,8 +148,8 @@ public class WriteResponse extends ExtensionObjectDefinition implements Message 
     return lengthInBits;
   }
 
-  public static WriteResponseBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("WriteResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -181,11 +181,11 @@ public class WriteResponse extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("WriteResponse");
     // Create the instance
-    return new WriteResponseBuilder(
+    return new WriteResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class WriteResponseBuilder
+  public static class WriteResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -193,7 +193,7 @@ public class WriteResponse extends ExtensionObjectDefinition implements Message 
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public WriteResponseBuilder(
+    public WriteResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<StatusCode> results,

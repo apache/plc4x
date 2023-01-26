@@ -111,14 +111,13 @@ public class BACnetConstructedDataPositiveIntegerValueRelinquishDefault
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder
-      staticParseBuilder(
-          ReadBuffer readBuffer,
-          Short tagNumber,
-          BACnetObjectType objectTypeArgument,
-          BACnetPropertyIdentifier propertyIdentifierArgument,
-          BACnetTagPayloadUnsignedInteger arrayIndexArgument)
-          throws ParseException {
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
+      ReadBuffer readBuffer,
+      Short tagNumber,
+      BACnetObjectType objectTypeArgument,
+      BACnetPropertyIdentifier propertyIdentifierArgument,
+      BACnetTagPayloadUnsignedInteger arrayIndexArgument)
+      throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataPositiveIntegerValueRelinquishDefault");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -138,17 +137,17 @@ public class BACnetConstructedDataPositiveIntegerValueRelinquishDefault
 
     readBuffer.closeContext("BACnetConstructedDataPositiveIntegerValueRelinquishDefault");
     // Create the instance
-    return new BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder(
+    return new BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilderImpl(
         relinquishDefault, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder
+  public static class BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger relinquishDefault;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilder(
+    public BACnetConstructedDataPositiveIntegerValueRelinquishDefaultBuilderImpl(
         BACnetApplicationTagUnsignedInteger relinquishDefault,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

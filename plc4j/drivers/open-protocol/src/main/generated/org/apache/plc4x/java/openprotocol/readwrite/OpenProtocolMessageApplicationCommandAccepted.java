@@ -110,7 +110,7 @@ public class OpenProtocolMessageApplicationCommandAccepted extends OpenProtocolM
     return lengthInBits;
   }
 
-  public static OpenProtocolMessageApplicationCommandAcceptedBuilder staticParseBuilder(
+  public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
       ReadBuffer readBuffer, OpenProtocolRevision connectionRevision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommandAccepted");
     PositionAware positionAware = readBuffer;
@@ -126,16 +126,16 @@ public class OpenProtocolMessageApplicationCommandAccepted extends OpenProtocolM
 
     readBuffer.closeContext("OpenProtocolMessageApplicationCommandAccepted");
     // Create the instance
-    return new OpenProtocolMessageApplicationCommandAcceptedBuilder(
+    return new OpenProtocolMessageApplicationCommandAcceptedBuilderImpl(
         midNumberAccepted, connectionRevision);
   }
 
-  public static class OpenProtocolMessageApplicationCommandAcceptedBuilder
+  public static class OpenProtocolMessageApplicationCommandAcceptedBuilderImpl
       implements OpenProtocolMessage.OpenProtocolMessageBuilder {
     private final Mid midNumberAccepted;
     private final OpenProtocolRevision connectionRevision;
 
-    public OpenProtocolMessageApplicationCommandAcceptedBuilder(
+    public OpenProtocolMessageApplicationCommandAcceptedBuilderImpl(
         Mid midNumberAccepted, OpenProtocolRevision connectionRevision) {
 
       this.midNumberAccepted = midNumberAccepted;

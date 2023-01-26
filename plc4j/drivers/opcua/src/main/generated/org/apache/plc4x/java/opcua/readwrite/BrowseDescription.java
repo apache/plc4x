@@ -166,7 +166,7 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static BrowseDescriptionBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("BrowseDescription");
     PositionAware positionAware = readBuffer;
@@ -201,7 +201,7 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("BrowseDescription");
     // Create the instance
-    return new BrowseDescriptionBuilder(
+    return new BrowseDescriptionBuilderImpl(
         nodeId,
         browseDirection,
         referenceTypeId,
@@ -211,7 +211,7 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
         reservedField0);
   }
 
-  public static class BrowseDescriptionBuilder
+  public static class BrowseDescriptionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId nodeId;
     private final BrowseDirection browseDirection;
@@ -221,7 +221,7 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
     private final long resultMask;
     private final Short reservedField0;
 
-    public BrowseDescriptionBuilder(
+    public BrowseDescriptionBuilderImpl(
         NodeId nodeId,
         BrowseDirection browseDirection,
         NodeId referenceTypeId,

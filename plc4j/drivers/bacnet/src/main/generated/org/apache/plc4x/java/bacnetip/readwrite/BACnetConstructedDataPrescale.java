@@ -109,7 +109,7 @@ public class BACnetConstructedDataPrescale extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPrescaleBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -130,16 +130,16 @@ public class BACnetConstructedDataPrescale extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataPrescale");
     // Create the instance
-    return new BACnetConstructedDataPrescaleBuilder(prescale, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPrescaleBuilderImpl(prescale, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPrescaleBuilder
+  public static class BACnetConstructedDataPrescaleBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetPrescale prescale;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPrescaleBuilder(
+    public BACnetConstructedDataPrescaleBuilderImpl(
         BACnetPrescale prescale,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

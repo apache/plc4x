@@ -129,7 +129,7 @@ public class OpenProtocolMessageApplicationCommandError extends OpenProtocolMess
     return lengthInBits;
   }
 
-  public static OpenProtocolMessageApplicationCommandErrorBuilder staticParseBuilder(
+  public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
       ReadBuffer readBuffer, OpenProtocolRevision connectionRevision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommandError");
     PositionAware positionAware = readBuffer;
@@ -152,17 +152,17 @@ public class OpenProtocolMessageApplicationCommandError extends OpenProtocolMess
 
     readBuffer.closeContext("OpenProtocolMessageApplicationCommandError");
     // Create the instance
-    return new OpenProtocolMessageApplicationCommandErrorBuilder(
+    return new OpenProtocolMessageApplicationCommandErrorBuilderImpl(
         requestMid, error, connectionRevision);
   }
 
-  public static class OpenProtocolMessageApplicationCommandErrorBuilder
+  public static class OpenProtocolMessageApplicationCommandErrorBuilderImpl
       implements OpenProtocolMessage.OpenProtocolMessageBuilder {
     private final Mid requestMid;
     private final Error error;
     private final OpenProtocolRevision connectionRevision;
 
-    public OpenProtocolMessageApplicationCommandErrorBuilder(
+    public OpenProtocolMessageApplicationCommandErrorBuilderImpl(
         Mid requestMid, Error error, OpenProtocolRevision connectionRevision) {
 
       this.requestMid = requestMid;

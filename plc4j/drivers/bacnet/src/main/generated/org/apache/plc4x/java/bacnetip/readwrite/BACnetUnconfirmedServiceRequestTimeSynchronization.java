@@ -105,8 +105,9 @@ public class BACnetUnconfirmedServiceRequestTimeSynchronization
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
+  public static BACnetUnconfirmedServiceRequestBuilder
+      staticParseBACnetUnconfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestTimeSynchronization");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -128,17 +129,17 @@ public class BACnetUnconfirmedServiceRequestTimeSynchronization
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestTimeSynchronization");
     // Create the instance
-    return new BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder(
+    return new BACnetUnconfirmedServiceRequestTimeSynchronizationBuilderImpl(
         synchronizedDate, synchronizedTime, serviceRequestLength);
   }
 
-  public static class BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder
+  public static class BACnetUnconfirmedServiceRequestTimeSynchronizationBuilderImpl
       implements BACnetUnconfirmedServiceRequest.BACnetUnconfirmedServiceRequestBuilder {
     private final BACnetApplicationTagDate synchronizedDate;
     private final BACnetApplicationTagTime synchronizedTime;
     private final Integer serviceRequestLength;
 
-    public BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder(
+    public BACnetUnconfirmedServiceRequestTimeSynchronizationBuilderImpl(
         BACnetApplicationTagDate synchronizedDate,
         BACnetApplicationTagTime synchronizedTime,
         Integer serviceRequestLength) {

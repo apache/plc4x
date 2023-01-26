@@ -72,7 +72,7 @@ public class ApduDataExtDomainAddressSerialNumberWrite extends ApduDataExt imple
     return lengthInBits;
   }
 
-  public static ApduDataExtDomainAddressSerialNumberWriteBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtDomainAddressSerialNumberWrite");
     PositionAware positionAware = readBuffer;
@@ -81,14 +81,14 @@ public class ApduDataExtDomainAddressSerialNumberWrite extends ApduDataExt imple
 
     readBuffer.closeContext("ApduDataExtDomainAddressSerialNumberWrite");
     // Create the instance
-    return new ApduDataExtDomainAddressSerialNumberWriteBuilder(length);
+    return new ApduDataExtDomainAddressSerialNumberWriteBuilderImpl(length);
   }
 
-  public static class ApduDataExtDomainAddressSerialNumberWriteBuilder
+  public static class ApduDataExtDomainAddressSerialNumberWriteBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final Short length;
 
-    public ApduDataExtDomainAddressSerialNumberWriteBuilder(Short length) {
+    public ApduDataExtDomainAddressSerialNumberWriteBuilderImpl(Short length) {
 
       this.length = length;
     }

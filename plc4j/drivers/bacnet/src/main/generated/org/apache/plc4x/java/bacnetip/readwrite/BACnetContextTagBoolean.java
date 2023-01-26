@@ -113,7 +113,7 @@ public class BACnetContextTagBoolean extends BACnetContextTag implements Message
     return lengthInBits;
   }
 
-  public static BACnetContextTagBooleanBuilder staticParseBuilder(
+  public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer,
       Short tagNumberArgument,
       BACnetDataType dataType,
@@ -139,16 +139,16 @@ public class BACnetContextTagBoolean extends BACnetContextTag implements Message
 
     readBuffer.closeContext("BACnetContextTagBoolean");
     // Create the instance
-    return new BACnetContextTagBooleanBuilder(value, payload, tagNumberArgument);
+    return new BACnetContextTagBooleanBuilderImpl(value, payload, tagNumberArgument);
   }
 
-  public static class BACnetContextTagBooleanBuilder
+  public static class BACnetContextTagBooleanBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final short value;
     private final BACnetTagPayloadBoolean payload;
     private final Short tagNumberArgument;
 
-    public BACnetContextTagBooleanBuilder(
+    public BACnetContextTagBooleanBuilderImpl(
         short value, BACnetTagPayloadBoolean payload, Short tagNumberArgument) {
 
       this.value = value;

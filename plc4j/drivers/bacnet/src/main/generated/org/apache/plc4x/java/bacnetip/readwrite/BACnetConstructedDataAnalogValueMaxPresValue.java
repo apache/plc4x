@@ -110,7 +110,7 @@ public class BACnetConstructedDataAnalogValueMaxPresValue extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAnalogValueMaxPresValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -133,17 +133,17 @@ public class BACnetConstructedDataAnalogValueMaxPresValue extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataAnalogValueMaxPresValue");
     // Create the instance
-    return new BACnetConstructedDataAnalogValueMaxPresValueBuilder(
+    return new BACnetConstructedDataAnalogValueMaxPresValueBuilderImpl(
         maxPresValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAnalogValueMaxPresValueBuilder
+  public static class BACnetConstructedDataAnalogValueMaxPresValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal maxPresValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAnalogValueMaxPresValueBuilder(
+    public BACnetConstructedDataAnalogValueMaxPresValueBuilderImpl(
         BACnetApplicationTagReal maxPresValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

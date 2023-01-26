@@ -113,7 +113,7 @@ public class BACnetConstructedDataLimitMonitoringInterval extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLimitMonitoringIntervalBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -139,17 +139,17 @@ public class BACnetConstructedDataLimitMonitoringInterval extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataLimitMonitoringInterval");
     // Create the instance
-    return new BACnetConstructedDataLimitMonitoringIntervalBuilder(
+    return new BACnetConstructedDataLimitMonitoringIntervalBuilderImpl(
         limitMonitoringInterval, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLimitMonitoringIntervalBuilder
+  public static class BACnetConstructedDataLimitMonitoringIntervalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger limitMonitoringInterval;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLimitMonitoringIntervalBuilder(
+    public BACnetConstructedDataLimitMonitoringIntervalBuilderImpl(
         BACnetApplicationTagUnsignedInteger limitMonitoringInterval,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

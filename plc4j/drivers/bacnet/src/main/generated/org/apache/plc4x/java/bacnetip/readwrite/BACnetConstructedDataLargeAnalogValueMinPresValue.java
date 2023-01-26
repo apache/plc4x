@@ -110,7 +110,7 @@ public class BACnetConstructedDataLargeAnalogValueMinPresValue extends BACnetCon
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLargeAnalogValueMinPresValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -133,17 +133,17 @@ public class BACnetConstructedDataLargeAnalogValueMinPresValue extends BACnetCon
 
     readBuffer.closeContext("BACnetConstructedDataLargeAnalogValueMinPresValue");
     // Create the instance
-    return new BACnetConstructedDataLargeAnalogValueMinPresValueBuilder(
+    return new BACnetConstructedDataLargeAnalogValueMinPresValueBuilderImpl(
         minPresValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLargeAnalogValueMinPresValueBuilder
+  public static class BACnetConstructedDataLargeAnalogValueMinPresValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagDouble minPresValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLargeAnalogValueMinPresValueBuilder(
+    public BACnetConstructedDataLargeAnalogValueMinPresValueBuilderImpl(
         BACnetApplicationTagDouble minPresValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

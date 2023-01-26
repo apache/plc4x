@@ -100,7 +100,7 @@ public class VTCloseError extends BACnetError implements Message {
     return lengthInBits;
   }
 
-  public static VTCloseErrorBuilder staticParseBuilder(
+  public static BACnetErrorBuilder staticParseBACnetErrorBuilder(
       ReadBuffer readBuffer, BACnetConfirmedServiceChoice errorChoice) throws ParseException {
     readBuffer.pullContext("VTCloseError");
     PositionAware positionAware = readBuffer;
@@ -122,14 +122,14 @@ public class VTCloseError extends BACnetError implements Message {
 
     readBuffer.closeContext("VTCloseError");
     // Create the instance
-    return new VTCloseErrorBuilder(errorType, listOfVtSessionIdentifiers);
+    return new VTCloseErrorBuilderImpl(errorType, listOfVtSessionIdentifiers);
   }
 
-  public static class VTCloseErrorBuilder implements BACnetError.BACnetErrorBuilder {
+  public static class VTCloseErrorBuilderImpl implements BACnetError.BACnetErrorBuilder {
     private final ErrorEnclosed errorType;
     private final VTCloseErrorListOfVTSessionIdentifiers listOfVtSessionIdentifiers;
 
-    public VTCloseErrorBuilder(
+    public VTCloseErrorBuilderImpl(
         ErrorEnclosed errorType,
         VTCloseErrorListOfVTSessionIdentifiers listOfVtSessionIdentifiers) {
 

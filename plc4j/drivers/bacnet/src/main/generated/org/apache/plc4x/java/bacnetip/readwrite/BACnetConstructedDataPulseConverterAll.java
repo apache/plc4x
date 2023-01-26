@@ -85,7 +85,7 @@ public class BACnetConstructedDataPulseConverterAll extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPulseConverterAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -104,15 +104,15 @@ public class BACnetConstructedDataPulseConverterAll extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataPulseConverterAll");
     // Create the instance
-    return new BACnetConstructedDataPulseConverterAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPulseConverterAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPulseConverterAllBuilder
+  public static class BACnetConstructedDataPulseConverterAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPulseConverterAllBuilder(
+    public BACnetConstructedDataPulseConverterAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
 
       this.tagNumber = tagNumber;

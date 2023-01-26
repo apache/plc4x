@@ -82,8 +82,9 @@ public class BACnetFaultParameterFaultExtendedParametersEntryBoolean
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetFaultParameterFaultExtendedParametersEntryBuilder
+      staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryBoolean");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -98,15 +99,15 @@ public class BACnetFaultParameterFaultExtendedParametersEntryBoolean
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtendedParametersEntryBoolean");
     // Create the instance
-    return new BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder(booleanValue);
+    return new BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilderImpl(booleanValue);
   }
 
-  public static class BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder
+  public static class BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilderImpl
       implements BACnetFaultParameterFaultExtendedParametersEntry
           .BACnetFaultParameterFaultExtendedParametersEntryBuilder {
     private final BACnetApplicationTagBoolean booleanValue;
 
-    public BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder(
+    public BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilderImpl(
         BACnetApplicationTagBoolean booleanValue) {
 
       this.booleanValue = booleanValue;

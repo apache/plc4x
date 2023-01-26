@@ -207,7 +207,7 @@ public abstract class DF1ResponseMessage implements Message {
     DF1ResponseMessageBuilder builder = null;
     if (EvaluationHelper.equals(commandCode, (short) 0x4F)) {
       builder =
-          DF1CommandResponseMessageProtectedTypedLogicalRead.staticParseBuilder(
+          DF1CommandResponseMessageProtectedTypedLogicalRead.staticParseDF1ResponseMessageBuilder(
               readBuffer, payloadLength);
     }
     if (builder == null) {
@@ -228,7 +228,7 @@ public abstract class DF1ResponseMessage implements Message {
     return _dF1ResponseMessage;
   }
 
-  public static interface DF1ResponseMessageBuilder {
+  public interface DF1ResponseMessageBuilder {
     DF1ResponseMessage build(
         short destinationAddress,
         short sourceAddress,

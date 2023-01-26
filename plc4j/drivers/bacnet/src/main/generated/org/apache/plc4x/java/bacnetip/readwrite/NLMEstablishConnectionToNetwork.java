@@ -100,8 +100,8 @@ public class NLMEstablishConnectionToNetwork extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMEstablishConnectionToNetworkBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMEstablishConnectionToNetwork");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -114,16 +114,16 @@ public class NLMEstablishConnectionToNetwork extends NLM implements Message {
 
     readBuffer.closeContext("NLMEstablishConnectionToNetwork");
     // Create the instance
-    return new NLMEstablishConnectionToNetworkBuilder(
+    return new NLMEstablishConnectionToNetworkBuilderImpl(
         destinationNetworkAddress, terminationTime, apduLength);
   }
 
-  public static class NLMEstablishConnectionToNetworkBuilder implements NLM.NLMBuilder {
+  public static class NLMEstablishConnectionToNetworkBuilderImpl implements NLM.NLMBuilder {
     private final int destinationNetworkAddress;
     private final short terminationTime;
     private final Integer apduLength;
 
-    public NLMEstablishConnectionToNetworkBuilder(
+    public NLMEstablishConnectionToNetworkBuilderImpl(
         int destinationNetworkAddress, short terminationTime, Integer apduLength) {
 
       this.destinationNetworkAddress = destinationNetworkAddress;

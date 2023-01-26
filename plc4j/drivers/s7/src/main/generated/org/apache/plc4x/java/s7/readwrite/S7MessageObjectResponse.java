@@ -121,7 +121,7 @@ public class S7MessageObjectResponse extends S7DataAlarmMessage implements Messa
     return lengthInBits;
   }
 
-  public static S7MessageObjectResponseBuilder staticParseBuilder(
+  public static S7DataAlarmMessageBuilder staticParseS7DataAlarmMessageBuilder(
       ReadBuffer readBuffer, Byte cpuFunctionType) throws ParseException {
     readBuffer.pullContext("S7MessageObjectResponse");
     PositionAware positionAware = readBuffer;
@@ -147,16 +147,16 @@ public class S7MessageObjectResponse extends S7DataAlarmMessage implements Messa
 
     readBuffer.closeContext("S7MessageObjectResponse");
     // Create the instance
-    return new S7MessageObjectResponseBuilder(returnCode, transportSize, reservedField0);
+    return new S7MessageObjectResponseBuilderImpl(returnCode, transportSize, reservedField0);
   }
 
-  public static class S7MessageObjectResponseBuilder
+  public static class S7MessageObjectResponseBuilderImpl
       implements S7DataAlarmMessage.S7DataAlarmMessageBuilder {
     private final DataTransportErrorCode returnCode;
     private final DataTransportSize transportSize;
     private final Short reservedField0;
 
-    public S7MessageObjectResponseBuilder(
+    public S7MessageObjectResponseBuilderImpl(
         DataTransportErrorCode returnCode, DataTransportSize transportSize, Short reservedField0) {
       this.returnCode = returnCode;
       this.transportSize = transportSize;

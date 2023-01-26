@@ -111,7 +111,7 @@ public class BACnetConstructedDataRequestedShedLevel extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataRequestedShedLevelBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -133,17 +133,17 @@ public class BACnetConstructedDataRequestedShedLevel extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataRequestedShedLevel");
     // Create the instance
-    return new BACnetConstructedDataRequestedShedLevelBuilder(
+    return new BACnetConstructedDataRequestedShedLevelBuilderImpl(
         requestedShedLevel, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataRequestedShedLevelBuilder
+  public static class BACnetConstructedDataRequestedShedLevelBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetShedLevel requestedShedLevel;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataRequestedShedLevelBuilder(
+    public BACnetConstructedDataRequestedShedLevelBuilderImpl(
         BACnetShedLevel requestedShedLevel,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

@@ -98,8 +98,8 @@ public class APDUUnconfirmedRequest extends APDU implements Message {
     return lengthInBits;
   }
 
-  public static APDUUnconfirmedRequestBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static APDUBuilder staticParseAPDUBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("APDUUnconfirmedRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -118,15 +118,15 @@ public class APDUUnconfirmedRequest extends APDU implements Message {
 
     readBuffer.closeContext("APDUUnconfirmedRequest");
     // Create the instance
-    return new APDUUnconfirmedRequestBuilder(serviceRequest, apduLength, reservedField0);
+    return new APDUUnconfirmedRequestBuilderImpl(serviceRequest, apduLength, reservedField0);
   }
 
-  public static class APDUUnconfirmedRequestBuilder implements APDU.APDUBuilder {
+  public static class APDUUnconfirmedRequestBuilderImpl implements APDU.APDUBuilder {
     private final BACnetUnconfirmedServiceRequest serviceRequest;
     private final Integer apduLength;
     private final Byte reservedField0;
 
-    public APDUUnconfirmedRequestBuilder(
+    public APDUUnconfirmedRequestBuilderImpl(
         BACnetUnconfirmedServiceRequest serviceRequest, Integer apduLength, Byte reservedField0) {
       this.serviceRequest = serviceRequest;
       this.apduLength = apduLength;

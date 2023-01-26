@@ -72,7 +72,7 @@ public class ApduDataExtFileStreamInfoReport extends ApduDataExt implements Mess
     return lengthInBits;
   }
 
-  public static ApduDataExtFileStreamInfoReportBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtFileStreamInfoReport");
     PositionAware positionAware = readBuffer;
@@ -81,14 +81,14 @@ public class ApduDataExtFileStreamInfoReport extends ApduDataExt implements Mess
 
     readBuffer.closeContext("ApduDataExtFileStreamInfoReport");
     // Create the instance
-    return new ApduDataExtFileStreamInfoReportBuilder(length);
+    return new ApduDataExtFileStreamInfoReportBuilderImpl(length);
   }
 
-  public static class ApduDataExtFileStreamInfoReportBuilder
+  public static class ApduDataExtFileStreamInfoReportBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final Short length;
 
-    public ApduDataExtFileStreamInfoReportBuilder(Short length) {
+    public ApduDataExtFileStreamInfoReportBuilderImpl(Short length) {
 
       this.length = length;
     }

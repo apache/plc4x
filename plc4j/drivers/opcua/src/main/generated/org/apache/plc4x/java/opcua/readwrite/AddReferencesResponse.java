@@ -148,7 +148,7 @@ public class AddReferencesResponse extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static AddReferencesResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AddReferencesResponse");
     PositionAware positionAware = readBuffer;
@@ -181,11 +181,11 @@ public class AddReferencesResponse extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("AddReferencesResponse");
     // Create the instance
-    return new AddReferencesResponseBuilder(
+    return new AddReferencesResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class AddReferencesResponseBuilder
+  public static class AddReferencesResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -193,7 +193,7 @@ public class AddReferencesResponse extends ExtensionObjectDefinition implements 
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public AddReferencesResponseBuilder(
+    public AddReferencesResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<StatusCode> results,

@@ -72,8 +72,8 @@ public class PnDcp_Block_ControlOptionFactoryReset extends PnDcp_Block implement
     return lengthInBits;
   }
 
-  public static PnDcp_Block_ControlOptionFactoryResetBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnDcp_Block_ControlOptionFactoryReset");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -81,13 +81,13 @@ public class PnDcp_Block_ControlOptionFactoryReset extends PnDcp_Block implement
 
     readBuffer.closeContext("PnDcp_Block_ControlOptionFactoryReset");
     // Create the instance
-    return new PnDcp_Block_ControlOptionFactoryResetBuilder();
+    return new PnDcp_Block_ControlOptionFactoryResetBuilderImpl();
   }
 
-  public static class PnDcp_Block_ControlOptionFactoryResetBuilder
+  public static class PnDcp_Block_ControlOptionFactoryResetBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_ControlOptionFactoryResetBuilder() {}
+    public PnDcp_Block_ControlOptionFactoryResetBuilderImpl() {}
 
     public PnDcp_Block_ControlOptionFactoryReset build() {
       PnDcp_Block_ControlOptionFactoryReset pnDcp_Block_ControlOptionFactoryReset =

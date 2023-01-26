@@ -148,7 +148,7 @@ public class DeleteNodesResponse extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static DeleteNodesResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DeleteNodesResponse");
     PositionAware positionAware = readBuffer;
@@ -181,11 +181,11 @@ public class DeleteNodesResponse extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("DeleteNodesResponse");
     // Create the instance
-    return new DeleteNodesResponseBuilder(
+    return new DeleteNodesResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class DeleteNodesResponseBuilder
+  public static class DeleteNodesResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -193,7 +193,7 @@ public class DeleteNodesResponse extends ExtensionObjectDefinition implements Me
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public DeleteNodesResponseBuilder(
+    public DeleteNodesResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<StatusCode> results,

@@ -109,7 +109,7 @@ public class BACnetConstructedDataVendorName extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataVendorNameBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,16 +134,17 @@ public class BACnetConstructedDataVendorName extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataVendorName");
     // Create the instance
-    return new BACnetConstructedDataVendorNameBuilder(vendorName, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataVendorNameBuilderImpl(
+        vendorName, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataVendorNameBuilder
+  public static class BACnetConstructedDataVendorNameBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString vendorName;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataVendorNameBuilder(
+    public BACnetConstructedDataVendorNameBuilderImpl(
         BACnetApplicationTagCharacterString vendorName,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

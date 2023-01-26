@@ -105,7 +105,7 @@ public class BACnetConstructedDataActiveCOVMultipleSubscriptions extends BACnetC
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -129,17 +129,17 @@ public class BACnetConstructedDataActiveCOVMultipleSubscriptions extends BACnetC
 
     readBuffer.closeContext("BACnetConstructedDataActiveCOVMultipleSubscriptions");
     // Create the instance
-    return new BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder(
+    return new BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilderImpl(
         activeCOVMultipleSubscriptions, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder
+  public static class BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetCOVMultipleSubscription> activeCOVMultipleSubscriptions;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder(
+    public BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilderImpl(
         List<BACnetCOVMultipleSubscription> activeCOVMultipleSubscriptions,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

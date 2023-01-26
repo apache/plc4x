@@ -68,7 +68,7 @@ public class MediaTransportControlDataStatusRequest extends MediaTransportContro
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataStatusRequestBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataStatusRequest");
     PositionAware positionAware = readBuffer;
@@ -77,13 +77,13 @@ public class MediaTransportControlDataStatusRequest extends MediaTransportContro
 
     readBuffer.closeContext("MediaTransportControlDataStatusRequest");
     // Create the instance
-    return new MediaTransportControlDataStatusRequestBuilder();
+    return new MediaTransportControlDataStatusRequestBuilderImpl();
   }
 
-  public static class MediaTransportControlDataStatusRequestBuilder
+  public static class MediaTransportControlDataStatusRequestBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
 
-    public MediaTransportControlDataStatusRequestBuilder() {}
+    public MediaTransportControlDataStatusRequestBuilderImpl() {}
 
     public MediaTransportControlDataStatusRequest build(
         MediaTransportControlCommandTypeContainer commandTypeContainer, byte mediaLinkGroup) {

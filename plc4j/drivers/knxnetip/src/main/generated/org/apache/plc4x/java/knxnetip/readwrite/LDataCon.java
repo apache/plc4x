@@ -121,7 +121,7 @@ public class LDataCon extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static LDataConBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("LDataCon");
     PositionAware positionAware = readBuffer;
@@ -145,16 +145,17 @@ public class LDataCon extends CEMI implements Message {
 
     readBuffer.closeContext("LDataCon");
     // Create the instance
-    return new LDataConBuilder(additionalInformationLength, additionalInformation, dataFrame, size);
+    return new LDataConBuilderImpl(
+        additionalInformationLength, additionalInformation, dataFrame, size);
   }
 
-  public static class LDataConBuilder implements CEMI.CEMIBuilder {
+  public static class LDataConBuilderImpl implements CEMI.CEMIBuilder {
     private final short additionalInformationLength;
     private final List<CEMIAdditionalInformation> additionalInformation;
     private final LDataFrame dataFrame;
     private final Integer size;
 
-    public LDataConBuilder(
+    public LDataConBuilderImpl(
         short additionalInformationLength,
         List<CEMIAdditionalInformation> additionalInformation,
         LDataFrame dataFrame,

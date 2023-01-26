@@ -125,15 +125,17 @@ public abstract class COTPParameter implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     COTPParameterBuilder builder = null;
     if (EvaluationHelper.equals(parameterType, (short) 0xC0)) {
-      builder = COTPParameterTpduSize.staticParseBuilder(readBuffer, rest);
+      builder = COTPParameterTpduSize.staticParseCOTPParameterBuilder(readBuffer, rest);
     } else if (EvaluationHelper.equals(parameterType, (short) 0xC1)) {
-      builder = COTPParameterCallingTsap.staticParseBuilder(readBuffer, rest);
+      builder = COTPParameterCallingTsap.staticParseCOTPParameterBuilder(readBuffer, rest);
     } else if (EvaluationHelper.equals(parameterType, (short) 0xC2)) {
-      builder = COTPParameterCalledTsap.staticParseBuilder(readBuffer, rest);
+      builder = COTPParameterCalledTsap.staticParseCOTPParameterBuilder(readBuffer, rest);
     } else if (EvaluationHelper.equals(parameterType, (short) 0xC3)) {
-      builder = COTPParameterChecksum.staticParseBuilder(readBuffer, rest);
+      builder = COTPParameterChecksum.staticParseCOTPParameterBuilder(readBuffer, rest);
     } else if (EvaluationHelper.equals(parameterType, (short) 0xE0)) {
-      builder = COTPParameterDisconnectAdditionalInformation.staticParseBuilder(readBuffer, rest);
+      builder =
+          COTPParameterDisconnectAdditionalInformation.staticParseCOTPParameterBuilder(
+              readBuffer, rest);
     }
     if (builder == null) {
       throw new ParseException(
@@ -151,7 +153,7 @@ public abstract class COTPParameter implements Message {
     return _cOTPParameter;
   }
 
-  public static interface COTPParameterBuilder {
+  public interface COTPParameterBuilder {
     COTPParameter build(Short rest);
   }
 

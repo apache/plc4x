@@ -72,8 +72,8 @@ public class ApduDataIndividualAddressWrite extends ApduData implements Message 
     return lengthInBits;
   }
 
-  public static ApduDataIndividualAddressWriteBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short dataLength) throws ParseException {
+  public static ApduDataBuilder staticParseApduDataBuilder(ReadBuffer readBuffer, Short dataLength)
+      throws ParseException {
     readBuffer.pullContext("ApduDataIndividualAddressWrite");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -81,13 +81,14 @@ public class ApduDataIndividualAddressWrite extends ApduData implements Message 
 
     readBuffer.closeContext("ApduDataIndividualAddressWrite");
     // Create the instance
-    return new ApduDataIndividualAddressWriteBuilder(dataLength);
+    return new ApduDataIndividualAddressWriteBuilderImpl(dataLength);
   }
 
-  public static class ApduDataIndividualAddressWriteBuilder implements ApduData.ApduDataBuilder {
+  public static class ApduDataIndividualAddressWriteBuilderImpl
+      implements ApduData.ApduDataBuilder {
     private final Short dataLength;
 
-    public ApduDataIndividualAddressWriteBuilder(Short dataLength) {
+    public ApduDataIndividualAddressWriteBuilderImpl(Short dataLength) {
 
       this.dataLength = dataLength;
     }

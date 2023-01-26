@@ -89,7 +89,7 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
     return lengthInBits;
   }
 
-  public static BACnetLogRecordLogDatumFailureBuilder staticParseBuilder(
+  public static BACnetLogRecordLogDatumBuilder staticParseBACnetLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumFailure");
     PositionAware positionAware = readBuffer;
@@ -104,15 +104,15 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
 
     readBuffer.closeContext("BACnetLogRecordLogDatumFailure");
     // Create the instance
-    return new BACnetLogRecordLogDatumFailureBuilder(failure, tagNumber);
+    return new BACnetLogRecordLogDatumFailureBuilderImpl(failure, tagNumber);
   }
 
-  public static class BACnetLogRecordLogDatumFailureBuilder
+  public static class BACnetLogRecordLogDatumFailureBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final ErrorEnclosed failure;
     private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumFailureBuilder(ErrorEnclosed failure, Short tagNumber) {
+    public BACnetLogRecordLogDatumFailureBuilderImpl(ErrorEnclosed failure, Short tagNumber) {
 
       this.failure = failure;
       this.tagNumber = tagNumber;

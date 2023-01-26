@@ -72,7 +72,7 @@ public class SysexCommandCapabilityQuery extends SysexCommand implements Message
     return lengthInBits;
   }
 
-  public static SysexCommandCapabilityQueryBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandCapabilityQuery");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class SysexCommandCapabilityQuery extends SysexCommand implements Message
 
     readBuffer.closeContext("SysexCommandCapabilityQuery");
     // Create the instance
-    return new SysexCommandCapabilityQueryBuilder();
+    return new SysexCommandCapabilityQueryBuilderImpl();
   }
 
-  public static class SysexCommandCapabilityQueryBuilder
+  public static class SysexCommandCapabilityQueryBuilderImpl
       implements SysexCommand.SysexCommandBuilder {
 
-    public SysexCommandCapabilityQueryBuilder() {}
+    public SysexCommandCapabilityQueryBuilderImpl() {}
 
     public SysexCommandCapabilityQuery build() {
       SysexCommandCapabilityQuery sysexCommandCapabilityQuery = new SysexCommandCapabilityQuery();

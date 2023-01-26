@@ -136,8 +136,9 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequestIAmBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
+  public static BACnetUnconfirmedServiceRequestBuilder
+      staticParseBACnetUnconfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestIAm");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -181,7 +182,7 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestIAm");
     // Create the instance
-    return new BACnetUnconfirmedServiceRequestIAmBuilder(
+    return new BACnetUnconfirmedServiceRequestIAmBuilderImpl(
         deviceIdentifier,
         maximumApduLengthAcceptedLength,
         segmentationSupported,
@@ -189,7 +190,7 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
         serviceRequestLength);
   }
 
-  public static class BACnetUnconfirmedServiceRequestIAmBuilder
+  public static class BACnetUnconfirmedServiceRequestIAmBuilderImpl
       implements BACnetUnconfirmedServiceRequest.BACnetUnconfirmedServiceRequestBuilder {
     private final BACnetApplicationTagObjectIdentifier deviceIdentifier;
     private final BACnetApplicationTagUnsignedInteger maximumApduLengthAcceptedLength;
@@ -197,7 +198,7 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
     private final BACnetVendorIdTagged vendorId;
     private final Integer serviceRequestLength;
 
-    public BACnetUnconfirmedServiceRequestIAmBuilder(
+    public BACnetUnconfirmedServiceRequestIAmBuilderImpl(
         BACnetApplicationTagObjectIdentifier deviceIdentifier,
         BACnetApplicationTagUnsignedInteger maximumApduLengthAcceptedLength,
         BACnetSegmentationTagged segmentationSupported,

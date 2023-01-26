@@ -162,8 +162,8 @@ public class ClockAndTimekeepingDataUpdateTime extends ClockAndTimekeepingData i
     return lengthInBits;
   }
 
-  public static ClockAndTimekeepingDataUpdateTimeBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static ClockAndTimekeepingDataBuilder staticParseClockAndTimekeepingDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ClockAndTimekeepingDataUpdateTime");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -189,17 +189,17 @@ public class ClockAndTimekeepingDataUpdateTime extends ClockAndTimekeepingData i
 
     readBuffer.closeContext("ClockAndTimekeepingDataUpdateTime");
     // Create the instance
-    return new ClockAndTimekeepingDataUpdateTimeBuilder(hours, minute, second, daylightSaving);
+    return new ClockAndTimekeepingDataUpdateTimeBuilderImpl(hours, minute, second, daylightSaving);
   }
 
-  public static class ClockAndTimekeepingDataUpdateTimeBuilder
+  public static class ClockAndTimekeepingDataUpdateTimeBuilderImpl
       implements ClockAndTimekeepingData.ClockAndTimekeepingDataBuilder {
     private final short hours;
     private final short minute;
     private final short second;
     private final byte daylightSaving;
 
-    public ClockAndTimekeepingDataUpdateTimeBuilder(
+    public ClockAndTimekeepingDataUpdateTimeBuilderImpl(
         short hours, short minute, short second, byte daylightSaving) {
 
       this.hours = hours;

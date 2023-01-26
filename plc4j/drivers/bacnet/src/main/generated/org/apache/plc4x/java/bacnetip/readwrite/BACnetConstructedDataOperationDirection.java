@@ -111,7 +111,7 @@ public class BACnetConstructedDataOperationDirection extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataOperationDirectionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,17 +137,17 @@ public class BACnetConstructedDataOperationDirection extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataOperationDirection");
     // Create the instance
-    return new BACnetConstructedDataOperationDirectionBuilder(
+    return new BACnetConstructedDataOperationDirectionBuilderImpl(
         operationDirection, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataOperationDirectionBuilder
+  public static class BACnetConstructedDataOperationDirectionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEscalatorOperationDirectionTagged operationDirection;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataOperationDirectionBuilder(
+    public BACnetConstructedDataOperationDirectionBuilderImpl(
         BACnetEscalatorOperationDirectionTagged operationDirection,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

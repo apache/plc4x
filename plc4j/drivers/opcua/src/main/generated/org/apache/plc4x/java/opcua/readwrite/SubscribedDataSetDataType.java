@@ -69,7 +69,7 @@ public class SubscribedDataSetDataType extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static SubscribedDataSetDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SubscribedDataSetDataType");
     PositionAware positionAware = readBuffer;
@@ -78,13 +78,13 @@ public class SubscribedDataSetDataType extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("SubscribedDataSetDataType");
     // Create the instance
-    return new SubscribedDataSetDataTypeBuilder();
+    return new SubscribedDataSetDataTypeBuilderImpl();
   }
 
-  public static class SubscribedDataSetDataTypeBuilder
+  public static class SubscribedDataSetDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public SubscribedDataSetDataTypeBuilder() {}
+    public SubscribedDataSetDataTypeBuilderImpl() {}
 
     public SubscribedDataSetDataType build() {
       SubscribedDataSetDataType subscribedDataSetDataType = new SubscribedDataSetDataType();

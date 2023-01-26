@@ -97,7 +97,7 @@ public class CIPEncapsulationReadResponse extends CIPEncapsulationPacket impleme
     return lengthInBits;
   }
 
-  public static CIPEncapsulationReadResponseBuilder staticParseBuilder(
+  public static CIPEncapsulationPacketBuilder staticParseCIPEncapsulationPacketBuilder(
       ReadBuffer readBuffer, Integer packetLen) throws ParseException {
     readBuffer.pullContext("CIPEncapsulationReadResponse");
     PositionAware positionAware = readBuffer;
@@ -113,15 +113,15 @@ public class CIPEncapsulationReadResponse extends CIPEncapsulationPacket impleme
 
     readBuffer.closeContext("CIPEncapsulationReadResponse");
     // Create the instance
-    return new CIPEncapsulationReadResponseBuilder(response, packetLen);
+    return new CIPEncapsulationReadResponseBuilderImpl(response, packetLen);
   }
 
-  public static class CIPEncapsulationReadResponseBuilder
+  public static class CIPEncapsulationReadResponseBuilderImpl
       implements CIPEncapsulationPacket.CIPEncapsulationPacketBuilder {
     private final DF1ResponseMessage response;
     private final Integer packetLen;
 
-    public CIPEncapsulationReadResponseBuilder(DF1ResponseMessage response, Integer packetLen) {
+    public CIPEncapsulationReadResponseBuilderImpl(DF1ResponseMessage response, Integer packetLen) {
 
       this.response = response;
       this.packetLen = packetLen;

@@ -82,8 +82,8 @@ public class KnxNetRemoteConfigurationAndDiagnosis extends ServiceId implements 
     return lengthInBits;
   }
 
-  public static KnxNetRemoteConfigurationAndDiagnosisBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static ServiceIdBuilder staticParseServiceIdBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("KnxNetRemoteConfigurationAndDiagnosis");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -93,14 +93,14 @@ public class KnxNetRemoteConfigurationAndDiagnosis extends ServiceId implements 
 
     readBuffer.closeContext("KnxNetRemoteConfigurationAndDiagnosis");
     // Create the instance
-    return new KnxNetRemoteConfigurationAndDiagnosisBuilder(version);
+    return new KnxNetRemoteConfigurationAndDiagnosisBuilderImpl(version);
   }
 
-  public static class KnxNetRemoteConfigurationAndDiagnosisBuilder
+  public static class KnxNetRemoteConfigurationAndDiagnosisBuilderImpl
       implements ServiceId.ServiceIdBuilder {
     private final short version;
 
-    public KnxNetRemoteConfigurationAndDiagnosisBuilder(short version) {
+    public KnxNetRemoteConfigurationAndDiagnosisBuilderImpl(short version) {
 
       this.version = version;
     }

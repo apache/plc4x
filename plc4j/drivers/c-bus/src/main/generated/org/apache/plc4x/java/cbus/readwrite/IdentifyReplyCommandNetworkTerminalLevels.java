@@ -91,7 +91,7 @@ public class IdentifyReplyCommandNetworkTerminalLevels extends IdentifyReplyComm
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandNetworkTerminalLevelsBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandNetworkTerminalLevels");
     PositionAware positionAware = readBuffer;
@@ -103,15 +103,16 @@ public class IdentifyReplyCommandNetworkTerminalLevels extends IdentifyReplyComm
 
     readBuffer.closeContext("IdentifyReplyCommandNetworkTerminalLevels");
     // Create the instance
-    return new IdentifyReplyCommandNetworkTerminalLevelsBuilder(networkTerminalLevels, numBytes);
+    return new IdentifyReplyCommandNetworkTerminalLevelsBuilderImpl(
+        networkTerminalLevels, numBytes);
   }
 
-  public static class IdentifyReplyCommandNetworkTerminalLevelsBuilder
+  public static class IdentifyReplyCommandNetworkTerminalLevelsBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] networkTerminalLevels;
     private final Short numBytes;
 
-    public IdentifyReplyCommandNetworkTerminalLevelsBuilder(
+    public IdentifyReplyCommandNetworkTerminalLevelsBuilderImpl(
         byte[] networkTerminalLevels, Short numBytes) {
 
       this.networkTerminalLevels = networkTerminalLevels;

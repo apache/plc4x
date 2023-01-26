@@ -117,16 +117,19 @@ public abstract class S7Payload implements Message {
     S7PayloadBuilder builder = null;
     if (EvaluationHelper.equals(parameter.getParameterType(), (short) 0x04)
         && EvaluationHelper.equals(messageType, (short) 0x03)) {
-      builder = S7PayloadReadVarResponse.staticParseBuilder(readBuffer, messageType, parameter);
+      builder =
+          S7PayloadReadVarResponse.staticParseS7PayloadBuilder(readBuffer, messageType, parameter);
     } else if (EvaluationHelper.equals(parameter.getParameterType(), (short) 0x05)
         && EvaluationHelper.equals(messageType, (short) 0x01)) {
-      builder = S7PayloadWriteVarRequest.staticParseBuilder(readBuffer, messageType, parameter);
+      builder =
+          S7PayloadWriteVarRequest.staticParseS7PayloadBuilder(readBuffer, messageType, parameter);
     } else if (EvaluationHelper.equals(parameter.getParameterType(), (short) 0x05)
         && EvaluationHelper.equals(messageType, (short) 0x03)) {
-      builder = S7PayloadWriteVarResponse.staticParseBuilder(readBuffer, messageType, parameter);
+      builder =
+          S7PayloadWriteVarResponse.staticParseS7PayloadBuilder(readBuffer, messageType, parameter);
     } else if (EvaluationHelper.equals(parameter.getParameterType(), (short) 0x00)
         && EvaluationHelper.equals(messageType, (short) 0x07)) {
-      builder = S7PayloadUserData.staticParseBuilder(readBuffer, messageType, parameter);
+      builder = S7PayloadUserData.staticParseS7PayloadBuilder(readBuffer, messageType, parameter);
     }
     if (builder == null) {
       throw new ParseException(
@@ -147,7 +150,7 @@ public abstract class S7Payload implements Message {
     return _s7Payload;
   }
 
-  public static interface S7PayloadBuilder {
+  public interface S7PayloadBuilder {
     S7Payload build(S7Parameter parameter);
   }
 

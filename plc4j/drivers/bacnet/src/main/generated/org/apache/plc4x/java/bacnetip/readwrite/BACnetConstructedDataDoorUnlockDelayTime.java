@@ -111,7 +111,7 @@ public class BACnetConstructedDataDoorUnlockDelayTime extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDoorUnlockDelayTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,17 +137,17 @@ public class BACnetConstructedDataDoorUnlockDelayTime extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataDoorUnlockDelayTime");
     // Create the instance
-    return new BACnetConstructedDataDoorUnlockDelayTimeBuilder(
+    return new BACnetConstructedDataDoorUnlockDelayTimeBuilderImpl(
         doorUnlockDelayTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDoorUnlockDelayTimeBuilder
+  public static class BACnetConstructedDataDoorUnlockDelayTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger doorUnlockDelayTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDoorUnlockDelayTimeBuilder(
+    public BACnetConstructedDataDoorUnlockDelayTimeBuilderImpl(
         BACnetApplicationTagUnsignedInteger doorUnlockDelayTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

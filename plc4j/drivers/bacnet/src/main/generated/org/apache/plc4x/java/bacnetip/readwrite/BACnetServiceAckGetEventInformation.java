@@ -103,7 +103,7 @@ public class BACnetServiceAckGetEventInformation extends BACnetServiceAck implem
     return lengthInBits;
   }
 
-  public static BACnetServiceAckGetEventInformationBuilder staticParseBuilder(
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckGetEventInformation");
     PositionAware positionAware = readBuffer;
@@ -128,17 +128,17 @@ public class BACnetServiceAckGetEventInformation extends BACnetServiceAck implem
 
     readBuffer.closeContext("BACnetServiceAckGetEventInformation");
     // Create the instance
-    return new BACnetServiceAckGetEventInformationBuilder(
+    return new BACnetServiceAckGetEventInformationBuilderImpl(
         listOfEventSummaries, moreEvents, serviceAckLength);
   }
 
-  public static class BACnetServiceAckGetEventInformationBuilder
+  public static class BACnetServiceAckGetEventInformationBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetEventSummariesList listOfEventSummaries;
     private final BACnetContextTagBoolean moreEvents;
     private final Long serviceAckLength;
 
-    public BACnetServiceAckGetEventInformationBuilder(
+    public BACnetServiceAckGetEventInformationBuilderImpl(
         BACnetEventSummariesList listOfEventSummaries,
         BACnetContextTagBoolean moreEvents,
         Long serviceAckLength) {

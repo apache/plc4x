@@ -84,7 +84,7 @@ public class BACnetConstructedDataChannelAll extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataChannelAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -103,15 +103,15 @@ public class BACnetConstructedDataChannelAll extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataChannelAll");
     // Create the instance
-    return new BACnetConstructedDataChannelAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataChannelAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataChannelAllBuilder
+  public static class BACnetConstructedDataChannelAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataChannelAllBuilder(
+    public BACnetConstructedDataChannelAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
 
       this.tagNumber = tagNumber;

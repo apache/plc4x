@@ -109,7 +109,7 @@ public class BACnetConstructedDataAbsenteeLimit extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAbsenteeLimitBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataAbsenteeLimit extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataAbsenteeLimit");
     // Create the instance
-    return new BACnetConstructedDataAbsenteeLimitBuilder(
+    return new BACnetConstructedDataAbsenteeLimitBuilderImpl(
         absenteeLimit, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAbsenteeLimitBuilder
+  public static class BACnetConstructedDataAbsenteeLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger absenteeLimit;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAbsenteeLimitBuilder(
+    public BACnetConstructedDataAbsenteeLimitBuilderImpl(
         BACnetApplicationTagUnsignedInteger absenteeLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

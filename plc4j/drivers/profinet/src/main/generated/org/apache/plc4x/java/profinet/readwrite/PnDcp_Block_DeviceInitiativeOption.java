@@ -72,7 +72,7 @@ public class PnDcp_Block_DeviceInitiativeOption extends PnDcp_Block implements M
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DeviceInitiativeOptionBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DeviceInitiativeOption");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class PnDcp_Block_DeviceInitiativeOption extends PnDcp_Block implements M
 
     readBuffer.closeContext("PnDcp_Block_DeviceInitiativeOption");
     // Create the instance
-    return new PnDcp_Block_DeviceInitiativeOptionBuilder();
+    return new PnDcp_Block_DeviceInitiativeOptionBuilderImpl();
   }
 
-  public static class PnDcp_Block_DeviceInitiativeOptionBuilder
+  public static class PnDcp_Block_DeviceInitiativeOptionBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_DeviceInitiativeOptionBuilder() {}
+    public PnDcp_Block_DeviceInitiativeOptionBuilderImpl() {}
 
     public PnDcp_Block_DeviceInitiativeOption build() {
       PnDcp_Block_DeviceInitiativeOption pnDcp_Block_DeviceInitiativeOption =

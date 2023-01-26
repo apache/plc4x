@@ -171,7 +171,7 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_Pdu_IdentifyResBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_PduBuilder staticParsePnDcp_PduBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Pdu_IdentifyRes");
     PositionAware positionAware = readBuffer;
@@ -208,11 +208,11 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
 
     readBuffer.closeContext("PnDcp_Pdu_IdentifyRes");
     // Create the instance
-    return new PnDcp_Pdu_IdentifyResBuilder(
+    return new PnDcp_Pdu_IdentifyResBuilderImpl(
         notSupported, xid, blocks, reservedField0, reservedField1, reservedField2);
   }
 
-  public static class PnDcp_Pdu_IdentifyResBuilder implements PnDcp_Pdu.PnDcp_PduBuilder {
+  public static class PnDcp_Pdu_IdentifyResBuilderImpl implements PnDcp_Pdu.PnDcp_PduBuilder {
     private final boolean notSupported;
     private final long xid;
     private final List<PnDcp_Block> blocks;
@@ -220,7 +220,7 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
     private final Byte reservedField1;
     private final Integer reservedField2;
 
-    public PnDcp_Pdu_IdentifyResBuilder(
+    public PnDcp_Pdu_IdentifyResBuilderImpl(
         boolean notSupported,
         long xid,
         List<PnDcp_Block> blocks,

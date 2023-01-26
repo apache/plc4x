@@ -161,7 +161,7 @@ public class RequestCommand extends Request implements Message {
     return lengthInBits;
   }
 
-  public static RequestCommandBuilder staticParseBuilder(
+  public static RequestBuilder staticParseRequestBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("RequestCommand");
     PositionAware positionAware = readBuffer;
@@ -198,16 +198,16 @@ public class RequestCommand extends Request implements Message {
 
     readBuffer.closeContext("RequestCommand");
     // Create the instance
-    return new RequestCommandBuilder(cbusCommand, chksum, alpha, cBusOptions);
+    return new RequestCommandBuilderImpl(cbusCommand, chksum, alpha, cBusOptions);
   }
 
-  public static class RequestCommandBuilder implements Request.RequestBuilder {
+  public static class RequestCommandBuilderImpl implements Request.RequestBuilder {
     private final CBusCommand cbusCommand;
     private final Checksum chksum;
     private final Alpha alpha;
     private final CBusOptions cBusOptions;
 
-    public RequestCommandBuilder(
+    public RequestCommandBuilderImpl(
         CBusCommand cbusCommand, Checksum chksum, Alpha alpha, CBusOptions cBusOptions) {
 
       this.cbusCommand = cbusCommand;

@@ -135,7 +135,7 @@ public class BACnetConstructedDataObjectList extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataObjectListBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -173,18 +173,18 @@ public class BACnetConstructedDataObjectList extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataObjectList");
     // Create the instance
-    return new BACnetConstructedDataObjectListBuilder(
+    return new BACnetConstructedDataObjectListBuilderImpl(
         numberOfDataElements, objectList, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataObjectListBuilder
+  public static class BACnetConstructedDataObjectListBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagObjectIdentifier> objectList;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataObjectListBuilder(
+    public BACnetConstructedDataObjectListBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagObjectIdentifier> objectList,
         Short tagNumber,

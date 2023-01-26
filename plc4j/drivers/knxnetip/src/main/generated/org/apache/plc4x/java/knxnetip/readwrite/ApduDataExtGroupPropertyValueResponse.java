@@ -72,7 +72,7 @@ public class ApduDataExtGroupPropertyValueResponse extends ApduDataExt implement
     return lengthInBits;
   }
 
-  public static ApduDataExtGroupPropertyValueResponseBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtGroupPropertyValueResponse");
     PositionAware positionAware = readBuffer;
@@ -81,14 +81,14 @@ public class ApduDataExtGroupPropertyValueResponse extends ApduDataExt implement
 
     readBuffer.closeContext("ApduDataExtGroupPropertyValueResponse");
     // Create the instance
-    return new ApduDataExtGroupPropertyValueResponseBuilder(length);
+    return new ApduDataExtGroupPropertyValueResponseBuilderImpl(length);
   }
 
-  public static class ApduDataExtGroupPropertyValueResponseBuilder
+  public static class ApduDataExtGroupPropertyValueResponseBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final Short length;
 
-    public ApduDataExtGroupPropertyValueResponseBuilder(Short length) {
+    public ApduDataExtGroupPropertyValueResponseBuilderImpl(Short length) {
 
       this.length = length;
     }

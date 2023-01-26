@@ -95,7 +95,7 @@ public class ComplexNumberType extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static ComplexNumberTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ComplexNumberType");
     PositionAware positionAware = readBuffer;
@@ -108,15 +108,15 @@ public class ComplexNumberType extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("ComplexNumberType");
     // Create the instance
-    return new ComplexNumberTypeBuilder(real, imaginary);
+    return new ComplexNumberTypeBuilderImpl(real, imaginary);
   }
 
-  public static class ComplexNumberTypeBuilder
+  public static class ComplexNumberTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final float real;
     private final float imaginary;
 
-    public ComplexNumberTypeBuilder(float real, float imaginary) {
+    public ComplexNumberTypeBuilderImpl(float real, float imaginary) {
 
       this.real = real;
       this.imaginary = imaginary;

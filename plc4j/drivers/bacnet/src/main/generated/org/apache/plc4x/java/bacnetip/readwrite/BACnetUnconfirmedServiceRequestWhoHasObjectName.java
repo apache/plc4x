@@ -82,8 +82,9 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectName
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
+      staticParseBACnetUnconfirmedServiceRequestWhoHasObjectBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestWhoHasObjectName");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -103,15 +104,15 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectName
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestWhoHasObjectName");
     // Create the instance
-    return new BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder(objectName);
+    return new BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilderImpl(objectName);
   }
 
-  public static class BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder
+  public static class BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilderImpl
       implements BACnetUnconfirmedServiceRequestWhoHasObject
           .BACnetUnconfirmedServiceRequestWhoHasObjectBuilder {
     private final BACnetContextTagCharacterString objectName;
 
-    public BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder(
+    public BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilderImpl(
         BACnetContextTagCharacterString objectName) {
 
       this.objectName = objectName;

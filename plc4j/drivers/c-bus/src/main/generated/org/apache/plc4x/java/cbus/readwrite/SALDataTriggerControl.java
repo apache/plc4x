@@ -83,7 +83,7 @@ public class SALDataTriggerControl extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataTriggerControlBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataTriggerControl");
     PositionAware positionAware = readBuffer;
@@ -98,13 +98,13 @@ public class SALDataTriggerControl extends SALData implements Message {
 
     readBuffer.closeContext("SALDataTriggerControl");
     // Create the instance
-    return new SALDataTriggerControlBuilder(triggerControlData);
+    return new SALDataTriggerControlBuilderImpl(triggerControlData);
   }
 
-  public static class SALDataTriggerControlBuilder implements SALData.SALDataBuilder {
+  public static class SALDataTriggerControlBuilderImpl implements SALData.SALDataBuilder {
     private final TriggerControlData triggerControlData;
 
-    public SALDataTriggerControlBuilder(TriggerControlData triggerControlData) {
+    public SALDataTriggerControlBuilderImpl(TriggerControlData triggerControlData) {
 
       this.triggerControlData = triggerControlData;
     }

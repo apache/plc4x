@@ -67,7 +67,7 @@ public class AccessControlDataLockAccessPoint extends AccessControlData implemen
     return lengthInBits;
   }
 
-  public static AccessControlDataLockAccessPointBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AccessControlDataBuilder staticParseAccessControlDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AccessControlDataLockAccessPoint");
     PositionAware positionAware = readBuffer;
@@ -76,13 +76,13 @@ public class AccessControlDataLockAccessPoint extends AccessControlData implemen
 
     readBuffer.closeContext("AccessControlDataLockAccessPoint");
     // Create the instance
-    return new AccessControlDataLockAccessPointBuilder();
+    return new AccessControlDataLockAccessPointBuilderImpl();
   }
 
-  public static class AccessControlDataLockAccessPointBuilder
+  public static class AccessControlDataLockAccessPointBuilderImpl
       implements AccessControlData.AccessControlDataBuilder {
 
-    public AccessControlDataLockAccessPointBuilder() {}
+    public AccessControlDataLockAccessPointBuilderImpl() {}
 
     public AccessControlDataLockAccessPoint build(
         AccessControlCommandTypeContainer commandTypeContainer,

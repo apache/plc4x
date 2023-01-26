@@ -103,7 +103,7 @@ public class BACnetConstructedDataMembers extends BACnetConstructedData implemen
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMembersBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -127,16 +127,16 @@ public class BACnetConstructedDataMembers extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataMembers");
     // Create the instance
-    return new BACnetConstructedDataMembersBuilder(members, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMembersBuilderImpl(members, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMembersBuilder
+  public static class BACnetConstructedDataMembersBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDeviceObjectReference> members;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMembersBuilder(
+    public BACnetConstructedDataMembersBuilderImpl(
         List<BACnetDeviceObjectReference> members,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

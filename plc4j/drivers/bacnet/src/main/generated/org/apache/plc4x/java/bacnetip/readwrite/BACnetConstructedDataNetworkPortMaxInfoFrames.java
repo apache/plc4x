@@ -110,7 +110,7 @@ public class BACnetConstructedDataNetworkPortMaxInfoFrames extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNetworkPortMaxInfoFramesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,17 +135,17 @@ public class BACnetConstructedDataNetworkPortMaxInfoFrames extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataNetworkPortMaxInfoFrames");
     // Create the instance
-    return new BACnetConstructedDataNetworkPortMaxInfoFramesBuilder(
+    return new BACnetConstructedDataNetworkPortMaxInfoFramesBuilderImpl(
         maxInfoFrames, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNetworkPortMaxInfoFramesBuilder
+  public static class BACnetConstructedDataNetworkPortMaxInfoFramesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger maxInfoFrames;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNetworkPortMaxInfoFramesBuilder(
+    public BACnetConstructedDataNetworkPortMaxInfoFramesBuilderImpl(
         BACnetApplicationTagUnsignedInteger maxInfoFrames,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

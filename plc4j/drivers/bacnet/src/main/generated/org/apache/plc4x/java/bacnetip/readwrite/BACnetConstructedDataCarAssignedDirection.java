@@ -111,7 +111,7 @@ public class BACnetConstructedDataCarAssignedDirection extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCarAssignedDirectionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -136,17 +136,17 @@ public class BACnetConstructedDataCarAssignedDirection extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataCarAssignedDirection");
     // Create the instance
-    return new BACnetConstructedDataCarAssignedDirectionBuilder(
+    return new BACnetConstructedDataCarAssignedDirectionBuilderImpl(
         assignedDirection, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCarAssignedDirectionBuilder
+  public static class BACnetConstructedDataCarAssignedDirectionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLiftCarDirectionTagged assignedDirection;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCarAssignedDirectionBuilder(
+    public BACnetConstructedDataCarAssignedDirectionBuilderImpl(
         BACnetLiftCarDirectionTagged assignedDirection,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

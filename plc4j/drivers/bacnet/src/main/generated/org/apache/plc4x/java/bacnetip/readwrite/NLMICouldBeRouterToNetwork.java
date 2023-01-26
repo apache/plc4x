@@ -100,8 +100,8 @@ public class NLMICouldBeRouterToNetwork extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMICouldBeRouterToNetworkBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMICouldBeRouterToNetwork");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -114,16 +114,16 @@ public class NLMICouldBeRouterToNetwork extends NLM implements Message {
 
     readBuffer.closeContext("NLMICouldBeRouterToNetwork");
     // Create the instance
-    return new NLMICouldBeRouterToNetworkBuilder(
+    return new NLMICouldBeRouterToNetworkBuilderImpl(
         destinationNetworkAddress, performanceIndex, apduLength);
   }
 
-  public static class NLMICouldBeRouterToNetworkBuilder implements NLM.NLMBuilder {
+  public static class NLMICouldBeRouterToNetworkBuilderImpl implements NLM.NLMBuilder {
     private final int destinationNetworkAddress;
     private final short performanceIndex;
     private final Integer apduLength;
 
-    public NLMICouldBeRouterToNetworkBuilder(
+    public NLMICouldBeRouterToNetworkBuilderImpl(
         int destinationNetworkAddress, short performanceIndex, Integer apduLength) {
 
       this.destinationNetworkAddress = destinationNetworkAddress;

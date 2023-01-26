@@ -87,7 +87,7 @@ public class IdentifyReplyCommandType extends IdentifyReplyCommand implements Me
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandTypeBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandType");
     PositionAware positionAware = readBuffer;
@@ -98,15 +98,15 @@ public class IdentifyReplyCommandType extends IdentifyReplyCommand implements Me
 
     readBuffer.closeContext("IdentifyReplyCommandType");
     // Create the instance
-    return new IdentifyReplyCommandTypeBuilder(unitType, numBytes);
+    return new IdentifyReplyCommandTypeBuilderImpl(unitType, numBytes);
   }
 
-  public static class IdentifyReplyCommandTypeBuilder
+  public static class IdentifyReplyCommandTypeBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final String unitType;
     private final Short numBytes;
 
-    public IdentifyReplyCommandTypeBuilder(String unitType, Short numBytes) {
+    public IdentifyReplyCommandTypeBuilderImpl(String unitType, Short numBytes) {
 
       this.unitType = unitType;
       this.numBytes = numBytes;

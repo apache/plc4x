@@ -96,7 +96,7 @@ public class DF1CommandResponseMessageProtectedTypedLogicalRead extends DF1Respo
     return lengthInBits;
   }
 
-  public static DF1CommandResponseMessageProtectedTypedLogicalReadBuilder staticParseBuilder(
+  public static DF1ResponseMessageBuilder staticParseDF1ResponseMessageBuilder(
       ReadBuffer readBuffer, Integer payloadLength) throws ParseException {
     readBuffer.pullContext("DF1CommandResponseMessageProtectedTypedLogicalRead");
     PositionAware positionAware = readBuffer;
@@ -108,15 +108,15 @@ public class DF1CommandResponseMessageProtectedTypedLogicalRead extends DF1Respo
 
     readBuffer.closeContext("DF1CommandResponseMessageProtectedTypedLogicalRead");
     // Create the instance
-    return new DF1CommandResponseMessageProtectedTypedLogicalReadBuilder(data, payloadLength);
+    return new DF1CommandResponseMessageProtectedTypedLogicalReadBuilderImpl(data, payloadLength);
   }
 
-  public static class DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+  public static class DF1CommandResponseMessageProtectedTypedLogicalReadBuilderImpl
       implements DF1ResponseMessage.DF1ResponseMessageBuilder {
     private final List<Short> data;
     private final Integer payloadLength;
 
-    public DF1CommandResponseMessageProtectedTypedLogicalReadBuilder(
+    public DF1CommandResponseMessageProtectedTypedLogicalReadBuilderImpl(
         List<Short> data, Integer payloadLength) {
 
       this.data = data;

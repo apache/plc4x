@@ -82,7 +82,7 @@ public class BACnetPropertyStatesTimerTransition extends BACnetPropertyStates im
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesTimerTransitionBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesTimerTransition");
     PositionAware positionAware = readBuffer;
@@ -102,14 +102,15 @@ public class BACnetPropertyStatesTimerTransition extends BACnetPropertyStates im
 
     readBuffer.closeContext("BACnetPropertyStatesTimerTransition");
     // Create the instance
-    return new BACnetPropertyStatesTimerTransitionBuilder(timerTransition);
+    return new BACnetPropertyStatesTimerTransitionBuilderImpl(timerTransition);
   }
 
-  public static class BACnetPropertyStatesTimerTransitionBuilder
+  public static class BACnetPropertyStatesTimerTransitionBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetTimerTransitionTagged timerTransition;
 
-    public BACnetPropertyStatesTimerTransitionBuilder(BACnetTimerTransitionTagged timerTransition) {
+    public BACnetPropertyStatesTimerTransitionBuilderImpl(
+        BACnetTimerTransitionTagged timerTransition) {
 
       this.timerTransition = timerTransition;
     }

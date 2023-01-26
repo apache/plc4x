@@ -81,8 +81,8 @@ public class BACnetChannelValueDate extends BACnetChannelValue implements Messag
     return lengthInBits;
   }
 
-  public static BACnetChannelValueDateBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueDate");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -97,14 +97,14 @@ public class BACnetChannelValueDate extends BACnetChannelValue implements Messag
 
     readBuffer.closeContext("BACnetChannelValueDate");
     // Create the instance
-    return new BACnetChannelValueDateBuilder(dateValue);
+    return new BACnetChannelValueDateBuilderImpl(dateValue);
   }
 
-  public static class BACnetChannelValueDateBuilder
+  public static class BACnetChannelValueDateBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagDate dateValue;
 
-    public BACnetChannelValueDateBuilder(BACnetApplicationTagDate dateValue) {
+    public BACnetChannelValueDateBuilderImpl(BACnetApplicationTagDate dateValue) {
 
       this.dateValue = dateValue;
     }

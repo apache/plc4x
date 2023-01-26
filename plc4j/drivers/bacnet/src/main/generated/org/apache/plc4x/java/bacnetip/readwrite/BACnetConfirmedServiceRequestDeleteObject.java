@@ -90,8 +90,9 @@ public class BACnetConfirmedServiceRequestDeleteObject extends BACnetConfirmedSe
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestDeleteObjectBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestDeleteObject");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -108,16 +109,16 @@ public class BACnetConfirmedServiceRequestDeleteObject extends BACnetConfirmedSe
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestDeleteObject");
     // Create the instance
-    return new BACnetConfirmedServiceRequestDeleteObjectBuilder(
+    return new BACnetConfirmedServiceRequestDeleteObjectBuilderImpl(
         objectIdentifier, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestDeleteObjectBuilder
+  public static class BACnetConfirmedServiceRequestDeleteObjectBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetApplicationTagObjectIdentifier objectIdentifier;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestDeleteObjectBuilder(
+    public BACnetConfirmedServiceRequestDeleteObjectBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectIdentifier, Long serviceRequestLength) {
 
       this.objectIdentifier = objectIdentifier;

@@ -92,8 +92,8 @@ public class BVLCWriteBroadcastDistributionTable extends BVLC implements Message
     return lengthInBits;
   }
 
-  public static BVLCWriteBroadcastDistributionTableBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer bvlcPayloadLength) throws ParseException {
+  public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer, Integer bvlcPayloadLength)
+      throws ParseException {
     readBuffer.pullContext("BVLCWriteBroadcastDistributionTable");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -109,14 +109,14 @@ public class BVLCWriteBroadcastDistributionTable extends BVLC implements Message
 
     readBuffer.closeContext("BVLCWriteBroadcastDistributionTable");
     // Create the instance
-    return new BVLCWriteBroadcastDistributionTableBuilder(table, bvlcPayloadLength);
+    return new BVLCWriteBroadcastDistributionTableBuilderImpl(table, bvlcPayloadLength);
   }
 
-  public static class BVLCWriteBroadcastDistributionTableBuilder implements BVLC.BVLCBuilder {
+  public static class BVLCWriteBroadcastDistributionTableBuilderImpl implements BVLC.BVLCBuilder {
     private final List<BVLCBroadcastDistributionTableEntry> table;
     private final Integer bvlcPayloadLength;
 
-    public BVLCWriteBroadcastDistributionTableBuilder(
+    public BVLCWriteBroadcastDistributionTableBuilderImpl(
         List<BVLCBroadcastDistributionTableEntry> table, Integer bvlcPayloadLength) {
 
       this.table = table;

@@ -98,7 +98,7 @@ public class ChangeListRemoveError extends BACnetError implements Message {
     return lengthInBits;
   }
 
-  public static ChangeListRemoveErrorBuilder staticParseBuilder(
+  public static BACnetErrorBuilder staticParseBACnetErrorBuilder(
       ReadBuffer readBuffer, BACnetConfirmedServiceChoice errorChoice) throws ParseException {
     readBuffer.pullContext("ChangeListRemoveError");
     PositionAware positionAware = readBuffer;
@@ -125,14 +125,14 @@ public class ChangeListRemoveError extends BACnetError implements Message {
 
     readBuffer.closeContext("ChangeListRemoveError");
     // Create the instance
-    return new ChangeListRemoveErrorBuilder(errorType, firstFailedElementNumber);
+    return new ChangeListRemoveErrorBuilderImpl(errorType, firstFailedElementNumber);
   }
 
-  public static class ChangeListRemoveErrorBuilder implements BACnetError.BACnetErrorBuilder {
+  public static class ChangeListRemoveErrorBuilderImpl implements BACnetError.BACnetErrorBuilder {
     private final ErrorEnclosed errorType;
     private final BACnetContextTagUnsignedInteger firstFailedElementNumber;
 
-    public ChangeListRemoveErrorBuilder(
+    public ChangeListRemoveErrorBuilderImpl(
         ErrorEnclosed errorType, BACnetContextTagUnsignedInteger firstFailedElementNumber) {
 
       this.errorType = errorType;

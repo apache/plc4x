@@ -109,7 +109,7 @@ public class BACnetConstructedDataEnergyMeter extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEnergyMeterBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,16 +132,17 @@ public class BACnetConstructedDataEnergyMeter extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataEnergyMeter");
     // Create the instance
-    return new BACnetConstructedDataEnergyMeterBuilder(energyMeter, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEnergyMeterBuilderImpl(
+        energyMeter, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEnergyMeterBuilder
+  public static class BACnetConstructedDataEnergyMeterBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal energyMeter;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEnergyMeterBuilder(
+    public BACnetConstructedDataEnergyMeterBuilderImpl(
         BACnetApplicationTagReal energyMeter,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

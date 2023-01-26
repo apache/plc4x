@@ -72,7 +72,7 @@ public class MResetReq extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static MResetReqBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("MResetReq");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class MResetReq extends CEMI implements Message {
 
     readBuffer.closeContext("MResetReq");
     // Create the instance
-    return new MResetReqBuilder(size);
+    return new MResetReqBuilderImpl(size);
   }
 
-  public static class MResetReqBuilder implements CEMI.CEMIBuilder {
+  public static class MResetReqBuilderImpl implements CEMI.CEMIBuilder {
     private final Integer size;
 
-    public MResetReqBuilder(Integer size) {
+    public MResetReqBuilderImpl(Integer size) {
 
       this.size = size;
     }

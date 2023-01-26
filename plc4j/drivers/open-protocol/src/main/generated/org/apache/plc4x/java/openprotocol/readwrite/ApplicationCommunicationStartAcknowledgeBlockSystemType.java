@@ -85,8 +85,9 @@ public class ApplicationCommunicationStartAcknowledgeBlockSystemType
     return lengthInBits;
   }
 
-  public static ApplicationCommunicationStartAcknowledgeBlockSystemTypeBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static ApplicationCommunicationStartAcknowledgeBlockBuilder
+      staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("ApplicationCommunicationStartAcknowledgeBlockSystemType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -97,15 +98,15 @@ public class ApplicationCommunicationStartAcknowledgeBlockSystemType
 
     readBuffer.closeContext("ApplicationCommunicationStartAcknowledgeBlockSystemType");
     // Create the instance
-    return new ApplicationCommunicationStartAcknowledgeBlockSystemTypeBuilder(systemType);
+    return new ApplicationCommunicationStartAcknowledgeBlockSystemTypeBuilderImpl(systemType);
   }
 
-  public static class ApplicationCommunicationStartAcknowledgeBlockSystemTypeBuilder
+  public static class ApplicationCommunicationStartAcknowledgeBlockSystemTypeBuilderImpl
       implements ApplicationCommunicationStartAcknowledgeBlock
           .ApplicationCommunicationStartAcknowledgeBlockBuilder {
     private final String systemType;
 
-    public ApplicationCommunicationStartAcknowledgeBlockSystemTypeBuilder(String systemType) {
+    public ApplicationCommunicationStartAcknowledgeBlockSystemTypeBuilderImpl(String systemType) {
 
       this.systemType = systemType;
     }

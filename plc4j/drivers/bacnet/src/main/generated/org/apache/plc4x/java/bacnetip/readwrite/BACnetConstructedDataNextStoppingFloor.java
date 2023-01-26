@@ -111,7 +111,7 @@ public class BACnetConstructedDataNextStoppingFloor extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNextStoppingFloorBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,17 +137,17 @@ public class BACnetConstructedDataNextStoppingFloor extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataNextStoppingFloor");
     // Create the instance
-    return new BACnetConstructedDataNextStoppingFloorBuilder(
+    return new BACnetConstructedDataNextStoppingFloorBuilderImpl(
         nextStoppingFloor, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNextStoppingFloorBuilder
+  public static class BACnetConstructedDataNextStoppingFloorBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger nextStoppingFloor;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNextStoppingFloorBuilder(
+    public BACnetConstructedDataNextStoppingFloorBuilderImpl(
         BACnetApplicationTagUnsignedInteger nextStoppingFloor,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

@@ -136,7 +136,7 @@ public class BACnetConstructedDataShedLevelDescriptions extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataShedLevelDescriptionsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -174,18 +174,18 @@ public class BACnetConstructedDataShedLevelDescriptions extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataShedLevelDescriptions");
     // Create the instance
-    return new BACnetConstructedDataShedLevelDescriptionsBuilder(
+    return new BACnetConstructedDataShedLevelDescriptionsBuilderImpl(
         numberOfDataElements, shedLevelDescriptions, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataShedLevelDescriptionsBuilder
+  public static class BACnetConstructedDataShedLevelDescriptionsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagCharacterString> shedLevelDescriptions;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataShedLevelDescriptionsBuilder(
+    public BACnetConstructedDataShedLevelDescriptionsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagCharacterString> shedLevelDescriptions,
         Short tagNumber,

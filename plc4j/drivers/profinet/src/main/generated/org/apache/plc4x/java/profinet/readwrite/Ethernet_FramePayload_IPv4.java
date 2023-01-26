@@ -279,8 +279,8 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     return lengthInBits;
   }
 
-  public static Ethernet_FramePayload_IPv4Builder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static Ethernet_FramePayloadBuilder staticParseEthernet_FramePayloadBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Ethernet_FramePayload_IPv4");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -353,7 +353,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
 
     readBuffer.closeContext("Ethernet_FramePayload_IPv4");
     // Create the instance
-    return new Ethernet_FramePayload_IPv4Builder(
+    return new Ethernet_FramePayload_IPv4BuilderImpl(
         identification,
         timeToLive,
         sourceAddress,
@@ -363,7 +363,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
         payload);
   }
 
-  public static class Ethernet_FramePayload_IPv4Builder
+  public static class Ethernet_FramePayload_IPv4BuilderImpl
       implements Ethernet_FramePayload.Ethernet_FramePayloadBuilder {
     private final int identification;
     private final short timeToLive;
@@ -373,7 +373,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     private final int destinationPort;
     private final DceRpc_Packet payload;
 
-    public Ethernet_FramePayload_IPv4Builder(
+    public Ethernet_FramePayload_IPv4BuilderImpl(
         int identification,
         short timeToLive,
         IpAddress sourceAddress,

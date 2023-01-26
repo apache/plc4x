@@ -109,7 +109,7 @@ public class VariantDiagnosticInfo extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantDiagnosticInfoBuilder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantDiagnosticInfo");
     PositionAware positionAware = readBuffer;
@@ -128,14 +128,14 @@ public class VariantDiagnosticInfo extends Variant implements Message {
 
     readBuffer.closeContext("VariantDiagnosticInfo");
     // Create the instance
-    return new VariantDiagnosticInfoBuilder(arrayLength, value);
+    return new VariantDiagnosticInfoBuilderImpl(arrayLength, value);
   }
 
-  public static class VariantDiagnosticInfoBuilder implements Variant.VariantBuilder {
+  public static class VariantDiagnosticInfoBuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final List<DiagnosticInfo> value;
 
-    public VariantDiagnosticInfoBuilder(Integer arrayLength, List<DiagnosticInfo> value) {
+    public VariantDiagnosticInfoBuilderImpl(Integer arrayLength, List<DiagnosticInfo> value) {
 
       this.arrayLength = arrayLength;
       this.value = value;

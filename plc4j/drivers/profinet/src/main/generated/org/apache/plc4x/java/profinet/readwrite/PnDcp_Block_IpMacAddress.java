@@ -97,7 +97,7 @@ public class PnDcp_Block_IpMacAddress extends PnDcp_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_Block_IpMacAddressBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Block_IpMacAddress");
     PositionAware positionAware = readBuffer;
@@ -114,14 +114,15 @@ public class PnDcp_Block_IpMacAddress extends PnDcp_Block implements Message {
 
     readBuffer.closeContext("PnDcp_Block_IpMacAddress");
     // Create the instance
-    return new PnDcp_Block_IpMacAddressBuilder(macAddress, reservedField0);
+    return new PnDcp_Block_IpMacAddressBuilderImpl(macAddress, reservedField0);
   }
 
-  public static class PnDcp_Block_IpMacAddressBuilder implements PnDcp_Block.PnDcp_BlockBuilder {
+  public static class PnDcp_Block_IpMacAddressBuilderImpl
+      implements PnDcp_Block.PnDcp_BlockBuilder {
     private final MacAddress macAddress;
     private final Integer reservedField0;
 
-    public PnDcp_Block_IpMacAddressBuilder(MacAddress macAddress, Integer reservedField0) {
+    public PnDcp_Block_IpMacAddressBuilderImpl(MacAddress macAddress, Integer reservedField0) {
       this.macAddress = macAddress;
       this.reservedField0 = reservedField0;
     }

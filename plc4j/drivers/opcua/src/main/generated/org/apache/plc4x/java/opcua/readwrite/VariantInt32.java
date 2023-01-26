@@ -105,7 +105,7 @@ public class VariantInt32 extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantInt32Builder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantInt32");
     PositionAware positionAware = readBuffer;
@@ -121,14 +121,14 @@ public class VariantInt32 extends Variant implements Message {
 
     readBuffer.closeContext("VariantInt32");
     // Create the instance
-    return new VariantInt32Builder(arrayLength, value);
+    return new VariantInt32BuilderImpl(arrayLength, value);
   }
 
-  public static class VariantInt32Builder implements Variant.VariantBuilder {
+  public static class VariantInt32BuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final List<Integer> value;
 
-    public VariantInt32Builder(Integer arrayLength, List<Integer> value) {
+    public VariantInt32BuilderImpl(Integer arrayLength, List<Integer> value) {
 
       this.arrayLength = arrayLength;
       this.value = value;

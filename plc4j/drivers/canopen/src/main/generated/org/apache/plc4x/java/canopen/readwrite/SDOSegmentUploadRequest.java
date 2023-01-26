@@ -103,7 +103,7 @@ public class SDOSegmentUploadRequest extends SDORequest implements Message {
     return lengthInBits;
   }
 
-  public static SDOSegmentUploadRequestBuilder staticParseBuilder(
+  public static SDORequestBuilder staticParseSDORequestBuilder(
       ReadBuffer readBuffer, SDORequestCommand command) throws ParseException {
     readBuffer.pullContext("SDOSegmentUploadRequest");
     PositionAware positionAware = readBuffer;
@@ -120,15 +120,15 @@ public class SDOSegmentUploadRequest extends SDORequest implements Message {
 
     readBuffer.closeContext("SDOSegmentUploadRequest");
     // Create the instance
-    return new SDOSegmentUploadRequestBuilder(toggle, reservedField0, reservedField1);
+    return new SDOSegmentUploadRequestBuilderImpl(toggle, reservedField0, reservedField1);
   }
 
-  public static class SDOSegmentUploadRequestBuilder implements SDORequest.SDORequestBuilder {
+  public static class SDOSegmentUploadRequestBuilderImpl implements SDORequest.SDORequestBuilder {
     private final boolean toggle;
     private final Byte reservedField0;
     private final Long reservedField1;
 
-    public SDOSegmentUploadRequestBuilder(
+    public SDOSegmentUploadRequestBuilderImpl(
         boolean toggle, Byte reservedField0, Long reservedField1) {
       this.toggle = toggle;
       this.reservedField0 = reservedField0;

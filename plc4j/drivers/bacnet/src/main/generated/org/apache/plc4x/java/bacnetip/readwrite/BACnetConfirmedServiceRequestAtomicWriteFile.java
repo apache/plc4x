@@ -148,8 +148,9 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestAtomicWriteFileBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestAtomicWriteFile");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -195,7 +196,7 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestAtomicWriteFile");
     // Create the instance
-    return new BACnetConfirmedServiceRequestAtomicWriteFileBuilder(
+    return new BACnetConfirmedServiceRequestAtomicWriteFileBuilderImpl(
         deviceIdentifier,
         openingTag,
         fileStartPosition,
@@ -204,7 +205,7 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
         serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestAtomicWriteFileBuilder
+  public static class BACnetConfirmedServiceRequestAtomicWriteFileBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetApplicationTagObjectIdentifier deviceIdentifier;
     private final BACnetOpeningTag openingTag;
@@ -213,7 +214,7 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
     private final BACnetClosingTag closingTag;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestAtomicWriteFileBuilder(
+    public BACnetConfirmedServiceRequestAtomicWriteFileBuilderImpl(
         BACnetApplicationTagObjectIdentifier deviceIdentifier,
         BACnetOpeningTag openingTag,
         BACnetApplicationTagSignedInteger fileStartPosition,

@@ -72,7 +72,7 @@ public class PnDcp_Block_DhcpOptionHostName extends PnDcp_Block implements Messa
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DhcpOptionHostNameBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DhcpOptionHostName");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class PnDcp_Block_DhcpOptionHostName extends PnDcp_Block implements Messa
 
     readBuffer.closeContext("PnDcp_Block_DhcpOptionHostName");
     // Create the instance
-    return new PnDcp_Block_DhcpOptionHostNameBuilder();
+    return new PnDcp_Block_DhcpOptionHostNameBuilderImpl();
   }
 
-  public static class PnDcp_Block_DhcpOptionHostNameBuilder
+  public static class PnDcp_Block_DhcpOptionHostNameBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_DhcpOptionHostNameBuilder() {}
+    public PnDcp_Block_DhcpOptionHostNameBuilderImpl() {}
 
     public PnDcp_Block_DhcpOptionHostName build() {
       PnDcp_Block_DhcpOptionHostName pnDcp_Block_DhcpOptionHostName =

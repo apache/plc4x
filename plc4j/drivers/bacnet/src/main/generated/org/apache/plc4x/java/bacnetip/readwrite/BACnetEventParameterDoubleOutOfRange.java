@@ -147,7 +147,7 @@ public class BACnetEventParameterDoubleOutOfRange extends BACnetEventParameter i
     return lengthInBits;
   }
 
-  public static BACnetEventParameterDoubleOutOfRangeBuilder staticParseBuilder(
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterDoubleOutOfRange");
     PositionAware positionAware = readBuffer;
@@ -210,11 +210,11 @@ public class BACnetEventParameterDoubleOutOfRange extends BACnetEventParameter i
 
     readBuffer.closeContext("BACnetEventParameterDoubleOutOfRange");
     // Create the instance
-    return new BACnetEventParameterDoubleOutOfRangeBuilder(
+    return new BACnetEventParameterDoubleOutOfRangeBuilderImpl(
         openingTag, timeDelay, lowLimit, highLimit, deadband, closingTag);
   }
 
-  public static class BACnetEventParameterDoubleOutOfRangeBuilder
+  public static class BACnetEventParameterDoubleOutOfRangeBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
@@ -223,7 +223,7 @@ public class BACnetEventParameterDoubleOutOfRange extends BACnetEventParameter i
     private final BACnetContextTagDouble deadband;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterDoubleOutOfRangeBuilder(
+    public BACnetEventParameterDoubleOutOfRangeBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetContextTagDouble lowLimit,

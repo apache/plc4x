@@ -113,7 +113,7 @@ public class BACnetConstructedDataNumberOfAuthenticationPolicies extends BACnetC
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -141,17 +141,17 @@ public class BACnetConstructedDataNumberOfAuthenticationPolicies extends BACnetC
 
     readBuffer.closeContext("BACnetConstructedDataNumberOfAuthenticationPolicies");
     // Create the instance
-    return new BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder(
+    return new BACnetConstructedDataNumberOfAuthenticationPoliciesBuilderImpl(
         numberOfAuthenticationPolicies, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder
+  public static class BACnetConstructedDataNumberOfAuthenticationPoliciesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfAuthenticationPolicies;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder(
+    public BACnetConstructedDataNumberOfAuthenticationPoliciesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfAuthenticationPolicies,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

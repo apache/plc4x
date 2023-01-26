@@ -111,7 +111,7 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAllWritesSuccessfulBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataAllWritesSuccessful");
     // Create the instance
-    return new BACnetConstructedDataAllWritesSuccessfulBuilder(
+    return new BACnetConstructedDataAllWritesSuccessfulBuilderImpl(
         allWritesSuccessful, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAllWritesSuccessfulBuilder
+  public static class BACnetConstructedDataAllWritesSuccessfulBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean allWritesSuccessful;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAllWritesSuccessfulBuilder(
+    public BACnetConstructedDataAllWritesSuccessfulBuilderImpl(
         BACnetApplicationTagBoolean allWritesSuccessful,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

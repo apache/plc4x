@@ -104,7 +104,7 @@ public class PnIoCm_Block_ExpectedSubmoduleReq extends PnIoCm_Block implements M
     return lengthInBits;
   }
 
-  public static PnIoCm_Block_ExpectedSubmoduleReqBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnIoCm_BlockBuilder staticParsePnIoCm_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_Block_ExpectedSubmoduleReq");
     PositionAware positionAware = readBuffer;
@@ -127,14 +127,14 @@ public class PnIoCm_Block_ExpectedSubmoduleReq extends PnIoCm_Block implements M
 
     readBuffer.closeContext("PnIoCm_Block_ExpectedSubmoduleReq");
     // Create the instance
-    return new PnIoCm_Block_ExpectedSubmoduleReqBuilder(apis);
+    return new PnIoCm_Block_ExpectedSubmoduleReqBuilderImpl(apis);
   }
 
-  public static class PnIoCm_Block_ExpectedSubmoduleReqBuilder
+  public static class PnIoCm_Block_ExpectedSubmoduleReqBuilderImpl
       implements PnIoCm_Block.PnIoCm_BlockBuilder {
     private final List<PnIoCm_ExpectedSubmoduleBlockReqApi> apis;
 
-    public PnIoCm_Block_ExpectedSubmoduleReqBuilder(
+    public PnIoCm_Block_ExpectedSubmoduleReqBuilderImpl(
         List<PnIoCm_ExpectedSubmoduleBlockReqApi> apis) {
 
       this.apis = apis;

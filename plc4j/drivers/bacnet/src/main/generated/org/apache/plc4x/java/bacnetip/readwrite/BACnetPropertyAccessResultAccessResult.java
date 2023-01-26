@@ -167,18 +167,20 @@ public abstract class BACnetPropertyAccessResultAccessResult implements Message 
     BACnetPropertyAccessResultAccessResultBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetPropertyAccessResultAccessResultPropertyValue.staticParseBuilder(
-              readBuffer,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              propertyArrayIndexArgument);
+          BACnetPropertyAccessResultAccessResultPropertyValue
+              .staticParseBACnetPropertyAccessResultAccessResultBuilder(
+                  readBuffer,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  propertyArrayIndexArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
       builder =
-          BACnetPropertyAccessResultAccessResultPropertyAccessError.staticParseBuilder(
-              readBuffer,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              propertyArrayIndexArgument);
+          BACnetPropertyAccessResultAccessResultPropertyAccessError
+              .staticParseBACnetPropertyAccessResultAccessResultBuilder(
+                  readBuffer,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  propertyArrayIndexArgument);
     }
     if (builder == null) {
       throw new ParseException(
@@ -200,7 +202,7 @@ public abstract class BACnetPropertyAccessResultAccessResult implements Message 
     return _bACnetPropertyAccessResultAccessResult;
   }
 
-  public static interface BACnetPropertyAccessResultAccessResultBuilder {
+  public interface BACnetPropertyAccessResultAccessResultBuilder {
     BACnetPropertyAccessResultAccessResult build(
         BACnetTagHeader peekedTagHeader,
         BACnetObjectType objectTypeArgument,

@@ -72,7 +72,7 @@ public class PnDcp_Block_ControlOptionSignal extends PnDcp_Block implements Mess
     return lengthInBits;
   }
 
-  public static PnDcp_Block_ControlOptionSignalBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Block_ControlOptionSignal");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class PnDcp_Block_ControlOptionSignal extends PnDcp_Block implements Mess
 
     readBuffer.closeContext("PnDcp_Block_ControlOptionSignal");
     // Create the instance
-    return new PnDcp_Block_ControlOptionSignalBuilder();
+    return new PnDcp_Block_ControlOptionSignalBuilderImpl();
   }
 
-  public static class PnDcp_Block_ControlOptionSignalBuilder
+  public static class PnDcp_Block_ControlOptionSignalBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_ControlOptionSignalBuilder() {}
+    public PnDcp_Block_ControlOptionSignalBuilderImpl() {}
 
     public PnDcp_Block_ControlOptionSignal build() {
       PnDcp_Block_ControlOptionSignal pnDcp_Block_ControlOptionSignal =

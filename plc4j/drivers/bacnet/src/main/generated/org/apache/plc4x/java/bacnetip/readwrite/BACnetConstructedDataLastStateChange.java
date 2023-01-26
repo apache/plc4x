@@ -110,7 +110,7 @@ public class BACnetConstructedDataLastStateChange extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLastStateChangeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,17 +135,17 @@ public class BACnetConstructedDataLastStateChange extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataLastStateChange");
     // Create the instance
-    return new BACnetConstructedDataLastStateChangeBuilder(
+    return new BACnetConstructedDataLastStateChangeBuilderImpl(
         lastStateChange, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLastStateChangeBuilder
+  public static class BACnetConstructedDataLastStateChangeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetTimerTransitionTagged lastStateChange;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLastStateChangeBuilder(
+    public BACnetConstructedDataLastStateChangeBuilderImpl(
         BACnetTimerTransitionTagged lastStateChange,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

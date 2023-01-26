@@ -104,7 +104,7 @@ public class BACnetConstructedDataVTClassesSupported extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataVTClassesSupportedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,17 +131,17 @@ public class BACnetConstructedDataVTClassesSupported extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataVTClassesSupported");
     // Create the instance
-    return new BACnetConstructedDataVTClassesSupportedBuilder(
+    return new BACnetConstructedDataVTClassesSupportedBuilderImpl(
         vtClassesSupported, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataVTClassesSupportedBuilder
+  public static class BACnetConstructedDataVTClassesSupportedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetVTClassTagged> vtClassesSupported;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataVTClassesSupportedBuilder(
+    public BACnetConstructedDataVTClassesSupportedBuilderImpl(
         List<BACnetVTClassTagged> vtClassesSupported,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

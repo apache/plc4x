@@ -82,8 +82,9 @@ public class BACnetFaultParameterFaultExtendedParametersEntryNull
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedParametersEntryNullBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetFaultParameterFaultExtendedParametersEntryBuilder
+      staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryNull");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -98,15 +99,15 @@ public class BACnetFaultParameterFaultExtendedParametersEntryNull
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtendedParametersEntryNull");
     // Create the instance
-    return new BACnetFaultParameterFaultExtendedParametersEntryNullBuilder(nullValue);
+    return new BACnetFaultParameterFaultExtendedParametersEntryNullBuilderImpl(nullValue);
   }
 
-  public static class BACnetFaultParameterFaultExtendedParametersEntryNullBuilder
+  public static class BACnetFaultParameterFaultExtendedParametersEntryNullBuilderImpl
       implements BACnetFaultParameterFaultExtendedParametersEntry
           .BACnetFaultParameterFaultExtendedParametersEntryBuilder {
     private final BACnetApplicationTagNull nullValue;
 
-    public BACnetFaultParameterFaultExtendedParametersEntryNullBuilder(
+    public BACnetFaultParameterFaultExtendedParametersEntryNullBuilderImpl(
         BACnetApplicationTagNull nullValue) {
 
       this.nullValue = nullValue;

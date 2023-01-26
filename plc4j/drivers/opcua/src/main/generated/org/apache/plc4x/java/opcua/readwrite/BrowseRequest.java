@@ -145,8 +145,8 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
     return lengthInBits;
   }
 
-  public static BrowseRequestBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("BrowseRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -181,11 +181,11 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("BrowseRequest");
     // Create the instance
-    return new BrowseRequestBuilder(
+    return new BrowseRequestBuilderImpl(
         requestHeader, view, requestedMaxReferencesPerNode, noOfNodesToBrowse, nodesToBrowse);
   }
 
-  public static class BrowseRequestBuilder
+  public static class BrowseRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final ExtensionObjectDefinition view;
@@ -193,7 +193,7 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
     private final int noOfNodesToBrowse;
     private final List<ExtensionObjectDefinition> nodesToBrowse;
 
-    public BrowseRequestBuilder(
+    public BrowseRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         ExtensionObjectDefinition view,
         long requestedMaxReferencesPerNode,

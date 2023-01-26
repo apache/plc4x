@@ -88,8 +88,9 @@ public class ApplicationCommunicationStartAcknowledgeBlockSupplierCode
     return lengthInBits;
   }
 
-  public static ApplicationCommunicationStartAcknowledgeBlockSupplierCodeBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static ApplicationCommunicationStartAcknowledgeBlockBuilder
+      staticParseApplicationCommunicationStartAcknowledgeBlockBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("ApplicationCommunicationStartAcknowledgeBlockSupplierCode");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -101,15 +102,15 @@ public class ApplicationCommunicationStartAcknowledgeBlockSupplierCode
 
     readBuffer.closeContext("ApplicationCommunicationStartAcknowledgeBlockSupplierCode");
     // Create the instance
-    return new ApplicationCommunicationStartAcknowledgeBlockSupplierCodeBuilder(supplierCode);
+    return new ApplicationCommunicationStartAcknowledgeBlockSupplierCodeBuilderImpl(supplierCode);
   }
 
-  public static class ApplicationCommunicationStartAcknowledgeBlockSupplierCodeBuilder
+  public static class ApplicationCommunicationStartAcknowledgeBlockSupplierCodeBuilderImpl
       implements ApplicationCommunicationStartAcknowledgeBlock
           .ApplicationCommunicationStartAcknowledgeBlockBuilder {
     private final long supplierCode;
 
-    public ApplicationCommunicationStartAcknowledgeBlockSupplierCodeBuilder(long supplierCode) {
+    public ApplicationCommunicationStartAcknowledgeBlockSupplierCodeBuilderImpl(long supplierCode) {
 
       this.supplierCode = supplierCode;
     }

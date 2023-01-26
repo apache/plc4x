@@ -221,7 +221,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static PubSubGroupDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("PubSubGroupDataType");
     PositionAware positionAware = readBuffer;
@@ -276,7 +276,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("PubSubGroupDataType");
     // Create the instance
-    return new PubSubGroupDataTypeBuilder(
+    return new PubSubGroupDataTypeBuilderImpl(
         name,
         enabled,
         securityMode,
@@ -289,7 +289,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
         reservedField0);
   }
 
-  public static class PubSubGroupDataTypeBuilder
+  public static class PubSubGroupDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString name;
     private final boolean enabled;
@@ -302,7 +302,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     private final List<ExtensionObjectDefinition> groupProperties;
     private final Short reservedField0;
 
-    public PubSubGroupDataTypeBuilder(
+    public PubSubGroupDataTypeBuilderImpl(
         PascalString name,
         boolean enabled,
         MessageSecurityMode securityMode,

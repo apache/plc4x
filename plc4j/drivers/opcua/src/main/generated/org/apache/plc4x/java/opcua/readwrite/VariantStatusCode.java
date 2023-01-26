@@ -109,7 +109,7 @@ public class VariantStatusCode extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantStatusCodeBuilder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantStatusCode");
     PositionAware positionAware = readBuffer;
@@ -127,14 +127,14 @@ public class VariantStatusCode extends Variant implements Message {
 
     readBuffer.closeContext("VariantStatusCode");
     // Create the instance
-    return new VariantStatusCodeBuilder(arrayLength, value);
+    return new VariantStatusCodeBuilderImpl(arrayLength, value);
   }
 
-  public static class VariantStatusCodeBuilder implements Variant.VariantBuilder {
+  public static class VariantStatusCodeBuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final List<StatusCode> value;
 
-    public VariantStatusCodeBuilder(Integer arrayLength, List<StatusCode> value) {
+    public VariantStatusCodeBuilderImpl(Integer arrayLength, List<StatusCode> value) {
 
       this.arrayLength = arrayLength;
       this.value = value;

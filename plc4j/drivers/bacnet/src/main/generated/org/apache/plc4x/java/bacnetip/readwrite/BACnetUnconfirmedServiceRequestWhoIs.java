@@ -114,8 +114,9 @@ public class BACnetUnconfirmedServiceRequestWhoIs extends BACnetUnconfirmedServi
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequestWhoIsBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
+  public static BACnetUnconfirmedServiceRequestBuilder
+      staticParseBACnetUnconfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestWhoIs");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -148,17 +149,17 @@ public class BACnetUnconfirmedServiceRequestWhoIs extends BACnetUnconfirmedServi
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestWhoIs");
     // Create the instance
-    return new BACnetUnconfirmedServiceRequestWhoIsBuilder(
+    return new BACnetUnconfirmedServiceRequestWhoIsBuilderImpl(
         deviceInstanceRangeLowLimit, deviceInstanceRangeHighLimit, serviceRequestLength);
   }
 
-  public static class BACnetUnconfirmedServiceRequestWhoIsBuilder
+  public static class BACnetUnconfirmedServiceRequestWhoIsBuilderImpl
       implements BACnetUnconfirmedServiceRequest.BACnetUnconfirmedServiceRequestBuilder {
     private final BACnetContextTagUnsignedInteger deviceInstanceRangeLowLimit;
     private final BACnetContextTagUnsignedInteger deviceInstanceRangeHighLimit;
     private final Integer serviceRequestLength;
 
-    public BACnetUnconfirmedServiceRequestWhoIsBuilder(
+    public BACnetUnconfirmedServiceRequestWhoIsBuilderImpl(
         BACnetContextTagUnsignedInteger deviceInstanceRangeLowLimit,
         BACnetContextTagUnsignedInteger deviceInstanceRangeHighLimit,
         Integer serviceRequestLength) {

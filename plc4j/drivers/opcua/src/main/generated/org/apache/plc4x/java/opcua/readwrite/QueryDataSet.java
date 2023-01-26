@@ -130,8 +130,8 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static QueryDataSetBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("QueryDataSet");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -159,17 +159,17 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("QueryDataSet");
     // Create the instance
-    return new QueryDataSetBuilder(nodeId, typeDefinitionNode, noOfValues, values);
+    return new QueryDataSetBuilderImpl(nodeId, typeDefinitionNode, noOfValues, values);
   }
 
-  public static class QueryDataSetBuilder
+  public static class QueryDataSetBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExpandedNodeId nodeId;
     private final ExpandedNodeId typeDefinitionNode;
     private final int noOfValues;
     private final List<Variant> values;
 
-    public QueryDataSetBuilder(
+    public QueryDataSetBuilderImpl(
         ExpandedNodeId nodeId,
         ExpandedNodeId typeDefinitionNode,
         int noOfValues,

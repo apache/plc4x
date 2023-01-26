@@ -87,7 +87,7 @@ public class BACnetPriorityValueUnsigned extends BACnetPriorityValue implements 
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueUnsignedBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueUnsigned");
     PositionAware positionAware = readBuffer;
@@ -105,15 +105,15 @@ public class BACnetPriorityValueUnsigned extends BACnetPriorityValue implements 
 
     readBuffer.closeContext("BACnetPriorityValueUnsigned");
     // Create the instance
-    return new BACnetPriorityValueUnsignedBuilder(unsignedValue, objectTypeArgument);
+    return new BACnetPriorityValueUnsignedBuilderImpl(unsignedValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueUnsignedBuilder
+  public static class BACnetPriorityValueUnsignedBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagUnsignedInteger unsignedValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueUnsignedBuilder(
+    public BACnetPriorityValueUnsignedBuilderImpl(
         BACnetApplicationTagUnsignedInteger unsignedValue, BACnetObjectType objectTypeArgument) {
 
       this.unsignedValue = unsignedValue;

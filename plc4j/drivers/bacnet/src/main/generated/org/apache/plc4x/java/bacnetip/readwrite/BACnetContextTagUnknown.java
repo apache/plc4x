@@ -92,7 +92,7 @@ public class BACnetContextTagUnknown extends BACnetContextTag implements Message
     return lengthInBits;
   }
 
-  public static BACnetContextTagUnknownBuilder staticParseBuilder(
+  public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer, Short tagNumberArgument, BACnetDataType dataType, Long actualLength)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagUnknown");
@@ -104,16 +104,16 @@ public class BACnetContextTagUnknown extends BACnetContextTag implements Message
 
     readBuffer.closeContext("BACnetContextTagUnknown");
     // Create the instance
-    return new BACnetContextTagUnknownBuilder(unknownData, tagNumberArgument, actualLength);
+    return new BACnetContextTagUnknownBuilderImpl(unknownData, tagNumberArgument, actualLength);
   }
 
-  public static class BACnetContextTagUnknownBuilder
+  public static class BACnetContextTagUnknownBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final byte[] unknownData;
     private final Short tagNumberArgument;
     private final Long actualLength;
 
-    public BACnetContextTagUnknownBuilder(
+    public BACnetContextTagUnknownBuilderImpl(
         byte[] unknownData, Short tagNumberArgument, Long actualLength) {
 
       this.unknownData = unknownData;

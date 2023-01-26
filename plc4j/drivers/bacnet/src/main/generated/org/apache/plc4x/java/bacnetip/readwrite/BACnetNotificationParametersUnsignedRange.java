@@ -147,7 +147,7 @@ public class BACnetNotificationParametersUnsignedRange extends BACnetNotificatio
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersUnsignedRangeBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -207,7 +207,7 @@ public class BACnetNotificationParametersUnsignedRange extends BACnetNotificatio
 
     readBuffer.closeContext("BACnetNotificationParametersUnsignedRange");
     // Create the instance
-    return new BACnetNotificationParametersUnsignedRangeBuilder(
+    return new BACnetNotificationParametersUnsignedRangeBuilderImpl(
         innerOpeningTag,
         sequenceNumber,
         statusFlags,
@@ -217,7 +217,7 @@ public class BACnetNotificationParametersUnsignedRange extends BACnetNotificatio
         objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersUnsignedRangeBuilder
+  public static class BACnetNotificationParametersUnsignedRangeBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final BACnetContextTagUnsignedInteger sequenceNumber;
@@ -227,7 +227,7 @@ public class BACnetNotificationParametersUnsignedRange extends BACnetNotificatio
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersUnsignedRangeBuilder(
+    public BACnetNotificationParametersUnsignedRangeBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetContextTagUnsignedInteger sequenceNumber,
         BACnetStatusFlagsTagged statusFlags,

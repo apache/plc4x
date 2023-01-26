@@ -109,7 +109,7 @@ public class BACnetConstructedDataDoNotHide extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDoNotHideBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,16 +132,16 @@ public class BACnetConstructedDataDoNotHide extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataDoNotHide");
     // Create the instance
-    return new BACnetConstructedDataDoNotHideBuilder(doNotHide, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDoNotHideBuilderImpl(doNotHide, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDoNotHideBuilder
+  public static class BACnetConstructedDataDoNotHideBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean doNotHide;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDoNotHideBuilder(
+    public BACnetConstructedDataDoNotHideBuilderImpl(
         BACnetApplicationTagBoolean doNotHide,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

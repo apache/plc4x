@@ -106,7 +106,7 @@ public class AccessControlDataInvalidAccessRequest extends AccessControlData imp
     return lengthInBits;
   }
 
-  public static AccessControlDataInvalidAccessRequestBuilder staticParseBuilder(
+  public static AccessControlDataBuilder staticParseAccessControlDataBuilder(
       ReadBuffer readBuffer, AccessControlCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("AccessControlDataInvalidAccessRequest");
@@ -127,15 +127,15 @@ public class AccessControlDataInvalidAccessRequest extends AccessControlData imp
 
     readBuffer.closeContext("AccessControlDataInvalidAccessRequest");
     // Create the instance
-    return new AccessControlDataInvalidAccessRequestBuilder(accessControlDirection, data);
+    return new AccessControlDataInvalidAccessRequestBuilderImpl(accessControlDirection, data);
   }
 
-  public static class AccessControlDataInvalidAccessRequestBuilder
+  public static class AccessControlDataInvalidAccessRequestBuilderImpl
       implements AccessControlData.AccessControlDataBuilder {
     private final AccessControlDirection accessControlDirection;
     private final byte[] data;
 
-    public AccessControlDataInvalidAccessRequestBuilder(
+    public AccessControlDataInvalidAccessRequestBuilderImpl(
         AccessControlDirection accessControlDirection, byte[] data) {
 
       this.accessControlDirection = accessControlDirection;

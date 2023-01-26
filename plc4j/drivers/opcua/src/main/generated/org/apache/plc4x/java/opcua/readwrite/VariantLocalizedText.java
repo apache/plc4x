@@ -109,7 +109,7 @@ public class VariantLocalizedText extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantLocalizedTextBuilder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantLocalizedText");
     PositionAware positionAware = readBuffer;
@@ -127,14 +127,14 @@ public class VariantLocalizedText extends Variant implements Message {
 
     readBuffer.closeContext("VariantLocalizedText");
     // Create the instance
-    return new VariantLocalizedTextBuilder(arrayLength, value);
+    return new VariantLocalizedTextBuilderImpl(arrayLength, value);
   }
 
-  public static class VariantLocalizedTextBuilder implements Variant.VariantBuilder {
+  public static class VariantLocalizedTextBuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final List<LocalizedText> value;
 
-    public VariantLocalizedTextBuilder(Integer arrayLength, List<LocalizedText> value) {
+    public VariantLocalizedTextBuilderImpl(Integer arrayLength, List<LocalizedText> value) {
 
       this.arrayLength = arrayLength;
       this.value = value;

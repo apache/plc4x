@@ -81,7 +81,7 @@ public class BACnetPropertyStatesReliability extends BACnetPropertyStates implem
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesReliabilityBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesReliability");
     PositionAware positionAware = readBuffer;
@@ -101,14 +101,14 @@ public class BACnetPropertyStatesReliability extends BACnetPropertyStates implem
 
     readBuffer.closeContext("BACnetPropertyStatesReliability");
     // Create the instance
-    return new BACnetPropertyStatesReliabilityBuilder(reliability);
+    return new BACnetPropertyStatesReliabilityBuilderImpl(reliability);
   }
 
-  public static class BACnetPropertyStatesReliabilityBuilder
+  public static class BACnetPropertyStatesReliabilityBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetReliabilityTagged reliability;
 
-    public BACnetPropertyStatesReliabilityBuilder(BACnetReliabilityTagged reliability) {
+    public BACnetPropertyStatesReliabilityBuilderImpl(BACnetReliabilityTagged reliability) {
 
       this.reliability = reliability;
     }

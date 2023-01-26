@@ -81,7 +81,7 @@ public class BACnetPropertyStatesNotifyType extends BACnetPropertyStates impleme
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesNotifyTypeBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesNotifyType");
     PositionAware positionAware = readBuffer;
@@ -101,14 +101,14 @@ public class BACnetPropertyStatesNotifyType extends BACnetPropertyStates impleme
 
     readBuffer.closeContext("BACnetPropertyStatesNotifyType");
     // Create the instance
-    return new BACnetPropertyStatesNotifyTypeBuilder(notifyType);
+    return new BACnetPropertyStatesNotifyTypeBuilderImpl(notifyType);
   }
 
-  public static class BACnetPropertyStatesNotifyTypeBuilder
+  public static class BACnetPropertyStatesNotifyTypeBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetNotifyTypeTagged notifyType;
 
-    public BACnetPropertyStatesNotifyTypeBuilder(BACnetNotifyTypeTagged notifyType) {
+    public BACnetPropertyStatesNotifyTypeBuilderImpl(BACnetNotifyTypeTagged notifyType) {
 
       this.notifyType = notifyType;
     }

@@ -144,7 +144,7 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
     return lengthInBits;
   }
 
-  public static SetMonitoringModeRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SetMonitoringModeRequest");
     PositionAware positionAware = readBuffer;
@@ -176,11 +176,11 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
 
     readBuffer.closeContext("SetMonitoringModeRequest");
     // Create the instance
-    return new SetMonitoringModeRequestBuilder(
+    return new SetMonitoringModeRequestBuilderImpl(
         requestHeader, subscriptionId, monitoringMode, noOfMonitoredItemIds, monitoredItemIds);
   }
 
-  public static class SetMonitoringModeRequestBuilder
+  public static class SetMonitoringModeRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final long subscriptionId;
@@ -188,7 +188,7 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
     private final int noOfMonitoredItemIds;
     private final List<Long> monitoredItemIds;
 
-    public SetMonitoringModeRequestBuilder(
+    public SetMonitoringModeRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         long subscriptionId,
         MonitoringMode monitoringMode,

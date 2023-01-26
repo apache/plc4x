@@ -82,7 +82,7 @@ public class BACnetClientCOVNone extends BACnetClientCOV implements Message {
     return lengthInBits;
   }
 
-  public static BACnetClientCOVNoneBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetClientCOVBuilder staticParseBACnetClientCOVBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetClientCOVNone");
     PositionAware positionAware = readBuffer;
@@ -98,13 +98,14 @@ public class BACnetClientCOVNone extends BACnetClientCOV implements Message {
 
     readBuffer.closeContext("BACnetClientCOVNone");
     // Create the instance
-    return new BACnetClientCOVNoneBuilder(defaultIncrement);
+    return new BACnetClientCOVNoneBuilderImpl(defaultIncrement);
   }
 
-  public static class BACnetClientCOVNoneBuilder implements BACnetClientCOV.BACnetClientCOVBuilder {
+  public static class BACnetClientCOVNoneBuilderImpl
+      implements BACnetClientCOV.BACnetClientCOVBuilder {
     private final BACnetApplicationTagNull defaultIncrement;
 
-    public BACnetClientCOVNoneBuilder(BACnetApplicationTagNull defaultIncrement) {
+    public BACnetClientCOVNoneBuilderImpl(BACnetApplicationTagNull defaultIncrement) {
 
       this.defaultIncrement = defaultIncrement;
     }

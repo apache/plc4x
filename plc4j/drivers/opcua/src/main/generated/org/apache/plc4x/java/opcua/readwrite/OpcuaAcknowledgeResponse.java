@@ -160,7 +160,7 @@ public class OpcuaAcknowledgeResponse extends MessagePDU implements Message {
     return lengthInBits;
   }
 
-  public static OpcuaAcknowledgeResponseBuilder staticParseBuilder(
+  public static MessagePDUBuilder staticParseMessagePDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("OpcuaAcknowledgeResponse");
     PositionAware positionAware = readBuffer;
@@ -183,11 +183,11 @@ public class OpcuaAcknowledgeResponse extends MessagePDU implements Message {
 
     readBuffer.closeContext("OpcuaAcknowledgeResponse");
     // Create the instance
-    return new OpcuaAcknowledgeResponseBuilder(
+    return new OpcuaAcknowledgeResponseBuilderImpl(
         chunk, version, receiveBufferSize, sendBufferSize, maxMessageSize, maxChunkCount);
   }
 
-  public static class OpcuaAcknowledgeResponseBuilder implements MessagePDU.MessagePDUBuilder {
+  public static class OpcuaAcknowledgeResponseBuilderImpl implements MessagePDU.MessagePDUBuilder {
     private final String chunk;
     private final int version;
     private final int receiveBufferSize;
@@ -195,7 +195,7 @@ public class OpcuaAcknowledgeResponse extends MessagePDU implements Message {
     private final int maxMessageSize;
     private final int maxChunkCount;
 
-    public OpcuaAcknowledgeResponseBuilder(
+    public OpcuaAcknowledgeResponseBuilderImpl(
         String chunk,
         int version,
         int receiveBufferSize,

@@ -81,7 +81,7 @@ public class BACnetPropertyStatesSecurityLevel extends BACnetPropertyStates impl
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesSecurityLevelBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesSecurityLevel");
     PositionAware positionAware = readBuffer;
@@ -101,14 +101,14 @@ public class BACnetPropertyStatesSecurityLevel extends BACnetPropertyStates impl
 
     readBuffer.closeContext("BACnetPropertyStatesSecurityLevel");
     // Create the instance
-    return new BACnetPropertyStatesSecurityLevelBuilder(securityLevel);
+    return new BACnetPropertyStatesSecurityLevelBuilderImpl(securityLevel);
   }
 
-  public static class BACnetPropertyStatesSecurityLevelBuilder
+  public static class BACnetPropertyStatesSecurityLevelBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetSecurityLevelTagged securityLevel;
 
-    public BACnetPropertyStatesSecurityLevelBuilder(BACnetSecurityLevelTagged securityLevel) {
+    public BACnetPropertyStatesSecurityLevelBuilderImpl(BACnetSecurityLevelTagged securityLevel) {
 
       this.securityLevel = securityLevel;
     }

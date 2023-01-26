@@ -110,7 +110,7 @@ public class BACnetConstructedDataDateTimePatternValuePresentValue extends BACne
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDateTimePatternValuePresentValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,17 +132,17 @@ public class BACnetConstructedDataDateTimePatternValuePresentValue extends BACne
 
     readBuffer.closeContext("BACnetConstructedDataDateTimePatternValuePresentValue");
     // Create the instance
-    return new BACnetConstructedDataDateTimePatternValuePresentValueBuilder(
+    return new BACnetConstructedDataDateTimePatternValuePresentValueBuilderImpl(
         presentValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDateTimePatternValuePresentValueBuilder
+  public static class BACnetConstructedDataDateTimePatternValuePresentValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime presentValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDateTimePatternValuePresentValueBuilder(
+    public BACnetConstructedDataDateTimePatternValuePresentValueBuilderImpl(
         BACnetDateTime presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

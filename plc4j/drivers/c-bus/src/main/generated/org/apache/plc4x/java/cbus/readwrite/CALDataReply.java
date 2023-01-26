@@ -105,7 +105,7 @@ public class CALDataReply extends CALData implements Message {
     return lengthInBits;
   }
 
-  public static CALDataReplyBuilder staticParseBuilder(
+  public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer,
       RequestContext requestContext,
       CALCommandTypeContainer commandTypeContainer)
@@ -134,15 +134,15 @@ public class CALDataReply extends CALData implements Message {
 
     readBuffer.closeContext("CALDataReply");
     // Create the instance
-    return new CALDataReplyBuilder(paramNo, parameterValue, requestContext);
+    return new CALDataReplyBuilderImpl(paramNo, parameterValue, requestContext);
   }
 
-  public static class CALDataReplyBuilder implements CALData.CALDataBuilder {
+  public static class CALDataReplyBuilderImpl implements CALData.CALDataBuilder {
     private final Parameter paramNo;
     private final ParameterValue parameterValue;
     private final RequestContext requestContext;
 
-    public CALDataReplyBuilder(
+    public CALDataReplyBuilderImpl(
         Parameter paramNo, ParameterValue parameterValue, RequestContext requestContext) {
 
       this.paramNo = paramNo;

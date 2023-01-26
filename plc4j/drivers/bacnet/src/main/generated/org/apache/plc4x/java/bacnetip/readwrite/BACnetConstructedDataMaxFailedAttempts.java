@@ -111,7 +111,7 @@ public class BACnetConstructedDataMaxFailedAttempts extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMaxFailedAttemptsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,17 +137,17 @@ public class BACnetConstructedDataMaxFailedAttempts extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataMaxFailedAttempts");
     // Create the instance
-    return new BACnetConstructedDataMaxFailedAttemptsBuilder(
+    return new BACnetConstructedDataMaxFailedAttemptsBuilderImpl(
         maxFailedAttempts, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMaxFailedAttemptsBuilder
+  public static class BACnetConstructedDataMaxFailedAttemptsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger maxFailedAttempts;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMaxFailedAttemptsBuilder(
+    public BACnetConstructedDataMaxFailedAttemptsBuilderImpl(
         BACnetApplicationTagUnsignedInteger maxFailedAttempts,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

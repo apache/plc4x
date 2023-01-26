@@ -90,7 +90,7 @@ public class ModbusPDUReadExceptionStatusResponse extends ModbusPDU implements M
     return lengthInBits;
   }
 
-  public static ModbusPDUReadExceptionStatusResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadExceptionStatusResponse");
     PositionAware positionAware = readBuffer;
@@ -101,14 +101,14 @@ public class ModbusPDUReadExceptionStatusResponse extends ModbusPDU implements M
 
     readBuffer.closeContext("ModbusPDUReadExceptionStatusResponse");
     // Create the instance
-    return new ModbusPDUReadExceptionStatusResponseBuilder(value);
+    return new ModbusPDUReadExceptionStatusResponseBuilderImpl(value);
   }
 
-  public static class ModbusPDUReadExceptionStatusResponseBuilder
+  public static class ModbusPDUReadExceptionStatusResponseBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final short value;
 
-    public ModbusPDUReadExceptionStatusResponseBuilder(short value) {
+    public ModbusPDUReadExceptionStatusResponseBuilderImpl(short value) {
 
       this.value = value;
     }

@@ -318,7 +318,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
     return lengthInBits;
   }
 
-  public static ProgramDiagnostic2DataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ProgramDiagnostic2DataType");
     PositionAware positionAware = readBuffer;
@@ -399,7 +399,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
 
     readBuffer.closeContext("ProgramDiagnostic2DataType");
     // Create the instance
-    return new ProgramDiagnostic2DataTypeBuilder(
+    return new ProgramDiagnostic2DataTypeBuilderImpl(
         createSessionId,
         createClientName,
         invocationCreationTime,
@@ -418,7 +418,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
         lastMethodReturnStatus);
   }
 
-  public static class ProgramDiagnostic2DataTypeBuilder
+  public static class ProgramDiagnostic2DataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId createSessionId;
     private final PascalString createClientName;
@@ -437,7 +437,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
     private final long lastMethodCallTime;
     private final StatusCode lastMethodReturnStatus;
 
-    public ProgramDiagnostic2DataTypeBuilder(
+    public ProgramDiagnostic2DataTypeBuilderImpl(
         NodeId createSessionId,
         PascalString createClientName,
         long invocationCreationTime,

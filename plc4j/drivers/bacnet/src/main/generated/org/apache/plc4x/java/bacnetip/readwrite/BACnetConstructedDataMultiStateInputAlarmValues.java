@@ -104,7 +104,7 @@ public class BACnetConstructedDataMultiStateInputAlarmValues extends BACnetConst
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMultiStateInputAlarmValuesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,17 +131,17 @@ public class BACnetConstructedDataMultiStateInputAlarmValues extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataMultiStateInputAlarmValues");
     // Create the instance
-    return new BACnetConstructedDataMultiStateInputAlarmValuesBuilder(
+    return new BACnetConstructedDataMultiStateInputAlarmValuesBuilderImpl(
         alarmValues, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMultiStateInputAlarmValuesBuilder
+  public static class BACnetConstructedDataMultiStateInputAlarmValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetApplicationTagUnsignedInteger> alarmValues;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMultiStateInputAlarmValuesBuilder(
+    public BACnetConstructedDataMultiStateInputAlarmValuesBuilderImpl(
         List<BACnetApplicationTagUnsignedInteger> alarmValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

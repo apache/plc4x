@@ -118,8 +118,9 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequestIHaveBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
+  public static BACnetUnconfirmedServiceRequestBuilder
+      staticParseBACnetUnconfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestIHave");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -154,18 +155,18 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestIHave");
     // Create the instance
-    return new BACnetUnconfirmedServiceRequestIHaveBuilder(
+    return new BACnetUnconfirmedServiceRequestIHaveBuilderImpl(
         deviceIdentifier, objectIdentifier, objectName, serviceRequestLength);
   }
 
-  public static class BACnetUnconfirmedServiceRequestIHaveBuilder
+  public static class BACnetUnconfirmedServiceRequestIHaveBuilderImpl
       implements BACnetUnconfirmedServiceRequest.BACnetUnconfirmedServiceRequestBuilder {
     private final BACnetApplicationTagObjectIdentifier deviceIdentifier;
     private final BACnetApplicationTagObjectIdentifier objectIdentifier;
     private final BACnetApplicationTagCharacterString objectName;
     private final Integer serviceRequestLength;
 
-    public BACnetUnconfirmedServiceRequestIHaveBuilder(
+    public BACnetUnconfirmedServiceRequestIHaveBuilderImpl(
         BACnetApplicationTagObjectIdentifier deviceIdentifier,
         BACnetApplicationTagObjectIdentifier objectIdentifier,
         BACnetApplicationTagCharacterString objectName,

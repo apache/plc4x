@@ -93,7 +93,7 @@ public class BACnetNotificationParametersComplexEventType extends BACnetNotifica
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersComplexEventTypeBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -117,17 +117,17 @@ public class BACnetNotificationParametersComplexEventType extends BACnetNotifica
 
     readBuffer.closeContext("BACnetNotificationParametersComplexEventType");
     // Create the instance
-    return new BACnetNotificationParametersComplexEventTypeBuilder(
+    return new BACnetNotificationParametersComplexEventTypeBuilderImpl(
         listOfValues, tagNumber, objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersComplexEventTypeBuilder
+  public static class BACnetNotificationParametersComplexEventTypeBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetPropertyValues listOfValues;
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersComplexEventTypeBuilder(
+    public BACnetNotificationParametersComplexEventTypeBuilderImpl(
         BACnetPropertyValues listOfValues, Short tagNumber, BACnetObjectType objectTypeArgument) {
 
       this.listOfValues = listOfValues;

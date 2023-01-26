@@ -135,7 +135,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static RelativePathElementBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RelativePathElement");
     PositionAware positionAware = readBuffer;
@@ -162,11 +162,11 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("RelativePathElement");
     // Create the instance
-    return new RelativePathElementBuilder(
+    return new RelativePathElementBuilderImpl(
         referenceTypeId, includeSubtypes, isInverse, targetName, reservedField0);
   }
 
-  public static class RelativePathElementBuilder
+  public static class RelativePathElementBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId referenceTypeId;
     private final boolean includeSubtypes;
@@ -174,7 +174,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
     private final QualifiedName targetName;
     private final Short reservedField0;
 
-    public RelativePathElementBuilder(
+    public RelativePathElementBuilderImpl(
         NodeId referenceTypeId,
         boolean includeSubtypes,
         boolean isInverse,

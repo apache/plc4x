@@ -158,7 +158,7 @@ public class S7ParameterModeTransition extends S7Parameter implements Message {
     return lengthInBits;
   }
 
-  public static S7ParameterModeTransitionBuilder staticParseBuilder(
+  public static S7ParameterBuilder staticParseS7ParameterBuilder(
       ReadBuffer readBuffer, Short messageType) throws ParseException {
     readBuffer.pullContext("S7ParameterModeTransition");
     PositionAware positionAware = readBuffer;
@@ -182,11 +182,12 @@ public class S7ParameterModeTransition extends S7Parameter implements Message {
 
     readBuffer.closeContext("S7ParameterModeTransition");
     // Create the instance
-    return new S7ParameterModeTransitionBuilder(
+    return new S7ParameterModeTransitionBuilderImpl(
         method, cpuFunctionType, cpuFunctionGroup, currentMode, sequenceNumber, reservedField0);
   }
 
-  public static class S7ParameterModeTransitionBuilder implements S7Parameter.S7ParameterBuilder {
+  public static class S7ParameterModeTransitionBuilderImpl
+      implements S7Parameter.S7ParameterBuilder {
     private final short method;
     private final byte cpuFunctionType;
     private final byte cpuFunctionGroup;
@@ -194,7 +195,7 @@ public class S7ParameterModeTransition extends S7Parameter implements Message {
     private final short sequenceNumber;
     private final Integer reservedField0;
 
-    public S7ParameterModeTransitionBuilder(
+    public S7ParameterModeTransitionBuilderImpl(
         short method,
         byte cpuFunctionType,
         byte cpuFunctionGroup,

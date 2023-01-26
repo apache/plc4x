@@ -66,7 +66,7 @@ public class MeteringDataMeasureElectricity extends MeteringData implements Mess
     return lengthInBits;
   }
 
-  public static MeteringDataMeasureElectricityBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static MeteringDataBuilder staticParseMeteringDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("MeteringDataMeasureElectricity");
     PositionAware positionAware = readBuffer;
@@ -75,13 +75,13 @@ public class MeteringDataMeasureElectricity extends MeteringData implements Mess
 
     readBuffer.closeContext("MeteringDataMeasureElectricity");
     // Create the instance
-    return new MeteringDataMeasureElectricityBuilder();
+    return new MeteringDataMeasureElectricityBuilderImpl();
   }
 
-  public static class MeteringDataMeasureElectricityBuilder
+  public static class MeteringDataMeasureElectricityBuilderImpl
       implements MeteringData.MeteringDataBuilder {
 
-    public MeteringDataMeasureElectricityBuilder() {}
+    public MeteringDataMeasureElectricityBuilderImpl() {}
 
     public MeteringDataMeasureElectricity build(
         MeteringCommandTypeContainer commandTypeContainer, byte argument) {

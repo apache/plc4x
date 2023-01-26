@@ -109,7 +109,7 @@ public class BACnetConstructedDataTransition extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTransitionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,16 +134,17 @@ public class BACnetConstructedDataTransition extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataTransition");
     // Create the instance
-    return new BACnetConstructedDataTransitionBuilder(transition, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTransitionBuilderImpl(
+        transition, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTransitionBuilder
+  public static class BACnetConstructedDataTransitionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLightingTransitionTagged transition;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTransitionBuilder(
+    public BACnetConstructedDataTransitionBuilderImpl(
         BACnetLightingTransitionTagged transition,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

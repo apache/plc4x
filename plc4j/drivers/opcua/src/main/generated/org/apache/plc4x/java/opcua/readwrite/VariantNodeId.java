@@ -109,7 +109,7 @@ public class VariantNodeId extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantNodeIdBuilder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantNodeId");
     PositionAware positionAware = readBuffer;
@@ -127,14 +127,14 @@ public class VariantNodeId extends Variant implements Message {
 
     readBuffer.closeContext("VariantNodeId");
     // Create the instance
-    return new VariantNodeIdBuilder(arrayLength, value);
+    return new VariantNodeIdBuilderImpl(arrayLength, value);
   }
 
-  public static class VariantNodeIdBuilder implements Variant.VariantBuilder {
+  public static class VariantNodeIdBuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final List<NodeId> value;
 
-    public VariantNodeIdBuilder(Integer arrayLength, List<NodeId> value) {
+    public VariantNodeIdBuilderImpl(Integer arrayLength, List<NodeId> value) {
 
       this.arrayLength = arrayLength;
       this.value = value;

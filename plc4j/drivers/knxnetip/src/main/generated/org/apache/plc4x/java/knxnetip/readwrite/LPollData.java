@@ -132,7 +132,8 @@ public class LPollData extends LDataFrame implements Message {
     return lengthInBits;
   }
 
-  public static LPollDataBuilder staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static LDataFrameBuilder staticParseLDataFrameBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("LPollData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -153,17 +154,17 @@ public class LPollData extends LDataFrame implements Message {
 
     readBuffer.closeContext("LPollData");
     // Create the instance
-    return new LPollDataBuilder(
+    return new LPollDataBuilderImpl(
         sourceAddress, targetAddress, numberExpectedPollData, reservedField0);
   }
 
-  public static class LPollDataBuilder implements LDataFrame.LDataFrameBuilder {
+  public static class LPollDataBuilderImpl implements LDataFrame.LDataFrameBuilder {
     private final KnxAddress sourceAddress;
     private final byte[] targetAddress;
     private final short numberExpectedPollData;
     private final Byte reservedField0;
 
-    public LPollDataBuilder(
+    public LPollDataBuilderImpl(
         KnxAddress sourceAddress,
         byte[] targetAddress,
         short numberExpectedPollData,

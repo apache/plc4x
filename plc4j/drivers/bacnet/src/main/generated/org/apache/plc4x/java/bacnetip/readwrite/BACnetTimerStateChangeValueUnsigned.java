@@ -88,7 +88,7 @@ public class BACnetTimerStateChangeValueUnsigned extends BACnetTimerStateChangeV
     return lengthInBits;
   }
 
-  public static BACnetTimerStateChangeValueUnsignedBuilder staticParseBuilder(
+  public static BACnetTimerStateChangeValueBuilder staticParseBACnetTimerStateChangeValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueUnsigned");
     PositionAware positionAware = readBuffer;
@@ -106,15 +106,15 @@ public class BACnetTimerStateChangeValueUnsigned extends BACnetTimerStateChangeV
 
     readBuffer.closeContext("BACnetTimerStateChangeValueUnsigned");
     // Create the instance
-    return new BACnetTimerStateChangeValueUnsignedBuilder(unsignedValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueUnsignedBuilderImpl(unsignedValue, objectTypeArgument);
   }
 
-  public static class BACnetTimerStateChangeValueUnsignedBuilder
+  public static class BACnetTimerStateChangeValueUnsignedBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagUnsignedInteger unsignedValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueUnsignedBuilder(
+    public BACnetTimerStateChangeValueUnsignedBuilderImpl(
         BACnetApplicationTagUnsignedInteger unsignedValue, BACnetObjectType objectTypeArgument) {
 
       this.unsignedValue = unsignedValue;

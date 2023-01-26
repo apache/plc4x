@@ -98,7 +98,7 @@ public class CreateObjectError extends BACnetError implements Message {
     return lengthInBits;
   }
 
-  public static CreateObjectErrorBuilder staticParseBuilder(
+  public static BACnetErrorBuilder staticParseBACnetErrorBuilder(
       ReadBuffer readBuffer, BACnetConfirmedServiceChoice errorChoice) throws ParseException {
     readBuffer.pullContext("CreateObjectError");
     PositionAware positionAware = readBuffer;
@@ -125,14 +125,14 @@ public class CreateObjectError extends BACnetError implements Message {
 
     readBuffer.closeContext("CreateObjectError");
     // Create the instance
-    return new CreateObjectErrorBuilder(errorType, firstFailedElementNumber);
+    return new CreateObjectErrorBuilderImpl(errorType, firstFailedElementNumber);
   }
 
-  public static class CreateObjectErrorBuilder implements BACnetError.BACnetErrorBuilder {
+  public static class CreateObjectErrorBuilderImpl implements BACnetError.BACnetErrorBuilder {
     private final ErrorEnclosed errorType;
     private final BACnetContextTagUnsignedInteger firstFailedElementNumber;
 
-    public CreateObjectErrorBuilder(
+    public CreateObjectErrorBuilderImpl(
         ErrorEnclosed errorType, BACnetContextTagUnsignedInteger firstFailedElementNumber) {
 
       this.errorType = errorType;

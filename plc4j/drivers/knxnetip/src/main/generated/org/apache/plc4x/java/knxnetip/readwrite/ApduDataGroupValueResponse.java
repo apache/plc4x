@@ -100,8 +100,8 @@ public class ApduDataGroupValueResponse extends ApduData implements Message {
     return lengthInBits;
   }
 
-  public static ApduDataGroupValueResponseBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short dataLength) throws ParseException {
+  public static ApduDataBuilder staticParseApduDataBuilder(ReadBuffer readBuffer, Short dataLength)
+      throws ParseException {
     readBuffer.pullContext("ApduDataGroupValueResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -115,15 +115,16 @@ public class ApduDataGroupValueResponse extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataGroupValueResponse");
     // Create the instance
-    return new ApduDataGroupValueResponseBuilder(dataFirstByte, data, dataLength);
+    return new ApduDataGroupValueResponseBuilderImpl(dataFirstByte, data, dataLength);
   }
 
-  public static class ApduDataGroupValueResponseBuilder implements ApduData.ApduDataBuilder {
+  public static class ApduDataGroupValueResponseBuilderImpl implements ApduData.ApduDataBuilder {
     private final byte dataFirstByte;
     private final byte[] data;
     private final Short dataLength;
 
-    public ApduDataGroupValueResponseBuilder(byte dataFirstByte, byte[] data, Short dataLength) {
+    public ApduDataGroupValueResponseBuilderImpl(
+        byte dataFirstByte, byte[] data, Short dataLength) {
 
       this.dataFirstByte = dataFirstByte;
       this.data = data;

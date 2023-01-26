@@ -99,7 +99,7 @@ public class SubscribeCOVPropertyMultipleError extends BACnetError implements Me
     return lengthInBits;
   }
 
-  public static SubscribeCOVPropertyMultipleErrorBuilder staticParseBuilder(
+  public static BACnetErrorBuilder staticParseBACnetErrorBuilder(
       ReadBuffer readBuffer, BACnetConfirmedServiceChoice errorChoice) throws ParseException {
     readBuffer.pullContext("SubscribeCOVPropertyMultipleError");
     PositionAware positionAware = readBuffer;
@@ -123,15 +123,15 @@ public class SubscribeCOVPropertyMultipleError extends BACnetError implements Me
 
     readBuffer.closeContext("SubscribeCOVPropertyMultipleError");
     // Create the instance
-    return new SubscribeCOVPropertyMultipleErrorBuilder(errorType, firstFailedSubscription);
+    return new SubscribeCOVPropertyMultipleErrorBuilderImpl(errorType, firstFailedSubscription);
   }
 
-  public static class SubscribeCOVPropertyMultipleErrorBuilder
+  public static class SubscribeCOVPropertyMultipleErrorBuilderImpl
       implements BACnetError.BACnetErrorBuilder {
     private final ErrorEnclosed errorType;
     private final SubscribeCOVPropertyMultipleErrorFirstFailedSubscription firstFailedSubscription;
 
-    public SubscribeCOVPropertyMultipleErrorBuilder(
+    public SubscribeCOVPropertyMultipleErrorBuilderImpl(
         ErrorEnclosed errorType,
         SubscribeCOVPropertyMultipleErrorFirstFailedSubscription firstFailedSubscription) {
 

@@ -72,7 +72,7 @@ public class ApduDataExtLinkResponse extends ApduDataExt implements Message {
     return lengthInBits;
   }
 
-  public static ApduDataExtLinkResponseBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtLinkResponse");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class ApduDataExtLinkResponse extends ApduDataExt implements Message {
 
     readBuffer.closeContext("ApduDataExtLinkResponse");
     // Create the instance
-    return new ApduDataExtLinkResponseBuilder(length);
+    return new ApduDataExtLinkResponseBuilderImpl(length);
   }
 
-  public static class ApduDataExtLinkResponseBuilder implements ApduDataExt.ApduDataExtBuilder {
+  public static class ApduDataExtLinkResponseBuilderImpl implements ApduDataExt.ApduDataExtBuilder {
     private final Short length;
 
-    public ApduDataExtLinkResponseBuilder(Short length) {
+    public ApduDataExtLinkResponseBuilderImpl(Short length) {
 
       this.length = length;
     }

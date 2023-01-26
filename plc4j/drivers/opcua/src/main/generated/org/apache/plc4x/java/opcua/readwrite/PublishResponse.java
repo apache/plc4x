@@ -231,8 +231,8 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
     return lengthInBits;
   }
 
-  public static PublishResponseBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("PublishResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -287,7 +287,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
 
     readBuffer.closeContext("PublishResponse");
     // Create the instance
-    return new PublishResponseBuilder(
+    return new PublishResponseBuilderImpl(
         responseHeader,
         subscriptionId,
         noOfAvailableSequenceNumbers,
@@ -301,7 +301,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
         reservedField0);
   }
 
-  public static class PublishResponseBuilder
+  public static class PublishResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final long subscriptionId;
@@ -315,7 +315,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
     private final List<DiagnosticInfo> diagnosticInfos;
     private final Short reservedField0;
 
-    public PublishResponseBuilder(
+    public PublishResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         long subscriptionId,
         int noOfAvailableSequenceNumbers,

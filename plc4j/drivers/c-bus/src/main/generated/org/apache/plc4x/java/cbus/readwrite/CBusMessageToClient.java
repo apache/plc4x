@@ -89,7 +89,7 @@ public class CBusMessageToClient extends CBusMessage implements Message {
     return lengthInBits;
   }
 
-  public static CBusMessageToClientBuilder staticParseBuilder(
+  public static CBusMessageBuilder staticParseCBusMessageBuilder(
       ReadBuffer readBuffer,
       Boolean isResponse,
       RequestContext requestContext,
@@ -111,15 +111,15 @@ public class CBusMessageToClient extends CBusMessage implements Message {
 
     readBuffer.closeContext("CBusMessageToClient");
     // Create the instance
-    return new CBusMessageToClientBuilder(reply, requestContext, cBusOptions);
+    return new CBusMessageToClientBuilderImpl(reply, requestContext, cBusOptions);
   }
 
-  public static class CBusMessageToClientBuilder implements CBusMessage.CBusMessageBuilder {
+  public static class CBusMessageToClientBuilderImpl implements CBusMessage.CBusMessageBuilder {
     private final ReplyOrConfirmation reply;
     private final RequestContext requestContext;
     private final CBusOptions cBusOptions;
 
-    public CBusMessageToClientBuilder(
+    public CBusMessageToClientBuilderImpl(
         ReplyOrConfirmation reply, RequestContext requestContext, CBusOptions cBusOptions) {
 
       this.reply = reply;

@@ -109,7 +109,7 @@ public class BACnetConstructedDataUpdateTime extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataUpdateTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -130,16 +130,17 @@ public class BACnetConstructedDataUpdateTime extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataUpdateTime");
     // Create the instance
-    return new BACnetConstructedDataUpdateTimeBuilder(updateTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataUpdateTimeBuilderImpl(
+        updateTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataUpdateTimeBuilder
+  public static class BACnetConstructedDataUpdateTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime updateTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataUpdateTimeBuilder(
+    public BACnetConstructedDataUpdateTimeBuilderImpl(
         BACnetDateTime updateTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

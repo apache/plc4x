@@ -96,13 +96,13 @@ public abstract class ApduControl implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ApduControlBuilder builder = null;
     if (EvaluationHelper.equals(controlType, (byte) 0x0)) {
-      builder = ApduControlConnect.staticParseBuilder(readBuffer);
+      builder = ApduControlConnect.staticParseApduControlBuilder(readBuffer);
     } else if (EvaluationHelper.equals(controlType, (byte) 0x1)) {
-      builder = ApduControlDisconnect.staticParseBuilder(readBuffer);
+      builder = ApduControlDisconnect.staticParseApduControlBuilder(readBuffer);
     } else if (EvaluationHelper.equals(controlType, (byte) 0x2)) {
-      builder = ApduControlAck.staticParseBuilder(readBuffer);
+      builder = ApduControlAck.staticParseApduControlBuilder(readBuffer);
     } else if (EvaluationHelper.equals(controlType, (byte) 0x3)) {
-      builder = ApduControlNack.staticParseBuilder(readBuffer);
+      builder = ApduControlNack.staticParseApduControlBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -119,7 +119,7 @@ public abstract class ApduControl implements Message {
     return _apduControl;
   }
 
-  public static interface ApduControlBuilder {
+  public interface ApduControlBuilder {
     ApduControl build();
   }
 

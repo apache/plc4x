@@ -107,8 +107,8 @@ public class ViewDescription extends ExtensionObjectDefinition implements Messag
     return lengthInBits;
   }
 
-  public static ViewDescriptionBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ViewDescription");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -125,16 +125,16 @@ public class ViewDescription extends ExtensionObjectDefinition implements Messag
 
     readBuffer.closeContext("ViewDescription");
     // Create the instance
-    return new ViewDescriptionBuilder(viewId, timestamp, viewVersion);
+    return new ViewDescriptionBuilderImpl(viewId, timestamp, viewVersion);
   }
 
-  public static class ViewDescriptionBuilder
+  public static class ViewDescriptionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId viewId;
     private final long timestamp;
     private final long viewVersion;
 
-    public ViewDescriptionBuilder(NodeId viewId, long timestamp, long viewVersion) {
+    public ViewDescriptionBuilderImpl(NodeId viewId, long timestamp, long viewVersion) {
 
       this.viewId = viewId;
       this.timestamp = timestamp;

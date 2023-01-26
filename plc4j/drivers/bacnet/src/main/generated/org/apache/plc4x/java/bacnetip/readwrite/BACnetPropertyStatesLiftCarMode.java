@@ -81,7 +81,7 @@ public class BACnetPropertyStatesLiftCarMode extends BACnetPropertyStates implem
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesLiftCarModeBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLiftCarMode");
     PositionAware positionAware = readBuffer;
@@ -101,14 +101,14 @@ public class BACnetPropertyStatesLiftCarMode extends BACnetPropertyStates implem
 
     readBuffer.closeContext("BACnetPropertyStatesLiftCarMode");
     // Create the instance
-    return new BACnetPropertyStatesLiftCarModeBuilder(liftCarMode);
+    return new BACnetPropertyStatesLiftCarModeBuilderImpl(liftCarMode);
   }
 
-  public static class BACnetPropertyStatesLiftCarModeBuilder
+  public static class BACnetPropertyStatesLiftCarModeBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetLiftCarModeTagged liftCarMode;
 
-    public BACnetPropertyStatesLiftCarModeBuilder(BACnetLiftCarModeTagged liftCarMode) {
+    public BACnetPropertyStatesLiftCarModeBuilderImpl(BACnetLiftCarModeTagged liftCarMode) {
 
       this.liftCarMode = liftCarMode;
     }

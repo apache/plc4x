@@ -154,10 +154,12 @@ public abstract class CBusPointToPointToMultiPointCommand implements Message {
     CBusPointToPointToMultiPointCommandBuilder builder = null;
     if (EvaluationHelper.equals(peekedApplication, (byte) 0xFF)) {
       builder =
-          CBusPointToPointToMultiPointCommandStatus.staticParseBuilder(readBuffer, cBusOptions);
+          CBusPointToPointToMultiPointCommandStatus
+              .staticParseCBusPointToPointToMultiPointCommandBuilder(readBuffer, cBusOptions);
     } else if (true) {
       builder =
-          CBusPointToPointToMultiPointCommandNormal.staticParseBuilder(readBuffer, cBusOptions);
+          CBusPointToPointToMultiPointCommandNormal
+              .staticParseCBusPointToPointToMultiPointCommandBuilder(readBuffer, cBusOptions);
     }
     if (builder == null) {
       throw new ParseException(
@@ -175,7 +177,7 @@ public abstract class CBusPointToPointToMultiPointCommand implements Message {
     return _cBusPointToPointToMultiPointCommand;
   }
 
-  public static interface CBusPointToPointToMultiPointCommandBuilder {
+  public interface CBusPointToPointToMultiPointCommandBuilder {
     CBusPointToPointToMultiPointCommand build(
         BridgeAddress bridgeAddress,
         NetworkRoute networkRoute,

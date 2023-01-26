@@ -84,7 +84,7 @@ public class CBusCommandPointToMultiPoint extends CBusCommand implements Message
     return lengthInBits;
   }
 
-  public static CBusCommandPointToMultiPointBuilder staticParseBuilder(
+  public static CBusCommandBuilder staticParseCBusCommandBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusCommandPointToMultiPoint");
     PositionAware positionAware = readBuffer;
@@ -102,15 +102,15 @@ public class CBusCommandPointToMultiPoint extends CBusCommand implements Message
 
     readBuffer.closeContext("CBusCommandPointToMultiPoint");
     // Create the instance
-    return new CBusCommandPointToMultiPointBuilder(command, cBusOptions);
+    return new CBusCommandPointToMultiPointBuilderImpl(command, cBusOptions);
   }
 
-  public static class CBusCommandPointToMultiPointBuilder
+  public static class CBusCommandPointToMultiPointBuilderImpl
       implements CBusCommand.CBusCommandBuilder {
     private final CBusPointToMultiPointCommand command;
     private final CBusOptions cBusOptions;
 
-    public CBusCommandPointToMultiPointBuilder(
+    public CBusCommandPointToMultiPointBuilderImpl(
         CBusPointToMultiPointCommand command, CBusOptions cBusOptions) {
 
       this.command = command;

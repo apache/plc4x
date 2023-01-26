@@ -83,7 +83,7 @@ public class SALDataVentilation extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataVentilationBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataVentilation");
     PositionAware positionAware = readBuffer;
@@ -97,13 +97,13 @@ public class SALDataVentilation extends SALData implements Message {
 
     readBuffer.closeContext("SALDataVentilation");
     // Create the instance
-    return new SALDataVentilationBuilder(ventilationData);
+    return new SALDataVentilationBuilderImpl(ventilationData);
   }
 
-  public static class SALDataVentilationBuilder implements SALData.SALDataBuilder {
+  public static class SALDataVentilationBuilderImpl implements SALData.SALDataBuilder {
     private final LightingData ventilationData;
 
-    public SALDataVentilationBuilder(LightingData ventilationData) {
+    public SALDataVentilationBuilderImpl(LightingData ventilationData) {
 
       this.ventilationData = ventilationData;
     }

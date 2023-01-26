@@ -123,7 +123,7 @@ public class AirConditioningDataSetHumidityUpperGuardLimit extends AirConditioni
     return lengthInBits;
   }
 
-  public static AirConditioningDataSetHumidityUpperGuardLimitBuilder staticParseBuilder(
+  public static AirConditioningDataBuilder staticParseAirConditioningDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataSetHumidityUpperGuardLimit");
     PositionAware positionAware = readBuffer;
@@ -150,18 +150,18 @@ public class AirConditioningDataSetHumidityUpperGuardLimit extends AirConditioni
 
     readBuffer.closeContext("AirConditioningDataSetHumidityUpperGuardLimit");
     // Create the instance
-    return new AirConditioningDataSetHumidityUpperGuardLimitBuilder(
+    return new AirConditioningDataSetHumidityUpperGuardLimitBuilderImpl(
         zoneGroup, zoneList, limit, hvacModeAndFlags);
   }
 
-  public static class AirConditioningDataSetHumidityUpperGuardLimitBuilder
+  public static class AirConditioningDataSetHumidityUpperGuardLimitBuilderImpl
       implements AirConditioningData.AirConditioningDataBuilder {
     private final byte zoneGroup;
     private final HVACZoneList zoneList;
     private final HVACHumidity limit;
     private final HVACHumidityModeAndFlags hvacModeAndFlags;
 
-    public AirConditioningDataSetHumidityUpperGuardLimitBuilder(
+    public AirConditioningDataSetHumidityUpperGuardLimitBuilderImpl(
         byte zoneGroup,
         HVACZoneList zoneList,
         HVACHumidity limit,

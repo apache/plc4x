@@ -158,7 +158,7 @@ public class DeleteReferencesItem extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static DeleteReferencesItemBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DeleteReferencesItem");
     PositionAware positionAware = readBuffer;
@@ -193,7 +193,7 @@ public class DeleteReferencesItem extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("DeleteReferencesItem");
     // Create the instance
-    return new DeleteReferencesItemBuilder(
+    return new DeleteReferencesItemBuilderImpl(
         sourceNodeId,
         referenceTypeId,
         isForward,
@@ -203,7 +203,7 @@ public class DeleteReferencesItem extends ExtensionObjectDefinition implements M
         reservedField1);
   }
 
-  public static class DeleteReferencesItemBuilder
+  public static class DeleteReferencesItemBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId sourceNodeId;
     private final NodeId referenceTypeId;
@@ -213,7 +213,7 @@ public class DeleteReferencesItem extends ExtensionObjectDefinition implements M
     private final Short reservedField0;
     private final Short reservedField1;
 
-    public DeleteReferencesItemBuilder(
+    public DeleteReferencesItemBuilderImpl(
         NodeId sourceNodeId,
         NodeId referenceTypeId,
         boolean isForward,

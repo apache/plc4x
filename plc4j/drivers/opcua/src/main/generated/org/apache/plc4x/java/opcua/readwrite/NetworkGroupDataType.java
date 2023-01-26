@@ -114,7 +114,7 @@ public class NetworkGroupDataType extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static NetworkGroupDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("NetworkGroupDataType");
     PositionAware positionAware = readBuffer;
@@ -138,16 +138,16 @@ public class NetworkGroupDataType extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("NetworkGroupDataType");
     // Create the instance
-    return new NetworkGroupDataTypeBuilder(serverUri, noOfNetworkPaths, networkPaths);
+    return new NetworkGroupDataTypeBuilderImpl(serverUri, noOfNetworkPaths, networkPaths);
   }
 
-  public static class NetworkGroupDataTypeBuilder
+  public static class NetworkGroupDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString serverUri;
     private final int noOfNetworkPaths;
     private final List<ExtensionObjectDefinition> networkPaths;
 
-    public NetworkGroupDataTypeBuilder(
+    public NetworkGroupDataTypeBuilderImpl(
         PascalString serverUri,
         int noOfNetworkPaths,
         List<ExtensionObjectDefinition> networkPaths) {

@@ -117,7 +117,7 @@ public class APDUSimpleAck extends APDU implements Message {
     return lengthInBits;
   }
 
-  public static APDUSimpleAckBuilder staticParseBuilder(ReadBuffer readBuffer, Integer apduLength)
+  public static APDUBuilder staticParseAPDUBuilder(ReadBuffer readBuffer, Integer apduLength)
       throws ParseException {
     readBuffer.pullContext("APDUSimpleAck");
     PositionAware positionAware = readBuffer;
@@ -137,16 +137,17 @@ public class APDUSimpleAck extends APDU implements Message {
 
     readBuffer.closeContext("APDUSimpleAck");
     // Create the instance
-    return new APDUSimpleAckBuilder(originalInvokeId, serviceChoice, apduLength, reservedField0);
+    return new APDUSimpleAckBuilderImpl(
+        originalInvokeId, serviceChoice, apduLength, reservedField0);
   }
 
-  public static class APDUSimpleAckBuilder implements APDU.APDUBuilder {
+  public static class APDUSimpleAckBuilderImpl implements APDU.APDUBuilder {
     private final short originalInvokeId;
     private final BACnetConfirmedServiceChoice serviceChoice;
     private final Integer apduLength;
     private final Byte reservedField0;
 
-    public APDUSimpleAckBuilder(
+    public APDUSimpleAckBuilderImpl(
         short originalInvokeId,
         BACnetConfirmedServiceChoice serviceChoice,
         Integer apduLength,

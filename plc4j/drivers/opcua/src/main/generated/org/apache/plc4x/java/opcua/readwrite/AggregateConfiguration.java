@@ -158,7 +158,7 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static AggregateConfigurationBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AggregateConfiguration");
     PositionAware positionAware = readBuffer;
@@ -185,7 +185,7 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("AggregateConfiguration");
     // Create the instance
-    return new AggregateConfigurationBuilder(
+    return new AggregateConfigurationBuilderImpl(
         treatUncertainAsBad,
         useServerCapabilitiesDefaults,
         percentDataBad,
@@ -195,7 +195,7 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
         reservedField1);
   }
 
-  public static class AggregateConfigurationBuilder
+  public static class AggregateConfigurationBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final boolean treatUncertainAsBad;
     private final boolean useServerCapabilitiesDefaults;
@@ -205,7 +205,7 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
     private final Short reservedField0;
     private final Short reservedField1;
 
-    public AggregateConfigurationBuilder(
+    public AggregateConfigurationBuilderImpl(
         boolean treatUncertainAsBad,
         boolean useServerCapabilitiesDefaults,
         short percentDataBad,

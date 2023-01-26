@@ -72,7 +72,7 @@ public class CALDataReset extends CALData implements Message {
     return lengthInBits;
   }
 
-  public static CALDataResetBuilder staticParseBuilder(
+  public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer, RequestContext requestContext) throws ParseException {
     readBuffer.pullContext("CALDataReset");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class CALDataReset extends CALData implements Message {
 
     readBuffer.closeContext("CALDataReset");
     // Create the instance
-    return new CALDataResetBuilder(requestContext);
+    return new CALDataResetBuilderImpl(requestContext);
   }
 
-  public static class CALDataResetBuilder implements CALData.CALDataBuilder {
+  public static class CALDataResetBuilderImpl implements CALData.CALDataBuilder {
     private final RequestContext requestContext;
 
-    public CALDataResetBuilder(RequestContext requestContext) {
+    public CALDataResetBuilderImpl(RequestContext requestContext) {
 
       this.requestContext = requestContext;
     }

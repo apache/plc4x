@@ -72,7 +72,7 @@ public class ApduDataExtReadRoutingTableRequest extends ApduDataExt implements M
     return lengthInBits;
   }
 
-  public static ApduDataExtReadRoutingTableRequestBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtReadRoutingTableRequest");
     PositionAware positionAware = readBuffer;
@@ -81,14 +81,14 @@ public class ApduDataExtReadRoutingTableRequest extends ApduDataExt implements M
 
     readBuffer.closeContext("ApduDataExtReadRoutingTableRequest");
     // Create the instance
-    return new ApduDataExtReadRoutingTableRequestBuilder(length);
+    return new ApduDataExtReadRoutingTableRequestBuilderImpl(length);
   }
 
-  public static class ApduDataExtReadRoutingTableRequestBuilder
+  public static class ApduDataExtReadRoutingTableRequestBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final Short length;
 
-    public ApduDataExtReadRoutingTableRequestBuilder(Short length) {
+    public ApduDataExtReadRoutingTableRequestBuilderImpl(Short length) {
 
       this.length = length;
     }

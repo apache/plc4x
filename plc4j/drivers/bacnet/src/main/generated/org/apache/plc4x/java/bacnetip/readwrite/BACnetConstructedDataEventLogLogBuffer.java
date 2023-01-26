@@ -104,7 +104,7 @@ public class BACnetConstructedDataEventLogLogBuffer extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEventLogLogBufferBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -128,17 +128,17 @@ public class BACnetConstructedDataEventLogLogBuffer extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataEventLogLogBuffer");
     // Create the instance
-    return new BACnetConstructedDataEventLogLogBufferBuilder(
+    return new BACnetConstructedDataEventLogLogBufferBuilderImpl(
         floorText, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEventLogLogBufferBuilder
+  public static class BACnetConstructedDataEventLogLogBufferBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetEventLogRecord> floorText;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEventLogLogBufferBuilder(
+    public BACnetConstructedDataEventLogLogBufferBuilderImpl(
         List<BACnetEventLogRecord> floorText,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

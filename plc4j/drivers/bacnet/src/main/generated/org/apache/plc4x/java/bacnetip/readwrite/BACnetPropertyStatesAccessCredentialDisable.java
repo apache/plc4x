@@ -86,7 +86,7 @@ public class BACnetPropertyStatesAccessCredentialDisable extends BACnetPropertyS
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesAccessCredentialDisableBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesAccessCredentialDisable");
     PositionAware positionAware = readBuffer;
@@ -106,14 +106,14 @@ public class BACnetPropertyStatesAccessCredentialDisable extends BACnetPropertyS
 
     readBuffer.closeContext("BACnetPropertyStatesAccessCredentialDisable");
     // Create the instance
-    return new BACnetPropertyStatesAccessCredentialDisableBuilder(accessCredentialDisable);
+    return new BACnetPropertyStatesAccessCredentialDisableBuilderImpl(accessCredentialDisable);
   }
 
-  public static class BACnetPropertyStatesAccessCredentialDisableBuilder
+  public static class BACnetPropertyStatesAccessCredentialDisableBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetAccessCredentialDisableTagged accessCredentialDisable;
 
-    public BACnetPropertyStatesAccessCredentialDisableBuilder(
+    public BACnetPropertyStatesAccessCredentialDisableBuilderImpl(
         BACnetAccessCredentialDisableTagged accessCredentialDisable) {
 
       this.accessCredentialDisable = accessCredentialDisable;

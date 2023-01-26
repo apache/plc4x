@@ -166,8 +166,9 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestAcknowledgeAlarm");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -232,7 +233,7 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestAcknowledgeAlarm");
     // Create the instance
-    return new BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder(
+    return new BACnetConfirmedServiceRequestAcknowledgeAlarmBuilderImpl(
         acknowledgingProcessIdentifier,
         eventObjectIdentifier,
         eventStateAcknowledged,
@@ -242,7 +243,7 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
         serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+  public static class BACnetConfirmedServiceRequestAcknowledgeAlarmBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagUnsignedInteger acknowledgingProcessIdentifier;
     private final BACnetContextTagObjectIdentifier eventObjectIdentifier;
@@ -252,7 +253,7 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
     private final BACnetTimeStampEnclosed timeOfAcknowledgment;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder(
+    public BACnetConfirmedServiceRequestAcknowledgeAlarmBuilderImpl(
         BACnetContextTagUnsignedInteger acknowledgingProcessIdentifier,
         BACnetContextTagObjectIdentifier eventObjectIdentifier,
         BACnetEventStateTagged eventStateAcknowledged,

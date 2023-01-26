@@ -86,7 +86,7 @@ public class BACnetPropertyStatesEscalatorOperationDirection extends BACnetPrope
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesEscalatorOperationDirectionBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesEscalatorOperationDirection");
     PositionAware positionAware = readBuffer;
@@ -106,14 +106,15 @@ public class BACnetPropertyStatesEscalatorOperationDirection extends BACnetPrope
 
     readBuffer.closeContext("BACnetPropertyStatesEscalatorOperationDirection");
     // Create the instance
-    return new BACnetPropertyStatesEscalatorOperationDirectionBuilder(escalatorOperationDirection);
+    return new BACnetPropertyStatesEscalatorOperationDirectionBuilderImpl(
+        escalatorOperationDirection);
   }
 
-  public static class BACnetPropertyStatesEscalatorOperationDirectionBuilder
+  public static class BACnetPropertyStatesEscalatorOperationDirectionBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetEscalatorOperationDirectionTagged escalatorOperationDirection;
 
-    public BACnetPropertyStatesEscalatorOperationDirectionBuilder(
+    public BACnetPropertyStatesEscalatorOperationDirectionBuilderImpl(
         BACnetEscalatorOperationDirectionTagged escalatorOperationDirection) {
 
       this.escalatorOperationDirection = escalatorOperationDirection;

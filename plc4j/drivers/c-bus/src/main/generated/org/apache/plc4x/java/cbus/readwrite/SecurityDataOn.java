@@ -82,7 +82,7 @@ public class SecurityDataOn extends SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityDataOnBuilder staticParseBuilder(
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(
       ReadBuffer readBuffer, SecurityCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataOn");
@@ -96,13 +96,13 @@ public class SecurityDataOn extends SecurityData implements Message {
 
     readBuffer.closeContext("SecurityDataOn");
     // Create the instance
-    return new SecurityDataOnBuilder(data);
+    return new SecurityDataOnBuilderImpl(data);
   }
 
-  public static class SecurityDataOnBuilder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataOnBuilderImpl implements SecurityData.SecurityDataBuilder {
     private final byte[] data;
 
-    public SecurityDataOnBuilder(byte[] data) {
+    public SecurityDataOnBuilderImpl(byte[] data) {
 
       this.data = data;
     }

@@ -113,9 +113,9 @@ public abstract class BACnetOptionalUnsigned implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetOptionalUnsignedBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetOptionalUnsignedNull.staticParseBuilder(readBuffer);
+      builder = BACnetOptionalUnsignedNull.staticParseBACnetOptionalUnsignedBuilder(readBuffer);
     } else if (true) {
-      builder = BACnetOptionalUnsignedValue.staticParseBuilder(readBuffer);
+      builder = BACnetOptionalUnsignedValue.staticParseBACnetOptionalUnsignedBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -132,7 +132,7 @@ public abstract class BACnetOptionalUnsigned implements Message {
     return _bACnetOptionalUnsigned;
   }
 
-  public static interface BACnetOptionalUnsignedBuilder {
+  public interface BACnetOptionalUnsignedBuilder {
     BACnetOptionalUnsigned build(BACnetTagHeader peekedTagHeader);
   }
 

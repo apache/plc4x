@@ -95,7 +95,7 @@ public class ConfigurationVersionDataType extends ExtensionObjectDefinition impl
     return lengthInBits;
   }
 
-  public static ConfigurationVersionDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ConfigurationVersionDataType");
     PositionAware positionAware = readBuffer;
@@ -108,15 +108,15 @@ public class ConfigurationVersionDataType extends ExtensionObjectDefinition impl
 
     readBuffer.closeContext("ConfigurationVersionDataType");
     // Create the instance
-    return new ConfigurationVersionDataTypeBuilder(majorVersion, minorVersion);
+    return new ConfigurationVersionDataTypeBuilderImpl(majorVersion, minorVersion);
   }
 
-  public static class ConfigurationVersionDataTypeBuilder
+  public static class ConfigurationVersionDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long majorVersion;
     private final long minorVersion;
 
-    public ConfigurationVersionDataTypeBuilder(long majorVersion, long minorVersion) {
+    public ConfigurationVersionDataTypeBuilderImpl(long majorVersion, long minorVersion) {
 
       this.majorVersion = majorVersion;
       this.minorVersion = minorVersion;

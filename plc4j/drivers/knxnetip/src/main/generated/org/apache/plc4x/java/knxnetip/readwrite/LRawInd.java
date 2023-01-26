@@ -72,7 +72,7 @@ public class LRawInd extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static LRawIndBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("LRawInd");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class LRawInd extends CEMI implements Message {
 
     readBuffer.closeContext("LRawInd");
     // Create the instance
-    return new LRawIndBuilder(size);
+    return new LRawIndBuilderImpl(size);
   }
 
-  public static class LRawIndBuilder implements CEMI.CEMIBuilder {
+  public static class LRawIndBuilderImpl implements CEMI.CEMIBuilder {
     private final Integer size;
 
-    public LRawIndBuilder(Integer size) {
+    public LRawIndBuilderImpl(Integer size) {
 
       this.size = size;
     }

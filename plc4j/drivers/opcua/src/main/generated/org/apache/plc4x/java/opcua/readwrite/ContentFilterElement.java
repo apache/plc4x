@@ -119,7 +119,7 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static ContentFilterElementBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ContentFilterElement");
     PositionAware positionAware = readBuffer;
@@ -144,16 +144,16 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("ContentFilterElement");
     // Create the instance
-    return new ContentFilterElementBuilder(filterOperator, noOfFilterOperands, filterOperands);
+    return new ContentFilterElementBuilderImpl(filterOperator, noOfFilterOperands, filterOperands);
   }
 
-  public static class ContentFilterElementBuilder
+  public static class ContentFilterElementBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final FilterOperator filterOperator;
     private final int noOfFilterOperands;
     private final List<ExtensionObject> filterOperands;
 
-    public ContentFilterElementBuilder(
+    public ContentFilterElementBuilderImpl(
         FilterOperator filterOperator,
         int noOfFilterOperands,
         List<ExtensionObject> filterOperands) {

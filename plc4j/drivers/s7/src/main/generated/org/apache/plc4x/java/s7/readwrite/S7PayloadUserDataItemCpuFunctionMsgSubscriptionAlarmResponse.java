@@ -152,9 +152,8 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
     return lengthInBits;
   }
 
-  public static S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction)
-          throws ParseException {
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
+      ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -176,11 +175,11 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse");
     // Create the instance
-    return new S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder(
+    return new S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilderImpl(
         result, reserved01, alarmType, reserved02, reserved03);
   }
 
-  public static class S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
+  public static class S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
     private final short result;
     private final short reserved01;
@@ -188,7 +187,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
     private final short reserved02;
     private final short reserved03;
 
-    public S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder(
+    public S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilderImpl(
         short result, short reserved01, AlarmType alarmType, short reserved02, short reserved03) {
 
       this.result = result;

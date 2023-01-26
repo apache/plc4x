@@ -230,7 +230,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static DataSetWriterDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DataSetWriterDataType");
     PositionAware positionAware = readBuffer;
@@ -288,7 +288,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("DataSetWriterDataType");
     // Create the instance
-    return new DataSetWriterDataTypeBuilder(
+    return new DataSetWriterDataTypeBuilderImpl(
         name,
         enabled,
         dataSetWriterId,
@@ -302,7 +302,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         reservedField0);
   }
 
-  public static class DataSetWriterDataTypeBuilder
+  public static class DataSetWriterDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString name;
     private final boolean enabled;
@@ -316,7 +316,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     private final ExtensionObject messageSettings;
     private final Short reservedField0;
 
-    public DataSetWriterDataTypeBuilder(
+    public DataSetWriterDataTypeBuilderImpl(
         PascalString name,
         boolean enabled,
         int dataSetWriterId,

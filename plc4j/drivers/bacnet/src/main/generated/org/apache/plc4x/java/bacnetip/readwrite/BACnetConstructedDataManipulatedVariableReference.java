@@ -113,7 +113,7 @@ public class BACnetConstructedDataManipulatedVariableReference extends BACnetCon
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataManipulatedVariableReferenceBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -136,17 +136,17 @@ public class BACnetConstructedDataManipulatedVariableReference extends BACnetCon
 
     readBuffer.closeContext("BACnetConstructedDataManipulatedVariableReference");
     // Create the instance
-    return new BACnetConstructedDataManipulatedVariableReferenceBuilder(
+    return new BACnetConstructedDataManipulatedVariableReferenceBuilderImpl(
         manipulatedVariableReference, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataManipulatedVariableReferenceBuilder
+  public static class BACnetConstructedDataManipulatedVariableReferenceBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetObjectPropertyReference manipulatedVariableReference;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataManipulatedVariableReferenceBuilder(
+    public BACnetConstructedDataManipulatedVariableReferenceBuilderImpl(
         BACnetObjectPropertyReference manipulatedVariableReference,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

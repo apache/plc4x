@@ -98,8 +98,8 @@ public class ApduDataMemoryRead extends ApduData implements Message {
     return lengthInBits;
   }
 
-  public static ApduDataMemoryReadBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short dataLength) throws ParseException {
+  public static ApduDataBuilder staticParseApduDataBuilder(ReadBuffer readBuffer, Short dataLength)
+      throws ParseException {
     readBuffer.pullContext("ApduDataMemoryRead");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -111,15 +111,15 @@ public class ApduDataMemoryRead extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataMemoryRead");
     // Create the instance
-    return new ApduDataMemoryReadBuilder(numBytes, address, dataLength);
+    return new ApduDataMemoryReadBuilderImpl(numBytes, address, dataLength);
   }
 
-  public static class ApduDataMemoryReadBuilder implements ApduData.ApduDataBuilder {
+  public static class ApduDataMemoryReadBuilderImpl implements ApduData.ApduDataBuilder {
     private final short numBytes;
     private final int address;
     private final Short dataLength;
 
-    public ApduDataMemoryReadBuilder(short numBytes, int address, Short dataLength) {
+    public ApduDataMemoryReadBuilderImpl(short numBytes, int address, Short dataLength) {
 
       this.numBytes = numBytes;
       this.address = address;

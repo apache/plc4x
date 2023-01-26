@@ -101,8 +101,9 @@ public class BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
-      staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static BACnetConfirmedServiceRequestReadRangeRangeBuilder
+      staticParseBACnetConfirmedServiceRequestReadRangeRangeBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -128,17 +129,17 @@ public class BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber");
     // Create the instance
-    return new BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder(
+    return new BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilderImpl(
         referenceSequenceNumber, count);
   }
 
-  public static class BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
+  public static class BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilderImpl
       implements BACnetConfirmedServiceRequestReadRangeRange
           .BACnetConfirmedServiceRequestReadRangeRangeBuilder {
     private final BACnetApplicationTagUnsignedInteger referenceSequenceNumber;
     private final BACnetApplicationTagSignedInteger count;
 
-    public BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder(
+    public BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilderImpl(
         BACnetApplicationTagUnsignedInteger referenceSequenceNumber,
         BACnetApplicationTagSignedInteger count) {
 

@@ -68,7 +68,7 @@ public class PnIoCm_Block_ArServer extends PnIoCm_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_Block_ArServerBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnIoCm_BlockBuilder staticParsePnIoCm_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_Block_ArServer");
     PositionAware positionAware = readBuffer;
@@ -77,12 +77,12 @@ public class PnIoCm_Block_ArServer extends PnIoCm_Block implements Message {
 
     readBuffer.closeContext("PnIoCm_Block_ArServer");
     // Create the instance
-    return new PnIoCm_Block_ArServerBuilder();
+    return new PnIoCm_Block_ArServerBuilderImpl();
   }
 
-  public static class PnIoCm_Block_ArServerBuilder implements PnIoCm_Block.PnIoCm_BlockBuilder {
+  public static class PnIoCm_Block_ArServerBuilderImpl implements PnIoCm_Block.PnIoCm_BlockBuilder {
 
-    public PnIoCm_Block_ArServerBuilder() {}
+    public PnIoCm_Block_ArServerBuilderImpl() {}
 
     public PnIoCm_Block_ArServer build(short blockVersionHigh, short blockVersionLow) {
       PnIoCm_Block_ArServer pnIoCm_Block_ArServer =

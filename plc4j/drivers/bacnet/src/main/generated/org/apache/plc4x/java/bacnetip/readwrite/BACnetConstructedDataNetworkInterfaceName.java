@@ -111,7 +111,7 @@ public class BACnetConstructedDataNetworkInterfaceName extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNetworkInterfaceNameBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,17 +137,17 @@ public class BACnetConstructedDataNetworkInterfaceName extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataNetworkInterfaceName");
     // Create the instance
-    return new BACnetConstructedDataNetworkInterfaceNameBuilder(
+    return new BACnetConstructedDataNetworkInterfaceNameBuilderImpl(
         networkInterfaceName, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNetworkInterfaceNameBuilder
+  public static class BACnetConstructedDataNetworkInterfaceNameBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString networkInterfaceName;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNetworkInterfaceNameBuilder(
+    public BACnetConstructedDataNetworkInterfaceNameBuilderImpl(
         BACnetApplicationTagCharacterString networkInterfaceName,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

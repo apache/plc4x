@@ -110,7 +110,7 @@ public class BACnetConstructedDataCredentialDataInputUpdateTime extends BACnetCo
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCredentialDataInputUpdateTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,17 +132,17 @@ public class BACnetConstructedDataCredentialDataInputUpdateTime extends BACnetCo
 
     readBuffer.closeContext("BACnetConstructedDataCredentialDataInputUpdateTime");
     // Create the instance
-    return new BACnetConstructedDataCredentialDataInputUpdateTimeBuilder(
+    return new BACnetConstructedDataCredentialDataInputUpdateTimeBuilderImpl(
         updateTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+  public static class BACnetConstructedDataCredentialDataInputUpdateTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetTimeStamp updateTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCredentialDataInputUpdateTimeBuilder(
+    public BACnetConstructedDataCredentialDataInputUpdateTimeBuilderImpl(
         BACnetTimeStamp updateTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

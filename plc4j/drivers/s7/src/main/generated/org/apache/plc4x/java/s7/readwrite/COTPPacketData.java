@@ -103,8 +103,8 @@ public class COTPPacketData extends COTPPacket implements Message {
     return lengthInBits;
   }
 
-  public static COTPPacketDataBuilder staticParseBuilder(ReadBuffer readBuffer, Integer cotpLen)
-      throws ParseException {
+  public static COTPPacketBuilder staticParseCOTPPacketBuilder(
+      ReadBuffer readBuffer, Integer cotpLen) throws ParseException {
     readBuffer.pullContext("COTPPacketData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -116,15 +116,15 @@ public class COTPPacketData extends COTPPacket implements Message {
 
     readBuffer.closeContext("COTPPacketData");
     // Create the instance
-    return new COTPPacketDataBuilder(eot, tpduRef, cotpLen);
+    return new COTPPacketDataBuilderImpl(eot, tpduRef, cotpLen);
   }
 
-  public static class COTPPacketDataBuilder implements COTPPacket.COTPPacketBuilder {
+  public static class COTPPacketDataBuilderImpl implements COTPPacket.COTPPacketBuilder {
     private final boolean eot;
     private final short tpduRef;
     private final Integer cotpLen;
 
-    public COTPPacketDataBuilder(boolean eot, short tpduRef, Integer cotpLen) {
+    public COTPPacketDataBuilderImpl(boolean eot, short tpduRef, Integer cotpLen) {
 
       this.eot = eot;
       this.tpduRef = tpduRef;

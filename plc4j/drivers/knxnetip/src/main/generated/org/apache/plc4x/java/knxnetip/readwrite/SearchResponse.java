@@ -122,7 +122,7 @@ public class SearchResponse extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static SearchResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SearchResponse");
     PositionAware positionAware = readBuffer;
@@ -151,15 +151,15 @@ public class SearchResponse extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("SearchResponse");
     // Create the instance
-    return new SearchResponseBuilder(hpaiControlEndpoint, dibDeviceInfo, dibSuppSvcFamilies);
+    return new SearchResponseBuilderImpl(hpaiControlEndpoint, dibDeviceInfo, dibSuppSvcFamilies);
   }
 
-  public static class SearchResponseBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class SearchResponseBuilderImpl implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final HPAIControlEndpoint hpaiControlEndpoint;
     private final DIBDeviceInfo dibDeviceInfo;
     private final DIBSuppSvcFamilies dibSuppSvcFamilies;
 
-    public SearchResponseBuilder(
+    public SearchResponseBuilderImpl(
         HPAIControlEndpoint hpaiControlEndpoint,
         DIBDeviceInfo dibDeviceInfo,
         DIBSuppSvcFamilies dibSuppSvcFamilies) {

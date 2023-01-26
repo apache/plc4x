@@ -113,7 +113,7 @@ public class BACnetConstructedDataLockoutRelinquishTime extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLockoutRelinquishTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -139,17 +139,17 @@ public class BACnetConstructedDataLockoutRelinquishTime extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataLockoutRelinquishTime");
     // Create the instance
-    return new BACnetConstructedDataLockoutRelinquishTimeBuilder(
+    return new BACnetConstructedDataLockoutRelinquishTimeBuilderImpl(
         lockoutRelinquishTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLockoutRelinquishTimeBuilder
+  public static class BACnetConstructedDataLockoutRelinquishTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger lockoutRelinquishTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLockoutRelinquishTimeBuilder(
+    public BACnetConstructedDataLockoutRelinquishTimeBuilderImpl(
         BACnetApplicationTagUnsignedInteger lockoutRelinquishTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

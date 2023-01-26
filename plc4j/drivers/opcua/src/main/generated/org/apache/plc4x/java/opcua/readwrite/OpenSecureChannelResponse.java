@@ -124,7 +124,7 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static OpenSecureChannelResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("OpenSecureChannelResponse");
     PositionAware positionAware = readBuffer;
@@ -156,18 +156,18 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("OpenSecureChannelResponse");
     // Create the instance
-    return new OpenSecureChannelResponseBuilder(
+    return new OpenSecureChannelResponseBuilderImpl(
         responseHeader, serverProtocolVersion, securityToken, serverNonce);
   }
 
-  public static class OpenSecureChannelResponseBuilder
+  public static class OpenSecureChannelResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final long serverProtocolVersion;
     private final ExtensionObjectDefinition securityToken;
     private final PascalByteString serverNonce;
 
-    public OpenSecureChannelResponseBuilder(
+    public OpenSecureChannelResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         long serverProtocolVersion,
         ExtensionObjectDefinition securityToken,

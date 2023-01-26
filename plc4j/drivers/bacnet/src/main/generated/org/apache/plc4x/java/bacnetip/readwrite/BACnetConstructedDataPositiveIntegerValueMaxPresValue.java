@@ -110,7 +110,7 @@ public class BACnetConstructedDataPositiveIntegerValueMaxPresValue extends BACne
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,17 +135,17 @@ public class BACnetConstructedDataPositiveIntegerValueMaxPresValue extends BACne
 
     readBuffer.closeContext("BACnetConstructedDataPositiveIntegerValueMaxPresValue");
     // Create the instance
-    return new BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder(
+    return new BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilderImpl(
         maxPresValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder
+  public static class BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger maxPresValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilder(
+    public BACnetConstructedDataPositiveIntegerValueMaxPresValueBuilderImpl(
         BACnetApplicationTagUnsignedInteger maxPresValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

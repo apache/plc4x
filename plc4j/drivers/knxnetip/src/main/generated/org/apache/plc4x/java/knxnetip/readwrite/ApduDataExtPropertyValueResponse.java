@@ -137,7 +137,7 @@ public class ApduDataExtPropertyValueResponse extends ApduDataExt implements Mes
     return lengthInBits;
   }
 
-  public static ApduDataExtPropertyValueResponseBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtPropertyValueResponse");
     PositionAware positionAware = readBuffer;
@@ -156,11 +156,11 @@ public class ApduDataExtPropertyValueResponse extends ApduDataExt implements Mes
 
     readBuffer.closeContext("ApduDataExtPropertyValueResponse");
     // Create the instance
-    return new ApduDataExtPropertyValueResponseBuilder(
+    return new ApduDataExtPropertyValueResponseBuilderImpl(
         objectIndex, propertyId, count, index, data, length);
   }
 
-  public static class ApduDataExtPropertyValueResponseBuilder
+  public static class ApduDataExtPropertyValueResponseBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final short objectIndex;
     private final short propertyId;
@@ -169,7 +169,7 @@ public class ApduDataExtPropertyValueResponse extends ApduDataExt implements Mes
     private final byte[] data;
     private final Short length;
 
-    public ApduDataExtPropertyValueResponseBuilder(
+    public ApduDataExtPropertyValueResponseBuilderImpl(
         short objectIndex, short propertyId, byte count, int index, byte[] data, Short length) {
 
       this.objectIndex = objectIndex;

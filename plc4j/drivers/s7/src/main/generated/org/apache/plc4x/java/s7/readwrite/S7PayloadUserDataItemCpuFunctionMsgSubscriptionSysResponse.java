@@ -108,9 +108,8 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
     return lengthInBits;
   }
 
-  public static S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction)
-          throws ParseException {
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
+      ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -122,16 +121,16 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse");
     // Create the instance
-    return new S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder(
+    return new S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilderImpl(
         result, reserved01);
   }
 
-  public static class S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
+  public static class S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
     private final short result;
     private final short reserved01;
 
-    public S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder(
+    public S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilderImpl(
         short result, short reserved01) {
 
       this.result = result;

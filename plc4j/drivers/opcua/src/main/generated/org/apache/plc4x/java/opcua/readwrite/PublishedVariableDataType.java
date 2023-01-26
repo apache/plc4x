@@ -197,7 +197,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static PublishedVariableDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("PublishedVariableDataType");
     PositionAware positionAware = readBuffer;
@@ -239,7 +239,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("PublishedVariableDataType");
     // Create the instance
-    return new PublishedVariableDataTypeBuilder(
+    return new PublishedVariableDataTypeBuilderImpl(
         publishedVariable,
         attributeId,
         samplingIntervalHint,
@@ -251,7 +251,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
         metaDataProperties);
   }
 
-  public static class PublishedVariableDataTypeBuilder
+  public static class PublishedVariableDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId publishedVariable;
     private final long attributeId;
@@ -263,7 +263,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
     private final int noOfMetaDataProperties;
     private final List<QualifiedName> metaDataProperties;
 
-    public PublishedVariableDataTypeBuilder(
+    public PublishedVariableDataTypeBuilderImpl(
         NodeId publishedVariable,
         long attributeId,
         double samplingIntervalHint,

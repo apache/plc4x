@@ -84,9 +84,11 @@ public class ErrorReportingSystemCategoryTypeReserved extends ErrorReportingSyst
     return lengthInBits;
   }
 
-  public static ErrorReportingSystemCategoryTypeReservedBuilder staticParseBuilder(
-      ReadBuffer readBuffer, ErrorReportingSystemCategoryClass errorReportingSystemCategoryClass)
-      throws ParseException {
+  public static ErrorReportingSystemCategoryTypeBuilder
+      staticParseErrorReportingSystemCategoryTypeBuilder(
+          ReadBuffer readBuffer,
+          ErrorReportingSystemCategoryClass errorReportingSystemCategoryClass)
+          throws ParseException {
     readBuffer.pullContext("ErrorReportingSystemCategoryTypeReserved");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -96,14 +98,14 @@ public class ErrorReportingSystemCategoryTypeReserved extends ErrorReportingSyst
 
     readBuffer.closeContext("ErrorReportingSystemCategoryTypeReserved");
     // Create the instance
-    return new ErrorReportingSystemCategoryTypeReservedBuilder(reservedValue);
+    return new ErrorReportingSystemCategoryTypeReservedBuilderImpl(reservedValue);
   }
 
-  public static class ErrorReportingSystemCategoryTypeReservedBuilder
+  public static class ErrorReportingSystemCategoryTypeReservedBuilderImpl
       implements ErrorReportingSystemCategoryType.ErrorReportingSystemCategoryTypeBuilder {
     private final byte reservedValue;
 
-    public ErrorReportingSystemCategoryTypeReservedBuilder(byte reservedValue) {
+    public ErrorReportingSystemCategoryTypeReservedBuilderImpl(byte reservedValue) {
 
       this.reservedValue = reservedValue;
     }

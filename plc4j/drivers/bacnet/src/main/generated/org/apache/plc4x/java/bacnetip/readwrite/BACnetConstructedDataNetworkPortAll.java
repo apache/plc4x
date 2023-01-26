@@ -84,7 +84,7 @@ public class BACnetConstructedDataNetworkPortAll extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNetworkPortAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -103,15 +103,15 @@ public class BACnetConstructedDataNetworkPortAll extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataNetworkPortAll");
     // Create the instance
-    return new BACnetConstructedDataNetworkPortAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataNetworkPortAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNetworkPortAllBuilder
+  public static class BACnetConstructedDataNetworkPortAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNetworkPortAllBuilder(
+    public BACnetConstructedDataNetworkPortAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
 
       this.tagNumber = tagNumber;

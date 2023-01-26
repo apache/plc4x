@@ -111,7 +111,7 @@ public class BACnetConstructedDataAttemptedSamples extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAttemptedSamplesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,17 +137,17 @@ public class BACnetConstructedDataAttemptedSamples extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataAttemptedSamples");
     // Create the instance
-    return new BACnetConstructedDataAttemptedSamplesBuilder(
+    return new BACnetConstructedDataAttemptedSamplesBuilderImpl(
         attemptedSamples, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAttemptedSamplesBuilder
+  public static class BACnetConstructedDataAttemptedSamplesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger attemptedSamples;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAttemptedSamplesBuilder(
+    public BACnetConstructedDataAttemptedSamplesBuilderImpl(
         BACnetApplicationTagUnsignedInteger attemptedSamples,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

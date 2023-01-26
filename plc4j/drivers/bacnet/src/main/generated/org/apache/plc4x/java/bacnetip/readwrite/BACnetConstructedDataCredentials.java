@@ -103,7 +103,7 @@ public class BACnetConstructedDataCredentials extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCredentialsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -127,16 +127,17 @@ public class BACnetConstructedDataCredentials extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataCredentials");
     // Create the instance
-    return new BACnetConstructedDataCredentialsBuilder(credentials, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCredentialsBuilderImpl(
+        credentials, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCredentialsBuilder
+  public static class BACnetConstructedDataCredentialsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDeviceObjectReference> credentials;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCredentialsBuilder(
+    public BACnetConstructedDataCredentialsBuilderImpl(
         List<BACnetDeviceObjectReference> credentials,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

@@ -214,7 +214,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static TrustListDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("TrustListDataType");
     PositionAware positionAware = readBuffer;
@@ -263,7 +263,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("TrustListDataType");
     // Create the instance
-    return new TrustListDataTypeBuilder(
+    return new TrustListDataTypeBuilderImpl(
         specifiedLists,
         noOfTrustedCertificates,
         trustedCertificates,
@@ -275,7 +275,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
         issuerCrls);
   }
 
-  public static class TrustListDataTypeBuilder
+  public static class TrustListDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long specifiedLists;
     private final int noOfTrustedCertificates;
@@ -287,7 +287,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     private final int noOfIssuerCrls;
     private final List<PascalByteString> issuerCrls;
 
-    public TrustListDataTypeBuilder(
+    public TrustListDataTypeBuilderImpl(
         long specifiedLists,
         int noOfTrustedCertificates,
         List<PascalByteString> trustedCertificates,

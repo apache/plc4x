@@ -68,7 +68,7 @@ public class SALDataTesting extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataTestingBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataTesting");
     PositionAware positionAware = readBuffer;
@@ -81,12 +81,12 @@ public class SALDataTesting extends SALData implements Message {
 
     readBuffer.closeContext("SALDataTesting");
     // Create the instance
-    return new SALDataTestingBuilder();
+    return new SALDataTestingBuilderImpl();
   }
 
-  public static class SALDataTestingBuilder implements SALData.SALDataBuilder {
+  public static class SALDataTestingBuilderImpl implements SALData.SALDataBuilder {
 
-    public SALDataTestingBuilder() {}
+    public SALDataTestingBuilderImpl() {}
 
     public SALDataTesting build(SALData salData) {
       SALDataTesting sALDataTesting = new SALDataTesting(salData);

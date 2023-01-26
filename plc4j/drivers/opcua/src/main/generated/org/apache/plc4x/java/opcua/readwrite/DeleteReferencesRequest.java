@@ -117,7 +117,7 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
     return lengthInBits;
   }
 
-  public static DeleteReferencesRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DeleteReferencesRequest");
     PositionAware positionAware = readBuffer;
@@ -144,17 +144,17 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
 
     readBuffer.closeContext("DeleteReferencesRequest");
     // Create the instance
-    return new DeleteReferencesRequestBuilder(
+    return new DeleteReferencesRequestBuilderImpl(
         requestHeader, noOfReferencesToDelete, referencesToDelete);
   }
 
-  public static class DeleteReferencesRequestBuilder
+  public static class DeleteReferencesRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfReferencesToDelete;
     private final List<ExtensionObjectDefinition> referencesToDelete;
 
-    public DeleteReferencesRequestBuilder(
+    public DeleteReferencesRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfReferencesToDelete,
         List<ExtensionObjectDefinition> referencesToDelete) {

@@ -124,7 +124,7 @@ public class COTPPacketDisconnectRequest extends COTPPacket implements Message {
     return lengthInBits;
   }
 
-  public static COTPPacketDisconnectRequestBuilder staticParseBuilder(
+  public static COTPPacketBuilder staticParseCOTPPacketBuilder(
       ReadBuffer readBuffer, Integer cotpLen) throws ParseException {
     readBuffer.pullContext("COTPPacketDisconnectRequest");
     PositionAware positionAware = readBuffer;
@@ -145,17 +145,18 @@ public class COTPPacketDisconnectRequest extends COTPPacket implements Message {
 
     readBuffer.closeContext("COTPPacketDisconnectRequest");
     // Create the instance
-    return new COTPPacketDisconnectRequestBuilder(
+    return new COTPPacketDisconnectRequestBuilderImpl(
         destinationReference, sourceReference, protocolClass, cotpLen);
   }
 
-  public static class COTPPacketDisconnectRequestBuilder implements COTPPacket.COTPPacketBuilder {
+  public static class COTPPacketDisconnectRequestBuilderImpl
+      implements COTPPacket.COTPPacketBuilder {
     private final int destinationReference;
     private final int sourceReference;
     private final COTPProtocolClass protocolClass;
     private final Integer cotpLen;
 
-    public COTPPacketDisconnectRequestBuilder(
+    public COTPPacketDisconnectRequestBuilderImpl(
         int destinationReference,
         int sourceReference,
         COTPProtocolClass protocolClass,

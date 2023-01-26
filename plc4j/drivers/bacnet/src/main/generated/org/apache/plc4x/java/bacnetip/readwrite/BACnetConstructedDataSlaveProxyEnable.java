@@ -111,7 +111,7 @@ public class BACnetConstructedDataSlaveProxyEnable extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSlaveProxyEnableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataSlaveProxyEnable extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataSlaveProxyEnable");
     // Create the instance
-    return new BACnetConstructedDataSlaveProxyEnableBuilder(
+    return new BACnetConstructedDataSlaveProxyEnableBuilderImpl(
         slaveProxyEnable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSlaveProxyEnableBuilder
+  public static class BACnetConstructedDataSlaveProxyEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean slaveProxyEnable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSlaveProxyEnableBuilder(
+    public BACnetConstructedDataSlaveProxyEnableBuilderImpl(
         BACnetApplicationTagBoolean slaveProxyEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

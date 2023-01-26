@@ -72,8 +72,8 @@ public class ApduDataIndividualAddressResponse extends ApduData implements Messa
     return lengthInBits;
   }
 
-  public static ApduDataIndividualAddressResponseBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short dataLength) throws ParseException {
+  public static ApduDataBuilder staticParseApduDataBuilder(ReadBuffer readBuffer, Short dataLength)
+      throws ParseException {
     readBuffer.pullContext("ApduDataIndividualAddressResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -81,13 +81,14 @@ public class ApduDataIndividualAddressResponse extends ApduData implements Messa
 
     readBuffer.closeContext("ApduDataIndividualAddressResponse");
     // Create the instance
-    return new ApduDataIndividualAddressResponseBuilder(dataLength);
+    return new ApduDataIndividualAddressResponseBuilderImpl(dataLength);
   }
 
-  public static class ApduDataIndividualAddressResponseBuilder implements ApduData.ApduDataBuilder {
+  public static class ApduDataIndividualAddressResponseBuilderImpl
+      implements ApduData.ApduDataBuilder {
     private final Short dataLength;
 
-    public ApduDataIndividualAddressResponseBuilder(Short dataLength) {
+    public ApduDataIndividualAddressResponseBuilderImpl(Short dataLength) {
 
       this.dataLength = dataLength;
     }

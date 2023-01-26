@@ -118,7 +118,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAckResponse extends S7PayloadU
     return lengthInBits;
   }
 
-  public static S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder staticParseBuilder(
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
       ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionAlarmAckResponse");
     PositionAware positionAware = readBuffer;
@@ -134,15 +134,16 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAckResponse extends S7PayloadU
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionAlarmAckResponse");
     // Create the instance
-    return new S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder(functionId, messageObjects);
+    return new S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilderImpl(
+        functionId, messageObjects);
   }
 
-  public static class S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder
+  public static class S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
     private final short functionId;
     private final List<Short> messageObjects;
 
-    public S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilder(
+    public S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilderImpl(
         short functionId, List<Short> messageObjects) {
 
       this.functionId = functionId;

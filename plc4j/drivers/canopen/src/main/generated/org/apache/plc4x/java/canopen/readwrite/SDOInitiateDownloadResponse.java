@@ -103,7 +103,7 @@ public class SDOInitiateDownloadResponse extends SDOResponse implements Message 
     return lengthInBits;
   }
 
-  public static SDOInitiateDownloadResponseBuilder staticParseBuilder(
+  public static SDOResponseBuilder staticParseSDOResponseBuilder(
       ReadBuffer readBuffer, SDOResponseCommand command) throws ParseException {
     readBuffer.pullContext("SDOInitiateDownloadResponse");
     PositionAware positionAware = readBuffer;
@@ -123,15 +123,16 @@ public class SDOInitiateDownloadResponse extends SDOResponse implements Message 
 
     readBuffer.closeContext("SDOInitiateDownloadResponse");
     // Create the instance
-    return new SDOInitiateDownloadResponseBuilder(address, reservedField0, reservedField1);
+    return new SDOInitiateDownloadResponseBuilderImpl(address, reservedField0, reservedField1);
   }
 
-  public static class SDOInitiateDownloadResponseBuilder implements SDOResponse.SDOResponseBuilder {
+  public static class SDOInitiateDownloadResponseBuilderImpl
+      implements SDOResponse.SDOResponseBuilder {
     private final IndexAddress address;
     private final Short reservedField0;
     private final Integer reservedField1;
 
-    public SDOInitiateDownloadResponseBuilder(
+    public SDOInitiateDownloadResponseBuilderImpl(
         IndexAddress address, Short reservedField0, Integer reservedField1) {
       this.address = address;
       this.reservedField0 = reservedField0;

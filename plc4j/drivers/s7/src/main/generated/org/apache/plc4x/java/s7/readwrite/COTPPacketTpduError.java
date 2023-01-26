@@ -104,7 +104,7 @@ public class COTPPacketTpduError extends COTPPacket implements Message {
     return lengthInBits;
   }
 
-  public static COTPPacketTpduErrorBuilder staticParseBuilder(
+  public static COTPPacketBuilder staticParseCOTPPacketBuilder(
       ReadBuffer readBuffer, Integer cotpLen) throws ParseException {
     readBuffer.pullContext("COTPPacketTpduError");
     PositionAware positionAware = readBuffer;
@@ -118,15 +118,15 @@ public class COTPPacketTpduError extends COTPPacket implements Message {
 
     readBuffer.closeContext("COTPPacketTpduError");
     // Create the instance
-    return new COTPPacketTpduErrorBuilder(destinationReference, rejectCause, cotpLen);
+    return new COTPPacketTpduErrorBuilderImpl(destinationReference, rejectCause, cotpLen);
   }
 
-  public static class COTPPacketTpduErrorBuilder implements COTPPacket.COTPPacketBuilder {
+  public static class COTPPacketTpduErrorBuilderImpl implements COTPPacket.COTPPacketBuilder {
     private final int destinationReference;
     private final short rejectCause;
     private final Integer cotpLen;
 
-    public COTPPacketTpduErrorBuilder(
+    public COTPPacketTpduErrorBuilderImpl(
         int destinationReference, short rejectCause, Integer cotpLen) {
 
       this.destinationReference = destinationReference;

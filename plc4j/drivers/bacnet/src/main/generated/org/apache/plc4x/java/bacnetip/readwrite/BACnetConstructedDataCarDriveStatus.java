@@ -109,7 +109,7 @@ public class BACnetConstructedDataCarDriveStatus extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCarDriveStatusBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,17 +134,17 @@ public class BACnetConstructedDataCarDriveStatus extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataCarDriveStatus");
     // Create the instance
-    return new BACnetConstructedDataCarDriveStatusBuilder(
+    return new BACnetConstructedDataCarDriveStatusBuilderImpl(
         carDriveStatus, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCarDriveStatusBuilder
+  public static class BACnetConstructedDataCarDriveStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLiftCarDriveStatusTagged carDriveStatus;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCarDriveStatusBuilder(
+    public BACnetConstructedDataCarDriveStatusBuilderImpl(
         BACnetLiftCarDriveStatusTagged carDriveStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {

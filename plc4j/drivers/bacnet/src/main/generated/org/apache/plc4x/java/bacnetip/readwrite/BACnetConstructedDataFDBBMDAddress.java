@@ -109,7 +109,7 @@ public class BACnetConstructedDataFDBBMDAddress extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFDBBMDAddressBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,17 +131,17 @@ public class BACnetConstructedDataFDBBMDAddress extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataFDBBMDAddress");
     // Create the instance
-    return new BACnetConstructedDataFDBBMDAddressBuilder(
+    return new BACnetConstructedDataFDBBMDAddressBuilderImpl(
         fDBBMDAddress, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFDBBMDAddressBuilder
+  public static class BACnetConstructedDataFDBBMDAddressBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetHostNPort fDBBMDAddress;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFDBBMDAddressBuilder(
+    public BACnetConstructedDataFDBBMDAddressBuilderImpl(
         BACnetHostNPort fDBBMDAddress,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
