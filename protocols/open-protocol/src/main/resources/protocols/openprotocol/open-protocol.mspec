@@ -47,13 +47,25 @@
             [simple Error                  error                                                encoding='"ASCII"']
         ]
         ['ApplicationCommandAccepted' *ApplicationCommandAccepted
-            [simple Mid                    requestMid                                           encoding='"ASCII"']
+            [simple Mid                    midNumberAccepted                                    encoding='"ASCII"']
         ]
         ['ApplicationGenericDataRequest' *ApplicationGenericDataRequest
             [simple   Mid                  requestMid                                           encoding='"ASCII"']
-            [simple   OpenProtocolRevision revision                                             encoding='"ASCII"']
+            [simple   OpenProtocolRevision wantedRevision                                       encoding='"ASCII"']
             [implicit uint 16              extraDataLength 'COUNT(extraData)'                   encoding='"ASCII"']
-            [array    byte                 extraData       count 'extraDataLength'                                    ]
+            [array    byte                 extraData       count 'extraDataLength'                                ]
+        ]
+        ['ApplicationGenericSubscription' *ApplicationGenericSubscription
+            [simple   Mid                  subscriptionMid                                      encoding='"ASCII"']
+            [simple   OpenProtocolRevision wantedRevision                                       encoding='"ASCII"']
+            [implicit uint 16              extraDataLength 'COUNT(extraData)'                   encoding='"ASCII"']
+            [array    byte                 extraData       count 'extraDataLength'                                ]
+        ]
+        ['ApplicationGenericUnsubscribe' *ApplicationGenericUnsubscribe
+            [simple   Mid                  subscriptionMid                                      encoding='"ASCII"']
+            [simple   OpenProtocolRevision extraDataRevision                                    encoding='"ASCII"']
+            [implicit uint 16              extraDataLength 'COUNT(extraData)'                   encoding='"ASCII"']
+            [array    byte                 extraData       count 'extraDataLength'                                ]
         ]
     ]
     [const         uint 8  end                  0x00                                                              ]

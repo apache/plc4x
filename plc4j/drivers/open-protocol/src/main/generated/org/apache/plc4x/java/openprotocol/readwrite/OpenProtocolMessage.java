@@ -357,6 +357,14 @@ public abstract class OpenProtocolMessage implements Message {
       builder =
           OpenProtocolMessageApplicationGenericDataRequest.staticParseBuilder(
               readBuffer, connectionRevision);
+    } else if (EvaluationHelper.equals(mid, Mid.ApplicationGenericSubscription)) {
+      builder =
+          OpenProtocolMessageApplicationGenericSubscription.staticParseBuilder(
+              readBuffer, connectionRevision);
+    } else if (EvaluationHelper.equals(mid, Mid.ApplicationGenericUnsubscribe)) {
+      builder =
+          OpenProtocolMessageApplicationGenericUnsubscribe.staticParseBuilder(
+              readBuffer, connectionRevision);
     }
     if (builder == null) {
       throw new ParseException(

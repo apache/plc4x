@@ -92,4 +92,113 @@
     </xml>
   </testcase>
 
+  <testcase>
+    <name>MID 0003 Application Communication stop</name>
+    <!--  0 0 2 0 0 0 0 3 _ _ _ _ _ _ _ _ _ _ _ _ NULL -->
+    <raw>303032303030303320202020202020202020202000</raw>
+    <root-type>OpenProtocolMessage</root-type>
+    <parser-arguments>
+      <connectionRevision>Revision1</connectionRevision>
+    </parser-arguments>
+    <xml>
+      <OpenProtocolMessage>
+        <length dataType="uint" bitLength="32">20</length>
+        <mid>
+          <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationCommunicationStop">3</Mid>
+        </mid>
+        <selectedRevision>
+        </selectedRevision>
+        <OpenProtocolMessageApplicationCommunicationStop>
+        </OpenProtocolMessageApplicationCommunicationStop>
+        <end dataType="uint" bitLength="8">0</end>
+      </OpenProtocolMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>MID 0004 Application Communication negative acknowledge</name>
+    <!--  0 0 2 6 0 0 0 4                         0 0 1 8 0 2 NUL -->
+    <raw>303032363030303420202020202020202020202030303138303200</raw>
+    <root-type>OpenProtocolMessage</root-type>
+    <parser-arguments>
+      <connectionRevision>Revision1</connectionRevision>
+    </parser-arguments>
+    <xml>
+      <OpenProtocolMessage>
+        <length dataType="uint" bitLength="32">26</length>
+        <mid>
+          <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationCommandError">4</Mid>
+        </mid>
+        <selectedRevision>
+        </selectedRevision>
+        <OpenProtocolMessageApplicationCommandError>
+          <requestMid>
+            <Mid dataType="uint" bitLength="32" stringRepresentation="SelectParameterSet">18</Mid>
+          </requestMid>
+          <error>
+            <Error dataType="uint" bitLength="16" stringRepresentation="ParameterSetIdNotPresent">2</Error>
+          </error>
+        </OpenProtocolMessageApplicationCommandError>
+        <end dataType="uint" bitLength="8">0</end>
+      </OpenProtocolMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>MID 0005 Application Communication positive acknowledge</name>
+    <!--  0 0 2 4 0 0 0 5 _ _ _ _ _ _ _ _ _ _ _ _ 0 0 1 8 NULL -->
+    <raw>30303234303030352020202020202020202020203030313800</raw>
+    <root-type>OpenProtocolMessage</root-type>
+    <parser-arguments>
+      <connectionRevision>Revision1</connectionRevision>
+    </parser-arguments>
+    <xml>
+      <OpenProtocolMessage>
+        <length dataType="uint" bitLength="32">24</length>
+        <mid>
+          <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationCommandAccepted">5</Mid>
+        </mid>
+        <selectedRevision>
+        </selectedRevision>
+        <OpenProtocolMessageApplicationCommandAccepted>
+          <midNumberAccepted>
+            <Mid dataType="uint" bitLength="32" stringRepresentation="SelectParameterSet">18</Mid>
+          </midNumberAccepted>
+        </OpenProtocolMessageApplicationCommandAccepted>
+        <end dataType="uint" bitLength="8">0</end>
+      </OpenProtocolMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>MID 0006 Application data message request</name>
+    <!--  0 0 3 3 0 0 0 6 _ _ _ _ _ _ _ _ _ _ _ _ 0 0 1 8 0 0 6 0 4 H u r z NULL -->
+    <raw>30303333303030362020202020202020202020203030313830303630344875727A00</raw>
+    <root-type>OpenProtocolMessage</root-type>
+    <parser-arguments>
+      <connectionRevision>Revision1</connectionRevision>
+    </parser-arguments>
+    <xml>
+      <OpenProtocolMessage>
+        <length dataType="uint" bitLength="32">33</length>
+        <mid>
+          <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationGenericDataRequest">6</Mid>
+        </mid>
+        <selectedRevision>
+        </selectedRevision>
+        <OpenProtocolMessageApplicationGenericDataRequest>
+          <requestMid>
+            <Mid dataType="uint" bitLength="32" stringRepresentation="SelectParameterSet">18</Mid>
+          </requestMid>
+          <wantedRevision>
+            <OpenProtocolRevision dataType="uint" bitLength="24" stringRepresentation="Revision6">6</OpenProtocolRevision>
+          </wantedRevision>
+          <extraDataLength dataType="uint" bitLength="16">4</extraDataLength>
+          <extraData dataType="byte" bitLength="32">0x4875727a</extraData>
+        </OpenProtocolMessageApplicationGenericDataRequest>
+        <end dataType="uint" bitLength="8">0</end>
+      </OpenProtocolMessage>
+    </xml>
+  </testcase>
+
 </test:testsuite>

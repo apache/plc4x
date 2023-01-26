@@ -44,7 +44,7 @@ public class OpenProtocolMessageApplicationCommandAccepted extends OpenProtocolM
   }
 
   // Properties.
-  protected final Mid requestMid;
+  protected final Mid midNumberAccepted;
 
   // Arguments.
   protected final OpenProtocolRevision connectionRevision;
@@ -57,7 +57,7 @@ public class OpenProtocolMessageApplicationCommandAccepted extends OpenProtocolM
       Integer sequenceNumber,
       Short numberOfMessageParts,
       Short messagePartNumber,
-      Mid requestMid,
+      Mid midNumberAccepted,
       OpenProtocolRevision connectionRevision) {
     super(
         selectedRevision,
@@ -68,12 +68,12 @@ public class OpenProtocolMessageApplicationCommandAccepted extends OpenProtocolM
         numberOfMessageParts,
         messagePartNumber,
         connectionRevision);
-    this.requestMid = requestMid;
+    this.midNumberAccepted = midNumberAccepted;
     this.connectionRevision = connectionRevision;
   }
 
-  public Mid getRequestMid() {
-    return requestMid;
+  public Mid getMidNumberAccepted() {
+    return midNumberAccepted;
   }
 
   @Override
@@ -83,11 +83,11 @@ public class OpenProtocolMessageApplicationCommandAccepted extends OpenProtocolM
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenProtocolMessageApplicationCommandAccepted");
 
-    // Simple Field (requestMid)
+    // Simple Field (midNumberAccepted)
     writeSimpleEnumField(
-        "requestMid",
+        "midNumberAccepted",
         "Mid",
-        requestMid,
+        midNumberAccepted,
         new DataWriterEnumDefault<>(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
         WithOption.WithEncoding("ASCII"));
 
@@ -104,7 +104,7 @@ public class OpenProtocolMessageApplicationCommandAccepted extends OpenProtocolM
     int lengthInBits = super.getLengthInBits();
     OpenProtocolMessageApplicationCommandAccepted _value = this;
 
-    // Simple field (requestMid)
+    // Simple field (midNumberAccepted)
     lengthInBits += 32;
 
     return lengthInBits;
@@ -117,27 +117,28 @@ public class OpenProtocolMessageApplicationCommandAccepted extends OpenProtocolM
     int startPos = positionAware.getPos();
     int curPos;
 
-    Mid requestMid =
+    Mid midNumberAccepted =
         readEnumField(
-            "requestMid",
+            "midNumberAccepted",
             "Mid",
             new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
             WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("OpenProtocolMessageApplicationCommandAccepted");
     // Create the instance
-    return new OpenProtocolMessageApplicationCommandAcceptedBuilder(requestMid, connectionRevision);
+    return new OpenProtocolMessageApplicationCommandAcceptedBuilder(
+        midNumberAccepted, connectionRevision);
   }
 
   public static class OpenProtocolMessageApplicationCommandAcceptedBuilder
       implements OpenProtocolMessage.OpenProtocolMessageBuilder {
-    private final Mid requestMid;
+    private final Mid midNumberAccepted;
     private final OpenProtocolRevision connectionRevision;
 
     public OpenProtocolMessageApplicationCommandAcceptedBuilder(
-        Mid requestMid, OpenProtocolRevision connectionRevision) {
+        Mid midNumberAccepted, OpenProtocolRevision connectionRevision) {
 
-      this.requestMid = requestMid;
+      this.midNumberAccepted = midNumberAccepted;
       this.connectionRevision = connectionRevision;
     }
 
@@ -159,7 +160,7 @@ public class OpenProtocolMessageApplicationCommandAccepted extends OpenProtocolM
               sequenceNumber,
               numberOfMessageParts,
               messagePartNumber,
-              requestMid,
+              midNumberAccepted,
               connectionRevision);
       return openProtocolMessageApplicationCommandAccepted;
     }
@@ -175,12 +176,12 @@ public class OpenProtocolMessageApplicationCommandAccepted extends OpenProtocolM
     }
     OpenProtocolMessageApplicationCommandAccepted that =
         (OpenProtocolMessageApplicationCommandAccepted) o;
-    return (getRequestMid() == that.getRequestMid()) && super.equals(that) && true;
+    return (getMidNumberAccepted() == that.getMidNumberAccepted()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getRequestMid());
+    return Objects.hash(super.hashCode(), getMidNumberAccepted());
   }
 
   @Override
