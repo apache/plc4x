@@ -18,40 +18,40 @@
  */
 package org.apache.plc4x.java.profinet;
 
-import org.apache.commons.codec.DecoderException;
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
+import org.apache.plc4x.java.api.messages.PlcBrowseResponse;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.profinet.device.ProfinetSubscriptionHandle;
-import org.junit.jupiter.api.Test;
+import org.apache.plc4x.java.profinet.tag.ProfinetTag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.ExecutionException;
 
 public class ManualProfinetIoTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ManualProfinetIoTest.class);
 
-
-    public void manualConnectionTest() throws DecoderException, PlcConnectionException, ExecutionException, InterruptedException {
-        final PlcConnection connection = new PlcDriverManager().getConnection("profinet://192.168.90.1?deviceaccess='IDD_1'&gsddirectory=/home/missy/Documents/Profinet/gsd&devices=[00:0c:29:75:25:67]&submodules=[[IDM_30,IDM_32,IDM_31,]]&reductionratio=512&sendclockfactor=32&dataholdfactor=3&watchdogfactor=10");
-        PlcBrowseRequest browseRequest = connection.browseRequestBuilder().addQuery("Browse", "00:0c:29:75:25:67").build();
+    public static void main(String[] args) throws Exception {
+        final PlcConnection connection = new DefaultPlcDriverManager().getConnection("profinet://192.168.90.1?gsddirectory=/Profinet/gsd&devices=[[test-device,MOD_1,(SUBMOD_1,SUBMOD_1,SUBMOD_1,)]]&reductionratio=16&sendclockfactor=32&dataholdfactor=3&watchdogfactor=2");
+        PlcBrowseRequest browseRequest = connection.browseRequestBuilder().addQuery("Browse", "").build();
         final PlcBrowseResponse browseResponse = browseRequest.execute().get();
-        //final PlcSubscriptionRequest request = connection.subscriptionRequestBuilder().addChangeOfStateField("*", "I have no idea").build();
-        //final PlcSubscriptionResponse response = request.execute().get();
+        PlcSubscriptionRequest.Builder builder = connection.subscriptionRequestBuilder();
+        builder.addChangeOfStateTag("Input 4", ProfinetTag.of("test-device.1.1.SUBMOD.4:BOOL"));
+        PlcSubscriptionRequest request = builder.build();
+
+        final PlcSubscriptionResponse response = request.execute().get();
 
         // Get result of creating subscription
-//        final ProfinetSubscriptionHandle subscriptionHandle = (ProfinetSubscriptionHandle) response.getSubscriptionHandle("*");
-        //subscriptionHandle.getFields();
+        final ProfinetSubscriptionHandle subscriptionHandle = (ProfinetSubscriptionHandle) response.getSubscriptionHandle("Input 4");
 
         // Create handler for returned value
-//        subscriptionHandle.register(plcSubscriptionEvent -> {
-//            assert plcSubscriptionEvent.getResponseCode(field).equals(PlcResponseCode.OK);
-//            LOGGER.info("Received a response from {} test {}", field, plcSubscriptionEvent.getPlcValue(field).toString());
-//        });
+        subscriptionHandle.register(plcSubscriptionEvent -> {
+            assert plcSubscriptionEvent.getResponseCode("Input 4").equals(PlcResponseCode.OK);
+            LOGGER.info("Received a response from {} test {}", "Input 4", plcSubscriptionEvent.getPlcValue("Input 4").toString());
+        });
     }
 
 }
