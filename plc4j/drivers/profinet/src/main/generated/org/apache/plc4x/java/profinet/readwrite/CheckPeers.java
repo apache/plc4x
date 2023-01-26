@@ -92,7 +92,11 @@ public class CheckPeers extends PnIoCm_Block implements Message {
     // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int blockLength = (int) ((getLengthInBytes()) - (4));
-    writeImplicitField("blockLength", blockLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "blockLength",
+        blockLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (blockVersionHigh)
     writeSimpleField(
@@ -109,7 +113,11 @@ public class CheckPeers extends PnIoCm_Block implements Message {
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (noOfPeers)
-    writeConstField("noOfPeers", NOOFPEERS, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "noOfPeers",
+        NOOFPEERS,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (peerPortId)
     writeSimpleField(

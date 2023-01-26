@@ -143,7 +143,11 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
     // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int blockLength = (int) ((getLengthInBytes()) - (4));
-    writeImplicitField("blockLength", blockLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "blockLength",
+        blockLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (blockVersionHigh)
     writeSimpleField(
@@ -167,7 +171,8 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
         new DataWriterEnumDefault<>(
             PnIoCm_AlarmCrType::getValue,
             PnIoCm_AlarmCrType::name,
-            writeUnsignedInt(writeBuffer, 16)));
+            writeUnsignedInt(writeBuffer, 16)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (lt)
     writeSimpleField(
@@ -180,7 +185,8 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (long) 0x00000000,
-        writeUnsignedLong(writeBuffer, 30));
+        writeUnsignedLong(writeBuffer, 30),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (transport)
     writeSimpleField(

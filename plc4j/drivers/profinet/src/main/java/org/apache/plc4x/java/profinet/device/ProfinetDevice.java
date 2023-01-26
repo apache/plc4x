@@ -66,6 +66,7 @@ public class ProfinetDevice {
     DatagramSocket socket = null;
     private String vendorId;
     private String deviceId;
+    private List<Thread> threads = new ArrayList<>();
 
     public ProfinetDevice(String deviceName, String deviceAccess, String subModules, BiFunction<String, String, ProfinetISO15745Profile> gsdHandler)  {
         this.gsdHandler = gsdHandler;
@@ -133,6 +134,7 @@ public class ProfinetDevice {
     public boolean onConnect(PlcSubscriber subscriber) throws ExecutionException, InterruptedException, TimeoutException {
         CreateConnection createConnection = new CreateConnection();
         recordIdAndSend(createConnection);
+
         startSubscription(subscriber);
         createConnection.getResponseHandled().get(1000L, TimeUnit.MILLISECONDS);
 
@@ -169,7 +171,18 @@ public class ProfinetDevice {
             };
 
         Thread thread = new Thread(new ProfinetRunnable(null, subscription));
+        threads.add(thread);
         thread.start();
+    }
+
+    /*
+        Attempts to clean up threads after a subscription has been interrupted
+     */
+    public void stopSubscription() {
+        for (Thread thread : threads) {
+            thread.interrupt();
+            threads.remove(thread);
+        }
     }
 
     /*
@@ -427,7 +440,17 @@ public class ProfinetDevice {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public void handleAlarmResponse(PnDcp_Pdu_AlarmLow alarmPdu) {
+        stopSubscription();
+        logger.error("Received Alarm Low packet, attempting to re-connect");
+        try {
+            onConnect(deviceContext.getSubscriptionHandle().getPlcSubscriber());
+        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            // Failed to reconnect
+            throw new RuntimeException(e);
+        }
     }
 
     public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {

@@ -369,7 +369,6 @@
     [virtual       PnDcp_FrameId     frameId       'STATIC_CALL("getFrameId", frameIdValue)']
     [typeSwitch frameId
         ['RT_CLASS_1' PnDcp_Pdu_RealTimeCyclic
-            // TODO: This type needs to be implemented based of the configuration and gsd file ...
             [manual   PnIo_CyclicServiceDataUnit
                                           dataUnit
                                                 'STATIC_CALL("readDataUnit", readBuffer)'
@@ -408,6 +407,18 @@
             [const    uint 9     endLength       0]
             // Delay Parameter End
         ]
+        ['Alarm_Low' PnDcp_Pdu_AlarmLow
+                    [simple uint 16 alarmDstEndpoint]
+                    [simple uint 16 alarmSrcEndpoint]
+                    [simple uint 4  version]
+                    [simple uint 4  errorType]
+                    [simple uint 4  tAck]
+                    [simple uint 4  windowSize]
+                    [simple uint 16 senSeqNum]
+                    [simple uint 16 ackSeqNum]
+                    [implicit uint 16 varPartLen 'varPart.length']
+                    [array    byte varPart                        length              'varPartLen']
+                ]
         ['DCP_Identify_ReqPDU' PnDcp_Pdu_IdentifyReq
             [const    uint 8      serviceId                    0x05                                ]
             // ServiceType Start

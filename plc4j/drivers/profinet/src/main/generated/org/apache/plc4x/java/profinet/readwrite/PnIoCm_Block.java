@@ -58,7 +58,8 @@ public abstract class PnIoCm_Block implements Message {
         "PnIoCm_BlockType",
         getBlockType(),
         new DataWriterEnumDefault<>(
-            PnIoCm_BlockType::getValue, PnIoCm_BlockType::name, writeUnsignedInt(writeBuffer, 16)));
+            PnIoCm_BlockType::getValue, PnIoCm_BlockType::name, writeUnsignedInt(writeBuffer, 16)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializePnIoCm_BlockChild(writeBuffer);

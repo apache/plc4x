@@ -96,7 +96,11 @@ public class PnIoCm_Control_Request extends PnIoCm_Block implements Message {
     // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int blockLength = (int) ((getLengthInBytes()) - (4));
-    writeImplicitField("blockLength", blockLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "blockLength",
+        blockLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (blockVersionHigh)
     writeSimpleField(
@@ -116,7 +120,8 @@ public class PnIoCm_Control_Request extends PnIoCm_Block implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (arUuid)
     writeSimpleField(
@@ -136,7 +141,8 @@ public class PnIoCm_Control_Request extends PnIoCm_Block implements Message {
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (controlCommand)
     writeSimpleField(
@@ -149,7 +155,8 @@ public class PnIoCm_Control_Request extends PnIoCm_Block implements Message {
     writeReservedField(
         "reserved",
         reservedField2 != null ? reservedField2 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnIoCm_Control_Request");
   }

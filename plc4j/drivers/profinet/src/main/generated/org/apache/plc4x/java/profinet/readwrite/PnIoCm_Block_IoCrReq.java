@@ -214,7 +214,11 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int blockLength = (int) ((getLengthInBytes()) - (4));
-    writeImplicitField("blockLength", blockLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "blockLength",
+        blockLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (blockVersionHigh)
     writeSimpleField(
@@ -236,7 +240,8 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
         "PnIoCm_IoCrType",
         ioCrType,
         new DataWriterEnumDefault<>(
-            PnIoCm_IoCrType::getValue, PnIoCm_IoCrType::name, writeUnsignedInt(writeBuffer, 16)));
+            PnIoCm_IoCrType::getValue, PnIoCm_IoCrType::name, writeUnsignedInt(writeBuffer, 16)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (ioCrReference)
     writeSimpleField(
@@ -277,7 +282,8 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (long) 0x0000,
-        writeUnsignedLong(writeBuffer, 17));
+        writeUnsignedLong(writeBuffer, 17),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (mediaRedundancy)
     writeSimpleField(
@@ -290,7 +296,8 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+        writeUnsignedShort(writeBuffer, 7),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (rtClass)
     writeSimpleEnumField(
@@ -298,7 +305,8 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
         "PnIoCm_RtClass",
         rtClass,
         new DataWriterEnumDefault<>(
-            PnIoCm_RtClass::getValue, PnIoCm_RtClass::name, writeUnsignedByte(writeBuffer, 4)));
+            PnIoCm_RtClass::getValue, PnIoCm_RtClass::name, writeUnsignedByte(writeBuffer, 4)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (dataLength)
     writeSimpleField(
@@ -380,10 +388,15 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     // Implicit Field (numberOfApis) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int numberOfApis = (int) (COUNT(getApis()));
-    writeImplicitField("numberOfApis", numberOfApis, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "numberOfApis",
+        numberOfApis,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (apis)
-    writeComplexTypeArrayField("apis", apis, writeBuffer);
+    writeComplexTypeArrayField(
+        "apis", apis, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnIoCm_Block_IoCrReq");
   }

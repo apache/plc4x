@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.time.*;
 import java.util.*;
 import org.apache.plc4x.java.api.value.*;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.EvaluationHelper;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -422,7 +423,7 @@ public class DataItem {
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 8, "UTF-8");
+          readBuffer.readString("", 8, WithOption.WithEncoding("UTF-8"));
 
       return new PlcCHAR(value);
     } else if (EvaluationHelper.equals(dataType, ProfinetDataType.CHAR)) { // List
@@ -443,7 +444,7 @@ public class DataItem {
           value.add(
               new PlcSTRING(
                   (String) /*TODO: migrate me*/ /*TODO: migrate me*/
-                      readBuffer.readString("", 8, "UTF-8")));
+                      readBuffer.readString("", 8, WithOption.WithEncoding("UTF-8"))));
         }
       }
 
@@ -453,7 +454,7 @@ public class DataItem {
 
       // Simple Field (value)
       String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 16, "UTF-16");
+          readBuffer.readString("", 16, WithOption.WithEncoding("UTF-16"));
 
       return new PlcWCHAR(value);
     } else if (EvaluationHelper.equals(dataType, ProfinetDataType.WCHAR)) { // List
@@ -474,7 +475,7 @@ public class DataItem {
           value.add(
               new PlcSTRING(
                   (String) /*TODO: migrate me*/ /*TODO: migrate me*/
-                      readBuffer.readString("", 16, "UTF-16")));
+                      readBuffer.readString("", 16, WithOption.WithEncoding("UTF-16"))));
         }
       }
 
@@ -696,14 +697,16 @@ public class DataItem {
       // Simple Field (value)
       String value = (String) _value.getString();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString("", 8, "UTF-8", (String) (value));
+      /*TODO: migrate me*/ writeBuffer.writeString(
+          "", 8, (String) (value), WithOption.WithEncoding("UTF-8"));
     } else if (EvaluationHelper.equals(dataType, ProfinetDataType.CHAR)) { // List
       PlcList values = (PlcList) _value;
 
       for (PlcValue val : ((List<PlcValue>) values.getList())) {
         String value = (String) val.getString();
         /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeString("", 8, "UTF-8", (String) (value));
+        /*TODO: migrate me*/ writeBuffer.writeString(
+            "", 8, (String) (value), WithOption.WithEncoding("UTF-8"));
       }
 
     } else if (EvaluationHelper.equals(dataType, ProfinetDataType.WCHAR)
@@ -711,14 +714,16 @@ public class DataItem {
       // Simple Field (value)
       String value = (String) _value.getString();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString("", 16, "UTF-16", (String) (value));
+      /*TODO: migrate me*/ writeBuffer.writeString(
+          "", 16, (String) (value), WithOption.WithEncoding("UTF-16"));
     } else if (EvaluationHelper.equals(dataType, ProfinetDataType.WCHAR)) { // List
       PlcList values = (PlcList) _value;
 
       for (PlcValue val : ((List<PlcValue>) values.getList())) {
         String value = (String) val.getString();
         /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeString("", 16, "UTF-16", (String) (value));
+        /*TODO: migrate me*/ writeBuffer.writeString(
+            "", 16, (String) (value), WithOption.WithEncoding("UTF-16"));
       }
     }
   }

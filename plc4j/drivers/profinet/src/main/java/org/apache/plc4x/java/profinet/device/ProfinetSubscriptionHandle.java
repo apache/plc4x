@@ -67,4 +67,8 @@ public class ProfinetSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     public Map<String, String> getTags() {
         return tags;
     }
+
+    public PlcSubscriber getPlcSubscriber() {
+        return plcSubscriber;
+    }
 }

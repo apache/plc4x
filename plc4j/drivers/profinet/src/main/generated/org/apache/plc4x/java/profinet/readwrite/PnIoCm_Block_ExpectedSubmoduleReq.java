@@ -78,7 +78,11 @@ public class PnIoCm_Block_ExpectedSubmoduleReq extends PnIoCm_Block implements M
     // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int blockLength = (int) ((getLengthInBytes()) - (4));
-    writeImplicitField("blockLength", blockLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "blockLength",
+        blockLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (blockVersionHigh)
     writeSimpleField(
@@ -97,10 +101,15 @@ public class PnIoCm_Block_ExpectedSubmoduleReq extends PnIoCm_Block implements M
     // Implicit Field (numberOfApis) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int numberOfApis = (int) (COUNT(getApis()));
-    writeImplicitField("numberOfApis", numberOfApis, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "numberOfApis",
+        numberOfApis,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (apis)
-    writeComplexTypeArrayField("apis", apis, writeBuffer);
+    writeComplexTypeArrayField(
+        "apis", apis, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnIoCm_Block_ExpectedSubmoduleReq");
   }

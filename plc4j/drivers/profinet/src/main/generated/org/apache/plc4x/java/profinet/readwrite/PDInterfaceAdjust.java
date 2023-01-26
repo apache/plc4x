@@ -95,7 +95,11 @@ public class PDInterfaceAdjust extends PnIoCm_Block implements Message {
     // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int blockLength = (int) ((getLengthInBytes()) - (4));
-    writeImplicitField("blockLength", blockLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "blockLength",
+        blockLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (blockVersionHigh)
     writeSimpleField(
@@ -112,19 +116,25 @@ public class PDInterfaceAdjust extends PnIoCm_Block implements Message {
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (padField)
-    writeConstField("padField", PADFIELD, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "padField",
+        PADFIELD,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (multipleInterfaceModeReserved2)
     writeConstField(
         "multipleInterfaceModeReserved2",
         MULTIPLEINTERFACEMODERESERVED2,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (multipleInterfaceModeReserved1)
     writeConstField(
         "multipleInterfaceModeReserved1",
         MULTIPLEINTERFACEMODERESERVED1,
-        writeUnsignedInt(writeBuffer, 15));
+        writeUnsignedInt(writeBuffer, 15),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (multipleInterfaceModeNameOfDevice)
     writeSimpleEnumField(
@@ -134,7 +144,8 @@ public class PDInterfaceAdjust extends PnIoCm_Block implements Message {
         new DataWriterEnumDefault<>(
             MultipleInterfaceModeNameOfDevice::getValue,
             MultipleInterfaceModeNameOfDevice::name,
-            writeBoolean(writeBuffer)));
+            writeBoolean(writeBuffer)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PDInterfaceAdjust");
   }
