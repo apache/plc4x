@@ -83,7 +83,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     public void setContext(ConversationContext<Ethernet_Frame> context) {
         super.setContext(context);
 
-        // Open the receiving UDP port.
+        // Open the receiving UDP port and keep it open.
         try {
             driverContext.setSocket(new DatagramSocket(ProfinetDriverContext.DEFAULT_UDP_PORT));
         } catch (SocketException e) {
@@ -179,7 +179,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
     @Override
     public void close(ConversationContext<Ethernet_Frame> context) {
-        // Nothing to do here ...
+        // TODO:- Do something here
     }
 
     @Override
@@ -200,9 +200,6 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         return CompletableFuture.supplyAsync(() -> {
             Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
-            long subscriptionId = 0;
-            ArrayList<String> fields = new ArrayList<>(subscriptionRequest.getTagNames());
-            long cycleTime = (subscriptionRequest.getTag(fields.get(0))).getDuration().orElse(Duration.ofMillis(1000)).toMillis();
 
             for (String fieldName : subscriptionRequest.getTagNames()) {
                 final DefaultPlcSubscriptionTag fieldDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(fieldName);

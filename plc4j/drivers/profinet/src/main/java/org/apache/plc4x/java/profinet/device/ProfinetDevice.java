@@ -25,22 +25,15 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
-import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
-import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
 import org.apache.plc4x.java.profinet.gsdml.*;
-import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.profinet.tag.ProfinetTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.generation.*;
-import org.apache.plc4x.java.spi.messages.DefaultPlcBrowseItem;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
-import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,11 +56,13 @@ public class ProfinetDevice {
     private static final int DEFAULT_NUMBER_OF_PORTS_TO_SCAN = 100;
     private static final int MIN_CYCLE_NANO_SEC = 31250;
     private final BiFunction<String, String, ProfinetISO15745Profile> gsdHandler;
-    private ProfinetDeviceContext deviceContext = new ProfinetDeviceContext();
-    DatagramSocket socket = null;
+    private final ProfinetDeviceContext deviceContext = new ProfinetDeviceContext();
+
+    // Each device should create a receiving socket, all the packets are then automatically transferred to the listener for the channel though.
+    private DatagramSocket socket = null;
     private String vendorId;
     private String deviceId;
-    private List<Thread> threads = new ArrayList<>();
+    private final List<Thread> threads = new ArrayList<>();
 
     public ProfinetDevice(String deviceName, String deviceAccess, String subModules, BiFunction<String, String, ProfinetISO15745Profile> gsdHandler)  {
         this.gsdHandler = gsdHandler;
@@ -75,10 +70,6 @@ public class ProfinetDevice {
         deviceContext.setSubModules(subModules);
         deviceContext.setDeviceName(deviceName);
         openDeviceUdpPort();
-    }
-
-    public BiFunction<String, String, ProfinetISO15745Profile> getGsdHandler() {
-        return gsdHandler;
     }
 
     private void openDeviceUdpPort() {
@@ -128,48 +119,61 @@ public class ProfinetDevice {
         deviceContext.getQueue().put(callable.getId(), callable);
         ProfinetMessageWrapper.sendUdpMessage(
             callable,
-            this
+            deviceContext
         );
     }
 
     public boolean onConnect(PlcSubscriber subscriber) throws ExecutionException, InterruptedException, TimeoutException {
-        CreateConnection createConnection = new CreateConnection();
-        recordIdAndSend(createConnection);
-
-        startSubscription(subscriber);
-        createConnection.getResponseHandled().get(1000L, TimeUnit.MILLISECONDS);
-
-        WriteParameters writeParameters = new WriteParameters();
-        recordIdAndSend(writeParameters);
-        writeParameters.getResponseHandled().get(1000L, TimeUnit.MILLISECONDS);
-
-        WriteParametersEnd writeParametersEnd = new WriteParametersEnd();
-        recordIdAndSend(writeParametersEnd);
-        writeParametersEnd.getResponseHandled().get(1000L, TimeUnit.MILLISECONDS);
-
+        start(subscriber);
         return true;
     }
 
     /*
         Starts the subscription, sending data from controller to device.
      */
-    public void startSubscription(PlcSubscriber subscriber) {
+    public void start(PlcSubscriber subscriber) {
         if (deviceContext.getSubscriptionHandle() == null) {
             deviceContext.setSubscriptionHandle(new ProfinetSubscriptionHandle(subscriber));
         }
+        final long timeout = (long) deviceContext.getConfiguration().getReductionRatio() * deviceContext.getConfiguration().getSendClockFactor() * deviceContext.getConfiguration().getWatchdogFactor() * MIN_CYCLE_NANO_SEC;
+        final int cycleTime = (int) (deviceContext.getConfiguration().getSendClockFactor() * deviceContext.getConfiguration().getReductionRatio() * (MIN_CYCLE_NANO_SEC/1000000.0));
         Function<Object, Boolean> subscription =
             message -> {
-                boolean escape = false;
                 long startTime = System.nanoTime();
-                while (!escape) {
+                while (deviceContext.getState() != ProfinetDeviceState.ABORT) {
                     try {
-                        CyclicData cyclicData = new CyclicData(startTime);
-                        ProfinetMessageWrapper.sendPnioMessage(cyclicData, this);
-
-                        int sleepTime = (int) (deviceContext.getConfiguration().getSendClockFactor() * deviceContext.getConfiguration().getReductionRatio() * (MIN_CYCLE_NANO_SEC/1000000.0));
-                        Thread.sleep(sleepTime);
-                    } catch (InterruptedException e) {
-                        escape = true;
+                        switch(deviceContext.getState()) {
+                            case IDLE:
+                                CreateConnection createConnection = new CreateConnection();
+                                recordIdAndSend(createConnection);
+                                createConnection.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
+                                break;
+                            case STARTUP:
+                                WriteParameters writeParameters = new WriteParameters();
+                                recordIdAndSend(writeParameters);
+                                writeParameters.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
+                                break;
+                            case PREMED:
+                                WriteParametersEnd writeParametersEnd = new WriteParametersEnd();
+                                recordIdAndSend(writeParametersEnd);
+                                writeParametersEnd.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
+                                break;
+                            case WAITAPPLRDY:
+                                Thread.sleep(cycleTime);
+                            case APPLRDY:
+                                ApplicationReadyResponse applicationReadyResponse = new ApplicationReadyResponse(deviceContext.getActivityUuid(), deviceContext.getSequenceNumber());
+                                recordIdAndSend(applicationReadyResponse);
+                                deviceContext.getContext().fireConnected();
+                                deviceContext.setState(ProfinetDeviceState.CYCLICDATA);
+                                break;
+                            case CYCLICDATA:
+                                CyclicData cyclicData = new CyclicData(startTime);
+                                ProfinetMessageWrapper.sendPnioMessage(cyclicData, deviceContext);
+                                Thread.sleep(cycleTime);
+                                break;
+                        }
+                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                        deviceContext.setState(ProfinetDeviceState.ABORT);
                     }
                 }
                 return null;
@@ -208,9 +212,7 @@ public class ProfinetDevice {
                     break;
                 }
             }
-
         }
-
         return options;
     }
 
@@ -225,18 +227,7 @@ public class ProfinetDevice {
         for (ProfinetModule module : deviceContext.getModules()) {
             browseItems = module.browseTags(browseItems, deviceContext.getDeviceName(), options);
         }
-
         return browseItems;
-    }
-
-    private int generateSessionKey() {
-        // Generate a new session key.
-        Integer sessionKey = deviceContext.getSessionKeyGenerator().getAndIncrement();
-        // Reset the session key as soon as it reaches the max for a 16 bit uint
-        if (deviceContext.getSessionKeyGenerator().get() == 0xFFFF) {
-            deviceContext.getSessionKeyGenerator().set(1);
-        }
-        return sessionKey;
     }
 
     public boolean hasLldpPdu() {
@@ -249,33 +240,25 @@ public class ProfinetDevice {
 
     public void handleResponse(Ethernet_FramePayload_IPv4 packet) {
         logger.debug("Received packet for {}", packet.getPayload().getObjectUuid());
-        try {
-            long objectId = packet.getPayload().getSequenceNumber();
-            if (deviceContext.getQueue().containsKey(objectId)) {
-                deviceContext.getQueue().get(objectId).handle(packet.getPayload());
-            } else {
-                PnIoCm_Packet payloadPacket = packet.getPayload().getPayload();
-                DceRpc_ActivityUuid activityUuid = packet.getPayload().getActivityUuid();
-                long seqNumber = packet.getPayload().getSequenceNumber();
-                if (payloadPacket instanceof PnIoCm_Packet_Req) {
-                    PnIoCm_Packet_Req req = (PnIoCm_Packet_Req) payloadPacket;
-                    for (PnIoCm_Block block : req.getBlocks()) {
-                        if (block instanceof PnIoCM_Block_Request) {
-                            deviceContext.setState(ProfinetDeviceState.APPLRDY);
-                            ApplicationReadyResponse applicationReadyResponse = new ApplicationReadyResponse(activityUuid, seqNumber);
-                            recordIdAndSend(applicationReadyResponse);
-                            deviceContext.getContext().fireConnected();
-                        }
+        long objectId = packet.getPayload().getSequenceNumber();
+        if (deviceContext.getQueue().containsKey(objectId)) {
+            deviceContext.getQueue().get(objectId).handle(packet.getPayload());
+        } else {
+            PnIoCm_Packet payloadPacket = packet.getPayload().getPayload();
+            deviceContext.setActivityUuid(packet.getPayload().getActivityUuid());
+            deviceContext.setSequenceNumber(packet.getPayload().getSequenceNumber());
+            if (payloadPacket instanceof PnIoCm_Packet_Req) {
+                PnIoCm_Packet_Req req = (PnIoCm_Packet_Req) payloadPacket;
+                for (PnIoCm_Block block : req.getBlocks()) {
+                    if (block instanceof PnIoCM_Block_Request) {
+                        deviceContext.setState(ProfinetDeviceState.APPLRDY);
                     }
-                } else {
-                    throw new RuntimeException("Unable to match Response with Requested Profinet packet");
                 }
+            } else {
+                deviceContext.setState(ProfinetDeviceState.ABORT);
+                logger.error("Unable to match Response with Requested Profinet packet");
             }
-
-        } catch (PlcException e) {
-            throw new RuntimeException(e);
         }
-
     }
 
     public void handle(PlcDiscoveryItem item) {
@@ -300,7 +283,8 @@ public class ProfinetDevice {
             try {
                 deviceContext.setLocalMacAddress(new MacAddress(Hex.decodeHex(macString)));
             } catch (DecoderException e) {
-                throw new RuntimeException(e);
+                deviceContext.setState(ProfinetDeviceState.ABORT);
+                logger.error("Error Decode Local Mac Address from PN-DCP {}", item.getOptions().get("localMacAddress"));
             }
         }
         if (item.getOptions().containsKey("macAddress")) {
@@ -308,7 +292,8 @@ public class ProfinetDevice {
             try {
                 deviceContext.setMacAddress(new MacAddress(Hex.decodeHex(macString)));
             } catch (DecoderException e) {
-                throw new RuntimeException(e);
+                deviceContext.setState(ProfinetDeviceState.ABORT);
+                logger.error("Error Decode Mac Address from PN-DCP {}", item.getOptions().get("macAddress"));
             }
         }
         if (item.getOptions().containsKey("packetType")) {
@@ -331,7 +316,6 @@ public class ProfinetDevice {
     }
 
     public void handleRealTimeResponse(PnDcp_Pdu_RealTimeCyclic cyclicPdu) {
-        logger.debug("Received Real Time Cyclic Data");
         Map<String, ResponseItem<PlcValue>> tags = new HashMap<>();
         ReadBuffer buffer = new ReadBufferByteBased(cyclicPdu.getDataUnit().getData());
 
@@ -340,7 +324,6 @@ public class ProfinetDevice {
                 module.parseTags(tags, deviceContext.getDeviceName(), buffer);
             }
 
-            Set<Map.Entry<String, ResponseItem<PlcValue>>> entries = tags.entrySet();
             Map<String, ResponseItem<PlcValue>> publishedTags = new HashMap<>();
             for (Map.Entry<String, ResponseItem<PlcValue>> entry : tags.entrySet()) {
                 Map<String, String> consumerTags = deviceContext.getSubscriptionHandle().getTags();
@@ -353,44 +336,33 @@ public class ProfinetDevice {
                 consumer.accept(new DefaultPlcSubscriptionEvent(Instant.now(), publishedTags));
             }
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            deviceContext.setState(ProfinetDeviceState.ABORT);
+            logger.error("Error Parsing Cyclic Data from device {}", deviceContext.getDeviceName());
         }
     }
 
     public void handleAlarmResponse(PnDcp_Pdu_AlarmLow alarmPdu) {
         stopSubscription();
-        deviceContext.setFrameId(0x8001);
         logger.error("Received Alarm Low packet, attempting to re-connect");
-        Thread thread = new Thread(new ProfinetRunnable(null, (subscriber) -> {
-            try {
-                return onConnect(deviceContext.getSubscriptionHandle().getPlcSubscriber());
-            } catch (ExecutionException | InterruptedException | TimeoutException e) {
-                throw new RuntimeException(e);
-            }
-        }));
-        threads.add(thread);
-        thread.start();
+        deviceContext.setState(ProfinetDeviceState.IDLE);
     }
 
     public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
 
         CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
         private long id = getObjectId();
-
         public CompletableFuture<Boolean> getResponseHandled() {
             return responseHandled;
         }
-
         public long getId() {
             return id;
         }
-
         public void setId(long id) {
             this.id = id;
         }
 
         public DceRpc_Packet create() throws PlcException {
-            deviceContext.setSessionKey(ProfinetDevice.this.generateSessionKey());
+            deviceContext.setSessionKey(deviceContext.getAndIncrementSessionKey());
 
             List<PnIoCm_Block> blocks = new ArrayList<>();
             blocks.add(new PnIoCm_Block_ArReq(
@@ -402,7 +374,7 @@ public class ProfinetDevice {
                     deviceContext.getLocalMacAddress(),
                     new DceRpc_ObjectUuid((byte) 0x00, 0x0001, Integer.valueOf(deviceId), Integer.valueOf(vendorId)),
                     false,
-                    deviceContext.isStartupMode(),
+                    deviceContext.isNonLegacyStartupMode(),
                     false,
                     false,
                     PnIoCm_CompanionArType.SINGLE_AR,
@@ -505,11 +477,6 @@ public class ProfinetDevice {
                 blocks.add(expectedSubModuleApiBlocksReq);
             }
 
-            long arrayLength = 0;
-            for (PnIoCm_Block block : blocks) {
-                arrayLength += block.getLengthInBytes();
-            }
-
             return new DceRpc_Packet(
                 DceRpc_PacketType.REQUEST,
                 true,
@@ -528,35 +495,33 @@ public class ProfinetDevice {
             );
         }
 
-        public void handle(DceRpc_Packet dceRpc_packet) throws PlcException {
-            try {
-                if ((dceRpc_packet.getOperation() == DceRpc_Operation.CONNECT) && (dceRpc_packet.getPacketType() == DceRpc_PacketType.RESPONSE)) {
-                    if (dceRpc_packet.getPayload().getPacketType() == DceRpc_PacketType.RESPONSE) {
-
-                        // Get the remote MAC address and store it in the context.
-                        final PnIoCm_Packet_Res connectResponse = (PnIoCm_Packet_Res) dceRpc_packet.getPayload();
-                        if ((connectResponse.getBlocks().size() > 0) && (connectResponse.getBlocks().get(0) instanceof PnIoCm_Block_ArRes)) {
-                            final PnIoCm_Block_ArRes pnIoCm_block_arRes = (PnIoCm_Block_ArRes) connectResponse.getBlocks().get(0);
-                            responseHandled.complete(true);
-                            // Update the raw-socket transports filter expression.
-                            //((RawSocketChannel) channel).setRemoteMacAddress(org.pcap4j.util.MacAddress.getByAddress(macAddress.getAddress()));
-                        } else {
-                            responseHandled.complete(true);
-                            handleAlarmResponse(null);
-                        }
+        public void handle(DceRpc_Packet dceRpc_packet) {
+            if ((dceRpc_packet.getOperation() == DceRpc_Operation.CONNECT) && (dceRpc_packet.getPacketType() == DceRpc_PacketType.RESPONSE)) {
+                if (dceRpc_packet.getPayload().getPacketType() == DceRpc_PacketType.RESPONSE) {
+                    final PnIoCm_Packet_Res connectResponse = (PnIoCm_Packet_Res) dceRpc_packet.getPayload();
+                    if (connectResponse.getErrorCode() == 0) {
+                        deviceContext.setState(ProfinetDeviceState.STARTUP);
+                        responseHandled.complete(true);
                     } else {
-                        throw new PlcException("Unexpected response");
+                        deviceContext.setState(ProfinetDeviceState.ABORT);
+                        // TODO:- Introduce the error code lookups
+                        logger.error("Error {} - {} in Response from {} ", connectResponse.getErrorCode1(), connectResponse.getErrorCode2(), deviceContext.getDeviceName());
+                        responseHandled.complete(true);
                     }
-                } else if (dceRpc_packet.getPacketType() == DceRpc_PacketType.REJECT) {
-                    throw new PlcException("Device rejected connection request");
                 } else {
-                    throw new PlcException("Unexpected response");
+                    deviceContext.setState(ProfinetDeviceState.ABORT);
+                    logger.error("Received Incorrect Packet Type for Create Connection Response");
+                    responseHandled.complete(true);
                 }
-            } catch (Exception e) {
+            } else if (dceRpc_packet.getPacketType() == DceRpc_PacketType.REJECT) {
+                deviceContext.setState(ProfinetDeviceState.ABORT);
+                logger.error("Device rejected connection request");
                 responseHandled.complete(true);
-                handleAlarmResponse(null);
+            } else {
+                deviceContext.setState(ProfinetDeviceState.ABORT);
+                logger.error("Unexpected Response");
+                responseHandled.complete(true);
             }
-
         }
     }
 
@@ -579,12 +544,13 @@ public class ProfinetDevice {
 
         public DceRpc_Packet create() {
 
+            int seqNumber = 0;
             List<PnIoCm_Block> requests = new ArrayList<>();
             requests.add(
                 new IODWriteRequestHeader(
                     (short) 1,
                     (short) 0,
-                    0,
+                    seqNumber,
                     ProfinetDeviceContext.ARUUID,
                     0x00000000,
                     0x0000,
@@ -594,30 +560,32 @@ public class ProfinetDevice {
                     null
 
                 ));
-            requests.add(
-                new IODWriteRequestHeader(
-                    (short) 1,
-                    (short) 0,
-                    1,
-                    ProfinetDeviceContext.ARUUID,
-                    0x00000000,
-                    0x0000,
-                    0x8000,
-                    0x8071,
-                    12,
-                    null
+            seqNumber += 1;
+            for (ProfinetInterfaceSubmoduleItem interfaceModule : deviceContext.getInterfaceSubModules()) {
+                requests.add(
+                    new IODWriteRequestHeader(
+                        (short) 1,
+                        (short) 0,
+                        seqNumber,
+                        ProfinetDeviceContext.ARUUID,
+                        0x00000000,
+                        0x0000,
+                        interfaceModule.getSubslotNumber(),
+                        0x8071,
+                        12,
+                        null
+                    ));
+                requests.add(
+                    new PDInterfaceAdjust(
+                        (short) 1,
+                        (short) 0,
+                        MultipleInterfaceModeNameOfDevice.NAME_PROVIDED_BY_LLDP
+                    )
+                );
+                seqNumber += 1;
+            }
 
-                ));
-            requests.add(
-                new PDInterfaceAdjust(
-                    (short) 1,
-                    (short) 0,
-                    MultipleInterfaceModeNameOfDevice.NAME_PROVIDED_BY_LLDP
-                )
-            );
-            int seqNumber = 2;
             int index = 1;
-            int indexPacket = 0x007B;
             for (String submodule : deviceContext.getSubModules()) {
                 ProfinetModuleItem foundModule = null;
                 for (ProfinetModuleItem module : deviceContext.getGsdFile().getProfileBody().getApplicationProcess().getModuleList()) {
@@ -627,7 +595,6 @@ public class ProfinetDevice {
                     }
                 }
 
-                Integer identNumber = Integer.decode(foundModule.getModuleIdentNumber());
                 if (foundModule.getVirtualSubmoduleList().get(0).getRecordDataList() != null) {
                     for (ProfinetParameterRecordDataItem record : foundModule.getVirtualSubmoduleList().get(0).getRecordDataList()) {
                         requests.add(
@@ -664,9 +631,34 @@ public class ProfinetDevice {
         }
 
         @Override
-        public void handle(DceRpc_Packet packet) throws PlcException {
+        public void handle(DceRpc_Packet dceRpc_packet) {
             logger.debug("Received a Write Parameter Response");
-            responseHandled.complete(true);
+            if ((dceRpc_packet.getOperation() == DceRpc_Operation.WRITE) && (dceRpc_packet.getPacketType() == DceRpc_PacketType.RESPONSE)) {
+                if (dceRpc_packet.getPayload().getPacketType() == DceRpc_PacketType.RESPONSE) {
+                    final PnIoCm_Packet_Res connectResponse = (PnIoCm_Packet_Res) dceRpc_packet.getPayload();
+                    if (connectResponse.getErrorCode() == 0) {
+                        deviceContext.setState(ProfinetDeviceState.PREMED);
+                        responseHandled.complete(true);
+                    } else {
+                        deviceContext.setState(ProfinetDeviceState.ABORT);
+                        // TODO:- Introduce the error code lookups
+                        logger.error("Error {} - {} in Response from {} during Write Parameters ", connectResponse.getErrorCode1(), connectResponse.getErrorCode2(), deviceContext.getDeviceName());
+                        responseHandled.complete(true);
+                    }
+                } else {
+                    deviceContext.setState(ProfinetDeviceState.ABORT);
+                    logger.error("Received Incorrect Packet Type for Write Parameters Response");
+                    responseHandled.complete(true);
+                }
+            } else if (dceRpc_packet.getPacketType() == DceRpc_PacketType.REJECT) {
+                deviceContext.setState(ProfinetDeviceState.ABORT);
+                logger.error("Device rejected write parameter request");
+                responseHandled.complete(true);
+            } else {
+                deviceContext.setState(ProfinetDeviceState.ABORT);
+                logger.error("Unexpected Response");
+                responseHandled.complete(true);
+            }
         }
     }
 
@@ -698,23 +690,47 @@ public class ProfinetDevice {
                 id,
                 DceRpc_Operation.CONTROL,
                 new PnIoCm_Packet_Req(16696, 16696, 0,
-                    Arrays.asList(
+                    List.of(
                         new PnIoCm_Control_Request(
                             (short) 1,
                             (short) 0,
                             ProfinetDeviceContext.ARUUID,
                             deviceContext.getSessionKey(),
                             0x0001
-
                         )
                     ))
             );
         }
 
         @Override
-        public void handle(DceRpc_Packet packet) throws PlcException {
+        public void handle(DceRpc_Packet dceRpc_packet) {
             logger.debug("Received a Write Parameter End Response");
-            responseHandled.complete(true);
+            if ((dceRpc_packet.getOperation() == DceRpc_Operation.CONTROL) && (dceRpc_packet.getPacketType() == DceRpc_PacketType.RESPONSE)) {
+                if (dceRpc_packet.getPayload().getPacketType() == DceRpc_PacketType.RESPONSE) {
+                    final PnIoCm_Packet_Res connectResponse = (PnIoCm_Packet_Res) dceRpc_packet.getPayload();
+                    if (connectResponse.getErrorCode() == 0) {
+                        deviceContext.setState(ProfinetDeviceState.WAITAPPLRDY);
+                        responseHandled.complete(true);
+                    } else {
+                        deviceContext.setState(ProfinetDeviceState.ABORT);
+                        // TODO:- Introduce the error code lookups
+                        logger.error("Error {} - {} in Response from {} during Write Parameters End", connectResponse.getErrorCode1(), connectResponse.getErrorCode2(), deviceContext.getDeviceName());
+                        responseHandled.complete(true);
+                    }
+                } else {
+                    deviceContext.setState(ProfinetDeviceState.ABORT);
+                    logger.error("Received Incorrect Packet Type for Write Parameters Ed Response");
+                    responseHandled.complete(true);
+                }
+            } else if (dceRpc_packet.getPacketType() == DceRpc_PacketType.REJECT) {
+                deviceContext.setState(ProfinetDeviceState.ABORT);
+                logger.error("Device rejected write parameter end request");
+                responseHandled.complete(true);
+            } else {
+                deviceContext.setState(ProfinetDeviceState.ABORT);
+                logger.error("Unexpected Response");
+                responseHandled.complete(true);
+            }
         }
     }
 
@@ -762,7 +778,7 @@ public class ProfinetDevice {
                     (short) 0,
                     ProfinetDeviceContext.DEFAULT_MAX_ARRAY_COUNT,
                     0,
-                    Arrays.asList(
+                    List.of(
                         new PnIoCM_Block_Response(
                             (short) 1,
                             (short) 0,
@@ -776,7 +792,7 @@ public class ProfinetDevice {
         }
 
         @Override
-        public void handle(DceRpc_Packet packet) throws PlcException {
+        public void handle(DceRpc_Packet packet) {
             logger.debug("Received an unintented packet - We were expecting a response for an Application Ready Response");
         }
     }
@@ -858,8 +874,9 @@ public class ProfinetDevice {
         }
 
         @Override
-        public void handle(Ethernet_Frame packet) throws PlcException {
-            throw new PlcException("There is no returned packet for cyclic data");
+        public void handle(Ethernet_Frame packet)  {
+            deviceContext.setState(ProfinetDeviceState.ABORT);
+            logger.error("Error Parsing Cyclic Data from device {}", deviceContext.getDeviceName());
         }
     }
 }

@@ -22,7 +22,7 @@ package org.apache.plc4x.java.profinet.device;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 
 public interface ProfinetCallable<T> {
-    void handle(T packet) throws PlcException;
+    void handle(T packet);
 
     T create() throws PlcException;
 

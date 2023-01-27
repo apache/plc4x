@@ -20,6 +20,7 @@
 package org.apache.plc4x.java.profinet.device;
 
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
 import org.apache.plc4x.java.profinet.readwrite.*;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ import java.util.Random;
 
 public class ProfinetMessageWrapper {
 
-    public static void sendUdpMessage(ProfinetCallable<DceRpc_Packet> callable, ProfinetDevice context) throws RuntimeException {
+    public static void sendUdpMessage(ProfinetCallable<DceRpc_Packet> callable, ProfinetDeviceContext context) throws RuntimeException {
         try {
             DceRpc_Packet packet = callable.create();
             Random rand = new Random();
@@ -38,32 +39,30 @@ public class ProfinetMessageWrapper {
                 true,
                 false,
                 (short) 64,
-                new IpAddress(context.getDeviceContext().getLocalIpAddress().getAddress()),
-                new IpAddress(InetAddress.getByName(context.getDeviceContext().getIpAddress()).getAddress()),
-                context.getDeviceContext().getSourcePort(),
-                context.getDeviceContext().getDestinationPort(),
+                new IpAddress(context.getLocalIpAddress().getAddress()),
+                new IpAddress(InetAddress.getByName(context.getIpAddress()).getAddress()),
+                context.getSourcePort(),
+                context.getDestinationPort(),
                 packet
             );
-            MacAddress srcAddress = context.getDeviceContext().getLocalMacAddress();
-            MacAddress dstAddress = context.getDeviceContext().getMacAddress();
+            MacAddress srcAddress = context.getLocalMacAddress();
+            MacAddress dstAddress = context.getMacAddress();
             Ethernet_Frame frame = new Ethernet_Frame(
                 dstAddress,
                 srcAddress,
                 udpFrame);
 
-            context.getDeviceContext().getChannel().send(frame);
+            context.getChannel().send(frame);
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (PlcException e) {
+        } catch (IOException | PlcException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static void sendPnioMessage(ProfinetCallable<Ethernet_Frame> callable, ProfinetDevice context) throws RuntimeException {
+    public static void sendPnioMessage(ProfinetCallable<Ethernet_Frame> callable, ProfinetDeviceContext context) throws RuntimeException {
         try {
             Ethernet_Frame packet = callable.create();
-            context.getDeviceContext().getChannel().send(packet);
+            context.getChannel().send(packet);
         } catch (PlcException e) {
             throw new RuntimeException(e);
         }

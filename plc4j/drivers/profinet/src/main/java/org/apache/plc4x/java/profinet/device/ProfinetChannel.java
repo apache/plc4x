@@ -40,7 +40,6 @@ public class ProfinetChannel {
     private static final EtherType PN_EtherType = EtherType.getInstance((short) 0x8892);
     private static final EtherType LLDP_EtherType = EtherType.getInstance((short) 0x88cc);
     private ProfinetPlcDiscoverer discoverer = null;
-    private ProfinetConfiguration configuration = null;
     private Map<MacAddress, PcapHandle> openHandles;
     private ProfinetDevices configuredDevices;
 
@@ -56,22 +55,9 @@ public class ProfinetChannel {
             WriteBufferByteBased buffer = new WriteBufferByteBased(ethFrame.getLengthInBytes());
             try {
                 ethFrame.serialize(buffer);
-            } catch (SerializationException e) {
-                throw new RuntimeException(e);
-            }
-            Packet packet = null;
-            try {
-                int gg = ethFrame.getLengthInBytes();
-                int dd = buffer.getPos();
-                packet = EthernetPacket.newPacket(buffer.getData(), 0, ethFrame.getLengthInBytes());
-            } catch (IllegalRawDataException e) {
-                throw new RuntimeException(e);
-            }
-            try {
+                Packet packet = EthernetPacket.newPacket(buffer.getBytes(), 0, ethFrame.getLengthInBytes());
                 handle.sendPacket(packet);
-            } catch (PcapNativeException e) {
-                throw new RuntimeException(e);
-            } catch (NotOpenException e) {
+            } catch (PcapNativeException | NotOpenException | SerializationException | IllegalRawDataException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -81,21 +67,19 @@ public class ProfinetChannel {
         for (Map.Entry<MacAddress, PcapHandle> entry : openHandles.entrySet()) {
             PcapHandle handle = entry.getValue();
 
-            Function<Object, Boolean> runtimeHandler =
-                message -> {
-                    PacketListener listener = createListener();
-                    try {
-                        handle.loop(-1, listener);
-                    } catch (InterruptedException e) {
-                        logger.error("Got error handling raw socket", e);
-                        Thread.currentThread().interrupt();
-                    } catch (PcapNativeException | NotOpenException e) {
-                        logger.error("Got error handling raw socket", e);
-                    }
-                    return null;
-                };
-
-            Thread thread = new Thread(new ProfinetRunnable(handle, runtimeHandler));
+            Thread thread = new Thread(
+                new ProfinetRunnable(handle,
+                    message -> {
+                        PacketListener listener = createListener();
+                        try {
+                            handle.loop(-1, listener);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        } catch (PcapNativeException | NotOpenException e) {
+                            logger.error("Got error handling raw socket", e);
+                        }
+                        return null;
+                    }));
             thread.start();
         }
     }
@@ -118,7 +102,7 @@ public class ProfinetChannel {
                         isPnPacket = true;
                     } else if (ethernetPacket.getHeader().getType() == EtherType.IPV4 && ethernetPacket.getPayload().getPayload() instanceof UdpPacket) {
                         UdpPacket payload = (UdpPacket) ethernetPacket.getPayload().getPayload();
-                        // Check if its a PROFINET packet
+                        // Check if it's a PROFINET packet
                         if (payload.getHeader().getDstPort().value() == -30572 || payload.getHeader().getSrcPort().value() == -30572) {
                             isPnPacket = true;
                         }
@@ -168,7 +152,6 @@ public class ProfinetChannel {
                                     }
                                 }
                             }
-
                         } catch (ParseException e) {
                             logger.error("Got error decoding packet", e);
                         }

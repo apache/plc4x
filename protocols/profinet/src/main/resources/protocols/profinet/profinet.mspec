@@ -1160,12 +1160,14 @@
     ['0x8112' IOX_BLOCK_RES               ]
 ]
 
-[enum uint 16 ProfinetDeviceState
+[enum uint 8 ProfinetDeviceState
     ['0x00'     IDLE]
     ['0x01'     STARTUP]
-    ['0x02'     PRMEND]
-    ['0x03'     APPLRDY]
-    ['0x04'     ABORT]
+    ['0x02'     PREMED]
+    ['0x03'     WAITAPPLRDY]
+    ['0x04'     APPLRDY]
+    ['0x05'     CYCLICDATA]
+    ['0xFF'     ABORT]
 ]
 
 [enum uint 16 PnIoCm_ArType

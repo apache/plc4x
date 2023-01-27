@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.profinet.browse;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.plc4x.java.api.model.PlcQuery;
 
 public class ProfinetPlcQuery implements PlcQuery {

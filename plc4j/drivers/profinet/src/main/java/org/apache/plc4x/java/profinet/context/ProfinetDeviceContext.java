@@ -22,7 +22,6 @@ package org.apache.plc4x.java.profinet.context;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.device.*;
 import org.apache.plc4x.java.profinet.gsdml.*;
@@ -70,9 +69,8 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     public static final String DEFAULT_PLC4X_STATION_NAME = "plc4x";
     public static final int DEFAULT_IO_DATA_SIZE = 40;
 
-    private DceRpc_ActivityUuid dceRpc_activityUuid;
     private MacAddress localMacAddress;
-    private DceRpc_ActivityUuid uuid;
+    private final DceRpc_ActivityUuid uuid;
     private ProfinetConfiguration configuration;
     private InetAddress localIpAddress;
     private DatagramSocket socket;
@@ -84,16 +82,15 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     private boolean dcpReceived = false;
     private String ipAddress;
     private String portId;
-    PnIoCm_Block_IoCrReq inputReq = null;
-    PnIoCm_Block_IoCrReq outputReq = null;
+    private PnIoCm_Block_IoCrReq inputReq = null;
+    private PnIoCm_Block_IoCrReq outputReq = null;
     private String[] subModules;
     private AtomicInteger sessionKeyGenerator = new AtomicInteger(1);
     private AtomicInteger identificationGenerator = new AtomicInteger(1);
-
     private String deviceTypeName;
     private String deviceName;
     private ProfinetISO15745Profile gsdFile;
-    private boolean startupMode = false;
+    private boolean nonLegacyStartupMode = false;
     private int frameId = 0xBBF0;
     private Map<Long, ProfinetCallable<DceRpc_Packet>> queue = new HashMap<>();
     private int sessionKey;
@@ -104,6 +101,8 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     private String deviceAccess;
     private ProfinetDeviceAccessPointItem deviceAccessItem;
     private ProfinetModule[] modules;
+    private long sequenceNumber;
+    private  DceRpc_ActivityUuid activityUuid;
 
     public ProfinetDeviceContext() {
         // Generate a new Activity Id, which will be used throughout the connection.
@@ -117,7 +116,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
             wb.writeLong(64, number.getMostSignificantBits());
             wb.writeLong(64, number.getLeastSignificantBits());
 
-            ReadBuffer rb = new ReadBufferByteBased(wb.getData());
+            ReadBuffer rb = new ReadBufferByteBased(wb.getBytes());
             return new DceRpc_ActivityUuid(rb.readLong(32), rb.readInt(16), rb.readInt(16), rb.readByteArray(8));
         } catch (SerializationException | ParseException e) {
             // Ignore ... this should actually never happen.
@@ -126,9 +125,9 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     }
 
     public int getAndIncrementIdentification() {
-        int id = getIdentificationGenerator().getAndIncrement();
-        if (id >= 65535) {
-            getIdentificationGenerator().set(1);
+        int id = identificationGenerator.getAndIncrement();
+        if (id == 0xFFFF) {
+            identificationGenerator.set(1);
         }
         return id;
     }
@@ -138,17 +137,19 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         return frameId;
     }
 
+    public int getAndIncrementSessionKey() {
+        // Generate a new session key.
+        Integer sessionKey = sessionKeyGenerator.getAndIncrement();
+        // Reset the session key as soon as it reaches the max for a 16 bit uint
+        if (sessionKeyGenerator.get() == 0xFFFF) {
+            sessionKeyGenerator.set(1);
+        }
+        return sessionKey;
+    }
+
     @Override
     public void setConfiguration(ProfinetConfiguration configuration) {
         this.configuration = configuration;
-    }
-
-    public DceRpc_ActivityUuid getDceRpc_activityUuid() {
-        return dceRpc_activityUuid;
-    }
-
-    public void setDceRpc_activityUuid(DceRpc_ActivityUuid dceRpc_activityUuid) {
-        this.dceRpc_activityUuid = dceRpc_activityUuid;
     }
 
     public MacAddress getLocalMacAddress() {
@@ -163,10 +164,6 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         return uuid;
     }
 
-    public void setUuid(DceRpc_ActivityUuid uuid) {
-        this.uuid = uuid;
-    }
-
     public ProfinetConfiguration getConfiguration() {
         return configuration;
     }
@@ -177,14 +174,6 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
 
     public void setLocalIpAddress(InetAddress localIpAddress) {
         this.localIpAddress = localIpAddress;
-    }
-
-    public DatagramSocket getSocket() {
-        return socket;
-    }
-
-    public void setSocket(DatagramSocket socket) {
-        this.socket = socket;
     }
 
     public ProfinetChannel getChannel() {
@@ -282,22 +271,6 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         arrayList.toArray(this.subModules);
     }
 
-    public AtomicInteger getSessionKeyGenerator() {
-        return sessionKeyGenerator;
-    }
-
-    public void setSessionKeyGenerator(AtomicInteger sessionKeyGenerator) {
-        this.sessionKeyGenerator = sessionKeyGenerator;
-    }
-
-    public AtomicInteger getIdentificationGenerator() {
-        return identificationGenerator;
-    }
-
-    public void setIdentificationGenerator(AtomicInteger identificationGenerator) {
-        this.identificationGenerator = identificationGenerator;
-    }
-
     public List<PnIoCm_IoDataObject> getInputIoPsApiBlocks() {
         List<PnIoCm_IoDataObject> inputIoPsApiBlocks = new ArrayList<>();
         for (ProfinetModule module : modules) {
@@ -351,8 +324,6 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
                 );
             }
         }
-
-
         return expectedSubmoduleReq;
     }
 
@@ -405,8 +376,8 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
 
         List<ProfinetModuleItemRef> usableSubModules = this.deviceAccessItem.getUseableModules();
         int currentSlot = deviceAccessItem.getFixedInSlots() + 1;
-        Integer inputOffset = this.modules[deviceAccessItem.getFixedInSlots()].getInputIoPsSize();
-        Integer outputOffset = this.modules[deviceAccessItem.getFixedInSlots()].getOutputIoCsSize();
+        int inputOffset = this.modules[deviceAccessItem.getFixedInSlots()].getInputIoPsSize();
+        int outputOffset = this.modules[deviceAccessItem.getFixedInSlots()].getOutputIoCsSize();
         for (String subModule : this.subModules) {
             if (subModule.equals("")) {
                 this.modules[currentSlot] = new ProfinetEmptyModule();
@@ -463,26 +434,26 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         List<ProfinetInterfaceSubmoduleItem> interfaceSubModules = deviceAccessItem.getSystemDefinedSubmoduleList().getInterfaceSubmodules();
         if (interfaceSubModules != null && interfaceSubModules.size() > 0) {
             if (interfaceSubModules.get(0).getApplicationRelations().getStartupMode() != null && interfaceSubModules.get(0).getApplicationRelations().getStartupMode().toLowerCase().contains("advanced")) {
-                this.startupMode = true;
+                this.nonLegacyStartupMode = true;
                 this.frameId = 0x8001;
             }
         }
+    }
+
+    public List<ProfinetInterfaceSubmoduleItem> getInterfaceSubModules() {
+        return deviceAccessItem.getSystemDefinedSubmoduleList().getInterfaceSubmodules();
     }
 
     public ProfinetModule[] getModules() {
         return modules;
     }
 
-    public boolean isStartupMode() {
-        return startupMode;
+    public boolean isNonLegacyStartupMode() {
+        return nonLegacyStartupMode;
     }
 
-    public void setStartupMode(boolean startupMode) {
-        this.startupMode = startupMode;
-    }
-
-    public int getFrameId() {
-        return frameId;
+    public void setNonLegacyStartupMode(boolean nonLegacyStartupMode) {
+        this.nonLegacyStartupMode = nonLegacyStartupMode;
     }
 
     public void setFrameId(int frameId) {
@@ -537,4 +508,19 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         this.deviceAccess = deviceAccess;
     }
 
+    public long getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    public void setSequenceNumber(long sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
+
+    public DceRpc_ActivityUuid getActivityUuid() {
+        return activityUuid;
+    }
+
+    public void setActivityUuid(DceRpc_ActivityUuid activityUuid) {
+        this.activityUuid = activityUuid;
+    }
 }

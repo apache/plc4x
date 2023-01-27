@@ -22,12 +22,16 @@ package org.apache.plc4x.java.profinet.device;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -43,12 +47,6 @@ public class ProfinetSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         this.plcSubscriber = plcSubscriber;
     }
 
-    /**
-     * Registers a new Consumer, this allows multiple PLC4X consumers to use the same subscription.
-     *
-     * @param consumer - Consumer to be used to send any returned values.
-     * @return PlcConsumerRegistration - return the important information back to the client.
-     */
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer) {
         LOGGER.info("Registering a new Profinet subscription consumer");
@@ -58,6 +56,16 @@ public class ProfinetSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
     public Set<Consumer<PlcSubscriptionEvent>> getConsumers() {
         return consumers;
+    }
+
+    public void accept(Map<String, ResponseItem<PlcValue>> plcValues) {
+        Map<String, ResponseItem<PlcValue>> publishedTags = new HashMap<>();
+        plcValues.forEach((key, value) -> {
+            if (tags.containsKey(key)) {
+                publishedTags.put(key, value);
+            }
+        });
+        consumers.forEach((consumer) -> consumer.accept(new DefaultPlcSubscriptionEvent(Instant.now(), publishedTags)));
     }
 
     public void addTag(String address, String tag) {
