@@ -36,18 +36,16 @@ public class SchemaCache {
     private final AtomicInteger lastSchemaPosition = new AtomicInteger(0);
     private final AtomicInteger cacheSize = new AtomicInteger(0);
 
+    /** Creates a schema cache with first-in-first-out replacement policy. Stores PlcTags and RecordSchema used for PlcResponse serialization
+     * @param cacheSize initial cache size
+     */
     public SchemaCache(int cacheSize) {
         this.cacheSize.set(cacheSize);
     }
 
-    protected int getLastSchemaPosition() {
-        return lastSchemaPosition.get();
-    }
-
-    protected int getCacheSize() {
-        return cacheSize.get();
-    }
-
+    /** Empties and restart the cache with the given size
+     * @param cacheSize size of schema cache
+     */
     public void setCacheSize(int cacheSize) {
         this.cacheSize.set(cacheSize);
         this.schemaAppendOrder = new AtomicReferenceArray<>(cacheSize);
@@ -55,7 +53,14 @@ public class SchemaCache {
         this.lastSchemaPosition.set(0);
     }
 
-    public void addSchema(final Map<String,String> schemaIdentifier, final LinkedHashSet<String> tagsNames, final List<PlcTag> tagsList,  final RecordSchema schema) {
+
+    /** Adds the schema to the cache if not present. When the cache is full first-in-first-out replacement policy applies
+     * @param schemaIdentifier tagName-address map used to store the schema 
+     * @param tagsNames list of tag names
+     * @param tagsList list of PlcTag's
+     * @param schema record schema used for PlcResponse serialization. Can be null
+     */
+    public void addSchema(final Map<String,String> schemaIdentifier, final LinkedHashSet<String> tagsNames, final List<PlcTag> tagsList,  final RecordSchema schema) {        
         if (!schemaMap.containsKey(schemaIdentifier.toString())){
             if (lastSchemaPosition.get() == cacheSize.get()){
                 lastSchemaPosition.set(0);
@@ -72,6 +77,9 @@ public class SchemaCache {
         }    
     }
 
+    /** Removes the schema from the cache
+     * @param schemaIdentifier tagName-address map used to store the schema 
+     */
     public void removeSchema(final String schemaIdentifier) {
         if (schemaIdentifier == null)
             return;
@@ -80,6 +88,11 @@ public class SchemaCache {
         }
     }
 
+
+    /** Retrieves a schema from the cache if found
+     * @param schemaIdentifier tagName-address map used to store the schema 
+     * @return RecordSchema used for PlcResponse serialization. Null if not found
+     */
     public RecordSchema retrieveSchema(final Map<String,String> schemaIdentifier) { 
         if (schemaMap.containsKey(schemaIdentifier.toString())){
             return schemaMap.get(schemaIdentifier.toString()).getSchema();
@@ -87,11 +100,23 @@ public class SchemaCache {
         return null;
     }
 
+    /** Retrieves tags from the cache if found
+     * @param schemaIdentifier tagName-address map used to store the schema 
+     * @return Map between tag names and the corresponding PlcTag. Null if not found
+     */
     public Map<String, PlcTag> retrieveTags(final Map<String,String> schemaIdentifier) { 
         if (schemaMap.containsKey(schemaIdentifier.toString())){
             return schemaMap.get(schemaIdentifier.toString()).getTags();
         }
         return null;
+    }
+
+    protected int getLastSchemaPosition() {
+        return lastSchemaPosition.get();
+    }
+
+    protected int getCacheSize() {
+        return cacheSize.get();
     }
 
     public class SchemaContainer {
