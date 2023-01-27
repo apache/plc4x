@@ -45,9 +45,7 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
     private final Set<String> rsColumnNames;
     private boolean moreRows;
 
-    // TODO: review this AtomicReference?
-	// TODO: this could be enhanced checking if record schema should be updated (via a cache boolean, checking property values is a nifi expression language, etc)
-  	private AtomicReference<RecordSchema> recordSchema = new AtomicReference<RecordSchema>(null);
+   	private AtomicReference<RecordSchema> recordSchema = new AtomicReference<RecordSchema>(null);
 
     public Plc4xReadResponseRecordSet(final PlcReadResponse readResponse, RecordSchema recordSchema) throws IOException {
         this.readResponse = readResponse;

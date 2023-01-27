@@ -112,7 +112,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	@Override
 	public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
 		FlowFile fileToProcess = null;
-		// TODO: In the future the processor will be configurable to get the address and the connection from incoming flowfile
+		// TODO: In the future the processor will be configurable to get the connection from incoming flowfile
 		if (context.hasIncomingConnection()) {
 			fileToProcess = session.get();
 			// If we have no FlowFile, and all incoming connections are self-loops then we
