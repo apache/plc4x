@@ -40,10 +40,19 @@ public class SchemaCache {
         this.cacheSize.set(cacheSize);
     }
 
+    protected int getLastSchemaPosition() {
+        return lastSchemaPosition.get();
+    }
+
+    protected int getCacheSize() {
+        return cacheSize.get();
+    }
+
     public void setCacheSize(int cacheSize) {
         this.cacheSize.set(cacheSize);
-        schemaAppendOrder = new AtomicReferenceArray<>(cacheSize);
-        schemaMap = new ConcurrentHashMap<>();
+        this.schemaAppendOrder = new AtomicReferenceArray<>(cacheSize);
+        this.schemaMap = new ConcurrentHashMap<>();
+        this.lastSchemaPosition.set(0);
     }
 
     public void addSchema(final Map<String,String> schemaIdentifier, final LinkedHashSet<String> tagsNames, final List<PlcTag> tagsList,  final RecordSchema schema) {
