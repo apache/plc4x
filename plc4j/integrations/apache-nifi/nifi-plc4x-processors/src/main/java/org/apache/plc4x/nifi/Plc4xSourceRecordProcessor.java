@@ -155,6 +155,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 					builder.addTag(tag.getKey(), tag.getValue());
 				}
 			} else {
+				logger.debug("Plc-Avro schema and PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
 				for (Map.Entry<String,String> entry: addressMap.entrySet()){
 					builder.addTagAddress(entry.getKey(), entry.getValue());
 				}
@@ -184,6 +185,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			});
 
 			if (recordSchema == null){
+				logger.debug("Adding Plc-Avro schema and PlcTypes resolution into cache with key: " + addressMap.toString());
 				getSchemaCache().addSchema(
 					addressMap, 
 					readRequest.getTagNames(),

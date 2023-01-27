@@ -64,6 +64,7 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
                         builder.addTag(tag.getKey(), tag.getValue());
                     }
                 } else {
+                    getLogger().debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
                     for (Map.Entry<String,String> entry: addressMap.entrySet()){
                         builder.addTagAddress(entry.getKey(), entry.getValue());
                     }
@@ -81,6 +82,7 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
                 flowFile = session.putAllAttributes(flowFile, attributes); 
                 
                 if (tags == null){
+                    getLogger().debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
                     getSchemaCache().addSchema(
                         addressMap, 
                         readRequest.getTagNames(),
