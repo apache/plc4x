@@ -108,7 +108,6 @@ public class BACnetPropertyStatesState extends BACnetPropertyStates implements M
     private final BACnetEventStateTagged state;
 
     public BACnetPropertyStatesStateBuilderImpl(BACnetEventStateTagged state) {
-
       this.state = state;
     }
 

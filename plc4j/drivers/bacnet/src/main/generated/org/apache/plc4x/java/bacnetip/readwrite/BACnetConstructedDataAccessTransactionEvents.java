@@ -145,7 +145,6 @@ public class BACnetConstructedDataAccessTransactionEvents extends BACnetConstruc
         List<BACnetAccessEventTagged> accessTransactionEvents,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.accessTransactionEvents = accessTransactionEvents;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

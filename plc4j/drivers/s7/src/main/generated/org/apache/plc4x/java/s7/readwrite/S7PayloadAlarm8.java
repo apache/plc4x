@@ -117,7 +117,6 @@ public class S7PayloadAlarm8 extends S7PayloadUserDataItem implements Message {
     private final AlarmMessagePushType alarmMessage;
 
     public S7PayloadAlarm8BuilderImpl(AlarmMessagePushType alarmMessage) {
-
       this.alarmMessage = alarmMessage;
     }
 

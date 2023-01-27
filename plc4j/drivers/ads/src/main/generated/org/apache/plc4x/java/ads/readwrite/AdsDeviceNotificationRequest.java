@@ -156,7 +156,6 @@ public class AdsDeviceNotificationRequest extends AmsPacket implements Message {
 
     public AdsDeviceNotificationRequestBuilderImpl(
         long length, long stamps, List<AdsStampHeader> adsStampHeaders) {
-
       this.length = length;
       this.stamps = stamps;
       this.adsStampHeaders = adsStampHeaders;

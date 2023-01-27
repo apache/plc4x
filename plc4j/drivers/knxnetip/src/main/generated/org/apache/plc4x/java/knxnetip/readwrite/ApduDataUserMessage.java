@@ -42,12 +42,8 @@ public class ApduDataUserMessage extends ApduData implements Message {
     return (byte) 0xB;
   }
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataUserMessage(Short dataLength) {
-    super(dataLength);
-    this.dataLength = dataLength;
+  public ApduDataUserMessage() {
+    super();
   }
 
   @Override
@@ -81,21 +77,15 @@ public class ApduDataUserMessage extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataUserMessage");
     // Create the instance
-    return new ApduDataUserMessageBuilderImpl(dataLength);
+    return new ApduDataUserMessageBuilderImpl();
   }
 
   public static class ApduDataUserMessageBuilderImpl implements ApduData.ApduDataBuilder {
-    private final Short dataLength;
 
-    public ApduDataUserMessageBuilderImpl(Short dataLength) {
+    public ApduDataUserMessageBuilderImpl() {}
 
-      this.dataLength = dataLength;
-    }
-
-    public ApduDataUserMessage build(Short dataLength) {
-
-      ApduDataUserMessage apduDataUserMessage = new ApduDataUserMessage(dataLength);
-
+    public ApduDataUserMessage build() {
+      ApduDataUserMessage apduDataUserMessage = new ApduDataUserMessage();
       return apduDataUserMessage;
     }
   }

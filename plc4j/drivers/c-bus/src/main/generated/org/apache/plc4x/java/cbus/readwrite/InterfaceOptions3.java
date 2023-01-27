@@ -42,6 +42,7 @@ public class InterfaceOptions3 implements Message {
   protected final boolean pun;
   protected final boolean localSal;
   protected final boolean pcn;
+
   // Reserved Fields
   private Boolean reservedField0;
   private Boolean reservedField1;

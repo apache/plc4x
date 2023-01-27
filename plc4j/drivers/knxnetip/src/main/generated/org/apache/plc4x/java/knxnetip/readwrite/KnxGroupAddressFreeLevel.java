@@ -102,7 +102,6 @@ public class KnxGroupAddressFreeLevel extends KnxGroupAddress implements Message
     private final int subGroup;
 
     public KnxGroupAddressFreeLevelBuilderImpl(int subGroup) {
-
       this.subGroup = subGroup;
     }
 

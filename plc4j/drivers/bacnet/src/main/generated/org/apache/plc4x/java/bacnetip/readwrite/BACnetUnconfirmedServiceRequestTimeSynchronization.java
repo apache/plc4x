@@ -143,7 +143,6 @@ public class BACnetUnconfirmedServiceRequestTimeSynchronization
         BACnetApplicationTagDate synchronizedDate,
         BACnetApplicationTagTime synchronizedTime,
         Integer serviceRequestLength) {
-
       this.synchronizedDate = synchronizedDate;
       this.synchronizedTime = synchronizedTime;
       this.serviceRequestLength = serviceRequestLength;

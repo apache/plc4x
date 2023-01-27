@@ -112,7 +112,6 @@ public class BACnetPropertyStatesLightningInProgress extends BACnetPropertyState
 
     public BACnetPropertyStatesLightningInProgressBuilderImpl(
         BACnetLightingInProgressTagged lightningInProgress) {
-
       this.lightningInProgress = lightningInProgress;
     }
 

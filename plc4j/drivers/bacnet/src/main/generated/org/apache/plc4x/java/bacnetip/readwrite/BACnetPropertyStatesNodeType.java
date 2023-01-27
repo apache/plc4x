@@ -109,7 +109,6 @@ public class BACnetPropertyStatesNodeType extends BACnetPropertyStates implement
     private final BACnetNodeTypeTagged nodeType;
 
     public BACnetPropertyStatesNodeTypeBuilderImpl(BACnetNodeTypeTagged nodeType) {
-
       this.nodeType = nodeType;
     }
 

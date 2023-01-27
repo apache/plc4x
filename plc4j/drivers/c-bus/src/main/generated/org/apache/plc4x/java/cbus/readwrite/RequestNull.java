@@ -108,7 +108,6 @@ public class RequestNull extends Request implements Message {
     private final CBusOptions cBusOptions;
 
     public RequestNullBuilderImpl(CBusOptions cBusOptions) {
-
       this.cBusOptions = cBusOptions;
     }
 

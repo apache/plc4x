@@ -137,7 +137,6 @@ public class NLMInitalizeRoutingTableAck extends NLM implements Message {
         short numberOfPorts,
         List<NLMInitalizeRoutingTablePortMapping> portMappings,
         Integer apduLength) {
-
       this.numberOfPorts = numberOfPorts;
       this.portMappings = portMappings;
       this.apduLength = apduLength;

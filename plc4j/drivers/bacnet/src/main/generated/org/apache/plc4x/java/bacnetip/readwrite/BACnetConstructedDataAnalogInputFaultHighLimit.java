@@ -147,7 +147,6 @@ public class BACnetConstructedDataAnalogInputFaultHighLimit extends BACnetConstr
         BACnetApplicationTagReal faultHighLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.faultHighLimit = faultHighLimit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

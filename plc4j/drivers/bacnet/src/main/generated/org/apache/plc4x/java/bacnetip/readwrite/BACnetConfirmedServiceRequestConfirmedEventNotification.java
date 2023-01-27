@@ -456,7 +456,6 @@ public class BACnetConfirmedServiceRequestConfirmedEventNotification
         BACnetEventStateTagged toState,
         BACnetNotificationParameters eventValues,
         Long serviceRequestLength) {
-
       this.processIdentifier = processIdentifier;
       this.initiatingDeviceIdentifier = initiatingDeviceIdentifier;
       this.eventObjectIdentifier = eventObjectIdentifier;

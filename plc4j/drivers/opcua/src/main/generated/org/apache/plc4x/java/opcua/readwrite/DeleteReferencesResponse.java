@@ -199,7 +199,6 @@ public class DeleteReferencesResponse extends ExtensionObjectDefinition implemen
         List<StatusCode> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

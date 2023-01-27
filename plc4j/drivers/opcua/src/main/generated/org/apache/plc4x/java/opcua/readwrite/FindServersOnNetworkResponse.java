@@ -175,7 +175,6 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
         long lastCounterResetTime,
         int noOfServers,
         List<ExtensionObjectDefinition> servers) {
-
       this.responseHeader = responseHeader;
       this.lastCounterResetTime = lastCounterResetTime;
       this.noOfServers = noOfServers;

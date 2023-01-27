@@ -75,9 +75,9 @@ public class BACnetContextTagNull extends BACnetContextTag implements Message {
 
   public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer,
+      BACnetTagHeader header,
       Short tagNumberArgument,
-      BACnetDataType dataType,
-      BACnetTagHeader header)
+      BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagNull");
     PositionAware positionAware = readBuffer;
@@ -98,7 +98,6 @@ public class BACnetContextTagNull extends BACnetContextTag implements Message {
     private final Short tagNumberArgument;
 
     public BACnetContextTagNullBuilderImpl(Short tagNumberArgument) {
-
       this.tagNumberArgument = tagNumberArgument;
     }
 

@@ -116,7 +116,6 @@ public class CIPEncapsulationReadRequest extends CIPEncapsulationPacket implemen
     private final DF1RequestMessage request;
 
     public CIPEncapsulationReadRequestBuilderImpl(DF1RequestMessage request) {
-
       this.request = request;
     }
 

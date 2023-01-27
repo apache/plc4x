@@ -42,12 +42,8 @@ public class ApduDataExtGroupPropertyValueRead extends ApduDataExt implements Me
     return (short) 0x28;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtGroupPropertyValueRead(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtGroupPropertyValueRead() {
+    super();
   }
 
   @Override
@@ -81,22 +77,17 @@ public class ApduDataExtGroupPropertyValueRead extends ApduDataExt implements Me
 
     readBuffer.closeContext("ApduDataExtGroupPropertyValueRead");
     // Create the instance
-    return new ApduDataExtGroupPropertyValueReadBuilderImpl(length);
+    return new ApduDataExtGroupPropertyValueReadBuilderImpl();
   }
 
   public static class ApduDataExtGroupPropertyValueReadBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtGroupPropertyValueReadBuilderImpl(Short length) {
+    public ApduDataExtGroupPropertyValueReadBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtGroupPropertyValueRead build(Short length) {
-
+    public ApduDataExtGroupPropertyValueRead build() {
       ApduDataExtGroupPropertyValueRead apduDataExtGroupPropertyValueRead =
-          new ApduDataExtGroupPropertyValueRead(length);
+          new ApduDataExtGroupPropertyValueRead();
       return apduDataExtGroupPropertyValueRead;
     }
   }

@@ -43,28 +43,22 @@ public class OpenProtocolMessageApplicationCommunicationStart extends OpenProtoc
     return Mid.ApplicationCommunicationStart;
   }
 
-  // Arguments.
-  protected final OpenProtocolRevision connectionRevision;
-
   public OpenProtocolMessageApplicationCommunicationStart(
-      OpenProtocolRevision selectedRevision,
+      Long midRevision,
       Short noAckFlag,
-      Integer stationId,
-      Integer spindleId,
+      Integer targetStationId,
+      Integer targetSpindleId,
       Integer sequenceNumber,
       Short numberOfMessageParts,
-      Short messagePartNumber,
-      OpenProtocolRevision connectionRevision) {
+      Short messagePartNumber) {
     super(
-        selectedRevision,
+        midRevision,
         noAckFlag,
-        stationId,
-        spindleId,
+        targetStationId,
+        targetSpindleId,
         sequenceNumber,
         numberOfMessageParts,
-        messagePartNumber,
-        connectionRevision);
-    this.connectionRevision = connectionRevision;
+        messagePartNumber);
   }
 
   @Override
@@ -91,7 +85,7 @@ public class OpenProtocolMessageApplicationCommunicationStart extends OpenProtoc
   }
 
   public static OpenProtocolMessageBuilder staticParseOpenProtocolMessageBuilder(
-      ReadBuffer readBuffer, OpenProtocolRevision connectionRevision) throws ParseException {
+      ReadBuffer readBuffer, Long revision) throws ParseException {
     readBuffer.pullContext("OpenProtocolMessageApplicationCommunicationStart");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -99,39 +93,32 @@ public class OpenProtocolMessageApplicationCommunicationStart extends OpenProtoc
 
     readBuffer.closeContext("OpenProtocolMessageApplicationCommunicationStart");
     // Create the instance
-    return new OpenProtocolMessageApplicationCommunicationStartBuilderImpl(connectionRevision);
+    return new OpenProtocolMessageApplicationCommunicationStartBuilderImpl();
   }
 
   public static class OpenProtocolMessageApplicationCommunicationStartBuilderImpl
       implements OpenProtocolMessage.OpenProtocolMessageBuilder {
-    private final OpenProtocolRevision connectionRevision;
 
-    public OpenProtocolMessageApplicationCommunicationStartBuilderImpl(
-        OpenProtocolRevision connectionRevision) {
-
-      this.connectionRevision = connectionRevision;
-    }
+    public OpenProtocolMessageApplicationCommunicationStartBuilderImpl() {}
 
     public OpenProtocolMessageApplicationCommunicationStart build(
-        OpenProtocolRevision selectedRevision,
+        Long midRevision,
         Short noAckFlag,
-        Integer stationId,
-        Integer spindleId,
+        Integer targetStationId,
+        Integer targetSpindleId,
         Integer sequenceNumber,
         Short numberOfMessageParts,
-        Short messagePartNumber,
-        OpenProtocolRevision connectionRevision) {
+        Short messagePartNumber) {
       OpenProtocolMessageApplicationCommunicationStart
           openProtocolMessageApplicationCommunicationStart =
               new OpenProtocolMessageApplicationCommunicationStart(
-                  selectedRevision,
+                  midRevision,
                   noAckFlag,
-                  stationId,
-                  spindleId,
+                  targetStationId,
+                  targetSpindleId,
                   sequenceNumber,
                   numberOfMessageParts,
-                  messagePartNumber,
-                  connectionRevision);
+                  messagePartNumber);
       return openProtocolMessageApplicationCommunicationStart;
     }
   }

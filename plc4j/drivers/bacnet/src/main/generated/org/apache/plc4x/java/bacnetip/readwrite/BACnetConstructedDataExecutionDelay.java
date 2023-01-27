@@ -189,7 +189,6 @@ public class BACnetConstructedDataExecutionDelay extends BACnetConstructedData i
         List<BACnetApplicationTagUnsignedInteger> executionDelay,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.executionDelay = executionDelay;
       this.tagNumber = tagNumber;

@@ -142,7 +142,6 @@ public class BACnetConstructedDataCredentialsInZone extends BACnetConstructedDat
         List<BACnetDeviceObjectReference> credentialsInZone,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.credentialsInZone = credentialsInZone;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

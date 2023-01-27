@@ -168,7 +168,6 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
         long publishTime,
         int noOfNotificationData,
         List<ExtensionObject> notificationData) {
-
       this.sequenceNumber = sequenceNumber;
       this.publishTime = publishTime;
       this.noOfNotificationData = noOfNotificationData;

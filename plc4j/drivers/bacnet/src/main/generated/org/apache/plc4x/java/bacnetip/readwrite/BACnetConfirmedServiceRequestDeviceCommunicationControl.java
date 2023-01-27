@@ -183,7 +183,6 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
         BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged enableDisable,
         BACnetContextTagCharacterString password,
         Long serviceRequestLength) {
-
       this.timeDuration = timeDuration;
       this.enableDisable = enableDisable;
       this.password = password;

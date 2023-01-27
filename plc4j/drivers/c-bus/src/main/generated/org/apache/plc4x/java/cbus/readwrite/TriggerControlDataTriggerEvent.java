@@ -102,7 +102,6 @@ public class TriggerControlDataTriggerEvent extends TriggerControlData implement
     private final byte actionSelector;
 
     public TriggerControlDataTriggerEventBuilderImpl(byte actionSelector) {
-
       this.actionSelector = actionSelector;
     }
 

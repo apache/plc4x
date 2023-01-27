@@ -150,7 +150,6 @@ public class BACnetConstructedDataDaylightSavingsStatus extends BACnetConstructe
         BACnetApplicationTagBoolean daylightSavingsStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.daylightSavingsStatus = daylightSavingsStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

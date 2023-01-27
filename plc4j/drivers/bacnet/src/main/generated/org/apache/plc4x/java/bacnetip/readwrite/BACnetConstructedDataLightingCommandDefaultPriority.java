@@ -155,7 +155,6 @@ public class BACnetConstructedDataLightingCommandDefaultPriority extends BACnetC
         BACnetApplicationTagUnsignedInteger lightingCommandDefaultPriority,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lightingCommandDefaultPriority = lightingCommandDefaultPriority;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

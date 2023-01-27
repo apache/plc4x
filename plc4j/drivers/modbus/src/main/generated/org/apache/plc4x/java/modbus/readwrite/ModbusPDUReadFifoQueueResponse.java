@@ -132,7 +132,6 @@ public class ModbusPDUReadFifoQueueResponse extends ModbusPDU implements Message
     private final List<Integer> fifoValue;
 
     public ModbusPDUReadFifoQueueResponseBuilderImpl(List<Integer> fifoValue) {
-
       this.fifoValue = fifoValue;
     }
 

@@ -148,7 +148,6 @@ public class BACnetConstructedDataNumberOfStates extends BACnetConstructedData i
         BACnetApplicationTagUnsignedInteger numberOfState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfState = numberOfState;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -149,9 +149,9 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
 
   public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersCommandFailure");
     PositionAware positionAware = readBuffer;
@@ -239,7 +239,6 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
         BACnetClosingTag innerClosingTag,
         Short tagNumber,
         BACnetObjectType objectTypeArgument) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.commandValue = commandValue;
       this.statusFlags = statusFlags;

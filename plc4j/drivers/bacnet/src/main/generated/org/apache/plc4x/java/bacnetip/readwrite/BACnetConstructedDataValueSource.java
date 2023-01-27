@@ -145,7 +145,6 @@ public class BACnetConstructedDataValueSource extends BACnetConstructedData impl
         BACnetValueSource valueSource,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.valueSource = valueSource;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

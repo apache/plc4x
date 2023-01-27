@@ -124,7 +124,6 @@ public class ModbusPDUWriteSingleRegisterResponse extends ModbusPDU implements M
     private final int value;
 
     public ModbusPDUWriteSingleRegisterResponseBuilderImpl(int address, int value) {
-
       this.address = address;
       this.value = value;
     }

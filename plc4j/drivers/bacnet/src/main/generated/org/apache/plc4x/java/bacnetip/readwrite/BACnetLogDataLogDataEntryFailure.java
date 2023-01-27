@@ -103,7 +103,6 @@ public class BACnetLogDataLogDataEntryFailure extends BACnetLogDataLogDataEntry 
     private final ErrorEnclosed failure;
 
     public BACnetLogDataLogDataEntryFailureBuilderImpl(ErrorEnclosed failure) {
-
       this.failure = failure;
     }
 

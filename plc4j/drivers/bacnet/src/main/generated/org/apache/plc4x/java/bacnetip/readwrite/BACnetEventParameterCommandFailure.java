@@ -182,7 +182,6 @@ public class BACnetEventParameterCommandFailure extends BACnetEventParameter imp
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetDeviceObjectPropertyReferenceEnclosed feedbackPropertyReference,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.feedbackPropertyReference = feedbackPropertyReference;

@@ -190,7 +190,6 @@ public class BACnetConstructedDataKeySets extends BACnetConstructedData implemen
         List<BACnetSecurityKeySet> keySets,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.keySets = keySets;
       this.tagNumber = tagNumber;

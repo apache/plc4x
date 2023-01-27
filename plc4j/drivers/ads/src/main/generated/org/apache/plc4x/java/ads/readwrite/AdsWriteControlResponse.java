@@ -121,7 +121,6 @@ public class AdsWriteControlResponse extends AmsPacket implements Message {
     private final ReturnCode result;
 
     public AdsWriteControlResponseBuilderImpl(ReturnCode result) {
-
       this.result = result;
     }
 

@@ -99,7 +99,6 @@ public class MeteringDataElectricityConsumption extends MeteringData implements 
     private final long kWhr;
 
     public MeteringDataElectricityConsumptionBuilderImpl(long kWhr) {
-
       this.kWhr = kWhr;
     }
 

@@ -211,7 +211,6 @@ public class BACnetConfirmedServiceRequestRemoveListElement extends BACnetConfir
         BACnetContextTagUnsignedInteger arrayIndex,
         BACnetConstructedData listOfElements,
         Long serviceRequestLength) {
-
       this.objectIdentifier = objectIdentifier;
       this.propertyIdentifier = propertyIdentifier;
       this.arrayIndex = arrayIndex;

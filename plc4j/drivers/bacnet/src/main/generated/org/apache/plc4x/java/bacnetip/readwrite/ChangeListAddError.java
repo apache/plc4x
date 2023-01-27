@@ -134,7 +134,6 @@ public class ChangeListAddError extends BACnetError implements Message {
 
     public ChangeListAddErrorBuilderImpl(
         ErrorEnclosed errorType, BACnetContextTagUnsignedInteger firstFailedElementNumber) {
-
       this.errorType = errorType;
       this.firstFailedElementNumber = firstFailedElementNumber;
     }

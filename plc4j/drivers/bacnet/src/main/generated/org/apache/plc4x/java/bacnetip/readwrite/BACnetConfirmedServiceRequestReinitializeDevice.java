@@ -162,7 +162,6 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
             reinitializedStateOfDevice,
         BACnetContextTagCharacterString password,
         Long serviceRequestLength) {
-
       this.reinitializedStateOfDevice = reinitializedStateOfDevice;
       this.password = password;
       this.serviceRequestLength = serviceRequestLength;

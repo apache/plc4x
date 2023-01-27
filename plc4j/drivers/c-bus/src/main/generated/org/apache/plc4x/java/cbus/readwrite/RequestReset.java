@@ -184,7 +184,6 @@ public class RequestReset extends Request implements Message {
         RequestType tildePeek2,
         RequestType thirdTilde,
         CBusOptions cBusOptions) {
-
       this.tildePeek = tildePeek;
       this.secondTilde = secondTilde;
       this.tildePeek2 = tildePeek2;

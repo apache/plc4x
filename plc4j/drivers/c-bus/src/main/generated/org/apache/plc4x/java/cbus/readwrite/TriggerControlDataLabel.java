@@ -185,7 +185,6 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
         byte actionSelector,
         Language language,
         byte[] data) {
-
       this.triggerControlOptions = triggerControlOptions;
       this.actionSelector = actionSelector;
       this.language = language;

@@ -148,7 +148,6 @@ public class BACnetConstructedDataMinimumOffTime extends BACnetConstructedData i
         BACnetApplicationTagUnsignedInteger minimumOffTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.minimumOffTime = minimumOffTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

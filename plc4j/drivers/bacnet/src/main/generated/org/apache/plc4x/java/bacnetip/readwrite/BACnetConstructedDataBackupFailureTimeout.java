@@ -151,7 +151,6 @@ public class BACnetConstructedDataBackupFailureTimeout extends BACnetConstructed
         BACnetApplicationTagUnsignedInteger backupFailureTimeout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.backupFailureTimeout = backupFailureTimeout;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

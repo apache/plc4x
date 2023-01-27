@@ -151,7 +151,6 @@ public class BACnetConstructedDataPriorityForWriting extends BACnetConstructedDa
         BACnetApplicationTagUnsignedInteger priorityForWriting,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.priorityForWriting = priorityForWriting;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

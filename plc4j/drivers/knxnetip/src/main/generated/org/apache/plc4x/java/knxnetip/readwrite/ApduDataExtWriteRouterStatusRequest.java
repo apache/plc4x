@@ -42,12 +42,8 @@ public class ApduDataExtWriteRouterStatusRequest extends ApduDataExt implements 
     return (short) 0x0F;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtWriteRouterStatusRequest(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtWriteRouterStatusRequest() {
+    super();
   }
 
   @Override
@@ -81,22 +77,17 @@ public class ApduDataExtWriteRouterStatusRequest extends ApduDataExt implements 
 
     readBuffer.closeContext("ApduDataExtWriteRouterStatusRequest");
     // Create the instance
-    return new ApduDataExtWriteRouterStatusRequestBuilderImpl(length);
+    return new ApduDataExtWriteRouterStatusRequestBuilderImpl();
   }
 
   public static class ApduDataExtWriteRouterStatusRequestBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtWriteRouterStatusRequestBuilderImpl(Short length) {
+    public ApduDataExtWriteRouterStatusRequestBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtWriteRouterStatusRequest build(Short length) {
-
+    public ApduDataExtWriteRouterStatusRequest build() {
       ApduDataExtWriteRouterStatusRequest apduDataExtWriteRouterStatusRequest =
-          new ApduDataExtWriteRouterStatusRequest(length);
+          new ApduDataExtWriteRouterStatusRequest();
       return apduDataExtWriteRouterStatusRequest;
     }
   }

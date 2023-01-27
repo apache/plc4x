@@ -149,7 +149,6 @@ public class BACnetConstructedDataTimeDelayNormal extends BACnetConstructedData 
         BACnetApplicationTagUnsignedInteger timeDelayNormal,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.timeDelayNormal = timeDelayNormal;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -103,7 +103,6 @@ public class BACnetApplicationTagTime extends BACnetApplicationTag implements Me
     private final BACnetTagPayloadTime payload;
 
     public BACnetApplicationTagTimeBuilderImpl(BACnetTagPayloadTime payload) {
-
       this.payload = payload;
     }
 

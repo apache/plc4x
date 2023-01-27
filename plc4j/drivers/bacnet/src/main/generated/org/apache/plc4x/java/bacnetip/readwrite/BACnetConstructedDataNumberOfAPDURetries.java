@@ -151,7 +151,6 @@ public class BACnetConstructedDataNumberOfAPDURetries extends BACnetConstructedD
         BACnetApplicationTagUnsignedInteger numberOfApduRetries,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfApduRetries = numberOfApduRetries;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

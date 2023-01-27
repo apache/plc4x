@@ -107,7 +107,6 @@ public class BACnetCalendarEntryDate extends BACnetCalendarEntry implements Mess
     private final BACnetContextTagDate dateValue;
 
     public BACnetCalendarEntryDateBuilderImpl(BACnetContextTagDate dateValue) {
-
       this.dateValue = dateValue;
     }
 

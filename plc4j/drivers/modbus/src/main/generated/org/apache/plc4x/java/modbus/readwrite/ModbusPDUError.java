@@ -118,7 +118,6 @@ public class ModbusPDUError extends ModbusPDU implements Message {
     private final ModbusErrorCode exceptionCode;
 
     public ModbusPDUErrorBuilderImpl(ModbusErrorCode exceptionCode) {
-
       this.exceptionCode = exceptionCode;
     }
 

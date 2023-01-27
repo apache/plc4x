@@ -187,7 +187,6 @@ public class BACnetConstructedDataGlobalGroupPresentValue extends BACnetConstruc
         List<BACnetPropertyAccessResult> presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.presentValue = presentValue;
       this.tagNumber = tagNumber;

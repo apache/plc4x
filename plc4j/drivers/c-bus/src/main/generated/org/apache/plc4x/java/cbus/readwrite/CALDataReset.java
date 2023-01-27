@@ -88,7 +88,6 @@ public class CALDataReset extends CALData implements Message {
     private final RequestContext requestContext;
 
     public CALDataResetBuilderImpl(RequestContext requestContext) {
-
       this.requestContext = requestContext;
     }
 

@@ -146,7 +146,6 @@ public class BACnetConstructedDataThreatAuthority extends BACnetConstructedData 
         BACnetAccessThreatLevel threatAuthority,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.threatAuthority = threatAuthority;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

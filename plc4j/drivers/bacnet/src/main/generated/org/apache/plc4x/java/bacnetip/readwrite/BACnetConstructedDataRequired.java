@@ -113,7 +113,6 @@ public class BACnetConstructedDataRequired extends BACnetConstructedData impleme
 
     public BACnetConstructedDataRequiredBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

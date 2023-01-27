@@ -397,7 +397,6 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
         Short set2KeyCount,
         List<NLMUpdateKeyUpdateKeyEntry> set2Keys,
         Integer apduLength) {
-
       this.controlFlags = controlFlags;
       this.set1KeyRevision = set1KeyRevision;
       this.set1ActivationTime = set1ActivationTime;

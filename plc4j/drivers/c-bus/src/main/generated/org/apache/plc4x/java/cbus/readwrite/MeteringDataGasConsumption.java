@@ -99,7 +99,6 @@ public class MeteringDataGasConsumption extends MeteringData implements Message 
     private final long mJ;
 
     public MeteringDataGasConsumptionBuilderImpl(long mJ) {
-
       this.mJ = mJ;
     }
 

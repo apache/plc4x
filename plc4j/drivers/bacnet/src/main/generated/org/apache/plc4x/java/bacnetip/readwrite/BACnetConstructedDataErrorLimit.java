@@ -146,7 +146,6 @@ public class BACnetConstructedDataErrorLimit extends BACnetConstructedData imple
         BACnetApplicationTagReal errorLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.errorLimit = errorLimit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

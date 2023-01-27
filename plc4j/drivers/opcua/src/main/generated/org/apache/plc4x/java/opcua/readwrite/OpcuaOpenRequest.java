@@ -274,7 +274,6 @@ public class OpcuaOpenRequest extends MessagePDU implements Message {
         int sequenceNumber,
         int requestId,
         byte[] message) {
-
       this.chunk = chunk;
       this.secureChannelId = secureChannelId;
       this.endpoint = endpoint;

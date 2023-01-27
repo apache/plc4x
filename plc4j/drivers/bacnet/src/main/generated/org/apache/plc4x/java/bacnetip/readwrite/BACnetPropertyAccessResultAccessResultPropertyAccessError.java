@@ -139,7 +139,6 @@ public class BACnetPropertyAccessResultAccessResultPropertyAccessError
         BACnetObjectType objectTypeArgument,
         BACnetPropertyIdentifier propertyIdentifierArgument,
         BACnetTagPayloadUnsignedInteger propertyArrayIndexArgument) {
-
       this.propertyAccessError = propertyAccessError;
       this.objectTypeArgument = objectTypeArgument;
       this.propertyIdentifierArgument = propertyIdentifierArgument;

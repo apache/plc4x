@@ -151,7 +151,6 @@ public class BACnetConstructedDataValueBeforeChange extends BACnetConstructedDat
         BACnetApplicationTagUnsignedInteger valuesBeforeChange,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.valuesBeforeChange = valuesBeforeChange;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

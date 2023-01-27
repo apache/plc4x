@@ -42,12 +42,8 @@ public class ApduDataExtNetworkParameterResponse extends ApduDataExt implements 
     return (short) 0x1B;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtNetworkParameterResponse(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtNetworkParameterResponse() {
+    super();
   }
 
   @Override
@@ -81,22 +77,17 @@ public class ApduDataExtNetworkParameterResponse extends ApduDataExt implements 
 
     readBuffer.closeContext("ApduDataExtNetworkParameterResponse");
     // Create the instance
-    return new ApduDataExtNetworkParameterResponseBuilderImpl(length);
+    return new ApduDataExtNetworkParameterResponseBuilderImpl();
   }
 
   public static class ApduDataExtNetworkParameterResponseBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtNetworkParameterResponseBuilderImpl(Short length) {
+    public ApduDataExtNetworkParameterResponseBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtNetworkParameterResponse build(Short length) {
-
+    public ApduDataExtNetworkParameterResponse build() {
       ApduDataExtNetworkParameterResponse apduDataExtNetworkParameterResponse =
-          new ApduDataExtNetworkParameterResponse(length);
+          new ApduDataExtNetworkParameterResponse();
       return apduDataExtNetworkParameterResponse;
     }
   }

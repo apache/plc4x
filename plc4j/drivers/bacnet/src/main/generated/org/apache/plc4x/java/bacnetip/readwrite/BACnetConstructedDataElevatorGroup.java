@@ -148,7 +148,6 @@ public class BACnetConstructedDataElevatorGroup extends BACnetConstructedData im
         BACnetApplicationTagObjectIdentifier elevatorGroup,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.elevatorGroup = elevatorGroup;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -145,7 +145,6 @@ public class BACnetConstructedDataEnergyMeterRef extends BACnetConstructedData i
         BACnetDeviceObjectReference energyMeterRef,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.energyMeterRef = energyMeterRef;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

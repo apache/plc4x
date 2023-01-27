@@ -147,7 +147,6 @@ public class BACnetConstructedDataIPSubnetMask extends BACnetConstructedData imp
         BACnetApplicationTagOctetString ipSubnetMask,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipSubnetMask = ipSubnetMask;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

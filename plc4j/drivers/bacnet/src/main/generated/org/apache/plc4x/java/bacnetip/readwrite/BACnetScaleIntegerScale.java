@@ -108,7 +108,6 @@ public class BACnetScaleIntegerScale extends BACnetScale implements Message {
     private final BACnetContextTagSignedInteger integerScale;
 
     public BACnetScaleIntegerScaleBuilderImpl(BACnetContextTagSignedInteger integerScale) {
-
       this.integerScale = integerScale;
     }
 

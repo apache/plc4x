@@ -151,7 +151,6 @@ public class BACnetConstructedDataAccompanimentTime extends BACnetConstructedDat
         BACnetApplicationTagUnsignedInteger accompanimentTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.accompanimentTime = accompanimentTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

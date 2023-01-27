@@ -114,7 +114,6 @@ public class BACnetConstructedDataBitstringValueAll extends BACnetConstructedDat
 
     public BACnetConstructedDataBitstringValueAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

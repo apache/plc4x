@@ -47,8 +47,6 @@ public abstract class PnIoCm_Submodule implements Message {
   protected final boolean reduceOutputModuleDataLength;
   protected final boolean reduceInputModuleDataLength;
   protected final boolean sharedInput;
-  // Reserved Fields
-  private Integer reservedField0;
 
   public PnIoCm_Submodule(
       int slotNumber,
@@ -106,10 +104,7 @@ public abstract class PnIoCm_Submodule implements Message {
         "submoduleIdentNumber", submoduleIdentNumber, writeUnsignedLong(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (int) 0x000,
-        writeUnsignedInt(writeBuffer, 10));
+    writeReservedField("reserved", (int) 0x000, writeUnsignedInt(writeBuffer, 10));
 
     // Simple Field (discardIoxs)
     writeSimpleField("discardIoxs", discardIoxs, writeBoolean(writeBuffer));
@@ -242,7 +237,6 @@ public abstract class PnIoCm_Submodule implements Message {
             reduceOutputModuleDataLength,
             reduceInputModuleDataLength,
             sharedInput);
-    _pnIoCm_Submodule.reservedField0 = reservedField0;
     return _pnIoCm_Submodule;
   }
 

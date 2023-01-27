@@ -115,7 +115,6 @@ public class CALDataIdentify extends CALData implements Message {
     private final RequestContext requestContext;
 
     public CALDataIdentifyBuilderImpl(Attribute attribute, RequestContext requestContext) {
-
       this.attribute = attribute;
       this.requestContext = requestContext;
     }

@@ -154,7 +154,6 @@ public class BACnetFaultParameterFaultCharacterString extends BACnetFaultParamet
         BACnetOpeningTag openingTag,
         BACnetFaultParameterFaultCharacterStringListOfFaultValues listOfFaultValues,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.listOfFaultValues = listOfFaultValues;
       this.closingTag = closingTag;

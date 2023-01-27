@@ -148,7 +148,6 @@ public class BACnetConstructedDataStrikeCount extends BACnetConstructedData impl
         BACnetApplicationTagUnsignedInteger strikeCount,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.strikeCount = strikeCount;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

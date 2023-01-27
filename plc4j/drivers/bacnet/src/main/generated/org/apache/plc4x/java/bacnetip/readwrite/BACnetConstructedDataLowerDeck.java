@@ -147,7 +147,6 @@ public class BACnetConstructedDataLowerDeck extends BACnetConstructedData implem
         BACnetApplicationTagObjectIdentifier lowerDeck,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lowerDeck = lowerDeck;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

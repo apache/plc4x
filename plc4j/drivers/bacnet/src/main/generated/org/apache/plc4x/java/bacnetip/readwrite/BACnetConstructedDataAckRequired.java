@@ -148,7 +148,6 @@ public class BACnetConstructedDataAckRequired extends BACnetConstructedData impl
         BACnetEventTransitionBitsTagged ackRequired,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ackRequired = ackRequired;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

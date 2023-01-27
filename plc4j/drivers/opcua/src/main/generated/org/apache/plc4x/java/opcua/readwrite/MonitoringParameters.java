@@ -48,8 +48,6 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
   protected final ExtensionObject filter;
   protected final long queueSize;
   protected final boolean discardOldest;
-  // Reserved Fields
-  private Short reservedField0;
 
   public MonitoringParameters(
       long clientHandle,
@@ -105,10 +103,7 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
     writeSimpleField("queueSize", queueSize, writeUnsignedLong(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (discardOldest)
     writeSimpleField("discardOldest", discardOldest, writeBoolean(writeBuffer));
@@ -174,7 +169,7 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
     readBuffer.closeContext("MonitoringParameters");
     // Create the instance
     return new MonitoringParametersBuilderImpl(
-        clientHandle, samplingInterval, filter, queueSize, discardOldest, reservedField0);
+        clientHandle, samplingInterval, filter, queueSize, discardOldest);
   }
 
   public static class MonitoringParametersBuilderImpl
@@ -184,28 +179,24 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
     private final ExtensionObject filter;
     private final long queueSize;
     private final boolean discardOldest;
-    private final Short reservedField0;
 
     public MonitoringParametersBuilderImpl(
         long clientHandle,
         double samplingInterval,
         ExtensionObject filter,
         long queueSize,
-        boolean discardOldest,
-        Short reservedField0) {
+        boolean discardOldest) {
       this.clientHandle = clientHandle;
       this.samplingInterval = samplingInterval;
       this.filter = filter;
       this.queueSize = queueSize;
       this.discardOldest = discardOldest;
-      this.reservedField0 = reservedField0;
     }
 
     public MonitoringParameters build() {
       MonitoringParameters monitoringParameters =
           new MonitoringParameters(
               clientHandle, samplingInterval, filter, queueSize, discardOldest);
-      monitoringParameters.reservedField0 = reservedField0;
       return monitoringParameters;
     }
   }

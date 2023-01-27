@@ -42,12 +42,8 @@ public class ApduDataExtDomainAddressResponse extends ApduDataExt implements Mes
     return (short) 0x22;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtDomainAddressResponse(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtDomainAddressResponse() {
+    super();
   }
 
   @Override
@@ -81,22 +77,17 @@ public class ApduDataExtDomainAddressResponse extends ApduDataExt implements Mes
 
     readBuffer.closeContext("ApduDataExtDomainAddressResponse");
     // Create the instance
-    return new ApduDataExtDomainAddressResponseBuilderImpl(length);
+    return new ApduDataExtDomainAddressResponseBuilderImpl();
   }
 
   public static class ApduDataExtDomainAddressResponseBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtDomainAddressResponseBuilderImpl(Short length) {
+    public ApduDataExtDomainAddressResponseBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtDomainAddressResponse build(Short length) {
-
+    public ApduDataExtDomainAddressResponse build() {
       ApduDataExtDomainAddressResponse apduDataExtDomainAddressResponse =
-          new ApduDataExtDomainAddressResponse(length);
+          new ApduDataExtDomainAddressResponse();
       return apduDataExtDomainAddressResponse;
     }
   }

@@ -122,7 +122,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStrin
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilderImpl(
         BACnetApplicationTagOctetString octetStringValue, Short tagNumber) {
-
       this.octetStringValue = octetStringValue;
       this.tagNumber = tagNumber;
     }

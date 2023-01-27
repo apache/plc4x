@@ -50,13 +50,9 @@ public class SDOInitiateExpeditedUploadResponse extends SDOInitiateUploadRespons
   // Properties.
   protected final byte[] data;
 
-  // Arguments.
-  protected final Byte size;
-
-  public SDOInitiateExpeditedUploadResponse(byte[] data, Byte size) {
-    super(size);
+  public SDOInitiateExpeditedUploadResponse(byte[] data) {
+    super();
     this.data = data;
-    this.size = size;
   }
 
   public byte[] getData() {
@@ -119,24 +115,20 @@ public class SDOInitiateExpeditedUploadResponse extends SDOInitiateUploadRespons
 
     readBuffer.closeContext("SDOInitiateExpeditedUploadResponse");
     // Create the instance
-    return new SDOInitiateExpeditedUploadResponseBuilderImpl(data, size);
+    return new SDOInitiateExpeditedUploadResponseBuilderImpl(data);
   }
 
   public static class SDOInitiateExpeditedUploadResponseBuilderImpl
       implements SDOInitiateUploadResponsePayload.SDOInitiateUploadResponsePayloadBuilder {
     private final byte[] data;
-    private final Byte size;
 
-    public SDOInitiateExpeditedUploadResponseBuilderImpl(byte[] data, Byte size) {
-
+    public SDOInitiateExpeditedUploadResponseBuilderImpl(byte[] data) {
       this.data = data;
-      this.size = size;
     }
 
-    public SDOInitiateExpeditedUploadResponse build(Byte size) {
-
+    public SDOInitiateExpeditedUploadResponse build() {
       SDOInitiateExpeditedUploadResponse sDOInitiateExpeditedUploadResponse =
-          new SDOInitiateExpeditedUploadResponse(data, size);
+          new SDOInitiateExpeditedUploadResponse(data);
       return sDOInitiateExpeditedUploadResponse;
     }
   }

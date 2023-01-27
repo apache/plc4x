@@ -151,7 +151,6 @@ public class BACnetConstructedDataProtocolRevision extends BACnetConstructedData
         BACnetApplicationTagUnsignedInteger protocolRevision,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.protocolRevision = protocolRevision;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

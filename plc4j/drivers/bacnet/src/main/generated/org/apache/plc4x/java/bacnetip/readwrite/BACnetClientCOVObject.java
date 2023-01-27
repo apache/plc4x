@@ -105,7 +105,6 @@ public class BACnetClientCOVObject extends BACnetClientCOV implements Message {
     private final BACnetApplicationTagReal realIncrement;
 
     public BACnetClientCOVObjectBuilderImpl(BACnetApplicationTagReal realIncrement) {
-
       this.realIncrement = realIncrement;
     }
 

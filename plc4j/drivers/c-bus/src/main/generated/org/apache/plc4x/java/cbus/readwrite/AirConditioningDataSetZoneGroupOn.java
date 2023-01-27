@@ -100,7 +100,6 @@ public class AirConditioningDataSetZoneGroupOn extends AirConditioningData imple
     private final byte zoneGroup;
 
     public AirConditioningDataSetZoneGroupOnBuilderImpl(byte zoneGroup) {
-
       this.zoneGroup = zoneGroup;
     }
 

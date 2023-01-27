@@ -144,7 +144,6 @@ public class BACnetConstructedDataUpdateTime extends BACnetConstructedData imple
         BACnetDateTime updateTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.updateTime = updateTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -149,7 +149,6 @@ public class BACnetConstructedDataLastCredentialAddedTime extends BACnetConstruc
         BACnetDateTime lastCredentialAddedTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastCredentialAddedTime = lastCredentialAddedTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

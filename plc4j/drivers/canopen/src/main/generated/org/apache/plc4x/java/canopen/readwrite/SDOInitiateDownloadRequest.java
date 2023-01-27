@@ -47,8 +47,6 @@ public class SDOInitiateDownloadRequest extends SDORequest implements Message {
   protected final boolean indicated;
   protected final IndexAddress address;
   protected final SDOInitiateUploadResponsePayload payload;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public SDOInitiateDownloadRequest(
       boolean expedited,
@@ -85,10 +83,7 @@ public class SDOInitiateDownloadRequest extends SDORequest implements Message {
     writeBuffer.pushContext("SDOInitiateDownloadRequest");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeUnsignedByte(writeBuffer, 1));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 1));
 
     // Implicit Field (size) (Used for parsing, but its value is not stored as it's implicitly given
     // by the objects content)
@@ -176,8 +171,7 @@ public class SDOInitiateDownloadRequest extends SDORequest implements Message {
 
     readBuffer.closeContext("SDOInitiateDownloadRequest");
     // Create the instance
-    return new SDOInitiateDownloadRequestBuilderImpl(
-        expedited, indicated, address, payload, reservedField0);
+    return new SDOInitiateDownloadRequestBuilderImpl(expedited, indicated, address, payload);
   }
 
   public static class SDOInitiateDownloadRequestBuilderImpl
@@ -186,25 +180,21 @@ public class SDOInitiateDownloadRequest extends SDORequest implements Message {
     private final boolean indicated;
     private final IndexAddress address;
     private final SDOInitiateUploadResponsePayload payload;
-    private final Byte reservedField0;
 
     public SDOInitiateDownloadRequestBuilderImpl(
         boolean expedited,
         boolean indicated,
         IndexAddress address,
-        SDOInitiateUploadResponsePayload payload,
-        Byte reservedField0) {
+        SDOInitiateUploadResponsePayload payload) {
       this.expedited = expedited;
       this.indicated = indicated;
       this.address = address;
       this.payload = payload;
-      this.reservedField0 = reservedField0;
     }
 
     public SDOInitiateDownloadRequest build() {
       SDOInitiateDownloadRequest sDOInitiateDownloadRequest =
           new SDOInitiateDownloadRequest(expedited, indicated, address, payload);
-      sDOInitiateDownloadRequest.reservedField0 = reservedField0;
       return sDOInitiateDownloadRequest;
     }
   }

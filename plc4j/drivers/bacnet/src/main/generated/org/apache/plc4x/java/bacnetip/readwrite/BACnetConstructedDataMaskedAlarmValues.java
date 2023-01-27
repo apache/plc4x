@@ -145,7 +145,6 @@ public class BACnetConstructedDataMaskedAlarmValues extends BACnetConstructedDat
         List<BACnetDoorAlarmStateTagged> maskedAlarmValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maskedAlarmValues = maskedAlarmValues;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -149,7 +149,6 @@ public class DeleteSubscriptionsRequest extends ExtensionObjectDefinition implem
         ExtensionObjectDefinition requestHeader,
         int noOfSubscriptionIds,
         List<Long> subscriptionIds) {
-
       this.requestHeader = requestHeader;
       this.noOfSubscriptionIds = noOfSubscriptionIds;
       this.subscriptionIds = subscriptionIds;

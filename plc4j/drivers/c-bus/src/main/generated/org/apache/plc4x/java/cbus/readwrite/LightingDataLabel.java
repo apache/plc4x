@@ -174,7 +174,6 @@ public class LightingDataLabel extends LightingData implements Message {
 
     public LightingDataLabelBuilderImpl(
         byte group, LightingLabelOptions labelOptions, Language language, byte[] data) {
-
       this.group = group;
       this.labelOptions = labelOptions;
       this.language = language;

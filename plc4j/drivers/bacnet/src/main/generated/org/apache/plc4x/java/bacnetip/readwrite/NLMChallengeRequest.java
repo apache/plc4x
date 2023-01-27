@@ -138,7 +138,6 @@ public class NLMChallengeRequest extends NLM implements Message {
 
     public NLMChallengeRequestBuilderImpl(
         byte messageChallenge, long originalMessageId, long originalTimestamp, Integer apduLength) {
-
       this.messageChallenge = messageChallenge;
       this.originalMessageId = originalMessageId;
       this.originalTimestamp = originalTimestamp;

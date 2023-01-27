@@ -159,7 +159,6 @@ public class ReadValueId extends ExtensionObjectDefinition implements Message {
 
     public ReadValueIdBuilderImpl(
         NodeId nodeId, long attributeId, PascalString indexRange, QualifiedName dataEncoding) {
-
       this.nodeId = nodeId;
       this.attributeId = attributeId;
       this.indexRange = indexRange;

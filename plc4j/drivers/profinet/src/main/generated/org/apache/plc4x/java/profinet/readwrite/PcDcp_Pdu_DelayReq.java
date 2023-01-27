@@ -49,11 +49,6 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
   protected final int sequenceId;
   protected final long delayInNs;
   protected final MacAddress portMacAddress;
-  // Reserved Fields
-  private Long reservedField0;
-  private Long reservedField1;
-  private Long reservedField2;
-  private Integer reservedField3;
 
   public PcDcp_Pdu_DelayReq(
       int frameIdValue, int sequenceId, long delayInNs, MacAddress portMacAddress) {
@@ -98,31 +93,19 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
     writeBuffer.pushContext("PcDcp_Pdu_DelayReq");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (long) 0x00000000,
-        writeUnsignedLong(writeBuffer, 32));
+    writeReservedField("reserved", (long) 0x00000000, writeUnsignedLong(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField1 != null ? reservedField1 : (long) 0x00000000,
-        writeUnsignedLong(writeBuffer, 32));
+    writeReservedField("reserved", (long) 0x00000000, writeUnsignedLong(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField2 != null ? reservedField2 : (long) 0x00000000,
-        writeUnsignedLong(writeBuffer, 32));
+    writeReservedField("reserved", (long) 0x00000000, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (sequenceId)
     writeSimpleField("sequenceId", sequenceId, writeUnsignedInt(writeBuffer, 16));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField3 != null ? reservedField3 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+    writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (delayInNs)
     writeSimpleField("delayInNs", delayInNs, writeUnsignedLong(writeBuffer, 32));
@@ -235,49 +218,24 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
 
     readBuffer.closeContext("PcDcp_Pdu_DelayReq");
     // Create the instance
-    return new PcDcp_Pdu_DelayReqBuilderImpl(
-        sequenceId,
-        delayInNs,
-        portMacAddress,
-        reservedField0,
-        reservedField1,
-        reservedField2,
-        reservedField3);
+    return new PcDcp_Pdu_DelayReqBuilderImpl(sequenceId, delayInNs, portMacAddress);
   }
 
   public static class PcDcp_Pdu_DelayReqBuilderImpl implements PnDcp_Pdu.PnDcp_PduBuilder {
     private final int sequenceId;
     private final long delayInNs;
     private final MacAddress portMacAddress;
-    private final Long reservedField0;
-    private final Long reservedField1;
-    private final Long reservedField2;
-    private final Integer reservedField3;
 
     public PcDcp_Pdu_DelayReqBuilderImpl(
-        int sequenceId,
-        long delayInNs,
-        MacAddress portMacAddress,
-        Long reservedField0,
-        Long reservedField1,
-        Long reservedField2,
-        Integer reservedField3) {
+        int sequenceId, long delayInNs, MacAddress portMacAddress) {
       this.sequenceId = sequenceId;
       this.delayInNs = delayInNs;
       this.portMacAddress = portMacAddress;
-      this.reservedField0 = reservedField0;
-      this.reservedField1 = reservedField1;
-      this.reservedField2 = reservedField2;
-      this.reservedField3 = reservedField3;
     }
 
     public PcDcp_Pdu_DelayReq build(int frameIdValue) {
       PcDcp_Pdu_DelayReq pcDcp_Pdu_DelayReq =
           new PcDcp_Pdu_DelayReq(frameIdValue, sequenceId, delayInNs, portMacAddress);
-      pcDcp_Pdu_DelayReq.reservedField0 = reservedField0;
-      pcDcp_Pdu_DelayReq.reservedField1 = reservedField1;
-      pcDcp_Pdu_DelayReq.reservedField2 = reservedField2;
-      pcDcp_Pdu_DelayReq.reservedField3 = reservedField3;
       return pcDcp_Pdu_DelayReq;
     }
   }

@@ -149,7 +149,6 @@ public class BACnetConstructedDataNetworkPortMaxMaster extends BACnetConstructed
         BACnetApplicationTagUnsignedInteger maxMaster,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxMaster = maxMaster;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

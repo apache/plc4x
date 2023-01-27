@@ -151,7 +151,6 @@ public class BACnetConstructedDataIPv6DHCPLeaseTime extends BACnetConstructedDat
         BACnetApplicationTagUnsignedInteger ipv6DhcpLeaseTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipv6DhcpLeaseTime = ipv6DhcpLeaseTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

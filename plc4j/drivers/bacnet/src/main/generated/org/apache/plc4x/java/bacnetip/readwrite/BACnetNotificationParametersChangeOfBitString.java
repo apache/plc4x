@@ -137,9 +137,9 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
 
   public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfBitString");
     PositionAware positionAware = readBuffer;
@@ -206,7 +206,6 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
         BACnetClosingTag innerClosingTag,
         Short tagNumber,
         BACnetObjectType objectTypeArgument) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.changeOfBitString = changeOfBitString;
       this.statusFlags = statusFlags;

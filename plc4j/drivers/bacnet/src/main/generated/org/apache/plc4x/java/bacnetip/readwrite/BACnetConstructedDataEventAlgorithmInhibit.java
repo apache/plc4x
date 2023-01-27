@@ -150,7 +150,6 @@ public class BACnetConstructedDataEventAlgorithmInhibit extends BACnetConstructe
         BACnetApplicationTagBoolean eventAlgorithmInhibit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.eventAlgorithmInhibit = eventAlgorithmInhibit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -149,7 +149,6 @@ public class BACnetConstructedDataPositiveIntegerValueResolution extends BACnetC
         BACnetApplicationTagUnsignedInteger resolution,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.resolution = resolution;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -45,8 +45,6 @@ public class ConnectionStateRequest extends KnxNetIpMessage implements Message {
   // Properties.
   protected final short communicationChannelId;
   protected final HPAIControlEndpoint hpaiControlEndpoint;
-  // Reserved Fields
-  private Short reservedField0;
 
   public ConnectionStateRequest(
       short communicationChannelId, HPAIControlEndpoint hpaiControlEndpoint) {
@@ -80,7 +78,7 @@ public class ConnectionStateRequest extends KnxNetIpMessage implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
+        (short) 0x00,
         writeUnsignedShort(writeBuffer, 8),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -145,29 +143,23 @@ public class ConnectionStateRequest extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("ConnectionStateRequest");
     // Create the instance
-    return new ConnectionStateRequestBuilderImpl(
-        communicationChannelId, hpaiControlEndpoint, reservedField0);
+    return new ConnectionStateRequestBuilderImpl(communicationChannelId, hpaiControlEndpoint);
   }
 
   public static class ConnectionStateRequestBuilderImpl
       implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final short communicationChannelId;
     private final HPAIControlEndpoint hpaiControlEndpoint;
-    private final Short reservedField0;
 
     public ConnectionStateRequestBuilderImpl(
-        short communicationChannelId,
-        HPAIControlEndpoint hpaiControlEndpoint,
-        Short reservedField0) {
+        short communicationChannelId, HPAIControlEndpoint hpaiControlEndpoint) {
       this.communicationChannelId = communicationChannelId;
       this.hpaiControlEndpoint = hpaiControlEndpoint;
-      this.reservedField0 = reservedField0;
     }
 
     public ConnectionStateRequest build() {
       ConnectionStateRequest connectionStateRequest =
           new ConnectionStateRequest(communicationChannelId, hpaiControlEndpoint);
-      connectionStateRequest.reservedField0 = reservedField0;
       return connectionStateRequest;
     }
   }

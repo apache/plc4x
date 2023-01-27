@@ -114,7 +114,6 @@ public class BACnetTimerStateChangeValueReal extends BACnetTimerStateChangeValue
 
     public BACnetTimerStateChangeValueRealBuilderImpl(
         BACnetApplicationTagReal realValue, BACnetObjectType objectTypeArgument) {
-
       this.realValue = realValue;
       this.objectTypeArgument = objectTypeArgument;
     }

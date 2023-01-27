@@ -146,7 +146,6 @@ public class BACnetConstructedDataPassengerAlarm extends BACnetConstructedData i
         BACnetApplicationTagBoolean passengerAlarm,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.passengerAlarm = passengerAlarm;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

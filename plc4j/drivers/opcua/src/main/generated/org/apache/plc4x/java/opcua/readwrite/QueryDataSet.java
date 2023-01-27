@@ -174,7 +174,6 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
         ExpandedNodeId typeDefinitionNode,
         int noOfValues,
         List<Variant> values) {
-
       this.nodeId = nodeId;
       this.typeDefinitionNode = typeDefinitionNode;
       this.noOfValues = noOfValues;

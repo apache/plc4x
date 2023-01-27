@@ -101,15 +101,10 @@ public class ExpandedNodeId implements Message {
     writeBuffer.writeVirtual("identifier", identifier);
 
     // Optional Field (namespaceURI) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "namespaceURI",
-        namespaceURI,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getNamespaceURISpecified());
+    writeOptionalField("namespaceURI", namespaceURI, new DataWriterComplexDefault<>(writeBuffer));
 
     // Optional Field (serverIndex) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "serverIndex", serverIndex, writeUnsignedLong(writeBuffer, 32), getServerIndexSpecified());
+    writeOptionalField("serverIndex", serverIndex, writeUnsignedLong(writeBuffer, 32));
 
     writeBuffer.popContext("ExpandedNodeId");
   }

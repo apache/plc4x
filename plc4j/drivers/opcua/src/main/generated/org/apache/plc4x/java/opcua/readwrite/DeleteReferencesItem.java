@@ -48,9 +48,6 @@ public class DeleteReferencesItem extends ExtensionObjectDefinition implements M
   protected final boolean isForward;
   protected final ExpandedNodeId targetNodeId;
   protected final boolean deleteBidirectional;
-  // Reserved Fields
-  private Short reservedField0;
-  private Short reservedField1;
 
   public DeleteReferencesItem(
       NodeId sourceNodeId,
@@ -101,10 +98,7 @@ public class DeleteReferencesItem extends ExtensionObjectDefinition implements M
         "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (isForward)
     writeSimpleField("isForward", isForward, writeBoolean(writeBuffer));
@@ -113,10 +107,7 @@ public class DeleteReferencesItem extends ExtensionObjectDefinition implements M
     writeSimpleField("targetNodeId", targetNodeId, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField1 != null ? reservedField1 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (deleteBidirectional)
     writeSimpleField("deleteBidirectional", deleteBidirectional, writeBoolean(writeBuffer));
@@ -194,13 +185,7 @@ public class DeleteReferencesItem extends ExtensionObjectDefinition implements M
     readBuffer.closeContext("DeleteReferencesItem");
     // Create the instance
     return new DeleteReferencesItemBuilderImpl(
-        sourceNodeId,
-        referenceTypeId,
-        isForward,
-        targetNodeId,
-        deleteBidirectional,
-        reservedField0,
-        reservedField1);
+        sourceNodeId, referenceTypeId, isForward, targetNodeId, deleteBidirectional);
   }
 
   public static class DeleteReferencesItemBuilderImpl
@@ -210,32 +195,24 @@ public class DeleteReferencesItem extends ExtensionObjectDefinition implements M
     private final boolean isForward;
     private final ExpandedNodeId targetNodeId;
     private final boolean deleteBidirectional;
-    private final Short reservedField0;
-    private final Short reservedField1;
 
     public DeleteReferencesItemBuilderImpl(
         NodeId sourceNodeId,
         NodeId referenceTypeId,
         boolean isForward,
         ExpandedNodeId targetNodeId,
-        boolean deleteBidirectional,
-        Short reservedField0,
-        Short reservedField1) {
+        boolean deleteBidirectional) {
       this.sourceNodeId = sourceNodeId;
       this.referenceTypeId = referenceTypeId;
       this.isForward = isForward;
       this.targetNodeId = targetNodeId;
       this.deleteBidirectional = deleteBidirectional;
-      this.reservedField0 = reservedField0;
-      this.reservedField1 = reservedField1;
     }
 
     public DeleteReferencesItem build() {
       DeleteReferencesItem deleteReferencesItem =
           new DeleteReferencesItem(
               sourceNodeId, referenceTypeId, isForward, targetNodeId, deleteBidirectional);
-      deleteReferencesItem.reservedField0 = reservedField0;
-      deleteReferencesItem.reservedField1 = reservedField1;
       return deleteReferencesItem;
     }
   }

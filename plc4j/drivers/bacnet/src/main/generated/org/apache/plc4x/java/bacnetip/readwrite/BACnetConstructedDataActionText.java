@@ -189,7 +189,6 @@ public class BACnetConstructedDataActionText extends BACnetConstructedData imple
         List<BACnetApplicationTagCharacterString> actionText,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.actionText = actionText;
       this.tagNumber = tagNumber;

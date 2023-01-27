@@ -190,7 +190,6 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlResponse extends S7PayloadUs
 
     public S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilderImpl(
         SzlId szlId, int szlIndex, List<SzlDataTreeItem> items) {
-
       this.szlId = szlId;
       this.szlIndex = szlIndex;
       this.items = items;

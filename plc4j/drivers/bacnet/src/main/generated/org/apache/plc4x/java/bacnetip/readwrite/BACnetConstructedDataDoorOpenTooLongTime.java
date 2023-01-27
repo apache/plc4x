@@ -151,7 +151,6 @@ public class BACnetConstructedDataDoorOpenTooLongTime extends BACnetConstructedD
         BACnetApplicationTagUnsignedInteger doorOpenTooLongTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.doorOpenTooLongTime = doorOpenTooLongTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

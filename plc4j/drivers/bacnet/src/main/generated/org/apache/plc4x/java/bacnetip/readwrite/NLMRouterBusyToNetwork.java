@@ -113,7 +113,6 @@ public class NLMRouterBusyToNetwork extends NLM implements Message {
 
     public NLMRouterBusyToNetworkBuilderImpl(
         List<Integer> destinationNetworkAddresses, Integer apduLength) {
-
       this.destinationNetworkAddresses = destinationNetworkAddresses;
       this.apduLength = apduLength;
     }

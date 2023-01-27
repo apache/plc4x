@@ -115,7 +115,6 @@ public class BVLCSecureBVLL extends BVLC implements Message {
     private final Integer bvlcPayloadLength;
 
     public BVLCSecureBVLLBuilderImpl(byte[] securityWrapper, Integer bvlcPayloadLength) {
-
       this.securityWrapper = securityWrapper;
       this.bvlcPayloadLength = bvlcPayloadLength;
     }

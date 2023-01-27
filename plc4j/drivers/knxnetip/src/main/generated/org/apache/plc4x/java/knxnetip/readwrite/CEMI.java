@@ -40,12 +40,8 @@ public abstract class CEMI implements Message {
   // Abstract accessors for discriminator values.
   public abstract Short getMessageCode();
 
-  // Arguments.
-  protected final Integer size;
-
-  public CEMI(Integer size) {
+  public CEMI() {
     super();
-    this.size = size;
   }
 
   protected abstract void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException;
@@ -169,13 +165,12 @@ public abstract class CEMI implements Message {
 
     readBuffer.closeContext("CEMI");
     // Create the instance
-    CEMI _cEMI = builder.build(size);
-
+    CEMI _cEMI = builder.build();
     return _cEMI;
   }
 
   public interface CEMIBuilder {
-    CEMI build(Integer size);
+    CEMI build();
   }
 
   @Override

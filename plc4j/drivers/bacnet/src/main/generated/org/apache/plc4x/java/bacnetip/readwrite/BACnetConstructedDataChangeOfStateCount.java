@@ -151,7 +151,6 @@ public class BACnetConstructedDataChangeOfStateCount extends BACnetConstructedDa
         BACnetApplicationTagUnsignedInteger changeIfStateCount,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.changeIfStateCount = changeIfStateCount;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

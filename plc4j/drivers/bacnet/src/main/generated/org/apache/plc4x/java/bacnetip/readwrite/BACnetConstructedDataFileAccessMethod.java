@@ -150,7 +150,6 @@ public class BACnetConstructedDataFileAccessMethod extends BACnetConstructedData
         BACnetFileAccessMethodTagged fileAccessMethod,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.fileAccessMethod = fileAccessMethod;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

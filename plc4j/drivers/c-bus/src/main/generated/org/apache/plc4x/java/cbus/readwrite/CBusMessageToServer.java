@@ -118,7 +118,6 @@ public class CBusMessageToServer extends CBusMessage implements Message {
 
     public CBusMessageToServerBuilderImpl(
         Request request, RequestContext requestContext, CBusOptions cBusOptions) {
-
       this.request = request;
       this.requestContext = requestContext;
       this.cBusOptions = cBusOptions;

@@ -148,7 +148,6 @@ public class BACnetConstructedDataNodeSubtype extends BACnetConstructedData impl
         BACnetApplicationTagCharacterString nodeSubType,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.nodeSubType = nodeSubType;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

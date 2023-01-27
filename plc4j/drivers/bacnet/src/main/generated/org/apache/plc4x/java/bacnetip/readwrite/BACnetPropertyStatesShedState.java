@@ -109,7 +109,6 @@ public class BACnetPropertyStatesShedState extends BACnetPropertyStates implemen
     private final BACnetShedStateTagged shedState;
 
     public BACnetPropertyStatesShedStateBuilderImpl(BACnetShedStateTagged shedState) {
-
       this.shedState = shedState;
     }
 

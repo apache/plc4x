@@ -261,7 +261,6 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
         BACnetContextTagCharacterString acknowledgmentSource,
         BACnetTimeStampEnclosed timeOfAcknowledgment,
         Long serviceRequestLength) {
-
       this.acknowledgingProcessIdentifier = acknowledgingProcessIdentifier;
       this.eventObjectIdentifier = eventObjectIdentifier;
       this.eventStateAcknowledged = eventStateAcknowledged;

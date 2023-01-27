@@ -153,7 +153,6 @@ public class BACnetConstructedDataNotificationThreshold extends BACnetConstructe
         BACnetApplicationTagUnsignedInteger notificationThreshold,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.notificationThreshold = notificationThreshold;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

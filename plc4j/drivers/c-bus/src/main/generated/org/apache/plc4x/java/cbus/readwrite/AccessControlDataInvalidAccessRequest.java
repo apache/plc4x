@@ -137,7 +137,6 @@ public class AccessControlDataInvalidAccessRequest extends AccessControlData imp
 
     public AccessControlDataInvalidAccessRequestBuilderImpl(
         AccessControlDirection accessControlDirection, byte[] data) {
-
       this.accessControlDirection = accessControlDirection;
       this.data = data;
     }

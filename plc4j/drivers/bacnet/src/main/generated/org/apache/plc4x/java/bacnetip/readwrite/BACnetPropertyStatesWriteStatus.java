@@ -109,7 +109,6 @@ public class BACnetPropertyStatesWriteStatus extends BACnetPropertyStates implem
     private final BACnetWriteStatusTagged writeStatus;
 
     public BACnetPropertyStatesWriteStatusBuilderImpl(BACnetWriteStatusTagged writeStatus) {
-
       this.writeStatus = writeStatus;
     }
 

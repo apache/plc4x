@@ -151,9 +151,9 @@ public class BACnetNotificationParametersBufferReady extends BACnetNotificationP
 
   public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersBufferReady");
     PositionAware positionAware = readBuffer;
@@ -237,7 +237,6 @@ public class BACnetNotificationParametersBufferReady extends BACnetNotificationP
         BACnetClosingTag innerClosingTag,
         Short tagNumber,
         BACnetObjectType objectTypeArgument) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.bufferProperty = bufferProperty;
       this.previousNotification = previousNotification;

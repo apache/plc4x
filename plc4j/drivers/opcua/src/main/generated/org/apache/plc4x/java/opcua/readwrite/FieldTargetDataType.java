@@ -242,7 +242,6 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
         PascalString writeIndexRange,
         OverrideValueHandling overrideValueHandling,
         Variant overrideValue) {
-
       this.dataSetFieldId = dataSetFieldId;
       this.receiverIndexRange = receiverIndexRange;
       this.targetNodeId = targetNodeId;

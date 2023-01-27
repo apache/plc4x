@@ -135,7 +135,6 @@ public class ViewDescription extends ExtensionObjectDefinition implements Messag
     private final long viewVersion;
 
     public ViewDescriptionBuilderImpl(NodeId viewId, long timestamp, long viewVersion) {
-
       this.viewId = viewId;
       this.timestamp = timestamp;
       this.viewVersion = viewVersion;

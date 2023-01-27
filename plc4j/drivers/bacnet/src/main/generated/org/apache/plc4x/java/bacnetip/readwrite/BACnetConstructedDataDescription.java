@@ -148,7 +148,6 @@ public class BACnetConstructedDataDescription extends BACnetConstructedData impl
         BACnetApplicationTagCharacterString description,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.description = description;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

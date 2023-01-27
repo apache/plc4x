@@ -150,7 +150,6 @@ public class BACnetConstructedDataAckedTransitions extends BACnetConstructedData
         BACnetEventTransitionBitsTagged ackedTransitions,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ackedTransitions = ackedTransitions;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -230,7 +230,6 @@ public class BACnetEventParameterOutOfRange extends BACnetEventParameter impleme
         BACnetContextTagReal highDiffLimit,
         BACnetContextTagReal deadband,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.lowDiffLimit = lowDiffLimit;

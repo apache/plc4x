@@ -153,7 +153,6 @@ public class AdsReadStateResponse extends AmsPacket implements Message {
     private final int deviceState;
 
     public AdsReadStateResponseBuilderImpl(ReturnCode result, int adsState, int deviceState) {
-
       this.result = result;
       this.adsState = adsState;
       this.deviceState = deviceState;

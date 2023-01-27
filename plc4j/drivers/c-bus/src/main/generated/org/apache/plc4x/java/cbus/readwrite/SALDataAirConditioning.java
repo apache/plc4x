@@ -105,7 +105,6 @@ public class SALDataAirConditioning extends SALData implements Message {
     private final AirConditioningData airConditioningData;
 
     public SALDataAirConditioningBuilderImpl(AirConditioningData airConditioningData) {
-
       this.airConditioningData = airConditioningData;
     }
 

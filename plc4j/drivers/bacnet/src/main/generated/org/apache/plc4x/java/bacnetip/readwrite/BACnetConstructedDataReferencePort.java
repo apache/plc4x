@@ -148,7 +148,6 @@ public class BACnetConstructedDataReferencePort extends BACnetConstructedData im
         BACnetApplicationTagUnsignedInteger referencePort,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.referencePort = referencePort;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

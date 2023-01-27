@@ -109,7 +109,6 @@ public class NLMReserved extends NLM implements Message {
     private final Integer apduLength;
 
     public NLMReservedBuilderImpl(byte[] unknownBytes, Integer apduLength) {
-
       this.unknownBytes = unknownBytes;
       this.apduLength = apduLength;
     }

@@ -112,7 +112,6 @@ public class BACnetPropertyStatesAuthenticationStatus extends BACnetPropertyStat
 
     public BACnetPropertyStatesAuthenticationStatusBuilderImpl(
         BACnetAuthenticationStatusTagged authenticationStatus) {
-
       this.authenticationStatus = authenticationStatus;
     }
 

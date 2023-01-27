@@ -138,7 +138,6 @@ public class BACnetServiceAckAtomicReadFileStream
     public BACnetServiceAckAtomicReadFileStreamBuilderImpl(
         BACnetApplicationTagSignedInteger fileStartPosition,
         BACnetApplicationTagOctetString fileData) {
-
       this.fileStartPosition = fileStartPosition;
       this.fileData = fileData;
     }

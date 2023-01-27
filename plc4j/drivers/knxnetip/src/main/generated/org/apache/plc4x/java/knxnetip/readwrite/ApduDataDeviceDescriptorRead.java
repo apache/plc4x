@@ -45,13 +45,9 @@ public class ApduDataDeviceDescriptorRead extends ApduData implements Message {
   // Properties.
   protected final short descriptorType;
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataDeviceDescriptorRead(short descriptorType, Short dataLength) {
-    super(dataLength);
+  public ApduDataDeviceDescriptorRead(short descriptorType) {
+    super();
     this.descriptorType = descriptorType;
-    this.dataLength = dataLength;
   }
 
   public short getDescriptorType() {
@@ -97,23 +93,19 @@ public class ApduDataDeviceDescriptorRead extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataDeviceDescriptorRead");
     // Create the instance
-    return new ApduDataDeviceDescriptorReadBuilderImpl(descriptorType, dataLength);
+    return new ApduDataDeviceDescriptorReadBuilderImpl(descriptorType);
   }
 
   public static class ApduDataDeviceDescriptorReadBuilderImpl implements ApduData.ApduDataBuilder {
     private final short descriptorType;
-    private final Short dataLength;
 
-    public ApduDataDeviceDescriptorReadBuilderImpl(short descriptorType, Short dataLength) {
-
+    public ApduDataDeviceDescriptorReadBuilderImpl(short descriptorType) {
       this.descriptorType = descriptorType;
-      this.dataLength = dataLength;
     }
 
-    public ApduDataDeviceDescriptorRead build(Short dataLength) {
-
+    public ApduDataDeviceDescriptorRead build() {
       ApduDataDeviceDescriptorRead apduDataDeviceDescriptorRead =
-          new ApduDataDeviceDescriptorRead(descriptorType, dataLength);
+          new ApduDataDeviceDescriptorRead(descriptorType);
       return apduDataDeviceDescriptorRead;
     }
   }

@@ -133,7 +133,6 @@ public class CANOpenSDORequest extends CANOpenPayload implements Message {
     private final SDORequest request;
 
     public CANOpenSDORequestBuilderImpl(SDORequestCommand command, SDORequest request) {
-
       this.command = command;
       this.request = request;
     }

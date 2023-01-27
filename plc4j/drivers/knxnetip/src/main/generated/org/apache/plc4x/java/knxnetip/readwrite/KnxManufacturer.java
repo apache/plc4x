@@ -321,7 +321,7 @@ public enum KnxManufacturer {
   M_GUANGZHOU_SEAWIN_ELECTRICAL_TECHNOLOGIES_CO___LTD_(
       (int) 278, (int) 331, (String) "Guangzhou SeaWin Electrical Technologies Co., Ltd."),
   M_ACREL((int) 279, (int) 332, (String) "Acrel"),
-  M_FRANKE_AQUAROTTER_GMBH((int) 280, (int) 333, (String) "Franke Aquarotter GmbH"),
+  M_KWC_AQUAROTTER_GMBH((int) 280, (int) 333, (String) "KWC Aquarotter GmbH"),
   M_ORION_SYSTEMS((int) 281, (int) 334, (String) "Orion Systems"),
   M_SCHRACK_TECHNIK_GMBH((int) 282, (int) 335, (String) "Schrack Technik GmbH"),
   M_INSPRID((int) 283, (int) 336, (String) "INSPRID"),
@@ -439,7 +439,7 @@ public enum KnxManufacturer {
   M_CODESYS_GMBH((int) 387, (int) 440, (String) "CODESYS GmbH"),
   M_MOORGEN_DEUTSCHLAND_GMBH((int) 388, (int) 441, (String) "Moorgen Deutschland GmbH"),
   M_CULLMANN_TECH((int) 389, (int) 442, (String) "CULLMANN TECH"),
-  M_MERCK_WINDOW_TECHNOLOGIES_B_V_((int) 390, (int) 443, (String) "Merck Window Technologies B.V."),
+  M_EYRISE_B_V((int) 390, (int) 443, (String) "eyrise B.V"),
   M_ABEGO((int) 391, (int) 444, (String) "ABEGO"),
   M_MYGEKKO((int) 392, (int) 445, (String) "myGEKKO"),
   M_ERGO3_SARL((int) 393, (int) 446, (String) "Ergo3 Sarl"),

@@ -145,7 +145,6 @@ public class CBusCommandDeviceManagement extends CBusCommand implements Message 
 
     public CBusCommandDeviceManagementBuilderImpl(
         Parameter paramNo, byte parameterValue, CBusOptions cBusOptions) {
-
       this.paramNo = paramNo;
       this.parameterValue = parameterValue;
       this.cBusOptions = cBusOptions;

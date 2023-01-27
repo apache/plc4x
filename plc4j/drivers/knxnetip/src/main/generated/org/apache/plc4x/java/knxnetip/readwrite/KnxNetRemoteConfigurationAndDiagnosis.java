@@ -101,7 +101,6 @@ public class KnxNetRemoteConfigurationAndDiagnosis extends ServiceId implements 
     private final short version;
 
     public KnxNetRemoteConfigurationAndDiagnosisBuilderImpl(short version) {
-
       this.version = version;
     }
 

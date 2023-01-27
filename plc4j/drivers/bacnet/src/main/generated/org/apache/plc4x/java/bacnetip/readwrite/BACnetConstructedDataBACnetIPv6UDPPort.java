@@ -149,7 +149,6 @@ public class BACnetConstructedDataBACnetIPv6UDPPort extends BACnetConstructedDat
         BACnetApplicationTagUnsignedInteger ipv6UdpPort,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipv6UdpPort = ipv6UdpPort;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

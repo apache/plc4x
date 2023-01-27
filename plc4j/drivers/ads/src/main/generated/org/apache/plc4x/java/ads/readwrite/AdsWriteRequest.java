@@ -155,7 +155,6 @@ public class AdsWriteRequest extends AmsPacket implements Message {
     private final byte[] data;
 
     public AdsWriteRequestBuilderImpl(long indexGroup, long indexOffset, byte[] data) {
-
       this.indexGroup = indexGroup;
       this.indexOffset = indexOffset;
       this.data = data;

@@ -189,7 +189,6 @@ public class BACnetConstructedDataPropertyList extends BACnetConstructedData imp
         List<BACnetPropertyIdentifierTagged> propertyList,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.propertyList = propertyList;
       this.tagNumber = tagNumber;

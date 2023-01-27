@@ -116,7 +116,6 @@ public class BACnetLogDataLogStatus extends BACnetLogData implements Message {
     private final Short tagNumber;
 
     public BACnetLogDataLogStatusBuilderImpl(BACnetLogStatusTagged logStatus, Short tagNumber) {
-
       this.logStatus = logStatus;
       this.tagNumber = tagNumber;
     }

@@ -136,7 +136,6 @@ public class DisconnectResponse extends KnxNetIpMessage implements Message {
     private final Status status;
 
     public DisconnectResponseBuilderImpl(short communicationChannelId, Status status) {
-
       this.communicationChannelId = communicationChannelId;
       this.status = status;
     }

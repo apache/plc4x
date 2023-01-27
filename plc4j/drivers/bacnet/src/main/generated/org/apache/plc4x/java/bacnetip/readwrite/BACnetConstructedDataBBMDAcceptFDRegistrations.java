@@ -151,7 +151,6 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
         BACnetApplicationTagBoolean bbmdAcceptFDRegistrations,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.bbmdAcceptFDRegistrations = bbmdAcceptFDRegistrations;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

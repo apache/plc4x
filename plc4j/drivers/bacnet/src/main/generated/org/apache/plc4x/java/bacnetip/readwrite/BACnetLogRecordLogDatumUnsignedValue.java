@@ -121,7 +121,6 @@ public class BACnetLogRecordLogDatumUnsignedValue extends BACnetLogRecordLogDatu
 
     public BACnetLogRecordLogDatumUnsignedValueBuilderImpl(
         BACnetContextTagUnsignedInteger unsignedValue, Short tagNumber) {
-
       this.unsignedValue = unsignedValue;
       this.tagNumber = tagNumber;
     }

@@ -178,7 +178,6 @@ public class ReplyEncodedReply extends Reply implements Message {
         Checksum chksum,
         CBusOptions cBusOptions,
         RequestContext requestContext) {
-
       this.encodedReply = encodedReply;
       this.chksum = chksum;
       this.cBusOptions = cBusOptions;

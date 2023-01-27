@@ -150,7 +150,6 @@ public class BACnetConstructedDataVendorIdentifier extends BACnetConstructedData
         BACnetVendorIdTagged vendorIdentifier,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.vendorIdentifier = vendorIdentifier;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

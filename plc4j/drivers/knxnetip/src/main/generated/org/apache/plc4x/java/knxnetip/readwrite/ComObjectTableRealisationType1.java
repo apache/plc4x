@@ -152,7 +152,6 @@ public class ComObjectTableRealisationType1 extends ComObjectTable implements Me
         short numEntries,
         short ramFlagsTablePointer,
         List<GroupObjectDescriptorRealisationType1> comObjectDescriptors) {
-
       this.numEntries = numEntries;
       this.ramFlagsTablePointer = ramFlagsTablePointer;
       this.comObjectDescriptors = comObjectDescriptors;

@@ -130,7 +130,6 @@ public class NodeIdGuid extends NodeIdTypeDefinition implements Message {
     private final byte[] id;
 
     public NodeIdGuidBuilderImpl(int namespaceIndex, byte[] id) {
-
       this.namespaceIndex = namespaceIndex;
       this.id = id;
     }

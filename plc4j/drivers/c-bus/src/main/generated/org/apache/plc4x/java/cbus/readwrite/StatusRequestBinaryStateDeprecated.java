@@ -41,6 +41,7 @@ public class StatusRequestBinaryStateDeprecated extends StatusRequest implements
 
   // Properties.
   protected final ApplicationIdContainer application;
+
   // Reserved Fields
   private Byte reservedField0;
   private Byte reservedField1;

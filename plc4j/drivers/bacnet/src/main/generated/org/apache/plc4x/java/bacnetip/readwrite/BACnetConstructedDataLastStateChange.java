@@ -149,7 +149,6 @@ public class BACnetConstructedDataLastStateChange extends BACnetConstructedData 
         BACnetTimerTransitionTagged lastStateChange,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastStateChange = lastStateChange;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

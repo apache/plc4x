@@ -105,7 +105,6 @@ public class BACnetChannelValueTime extends BACnetChannelValue implements Messag
     private final BACnetApplicationTagTime timeValue;
 
     public BACnetChannelValueTimeBuilderImpl(BACnetApplicationTagTime timeValue) {
-
       this.timeValue = timeValue;
     }
 

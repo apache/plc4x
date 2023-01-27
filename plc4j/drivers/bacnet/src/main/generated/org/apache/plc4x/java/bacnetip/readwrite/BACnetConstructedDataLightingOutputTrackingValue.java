@@ -147,7 +147,6 @@ public class BACnetConstructedDataLightingOutputTrackingValue extends BACnetCons
         BACnetApplicationTagReal trackingValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.trackingValue = trackingValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

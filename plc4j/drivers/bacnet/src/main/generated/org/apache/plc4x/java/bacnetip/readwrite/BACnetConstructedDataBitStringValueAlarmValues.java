@@ -188,7 +188,6 @@ public class BACnetConstructedDataBitStringValueAlarmValues extends BACnetConstr
         List<BACnetApplicationTagBitString> alarmValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.alarmValues = alarmValues;
       this.tagNumber = tagNumber;

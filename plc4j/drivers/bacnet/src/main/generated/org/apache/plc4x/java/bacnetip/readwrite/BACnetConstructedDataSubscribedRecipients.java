@@ -142,7 +142,6 @@ public class BACnetConstructedDataSubscribedRecipients extends BACnetConstructed
         List<BACnetEventNotificationSubscription> subscribedRecipients,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.subscribedRecipients = subscribedRecipients;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

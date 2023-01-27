@@ -112,7 +112,6 @@ public class BACnetPropertyStatesLightningTransition extends BACnetPropertyState
 
     public BACnetPropertyStatesLightningTransitionBuilderImpl(
         BACnetLightingTransitionTagged lightningTransition) {
-
       this.lightningTransition = lightningTransition;
     }
 

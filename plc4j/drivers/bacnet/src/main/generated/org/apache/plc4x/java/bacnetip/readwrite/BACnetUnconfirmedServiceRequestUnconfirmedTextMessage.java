@@ -209,7 +209,6 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
         BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged messagePriority,
         BACnetContextTagCharacterString message,
         Integer serviceRequestLength) {
-
       this.textMessageSourceDevice = textMessageSourceDevice;
       this.messageClass = messageClass;
       this.messagePriority = messagePriority;

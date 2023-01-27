@@ -149,7 +149,6 @@ public class BACnetConstructedDataPositiveIntegerValueLowLimit extends BACnetCon
         BACnetApplicationTagUnsignedInteger lowLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lowLimit = lowLimit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -153,7 +153,6 @@ public class BACnetConstructedDataCOVResubscriptionInterval extends BACnetConstr
         BACnetApplicationTagUnsignedInteger covResubscriptionInterval,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.covResubscriptionInterval = covResubscriptionInterval;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

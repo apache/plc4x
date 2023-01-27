@@ -112,7 +112,6 @@ public class BACnetLogDataLogDataEntryUnsignedValue extends BACnetLogDataLogData
 
     public BACnetLogDataLogDataEntryUnsignedValueBuilderImpl(
         BACnetContextTagUnsignedInteger unsignedValue) {
-
       this.unsignedValue = unsignedValue;
     }
 

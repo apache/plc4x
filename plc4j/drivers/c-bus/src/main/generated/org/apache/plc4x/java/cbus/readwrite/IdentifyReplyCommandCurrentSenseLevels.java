@@ -112,7 +112,6 @@ public class IdentifyReplyCommandCurrentSenseLevels extends IdentifyReplyCommand
 
     public IdentifyReplyCommandCurrentSenseLevelsBuilderImpl(
         byte[] currentSenseLevels, Short numBytes) {
-
       this.currentSenseLevels = currentSenseLevels;
       this.numBytes = numBytes;
     }

@@ -39,8 +39,6 @@ public class AmsString implements Message {
 
   // Properties.
   protected final String text;
-  // Reserved Fields
-  private Short reservedField0;
 
   public AmsString(String text) {
     super();
@@ -69,10 +67,7 @@ public class AmsString implements Message {
         WithOption.WithEncoding("UTF-8"));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("AmsString");
   }
@@ -125,7 +120,6 @@ public class AmsString implements Message {
     // Create the instance
     AmsString _amsString;
     _amsString = new AmsString(text);
-    _amsString.reservedField0 = reservedField0;
     return _amsString;
   }
 

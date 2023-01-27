@@ -133,7 +133,6 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlRequest extends S7PayloadUse
     private final int szlIndex;
 
     public S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilderImpl(SzlId szlId, int szlIndex) {
-
       this.szlId = szlId;
       this.szlIndex = szlIndex;
     }

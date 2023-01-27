@@ -454,7 +454,6 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
         List<Variant> lastMethodOutputValues,
         long lastMethodCallTime,
         StatusCode lastMethodReturnStatus) {
-
       this.createSessionId = createSessionId;
       this.createClientName = createClientName;
       this.invocationCreationTime = invocationCreationTime;

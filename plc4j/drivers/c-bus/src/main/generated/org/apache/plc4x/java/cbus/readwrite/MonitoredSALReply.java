@@ -116,7 +116,6 @@ public class MonitoredSALReply extends EncodedReply implements Message {
 
     public MonitoredSALReplyBuilderImpl(
         MonitoredSAL monitoredSAL, CBusOptions cBusOptions, RequestContext requestContext) {
-
       this.monitoredSAL = monitoredSAL;
       this.cBusOptions = cBusOptions;
       this.requestContext = requestContext;

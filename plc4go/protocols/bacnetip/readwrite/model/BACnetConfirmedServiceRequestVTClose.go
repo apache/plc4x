@@ -87,7 +87,7 @@ func (m *_BACnetConfirmedServiceRequestVTClose) GetListOfRemoteVtSessionIdentifi
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestVTClose factory function for _BACnetConfirmedServiceRequestVTClose
-func NewBACnetConfirmedServiceRequestVTClose(listOfRemoteVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger, serviceRequestLength uint32, serviceRequestPayloadLength uint32) *_BACnetConfirmedServiceRequestVTClose {
+func NewBACnetConfirmedServiceRequestVTClose(listOfRemoteVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTClose {
 	_result := &_BACnetConfirmedServiceRequestVTClose{
 		ListOfRemoteVtSessionIdentifiers: listOfRemoteVtSessionIdentifiers,
 		_BACnetConfirmedServiceRequest:   NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -132,11 +132,11 @@ func (m *_BACnetConfirmedServiceRequestVTClose) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestVTCloseParse(theBytes []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestVTClose, error) {
-	return BACnetConfirmedServiceRequestVTCloseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength, serviceRequestPayloadLength)
+func BACnetConfirmedServiceRequestVTCloseParse(theBytes []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTClose, error) {
+	return BACnetConfirmedServiceRequestVTCloseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestPayloadLength, serviceRequestLength)
 }
 
-func BACnetConfirmedServiceRequestVTCloseParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestVTClose, error) {
+func BACnetConfirmedServiceRequestVTCloseParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTClose, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTClose"); pullErr != nil {

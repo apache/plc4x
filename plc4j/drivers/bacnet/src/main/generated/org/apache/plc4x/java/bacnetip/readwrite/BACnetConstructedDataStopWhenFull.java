@@ -146,7 +146,6 @@ public class BACnetConstructedDataStopWhenFull extends BACnetConstructedData imp
         BACnetApplicationTagBoolean stopWhenFull,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.stopWhenFull = stopWhenFull;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

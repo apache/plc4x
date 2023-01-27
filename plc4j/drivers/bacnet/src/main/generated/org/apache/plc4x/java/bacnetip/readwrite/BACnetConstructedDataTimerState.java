@@ -148,7 +148,6 @@ public class BACnetConstructedDataTimerState extends BACnetConstructedData imple
         BACnetTimerStateTagged timerState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.timerState = timerState;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

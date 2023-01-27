@@ -246,7 +246,6 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
         BACnetContextTagUnsignedInteger lifetimeInSeconds,
         BACnetPropertyValues listOfValues,
         Integer serviceRequestLength) {
-
       this.subscriberProcessIdentifier = subscriberProcessIdentifier;
       this.initiatingDeviceIdentifier = initiatingDeviceIdentifier;
       this.monitoredObjectIdentifier = monitoredObjectIdentifier;

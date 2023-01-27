@@ -168,7 +168,6 @@ public class ClockAndTimekeepingDataUpdateDate extends ClockAndTimekeepingData i
 
     public ClockAndTimekeepingDataUpdateDateBuilderImpl(
         byte yearHigh, byte yearLow, short month, short day, short dayOfWeek) {
-
       this.yearHigh = yearHigh;
       this.yearLow = yearLow;
       this.month = month;

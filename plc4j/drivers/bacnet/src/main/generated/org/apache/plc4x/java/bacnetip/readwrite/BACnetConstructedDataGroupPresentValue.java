@@ -142,7 +142,6 @@ public class BACnetConstructedDataGroupPresentValue extends BACnetConstructedDat
         List<BACnetReadAccessResult> presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.presentValue = presentValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

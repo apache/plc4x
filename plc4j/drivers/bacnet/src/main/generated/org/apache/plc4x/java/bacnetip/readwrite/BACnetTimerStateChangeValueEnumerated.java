@@ -116,7 +116,6 @@ public class BACnetTimerStateChangeValueEnumerated extends BACnetTimerStateChang
 
     public BACnetTimerStateChangeValueEnumeratedBuilderImpl(
         BACnetApplicationTagEnumerated enumeratedValue, BACnetObjectType objectTypeArgument) {
-
       this.enumeratedValue = enumeratedValue;
       this.objectTypeArgument = objectTypeArgument;
     }

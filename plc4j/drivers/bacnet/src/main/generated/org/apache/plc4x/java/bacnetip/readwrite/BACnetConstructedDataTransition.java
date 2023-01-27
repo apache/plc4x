@@ -148,7 +148,6 @@ public class BACnetConstructedDataTransition extends BACnetConstructedData imple
         BACnetLightingTransitionTagged transition,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.transition = transition;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

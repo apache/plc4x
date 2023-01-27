@@ -140,7 +140,6 @@ public class EventNotificationList extends ExtensionObjectDefinition implements 
 
     public EventNotificationListBuilderImpl(
         int noOfEvents, List<ExtensionObjectDefinition> events) {
-
       this.noOfEvents = noOfEvents;
       this.events = events;
     }

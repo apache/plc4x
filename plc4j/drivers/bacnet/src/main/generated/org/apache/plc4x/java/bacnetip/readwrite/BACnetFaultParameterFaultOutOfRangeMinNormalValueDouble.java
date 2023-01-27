@@ -119,7 +119,6 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble
 
     public BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleBuilderImpl(
         BACnetApplicationTagDouble doubleValue, Short tagNumber) {
-
       this.doubleValue = doubleValue;
       this.tagNumber = tagNumber;
     }

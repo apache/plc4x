@@ -148,7 +148,6 @@ public class BACnetConstructedDataInstanceOf extends BACnetConstructedData imple
         BACnetApplicationTagCharacterString instanceOf,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.instanceOf = instanceOf;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

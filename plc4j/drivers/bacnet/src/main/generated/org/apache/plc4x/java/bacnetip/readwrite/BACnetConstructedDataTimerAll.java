@@ -113,7 +113,6 @@ public class BACnetConstructedDataTimerAll extends BACnetConstructedData impleme
 
     public BACnetConstructedDataTimerAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

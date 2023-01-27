@@ -148,7 +148,6 @@ public class BACnetConstructedDataEscalatorMode extends BACnetConstructedData im
         BACnetEscalatorModeTagged escalatorMode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.escalatorMode = escalatorMode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -46,15 +46,15 @@ public class BACnetServiceAckRequestKey extends BACnetServiceAck implements Mess
   protected final byte[] bytesOfRemovedService;
 
   // Arguments.
-  protected final Long serviceAckLength;
   protected final Long serviceAckPayloadLength;
+  protected final Long serviceAckLength;
 
   public BACnetServiceAckRequestKey(
-      byte[] bytesOfRemovedService, Long serviceAckLength, Long serviceAckPayloadLength) {
+      byte[] bytesOfRemovedService, Long serviceAckPayloadLength, Long serviceAckLength) {
     super(serviceAckLength);
     this.bytesOfRemovedService = bytesOfRemovedService;
-    this.serviceAckLength = serviceAckLength;
     this.serviceAckPayloadLength = serviceAckPayloadLength;
+    this.serviceAckLength = serviceAckLength;
   }
 
   public byte[] getBytesOfRemovedService() {
@@ -94,7 +94,7 @@ public class BACnetServiceAckRequestKey extends BACnetServiceAck implements Mess
   }
 
   public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
-      ReadBuffer readBuffer, Long serviceAckLength, Long serviceAckPayloadLength)
+      ReadBuffer readBuffer, Long serviceAckPayloadLength, Long serviceAckLength)
       throws ParseException {
     readBuffer.pullContext("BACnetServiceAckRequestKey");
     PositionAware positionAware = readBuffer;
@@ -107,28 +107,27 @@ public class BACnetServiceAckRequestKey extends BACnetServiceAck implements Mess
     readBuffer.closeContext("BACnetServiceAckRequestKey");
     // Create the instance
     return new BACnetServiceAckRequestKeyBuilderImpl(
-        bytesOfRemovedService, serviceAckLength, serviceAckPayloadLength);
+        bytesOfRemovedService, serviceAckPayloadLength, serviceAckLength);
   }
 
   public static class BACnetServiceAckRequestKeyBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final byte[] bytesOfRemovedService;
-    private final Long serviceAckLength;
     private final Long serviceAckPayloadLength;
+    private final Long serviceAckLength;
 
     public BACnetServiceAckRequestKeyBuilderImpl(
-        byte[] bytesOfRemovedService, Long serviceAckLength, Long serviceAckPayloadLength) {
-
+        byte[] bytesOfRemovedService, Long serviceAckPayloadLength, Long serviceAckLength) {
       this.bytesOfRemovedService = bytesOfRemovedService;
-      this.serviceAckLength = serviceAckLength;
       this.serviceAckPayloadLength = serviceAckPayloadLength;
+      this.serviceAckLength = serviceAckLength;
     }
 
     public BACnetServiceAckRequestKey build(Long serviceAckLength) {
 
       BACnetServiceAckRequestKey bACnetServiceAckRequestKey =
           new BACnetServiceAckRequestKey(
-              bytesOfRemovedService, serviceAckLength, serviceAckPayloadLength);
+              bytesOfRemovedService, serviceAckPayloadLength, serviceAckLength);
       return bACnetServiceAckRequestKey;
     }
   }

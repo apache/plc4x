@@ -139,7 +139,6 @@ public class IdentifyReplyCommandSummary extends IdentifyReplyCommand implements
 
     public IdentifyReplyCommandSummaryBuilderImpl(
         String partName, byte unitServiceType, String version, Short numBytes) {
-
       this.partName = partName;
       this.unitServiceType = unitServiceType;
       this.version = version;

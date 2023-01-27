@@ -151,7 +151,6 @@ public class BACnetConstructedDataUpdateKeySetTimeout extends BACnetConstructedD
         BACnetApplicationTagUnsignedInteger updateKeySetTimeout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.updateKeySetTimeout = updateKeySetTimeout;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

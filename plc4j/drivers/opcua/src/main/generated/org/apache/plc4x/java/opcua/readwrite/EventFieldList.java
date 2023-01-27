@@ -143,7 +143,6 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
 
     public EventFieldListBuilderImpl(
         long clientHandle, int noOfEventFields, List<Variant> eventFields) {
-
       this.clientHandle = clientHandle;
       this.noOfEventFields = noOfEventFields;
       this.eventFields = eventFields;

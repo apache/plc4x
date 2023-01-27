@@ -153,7 +153,6 @@ public class TransferResult extends ExtensionObjectDefinition implements Message
         StatusCode statusCode,
         int noOfAvailableSequenceNumbers,
         List<Long> availableSequenceNumbers) {
-
       this.statusCode = statusCode;
       this.noOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers;
       this.availableSequenceNumbers = availableSequenceNumbers;

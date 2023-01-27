@@ -42,12 +42,8 @@ public class ApduDataExtReadRouterStatusRequest extends ApduDataExt implements M
     return (short) 0x0D;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtReadRouterStatusRequest(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtReadRouterStatusRequest() {
+    super();
   }
 
   @Override
@@ -81,22 +77,17 @@ public class ApduDataExtReadRouterStatusRequest extends ApduDataExt implements M
 
     readBuffer.closeContext("ApduDataExtReadRouterStatusRequest");
     // Create the instance
-    return new ApduDataExtReadRouterStatusRequestBuilderImpl(length);
+    return new ApduDataExtReadRouterStatusRequestBuilderImpl();
   }
 
   public static class ApduDataExtReadRouterStatusRequestBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtReadRouterStatusRequestBuilderImpl(Short length) {
+    public ApduDataExtReadRouterStatusRequestBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtReadRouterStatusRequest build(Short length) {
-
+    public ApduDataExtReadRouterStatusRequest build() {
       ApduDataExtReadRouterStatusRequest apduDataExtReadRouterStatusRequest =
-          new ApduDataExtReadRouterStatusRequest(length);
+          new ApduDataExtReadRouterStatusRequest();
       return apduDataExtReadRouterStatusRequest;
     }
   }

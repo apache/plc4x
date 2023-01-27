@@ -149,7 +149,6 @@ public class BACnetConstructedDataBACnetIPMulticastAddress extends BACnetConstru
         BACnetApplicationTagOctetString ipMulticastAddress,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipMulticastAddress = ipMulticastAddress;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -119,7 +119,6 @@ public class BACnetLogRecordLogDatumBitStringValue extends BACnetLogRecordLogDat
 
     public BACnetLogRecordLogDatumBitStringValueBuilderImpl(
         BACnetContextTagBitString bitStringValue, Short tagNumber) {
-
       this.bitStringValue = bitStringValue;
       this.tagNumber = tagNumber;
     }

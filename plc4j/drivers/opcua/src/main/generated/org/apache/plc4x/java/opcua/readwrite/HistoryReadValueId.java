@@ -170,7 +170,6 @@ public class HistoryReadValueId extends ExtensionObjectDefinition implements Mes
         PascalString indexRange,
         QualifiedName dataEncoding,
         PascalByteString continuationPoint) {
-
       this.nodeId = nodeId;
       this.indexRange = indexRange;
       this.dataEncoding = dataEncoding;

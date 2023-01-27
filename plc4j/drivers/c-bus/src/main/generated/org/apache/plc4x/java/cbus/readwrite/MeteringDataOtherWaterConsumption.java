@@ -99,7 +99,6 @@ public class MeteringDataOtherWaterConsumption extends MeteringData implements M
     private final long kL;
 
     public MeteringDataOtherWaterConsumptionBuilderImpl(long kL) {
-
       this.kL = kL;
     }
 

@@ -152,7 +152,6 @@ public class BACnetConstructedDataBackupAndRestoreState extends BACnetConstructe
         BACnetBackupStateTagged backupAndRestoreState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.backupAndRestoreState = backupAndRestoreState;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

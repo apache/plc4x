@@ -104,7 +104,6 @@ public class CANOpenPDOPayload extends CANOpenPayload implements Message {
     private final CANOpenPDO pdo;
 
     public CANOpenPDOPayloadBuilderImpl(CANOpenPDO pdo) {
-
       this.pdo = pdo;
     }
 

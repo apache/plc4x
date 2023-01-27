@@ -133,7 +133,6 @@ public class ParameterValueApplicationAddress1 extends ParameterValue implements
 
     public ParameterValueApplicationAddress1BuilderImpl(
         ApplicationAddress1 value, byte[] data, Short numBytes) {
-
       this.value = value;
       this.data = data;
       this.numBytes = numBytes;

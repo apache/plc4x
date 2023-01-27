@@ -105,7 +105,6 @@ public class SALDataAccessControl extends SALData implements Message {
     private final AccessControlData accessControlData;
 
     public SALDataAccessControlBuilderImpl(AccessControlData accessControlData) {
-
       this.accessControlData = accessControlData;
     }
 

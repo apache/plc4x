@@ -119,7 +119,6 @@ public class MediaTransportControlDataSetSelection extends MediaTransportControl
     private final byte selectionLo;
 
     public MediaTransportControlDataSetSelectionBuilderImpl(byte selectionHi, byte selectionLo) {
-
       this.selectionHi = selectionHi;
       this.selectionLo = selectionLo;
     }

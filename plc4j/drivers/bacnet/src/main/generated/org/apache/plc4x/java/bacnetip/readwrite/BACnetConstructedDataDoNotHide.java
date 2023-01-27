@@ -145,7 +145,6 @@ public class BACnetConstructedDataDoNotHide extends BACnetConstructedData implem
         BACnetApplicationTagBoolean doNotHide,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.doNotHide = doNotHide;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -45,8 +45,6 @@ public class CANOpenNetworkPayload extends CANOpenPayload implements Message {
   // Properties.
   protected final NMTStateRequest request;
   protected final short node;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public CANOpenNetworkPayload(NMTStateRequest request, short node) {
     super();
@@ -78,10 +76,7 @@ public class CANOpenNetworkPayload extends CANOpenPayload implements Message {
             NMTStateRequest::getValue, NMTStateRequest::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeUnsignedByte(writeBuffer, 1));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 1));
 
     // Simple Field (node)
     writeSimpleField("node", node, writeUnsignedShort(writeBuffer, 7));
@@ -132,25 +127,21 @@ public class CANOpenNetworkPayload extends CANOpenPayload implements Message {
 
     readBuffer.closeContext("CANOpenNetworkPayload");
     // Create the instance
-    return new CANOpenNetworkPayloadBuilderImpl(request, node, reservedField0);
+    return new CANOpenNetworkPayloadBuilderImpl(request, node);
   }
 
   public static class CANOpenNetworkPayloadBuilderImpl
       implements CANOpenPayload.CANOpenPayloadBuilder {
     private final NMTStateRequest request;
     private final short node;
-    private final Byte reservedField0;
 
-    public CANOpenNetworkPayloadBuilderImpl(
-        NMTStateRequest request, short node, Byte reservedField0) {
+    public CANOpenNetworkPayloadBuilderImpl(NMTStateRequest request, short node) {
       this.request = request;
       this.node = node;
-      this.reservedField0 = reservedField0;
     }
 
     public CANOpenNetworkPayload build() {
       CANOpenNetworkPayload cANOpenNetworkPayload = new CANOpenNetworkPayload(request, node);
-      cANOpenNetworkPayload.reservedField0 = reservedField0;
       return cANOpenNetworkPayload;
     }
   }

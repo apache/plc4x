@@ -124,7 +124,6 @@ public class KeyValuePair extends ExtensionObjectDefinition implements Message {
     private final Variant value;
 
     public KeyValuePairBuilderImpl(QualifiedName key, Variant value) {
-
       this.key = key;
       this.value = value;
     }

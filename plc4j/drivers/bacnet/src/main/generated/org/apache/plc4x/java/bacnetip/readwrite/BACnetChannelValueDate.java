@@ -105,7 +105,6 @@ public class BACnetChannelValueDate extends BACnetChannelValue implements Messag
     private final BACnetApplicationTagDate dateValue;
 
     public BACnetChannelValueDateBuilderImpl(BACnetApplicationTagDate dateValue) {
-
       this.dateValue = dateValue;
     }
 

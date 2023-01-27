@@ -245,7 +245,6 @@ public class BACnetConstructedDataEventMessageTextsConfig extends BACnetConstruc
         List<BACnetOptionalCharacterString> eventMessageTextsConfig,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.eventMessageTextsConfig = eventMessageTextsConfig;
       this.tagNumber = tagNumber;

@@ -42,12 +42,8 @@ public class ApduDataExtDomainAddressWrite extends ApduDataExt implements Messag
     return (short) 0x20;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtDomainAddressWrite(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtDomainAddressWrite() {
+    super();
   }
 
   @Override
@@ -81,22 +77,17 @@ public class ApduDataExtDomainAddressWrite extends ApduDataExt implements Messag
 
     readBuffer.closeContext("ApduDataExtDomainAddressWrite");
     // Create the instance
-    return new ApduDataExtDomainAddressWriteBuilderImpl(length);
+    return new ApduDataExtDomainAddressWriteBuilderImpl();
   }
 
   public static class ApduDataExtDomainAddressWriteBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtDomainAddressWriteBuilderImpl(Short length) {
+    public ApduDataExtDomainAddressWriteBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtDomainAddressWrite build(Short length) {
-
+    public ApduDataExtDomainAddressWrite build() {
       ApduDataExtDomainAddressWrite apduDataExtDomainAddressWrite =
-          new ApduDataExtDomainAddressWrite(length);
+          new ApduDataExtDomainAddressWrite();
       return apduDataExtDomainAddressWrite;
     }
   }

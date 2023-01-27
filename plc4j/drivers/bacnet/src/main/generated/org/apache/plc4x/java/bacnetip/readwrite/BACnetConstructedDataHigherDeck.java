@@ -148,7 +148,6 @@ public class BACnetConstructedDataHigherDeck extends BACnetConstructedData imple
         BACnetApplicationTagObjectIdentifier higherDeck,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.higherDeck = higherDeck;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

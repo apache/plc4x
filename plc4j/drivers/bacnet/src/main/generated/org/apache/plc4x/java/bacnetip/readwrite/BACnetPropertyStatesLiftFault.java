@@ -109,7 +109,6 @@ public class BACnetPropertyStatesLiftFault extends BACnetPropertyStates implemen
     private final BACnetLiftFaultTagged liftFault;
 
     public BACnetPropertyStatesLiftFaultBuilderImpl(BACnetLiftFaultTagged liftFault) {
-
       this.liftFault = liftFault;
     }
 

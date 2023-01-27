@@ -107,7 +107,6 @@ public class BACnetHostAddressNull extends BACnetHostAddress implements Message 
     private final BACnetContextTagNull none;
 
     public BACnetHostAddressNullBuilderImpl(BACnetContextTagNull none) {
-
       this.none = none;
     }
 

@@ -114,7 +114,6 @@ public class BACnetConstructedDataEventEnrollmentAll extends BACnetConstructedDa
 
     public BACnetConstructedDataEventEnrollmentAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

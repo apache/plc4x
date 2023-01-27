@@ -190,7 +190,6 @@ public class BACnetConstructedDataShedLevelDescriptions extends BACnetConstructe
         List<BACnetApplicationTagCharacterString> shedLevelDescriptions,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.shedLevelDescriptions = shedLevelDescriptions;
       this.tagNumber = tagNumber;

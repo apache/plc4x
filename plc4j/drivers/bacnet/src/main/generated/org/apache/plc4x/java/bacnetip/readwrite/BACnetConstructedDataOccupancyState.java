@@ -148,7 +148,6 @@ public class BACnetConstructedDataOccupancyState extends BACnetConstructedData i
         BACnetAccessZoneOccupancyStateTagged occupancyState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.occupancyState = occupancyState;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

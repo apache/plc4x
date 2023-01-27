@@ -109,7 +109,6 @@ public class BACnetPropertyStatesBacnetIpMode extends BACnetPropertyStates imple
     private final BACnetIPModeTagged bacnetIpMode;
 
     public BACnetPropertyStatesBacnetIpModeBuilderImpl(BACnetIPModeTagged bacnetIpMode) {
-
       this.bacnetIpMode = bacnetIpMode;
     }
 

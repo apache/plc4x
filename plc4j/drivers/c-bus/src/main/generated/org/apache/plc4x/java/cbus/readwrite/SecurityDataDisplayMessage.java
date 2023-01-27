@@ -106,7 +106,6 @@ public class SecurityDataDisplayMessage extends SecurityData implements Message 
     private final String message;
 
     public SecurityDataDisplayMessageBuilderImpl(String message) {
-
       this.message = message;
     }
 

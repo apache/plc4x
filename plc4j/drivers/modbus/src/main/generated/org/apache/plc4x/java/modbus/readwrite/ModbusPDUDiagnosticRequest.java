@@ -123,7 +123,6 @@ public class ModbusPDUDiagnosticRequest extends ModbusPDU implements Message {
     private final int data;
 
     public ModbusPDUDiagnosticRequestBuilderImpl(int subFunction, int data) {
-
       this.subFunction = subFunction;
       this.data = data;
     }

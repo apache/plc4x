@@ -145,7 +145,6 @@ public class BACnetConstructedDataIsUTC extends BACnetConstructedData implements
         BACnetApplicationTagBoolean isUtc,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.isUtc = isUtc;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

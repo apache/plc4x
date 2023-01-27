@@ -109,7 +109,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryReal
 
     public BACnetFaultParameterFaultExtendedParametersEntryRealBuilderImpl(
         BACnetApplicationTagReal realValue) {
-
       this.realValue = realValue;
     }
 

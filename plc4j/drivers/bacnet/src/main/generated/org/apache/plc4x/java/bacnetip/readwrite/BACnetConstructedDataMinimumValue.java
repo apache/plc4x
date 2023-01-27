@@ -146,7 +146,6 @@ public class BACnetConstructedDataMinimumValue extends BACnetConstructedData imp
         BACnetApplicationTagReal minimumValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.minimumValue = minimumValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

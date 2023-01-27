@@ -151,7 +151,6 @@ public class BACnetConstructedDataDatabaseRevision extends BACnetConstructedData
         BACnetApplicationTagUnsignedInteger databaseRevision,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.databaseRevision = databaseRevision;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

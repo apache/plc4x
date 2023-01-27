@@ -109,7 +109,6 @@ public class BACnetPropertyStatesDoorStatus extends BACnetPropertyStates impleme
     private final BACnetDoorStatusTagged doorStatus;
 
     public BACnetPropertyStatesDoorStatusBuilderImpl(BACnetDoorStatusTagged doorStatus) {
-
       this.doorStatus = doorStatus;
     }
 

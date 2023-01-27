@@ -126,7 +126,6 @@ public class IssuedIdentityToken extends UserIdentityTokenDefinition implements 
 
     public IssuedIdentityTokenBuilderImpl(
         PascalByteString tokenData, PascalString encryptionAlgorithm) {
-
       this.tokenData = tokenData;
       this.encryptionAlgorithm = encryptionAlgorithm;
     }

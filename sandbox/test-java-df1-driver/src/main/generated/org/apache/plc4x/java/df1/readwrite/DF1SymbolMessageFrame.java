@@ -222,7 +222,6 @@ public class DF1SymbolMessageFrame extends DF1Symbol implements Message {
 
     public DF1SymbolMessageFrameBuilderImpl(
         short destinationAddress, short sourceAddress, DF1Command command) {
-
       this.destinationAddress = destinationAddress;
       this.sourceAddress = sourceAddress;
       this.command = command;

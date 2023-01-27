@@ -148,7 +148,6 @@ public class BACnetConstructedDataProgramState extends BACnetConstructedData imp
         BACnetProgramStateTagged programState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.programState = programState;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

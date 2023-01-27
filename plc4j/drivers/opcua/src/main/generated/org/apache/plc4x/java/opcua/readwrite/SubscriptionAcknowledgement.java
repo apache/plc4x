@@ -117,7 +117,6 @@ public class SubscriptionAcknowledgement extends ExtensionObjectDefinition imple
     private final long sequenceNumber;
 
     public SubscriptionAcknowledgementBuilderImpl(long subscriptionId, long sequenceNumber) {
-
       this.subscriptionId = subscriptionId;
       this.sequenceNumber = sequenceNumber;
     }

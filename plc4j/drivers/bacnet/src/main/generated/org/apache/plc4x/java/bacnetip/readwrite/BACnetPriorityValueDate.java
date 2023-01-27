@@ -113,7 +113,6 @@ public class BACnetPriorityValueDate extends BACnetPriorityValue implements Mess
 
     public BACnetPriorityValueDateBuilderImpl(
         BACnetApplicationTagDate dateValue, BACnetObjectType objectTypeArgument) {
-
       this.dateValue = dateValue;
       this.objectTypeArgument = objectTypeArgument;
     }

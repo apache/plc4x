@@ -157,7 +157,6 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
         ExtensionObjectDefinition requestHeader,
         int noOfBrowsePaths,
         List<ExtensionObjectDefinition> browsePaths) {
-
       this.requestHeader = requestHeader;
       this.noOfBrowsePaths = noOfBrowsePaths;
       this.browsePaths = browsePaths;

@@ -44,51 +44,46 @@ public abstract class OpenProtocolMessage implements Message {
   public static final Short END = 0x00;
 
   // Properties.
-  protected final OpenProtocolRevision selectedRevision;
+  protected final Long midRevision;
   protected final Short noAckFlag;
-  protected final Integer stationId;
-  protected final Integer spindleId;
+  protected final Integer targetStationId;
+  protected final Integer targetSpindleId;
   protected final Integer sequenceNumber;
   protected final Short numberOfMessageParts;
   protected final Short messagePartNumber;
 
-  // Arguments.
-  protected final OpenProtocolRevision connectionRevision;
-
   public OpenProtocolMessage(
-      OpenProtocolRevision selectedRevision,
+      Long midRevision,
       Short noAckFlag,
-      Integer stationId,
-      Integer spindleId,
+      Integer targetStationId,
+      Integer targetSpindleId,
       Integer sequenceNumber,
       Short numberOfMessageParts,
-      Short messagePartNumber,
-      OpenProtocolRevision connectionRevision) {
+      Short messagePartNumber) {
     super();
-    this.selectedRevision = selectedRevision;
+    this.midRevision = midRevision;
     this.noAckFlag = noAckFlag;
-    this.stationId = stationId;
-    this.spindleId = spindleId;
+    this.targetStationId = targetStationId;
+    this.targetSpindleId = targetSpindleId;
     this.sequenceNumber = sequenceNumber;
     this.numberOfMessageParts = numberOfMessageParts;
     this.messagePartNumber = messagePartNumber;
-    this.connectionRevision = connectionRevision;
   }
 
-  public OpenProtocolRevision getSelectedRevision() {
-    return selectedRevision;
+  public Long getMidRevision() {
+    return midRevision;
   }
 
   public Short getNoAckFlag() {
     return noAckFlag;
   }
 
-  public Integer getStationId() {
-    return stationId;
+  public Integer getTargetStationId() {
+    return targetStationId;
   }
 
-  public Integer getSpindleId() {
-    return spindleId;
+  public Integer getTargetSpindleId() {
+    return targetSpindleId;
   }
 
   public Integer getSequenceNumber() {
@@ -129,15 +124,11 @@ public abstract class OpenProtocolMessage implements Message {
         new DataWriterEnumDefault<>(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
         WithOption.WithEncoding("ASCII"));
 
-    // Optional Field (selectedRevision) (Can be skipped, if the value is null)
-    writeOptionalEnumField(
-        "selectedRevision",
-        "OpenProtocolRevision",
-        selectedRevision,
-        new DataWriterEnumDefault<>(
-            OpenProtocolRevision::getValue,
-            OpenProtocolRevision::name,
-            writeUnsignedLong(writeBuffer, 24)),
+    // Optional Field (midRevision) (Can be skipped, if the value is null)
+    writeOptionalField(
+        "midRevision",
+        midRevision,
+        writeUnsignedLong(writeBuffer, 24),
         WithOption.WithEncoding("ASCII"),
         WithOption.WithNullBytesHex("202020"));
 
@@ -149,18 +140,18 @@ public abstract class OpenProtocolMessage implements Message {
         WithOption.WithEncoding("ASCII"),
         WithOption.WithNullBytesHex("20"));
 
-    // Optional Field (stationId) (Can be skipped, if the value is null)
+    // Optional Field (targetStationId) (Can be skipped, if the value is null)
     writeOptionalField(
-        "stationId",
-        stationId,
+        "targetStationId",
+        targetStationId,
         writeUnsignedInt(writeBuffer, 16),
         WithOption.WithEncoding("ASCII"),
         WithOption.WithNullBytesHex("2020"));
 
-    // Optional Field (spindleId) (Can be skipped, if the value is null)
+    // Optional Field (targetSpindleId) (Can be skipped, if the value is null)
     writeOptionalField(
-        "spindleId",
-        spindleId,
+        "targetSpindleId",
+        targetSpindleId,
         writeUnsignedInt(writeBuffer, 16),
         WithOption.WithEncoding("ASCII"),
         WithOption.WithNullBytesHex("2020"));
@@ -214,16 +205,16 @@ public abstract class OpenProtocolMessage implements Message {
     // Discriminator Field (mid)
     lengthInBits += 32;
 
-    // Optional Field (selectedRevision)
+    // Optional Field (midRevision)
     lengthInBits += 24;
 
     // Optional Field (noAckFlag)
     lengthInBits += 8;
 
-    // Optional Field (stationId)
+    // Optional Field (targetStationId)
     lengthInBits += 16;
 
-    // Optional Field (spindleId)
+    // Optional Field (targetSpindleId)
     lengthInBits += 16;
 
     // Optional Field (sequenceNumber)
@@ -250,22 +241,21 @@ public abstract class OpenProtocolMessage implements Message {
       throw new PlcRuntimeException(
           "Wrong number of arguments, expected 1, but got " + args.length);
     }
-    OpenProtocolRevision connectionRevision;
-    if (args[0] instanceof OpenProtocolRevision) {
-      connectionRevision = (OpenProtocolRevision) args[0];
+    Long revision;
+    if (args[0] instanceof Long) {
+      revision = (Long) args[0];
     } else if (args[0] instanceof String) {
-      connectionRevision = OpenProtocolRevision.valueOf((String) args[0]);
+      revision = Long.valueOf((String) args[0]);
     } else {
       throw new PlcRuntimeException(
-          "Argument 0 expected to be of type OpenProtocolRevision or a string which is parseable"
-              + " but was "
+          "Argument 0 expected to be of type Long or a string which is parseable but was "
               + args[0].getClass().getName());
     }
-    return staticParse(readBuffer, connectionRevision);
+    return staticParse(readBuffer, revision);
   }
 
-  public static OpenProtocolMessage staticParse(
-      ReadBuffer readBuffer, OpenProtocolRevision connectionRevision) throws ParseException {
+  public static OpenProtocolMessage staticParse(ReadBuffer readBuffer, Long revision)
+      throws ParseException {
     readBuffer.pullContext("OpenProtocolMessage");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -281,11 +271,10 @@ public abstract class OpenProtocolMessage implements Message {
             new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
             WithOption.WithEncoding("ASCII"));
 
-    OpenProtocolRevision selectedRevision =
+    Long midRevision =
         readOptionalField(
-            "selectedRevision",
-            new DataReaderEnumDefault<>(
-                OpenProtocolRevision::enumForValue, readUnsignedLong(readBuffer, 24)),
+            "midRevision",
+            readUnsignedLong(readBuffer, 24),
             WithOption.WithEncoding("ASCII"),
             WithOption.WithNullBytesHex("202020"));
 
@@ -296,16 +285,16 @@ public abstract class OpenProtocolMessage implements Message {
             WithOption.WithEncoding("ASCII"),
             WithOption.WithNullBytesHex("20"));
 
-    Integer stationId =
+    Integer targetStationId =
         readOptionalField(
-            "stationId",
+            "targetStationId",
             readUnsignedInt(readBuffer, 16),
             WithOption.WithEncoding("ASCII"),
             WithOption.WithNullBytesHex("2020"));
 
-    Integer spindleId =
+    Integer targetSpindleId =
         readOptionalField(
-            "spindleId",
+            "targetSpindleId",
             readUnsignedInt(readBuffer, 16),
             WithOption.WithEncoding("ASCII"),
             WithOption.WithNullBytesHex("2020"));
@@ -336,35 +325,35 @@ public abstract class OpenProtocolMessage implements Message {
     if (EvaluationHelper.equals(mid, Mid.ApplicationCommunicationStart)) {
       builder =
           OpenProtocolMessageApplicationCommunicationStart.staticParseOpenProtocolMessageBuilder(
-              readBuffer, connectionRevision);
+              readBuffer, revision);
     } else if (EvaluationHelper.equals(mid, Mid.ApplicationCommunicationStartAcknowledge)) {
       builder =
           OpenProtocolMessageApplicationCommunicationStartAcknowledge
-              .staticParseOpenProtocolMessageBuilder(readBuffer, connectionRevision);
+              .staticParseOpenProtocolMessageBuilder(readBuffer, revision);
     } else if (EvaluationHelper.equals(mid, Mid.ApplicationCommunicationStop)) {
       builder =
           OpenProtocolMessageApplicationCommunicationStop.staticParseOpenProtocolMessageBuilder(
-              readBuffer, connectionRevision);
+              readBuffer, revision);
     } else if (EvaluationHelper.equals(mid, Mid.ApplicationCommandError)) {
       builder =
           OpenProtocolMessageApplicationCommandError.staticParseOpenProtocolMessageBuilder(
-              readBuffer, connectionRevision);
+              readBuffer, revision);
     } else if (EvaluationHelper.equals(mid, Mid.ApplicationCommandAccepted)) {
       builder =
           OpenProtocolMessageApplicationCommandAccepted.staticParseOpenProtocolMessageBuilder(
-              readBuffer, connectionRevision);
+              readBuffer, revision);
     } else if (EvaluationHelper.equals(mid, Mid.ApplicationGenericDataRequest)) {
       builder =
           OpenProtocolMessageApplicationGenericDataRequest.staticParseOpenProtocolMessageBuilder(
-              readBuffer, connectionRevision);
+              readBuffer, revision);
     } else if (EvaluationHelper.equals(mid, Mid.ApplicationGenericSubscription)) {
       builder =
           OpenProtocolMessageApplicationGenericSubscription.staticParseOpenProtocolMessageBuilder(
-              readBuffer, connectionRevision);
+              readBuffer, revision);
     } else if (EvaluationHelper.equals(mid, Mid.ApplicationGenericUnsubscribe)) {
       builder =
           OpenProtocolMessageApplicationGenericUnsubscribe.staticParseOpenProtocolMessageBuilder(
-              readBuffer, connectionRevision);
+              readBuffer, revision);
     }
     if (builder == null) {
       throw new ParseException(
@@ -377,27 +366,25 @@ public abstract class OpenProtocolMessage implements Message {
     // Create the instance
     OpenProtocolMessage _openProtocolMessage =
         builder.build(
-            selectedRevision,
+            midRevision,
             noAckFlag,
-            stationId,
-            spindleId,
+            targetStationId,
+            targetSpindleId,
             sequenceNumber,
             numberOfMessageParts,
-            messagePartNumber,
-            connectionRevision);
+            messagePartNumber);
     return _openProtocolMessage;
   }
 
   public interface OpenProtocolMessageBuilder {
     OpenProtocolMessage build(
-        OpenProtocolRevision selectedRevision,
+        Long midRevision,
         Short noAckFlag,
-        Integer stationId,
-        Integer spindleId,
+        Integer targetStationId,
+        Integer targetSpindleId,
         Integer sequenceNumber,
         Short numberOfMessageParts,
-        Short messagePartNumber,
-        OpenProtocolRevision connectionRevision);
+        Short messagePartNumber);
   }
 
   @Override
@@ -409,10 +396,10 @@ public abstract class OpenProtocolMessage implements Message {
       return false;
     }
     OpenProtocolMessage that = (OpenProtocolMessage) o;
-    return (getSelectedRevision() == that.getSelectedRevision())
+    return (getMidRevision() == that.getMidRevision())
         && (getNoAckFlag() == that.getNoAckFlag())
-        && (getStationId() == that.getStationId())
-        && (getSpindleId() == that.getSpindleId())
+        && (getTargetStationId() == that.getTargetStationId())
+        && (getTargetSpindleId() == that.getTargetSpindleId())
         && (getSequenceNumber() == that.getSequenceNumber())
         && (getNumberOfMessageParts() == that.getNumberOfMessageParts())
         && (getMessagePartNumber() == that.getMessagePartNumber())
@@ -422,10 +409,10 @@ public abstract class OpenProtocolMessage implements Message {
   @Override
   public int hashCode() {
     return Objects.hash(
-        getSelectedRevision(),
+        getMidRevision(),
         getNoAckFlag(),
-        getStationId(),
-        getSpindleId(),
+        getTargetStationId(),
+        getTargetSpindleId(),
         getSequenceNumber(),
         getNumberOfMessageParts(),
         getMessagePartNumber());

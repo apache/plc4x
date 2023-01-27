@@ -188,7 +188,6 @@ public class CreateSubscriptionResponse extends ExtensionObjectDefinition implem
         double revisedPublishingInterval,
         long revisedLifetimeCount,
         long revisedMaxKeepAliveCount) {
-
       this.responseHeader = responseHeader;
       this.subscriptionId = subscriptionId;
       this.revisedPublishingInterval = revisedPublishingInterval;

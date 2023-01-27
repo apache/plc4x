@@ -114,7 +114,6 @@ public class BACnetConstructedDataStructuredViewAll extends BACnetConstructedDat
 
     public BACnetConstructedDataStructuredViewAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

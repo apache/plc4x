@@ -115,7 +115,6 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
 
     public BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilderImpl(
         BACnetContextTagObjectIdentifier objectIdentifier) {
-
       this.objectIdentifier = objectIdentifier;
     }
 

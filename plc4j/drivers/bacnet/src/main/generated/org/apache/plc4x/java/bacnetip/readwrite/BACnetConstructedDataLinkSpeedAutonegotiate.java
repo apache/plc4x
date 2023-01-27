@@ -150,7 +150,6 @@ public class BACnetConstructedDataLinkSpeedAutonegotiate extends BACnetConstruct
         BACnetApplicationTagBoolean linkSpeedAutonegotiate,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.linkSpeedAutonegotiate = linkSpeedAutonegotiate;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

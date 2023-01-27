@@ -109,7 +109,6 @@ public class BACnetPropertyStatesAccessEvent extends BACnetPropertyStates implem
     private final BACnetAccessEventTagged accessEvent;
 
     public BACnetPropertyStatesAccessEventBuilderImpl(BACnetAccessEventTagged accessEvent) {
-
       this.accessEvent = accessEvent;
     }
 

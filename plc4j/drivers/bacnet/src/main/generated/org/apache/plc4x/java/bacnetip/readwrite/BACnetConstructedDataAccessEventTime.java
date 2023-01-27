@@ -146,7 +146,6 @@ public class BACnetConstructedDataAccessEventTime extends BACnetConstructedData 
         BACnetTimeStamp accessEventTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.accessEventTime = accessEventTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

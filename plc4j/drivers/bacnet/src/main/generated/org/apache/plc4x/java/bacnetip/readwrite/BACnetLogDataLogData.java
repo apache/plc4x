@@ -168,7 +168,6 @@ public class BACnetLogDataLogData extends BACnetLogData implements Message {
         List<BACnetLogDataLogDataEntry> logData,
         BACnetClosingTag innerClosingTag,
         Short tagNumber) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.logData = logData;
       this.innerClosingTag = innerClosingTag;

@@ -164,7 +164,6 @@ public class SamplingIntervalDiagnosticsDataType extends ExtensionObjectDefiniti
         long monitoredItemCount,
         long maxMonitoredItemCount,
         long disabledMonitoredItemCount) {
-
       this.samplingInterval = samplingInterval;
       this.monitoredItemCount = monitoredItemCount;
       this.maxMonitoredItemCount = maxMonitoredItemCount;

@@ -156,7 +156,6 @@ public class BACnetEventParameterChangeOfDiscreteValue extends BACnetEventParame
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.closingTag = closingTag;

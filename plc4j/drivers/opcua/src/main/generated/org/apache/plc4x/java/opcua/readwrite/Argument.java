@@ -205,7 +205,6 @@ public class Argument extends ExtensionObjectDefinition implements Message {
         int noOfArrayDimensions,
         List<Long> arrayDimensions,
         LocalizedText description) {
-
       this.name = name;
       this.dataType = dataType;
       this.valueRank = valueRank;

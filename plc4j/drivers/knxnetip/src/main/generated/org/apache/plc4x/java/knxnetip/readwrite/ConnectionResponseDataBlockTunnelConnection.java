@@ -106,7 +106,6 @@ public class ConnectionResponseDataBlockTunnelConnection extends ConnectionRespo
     private final KnxAddress knxAddress;
 
     public ConnectionResponseDataBlockTunnelConnectionBuilderImpl(KnxAddress knxAddress) {
-
       this.knxAddress = knxAddress;
     }
 

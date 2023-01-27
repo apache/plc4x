@@ -153,7 +153,6 @@ public class BACnetConstructedDataFDSubscriptionLifetime extends BACnetConstruct
         BACnetApplicationTagUnsignedInteger fdSubscriptionLifetime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.fdSubscriptionLifetime = fdSubscriptionLifetime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

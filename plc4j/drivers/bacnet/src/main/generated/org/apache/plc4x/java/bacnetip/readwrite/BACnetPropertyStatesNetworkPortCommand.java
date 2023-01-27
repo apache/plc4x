@@ -112,7 +112,6 @@ public class BACnetPropertyStatesNetworkPortCommand extends BACnetPropertyStates
 
     public BACnetPropertyStatesNetworkPortCommandBuilderImpl(
         BACnetNetworkPortCommandTagged networkPortCommand) {
-
       this.networkPortCommand = networkPortCommand;
     }
 

@@ -167,7 +167,6 @@ public class DeleteMonitoredItemsRequest extends ExtensionObjectDefinition imple
         long subscriptionId,
         int noOfMonitoredItemIds,
         List<Long> monitoredItemIds) {
-
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
       this.noOfMonitoredItemIds = noOfMonitoredItemIds;

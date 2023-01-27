@@ -109,7 +109,6 @@ public class BACnetPropertyStatesSystemStatus extends BACnetPropertyStates imple
     private final BACnetDeviceStatusTagged systemStatus;
 
     public BACnetPropertyStatesSystemStatusBuilderImpl(BACnetDeviceStatusTagged systemStatus) {
-
       this.systemStatus = systemStatus;
     }
 

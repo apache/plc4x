@@ -122,7 +122,6 @@ public class BACnetApplicationTagSignedInteger extends BACnetApplicationTag impl
     private final BACnetTagPayloadSignedInteger payload;
 
     public BACnetApplicationTagSignedIntegerBuilderImpl(BACnetTagPayloadSignedInteger payload) {
-
       this.payload = payload;
     }
 

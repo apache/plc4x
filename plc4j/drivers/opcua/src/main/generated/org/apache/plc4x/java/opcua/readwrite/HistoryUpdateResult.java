@@ -198,7 +198,6 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
         List<StatusCode> operationResults,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.statusCode = statusCode;
       this.noOfOperationResults = noOfOperationResults;
       this.operationResults = operationResults;

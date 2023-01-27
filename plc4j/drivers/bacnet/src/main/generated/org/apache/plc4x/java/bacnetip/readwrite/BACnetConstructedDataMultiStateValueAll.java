@@ -114,7 +114,6 @@ public class BACnetConstructedDataMultiStateValueAll extends BACnetConstructedDa
 
     public BACnetConstructedDataMultiStateValueAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

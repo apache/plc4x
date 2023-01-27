@@ -174,7 +174,6 @@ public class SecurityDataArmSystem extends SecurityData implements Message {
     private final byte armMode;
 
     public SecurityDataArmSystemBuilderImpl(byte armMode) {
-
       this.armMode = armMode;
     }
 

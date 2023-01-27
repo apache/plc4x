@@ -145,7 +145,6 @@ public class BACnetConstructedDataFailedAttemptEvents extends BACnetConstructedD
         List<BACnetAccessEventTagged> failedAttemptEvents,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.failedAttemptEvents = failedAttemptEvents;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

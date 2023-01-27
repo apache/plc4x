@@ -153,7 +153,6 @@ public class BACnetConstructedDataTransactionNotificationClass extends BACnetCon
         BACnetApplicationTagUnsignedInteger transactionNotificationClass,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.transactionNotificationClass = transactionNotificationClass;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -148,7 +148,6 @@ public class BACnetConstructedDataReliability extends BACnetConstructedData impl
         BACnetReliabilityTagged reliability,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.reliability = reliability;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

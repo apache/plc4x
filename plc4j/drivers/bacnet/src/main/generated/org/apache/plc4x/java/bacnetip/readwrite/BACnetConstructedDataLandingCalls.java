@@ -141,7 +141,6 @@ public class BACnetConstructedDataLandingCalls extends BACnetConstructedData imp
         List<BACnetLandingCallStatus> landingCallStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.landingCallStatus = landingCallStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -143,7 +143,6 @@ public class BACnetConstructedDataUTCTimeSynchronizationRecipients extends BACne
         List<BACnetRecipient> utcTimeSynchronizationRecipients,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.utcTimeSynchronizationRecipients = utcTimeSynchronizationRecipients;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -145,7 +145,6 @@ public class BACnetConstructedDataTrigger extends BACnetConstructedData implemen
         BACnetApplicationTagBoolean trigger,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.trigger = trigger;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

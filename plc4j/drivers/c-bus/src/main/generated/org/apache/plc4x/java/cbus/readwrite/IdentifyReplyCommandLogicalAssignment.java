@@ -120,7 +120,6 @@ public class IdentifyReplyCommandLogicalAssignment extends IdentifyReplyCommand 
 
     public IdentifyReplyCommandLogicalAssignmentBuilderImpl(
         List<LogicAssignment> logicAssigment, Short numBytes) {
-
       this.logicAssigment = logicAssigment;
       this.numBytes = numBytes;
     }

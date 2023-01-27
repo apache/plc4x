@@ -124,7 +124,6 @@ public class BACnetLogRecordLogDatumAnyValue extends BACnetLogRecordLogDatum imp
 
     public BACnetLogRecordLogDatumAnyValueBuilderImpl(
         BACnetConstructedData anyValue, Short tagNumber) {
-
       this.anyValue = anyValue;
       this.tagNumber = tagNumber;
     }

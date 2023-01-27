@@ -108,7 +108,6 @@ public class BACnetChannelValueUnsigned extends BACnetChannelValue implements Me
 
     public BACnetChannelValueUnsignedBuilderImpl(
         BACnetApplicationTagUnsignedInteger unsignedValue) {
-
       this.unsignedValue = unsignedValue;
     }
 

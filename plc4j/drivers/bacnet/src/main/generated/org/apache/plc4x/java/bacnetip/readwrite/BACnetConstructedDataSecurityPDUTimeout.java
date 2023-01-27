@@ -151,7 +151,6 @@ public class BACnetConstructedDataSecurityPDUTimeout extends BACnetConstructedDa
         BACnetApplicationTagUnsignedInteger securityPduTimeout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.securityPduTimeout = securityPduTimeout;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

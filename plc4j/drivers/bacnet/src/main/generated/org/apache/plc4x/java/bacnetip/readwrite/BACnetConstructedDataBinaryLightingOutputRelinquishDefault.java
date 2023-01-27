@@ -150,7 +150,6 @@ public class BACnetConstructedDataBinaryLightingOutputRelinquishDefault
         BACnetBinaryLightingPVTagged relinquishDefault,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.relinquishDefault = relinquishDefault;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

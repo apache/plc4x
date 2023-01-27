@@ -171,7 +171,6 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
         BACnetApplicationTagObjectIdentifier objectIdentifier,
         BACnetApplicationTagCharacterString objectName,
         Integer serviceRequestLength) {
-
       this.deviceIdentifier = deviceIdentifier;
       this.objectIdentifier = objectIdentifier;
       this.objectName = objectName;

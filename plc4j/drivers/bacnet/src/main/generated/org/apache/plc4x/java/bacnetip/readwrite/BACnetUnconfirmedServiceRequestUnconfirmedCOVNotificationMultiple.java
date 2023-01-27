@@ -236,7 +236,6 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
         BACnetTimeStampEnclosed timestamp,
         ListOfCovNotificationsList listOfCovNotifications,
         Integer serviceRequestLength) {
-
       this.subscriberProcessIdentifier = subscriberProcessIdentifier;
       this.initiatingDeviceIdentifier = initiatingDeviceIdentifier;
       this.timeRemaining = timeRemaining;

@@ -157,7 +157,6 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
         FilterOperator filterOperator,
         int noOfFilterOperands,
         List<ExtensionObject> filterOperands) {
-
       this.filterOperator = filterOperator;
       this.noOfFilterOperands = noOfFilterOperands;
       this.filterOperands = filterOperands;

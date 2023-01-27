@@ -147,7 +147,6 @@ public class BACnetConstructedDataChangeOfStateTime extends BACnetConstructedDat
         BACnetDateTime changeOfStateTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.changeOfStateTime = changeOfStateTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

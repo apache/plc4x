@@ -156,7 +156,6 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
         ExtensionObjectDefinition requestHeader,
         int noOfNodesToUnregister,
         List<NodeId> nodesToUnregister) {
-
       this.requestHeader = requestHeader;
       this.noOfNodesToUnregister = noOfNodesToUnregister;
       this.nodesToUnregister = nodesToUnregister;

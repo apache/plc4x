@@ -145,7 +145,6 @@ public class BACnetConstructedDataLastKeyServer extends BACnetConstructedData im
         BACnetAddressBinding lastKeyServer,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastKeyServer = lastKeyServer;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

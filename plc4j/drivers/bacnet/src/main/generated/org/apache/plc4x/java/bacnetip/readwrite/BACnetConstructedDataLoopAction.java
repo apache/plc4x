@@ -147,7 +147,6 @@ public class BACnetConstructedDataLoopAction extends BACnetConstructedData imple
         BACnetActionTagged action,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.action = action;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

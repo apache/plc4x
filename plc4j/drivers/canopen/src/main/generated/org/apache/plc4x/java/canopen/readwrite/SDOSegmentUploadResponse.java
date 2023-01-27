@@ -155,7 +155,6 @@ public class SDOSegmentUploadResponse extends SDOResponse implements Message {
     private final byte[] data;
 
     public SDOSegmentUploadResponseBuilderImpl(boolean toggle, boolean last, byte[] data) {
-
       this.toggle = toggle;
       this.last = last;
       this.data = data;

@@ -199,7 +199,6 @@ public class DeleteNodesResponse extends ExtensionObjectDefinition implements Me
         List<StatusCode> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

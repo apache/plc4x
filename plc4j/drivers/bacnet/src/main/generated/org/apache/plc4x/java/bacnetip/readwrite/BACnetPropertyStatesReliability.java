@@ -109,7 +109,6 @@ public class BACnetPropertyStatesReliability extends BACnetPropertyStates implem
     private final BACnetReliabilityTagged reliability;
 
     public BACnetPropertyStatesReliabilityBuilderImpl(BACnetReliabilityTagged reliability) {
-
       this.reliability = reliability;
     }
 

@@ -137,7 +137,6 @@ public class AccessControlDataValidAccessRequest extends AccessControlData imple
 
     public AccessControlDataValidAccessRequestBuilderImpl(
         AccessControlDirection accessControlDirection, byte[] data) {
-
       this.accessControlDirection = accessControlDirection;
       this.data = data;
     }

@@ -109,7 +109,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryTime
 
     public BACnetFaultParameterFaultExtendedParametersEntryTimeBuilderImpl(
         BACnetApplicationTagTime timeValue) {
-
       this.timeValue = timeValue;
     }
 

@@ -166,7 +166,6 @@ public class AirConditioningDataSetHumiditySetbackLimit extends AirConditioningD
         HVACZoneList zoneList,
         HVACHumidity limit,
         HVACHumidityModeAndFlags hvacModeAndFlags) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.limit = limit;

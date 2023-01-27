@@ -168,7 +168,6 @@ public class PnIoCm_Block_AlarmCrRes extends PnIoCm_Block implements Message {
 
     public PnIoCm_Block_AlarmCrResBuilderImpl(
         PnIoCm_AlarmCrType alarmType, int localAlarmReference, int maxAlarmDataLength) {
-
       this.alarmType = alarmType;
       this.localAlarmReference = localAlarmReference;
       this.maxAlarmDataLength = maxAlarmDataLength;

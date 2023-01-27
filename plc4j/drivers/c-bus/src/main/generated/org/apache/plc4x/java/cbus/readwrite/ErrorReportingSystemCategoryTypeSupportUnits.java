@@ -121,7 +121,6 @@ public class ErrorReportingSystemCategoryTypeSupportUnits extends ErrorReporting
 
     public ErrorReportingSystemCategoryTypeSupportUnitsBuilderImpl(
         ErrorReportingSystemCategoryTypeForSupportUnits categoryForType) {
-
       this.categoryForType = categoryForType;
     }
 

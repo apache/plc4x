@@ -149,7 +149,6 @@ public class BACnetConstructedDataTimerMaxPresValue extends BACnetConstructedDat
         BACnetApplicationTagUnsignedInteger maxPresValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxPresValue = maxPresValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -148,7 +148,6 @@ public class BACnetConstructedDataProgramChange extends BACnetConstructedData im
         BACnetProgramRequestTagged programChange,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.programChange = programChange;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

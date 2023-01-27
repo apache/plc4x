@@ -42,12 +42,8 @@ public class ApduDataExtGroupPropertyValueInfoReport extends ApduDataExt impleme
     return (short) 0x2B;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtGroupPropertyValueInfoReport(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtGroupPropertyValueInfoReport() {
+    super();
   }
 
   @Override
@@ -81,22 +77,17 @@ public class ApduDataExtGroupPropertyValueInfoReport extends ApduDataExt impleme
 
     readBuffer.closeContext("ApduDataExtGroupPropertyValueInfoReport");
     // Create the instance
-    return new ApduDataExtGroupPropertyValueInfoReportBuilderImpl(length);
+    return new ApduDataExtGroupPropertyValueInfoReportBuilderImpl();
   }
 
   public static class ApduDataExtGroupPropertyValueInfoReportBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtGroupPropertyValueInfoReportBuilderImpl(Short length) {
+    public ApduDataExtGroupPropertyValueInfoReportBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtGroupPropertyValueInfoReport build(Short length) {
-
+    public ApduDataExtGroupPropertyValueInfoReport build() {
       ApduDataExtGroupPropertyValueInfoReport apduDataExtGroupPropertyValueInfoReport =
-          new ApduDataExtGroupPropertyValueInfoReport(length);
+          new ApduDataExtGroupPropertyValueInfoReport();
       return apduDataExtGroupPropertyValueInfoReport;
     }
   }

@@ -107,7 +107,6 @@ public class BACnetChannelValueInteger extends BACnetChannelValue implements Mes
     private final BACnetApplicationTagSignedInteger integerValue;
 
     public BACnetChannelValueIntegerBuilderImpl(BACnetApplicationTagSignedInteger integerValue) {
-
       this.integerValue = integerValue;
     }
 

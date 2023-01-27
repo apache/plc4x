@@ -153,7 +153,6 @@ public class MediaTransportControlDataSetTrack extends MediaTransportControlData
 
     public MediaTransportControlDataSetTrackBuilderImpl(
         byte trackMSB, byte trackMMSB, byte trackMLSB, byte trackLSB) {
-
       this.trackMSB = trackMSB;
       this.trackMMSB = trackMMSB;
       this.trackMLSB = trackMLSB;

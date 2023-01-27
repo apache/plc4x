@@ -242,7 +242,6 @@ public class BACnetConfirmedServiceRequestWriteProperty extends BACnetConfirmedS
         BACnetConstructedData propertyValue,
         BACnetContextTagUnsignedInteger priority,
         Long serviceRequestLength) {
-
       this.objectIdentifier = objectIdentifier;
       this.propertyIdentifier = propertyIdentifier;
       this.arrayIndex = arrayIndex;

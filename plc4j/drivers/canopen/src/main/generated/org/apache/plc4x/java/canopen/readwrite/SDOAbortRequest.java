@@ -103,7 +103,6 @@ public class SDOAbortRequest extends SDORequest implements Message {
     private final SDOAbort abort;
 
     public SDOAbortRequestBuilderImpl(SDOAbort abort) {
-
       this.abort = abort;
     }
 

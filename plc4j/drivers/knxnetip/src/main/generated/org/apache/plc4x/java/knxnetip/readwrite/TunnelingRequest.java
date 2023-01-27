@@ -46,15 +46,10 @@ public class TunnelingRequest extends KnxNetIpMessage implements Message {
   protected final TunnelingRequestDataBlock tunnelingRequestDataBlock;
   protected final CEMI cemi;
 
-  // Arguments.
-  protected final Integer totalLength;
-
-  public TunnelingRequest(
-      TunnelingRequestDataBlock tunnelingRequestDataBlock, CEMI cemi, Integer totalLength) {
+  public TunnelingRequest(TunnelingRequestDataBlock tunnelingRequestDataBlock, CEMI cemi) {
     super();
     this.tunnelingRequestDataBlock = tunnelingRequestDataBlock;
     this.cemi = cemi;
-    this.totalLength = totalLength;
   }
 
   public TunnelingRequestDataBlock getTunnelingRequestDataBlock() {
@@ -137,26 +132,22 @@ public class TunnelingRequest extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("TunnelingRequest");
     // Create the instance
-    return new TunnelingRequestBuilderImpl(tunnelingRequestDataBlock, cemi, totalLength);
+    return new TunnelingRequestBuilderImpl(tunnelingRequestDataBlock, cemi);
   }
 
   public static class TunnelingRequestBuilderImpl
       implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final TunnelingRequestDataBlock tunnelingRequestDataBlock;
     private final CEMI cemi;
-    private final Integer totalLength;
 
     public TunnelingRequestBuilderImpl(
-        TunnelingRequestDataBlock tunnelingRequestDataBlock, CEMI cemi, Integer totalLength) {
-
+        TunnelingRequestDataBlock tunnelingRequestDataBlock, CEMI cemi) {
       this.tunnelingRequestDataBlock = tunnelingRequestDataBlock;
       this.cemi = cemi;
-      this.totalLength = totalLength;
     }
 
     public TunnelingRequest build() {
-      TunnelingRequest tunnelingRequest =
-          new TunnelingRequest(tunnelingRequestDataBlock, cemi, totalLength);
+      TunnelingRequest tunnelingRequest = new TunnelingRequest(tunnelingRequestDataBlock, cemi);
       return tunnelingRequest;
     }
   }

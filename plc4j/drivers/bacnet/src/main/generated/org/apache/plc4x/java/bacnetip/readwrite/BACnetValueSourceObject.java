@@ -105,7 +105,6 @@ public class BACnetValueSourceObject extends BACnetValueSource implements Messag
     private final BACnetDeviceObjectReferenceEnclosed object;
 
     public BACnetValueSourceObjectBuilderImpl(BACnetDeviceObjectReferenceEnclosed object) {
-
       this.object = object;
     }
 

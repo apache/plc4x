@@ -38,6 +38,7 @@ import org.apache.plc4x.java.spi.generation.*;
 public class LevelInformationAbsent extends LevelInformation implements Message {
 
   // Accessors for discriminator values.
+
   // Reserved Fields
   private Integer reservedField0;
 

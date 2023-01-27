@@ -196,7 +196,6 @@ public class ModbusPDUReadWriteMultipleHoldingRegistersRequest extends ModbusPDU
         int writeStartingAddress,
         int writeQuantity,
         byte[] value) {
-
       this.readStartingAddress = readStartingAddress;
       this.readQuantity = readQuantity;
       this.writeStartingAddress = writeStartingAddress;

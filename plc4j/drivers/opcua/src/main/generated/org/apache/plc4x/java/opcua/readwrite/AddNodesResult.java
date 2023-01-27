@@ -123,7 +123,6 @@ public class AddNodesResult extends ExtensionObjectDefinition implements Message
     private final NodeId addedNodeId;
 
     public AddNodesResultBuilderImpl(StatusCode statusCode, NodeId addedNodeId) {
-
       this.statusCode = statusCode;
       this.addedNodeId = addedNodeId;
     }

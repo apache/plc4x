@@ -117,7 +117,6 @@ public class BACnetServiceAckCreateObject extends BACnetServiceAck implements Me
 
     public BACnetServiceAckCreateObjectBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectIdentifier, Long serviceAckLength) {
-
       this.objectIdentifier = objectIdentifier;
       this.serviceAckLength = serviceAckLength;
     }

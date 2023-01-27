@@ -142,7 +142,6 @@ public class BACnetConstructedDataActiveCOVSubscriptions extends BACnetConstruct
         List<BACnetCOVSubscription> activeCOVSubscriptions,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.activeCOVSubscriptions = activeCOVSubscriptions;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

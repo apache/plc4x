@@ -146,7 +146,6 @@ public class BACnetConstructedDataLightingCommand extends BACnetConstructedData 
         BACnetLightingCommand lightingCommand,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lightingCommand = lightingCommand;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

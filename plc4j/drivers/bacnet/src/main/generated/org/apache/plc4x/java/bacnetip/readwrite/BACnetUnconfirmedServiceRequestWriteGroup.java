@@ -202,7 +202,6 @@ public class BACnetUnconfirmedServiceRequestWriteGroup extends BACnetUnconfirmed
         BACnetGroupChannelValueList changeList,
         BACnetContextTagUnsignedInteger inhibitDelay,
         Integer serviceRequestLength) {
-
       this.groupNumber = groupNumber;
       this.writePriority = writePriority;
       this.changeList = changeList;

@@ -45,8 +45,6 @@ public class DisconnectRequest extends KnxNetIpMessage implements Message {
   // Properties.
   protected final short communicationChannelId;
   protected final HPAIControlEndpoint hpaiControlEndpoint;
-  // Reserved Fields
-  private Short reservedField0;
 
   public DisconnectRequest(short communicationChannelId, HPAIControlEndpoint hpaiControlEndpoint) {
     super();
@@ -79,7 +77,7 @@ public class DisconnectRequest extends KnxNetIpMessage implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
+        (short) 0x00,
         writeUnsignedShort(writeBuffer, 8),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -144,29 +142,23 @@ public class DisconnectRequest extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("DisconnectRequest");
     // Create the instance
-    return new DisconnectRequestBuilderImpl(
-        communicationChannelId, hpaiControlEndpoint, reservedField0);
+    return new DisconnectRequestBuilderImpl(communicationChannelId, hpaiControlEndpoint);
   }
 
   public static class DisconnectRequestBuilderImpl
       implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final short communicationChannelId;
     private final HPAIControlEndpoint hpaiControlEndpoint;
-    private final Short reservedField0;
 
     public DisconnectRequestBuilderImpl(
-        short communicationChannelId,
-        HPAIControlEndpoint hpaiControlEndpoint,
-        Short reservedField0) {
+        short communicationChannelId, HPAIControlEndpoint hpaiControlEndpoint) {
       this.communicationChannelId = communicationChannelId;
       this.hpaiControlEndpoint = hpaiControlEndpoint;
-      this.reservedField0 = reservedField0;
     }
 
     public DisconnectRequest build() {
       DisconnectRequest disconnectRequest =
           new DisconnectRequest(communicationChannelId, hpaiControlEndpoint);
-      disconnectRequest.reservedField0 = reservedField0;
       return disconnectRequest;
     }
   }

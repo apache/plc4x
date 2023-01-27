@@ -148,7 +148,6 @@ public class BACnetConstructedDataEgressTime extends BACnetConstructedData imple
         BACnetApplicationTagUnsignedInteger egressTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.egressTime = egressTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

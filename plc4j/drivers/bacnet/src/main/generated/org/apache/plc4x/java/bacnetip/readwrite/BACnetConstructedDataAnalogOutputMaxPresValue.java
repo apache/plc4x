@@ -147,7 +147,6 @@ public class BACnetConstructedDataAnalogOutputMaxPresValue extends BACnetConstru
         BACnetApplicationTagReal maxPresValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxPresValue = maxPresValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

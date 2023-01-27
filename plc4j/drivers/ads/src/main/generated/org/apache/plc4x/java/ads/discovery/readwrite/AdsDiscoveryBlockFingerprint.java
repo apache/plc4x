@@ -114,7 +114,6 @@ public class AdsDiscoveryBlockFingerprint extends AdsDiscoveryBlock implements M
     private final byte[] data;
 
     public AdsDiscoveryBlockFingerprintBuilderImpl(byte[] data) {
-
       this.data = data;
     }
 

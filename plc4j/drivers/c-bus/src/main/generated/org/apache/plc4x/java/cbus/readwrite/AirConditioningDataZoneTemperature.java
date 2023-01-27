@@ -173,7 +173,6 @@ public class AirConditioningDataZoneTemperature extends AirConditioningData impl
         HVACZoneList zoneList,
         HVACTemperature temperature,
         HVACSensorStatus sensorStatus) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.temperature = temperature;

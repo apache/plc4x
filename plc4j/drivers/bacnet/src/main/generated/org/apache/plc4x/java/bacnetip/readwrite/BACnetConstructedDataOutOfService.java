@@ -146,7 +146,6 @@ public class BACnetConstructedDataOutOfService extends BACnetConstructedData imp
         BACnetApplicationTagBoolean outOfService,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.outOfService = outOfService;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

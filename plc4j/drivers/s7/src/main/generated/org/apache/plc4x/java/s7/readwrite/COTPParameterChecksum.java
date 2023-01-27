@@ -45,13 +45,9 @@ public class COTPParameterChecksum extends COTPParameter implements Message {
   // Properties.
   protected final short crc;
 
-  // Arguments.
-  protected final Short rest;
-
-  public COTPParameterChecksum(short crc, Short rest) {
-    super(rest);
+  public COTPParameterChecksum(short crc) {
+    super();
     this.crc = crc;
-    this.rest = rest;
   }
 
   public short getCrc() {
@@ -98,23 +94,19 @@ public class COTPParameterChecksum extends COTPParameter implements Message {
 
     readBuffer.closeContext("COTPParameterChecksum");
     // Create the instance
-    return new COTPParameterChecksumBuilderImpl(crc, rest);
+    return new COTPParameterChecksumBuilderImpl(crc);
   }
 
   public static class COTPParameterChecksumBuilderImpl
       implements COTPParameter.COTPParameterBuilder {
     private final short crc;
-    private final Short rest;
 
-    public COTPParameterChecksumBuilderImpl(short crc, Short rest) {
-
+    public COTPParameterChecksumBuilderImpl(short crc) {
       this.crc = crc;
-      this.rest = rest;
     }
 
-    public COTPParameterChecksum build(Short rest) {
-
-      COTPParameterChecksum cOTPParameterChecksum = new COTPParameterChecksum(crc, rest);
+    public COTPParameterChecksum build() {
+      COTPParameterChecksum cOTPParameterChecksum = new COTPParameterChecksum(crc);
       return cOTPParameterChecksum;
     }
   }

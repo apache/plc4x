@@ -191,7 +191,6 @@ public class BACnetConstructedDataValueSourceArray extends BACnetConstructedData
         List<BACnetValueSource> vtClassesSupported,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.vtClassesSupported = vtClassesSupported;
       this.tagNumber = tagNumber;

@@ -149,7 +149,6 @@ public class BACnetConstructedDataIntegerValueFaultLowLimit extends BACnetConstr
         BACnetApplicationTagSignedInteger faultLowLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.faultLowLimit = faultLowLimit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

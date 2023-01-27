@@ -45,13 +45,9 @@ public class COTPParameterCallingTsap extends COTPParameter implements Message {
   // Properties.
   protected final int tsapId;
 
-  // Arguments.
-  protected final Short rest;
-
-  public COTPParameterCallingTsap(int tsapId, Short rest) {
-    super(rest);
+  public COTPParameterCallingTsap(int tsapId) {
+    super();
     this.tsapId = tsapId;
-    this.rest = rest;
   }
 
   public int getTsapId() {
@@ -98,24 +94,19 @@ public class COTPParameterCallingTsap extends COTPParameter implements Message {
 
     readBuffer.closeContext("COTPParameterCallingTsap");
     // Create the instance
-    return new COTPParameterCallingTsapBuilderImpl(tsapId, rest);
+    return new COTPParameterCallingTsapBuilderImpl(tsapId);
   }
 
   public static class COTPParameterCallingTsapBuilderImpl
       implements COTPParameter.COTPParameterBuilder {
     private final int tsapId;
-    private final Short rest;
 
-    public COTPParameterCallingTsapBuilderImpl(int tsapId, Short rest) {
-
+    public COTPParameterCallingTsapBuilderImpl(int tsapId) {
       this.tsapId = tsapId;
-      this.rest = rest;
     }
 
-    public COTPParameterCallingTsap build(Short rest) {
-
-      COTPParameterCallingTsap cOTPParameterCallingTsap =
-          new COTPParameterCallingTsap(tsapId, rest);
+    public COTPParameterCallingTsap build() {
+      COTPParameterCallingTsap cOTPParameterCallingTsap = new COTPParameterCallingTsap(tsapId);
       return cOTPParameterCallingTsap;
     }
   }

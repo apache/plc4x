@@ -157,7 +157,6 @@ public class ModbusPDUReadDeviceIdentificationRequest extends ModbusPDU implemen
 
     public ModbusPDUReadDeviceIdentificationRequestBuilderImpl(
         ModbusDeviceInformationLevel level, short objectId) {
-
       this.level = level;
       this.objectId = objectId;
     }

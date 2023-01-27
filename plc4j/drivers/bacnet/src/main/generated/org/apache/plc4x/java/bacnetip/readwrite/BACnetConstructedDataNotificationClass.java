@@ -151,7 +151,6 @@ public class BACnetConstructedDataNotificationClass extends BACnetConstructedDat
         BACnetApplicationTagUnsignedInteger notificationClass,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.notificationClass = notificationClass;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -211,7 +211,6 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
         ExtensionObjectDefinition buildInfo,
         long secondsTillShutdown,
         LocalizedText shutdownReason) {
-
       this.startTime = startTime;
       this.currentTime = currentTime;
       this.state = state;

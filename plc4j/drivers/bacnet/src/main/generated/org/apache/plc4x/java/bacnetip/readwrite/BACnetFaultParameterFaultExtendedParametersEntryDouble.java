@@ -109,7 +109,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryDouble
 
     public BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilderImpl(
         BACnetApplicationTagDouble doubleValue) {
-
       this.doubleValue = doubleValue;
     }
 

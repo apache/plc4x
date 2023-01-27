@@ -99,7 +99,6 @@ public class SecurityDataRequestZoneName extends SecurityData implements Message
     private final short zoneNumber;
 
     public SecurityDataRequestZoneNameBuilderImpl(short zoneNumber) {
-
       this.zoneNumber = zoneNumber;
     }
 

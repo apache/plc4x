@@ -145,7 +145,6 @@ public class BACnetConstructedDataLowDiffLimit extends BACnetConstructedData imp
         BACnetOptionalREAL lowDiffLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lowDiffLimit = lowDiffLimit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -126,7 +126,6 @@ public class NLMUpdateKeyDistributionKey extends NLM implements Message {
 
     public NLMUpdateKeyDistributionKeyBuilderImpl(
         byte keyRevision, NLMUpdateKeyUpdateKeyEntry key, Integer apduLength) {
-
       this.keyRevision = keyRevision;
       this.key = key;
       this.apduLength = apduLength;

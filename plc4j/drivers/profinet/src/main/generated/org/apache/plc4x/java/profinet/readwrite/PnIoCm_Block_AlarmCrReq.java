@@ -53,8 +53,6 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
   protected final int maxAlarmDataLength;
   protected final int alarmCtrTagHeaderHigh;
   protected final int alarmCtrTagHeaderLow;
-  // Reserved Fields
-  private Long reservedField0;
 
   public PnIoCm_Block_AlarmCrReq(
       short blockVersionHigh,
@@ -149,7 +147,7 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (long) 0x00000000,
+        (long) 0x00000000,
         writeUnsignedLong(writeBuffer, 30),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -340,8 +338,7 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
         localAlarmReference,
         maxAlarmDataLength,
         alarmCtrTagHeaderHigh,
-        alarmCtrTagHeaderLow,
-        reservedField0);
+        alarmCtrTagHeaderLow);
   }
 
   public static class PnIoCm_Block_AlarmCrReqBuilderImpl
@@ -356,7 +353,6 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
     private final int maxAlarmDataLength;
     private final int alarmCtrTagHeaderHigh;
     private final int alarmCtrTagHeaderLow;
-    private final Long reservedField0;
 
     public PnIoCm_Block_AlarmCrReqBuilderImpl(
         PnIoCm_AlarmCrType alarmType,
@@ -368,8 +364,7 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
         int localAlarmReference,
         int maxAlarmDataLength,
         int alarmCtrTagHeaderHigh,
-        int alarmCtrTagHeaderLow,
-        Long reservedField0) {
+        int alarmCtrTagHeaderLow) {
       this.alarmType = alarmType;
       this.lt = lt;
       this.transport = transport;
@@ -380,7 +375,6 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
       this.maxAlarmDataLength = maxAlarmDataLength;
       this.alarmCtrTagHeaderHigh = alarmCtrTagHeaderHigh;
       this.alarmCtrTagHeaderLow = alarmCtrTagHeaderLow;
-      this.reservedField0 = reservedField0;
     }
 
     public PnIoCm_Block_AlarmCrReq build(short blockVersionHigh, short blockVersionLow) {
@@ -398,7 +392,6 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
               maxAlarmDataLength,
               alarmCtrTagHeaderHigh,
               alarmCtrTagHeaderLow);
-      pnIoCm_Block_AlarmCrReq.reservedField0 = reservedField0;
       return pnIoCm_Block_AlarmCrReq;
     }
   }

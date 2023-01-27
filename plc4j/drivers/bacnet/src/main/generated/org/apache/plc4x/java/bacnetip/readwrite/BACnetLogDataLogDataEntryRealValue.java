@@ -109,7 +109,6 @@ public class BACnetLogDataLogDataEntryRealValue extends BACnetLogDataLogDataEntr
     private final BACnetContextTagReal realValue;
 
     public BACnetLogDataLogDataEntryRealValueBuilderImpl(BACnetContextTagReal realValue) {
-
       this.realValue = realValue;
     }
 

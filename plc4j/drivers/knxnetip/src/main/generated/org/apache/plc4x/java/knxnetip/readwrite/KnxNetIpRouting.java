@@ -100,7 +100,6 @@ public class KnxNetIpRouting extends ServiceId implements Message {
     private final short version;
 
     public KnxNetIpRoutingBuilderImpl(short version) {
-
       this.version = version;
     }
 

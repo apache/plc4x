@@ -162,9 +162,9 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
 
   public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersFloatingLimit");
     PositionAware positionAware = readBuffer;
@@ -257,7 +257,6 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
         BACnetClosingTag innerClosingTag,
         Short tagNumber,
         BACnetObjectType objectTypeArgument) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.referenceValue = referenceValue;
       this.statusFlags = statusFlags;

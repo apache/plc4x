@@ -86,7 +86,7 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetBytesOfRemovedService() []
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckReadPropertyConditional factory function for _BACnetServiceAckReadPropertyConditional
-func NewBACnetServiceAckReadPropertyConditional(bytesOfRemovedService []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) *_BACnetServiceAckReadPropertyConditional {
+func NewBACnetServiceAckReadPropertyConditional(bytesOfRemovedService []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckReadPropertyConditional {
 	_result := &_BACnetServiceAckReadPropertyConditional{
 		BytesOfRemovedService: bytesOfRemovedService,
 		_BACnetServiceAck:     NewBACnetServiceAck(serviceAckLength),
@@ -129,11 +129,11 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyConditionalParse(theBytes []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
-	return BACnetServiceAckReadPropertyConditionalParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckLength, serviceAckPayloadLength)
+func BACnetServiceAckReadPropertyConditionalParse(theBytes []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
+	return BACnetServiceAckReadPropertyConditionalParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckPayloadLength, serviceAckLength)
 }
 
-func BACnetServiceAckReadPropertyConditionalParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
+func BACnetServiceAckReadPropertyConditionalParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyConditional"); pullErr != nil {

@@ -142,7 +142,6 @@ public class QueryDataDescription extends ExtensionObjectDefinition implements M
 
     public QueryDataDescriptionBuilderImpl(
         ExtensionObjectDefinition relativePath, long attributeId, PascalString indexRange) {
-
       this.relativePath = relativePath;
       this.attributeId = attributeId;
       this.indexRange = indexRange;

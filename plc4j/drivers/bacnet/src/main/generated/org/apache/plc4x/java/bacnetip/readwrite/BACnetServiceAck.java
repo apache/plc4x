@@ -176,7 +176,7 @@ public abstract class BACnetServiceAck implements Message {
         serviceChoice, BACnetConfirmedServiceChoice.READ_PROPERTY_MULTIPLE)) {
       builder =
           BACnetServiceAckReadPropertyMultiple.staticParseBACnetServiceAckBuilder(
-              readBuffer, serviceAckLength, serviceAckPayloadLength);
+              readBuffer, serviceAckPayloadLength, serviceAckLength);
     } else if (EvaluationHelper.equals(serviceChoice, BACnetConfirmedServiceChoice.READ_RANGE)) {
       builder =
           BACnetServiceAckReadRange.staticParseBACnetServiceAckBuilder(
@@ -195,16 +195,16 @@ public abstract class BACnetServiceAck implements Message {
     } else if (EvaluationHelper.equals(serviceChoice, BACnetConfirmedServiceChoice.AUTHENTICATE)) {
       builder =
           BACnetServiceAckAuthenticate.staticParseBACnetServiceAckBuilder(
-              readBuffer, serviceAckLength, serviceAckPayloadLength);
+              readBuffer, serviceAckPayloadLength, serviceAckLength);
     } else if (EvaluationHelper.equals(serviceChoice, BACnetConfirmedServiceChoice.REQUEST_KEY)) {
       builder =
           BACnetServiceAckRequestKey.staticParseBACnetServiceAckBuilder(
-              readBuffer, serviceAckLength, serviceAckPayloadLength);
+              readBuffer, serviceAckPayloadLength, serviceAckLength);
     } else if (EvaluationHelper.equals(
         serviceChoice, BACnetConfirmedServiceChoice.READ_PROPERTY_CONDITIONAL)) {
       builder =
           BACnetServiceAckReadPropertyConditional.staticParseBACnetServiceAckBuilder(
-              readBuffer, serviceAckLength, serviceAckPayloadLength);
+              readBuffer, serviceAckPayloadLength, serviceAckLength);
     }
     if (builder == null) {
       throw new ParseException(

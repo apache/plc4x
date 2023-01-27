@@ -208,7 +208,6 @@ public class BACnetServiceAckReadProperty extends BACnetServiceAck implements Me
         BACnetContextTagUnsignedInteger arrayIndex,
         BACnetConstructedData values,
         Long serviceAckLength) {
-
       this.objectIdentifier = objectIdentifier;
       this.propertyIdentifier = propertyIdentifier;
       this.arrayIndex = arrayIndex;

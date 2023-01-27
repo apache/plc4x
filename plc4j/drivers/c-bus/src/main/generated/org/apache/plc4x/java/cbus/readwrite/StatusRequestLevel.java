@@ -42,6 +42,7 @@ public class StatusRequestLevel extends StatusRequest implements Message {
   // Properties.
   protected final ApplicationIdContainer application;
   protected final byte startingGroupAddressLabel;
+
   // Reserved Fields
   private Byte reservedField0;
   private Byte reservedField1;

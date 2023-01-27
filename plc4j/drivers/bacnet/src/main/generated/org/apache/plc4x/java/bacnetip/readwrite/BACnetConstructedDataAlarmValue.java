@@ -147,7 +147,6 @@ public class BACnetConstructedDataAlarmValue extends BACnetConstructedData imple
         BACnetBinaryPVTagged binaryPv,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.binaryPv = binaryPv;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

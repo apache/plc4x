@@ -147,7 +147,6 @@ public class BACnetConstructedDataPolarity extends BACnetConstructedData impleme
         BACnetPolarityTagged polarity,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.polarity = polarity;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

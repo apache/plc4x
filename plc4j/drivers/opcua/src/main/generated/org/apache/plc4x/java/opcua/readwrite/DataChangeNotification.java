@@ -189,7 +189,6 @@ public class DataChangeNotification extends ExtensionObjectDefinition implements
         List<ExtensionObjectDefinition> monitoredItems,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.noOfMonitoredItems = noOfMonitoredItems;
       this.monitoredItems = monitoredItems;
       this.noOfDiagnosticInfos = noOfDiagnosticInfos;

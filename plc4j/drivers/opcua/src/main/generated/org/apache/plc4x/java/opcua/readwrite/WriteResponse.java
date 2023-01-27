@@ -199,7 +199,6 @@ public class WriteResponse extends ExtensionObjectDefinition implements Message 
         List<StatusCode> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

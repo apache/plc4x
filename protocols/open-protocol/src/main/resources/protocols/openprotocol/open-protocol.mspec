@@ -24,13 +24,13 @@
     [const          uint 16     tcpDefaultPort 4545]
 ]
 
-[discriminatedType OpenProtocolMessage(OpenProtocolRevision connectionRevision)
+[discriminatedType OpenProtocolMessage(uint 24 revision)
     [implicit      uint 32              length               'lengthInBytes - 1'                encoding='"ASCII"'                      ]
     [discriminator Mid                  mid                                                     encoding='"ASCII"'                      ]
-    [optional      OpenProtocolRevision selectedRevision                                        encoding='"ASCII"' nullBytesHex='202020']
+    [optional      uint 24              midRevision                                                encoding='"ASCII"' nullBytesHex='202020']
     [optional      uint 8               noAckFlag                                               encoding='"ASCII"' nullBytesHex='20'    ]
-    [optional      uint 16              stationId                                               encoding='"ASCII"' nullBytesHex='2020'  ]
-    [optional      uint 16              spindleId                                               encoding='"ASCII"' nullBytesHex='2020'  ]
+    [optional      uint 16              targetStationId                                         encoding='"ASCII"' nullBytesHex='2020'  ]
+    [optional      uint 16              targetSpindleId                                         encoding='"ASCII"' nullBytesHex='2020'  ]
     [optional      uint 16              sequenceNumber                                          encoding='"ASCII"' nullBytesHex='2020'  ]
     [optional      uint 8               numberOfMessageParts                                    encoding='"ASCII"' nullBytesHex='20'    ]
     [optional      uint 8               messagePartNumber                                       encoding='"ASCII"' nullBytesHex='20'    ]
@@ -38,138 +38,172 @@
         ['ApplicationCommunicationStart' *ApplicationCommunicationStart
         ]
         ['ApplicationCommunicationStartAcknowledge' *ApplicationCommunicationStartAcknowledge
-            [array ApplicationCommunicationStartAcknowledgeBlock blocks           count 'connectionRevision.numCommunicationStartAcknowledgeBlocks']
+            [typeSwitch revision
+                ['1' *Rev1
+                    [const    uint   16  blockIdCellId                    1    encoding='"ASCII"']
+                    [simple   uint   32  cellId                                encoding='"ASCII"']
+                    [const    uint   16  blockIdChannelId                 2    encoding='"ASCII"']
+                    [simple   uint   16  channelId                             encoding='"ASCII"']
+                    [const    uint   16  blockIdControllerName            3    encoding='"ASCII"']
+                    [simple   string 200 controllerName                        encoding='"ASCII"']
+                ]
+                ['2' *Rev2
+                    [const    uint   16  blockIdCellId                    1    encoding='"ASCII"']
+                    [simple   uint   32  cellId                                encoding='"ASCII"']
+                    [const    uint   16  blockIdChannelId                 2    encoding='"ASCII"']
+                    [simple   uint   16  channelId                             encoding='"ASCII"']
+                    [const    uint   16  blockIdControllerName            3    encoding='"ASCII"']
+                    [simple   string 200 controllerName                        encoding='"ASCII"']
+                    [const    uint   16  blockIdSupplierCode              4    encoding='"ASCII"']
+                    [simple   uint   24  supplierCode                          encoding='"ASCII"']
+                ]
+                ['3' *Rev3
+                    [const    uint   16  blockIdCellId                    1    encoding='"ASCII"']
+                    [simple   uint   32  cellId                                encoding='"ASCII"']
+                    [const    uint   16  blockIdChannelId                 2    encoding='"ASCII"']
+                    [simple   uint   16  channelId                             encoding='"ASCII"']
+                    [const    uint   16  blockIdControllerName            3    encoding='"ASCII"']
+                    [simple   string 200 controllerName                        encoding='"ASCII"']
+                    [const    uint   16  blockIdSupplierCode              4    encoding='"ASCII"']
+                    [simple   uint   24  supplierCode                          encoding='"ASCII"']
+                    [const    uint   16  blockIdOpenProtocolVersion       5    encoding='"ASCII"']
+                    [simple   string 152 openProtocolVersion                   encoding='"ASCII"']
+                    [const    uint   16  blockIdControllerSoftwareVersion 6    encoding='"ASCII"']
+                    [simple   string 152 controllerSoftwareVersion             encoding='"ASCII"']
+                    [const    uint   16  blockIdToolSoftwareVersion       7    encoding='"ASCII"']
+                    [simple   string 152 toolSoftwareVersion                   encoding='"ASCII"']
+                ]
+                ['4' *Rev4
+                    [const    uint   16  blockIdCellId                    1    encoding='"ASCII"']
+                    [simple   uint   32  cellId                                encoding='"ASCII"']
+                    [const    uint   16  blockIdChannelId                 2    encoding='"ASCII"']
+                    [simple   uint   16  channelId                             encoding='"ASCII"']
+                    [const    uint   16  blockIdControllerName            3    encoding='"ASCII"']
+                    [simple   string 200 controllerName                        encoding='"ASCII"']
+                    [const    uint   16  blockIdSupplierCode              4    encoding='"ASCII"']
+                    [simple   uint   24  supplierCode                          encoding='"ASCII"']
+                    [const    uint   16  blockIdOpenProtocolVersion       5    encoding='"ASCII"']
+                    [simple   string 152 openProtocolVersion                   encoding='"ASCII"']
+                    [const    uint   16  blockIdControllerSoftwareVersion 6    encoding='"ASCII"']
+                    [simple   string 152 controllerSoftwareVersion             encoding='"ASCII"']
+                    [const    uint   16  blockIdToolSoftwareVersion       7    encoding='"ASCII"']
+                    [simple   string 152 toolSoftwareVersion                   encoding='"ASCII"']
+                    [const    uint   16  blockIdRbuType                   8    encoding='"ASCII"']
+                    [simple   string 192 rbuType                               encoding='"ASCII"']
+                    [const    uint   16  blockIdControllerSerialNumber    9    encoding='"ASCII"']
+                    [simple   string 80  controllerSerialNumber                encoding='"ASCII"']
+                ]
+                ['5' *Rev5
+                    [const    uint   16  blockIdCellId                    1    encoding='"ASCII"']
+                    [simple   uint   32  cellId                                encoding='"ASCII"']
+                    [const    uint   16  blockIdChannelId                 2    encoding='"ASCII"']
+                    [simple   uint   16  channelId                             encoding='"ASCII"']
+                    [const    uint   16  blockIdControllerName            3    encoding='"ASCII"']
+                    [simple   string 200 controllerName                        encoding='"ASCII"']
+                    [const    uint   16  blockIdSupplierCode              4    encoding='"ASCII"']
+                    [simple   uint   24  supplierCode                          encoding='"ASCII"']
+                    [const    uint   16  blockIdOpenProtocolVersion       5    encoding='"ASCII"']
+                    [simple   string 152 openProtocolVersion                   encoding='"ASCII"']
+                    [const    uint   16  blockIdControllerSoftwareVersion 6    encoding='"ASCII"']
+                    [simple   string 152 controllerSoftwareVersion             encoding='"ASCII"']
+                    [const    uint   16  blockIdToolSoftwareVersion       7    encoding='"ASCII"']
+                    [simple   string 152 toolSoftwareVersion                   encoding='"ASCII"']
+                    [const    uint   16  blockIdRbuType                   8    encoding='"ASCII"']
+                    [simple   string 192 rbuType                               encoding='"ASCII"']
+                    [const    uint   16  blockIdControllerSerialNumber    9    encoding='"ASCII"']
+                    [simple   string 80  controllerSerialNumber                encoding='"ASCII"']
+                    [const    uint   16  blockIdSystemType                10   encoding='"ASCII"']
+                    [simple   string 24  systemType                            encoding='"ASCII"']
+                    [const    uint   16  blockIdSystemSubtype             11   encoding='"ASCII"']
+                    [simple   string 24  systemSubtype                         encoding='"ASCII"']
+                ]
+                ['6' *Rev6
+                    [const    uint   16  blockIdCellId                    1    encoding='"ASCII"']
+                    [simple   uint   32  cellId                                encoding='"ASCII"']
+                    [const    uint   16  blockIdChannelId                 2    encoding='"ASCII"']
+                    [simple   uint   16  channelId                             encoding='"ASCII"']
+                    [const    uint   16  blockIdControllerName            3    encoding='"ASCII"']
+                    [simple   string 200 controllerName                        encoding='"ASCII"']
+                    [const    uint   16  blockIdSupplierCode              4    encoding='"ASCII"']
+                    [simple   uint   24  supplierCode                          encoding='"ASCII"']
+                    [const    uint   16  blockIdOpenProtocolVersion       5    encoding='"ASCII"']
+                    [simple   string 152 openProtocolVersion                   encoding='"ASCII"']
+                    [const    uint   16  blockIdControllerSoftwareVersion 6    encoding='"ASCII"']
+                    [simple   string 152 controllerSoftwareVersion             encoding='"ASCII"']
+                    [const    uint   16  blockIdToolSoftwareVersion       7    encoding='"ASCII"']
+                    [simple   string 152 toolSoftwareVersion                   encoding='"ASCII"']
+                    [const    uint   16  blockIdRbuType                   8    encoding='"ASCII"']
+                    [simple   string 192 rbuType                               encoding='"ASCII"']
+                    [const    uint   16  blockIdControllerSerialNumber    9    encoding='"ASCII"']
+                    [simple   string 80  controllerSerialNumber                encoding='"ASCII"']
+                    [const    uint   16  blockIdSystemType                10   encoding='"ASCII"']
+                    [simple   string 24  systemType                            encoding='"ASCII"']
+                    [const    uint   16  blockIdSystemSubtype             11   encoding='"ASCII"']
+                    [simple   string 24  systemSubtype                         encoding='"ASCII"']
+                    [const    uint   16  blockIdSequenceNumberSupport     12   encoding='"ASCII"']
+                    [reserved uint   7   '0x00'                                                  ]
+                    [simple   bit        sequenceNumberSupport                                   ]
+                    [const    uint   16  blockIdLinkingHandlingSupport    13   encoding='"ASCII"']
+                    [reserved uint   7   '0x00'                                                  ]
+                    [simple   bit        linkingHandlingSupport                                  ]
+                    [const    uint   16  blockIdStationId                 14   encoding='"ASCII"']
+                    [simple   string 80  stationId                             encoding='"ASCII"']
+                    [const    uint   16  blockIdStationName               15   encoding='"ASCII"']
+                    [simple   string 200 stationName                           encoding='"ASCII"']
+                    [const    uint   16  blockIdClientId                  16   encoding='"ASCII"']
+                    [simple   uint   8   clientId                              encoding='"ASCII"']
+                ]
+            ]
         ]
         ['ApplicationCommunicationStop' *ApplicationCommunicationStop
         ]
-        ['ApplicationCommandError' *ApplicationCommandError
-            [simple Mid                    requestMid                                           encoding='"ASCII"']
-            [simple Error                  error                                                encoding='"ASCII"']
+        ['ApplicationCommandError'      *ApplicationCommandError
+            [typeSwitch revision
+                ['1' *Rev1
+                    [simple Mid            requestMid                                           encoding='"ASCII"']
+                    [simple Error          error                                                encoding='"ASCII"']
+                ]
+            ]
         ]
-        ['ApplicationCommandAccepted' *ApplicationCommandAccepted
-            [simple Mid                    midNumberAccepted                                    encoding='"ASCII"']
+        ['ApplicationCommandAccepted'   *ApplicationCommandAccepted
+            [typeSwitch revision
+                ['1' *Rev1
+                    [simple Mid            midNumberAccepted                                    encoding='"ASCII"']
+                ]
+            ]
         ]
         ['ApplicationGenericDataRequest' *ApplicationGenericDataRequest
-            [simple   Mid                  requestMid                                           encoding='"ASCII"']
-            [simple   OpenProtocolRevision wantedRevision                                       encoding='"ASCII"']
-            [implicit uint 16              extraDataLength 'COUNT(extraData)'                   encoding='"ASCII"']
-            [array    byte                 extraData       count 'extraDataLength'                                ]
+            [typeSwitch revision
+                ['1' *Rev1
+                    [simple   Mid                  requestMid                                           encoding='"ASCII"']
+                    [simple   uint 24              wantedRevision                                       encoding='"ASCII"']
+                    [implicit uint 16              extraDataLength 'COUNT(extraData)'                   encoding='"ASCII"']
+                    [array    byte                 extraData       count 'extraDataLength'                                ]
+                ]
+            ]
         ]
         ['ApplicationGenericSubscription' *ApplicationGenericSubscription
-            [simple   Mid                  subscriptionMid                                      encoding='"ASCII"']
-            [simple   OpenProtocolRevision wantedRevision                                       encoding='"ASCII"']
-            [implicit uint 16              extraDataLength 'COUNT(extraData)'                   encoding='"ASCII"']
-            [array    byte                 extraData       count 'extraDataLength'                                ]
+            [typeSwitch revision
+                ['1' *Rev1
+                    [simple   Mid                  subscriptionMid                                      encoding='"ASCII"']
+                    [simple   uint 24              wantedRevision                                       encoding='"ASCII"']
+                    [implicit uint 16              extraDataLength 'COUNT(extraData)'                   encoding='"ASCII"']
+                    [array    byte                 extraData       count 'extraDataLength'                                ]
+                ]
+            ]
         ]
         ['ApplicationGenericUnsubscribe' *ApplicationGenericUnsubscribe
-            [simple   Mid                  subscriptionMid                                      encoding='"ASCII"']
-            [simple   OpenProtocolRevision extraDataRevision                                    encoding='"ASCII"']
-            [implicit uint 16              extraDataLength 'COUNT(extraData)'                   encoding='"ASCII"']
-            [array    byte                 extraData       count 'extraDataLength'                                ]
+            [typeSwitch revision
+                ['1' *Rev1
+                    [simple   Mid                  subscriptionMid                                      encoding='"ASCII"']
+                    [simple   uint 24              extraDataRevision                                    encoding='"ASCII"']
+                    [implicit uint 16              extraDataLength 'COUNT(extraData)'                   encoding='"ASCII"']
+                    [array    byte                 extraData       count 'extraDataLength'                                ]
+                ]
+            ]
         ]
     ]
     [const         uint 8  end                  0x00                                                              ]
-]
-
-[discriminatedType ApplicationCommunicationStartAcknowledgeBlock
-    [discriminator uint 16 blockType encoding='"ASCII"']
-    [typeSwitch blockType
-        // Revision 1
-        ['1' *CellId
-            [simple   uint 32    cellId                    encoding='"ASCII"']
-        ]
-        ['2' *ChannelId
-            [simple   uint 16    channelId                 encoding='"ASCII"']
-        ]
-        ['3' *ControllerName
-            [simple   string 200 controllerName            encoding='"ASCII"']
-        ]
-
-        // Additional Blocks for Revision 2
-        ['4' *SupplierCode
-            [simple   uint 24    supplierCode              encoding='"ASCII"']
-        ]
-
-        // Additional Blocks for Revision 3
-        ['5' *OpenProtocolVersion
-            [simple   string 152 openProtocolVersion       encoding='"ASCII"']
-        ]
-        ['6' *ControllerSoftwareVersion
-            [simple   string 152 controllerSoftwareVersion encoding='"ASCII"']
-        ]
-        ['7' *ToolSoftwareVersion
-            [simple   string 152 toolSoftwareVersion       encoding='"ASCII"']
-        ]
-
-        // Additional Blocks for Revision 4
-        ['8' *RbuType
-            [simple   string 192 rbuType                   encoding='"ASCII"']
-        ]
-        ['9' *ControllerSerialNumber
-            [simple   string 80  controllerSerialNumber    encoding='"ASCII"']
-        ]
-
-        // Additional Blocks for Revision 5
-        ['10' *SystemType
-            [simple   string 24  systemType                encoding='"ASCII"']
-        ]
-        ['11' *SystemSubtype
-            [simple   string 24  systemSubtype             encoding='"ASCII"']
-        ]
-
-        // Additional Blocks for Revision 6
-        ['12' *SequenceNumberSupport
-            [reserved uint 7     '0x00'                                      ]
-            [simple   bit        sequenceNumberSupport                       ]
-        ]
-        ['13' *LinkingHandlingSupport
-            [reserved uint 7     '0x00'                                      ]
-            [simple   bit        linkingHandlingSupport                      ]
-        ]
-        ['14' *StationId
-            [simple   string 80  stationId                 encoding='"ASCII"']
-        ]
-        ['15' *StationName
-            [simple   string 200 stationName               encoding='"ASCII"']
-        ]
-        ['16' *ClientId
-            [simple   uint 8     clientId                  encoding='"ASCII"']
-        ]
-    ]
-]
-
-// Depending on the revision of the device, a different number of blocks are supported.
-[enum uint 24 OpenProtocolRevision(uint 8 numCommunicationStartAcknowledgeBlocks) encoding='"ASCII"'
-    ['1' Revision1                [       '3'                                   ]]
-    ['2' Revision2                [       '4'                                   ]]
-    ['3' Revision3                [       '7'                                   ]]
-    ['4' Revision4                [       '9'                                   ]]
-    ['5' Revision5                [       '11'                                  ]]
-    ['6' Revision6                [       '16'                                  ]]
-]
-
-[enum MidTypes
-    [JobMessage                         ] //  600 -  699
-    [ToolMessage                        ] //  700 -  799
-    [VinMessage                         ] //  800 -  899
-    [TighteningResultMessage            ] //  900 -  999
-    [AlarmMessage                       ] // 1000 - 1099
-    [TimeMessage                        ] // 1100 - 1199
-    [MultiSpindleStatusMessage          ] // 1200 - 1299
-    [MultiSpindleResultMessage          ] // 1300 - 1399
-    [UserInterfaceMessage               ] // 1400 - 1499
-    [JobMessageAdvanced                 ] // 1500 - 1599
-    [MultipleIdentifiersMessage         ] // 1600 - 1699
-    [IOInterfaceMessage                 ] // 1700 - 1799
-    [PlcUserDataMessage                 ] // 1800 - 1899
-    [SelectorMessage                    ] // 1900 - 1999
-    [ToolLocationSystemMessage          ] // 2000 - 2099
-    [ControllerMessage                  ] // 2100 - 2199
-    [StatisticMessage                   ] // 2200 - 2299
-    [AutomaticManualModeMessage         ] // 2300 - 2399
-    [OpenProtocolCommandsDisabledMessage] // 2400 - 2499
-    [ParameterSetMessage                ] // 2500 - 2599
-    [NewGroupsMessage                   ] // 2600 - 9999
 ]
 
 [enum uint 32 Mid   encoding='"ASCII"'

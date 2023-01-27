@@ -153,7 +153,6 @@ public class BACnetConstructedDataUserInformationReference extends BACnetConstru
         BACnetApplicationTagCharacterString userInformationReference,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.userInformationReference = userInformationReference;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -119,7 +119,6 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble
 
     public BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilderImpl(
         BACnetApplicationTagDouble doubleValue, Short tagNumber) {
-
       this.doubleValue = doubleValue;
       this.tagNumber = tagNumber;
     }

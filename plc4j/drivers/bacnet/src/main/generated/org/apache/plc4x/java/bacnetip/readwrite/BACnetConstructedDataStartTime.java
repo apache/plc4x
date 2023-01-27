@@ -143,7 +143,6 @@ public class BACnetConstructedDataStartTime extends BACnetConstructedData implem
         BACnetDateTime startTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.startTime = startTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

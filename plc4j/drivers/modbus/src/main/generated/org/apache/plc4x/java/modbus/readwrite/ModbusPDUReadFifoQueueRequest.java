@@ -109,7 +109,6 @@ public class ModbusPDUReadFifoQueueRequest extends ModbusPDU implements Message 
     private final int fifoPointerAddress;
 
     public ModbusPDUReadFifoQueueRequestBuilderImpl(int fifoPointerAddress) {
-
       this.fifoPointerAddress = fifoPointerAddress;
     }
 

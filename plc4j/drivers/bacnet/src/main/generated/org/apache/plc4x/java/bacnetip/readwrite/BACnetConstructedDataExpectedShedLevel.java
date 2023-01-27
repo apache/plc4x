@@ -147,7 +147,6 @@ public class BACnetConstructedDataExpectedShedLevel extends BACnetConstructedDat
         BACnetShedLevel expectedShedLevel,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.expectedShedLevel = expectedShedLevel;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

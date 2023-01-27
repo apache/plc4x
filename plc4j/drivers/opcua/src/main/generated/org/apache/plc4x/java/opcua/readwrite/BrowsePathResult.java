@@ -149,7 +149,6 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
 
     public BrowsePathResultBuilderImpl(
         StatusCode statusCode, int noOfTargets, List<ExtensionObjectDefinition> targets) {
-
       this.statusCode = statusCode;
       this.noOfTargets = noOfTargets;
       this.targets = targets;

@@ -145,7 +145,6 @@ public class BACnetConstructedDataLoggingRecord extends BACnetConstructedData im
         BACnetAccumulatorRecord loggingRecord,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.loggingRecord = loggingRecord;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

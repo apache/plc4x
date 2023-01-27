@@ -111,7 +111,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryEnumerated
 
     public BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilderImpl(
         BACnetApplicationTagEnumerated enumeratedValue) {
-
       this.enumeratedValue = enumeratedValue;
     }
 

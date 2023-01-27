@@ -146,7 +146,6 @@ public class BACnetConstructedDataScaleFactor extends BACnetConstructedData impl
         BACnetApplicationTagReal scaleFactor,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.scaleFactor = scaleFactor;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -148,7 +148,6 @@ public class BACnetConstructedDataAdjustValue extends BACnetConstructedData impl
         BACnetApplicationTagSignedInteger adjustValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.adjustValue = adjustValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

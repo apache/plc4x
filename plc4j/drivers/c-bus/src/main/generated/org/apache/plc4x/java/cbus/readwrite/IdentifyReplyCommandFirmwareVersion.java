@@ -107,7 +107,6 @@ public class IdentifyReplyCommandFirmwareVersion extends IdentifyReplyCommand im
     private final Short numBytes;
 
     public IdentifyReplyCommandFirmwareVersionBuilderImpl(String firmwareVersion, Short numBytes) {
-
       this.firmwareVersion = firmwareVersion;
       this.numBytes = numBytes;
     }

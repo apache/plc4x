@@ -145,7 +145,6 @@ public class BACnetConstructedDataReasonForDisable extends BACnetConstructedData
         List<BACnetAccessCredentialDisableReasonTagged> reasonForDisable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.reasonForDisable = reasonForDisable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

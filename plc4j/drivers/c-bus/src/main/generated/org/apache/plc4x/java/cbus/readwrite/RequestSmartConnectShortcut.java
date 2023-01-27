@@ -149,7 +149,6 @@ public class RequestSmartConnectShortcut extends Request implements Message {
 
     public RequestSmartConnectShortcutBuilderImpl(
         RequestType pipePeek, Byte secondPipe, CBusOptions cBusOptions) {
-
       this.pipePeek = pipePeek;
       this.secondPipe = secondPipe;
       this.cBusOptions = cBusOptions;

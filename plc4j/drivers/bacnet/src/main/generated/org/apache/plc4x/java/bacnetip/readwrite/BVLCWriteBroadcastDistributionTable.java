@@ -118,7 +118,6 @@ public class BVLCWriteBroadcastDistributionTable extends BVLC implements Message
 
     public BVLCWriteBroadcastDistributionTableBuilderImpl(
         List<BVLCBroadcastDistributionTableEntry> table, Integer bvlcPayloadLength) {
-
       this.table = table;
       this.bvlcPayloadLength = bvlcPayloadLength;
     }

@@ -145,7 +145,6 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAckResponse extends S7PayloadU
 
     public S7PayloadUserDataItemCpuFunctionAlarmAckResponseBuilderImpl(
         short functionId, List<Short> messageObjects) {
-
       this.functionId = functionId;
       this.messageObjects = messageObjects;
     }

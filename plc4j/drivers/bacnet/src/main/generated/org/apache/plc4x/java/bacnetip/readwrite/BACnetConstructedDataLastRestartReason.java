@@ -150,7 +150,6 @@ public class BACnetConstructedDataLastRestartReason extends BACnetConstructedDat
         BACnetRestartReasonTagged lastRestartReason,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastRestartReason = lastRestartReason;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

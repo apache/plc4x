@@ -151,7 +151,6 @@ public class BACnetConstructedDataStateDescription extends BACnetConstructedData
         BACnetApplicationTagCharacterString stateDescription,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.stateDescription = stateDescription;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

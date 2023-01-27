@@ -189,7 +189,6 @@ public class BACnetConstructedDataCarDoorText extends BACnetConstructedData impl
         List<BACnetApplicationTagCharacterString> carDoorText,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.carDoorText = carDoorText;
       this.tagNumber = tagNumber;

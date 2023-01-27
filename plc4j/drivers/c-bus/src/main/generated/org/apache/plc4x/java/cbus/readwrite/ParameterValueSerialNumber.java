@@ -131,7 +131,6 @@ public class ParameterValueSerialNumber extends ParameterValue implements Messag
     private final Short numBytes;
 
     public ParameterValueSerialNumberBuilderImpl(SerialNumber value, byte[] data, Short numBytes) {
-
       this.value = value;
       this.data = data;
       this.numBytes = numBytes;

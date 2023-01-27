@@ -73,8 +73,7 @@ public class VariantExpandedNodeId extends Variant implements Message {
     writeBuffer.pushContext("VariantExpandedNodeId");
 
     // Optional Field (arrayLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "arrayLength", arrayLength, writeSignedInt(writeBuffer, 32), arrayLengthSpecified);
+    writeOptionalField("arrayLength", arrayLength, writeSignedInt(writeBuffer, 32));
 
     // Array Field (value)
     writeComplexTypeArrayField("value", value, writeBuffer);
@@ -136,7 +135,6 @@ public class VariantExpandedNodeId extends Variant implements Message {
     private final List<ExpandedNodeId> value;
 
     public VariantExpandedNodeIdBuilderImpl(Integer arrayLength, List<ExpandedNodeId> value) {
-
       this.arrayLength = arrayLength;
       this.value = value;
     }

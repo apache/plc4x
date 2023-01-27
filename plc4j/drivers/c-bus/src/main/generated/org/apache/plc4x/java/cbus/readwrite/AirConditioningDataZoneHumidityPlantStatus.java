@@ -203,7 +203,6 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
         HVACHumidityType humidityType,
         HVACHumidityStatusFlags humidityStatus,
         HVACHumidityError humidityErrorCode) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.humidityType = humidityType;

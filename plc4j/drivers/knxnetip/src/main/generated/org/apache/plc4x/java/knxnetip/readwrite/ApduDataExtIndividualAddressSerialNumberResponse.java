@@ -43,12 +43,8 @@ public class ApduDataExtIndividualAddressSerialNumberResponse extends ApduDataEx
     return (short) 0x1D;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtIndividualAddressSerialNumberResponse(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtIndividualAddressSerialNumberResponse() {
+    super();
   }
 
   @Override
@@ -82,23 +78,18 @@ public class ApduDataExtIndividualAddressSerialNumberResponse extends ApduDataEx
 
     readBuffer.closeContext("ApduDataExtIndividualAddressSerialNumberResponse");
     // Create the instance
-    return new ApduDataExtIndividualAddressSerialNumberResponseBuilderImpl(length);
+    return new ApduDataExtIndividualAddressSerialNumberResponseBuilderImpl();
   }
 
   public static class ApduDataExtIndividualAddressSerialNumberResponseBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtIndividualAddressSerialNumberResponseBuilderImpl(Short length) {
+    public ApduDataExtIndividualAddressSerialNumberResponseBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtIndividualAddressSerialNumberResponse build(Short length) {
-
+    public ApduDataExtIndividualAddressSerialNumberResponse build() {
       ApduDataExtIndividualAddressSerialNumberResponse
           apduDataExtIndividualAddressSerialNumberResponse =
-              new ApduDataExtIndividualAddressSerialNumberResponse(length);
+              new ApduDataExtIndividualAddressSerialNumberResponse();
       return apduDataExtIndividualAddressSerialNumberResponse;
     }
   }

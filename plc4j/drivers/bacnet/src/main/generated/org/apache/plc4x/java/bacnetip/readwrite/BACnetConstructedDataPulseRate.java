@@ -147,7 +147,6 @@ public class BACnetConstructedDataPulseRate extends BACnetConstructedData implem
         BACnetApplicationTagUnsignedInteger pulseRate,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.pulseRate = pulseRate;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

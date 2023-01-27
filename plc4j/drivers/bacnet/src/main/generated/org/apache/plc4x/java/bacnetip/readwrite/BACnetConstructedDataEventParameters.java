@@ -145,7 +145,6 @@ public class BACnetConstructedDataEventParameters extends BACnetConstructedData 
         BACnetEventParameter eventParameter,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.eventParameter = eventParameter;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

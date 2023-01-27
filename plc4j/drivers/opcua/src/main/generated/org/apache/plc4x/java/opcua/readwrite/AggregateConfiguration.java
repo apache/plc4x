@@ -48,9 +48,6 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
   protected final short percentDataBad;
   protected final short percentDataGood;
   protected final boolean useSlopedExtrapolation;
-  // Reserved Fields
-  private Short reservedField0;
-  private Short reservedField1;
 
   public AggregateConfiguration(
       boolean treatUncertainAsBad,
@@ -94,10 +91,7 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("AggregateConfiguration");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 6));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 6));
 
     // Simple Field (treatUncertainAsBad)
     writeSimpleField("treatUncertainAsBad", treatUncertainAsBad, writeBoolean(writeBuffer));
@@ -113,10 +107,7 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
     writeSimpleField("percentDataGood", percentDataGood, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField1 != null ? reservedField1 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (useSlopedExtrapolation)
     writeSimpleField("useSlopedExtrapolation", useSlopedExtrapolation, writeBoolean(writeBuffer));
@@ -190,9 +181,7 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
         useServerCapabilitiesDefaults,
         percentDataBad,
         percentDataGood,
-        useSlopedExtrapolation,
-        reservedField0,
-        reservedField1);
+        useSlopedExtrapolation);
   }
 
   public static class AggregateConfigurationBuilderImpl
@@ -202,24 +191,18 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
     private final short percentDataBad;
     private final short percentDataGood;
     private final boolean useSlopedExtrapolation;
-    private final Short reservedField0;
-    private final Short reservedField1;
 
     public AggregateConfigurationBuilderImpl(
         boolean treatUncertainAsBad,
         boolean useServerCapabilitiesDefaults,
         short percentDataBad,
         short percentDataGood,
-        boolean useSlopedExtrapolation,
-        Short reservedField0,
-        Short reservedField1) {
+        boolean useSlopedExtrapolation) {
       this.treatUncertainAsBad = treatUncertainAsBad;
       this.useServerCapabilitiesDefaults = useServerCapabilitiesDefaults;
       this.percentDataBad = percentDataBad;
       this.percentDataGood = percentDataGood;
       this.useSlopedExtrapolation = useSlopedExtrapolation;
-      this.reservedField0 = reservedField0;
-      this.reservedField1 = reservedField1;
     }
 
     public AggregateConfiguration build() {
@@ -230,8 +213,6 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
               percentDataBad,
               percentDataGood,
               useSlopedExtrapolation);
-      aggregateConfiguration.reservedField0 = reservedField0;
-      aggregateConfiguration.reservedField1 = reservedField1;
       return aggregateConfiguration;
     }
   }

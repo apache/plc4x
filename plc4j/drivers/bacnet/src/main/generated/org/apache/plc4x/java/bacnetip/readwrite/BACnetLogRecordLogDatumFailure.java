@@ -113,7 +113,6 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
     private final Short tagNumber;
 
     public BACnetLogRecordLogDatumFailureBuilderImpl(ErrorEnclosed failure, Short tagNumber) {
-
       this.failure = failure;
       this.tagNumber = tagNumber;
     }

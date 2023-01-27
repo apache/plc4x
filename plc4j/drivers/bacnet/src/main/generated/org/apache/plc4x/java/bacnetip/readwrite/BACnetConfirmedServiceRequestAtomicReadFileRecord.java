@@ -141,7 +141,6 @@ public class BACnetConfirmedServiceRequestAtomicReadFileRecord
     public BACnetConfirmedServiceRequestAtomicReadFileRecordBuilderImpl(
         BACnetApplicationTagSignedInteger fileStartRecord,
         BACnetApplicationTagUnsignedInteger requestRecordCount) {
-
       this.fileStartRecord = fileStartRecord;
       this.requestRecordCount = requestRecordCount;
     }

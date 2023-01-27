@@ -149,7 +149,6 @@ public class BACnetConstructedDataDerivativeConstantUnits extends BACnetConstruc
         BACnetEngineeringUnitsTagged units,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.units = units;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

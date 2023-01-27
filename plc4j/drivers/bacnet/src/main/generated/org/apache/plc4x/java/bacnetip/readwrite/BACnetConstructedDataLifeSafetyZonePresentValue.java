@@ -149,7 +149,6 @@ public class BACnetConstructedDataLifeSafetyZonePresentValue extends BACnetConst
         BACnetLifeSafetyStateTagged presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.presentValue = presentValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

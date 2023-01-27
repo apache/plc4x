@@ -149,9 +149,9 @@ public class BACnetNotificationParametersUnsignedRange extends BACnetNotificatio
 
   public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersUnsignedRange");
     PositionAware positionAware = readBuffer;
@@ -235,7 +235,6 @@ public class BACnetNotificationParametersUnsignedRange extends BACnetNotificatio
         BACnetClosingTag innerClosingTag,
         Short tagNumber,
         BACnetObjectType objectTypeArgument) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.sequenceNumber = sequenceNumber;
       this.statusFlags = statusFlags;

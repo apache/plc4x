@@ -230,7 +230,6 @@ public class ModifySubscriptionRequest extends ExtensionObjectDefinition impleme
         long requestedMaxKeepAliveCount,
         long maxNotificationsPerPublish,
         short priority) {
-
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
       this.requestedPublishingInterval = requestedPublishingInterval;

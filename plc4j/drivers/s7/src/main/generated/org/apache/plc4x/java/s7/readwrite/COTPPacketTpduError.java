@@ -46,19 +46,14 @@ public class COTPPacketTpduError extends COTPPacket implements Message {
   protected final int destinationReference;
   protected final short rejectCause;
 
-  // Arguments.
-  protected final Integer cotpLen;
-
   public COTPPacketTpduError(
       List<COTPParameter> parameters,
       S7Message payload,
       int destinationReference,
-      short rejectCause,
-      Integer cotpLen) {
-    super(parameters, payload, cotpLen);
+      short rejectCause) {
+    super(parameters, payload);
     this.destinationReference = destinationReference;
     this.rejectCause = rejectCause;
-    this.cotpLen = cotpLen;
   }
 
   public int getDestinationReference() {
@@ -118,26 +113,21 @@ public class COTPPacketTpduError extends COTPPacket implements Message {
 
     readBuffer.closeContext("COTPPacketTpduError");
     // Create the instance
-    return new COTPPacketTpduErrorBuilderImpl(destinationReference, rejectCause, cotpLen);
+    return new COTPPacketTpduErrorBuilderImpl(destinationReference, rejectCause);
   }
 
   public static class COTPPacketTpduErrorBuilderImpl implements COTPPacket.COTPPacketBuilder {
     private final int destinationReference;
     private final short rejectCause;
-    private final Integer cotpLen;
 
-    public COTPPacketTpduErrorBuilderImpl(
-        int destinationReference, short rejectCause, Integer cotpLen) {
-
+    public COTPPacketTpduErrorBuilderImpl(int destinationReference, short rejectCause) {
       this.destinationReference = destinationReference;
       this.rejectCause = rejectCause;
-      this.cotpLen = cotpLen;
     }
 
-    public COTPPacketTpduError build(
-        List<COTPParameter> parameters, S7Message payload, Integer cotpLen) {
+    public COTPPacketTpduError build(List<COTPParameter> parameters, S7Message payload) {
       COTPPacketTpduError cOTPPacketTpduError =
-          new COTPPacketTpduError(parameters, payload, destinationReference, rejectCause, cotpLen);
+          new COTPPacketTpduError(parameters, payload, destinationReference, rejectCause);
       return cOTPPacketTpduError;
     }
   }

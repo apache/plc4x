@@ -120,7 +120,6 @@ public class MonitoredItemNotification extends ExtensionObjectDefinition impleme
     private final DataValue value;
 
     public MonitoredItemNotificationBuilderImpl(long clientHandle, DataValue value) {
-
       this.clientHandle = clientHandle;
       this.value = value;
     }

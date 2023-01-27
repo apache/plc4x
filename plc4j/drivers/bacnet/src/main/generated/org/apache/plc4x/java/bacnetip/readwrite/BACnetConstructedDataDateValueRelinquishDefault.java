@@ -148,7 +148,6 @@ public class BACnetConstructedDataDateValueRelinquishDefault extends BACnetConst
         BACnetApplicationTagDate relinquishDefault,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.relinquishDefault = relinquishDefault;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -109,7 +109,6 @@ public class BACnetPropertyStatesRestartReason extends BACnetPropertyStates impl
     private final BACnetRestartReasonTagged restartReason;
 
     public BACnetPropertyStatesRestartReasonBuilderImpl(BACnetRestartReasonTagged restartReason) {
-
       this.restartReason = restartReason;
     }
 

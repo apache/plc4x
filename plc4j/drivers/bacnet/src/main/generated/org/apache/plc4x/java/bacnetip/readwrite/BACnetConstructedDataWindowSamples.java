@@ -148,7 +148,6 @@ public class BACnetConstructedDataWindowSamples extends BACnetConstructedData im
         BACnetApplicationTagUnsignedInteger windowSamples,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.windowSamples = windowSamples;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

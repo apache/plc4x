@@ -106,7 +106,6 @@ public class NetworkAddressDataType extends ExtensionObjectDefinition implements
     private final PascalString networkInterface;
 
     public NetworkAddressDataTypeBuilderImpl(PascalString networkInterface) {
-
       this.networkInterface = networkInterface;
     }
 

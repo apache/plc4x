@@ -204,7 +204,6 @@ public class BACnetConfirmedServiceRequestReadRange extends BACnetConfirmedServi
         BACnetContextTagUnsignedInteger propertyArrayIndex,
         BACnetConfirmedServiceRequestReadRangeRange readRange,
         Long serviceRequestLength) {
-
       this.objectIdentifier = objectIdentifier;
       this.propertyIdentifier = propertyIdentifier;
       this.propertyArrayIndex = propertyArrayIndex;

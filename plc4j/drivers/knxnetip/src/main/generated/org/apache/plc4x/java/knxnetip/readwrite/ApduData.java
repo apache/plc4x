@@ -40,12 +40,8 @@ public abstract class ApduData implements Message {
   // Abstract accessors for discriminator values.
   public abstract Byte getApciType();
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduData(Short dataLength) {
+  public ApduData() {
     super();
-    this.dataLength = dataLength;
   }
 
   protected abstract void serializeApduDataChild(WriteBuffer writeBuffer)
@@ -158,13 +154,12 @@ public abstract class ApduData implements Message {
 
     readBuffer.closeContext("ApduData");
     // Create the instance
-    ApduData _apduData = builder.build(dataLength);
-
+    ApduData _apduData = builder.build();
     return _apduData;
   }
 
   public interface ApduDataBuilder {
-    ApduData build(Short dataLength);
+    ApduData build();
   }
 
   @Override

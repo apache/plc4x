@@ -180,7 +180,6 @@ public class BACnetEventParameterAccessEvent extends BACnetEventParameter implem
         BACnetEventParameterAccessEventListOfAccessEvents listOfAccessEvents,
         BACnetDeviceObjectPropertyReferenceEnclosed accessEventTimeReference,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.listOfAccessEvents = listOfAccessEvents;
       this.accessEventTimeReference = accessEventTimeReference;

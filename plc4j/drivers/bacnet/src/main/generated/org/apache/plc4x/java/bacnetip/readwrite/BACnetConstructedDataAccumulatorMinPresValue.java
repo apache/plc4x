@@ -149,7 +149,6 @@ public class BACnetConstructedDataAccumulatorMinPresValue extends BACnetConstruc
         BACnetApplicationTagUnsignedInteger minPresValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.minPresValue = minPresValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

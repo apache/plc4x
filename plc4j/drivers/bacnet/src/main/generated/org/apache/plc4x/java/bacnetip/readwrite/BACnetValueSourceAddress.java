@@ -103,7 +103,6 @@ public class BACnetValueSourceAddress extends BACnetValueSource implements Messa
     private final BACnetAddressEnclosed address;
 
     public BACnetValueSourceAddressBuilderImpl(BACnetAddressEnclosed address) {
-
       this.address = address;
     }
 

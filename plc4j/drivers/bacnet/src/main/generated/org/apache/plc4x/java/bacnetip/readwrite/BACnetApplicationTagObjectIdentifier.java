@@ -129,7 +129,6 @@ public class BACnetApplicationTagObjectIdentifier extends BACnetApplicationTag i
 
     public BACnetApplicationTagObjectIdentifierBuilderImpl(
         BACnetTagPayloadObjectIdentifier payload) {
-
       this.payload = payload;
     }
 

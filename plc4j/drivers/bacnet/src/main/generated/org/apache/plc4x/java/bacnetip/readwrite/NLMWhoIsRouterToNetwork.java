@@ -110,7 +110,6 @@ public class NLMWhoIsRouterToNetwork extends NLM implements Message {
 
     public NLMWhoIsRouterToNetworkBuilderImpl(
         Integer destinationNetworkAddress, Integer apduLength) {
-
       this.destinationNetworkAddress = destinationNetworkAddress;
       this.apduLength = apduLength;
     }

@@ -147,7 +147,6 @@ public class BACnetConstructedDataSetpointReference extends BACnetConstructedDat
         BACnetSetpointReference setpointReference,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.setpointReference = setpointReference;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -138,7 +138,6 @@ public class BACnetContextTagObjectIdentifier extends BACnetContextTag implement
 
     public BACnetContextTagObjectIdentifierBuilderImpl(
         BACnetTagPayloadObjectIdentifier payload, Short tagNumberArgument) {
-
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

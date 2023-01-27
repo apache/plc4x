@@ -145,7 +145,6 @@ public class BACnetConstructedDataLinkSpeed extends BACnetConstructedData implem
         BACnetApplicationTagReal linkSpeed,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.linkSpeed = linkSpeed;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

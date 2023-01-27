@@ -42,12 +42,8 @@ public class ApduDataAdcRead extends ApduData implements Message {
     return (byte) 0x6;
   }
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataAdcRead(Short dataLength) {
-    super(dataLength);
-    this.dataLength = dataLength;
+  public ApduDataAdcRead() {
+    super();
   }
 
   @Override
@@ -81,21 +77,15 @@ public class ApduDataAdcRead extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataAdcRead");
     // Create the instance
-    return new ApduDataAdcReadBuilderImpl(dataLength);
+    return new ApduDataAdcReadBuilderImpl();
   }
 
   public static class ApduDataAdcReadBuilderImpl implements ApduData.ApduDataBuilder {
-    private final Short dataLength;
 
-    public ApduDataAdcReadBuilderImpl(Short dataLength) {
+    public ApduDataAdcReadBuilderImpl() {}
 
-      this.dataLength = dataLength;
-    }
-
-    public ApduDataAdcRead build(Short dataLength) {
-
-      ApduDataAdcRead apduDataAdcRead = new ApduDataAdcRead(dataLength);
-
+    public ApduDataAdcRead build() {
+      ApduDataAdcRead apduDataAdcRead = new ApduDataAdcRead();
       return apduDataAdcRead;
     }
   }

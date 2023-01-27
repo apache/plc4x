@@ -141,7 +141,6 @@ public class EnumValueType extends ExtensionObjectDefinition implements Message 
 
     public EnumValueTypeBuilderImpl(
         long value, LocalizedText displayName, LocalizedText description) {
-
       this.value = value;
       this.displayName = displayName;
       this.description = description;

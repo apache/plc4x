@@ -107,7 +107,6 @@ public class CloseSecureChannelResponse extends ExtensionObjectDefinition implem
     private final ExtensionObjectDefinition responseHeader;
 
     public CloseSecureChannelResponseBuilderImpl(ExtensionObjectDefinition responseHeader) {
-
       this.responseHeader = responseHeader;
     }
 

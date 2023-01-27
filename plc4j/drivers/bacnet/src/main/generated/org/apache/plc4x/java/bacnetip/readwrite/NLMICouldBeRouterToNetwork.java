@@ -125,7 +125,6 @@ public class NLMICouldBeRouterToNetwork extends NLM implements Message {
 
     public NLMICouldBeRouterToNetworkBuilderImpl(
         int destinationNetworkAddress, short performanceIndex, Integer apduLength) {
-
       this.destinationNetworkAddress = destinationNetworkAddress;
       this.performanceIndex = performanceIndex;
       this.apduLength = apduLength;

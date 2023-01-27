@@ -146,7 +146,6 @@ public class BACnetConstructedDataAverageValue extends BACnetConstructedData imp
         BACnetApplicationTagReal averageValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.averageValue = averageValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

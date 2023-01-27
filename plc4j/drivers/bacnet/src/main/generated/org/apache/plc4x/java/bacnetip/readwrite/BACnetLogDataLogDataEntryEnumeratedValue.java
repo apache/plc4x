@@ -111,7 +111,6 @@ public class BACnetLogDataLogDataEntryEnumeratedValue extends BACnetLogDataLogDa
 
     public BACnetLogDataLogDataEntryEnumeratedValueBuilderImpl(
         BACnetContextTagEnumerated enumeratedValue) {
-
       this.enumeratedValue = enumeratedValue;
     }
 

@@ -148,7 +148,6 @@ public class BACnetConstructedDataObjectName extends BACnetConstructedData imple
         BACnetApplicationTagCharacterString objectName,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.objectName = objectName;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

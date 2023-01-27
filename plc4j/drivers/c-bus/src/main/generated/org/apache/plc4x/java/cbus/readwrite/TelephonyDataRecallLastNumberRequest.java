@@ -128,7 +128,6 @@ public class TelephonyDataRecallLastNumberRequest extends TelephonyData implemen
     private final byte recallLastNumberType;
 
     public TelephonyDataRecallLastNumberRequestBuilderImpl(byte recallLastNumberType) {
-
       this.recallLastNumberType = recallLastNumberType;
     }
 

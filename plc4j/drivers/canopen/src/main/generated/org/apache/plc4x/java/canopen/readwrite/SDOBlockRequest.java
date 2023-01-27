@@ -103,7 +103,6 @@ public class SDOBlockRequest extends SDORequest implements Message {
     private final SDOBlockData block;
 
     public SDOBlockRequestBuilderImpl(SDOBlockData block) {
-
       this.block = block;
     }
 

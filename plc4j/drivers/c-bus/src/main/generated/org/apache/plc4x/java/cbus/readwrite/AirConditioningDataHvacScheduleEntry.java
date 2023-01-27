@@ -255,7 +255,6 @@ public class AirConditioningDataHvacScheduleEntry extends AirConditioningData im
         HVACStartTime startTime,
         HVACTemperature level,
         HVACRawLevels rawLevel) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.entry = entry;

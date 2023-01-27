@@ -40,6 +40,7 @@ public class NetworkProtocolControlInformation implements Message {
   // Properties.
   protected final byte stackCounter;
   protected final byte stackDepth;
+
   // Reserved Fields
   private Byte reservedField0;
 

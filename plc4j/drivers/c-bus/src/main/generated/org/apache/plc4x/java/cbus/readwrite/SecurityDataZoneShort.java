@@ -98,7 +98,6 @@ public class SecurityDataZoneShort extends SecurityData implements Message {
     private final short zoneNumber;
 
     public SecurityDataZoneShortBuilderImpl(short zoneNumber) {
-
       this.zoneNumber = zoneNumber;
     }
 

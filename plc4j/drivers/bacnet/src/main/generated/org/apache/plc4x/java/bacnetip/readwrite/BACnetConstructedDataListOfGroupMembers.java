@@ -142,7 +142,6 @@ public class BACnetConstructedDataListOfGroupMembers extends BACnetConstructedDa
         List<BACnetReadAccessSpecification> listOfGroupMembers,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.listOfGroupMembers = listOfGroupMembers;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

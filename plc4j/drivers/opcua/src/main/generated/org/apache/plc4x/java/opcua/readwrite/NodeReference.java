@@ -48,8 +48,6 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
   protected final boolean isForward;
   protected final int noOfReferencedNodeIds;
   protected final List<NodeId> referencedNodeIds;
-  // Reserved Fields
-  private Short reservedField0;
 
   public NodeReference(
       NodeId nodeId,
@@ -100,10 +98,7 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
         "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (isForward)
     writeSimpleField("isForward", isForward, writeBoolean(writeBuffer));
@@ -189,12 +184,7 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
     readBuffer.closeContext("NodeReference");
     // Create the instance
     return new NodeReferenceBuilderImpl(
-        nodeId,
-        referenceTypeId,
-        isForward,
-        noOfReferencedNodeIds,
-        referencedNodeIds,
-        reservedField0);
+        nodeId, referenceTypeId, isForward, noOfReferencedNodeIds, referencedNodeIds);
   }
 
   public static class NodeReferenceBuilderImpl
@@ -204,28 +194,24 @@ public class NodeReference extends ExtensionObjectDefinition implements Message 
     private final boolean isForward;
     private final int noOfReferencedNodeIds;
     private final List<NodeId> referencedNodeIds;
-    private final Short reservedField0;
 
     public NodeReferenceBuilderImpl(
         NodeId nodeId,
         NodeId referenceTypeId,
         boolean isForward,
         int noOfReferencedNodeIds,
-        List<NodeId> referencedNodeIds,
-        Short reservedField0) {
+        List<NodeId> referencedNodeIds) {
       this.nodeId = nodeId;
       this.referenceTypeId = referenceTypeId;
       this.isForward = isForward;
       this.noOfReferencedNodeIds = noOfReferencedNodeIds;
       this.referencedNodeIds = referencedNodeIds;
-      this.reservedField0 = reservedField0;
     }
 
     public NodeReference build() {
       NodeReference nodeReference =
           new NodeReference(
               nodeId, referenceTypeId, isForward, noOfReferencedNodeIds, referencedNodeIds);
-      nodeReference.reservedField0 = reservedField0;
       return nodeReference;
     }
   }

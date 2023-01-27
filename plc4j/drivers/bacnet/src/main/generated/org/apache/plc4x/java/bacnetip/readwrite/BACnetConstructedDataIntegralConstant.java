@@ -148,7 +148,6 @@ public class BACnetConstructedDataIntegralConstant extends BACnetConstructedData
         BACnetApplicationTagReal integralConstant,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.integralConstant = integralConstant;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

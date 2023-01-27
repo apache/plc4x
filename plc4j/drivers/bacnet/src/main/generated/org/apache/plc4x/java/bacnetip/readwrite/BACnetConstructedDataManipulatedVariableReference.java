@@ -150,7 +150,6 @@ public class BACnetConstructedDataManipulatedVariableReference extends BACnetCon
         BACnetObjectPropertyReference manipulatedVariableReference,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.manipulatedVariableReference = manipulatedVariableReference;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -42,12 +42,8 @@ public class ApduDataExtReadRouterMemoryResponse extends ApduDataExt implements 
     return (short) 0x09;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtReadRouterMemoryResponse(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtReadRouterMemoryResponse() {
+    super();
   }
 
   @Override
@@ -81,22 +77,17 @@ public class ApduDataExtReadRouterMemoryResponse extends ApduDataExt implements 
 
     readBuffer.closeContext("ApduDataExtReadRouterMemoryResponse");
     // Create the instance
-    return new ApduDataExtReadRouterMemoryResponseBuilderImpl(length);
+    return new ApduDataExtReadRouterMemoryResponseBuilderImpl();
   }
 
   public static class ApduDataExtReadRouterMemoryResponseBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtReadRouterMemoryResponseBuilderImpl(Short length) {
+    public ApduDataExtReadRouterMemoryResponseBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtReadRouterMemoryResponse build(Short length) {
-
+    public ApduDataExtReadRouterMemoryResponse build() {
       ApduDataExtReadRouterMemoryResponse apduDataExtReadRouterMemoryResponse =
-          new ApduDataExtReadRouterMemoryResponse(length);
+          new ApduDataExtReadRouterMemoryResponse();
       return apduDataExtReadRouterMemoryResponse;
     }
   }

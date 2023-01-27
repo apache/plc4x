@@ -202,7 +202,6 @@ public class OpcuaAcknowledgeResponse extends MessagePDU implements Message {
         int sendBufferSize,
         int maxMessageSize,
         int maxChunkCount) {
-
       this.chunk = chunk;
       this.version = version;
       this.receiveBufferSize = receiveBufferSize;

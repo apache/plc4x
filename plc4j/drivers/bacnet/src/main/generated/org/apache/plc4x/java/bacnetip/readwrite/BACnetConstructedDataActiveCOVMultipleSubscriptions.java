@@ -143,7 +143,6 @@ public class BACnetConstructedDataActiveCOVMultipleSubscriptions extends BACnetC
         List<BACnetCOVMultipleSubscription> activeCOVMultipleSubscriptions,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.activeCOVMultipleSubscriptions = activeCOVMultipleSubscriptions;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

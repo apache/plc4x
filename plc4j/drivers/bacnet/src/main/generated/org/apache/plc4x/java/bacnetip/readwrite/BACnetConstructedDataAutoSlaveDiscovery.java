@@ -148,7 +148,6 @@ public class BACnetConstructedDataAutoSlaveDiscovery extends BACnetConstructedDa
         BACnetApplicationTagBoolean autoSlaveDiscovery,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.autoSlaveDiscovery = autoSlaveDiscovery;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

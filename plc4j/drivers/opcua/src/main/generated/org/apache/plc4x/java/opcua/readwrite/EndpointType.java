@@ -179,7 +179,6 @@ public class EndpointType extends ExtensionObjectDefinition implements Message {
         MessageSecurityMode securityMode,
         PascalString securityPolicyUri,
         PascalString transportProfileUri) {
-
       this.endpointUrl = endpointUrl;
       this.securityMode = securityMode;
       this.securityPolicyUri = securityPolicyUri;

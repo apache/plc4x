@@ -186,7 +186,6 @@ public class BACnetConstructedDataCommandAction extends BACnetConstructedData im
         List<BACnetActionList> actionLists,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.actionLists = actionLists;
       this.tagNumber = tagNumber;

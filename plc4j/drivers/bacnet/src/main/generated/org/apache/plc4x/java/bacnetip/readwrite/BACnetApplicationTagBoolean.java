@@ -117,7 +117,6 @@ public class BACnetApplicationTagBoolean extends BACnetApplicationTag implements
     private final BACnetTagPayloadBoolean payload;
 
     public BACnetApplicationTagBooleanBuilderImpl(BACnetTagPayloadBoolean payload) {
-
       this.payload = payload;
     }
 

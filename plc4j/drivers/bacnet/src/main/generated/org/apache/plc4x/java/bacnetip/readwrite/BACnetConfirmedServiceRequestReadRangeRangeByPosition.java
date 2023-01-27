@@ -139,7 +139,6 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByPosition
     public BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilderImpl(
         BACnetApplicationTagUnsignedInteger referenceIndex,
         BACnetApplicationTagSignedInteger count) {
-
       this.referenceIndex = referenceIndex;
       this.count = count;
     }

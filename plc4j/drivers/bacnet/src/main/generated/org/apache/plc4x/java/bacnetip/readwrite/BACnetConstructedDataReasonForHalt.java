@@ -148,7 +148,6 @@ public class BACnetConstructedDataReasonForHalt extends BACnetConstructedData im
         BACnetProgramErrorTagged programError,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.programError = programError;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

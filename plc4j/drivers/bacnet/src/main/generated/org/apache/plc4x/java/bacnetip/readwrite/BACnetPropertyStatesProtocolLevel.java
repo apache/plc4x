@@ -109,7 +109,6 @@ public class BACnetPropertyStatesProtocolLevel extends BACnetPropertyStates impl
     private final BACnetProtocolLevelTagged protocolLevel;
 
     public BACnetPropertyStatesProtocolLevelBuilderImpl(BACnetProtocolLevelTagged protocolLevel) {
-
       this.protocolLevel = protocolLevel;
     }
 

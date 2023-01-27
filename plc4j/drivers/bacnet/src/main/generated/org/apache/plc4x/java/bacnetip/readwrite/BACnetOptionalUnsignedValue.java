@@ -108,7 +108,6 @@ public class BACnetOptionalUnsignedValue extends BACnetOptionalUnsigned implemen
 
     public BACnetOptionalUnsignedValueBuilderImpl(
         BACnetApplicationTagUnsignedInteger unsignedValue) {
-
       this.unsignedValue = unsignedValue;
     }
 

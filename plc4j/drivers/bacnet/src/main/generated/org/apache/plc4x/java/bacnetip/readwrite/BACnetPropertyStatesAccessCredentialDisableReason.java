@@ -116,7 +116,6 @@ public class BACnetPropertyStatesAccessCredentialDisableReason extends BACnetPro
 
     public BACnetPropertyStatesAccessCredentialDisableReasonBuilderImpl(
         BACnetAccessCredentialDisableReasonTagged accessCredentialDisableReason) {
-
       this.accessCredentialDisableReason = accessCredentialDisableReason;
     }
 

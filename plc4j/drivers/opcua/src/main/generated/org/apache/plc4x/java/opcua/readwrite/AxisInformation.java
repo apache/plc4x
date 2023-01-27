@@ -220,7 +220,6 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
         AxisScaleEnumeration axisScaleType,
         int noOfAxisSteps,
         List<Double> axisSteps) {
-
       this.engineeringUnits = engineeringUnits;
       this.eURange = eURange;
       this.title = title;

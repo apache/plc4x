@@ -125,7 +125,6 @@ public class MediaTransportControlDataPauseResume extends MediaTransportControlD
     private final byte operation;
 
     public MediaTransportControlDataPauseResumeBuilderImpl(byte operation) {
-
       this.operation = operation;
     }
 

@@ -147,7 +147,6 @@ public class BACnetConstructedDataUserName extends BACnetConstructedData impleme
         BACnetApplicationTagCharacterString userName,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.userName = userName;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

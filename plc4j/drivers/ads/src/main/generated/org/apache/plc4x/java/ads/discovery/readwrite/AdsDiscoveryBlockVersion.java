@@ -114,7 +114,6 @@ public class AdsDiscoveryBlockVersion extends AdsDiscoveryBlock implements Messa
     private final byte[] versionData;
 
     public AdsDiscoveryBlockVersionBuilderImpl(byte[] versionData) {
-
       this.versionData = versionData;
     }
 

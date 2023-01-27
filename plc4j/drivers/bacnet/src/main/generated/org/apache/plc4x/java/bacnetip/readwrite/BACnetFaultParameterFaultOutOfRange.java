@@ -176,7 +176,6 @@ public class BACnetFaultParameterFaultOutOfRange extends BACnetFaultParameter im
         BACnetFaultParameterFaultOutOfRangeMinNormalValue minNormalValue,
         BACnetFaultParameterFaultOutOfRangeMaxNormalValue maxNormalValue,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.minNormalValue = minNormalValue;
       this.maxNormalValue = maxNormalValue;

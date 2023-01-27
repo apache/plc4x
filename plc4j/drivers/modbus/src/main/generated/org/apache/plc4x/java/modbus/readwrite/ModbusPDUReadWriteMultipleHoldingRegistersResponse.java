@@ -122,7 +122,6 @@ public class ModbusPDUReadWriteMultipleHoldingRegistersResponse extends ModbusPD
     private final byte[] value;
 
     public ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilderImpl(byte[] value) {
-
       this.value = value;
     }
 

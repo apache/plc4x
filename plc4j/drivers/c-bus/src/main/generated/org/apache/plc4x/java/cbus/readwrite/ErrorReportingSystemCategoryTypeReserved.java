@@ -106,7 +106,6 @@ public class ErrorReportingSystemCategoryTypeReserved extends ErrorReportingSyst
     private final byte reservedValue;
 
     public ErrorReportingSystemCategoryTypeReservedBuilderImpl(byte reservedValue) {
-
       this.reservedValue = reservedValue;
     }
 

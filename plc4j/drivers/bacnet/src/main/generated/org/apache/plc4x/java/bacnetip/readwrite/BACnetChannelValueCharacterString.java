@@ -109,7 +109,6 @@ public class BACnetChannelValueCharacterString extends BACnetChannelValue implem
 
     public BACnetChannelValueCharacterStringBuilderImpl(
         BACnetApplicationTagCharacterString characterStringValue) {
-
       this.characterStringValue = characterStringValue;
     }
 

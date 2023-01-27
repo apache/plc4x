@@ -129,7 +129,6 @@ public class ModbusPDUReadFileRecordRequest extends ModbusPDU implements Message
 
     public ModbusPDUReadFileRecordRequestBuilderImpl(
         List<ModbusPDUReadFileRecordRequestItem> items) {
-
       this.items = items;
     }
 

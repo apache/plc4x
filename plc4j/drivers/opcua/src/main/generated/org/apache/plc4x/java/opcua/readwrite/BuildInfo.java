@@ -207,7 +207,6 @@ public class BuildInfo extends ExtensionObjectDefinition implements Message {
         PascalString softwareVersion,
         PascalString buildNumber,
         long buildDate) {
-
       this.productUri = productUri;
       this.manufacturerName = manufacturerName;
       this.productName = productName;

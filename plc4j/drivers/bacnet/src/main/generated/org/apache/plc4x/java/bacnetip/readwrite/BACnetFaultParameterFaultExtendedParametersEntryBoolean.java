@@ -109,7 +109,6 @@ public class BACnetFaultParameterFaultExtendedParametersEntryBoolean
 
     public BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilderImpl(
         BACnetApplicationTagBoolean booleanValue) {
-
       this.booleanValue = booleanValue;
     }
 

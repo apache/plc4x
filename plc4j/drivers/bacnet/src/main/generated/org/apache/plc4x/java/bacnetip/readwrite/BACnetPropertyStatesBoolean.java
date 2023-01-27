@@ -110,7 +110,6 @@ public class BACnetPropertyStatesBoolean extends BACnetPropertyStates implements
     private final BACnetContextTagBoolean booleanValue;
 
     public BACnetPropertyStatesBooleanBuilderImpl(BACnetContextTagBoolean booleanValue) {
-
       this.booleanValue = booleanValue;
     }
 

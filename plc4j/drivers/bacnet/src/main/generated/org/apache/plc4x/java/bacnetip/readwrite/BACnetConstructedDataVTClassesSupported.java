@@ -145,7 +145,6 @@ public class BACnetConstructedDataVTClassesSupported extends BACnetConstructedDa
         List<BACnetVTClassTagged> vtClassesSupported,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.vtClassesSupported = vtClassesSupported;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

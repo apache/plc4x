@@ -136,7 +136,6 @@ public class PnIoCm_Block_ExpectedSubmoduleReq extends PnIoCm_Block implements M
 
     public PnIoCm_Block_ExpectedSubmoduleReqBuilderImpl(
         List<PnIoCm_ExpectedSubmoduleBlockReqApi> apis) {
-
       this.apis = apis;
     }
 

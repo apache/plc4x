@@ -106,7 +106,6 @@ public class BACnetClientCOVNone extends BACnetClientCOV implements Message {
     private final BACnetApplicationTagNull defaultIncrement;
 
     public BACnetClientCOVNoneBuilderImpl(BACnetApplicationTagNull defaultIncrement) {
-
       this.defaultIncrement = defaultIncrement;
     }
 

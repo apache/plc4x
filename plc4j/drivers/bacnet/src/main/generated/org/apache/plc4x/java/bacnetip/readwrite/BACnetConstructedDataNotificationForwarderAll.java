@@ -115,7 +115,6 @@ public class BACnetConstructedDataNotificationForwarderAll extends BACnetConstru
 
     public BACnetConstructedDataNotificationForwarderAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

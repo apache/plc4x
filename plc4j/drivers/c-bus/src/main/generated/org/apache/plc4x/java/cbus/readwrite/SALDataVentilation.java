@@ -104,7 +104,6 @@ public class SALDataVentilation extends SALData implements Message {
     private final LightingData ventilationData;
 
     public SALDataVentilationBuilderImpl(LightingData ventilationData) {
-
       this.ventilationData = ventilationData;
     }
 

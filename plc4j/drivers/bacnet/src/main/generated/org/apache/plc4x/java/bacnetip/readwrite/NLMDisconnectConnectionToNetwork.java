@@ -108,7 +108,6 @@ public class NLMDisconnectConnectionToNetwork extends NLM implements Message {
 
     public NLMDisconnectConnectionToNetworkBuilderImpl(
         int destinationNetworkAddress, Integer apduLength) {
-
       this.destinationNetworkAddress = destinationNetworkAddress;
       this.apduLength = apduLength;
     }

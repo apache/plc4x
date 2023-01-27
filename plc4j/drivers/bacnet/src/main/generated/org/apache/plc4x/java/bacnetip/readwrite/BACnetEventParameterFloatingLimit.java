@@ -261,7 +261,6 @@ public class BACnetEventParameterFloatingLimit extends BACnetEventParameter impl
         BACnetContextTagReal highDiffLimit,
         BACnetContextTagReal deadband,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.setpointReference = setpointReference;

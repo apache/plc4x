@@ -138,7 +138,6 @@ public class Annotation extends ExtensionObjectDefinition implements Message {
     private final long annotationTime;
 
     public AnnotationBuilderImpl(PascalString message, PascalString userName, long annotationTime) {
-
       this.message = message;
       this.userName = userName;
       this.annotationTime = annotationTime;

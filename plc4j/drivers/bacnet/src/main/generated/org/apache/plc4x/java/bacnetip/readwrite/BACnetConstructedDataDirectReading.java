@@ -146,7 +146,6 @@ public class BACnetConstructedDataDirectReading extends BACnetConstructedData im
         BACnetApplicationTagReal directReading,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.directReading = directReading;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

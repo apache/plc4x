@@ -148,7 +148,6 @@ public class BACnetConstructedDataDerivativeConstant extends BACnetConstructedDa
         BACnetApplicationTagReal derivativeConstant,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.derivativeConstant = derivativeConstant;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

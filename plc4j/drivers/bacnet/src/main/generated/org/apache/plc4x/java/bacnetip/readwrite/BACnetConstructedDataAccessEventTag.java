@@ -148,7 +148,6 @@ public class BACnetConstructedDataAccessEventTag extends BACnetConstructedData i
         BACnetApplicationTagUnsignedInteger accessEventTag,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.accessEventTag = accessEventTag;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

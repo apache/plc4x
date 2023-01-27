@@ -116,7 +116,6 @@ public class DF1UnprotectedReadResponse extends DF1Command implements Message {
     private final byte[] data;
 
     public DF1UnprotectedReadResponseBuilderImpl(byte[] data) {
-
       this.data = data;
     }
 

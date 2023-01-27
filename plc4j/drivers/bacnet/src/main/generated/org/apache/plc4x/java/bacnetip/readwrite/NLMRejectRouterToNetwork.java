@@ -142,7 +142,6 @@ public class NLMRejectRouterToNetwork extends NLM implements Message {
         NLMRejectRouterToNetworkRejectReason rejectReason,
         int destinationNetworkAddress,
         Integer apduLength) {
-
       this.rejectReason = rejectReason;
       this.destinationNetworkAddress = destinationNetworkAddress;
       this.apduLength = apduLength;

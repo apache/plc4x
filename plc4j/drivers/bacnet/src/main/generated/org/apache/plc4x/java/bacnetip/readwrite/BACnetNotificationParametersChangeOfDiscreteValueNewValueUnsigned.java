@@ -121,7 +121,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedBuilderImpl(
         BACnetApplicationTagUnsignedInteger unsignedValue, Short tagNumber) {
-
       this.unsignedValue = unsignedValue;
       this.tagNumber = tagNumber;
     }

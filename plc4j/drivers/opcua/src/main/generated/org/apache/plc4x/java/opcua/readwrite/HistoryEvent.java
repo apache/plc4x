@@ -129,7 +129,6 @@ public class HistoryEvent extends ExtensionObjectDefinition implements Message {
     private final List<ExtensionObjectDefinition> events;
 
     public HistoryEventBuilderImpl(int noOfEvents, List<ExtensionObjectDefinition> events) {
-
       this.noOfEvents = noOfEvents;
       this.events = events;
     }

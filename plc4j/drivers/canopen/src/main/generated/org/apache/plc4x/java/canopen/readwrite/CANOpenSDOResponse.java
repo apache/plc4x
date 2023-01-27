@@ -134,7 +134,6 @@ public class CANOpenSDOResponse extends CANOpenPayload implements Message {
     private final SDOResponse response;
 
     public CANOpenSDOResponseBuilderImpl(SDOResponseCommand command, SDOResponse response) {
-
       this.command = command;
       this.response = response;
     }

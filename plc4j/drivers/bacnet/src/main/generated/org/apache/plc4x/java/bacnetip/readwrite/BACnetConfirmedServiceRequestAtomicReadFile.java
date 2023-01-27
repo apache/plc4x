@@ -145,7 +145,6 @@ public class BACnetConfirmedServiceRequestAtomicReadFile extends BACnetConfirmed
         BACnetApplicationTagObjectIdentifier fileIdentifier,
         BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord accessMethod,
         Long serviceRequestLength) {
-
       this.fileIdentifier = fileIdentifier;
       this.accessMethod = accessMethod;
       this.serviceRequestLength = serviceRequestLength;

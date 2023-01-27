@@ -149,7 +149,6 @@ public class BACnetConstructedDataIntegerValueMaxPresValue extends BACnetConstru
         BACnetApplicationTagSignedInteger maxPresValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxPresValue = maxPresValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

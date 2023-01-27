@@ -115,7 +115,6 @@ public class PowerUpReply extends Reply implements Message {
 
     public PowerUpReplyBuilderImpl(
         PowerUp powerUpIndicator, CBusOptions cBusOptions, RequestContext requestContext) {
-
       this.powerUpIndicator = powerUpIndicator;
       this.cBusOptions = cBusOptions;
       this.requestContext = requestContext;

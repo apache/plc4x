@@ -189,7 +189,6 @@ public class BACnetConstructedDataGroupMembers extends BACnetConstructedData imp
         List<BACnetApplicationTagObjectIdentifier> groupMembers,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.groupMembers = groupMembers;
       this.tagNumber = tagNumber;

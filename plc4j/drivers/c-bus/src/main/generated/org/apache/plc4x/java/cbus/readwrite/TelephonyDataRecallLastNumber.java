@@ -150,7 +150,6 @@ public class TelephonyDataRecallLastNumber extends TelephonyData implements Mess
     private final String number;
 
     public TelephonyDataRecallLastNumberBuilderImpl(byte recallLastNumberType, String number) {
-
       this.recallLastNumberType = recallLastNumberType;
       this.number = number;
     }

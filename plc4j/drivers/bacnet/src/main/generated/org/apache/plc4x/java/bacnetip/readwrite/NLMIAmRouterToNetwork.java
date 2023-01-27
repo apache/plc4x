@@ -113,7 +113,6 @@ public class NLMIAmRouterToNetwork extends NLM implements Message {
 
     public NLMIAmRouterToNetworkBuilderImpl(
         List<Integer> destinationNetworkAddresses, Integer apduLength) {
-
       this.destinationNetworkAddresses = destinationNetworkAddresses;
       this.apduLength = apduLength;
     }

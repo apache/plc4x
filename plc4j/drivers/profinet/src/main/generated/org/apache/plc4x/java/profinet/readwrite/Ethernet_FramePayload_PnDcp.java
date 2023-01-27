@@ -105,7 +105,6 @@ public class Ethernet_FramePayload_PnDcp extends Ethernet_FramePayload implement
     private final PnDcp_Pdu pdu;
 
     public Ethernet_FramePayload_PnDcpBuilderImpl(PnDcp_Pdu pdu) {
-
       this.pdu = pdu;
     }
 

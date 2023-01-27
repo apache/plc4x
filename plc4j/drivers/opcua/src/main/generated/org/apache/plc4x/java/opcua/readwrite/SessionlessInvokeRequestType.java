@@ -261,7 +261,6 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
         int noOfLocaleIds,
         List<PascalString> localeIds,
         long serviceId) {
-
       this.urisVersion = urisVersion;
       this.noOfNamespaceUris = noOfNamespaceUris;
       this.namespaceUris = namespaceUris;

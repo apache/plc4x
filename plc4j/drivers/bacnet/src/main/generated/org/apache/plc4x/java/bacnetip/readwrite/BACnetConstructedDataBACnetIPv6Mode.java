@@ -148,7 +148,6 @@ public class BACnetConstructedDataBACnetIPv6Mode extends BACnetConstructedData i
         BACnetIPModeTagged bacnetIpv6Mode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.bacnetIpv6Mode = bacnetIpv6Mode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -108,7 +108,6 @@ public class BACnetPropertyStatesAction extends BACnetPropertyStates implements 
     private final BACnetActionTagged action;
 
     public BACnetPropertyStatesActionBuilderImpl(BACnetActionTagged action) {
-
       this.action = action;
     }
 

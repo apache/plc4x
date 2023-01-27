@@ -40,8 +40,6 @@ public class DeviceConfigurationRequestDataBlock implements Message {
   // Properties.
   protected final short communicationChannelId;
   protected final short sequenceCounter;
-  // Reserved Fields
-  private Short reservedField0;
 
   public DeviceConfigurationRequestDataBlock(short communicationChannelId, short sequenceCounter) {
     super();
@@ -75,10 +73,7 @@ public class DeviceConfigurationRequestDataBlock implements Message {
     writeSimpleField("sequenceCounter", sequenceCounter, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("DeviceConfigurationRequestDataBlock");
   }
@@ -136,7 +131,6 @@ public class DeviceConfigurationRequestDataBlock implements Message {
     DeviceConfigurationRequestDataBlock _deviceConfigurationRequestDataBlock;
     _deviceConfigurationRequestDataBlock =
         new DeviceConfigurationRequestDataBlock(communicationChannelId, sequenceCounter);
-    _deviceConfigurationRequestDataBlock.reservedField0 = reservedField0;
     return _deviceConfigurationRequestDataBlock;
   }
 

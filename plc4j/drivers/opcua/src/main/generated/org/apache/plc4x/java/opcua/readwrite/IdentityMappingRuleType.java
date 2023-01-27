@@ -133,7 +133,6 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
 
     public IdentityMappingRuleTypeBuilderImpl(
         IdentityCriteriaType criteriaType, PascalString criteria) {
-
       this.criteriaType = criteriaType;
       this.criteria = criteria;
     }

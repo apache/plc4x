@@ -117,7 +117,6 @@ public class BACnetTimerStateChangeValueOctetString extends BACnetTimerStateChan
 
     public BACnetTimerStateChangeValueOctetStringBuilderImpl(
         BACnetApplicationTagOctetString octetStringValue, BACnetObjectType objectTypeArgument) {
-
       this.octetStringValue = octetStringValue;
       this.objectTypeArgument = objectTypeArgument;
     }

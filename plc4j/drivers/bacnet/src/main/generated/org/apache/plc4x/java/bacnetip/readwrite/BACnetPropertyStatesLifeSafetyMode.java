@@ -110,7 +110,6 @@ public class BACnetPropertyStatesLifeSafetyMode extends BACnetPropertyStates imp
 
     public BACnetPropertyStatesLifeSafetyModeBuilderImpl(
         BACnetLifeSafetyModeTagged lifeSafetyMode) {
-
       this.lifeSafetyMode = lifeSafetyMode;
     }
 

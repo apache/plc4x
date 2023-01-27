@@ -153,7 +153,6 @@ public class BACnetConstructedDataUserExternalIdentifier extends BACnetConstruct
         BACnetApplicationTagCharacterString userExternalIdentifier,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.userExternalIdentifier = userExternalIdentifier;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

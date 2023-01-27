@@ -145,7 +145,6 @@ public class BACnetConstructedDataAccessZoneAlarmValues extends BACnetConstructe
         List<BACnetAccessZoneOccupancyStateTagged> alarmValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.alarmValues = alarmValues;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

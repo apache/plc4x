@@ -105,7 +105,6 @@ public class BACnetScaleFloatScale extends BACnetScale implements Message {
     private final BACnetContextTagReal floatScale;
 
     public BACnetScaleFloatScaleBuilderImpl(BACnetContextTagReal floatScale) {
-
       this.floatScale = floatScale;
     }
 

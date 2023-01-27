@@ -122,7 +122,6 @@ public class ErrorReportingSystemCategoryTypeBuildingManagementSystems
 
     public ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilderImpl(
         ErrorReportingSystemCategoryTypeForBuildingManagementSystems categoryForType) {
-
       this.categoryForType = categoryForType;
     }
 

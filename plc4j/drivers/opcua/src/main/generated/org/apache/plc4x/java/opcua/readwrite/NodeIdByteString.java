@@ -132,7 +132,6 @@ public class NodeIdByteString extends NodeIdTypeDefinition implements Message {
     private final PascalByteString id;
 
     public NodeIdByteStringBuilderImpl(int namespaceIndex, PascalByteString id) {
-
       this.namespaceIndex = namespaceIndex;
       this.id = id;
     }

@@ -31,7 +31,7 @@
     <raw>303032303030303130303520202020202020202000</raw>
     <root-type>OpenProtocolMessage</root-type>
     <parser-arguments>
-      <connectionRevision>Revision5</connectionRevision>
+      <selectedRevision>1</selectedRevision>
     </parser-arguments>
     <xml>
       <OpenProtocolMessage>
@@ -39,9 +39,7 @@
         <mid>
           <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationCommunicationStart">1</Mid>
         </mid>
-        <selectedRevision>
-          <OpenProtocolRevision dataType="uint" bitLength="24" stringRepresentation="Revision5">5</OpenProtocolRevision>
-        </selectedRevision>
+        <midRevision dataType="uint" bitLength="24">5</midRevision>
         <OpenProtocolMessageApplicationCommunicationStart>
         </OpenProtocolMessageApplicationCommunicationStart>
         <end dataType="uint" bitLength="8">0</end>
@@ -55,7 +53,7 @@
     <raw>30303537303030322020202020202020202020203031303030313032303130334169726261673120202020202020202020202020202020202000</raw>
     <root-type>OpenProtocolMessage</root-type>
     <parser-arguments>
-      <connectionRevision>Revision1</connectionRevision>
+      <selectedRevision>1</selectedRevision>
     </parser-arguments>
     <xml>
       <OpenProtocolMessage>
@@ -63,29 +61,15 @@
         <mid>
           <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationCommunicationStartAcknowledge">2</Mid>
         </mid>
-        <selectedRevision>
-        </selectedRevision>
         <OpenProtocolMessageApplicationCommunicationStartAcknowledge>
-          <blocks isList="true">
-            <ApplicationCommunicationStartAcknowledgeBlock>
-              <blockType dataType="uint" bitLength="16">1</blockType>
-              <ApplicationCommunicationStartAcknowledgeBlockCellId>
-                <cellId dataType="uint" bitLength="32">1</cellId>
-              </ApplicationCommunicationStartAcknowledgeBlockCellId>
-            </ApplicationCommunicationStartAcknowledgeBlock>
-            <ApplicationCommunicationStartAcknowledgeBlock>
-              <blockType dataType="uint" bitLength="16">2</blockType>
-              <ApplicationCommunicationStartAcknowledgeBlockChannelId>
-                <channelId dataType="uint" bitLength="16">1</channelId>
-              </ApplicationCommunicationStartAcknowledgeBlockChannelId>
-            </ApplicationCommunicationStartAcknowledgeBlock>
-            <ApplicationCommunicationStartAcknowledgeBlock>
-              <blockType dataType="uint" bitLength="16">3</blockType>
-              <ApplicationCommunicationStartAcknowledgeBlockControllerName>
-                <controllerName dataType="string" bitLength="200" encoding="ASCII">Airbag1</controllerName>
-              </ApplicationCommunicationStartAcknowledgeBlockControllerName>
-            </ApplicationCommunicationStartAcknowledgeBlock>
-          </blocks>
+          <OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev1>
+            <blockIdCellId dataType="uint" bitLength="16">1</blockIdCellId>
+            <cellId dataType="uint" bitLength="32">1</cellId>
+            <blockIdChannelId dataType="uint" bitLength="16">2</blockIdChannelId>
+            <channelId dataType="uint" bitLength="16">1</channelId>
+            <blockIdControllerName dataType="uint" bitLength="16">3</blockIdControllerName>
+            <controllerName dataType="string" bitLength="200" encoding="ASCII">Airbag1</controllerName>
+          </OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev1>
         </OpenProtocolMessageApplicationCommunicationStartAcknowledge>
         <end dataType="uint" bitLength="8">0</end>
       </OpenProtocolMessage>
@@ -98,7 +82,7 @@
     <raw>303032303030303320202020202020202020202000</raw>
     <root-type>OpenProtocolMessage</root-type>
     <parser-arguments>
-      <connectionRevision>Revision1</connectionRevision>
+      <selectedRevision>1</selectedRevision>
     </parser-arguments>
     <xml>
       <OpenProtocolMessage>
@@ -106,8 +90,6 @@
         <mid>
           <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationCommunicationStop">3</Mid>
         </mid>
-        <selectedRevision>
-        </selectedRevision>
         <OpenProtocolMessageApplicationCommunicationStop>
         </OpenProtocolMessageApplicationCommunicationStop>
         <end dataType="uint" bitLength="8">0</end>
@@ -121,7 +103,7 @@
     <raw>303032363030303420202020202020202020202030303138303200</raw>
     <root-type>OpenProtocolMessage</root-type>
     <parser-arguments>
-      <connectionRevision>Revision1</connectionRevision>
+      <selectedRevision>1</selectedRevision>
     </parser-arguments>
     <xml>
       <OpenProtocolMessage>
@@ -129,15 +111,15 @@
         <mid>
           <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationCommandError">4</Mid>
         </mid>
-        <selectedRevision>
-        </selectedRevision>
         <OpenProtocolMessageApplicationCommandError>
-          <requestMid>
-            <Mid dataType="uint" bitLength="32" stringRepresentation="SelectParameterSet">18</Mid>
-          </requestMid>
-          <error>
-            <Error dataType="uint" bitLength="16" stringRepresentation="ParameterSetIdNotPresent">2</Error>
-          </error>
+          <OpenProtocolMessageApplicationCommandErrorRev1>
+            <requestMid>
+              <Mid dataType="uint" bitLength="32" stringRepresentation="SelectParameterSet">18</Mid>
+            </requestMid>
+            <error>
+              <Error dataType="uint" bitLength="16" stringRepresentation="ParameterSetIdNotPresent">2</Error>
+            </error>
+          </OpenProtocolMessageApplicationCommandErrorRev1>
         </OpenProtocolMessageApplicationCommandError>
         <end dataType="uint" bitLength="8">0</end>
       </OpenProtocolMessage>
@@ -150,7 +132,7 @@
     <raw>30303234303030352020202020202020202020203030313800</raw>
     <root-type>OpenProtocolMessage</root-type>
     <parser-arguments>
-      <connectionRevision>Revision1</connectionRevision>
+      <selectedRevision>1</selectedRevision>
     </parser-arguments>
     <xml>
       <OpenProtocolMessage>
@@ -158,12 +140,12 @@
         <mid>
           <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationCommandAccepted">5</Mid>
         </mid>
-        <selectedRevision>
-        </selectedRevision>
         <OpenProtocolMessageApplicationCommandAccepted>
-          <midNumberAccepted>
-            <Mid dataType="uint" bitLength="32" stringRepresentation="SelectParameterSet">18</Mid>
-          </midNumberAccepted>
+          <OpenProtocolMessageApplicationCommandAcceptedRev1>
+            <midNumberAccepted>
+              <Mid dataType="uint" bitLength="32" stringRepresentation="SelectParameterSet">18</Mid>
+            </midNumberAccepted>
+          </OpenProtocolMessageApplicationCommandAcceptedRev1>
         </OpenProtocolMessageApplicationCommandAccepted>
         <end dataType="uint" bitLength="8">0</end>
       </OpenProtocolMessage>
@@ -176,7 +158,7 @@
     <raw>30303333303030362020202020202020202020203030313830303630344875727A00</raw>
     <root-type>OpenProtocolMessage</root-type>
     <parser-arguments>
-      <connectionRevision>Revision1</connectionRevision>
+      <selectedRevision>1</selectedRevision>
     </parser-arguments>
     <xml>
       <OpenProtocolMessage>
@@ -184,17 +166,15 @@
         <mid>
           <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationGenericDataRequest">6</Mid>
         </mid>
-        <selectedRevision>
-        </selectedRevision>
         <OpenProtocolMessageApplicationGenericDataRequest>
-          <requestMid>
-            <Mid dataType="uint" bitLength="32" stringRepresentation="SelectParameterSet">18</Mid>
-          </requestMid>
-          <wantedRevision>
-            <OpenProtocolRevision dataType="uint" bitLength="24" stringRepresentation="Revision6">6</OpenProtocolRevision>
-          </wantedRevision>
-          <extraDataLength dataType="uint" bitLength="16">4</extraDataLength>
-          <extraData dataType="byte" bitLength="32">0x4875727a</extraData>
+          <OpenProtocolMessageApplicationGenericDataRequestRev1>
+            <requestMid>
+              <Mid dataType="uint" bitLength="32" stringRepresentation="SelectParameterSet">18</Mid>
+            </requestMid>
+            <wantedRevision dataType="uint" bitLength="24">6</wantedRevision>
+            <extraDataLength dataType="uint" bitLength="16">4</extraDataLength>
+            <extraData dataType="byte" bitLength="32">0x4875727a</extraData>
+          </OpenProtocolMessageApplicationGenericDataRequestRev1>
         </OpenProtocolMessageApplicationGenericDataRequest>
         <end dataType="uint" bitLength="8">0</end>
       </OpenProtocolMessage>

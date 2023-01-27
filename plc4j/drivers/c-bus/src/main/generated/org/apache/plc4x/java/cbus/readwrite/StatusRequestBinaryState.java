@@ -41,6 +41,7 @@ public class StatusRequestBinaryState extends StatusRequest implements Message {
 
   // Properties.
   protected final ApplicationIdContainer application;
+
   // Reserved Fields
   private Byte reservedField0;
   private Byte reservedField1;

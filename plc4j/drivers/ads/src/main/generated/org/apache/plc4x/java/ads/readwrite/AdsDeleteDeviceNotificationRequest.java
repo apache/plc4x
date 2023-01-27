@@ -113,7 +113,6 @@ public class AdsDeleteDeviceNotificationRequest extends AmsPacket implements Mes
     private final long notificationHandle;
 
     public AdsDeleteDeviceNotificationRequestBuilderImpl(long notificationHandle) {
-
       this.notificationHandle = notificationHandle;
     }
 

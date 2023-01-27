@@ -120,7 +120,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilderImpl(
         BACnetApplicationTagEnumerated enumeratedValue, Short tagNumber) {
-
       this.enumeratedValue = enumeratedValue;
       this.tagNumber = tagNumber;
     }

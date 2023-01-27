@@ -120,8 +120,8 @@ public class CALDataWrite extends CALData implements Message {
 
   public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer,
-      RequestContext requestContext,
-      CALCommandTypeContainer commandTypeContainer)
+      CALCommandTypeContainer commandTypeContainer,
+      RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("CALDataWrite");
     PositionAware positionAware = readBuffer;
@@ -163,7 +163,6 @@ public class CALDataWrite extends CALData implements Message {
         byte code,
         ParameterValue parameterValue,
         RequestContext requestContext) {
-
       this.paramNo = paramNo;
       this.code = code;
       this.parameterValue = parameterValue;

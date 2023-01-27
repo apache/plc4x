@@ -148,7 +148,6 @@ public class BACnetConstructedDataWriteStatus extends BACnetConstructedData impl
         BACnetWriteStatusTagged writeStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.writeStatus = writeStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

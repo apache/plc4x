@@ -154,7 +154,6 @@ public class SDOSegmentDownloadRequest extends SDORequest implements Message {
     private final byte[] data;
 
     public SDOSegmentDownloadRequestBuilderImpl(boolean toggle, boolean last, byte[] data) {
-
       this.toggle = toggle;
       this.last = last;
       this.data = data;

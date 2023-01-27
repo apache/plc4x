@@ -145,7 +145,6 @@ public class ReplyOrConfirmationConfirmation extends ReplyOrConfirmation impleme
         ReplyOrConfirmation embeddedReply,
         CBusOptions cBusOptions,
         RequestContext requestContext) {
-
       this.confirmation = confirmation;
       this.embeddedReply = embeddedReply;
       this.cBusOptions = cBusOptions;

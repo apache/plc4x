@@ -148,7 +148,6 @@ public class BACnetConstructedDataSlaveProxyEnable extends BACnetConstructedData
         BACnetApplicationTagBoolean slaveProxyEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.slaveProxyEnable = slaveProxyEnable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

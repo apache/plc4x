@@ -133,7 +133,6 @@ public class BVLCDeleteForeignDeviceTableEntry extends BVLC implements Message {
     private final int port;
 
     public BVLCDeleteForeignDeviceTableEntryBuilderImpl(List<Short> ip, int port) {
-
       this.ip = ip;
       this.port = port;
     }

@@ -114,7 +114,6 @@ public class AdsDiscoveryBlockOsData extends AdsDiscoveryBlock implements Messag
     private final byte[] osData;
 
     public AdsDiscoveryBlockOsDataBuilderImpl(byte[] osData) {
-
       this.osData = osData;
     }
 

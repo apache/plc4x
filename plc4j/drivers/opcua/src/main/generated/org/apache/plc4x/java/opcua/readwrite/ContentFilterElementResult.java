@@ -205,7 +205,6 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
         List<StatusCode> operandStatusCodes,
         int noOfOperandDiagnosticInfos,
         List<DiagnosticInfo> operandDiagnosticInfos) {
-
       this.statusCode = statusCode;
       this.noOfOperandStatusCodes = noOfOperandStatusCodes;
       this.operandStatusCodes = operandStatusCodes;

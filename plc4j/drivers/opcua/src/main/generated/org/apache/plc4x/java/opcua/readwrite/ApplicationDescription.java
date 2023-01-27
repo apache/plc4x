@@ -270,7 +270,6 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
         PascalString discoveryProfileUri,
         int noOfDiscoveryUrls,
         List<PascalString> discoveryUrls) {
-
       this.applicationUri = applicationUri;
       this.productUri = productUri;
       this.applicationName = applicationName;

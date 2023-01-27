@@ -47,8 +47,6 @@ public class SetPublishingModeRequest extends ExtensionObjectDefinition implemen
   protected final boolean publishingEnabled;
   protected final int noOfSubscriptionIds;
   protected final List<Long> subscriptionIds;
-  // Reserved Fields
-  private Short reservedField0;
 
   public SetPublishingModeRequest(
       ExtensionObjectDefinition requestHeader,
@@ -89,10 +87,7 @@ public class SetPublishingModeRequest extends ExtensionObjectDefinition implemen
     writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (publishingEnabled)
     writeSimpleField("publishingEnabled", publishingEnabled, writeBoolean(writeBuffer));
@@ -165,7 +160,7 @@ public class SetPublishingModeRequest extends ExtensionObjectDefinition implemen
     readBuffer.closeContext("SetPublishingModeRequest");
     // Create the instance
     return new SetPublishingModeRequestBuilderImpl(
-        requestHeader, publishingEnabled, noOfSubscriptionIds, subscriptionIds, reservedField0);
+        requestHeader, publishingEnabled, noOfSubscriptionIds, subscriptionIds);
   }
 
   public static class SetPublishingModeRequestBuilderImpl
@@ -174,26 +169,22 @@ public class SetPublishingModeRequest extends ExtensionObjectDefinition implemen
     private final boolean publishingEnabled;
     private final int noOfSubscriptionIds;
     private final List<Long> subscriptionIds;
-    private final Short reservedField0;
 
     public SetPublishingModeRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         boolean publishingEnabled,
         int noOfSubscriptionIds,
-        List<Long> subscriptionIds,
-        Short reservedField0) {
+        List<Long> subscriptionIds) {
       this.requestHeader = requestHeader;
       this.publishingEnabled = publishingEnabled;
       this.noOfSubscriptionIds = noOfSubscriptionIds;
       this.subscriptionIds = subscriptionIds;
-      this.reservedField0 = reservedField0;
     }
 
     public SetPublishingModeRequest build() {
       SetPublishingModeRequest setPublishingModeRequest =
           new SetPublishingModeRequest(
               requestHeader, publishingEnabled, noOfSubscriptionIds, subscriptionIds);
-      setPublishingModeRequest.reservedField0 = reservedField0;
       return setPublishingModeRequest;
     }
   }

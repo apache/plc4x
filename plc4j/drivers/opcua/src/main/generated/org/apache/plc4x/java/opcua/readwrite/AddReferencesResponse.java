@@ -199,7 +199,6 @@ public class AddReferencesResponse extends ExtensionObjectDefinition implements 
         List<StatusCode> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

@@ -209,7 +209,6 @@ public class BACnetEventParameterUnsignedRange extends BACnetEventParameter impl
         BACnetContextTagUnsignedInteger lowLimit,
         BACnetContextTagUnsignedInteger highLimit,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.lowLimit = lowLimit;

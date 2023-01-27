@@ -146,7 +146,6 @@ public class BACnetConstructedDataAnalogOutputInterfaceValue extends BACnetConst
         BACnetOptionalREAL interfaceValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.interfaceValue = interfaceValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

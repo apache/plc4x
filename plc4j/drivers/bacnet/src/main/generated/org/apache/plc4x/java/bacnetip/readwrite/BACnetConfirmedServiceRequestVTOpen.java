@@ -148,7 +148,6 @@ public class BACnetConfirmedServiceRequestVTOpen extends BACnetConfirmedServiceR
         BACnetVTClassTagged vtClass,
         BACnetApplicationTagUnsignedInteger localVtSessionIdentifier,
         Long serviceRequestLength) {
-
       this.vtClass = vtClass;
       this.localVtSessionIdentifier = localVtSessionIdentifier;
       this.serviceRequestLength = serviceRequestLength;

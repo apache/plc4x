@@ -147,7 +147,6 @@ public class BACnetConstructedDataMode extends BACnetConstructedData implements 
         BACnetLifeSafetyModeTagged mode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.mode = mode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

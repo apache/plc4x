@@ -103,7 +103,6 @@ public class MediaTransportControlDataSetCategory extends MediaTransportControlD
     private final short categoryNumber;
 
     public MediaTransportControlDataSetCategoryBuilderImpl(short categoryNumber) {
-
       this.categoryNumber = categoryNumber;
     }
 

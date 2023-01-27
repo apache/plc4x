@@ -47,8 +47,6 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
   protected final boolean releaseContinuationPoints;
   protected final int noOfContinuationPoints;
   protected final List<PascalByteString> continuationPoints;
-  // Reserved Fields
-  private Short reservedField0;
 
   public BrowseNextRequest(
       ExtensionObjectDefinition requestHeader,
@@ -89,10 +87,7 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
     writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (releaseContinuationPoints)
     writeSimpleField(
@@ -175,11 +170,7 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
     readBuffer.closeContext("BrowseNextRequest");
     // Create the instance
     return new BrowseNextRequestBuilderImpl(
-        requestHeader,
-        releaseContinuationPoints,
-        noOfContinuationPoints,
-        continuationPoints,
-        reservedField0);
+        requestHeader, releaseContinuationPoints, noOfContinuationPoints, continuationPoints);
   }
 
   public static class BrowseNextRequestBuilderImpl
@@ -188,26 +179,22 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
     private final boolean releaseContinuationPoints;
     private final int noOfContinuationPoints;
     private final List<PascalByteString> continuationPoints;
-    private final Short reservedField0;
 
     public BrowseNextRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         boolean releaseContinuationPoints,
         int noOfContinuationPoints,
-        List<PascalByteString> continuationPoints,
-        Short reservedField0) {
+        List<PascalByteString> continuationPoints) {
       this.requestHeader = requestHeader;
       this.releaseContinuationPoints = releaseContinuationPoints;
       this.noOfContinuationPoints = noOfContinuationPoints;
       this.continuationPoints = continuationPoints;
-      this.reservedField0 = reservedField0;
     }
 
     public BrowseNextRequest build() {
       BrowseNextRequest browseNextRequest =
           new BrowseNextRequest(
               requestHeader, releaseContinuationPoints, noOfContinuationPoints, continuationPoints);
-      browseNextRequest.reservedField0 = reservedField0;
       return browseNextRequest;
     }
   }

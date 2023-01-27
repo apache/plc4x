@@ -129,7 +129,6 @@ public class RegisterServerRequest extends ExtensionObjectDefinition implements 
 
     public RegisterServerRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader, ExtensionObjectDefinition server) {
-
       this.requestHeader = requestHeader;
       this.server = server;
     }

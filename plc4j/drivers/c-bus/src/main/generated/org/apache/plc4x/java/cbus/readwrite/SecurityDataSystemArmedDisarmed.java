@@ -105,7 +105,6 @@ public class SecurityDataSystemArmedDisarmed extends SecurityData implements Mes
     private final SecurityArmCode armCodeType;
 
     public SecurityDataSystemArmedDisarmedBuilderImpl(SecurityArmCode armCodeType) {
-
       this.armCodeType = armCodeType;
     }
 

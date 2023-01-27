@@ -224,7 +224,6 @@ public class SetTriggeringRequest extends ExtensionObjectDefinition implements M
         List<Long> linksToAdd,
         int noOfLinksToRemove,
         List<Long> linksToRemove) {
-
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
       this.triggeringItemId = triggeringItemId;

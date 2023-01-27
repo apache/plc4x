@@ -150,7 +150,6 @@ public class BACnetConstructedDataAuthorizationMode extends BACnetConstructedDat
         BACnetAuthorizationModeTagged authorizationMode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.authorizationMode = authorizationMode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

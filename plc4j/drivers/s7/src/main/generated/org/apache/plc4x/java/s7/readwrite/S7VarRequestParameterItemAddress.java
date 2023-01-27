@@ -115,7 +115,6 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
     private final S7Address address;
 
     public S7VarRequestParameterItemAddressBuilderImpl(S7Address address) {
-
       this.address = address;
     }
 

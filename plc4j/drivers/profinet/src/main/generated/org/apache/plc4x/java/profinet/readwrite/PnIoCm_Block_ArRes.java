@@ -217,7 +217,6 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
         int sessionKey,
         MacAddress cmResponderMacAddr,
         int responderUDPRTPort) {
-
       this.arType = arType;
       this.arUuid = arUuid;
       this.sessionKey = sessionKey;

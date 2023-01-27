@@ -201,7 +201,6 @@ public class HistoryReadResponse extends ExtensionObjectDefinition implements Me
         List<ExtensionObjectDefinition> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

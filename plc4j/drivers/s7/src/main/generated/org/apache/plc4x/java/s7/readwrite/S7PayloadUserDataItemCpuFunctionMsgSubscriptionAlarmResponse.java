@@ -189,7 +189,6 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
 
     public S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilderImpl(
         short result, short reserved01, AlarmType alarmType, short reserved02, short reserved03) {
-
       this.result = result;
       this.reserved01 = reserved01;
       this.alarmType = alarmType;

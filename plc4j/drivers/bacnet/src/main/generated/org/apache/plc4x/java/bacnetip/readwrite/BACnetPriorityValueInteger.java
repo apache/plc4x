@@ -115,7 +115,6 @@ public class BACnetPriorityValueInteger extends BACnetPriorityValue implements M
 
     public BACnetPriorityValueIntegerBuilderImpl(
         BACnetApplicationTagSignedInteger integerValue, BACnetObjectType objectTypeArgument) {
-
       this.integerValue = integerValue;
       this.objectTypeArgument = objectTypeArgument;
     }

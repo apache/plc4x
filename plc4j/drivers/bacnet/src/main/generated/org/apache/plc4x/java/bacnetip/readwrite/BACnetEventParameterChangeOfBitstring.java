@@ -207,7 +207,6 @@ public class BACnetEventParameterChangeOfBitstring extends BACnetEventParameter 
         BACnetContextTagBitString bitmask,
         BACnetEventParameterChangeOfBitstringListOfBitstringValues listOfBitstringValues,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.bitmask = bitmask;

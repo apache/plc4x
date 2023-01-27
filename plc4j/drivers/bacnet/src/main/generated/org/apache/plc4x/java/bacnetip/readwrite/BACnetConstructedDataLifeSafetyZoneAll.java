@@ -114,7 +114,6 @@ public class BACnetConstructedDataLifeSafetyZoneAll extends BACnetConstructedDat
 
     public BACnetConstructedDataLifeSafetyZoneAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

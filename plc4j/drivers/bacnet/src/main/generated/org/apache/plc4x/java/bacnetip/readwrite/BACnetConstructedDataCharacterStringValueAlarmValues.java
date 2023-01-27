@@ -187,7 +187,6 @@ public class BACnetConstructedDataCharacterStringValueAlarmValues extends BACnet
         List<BACnetOptionalCharacterString> alarmValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.alarmValues = alarmValues;
       this.tagNumber = tagNumber;

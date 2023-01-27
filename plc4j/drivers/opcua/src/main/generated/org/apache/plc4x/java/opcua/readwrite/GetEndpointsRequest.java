@@ -218,7 +218,6 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
         List<PascalString> localeIds,
         int noOfProfileUris,
         List<PascalString> profileUris) {
-
       this.requestHeader = requestHeader;
       this.endpointUrl = endpointUrl;
       this.noOfLocaleIds = noOfLocaleIds;

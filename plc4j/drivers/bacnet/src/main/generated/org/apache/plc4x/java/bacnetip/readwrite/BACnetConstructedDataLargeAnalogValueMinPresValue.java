@@ -147,7 +147,6 @@ public class BACnetConstructedDataLargeAnalogValueMinPresValue extends BACnetCon
         BACnetApplicationTagDouble minPresValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.minPresValue = minPresValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

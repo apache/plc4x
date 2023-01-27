@@ -107,7 +107,6 @@ public class ServiceFault extends ExtensionObjectDefinition implements Message {
     private final ExtensionObjectDefinition responseHeader;
 
     public ServiceFaultBuilderImpl(ExtensionObjectDefinition responseHeader) {
-
       this.responseHeader = responseHeader;
     }
 

@@ -148,7 +148,6 @@ public class BACnetConstructedDataOctetStringValuePresentValue extends BACnetCon
         BACnetApplicationTagOctetString presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.presentValue = presentValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

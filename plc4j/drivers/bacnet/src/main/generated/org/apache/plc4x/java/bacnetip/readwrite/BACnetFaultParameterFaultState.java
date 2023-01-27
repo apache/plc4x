@@ -152,7 +152,6 @@ public class BACnetFaultParameterFaultState extends BACnetFaultParameter impleme
         BACnetOpeningTag openingTag,
         BACnetFaultParameterFaultStateListOfFaultValues listOfFaultValues,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.listOfFaultValues = listOfFaultValues;
       this.closingTag = closingTag;

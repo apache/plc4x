@@ -145,7 +145,6 @@ public class BACnetConstructedDataLocalDate extends BACnetConstructedData implem
         BACnetApplicationTagDate localDate,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.localDate = localDate;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

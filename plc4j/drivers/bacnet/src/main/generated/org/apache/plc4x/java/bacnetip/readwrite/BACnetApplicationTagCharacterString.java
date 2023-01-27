@@ -118,7 +118,6 @@ public class BACnetApplicationTagCharacterString extends BACnetApplicationTag im
     private final BACnetTagPayloadCharacterString payload;
 
     public BACnetApplicationTagCharacterStringBuilderImpl(BACnetTagPayloadCharacterString payload) {
-
       this.payload = payload;
     }
 

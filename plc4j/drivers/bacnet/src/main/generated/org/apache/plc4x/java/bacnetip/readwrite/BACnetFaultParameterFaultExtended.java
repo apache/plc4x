@@ -204,7 +204,6 @@ public class BACnetFaultParameterFaultExtended extends BACnetFaultParameter impl
         BACnetContextTagUnsignedInteger extendedFaultType,
         BACnetFaultParameterFaultExtendedParameters parameters,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.vendorId = vendorId;
       this.extendedFaultType = extendedFaultType;

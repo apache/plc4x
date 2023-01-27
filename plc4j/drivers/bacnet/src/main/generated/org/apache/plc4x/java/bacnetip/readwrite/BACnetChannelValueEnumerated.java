@@ -106,7 +106,6 @@ public class BACnetChannelValueEnumerated extends BACnetChannelValue implements 
     private final BACnetApplicationTagEnumerated enumeratedValue;
 
     public BACnetChannelValueEnumeratedBuilderImpl(BACnetApplicationTagEnumerated enumeratedValue) {
-
       this.enumeratedValue = enumeratedValue;
     }
 

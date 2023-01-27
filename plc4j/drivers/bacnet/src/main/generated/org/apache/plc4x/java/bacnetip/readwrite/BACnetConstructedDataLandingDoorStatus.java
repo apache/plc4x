@@ -187,7 +187,6 @@ public class BACnetConstructedDataLandingDoorStatus extends BACnetConstructedDat
         List<BACnetLandingDoorStatus> landingDoorStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.landingDoorStatus = landingDoorStatus;
       this.tagNumber = tagNumber;

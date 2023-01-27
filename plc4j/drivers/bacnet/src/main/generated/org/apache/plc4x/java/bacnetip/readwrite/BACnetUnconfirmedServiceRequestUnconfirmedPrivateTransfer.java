@@ -180,7 +180,6 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
         BACnetContextTagUnsignedInteger serviceNumber,
         BACnetConstructedData serviceParameters,
         Integer serviceRequestLength) {
-
       this.vendorId = vendorId;
       this.serviceNumber = serviceNumber;
       this.serviceParameters = serviceParameters;

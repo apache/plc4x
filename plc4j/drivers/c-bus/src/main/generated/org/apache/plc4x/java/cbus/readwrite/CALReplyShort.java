@@ -90,7 +90,6 @@ public class CALReplyShort extends CALReply implements Message {
     private final RequestContext requestContext;
 
     public CALReplyShortBuilderImpl(CBusOptions cBusOptions, RequestContext requestContext) {
-
       this.cBusOptions = cBusOptions;
       this.requestContext = requestContext;
     }

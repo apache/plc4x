@@ -151,7 +151,6 @@ public class BACnetConstructedDataNetworkInterfaceName extends BACnetConstructed
         BACnetApplicationTagCharacterString networkInterfaceName,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.networkInterfaceName = networkInterfaceName;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -113,7 +113,6 @@ public class BACnetConstructedDataBinaryOutputAll extends BACnetConstructedData 
 
     public BACnetConstructedDataBinaryOutputAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

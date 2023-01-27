@@ -155,7 +155,6 @@ public class BACnetConstructedDataNumberOfAuthenticationPolicies extends BACnetC
         BACnetApplicationTagUnsignedInteger numberOfAuthenticationPolicies,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfAuthenticationPolicies = numberOfAuthenticationPolicies;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -121,7 +121,6 @@ public class ErrorReportingSystemCategoryTypeClimateControllers
 
     public ErrorReportingSystemCategoryTypeClimateControllersBuilderImpl(
         ErrorReportingSystemCategoryTypeForClimateControllers categoryForType) {
-
       this.categoryForType = categoryForType;
     }
 

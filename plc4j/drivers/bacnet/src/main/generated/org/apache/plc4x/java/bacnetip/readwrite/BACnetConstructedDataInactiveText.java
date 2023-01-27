@@ -148,7 +148,6 @@ public class BACnetConstructedDataInactiveText extends BACnetConstructedData imp
         BACnetApplicationTagCharacterString inactiveText,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.inactiveText = inactiveText;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

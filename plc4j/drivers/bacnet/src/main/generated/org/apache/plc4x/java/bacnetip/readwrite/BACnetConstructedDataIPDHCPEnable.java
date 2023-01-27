@@ -146,7 +146,6 @@ public class BACnetConstructedDataIPDHCPEnable extends BACnetConstructedData imp
         BACnetApplicationTagBoolean ipDhcpEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipDhcpEnable = ipDhcpEnable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

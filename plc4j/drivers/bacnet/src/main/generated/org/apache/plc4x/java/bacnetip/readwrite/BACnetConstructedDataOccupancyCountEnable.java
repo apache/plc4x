@@ -148,7 +148,6 @@ public class BACnetConstructedDataOccupancyCountEnable extends BACnetConstructed
         BACnetApplicationTagBoolean occupancyCountEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.occupancyCountEnable = occupancyCountEnable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -114,7 +114,6 @@ public class BACnetApplicationTagReal extends BACnetApplicationTag implements Me
     private final BACnetTagPayloadReal payload;
 
     public BACnetApplicationTagRealBuilderImpl(BACnetTagPayloadReal payload) {
-
       this.payload = payload;
     }
 

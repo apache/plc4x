@@ -127,7 +127,6 @@ public class MediaTransportControlDataNextPreviousTrack extends MediaTransportCo
     private final byte operation;
 
     public MediaTransportControlDataNextPreviousTrackBuilderImpl(byte operation) {
-
       this.operation = operation;
     }
 

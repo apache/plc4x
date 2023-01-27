@@ -116,7 +116,6 @@ public class BACnetTimerStateChangeValueLightingCommand extends BACnetTimerState
 
     public BACnetTimerStateChangeValueLightingCommandBuilderImpl(
         BACnetLightingCommandEnclosed ligthingCommandValue, BACnetObjectType objectTypeArgument) {
-
       this.ligthingCommandValue = ligthingCommandValue;
       this.objectTypeArgument = objectTypeArgument;
     }

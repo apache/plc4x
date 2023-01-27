@@ -149,7 +149,6 @@ public class BACnetConstructedDataMaximumValueTimestamp extends BACnetConstructe
         BACnetDateTime maximumValueTimestamp,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maximumValueTimestamp = maximumValueTimestamp;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

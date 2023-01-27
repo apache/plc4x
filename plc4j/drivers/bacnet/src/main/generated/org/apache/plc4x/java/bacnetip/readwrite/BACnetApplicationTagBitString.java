@@ -106,7 +106,6 @@ public class BACnetApplicationTagBitString extends BACnetApplicationTag implemen
     private final BACnetTagPayloadBitString payload;
 
     public BACnetApplicationTagBitStringBuilderImpl(BACnetTagPayloadBitString payload) {
-
       this.payload = payload;
     }
 

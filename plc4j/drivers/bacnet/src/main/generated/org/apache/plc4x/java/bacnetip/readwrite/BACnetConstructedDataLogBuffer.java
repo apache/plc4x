@@ -186,7 +186,6 @@ public class BACnetConstructedDataLogBuffer extends BACnetConstructedData implem
         List<BACnetLogRecord> floorText,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.floorText = floorText;
       this.tagNumber = tagNumber;

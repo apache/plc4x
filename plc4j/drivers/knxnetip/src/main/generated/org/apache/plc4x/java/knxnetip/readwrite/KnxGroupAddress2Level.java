@@ -117,7 +117,6 @@ public class KnxGroupAddress2Level extends KnxGroupAddress implements Message {
     private final int subGroup;
 
     public KnxGroupAddress2LevelBuilderImpl(short mainGroup, int subGroup) {
-
       this.mainGroup = mainGroup;
       this.subGroup = subGroup;
     }

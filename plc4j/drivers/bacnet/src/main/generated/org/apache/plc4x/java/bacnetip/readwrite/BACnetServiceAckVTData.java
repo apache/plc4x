@@ -167,7 +167,6 @@ public class BACnetServiceAckVTData extends BACnetServiceAck implements Message 
         BACnetApplicationTagOctetString vtNewData,
         BACnetApplicationTagUnsignedInteger vtDataFlag,
         Long serviceAckLength) {
-
       this.vtSessionIdentifier = vtSessionIdentifier;
       this.vtNewData = vtNewData;
       this.vtDataFlag = vtDataFlag;

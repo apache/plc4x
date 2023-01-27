@@ -113,7 +113,6 @@ public class BACnetPriorityValueReal extends BACnetPriorityValue implements Mess
 
     public BACnetPriorityValueRealBuilderImpl(
         BACnetApplicationTagReal realValue, BACnetObjectType objectTypeArgument) {
-
       this.realValue = realValue;
       this.objectTypeArgument = objectTypeArgument;
     }

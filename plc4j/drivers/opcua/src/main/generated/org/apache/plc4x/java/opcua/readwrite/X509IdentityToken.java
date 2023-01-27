@@ -107,7 +107,6 @@ public class X509IdentityToken extends UserIdentityTokenDefinition implements Me
     private final PascalByteString certificateData;
 
     public X509IdentityTokenBuilderImpl(PascalByteString certificateData) {
-
       this.certificateData = certificateData;
     }
 

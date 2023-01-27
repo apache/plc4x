@@ -122,7 +122,6 @@ public class BrowsePathTarget extends ExtensionObjectDefinition implements Messa
     private final long remainingPathIndex;
 
     public BrowsePathTargetBuilderImpl(ExpandedNodeId targetId, long remainingPathIndex) {
-
       this.targetId = targetId;
       this.remainingPathIndex = remainingPathIndex;
     }

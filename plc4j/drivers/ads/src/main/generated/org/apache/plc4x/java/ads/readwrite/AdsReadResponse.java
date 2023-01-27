@@ -149,7 +149,6 @@ public class AdsReadResponse extends AmsPacket implements Message {
     private final byte[] data;
 
     public AdsReadResponseBuilderImpl(ReturnCode result, byte[] data) {
-
       this.result = result;
       this.data = data;
     }

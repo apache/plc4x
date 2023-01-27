@@ -144,7 +144,6 @@ public class BACnetConstructedDataAcceptedModes extends BACnetConstructedData im
         List<BACnetLifeSafetyModeTagged> acceptedModes,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.acceptedModes = acceptedModes;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

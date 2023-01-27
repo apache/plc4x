@@ -113,7 +113,6 @@ public class BACnetPriorityValueBitString extends BACnetPriorityValue implements
 
     public BACnetPriorityValueBitStringBuilderImpl(
         BACnetApplicationTagBitString bitStringValue, BACnetObjectType objectTypeArgument) {
-
       this.bitStringValue = bitStringValue;
       this.objectTypeArgument = objectTypeArgument;
     }

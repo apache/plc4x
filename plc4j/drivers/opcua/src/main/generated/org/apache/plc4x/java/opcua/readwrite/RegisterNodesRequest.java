@@ -153,7 +153,6 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
         ExtensionObjectDefinition requestHeader,
         int noOfNodesToRegister,
         List<NodeId> nodesToRegister) {
-
       this.requestHeader = requestHeader;
       this.noOfNodesToRegister = noOfNodesToRegister;
       this.nodesToRegister = nodesToRegister;

@@ -125,7 +125,6 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeri
 
     public BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilderImpl(
         BACnetContextTagUnsignedInteger numericValue, Short tagNumber) {
-
       this.numericValue = numericValue;
       this.tagNumber = tagNumber;
     }

@@ -190,7 +190,6 @@ public class BACnetConstructedDataConfigurationFiles extends BACnetConstructedDa
         List<BACnetApplicationTagObjectIdentifier> configurationFiles,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.configurationFiles = configurationFiles;
       this.tagNumber = tagNumber;

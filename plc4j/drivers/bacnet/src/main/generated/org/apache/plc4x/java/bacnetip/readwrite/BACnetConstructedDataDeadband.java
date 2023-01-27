@@ -145,7 +145,6 @@ public class BACnetConstructedDataDeadband extends BACnetConstructedData impleme
         BACnetApplicationTagReal deadband,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.deadband = deadband;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

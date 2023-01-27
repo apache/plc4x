@@ -145,7 +145,6 @@ public class UserNameIdentityToken extends UserIdentityTokenDefinition implement
 
     public UserNameIdentityTokenBuilderImpl(
         PascalString userName, PascalByteString password, PascalString encryptionAlgorithm) {
-
       this.userName = userName;
       this.password = password;
       this.encryptionAlgorithm = encryptionAlgorithm;

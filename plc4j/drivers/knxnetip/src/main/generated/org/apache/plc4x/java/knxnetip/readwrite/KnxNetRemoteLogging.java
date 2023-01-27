@@ -100,7 +100,6 @@ public class KnxNetRemoteLogging extends ServiceId implements Message {
     private final short version;
 
     public KnxNetRemoteLoggingBuilderImpl(short version) {
-
       this.version = version;
     }
 

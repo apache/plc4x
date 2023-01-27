@@ -198,7 +198,6 @@ public class UserTokenPolicy extends ExtensionObjectDefinition implements Messag
         PascalString issuedTokenType,
         PascalString issuerEndpointUrl,
         PascalString securityPolicyUri) {
-
       this.policyId = policyId;
       this.tokenType = tokenType;
       this.issuedTokenType = issuedTokenType;

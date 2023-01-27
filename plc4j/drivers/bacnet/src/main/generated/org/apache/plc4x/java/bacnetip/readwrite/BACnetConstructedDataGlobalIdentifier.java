@@ -151,7 +151,6 @@ public class BACnetConstructedDataGlobalIdentifier extends BACnetConstructedData
         BACnetApplicationTagUnsignedInteger globalIdentifier,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.globalIdentifier = globalIdentifier;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

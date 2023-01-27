@@ -136,7 +136,6 @@ public class ConnectionStateResponse extends KnxNetIpMessage implements Message 
     private final Status status;
 
     public ConnectionStateResponseBuilderImpl(short communicationChannelId, Status status) {
-
       this.communicationChannelId = communicationChannelId;
       this.status = status;
     }

@@ -110,7 +110,6 @@ public class BACnetHostAddressName extends BACnetHostAddress implements Message 
     private final BACnetContextTagCharacterString name;
 
     public BACnetHostAddressNameBuilderImpl(BACnetContextTagCharacterString name) {
-
       this.name = name;
     }
 

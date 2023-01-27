@@ -44,9 +44,6 @@ public class SDOInitiateUploadRequest extends SDORequest implements Message {
 
   // Properties.
   protected final IndexAddress address;
-  // Reserved Fields
-  private Short reservedField0;
-  private Integer reservedField1;
 
   public SDOInitiateUploadRequest(IndexAddress address) {
     super();
@@ -64,19 +61,13 @@ public class SDOInitiateUploadRequest extends SDORequest implements Message {
     writeBuffer.pushContext("SDOInitiateUploadRequest");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 5));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 5));
 
     // Simple Field (address)
     writeSimpleField("address", address, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField1 != null ? reservedField1 : (int) 0x00,
-        writeSignedInt(writeBuffer, 32));
+    writeReservedField("reserved", (int) 0x00, writeSignedInt(writeBuffer, 32));
 
     writeBuffer.popContext("SDOInitiateUploadRequest");
   }
@@ -123,25 +114,18 @@ public class SDOInitiateUploadRequest extends SDORequest implements Message {
 
     readBuffer.closeContext("SDOInitiateUploadRequest");
     // Create the instance
-    return new SDOInitiateUploadRequestBuilderImpl(address, reservedField0, reservedField1);
+    return new SDOInitiateUploadRequestBuilderImpl(address);
   }
 
   public static class SDOInitiateUploadRequestBuilderImpl implements SDORequest.SDORequestBuilder {
     private final IndexAddress address;
-    private final Short reservedField0;
-    private final Integer reservedField1;
 
-    public SDOInitiateUploadRequestBuilderImpl(
-        IndexAddress address, Short reservedField0, Integer reservedField1) {
+    public SDOInitiateUploadRequestBuilderImpl(IndexAddress address) {
       this.address = address;
-      this.reservedField0 = reservedField0;
-      this.reservedField1 = reservedField1;
     }
 
     public SDOInitiateUploadRequest build() {
       SDOInitiateUploadRequest sDOInitiateUploadRequest = new SDOInitiateUploadRequest(address);
-      sDOInitiateUploadRequest.reservedField0 = reservedField0;
-      sDOInitiateUploadRequest.reservedField1 = reservedField1;
       return sDOInitiateUploadRequest;
     }
   }

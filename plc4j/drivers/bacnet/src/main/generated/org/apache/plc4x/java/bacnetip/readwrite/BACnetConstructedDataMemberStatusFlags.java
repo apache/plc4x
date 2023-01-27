@@ -149,7 +149,6 @@ public class BACnetConstructedDataMemberStatusFlags extends BACnetConstructedDat
         BACnetStatusFlagsTagged statusFlags,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.statusFlags = statusFlags;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

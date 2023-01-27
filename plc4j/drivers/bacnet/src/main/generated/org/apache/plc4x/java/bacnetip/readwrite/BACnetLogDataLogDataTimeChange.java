@@ -118,7 +118,6 @@ public class BACnetLogDataLogDataTimeChange extends BACnetLogData implements Mes
 
     public BACnetLogDataLogDataTimeChangeBuilderImpl(
         BACnetContextTagReal timeChange, Short tagNumber) {
-
       this.timeChange = timeChange;
       this.tagNumber = tagNumber;
     }

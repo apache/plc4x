@@ -121,7 +121,6 @@ public class SecurityDataLowBatteryCharging extends SecurityData implements Mess
     private final byte startStop;
 
     public SecurityDataLowBatteryChargingBuilderImpl(byte startStop) {
-
       this.startStop = startStop;
     }
 

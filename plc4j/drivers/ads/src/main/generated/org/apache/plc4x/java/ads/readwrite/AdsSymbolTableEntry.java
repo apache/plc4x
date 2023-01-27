@@ -65,9 +65,6 @@ public class AdsSymbolTableEntry implements Message {
   protected final String dataTypeName;
   protected final String comment;
   protected final byte[] rest;
-  // Reserved Fields
-  private Byte reservedField0;
-  private Integer reservedField1;
 
   public AdsSymbolTableEntry(
       long entryLength,
@@ -316,7 +313,7 @@ public class AdsSymbolTableEntry implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
+        (byte) 0x00,
         writeUnsignedByte(writeBuffer, 3),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
@@ -358,7 +355,7 @@ public class AdsSymbolTableEntry implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField1 != null ? reservedField1 : (int) 0x0000,
+        (int) 0x0000,
         writeUnsignedInt(writeBuffer, 16),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
@@ -770,8 +767,6 @@ public class AdsSymbolTableEntry implements Message {
             dataTypeName,
             comment,
             rest);
-    _adsSymbolTableEntry.reservedField0 = reservedField0;
-    _adsSymbolTableEntry.reservedField1 = reservedField1;
     return _adsSymbolTableEntry;
   }
 

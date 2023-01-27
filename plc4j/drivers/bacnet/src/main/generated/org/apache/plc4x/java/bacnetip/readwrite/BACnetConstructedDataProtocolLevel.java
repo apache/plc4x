@@ -148,7 +148,6 @@ public class BACnetConstructedDataProtocolLevel extends BACnetConstructedData im
         BACnetProtocolLevelTagged protocolLevel,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.protocolLevel = protocolLevel;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

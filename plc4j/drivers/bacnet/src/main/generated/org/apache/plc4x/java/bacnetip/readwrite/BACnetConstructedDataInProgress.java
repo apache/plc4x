@@ -148,7 +148,6 @@ public class BACnetConstructedDataInProgress extends BACnetConstructedData imple
         BACnetLightingInProgressTagged inProgress,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.inProgress = inProgress;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

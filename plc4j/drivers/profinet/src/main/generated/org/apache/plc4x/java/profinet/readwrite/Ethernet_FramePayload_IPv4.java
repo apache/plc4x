@@ -381,7 +381,6 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
         int sourcePort,
         int destinationPort,
         DceRpc_Packet payload) {
-
       this.identification = identification;
       this.timeToLive = timeToLive;
       this.sourceAddress = sourceAddress;

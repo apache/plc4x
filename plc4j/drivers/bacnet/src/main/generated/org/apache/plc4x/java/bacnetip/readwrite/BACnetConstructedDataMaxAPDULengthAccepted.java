@@ -153,7 +153,6 @@ public class BACnetConstructedDataMaxAPDULengthAccepted extends BACnetConstructe
         BACnetApplicationTagUnsignedInteger maxApduLengthAccepted,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxApduLengthAccepted = maxApduLengthAccepted;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

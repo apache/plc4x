@@ -111,7 +111,6 @@ public class TunnelingResponse extends KnxNetIpMessage implements Message {
     private final TunnelingResponseDataBlock tunnelingResponseDataBlock;
 
     public TunnelingResponseBuilderImpl(TunnelingResponseDataBlock tunnelingResponseDataBlock) {
-
       this.tunnelingResponseDataBlock = tunnelingResponseDataBlock;
     }
 

@@ -145,7 +145,6 @@ public class BACnetConstructedDataLocalTime extends BACnetConstructedData implem
         BACnetApplicationTagTime localTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.localTime = localTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

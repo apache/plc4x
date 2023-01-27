@@ -107,7 +107,6 @@ public class UnregisterNodesResponse extends ExtensionObjectDefinition implement
     private final ExtensionObjectDefinition responseHeader;
 
     public UnregisterNodesResponseBuilderImpl(ExtensionObjectDefinition responseHeader) {
-
       this.responseHeader = responseHeader;
     }
 

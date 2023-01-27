@@ -45,13 +45,9 @@ public class ApduDataOther extends ApduData implements Message {
   // Properties.
   protected final ApduDataExt extendedApdu;
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataOther(ApduDataExt extendedApdu, Short dataLength) {
-    super(dataLength);
+  public ApduDataOther(ApduDataExt extendedApdu) {
+    super();
     this.extendedApdu = extendedApdu;
-    this.dataLength = dataLength;
   }
 
   public ApduDataExt getExtendedApdu() {
@@ -101,22 +97,18 @@ public class ApduDataOther extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataOther");
     // Create the instance
-    return new ApduDataOtherBuilderImpl(extendedApdu, dataLength);
+    return new ApduDataOtherBuilderImpl(extendedApdu);
   }
 
   public static class ApduDataOtherBuilderImpl implements ApduData.ApduDataBuilder {
     private final ApduDataExt extendedApdu;
-    private final Short dataLength;
 
-    public ApduDataOtherBuilderImpl(ApduDataExt extendedApdu, Short dataLength) {
-
+    public ApduDataOtherBuilderImpl(ApduDataExt extendedApdu) {
       this.extendedApdu = extendedApdu;
-      this.dataLength = dataLength;
     }
 
-    public ApduDataOther build(Short dataLength) {
-
-      ApduDataOther apduDataOther = new ApduDataOther(extendedApdu, dataLength);
+    public ApduDataOther build() {
+      ApduDataOther apduDataOther = new ApduDataOther(extendedApdu);
       return apduDataOther;
     }
   }

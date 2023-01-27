@@ -145,7 +145,6 @@ public class BACnetConstructedDataSetpoint extends BACnetConstructedData impleme
         BACnetApplicationTagReal setpoint,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.setpoint = setpoint;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

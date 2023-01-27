@@ -109,7 +109,6 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
 
     public SALDataPoolsSpasPondsFountainsControlBuilderImpl(
         LightingData poolsSpaPondsFountainsData) {
-
       this.poolsSpaPondsFountainsData = poolsSpaPondsFountainsData;
     }
 

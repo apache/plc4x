@@ -109,7 +109,6 @@ public class IdentifyReplyCommandMaximumLevels extends IdentifyReplyCommand impl
     private final Short numBytes;
 
     public IdentifyReplyCommandMaximumLevelsBuilderImpl(byte[] maximumLevels, Short numBytes) {
-
       this.maximumLevels = maximumLevels;
       this.numBytes = numBytes;
     }

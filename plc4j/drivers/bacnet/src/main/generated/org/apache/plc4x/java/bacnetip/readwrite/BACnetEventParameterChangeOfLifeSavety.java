@@ -244,7 +244,6 @@ public class BACnetEventParameterChangeOfLifeSavety extends BACnetEventParameter
         BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues listOfAlarmValues,
         BACnetDeviceObjectPropertyReferenceEnclosed modePropertyReference,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.listOfLifeSavetyAlarmValues = listOfLifeSavetyAlarmValues;

@@ -169,7 +169,6 @@ public class RequestDirectCommandAccess extends Request implements Message {
 
     public RequestDirectCommandAccessBuilderImpl(
         CALData calData, Alpha alpha, CBusOptions cBusOptions) {
-
       this.calData = calData;
       this.alpha = alpha;
       this.cBusOptions = cBusOptions;

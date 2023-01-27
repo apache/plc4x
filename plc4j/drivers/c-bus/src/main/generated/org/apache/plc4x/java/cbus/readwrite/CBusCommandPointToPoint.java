@@ -109,7 +109,6 @@ public class CBusCommandPointToPoint extends CBusCommand implements Message {
 
     public CBusCommandPointToPointBuilderImpl(
         CBusPointToPointCommand command, CBusOptions cBusOptions) {
-
       this.command = command;
       this.cBusOptions = cBusOptions;
     }

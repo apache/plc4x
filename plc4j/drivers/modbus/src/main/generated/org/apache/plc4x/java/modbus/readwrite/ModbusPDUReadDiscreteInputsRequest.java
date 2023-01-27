@@ -124,7 +124,6 @@ public class ModbusPDUReadDiscreteInputsRequest extends ModbusPDU implements Mes
     private final int quantity;
 
     public ModbusPDUReadDiscreteInputsRequestBuilderImpl(int startingAddress, int quantity) {
-
       this.startingAddress = startingAddress;
       this.quantity = quantity;
     }

@@ -187,7 +187,6 @@ public class BACnetConstructedDataGlobalGroupGroupMembers extends BACnetConstruc
         List<BACnetDeviceObjectPropertyReference> groupMembers,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.groupMembers = groupMembers;
       this.tagNumber = tagNumber;

@@ -128,7 +128,6 @@ public class CEMIAdditionalInformationRelativeTimestamp extends CEMIAdditionalIn
 
     public CEMIAdditionalInformationRelativeTimestampBuilderImpl(
         RelativeTimestamp relativeTimestamp) {
-
       this.relativeTimestamp = relativeTimestamp;
     }
 

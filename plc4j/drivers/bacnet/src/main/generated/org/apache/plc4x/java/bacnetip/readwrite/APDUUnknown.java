@@ -124,7 +124,6 @@ public class APDUUnknown extends APDU implements Message {
     private final Integer apduLength;
 
     public APDUUnknownBuilderImpl(byte unknownTypeRest, byte[] unknownBytes, Integer apduLength) {
-
       this.unknownTypeRest = unknownTypeRest;
       this.unknownBytes = unknownBytes;
       this.apduLength = apduLength;

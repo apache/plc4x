@@ -148,7 +148,6 @@ public class BACnetConstructedDataDeviceMaxMaster extends BACnetConstructedData 
         BACnetApplicationTagUnsignedInteger maxMaster,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxMaster = maxMaster;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

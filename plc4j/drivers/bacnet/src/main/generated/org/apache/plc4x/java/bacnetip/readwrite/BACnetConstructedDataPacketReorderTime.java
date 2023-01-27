@@ -151,7 +151,6 @@ public class BACnetConstructedDataPacketReorderTime extends BACnetConstructedDat
         BACnetApplicationTagUnsignedInteger packetReorderTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.packetReorderTime = packetReorderTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -193,7 +193,6 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
         int noOfServerUris,
         List<PascalString> serverUris,
         long serviceId) {
-
       this.noOfNamespaceUris = noOfNamespaceUris;
       this.namespaceUris = namespaceUris;
       this.noOfServerUris = noOfServerUris;

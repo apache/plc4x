@@ -117,7 +117,6 @@ public class DoubleComplexNumberType extends ExtensionObjectDefinition implement
     private final double imaginary;
 
     public DoubleComplexNumberTypeBuilderImpl(double real, double imaginary) {
-
       this.real = real;
       this.imaginary = imaginary;
     }

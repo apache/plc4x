@@ -121,7 +121,6 @@ public class CBusMessageToClient extends CBusMessage implements Message {
 
     public CBusMessageToClientBuilderImpl(
         ReplyOrConfirmation reply, RequestContext requestContext, CBusOptions cBusOptions) {
-
       this.reply = reply;
       this.requestContext = requestContext;
       this.cBusOptions = cBusOptions;

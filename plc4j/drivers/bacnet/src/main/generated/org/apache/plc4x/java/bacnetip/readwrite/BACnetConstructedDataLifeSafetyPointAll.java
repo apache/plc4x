@@ -114,7 +114,6 @@ public class BACnetConstructedDataLifeSafetyPointAll extends BACnetConstructedDa
 
     public BACnetConstructedDataLifeSafetyPointAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

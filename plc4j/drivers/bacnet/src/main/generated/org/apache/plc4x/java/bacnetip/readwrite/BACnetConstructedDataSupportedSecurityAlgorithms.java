@@ -146,7 +146,6 @@ public class BACnetConstructedDataSupportedSecurityAlgorithms extends BACnetCons
         List<BACnetApplicationTagUnsignedInteger> supportedSecurityAlgorithms,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.supportedSecurityAlgorithms = supportedSecurityAlgorithms;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

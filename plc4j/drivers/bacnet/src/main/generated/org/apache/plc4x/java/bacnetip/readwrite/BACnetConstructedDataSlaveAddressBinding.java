@@ -142,7 +142,6 @@ public class BACnetConstructedDataSlaveAddressBinding extends BACnetConstructedD
         List<BACnetAddressBinding> slaveAddressBinding,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.slaveAddressBinding = slaveAddressBinding;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

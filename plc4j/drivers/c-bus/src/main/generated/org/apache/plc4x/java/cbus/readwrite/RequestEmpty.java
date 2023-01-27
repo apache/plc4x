@@ -91,7 +91,6 @@ public class RequestEmpty extends Request implements Message {
     private final CBusOptions cBusOptions;
 
     public RequestEmptyBuilderImpl(CBusOptions cBusOptions) {
-
       this.cBusOptions = cBusOptions;
     }
 

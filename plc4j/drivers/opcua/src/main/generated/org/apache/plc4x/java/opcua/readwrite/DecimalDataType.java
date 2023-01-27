@@ -121,7 +121,6 @@ public class DecimalDataType extends ExtensionObjectDefinition implements Messag
     private final PascalByteString value;
 
     public DecimalDataTypeBuilderImpl(short scale, PascalByteString value) {
-
       this.scale = scale;
       this.value = value;
     }

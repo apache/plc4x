@@ -49,8 +49,6 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
   protected final boolean includeSubtypes;
   protected final long nodeClassMask;
   protected final long resultMask;
-  // Reserved Fields
-  private Short reservedField0;
 
   public BrowseDescription(
       NodeId nodeId,
@@ -115,10 +113,7 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
         "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (includeSubtypes)
     writeSimpleField("includeSubtypes", includeSubtypes, writeBoolean(writeBuffer));
@@ -202,13 +197,7 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
     readBuffer.closeContext("BrowseDescription");
     // Create the instance
     return new BrowseDescriptionBuilderImpl(
-        nodeId,
-        browseDirection,
-        referenceTypeId,
-        includeSubtypes,
-        nodeClassMask,
-        resultMask,
-        reservedField0);
+        nodeId, browseDirection, referenceTypeId, includeSubtypes, nodeClassMask, resultMask);
   }
 
   public static class BrowseDescriptionBuilderImpl
@@ -219,7 +208,6 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
     private final boolean includeSubtypes;
     private final long nodeClassMask;
     private final long resultMask;
-    private final Short reservedField0;
 
     public BrowseDescriptionBuilderImpl(
         NodeId nodeId,
@@ -227,22 +215,19 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
         NodeId referenceTypeId,
         boolean includeSubtypes,
         long nodeClassMask,
-        long resultMask,
-        Short reservedField0) {
+        long resultMask) {
       this.nodeId = nodeId;
       this.browseDirection = browseDirection;
       this.referenceTypeId = referenceTypeId;
       this.includeSubtypes = includeSubtypes;
       this.nodeClassMask = nodeClassMask;
       this.resultMask = resultMask;
-      this.reservedField0 = reservedField0;
     }
 
     public BrowseDescription build() {
       BrowseDescription browseDescription =
           new BrowseDescription(
               nodeId, browseDirection, referenceTypeId, includeSubtypes, nodeClassMask, resultMask);
-      browseDescription.reservedField0 = reservedField0;
       return browseDescription;
     }
   }

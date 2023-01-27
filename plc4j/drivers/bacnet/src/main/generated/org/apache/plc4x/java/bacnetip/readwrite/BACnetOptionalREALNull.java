@@ -105,7 +105,6 @@ public class BACnetOptionalREALNull extends BACnetOptionalREAL implements Messag
     private final BACnetApplicationTagNull nullValue;
 
     public BACnetOptionalREALNullBuilderImpl(BACnetApplicationTagNull nullValue) {
-
       this.nullValue = nullValue;
     }
 

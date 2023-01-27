@@ -122,7 +122,6 @@ public class CancelResponse extends ExtensionObjectDefinition implements Message
     private final long cancelCount;
 
     public CancelResponseBuilderImpl(ExtensionObjectDefinition responseHeader, long cancelCount) {
-
       this.responseHeader = responseHeader;
       this.cancelCount = cancelCount;
     }

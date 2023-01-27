@@ -153,7 +153,6 @@ public class MediaTransportControlDataTotalTracks extends MediaTransportControlD
 
     public MediaTransportControlDataTotalTracksBuilderImpl(
         byte totalTracksMSB, byte totalTracksMMSB, byte totalTracksMLSB, byte totalTracksLSB) {
-
       this.totalTracksMSB = totalTracksMSB;
       this.totalTracksMMSB = totalTracksMMSB;
       this.totalTracksMLSB = totalTracksMLSB;

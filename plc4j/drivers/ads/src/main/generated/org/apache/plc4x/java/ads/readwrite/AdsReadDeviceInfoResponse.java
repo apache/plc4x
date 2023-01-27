@@ -189,7 +189,6 @@ public class AdsReadDeviceInfoResponse extends AmsPacket implements Message {
 
     public AdsReadDeviceInfoResponseBuilderImpl(
         ReturnCode result, short majorVersion, short minorVersion, int version, byte[] device) {
-
       this.result = result;
       this.majorVersion = majorVersion;
       this.minorVersion = minorVersion;

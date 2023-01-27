@@ -190,7 +190,6 @@ public class BACnetConstructedDataAuthenticationPolicyNames extends BACnetConstr
         List<BACnetApplicationTagCharacterString> authenticationPolicyNames,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.authenticationPolicyNames = authenticationPolicyNames;
       this.tagNumber = tagNumber;

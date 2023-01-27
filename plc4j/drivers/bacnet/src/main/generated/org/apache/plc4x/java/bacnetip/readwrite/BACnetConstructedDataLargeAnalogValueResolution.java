@@ -147,7 +147,6 @@ public class BACnetConstructedDataLargeAnalogValueResolution extends BACnetConst
         BACnetApplicationTagDouble resolution,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.resolution = resolution;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

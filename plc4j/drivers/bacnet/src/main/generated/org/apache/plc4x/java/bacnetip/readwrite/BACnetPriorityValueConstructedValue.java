@@ -121,7 +121,6 @@ public class BACnetPriorityValueConstructedValue extends BACnetPriorityValue imp
 
     public BACnetPriorityValueConstructedValueBuilderImpl(
         BACnetConstructedData constructedValue, BACnetObjectType objectTypeArgument) {
-
       this.constructedValue = constructedValue;
       this.objectTypeArgument = objectTypeArgument;
     }

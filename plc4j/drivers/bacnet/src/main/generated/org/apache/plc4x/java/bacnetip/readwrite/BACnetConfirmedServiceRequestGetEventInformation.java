@@ -127,7 +127,6 @@ public class BACnetConfirmedServiceRequestGetEventInformation extends BACnetConf
 
     public BACnetConfirmedServiceRequestGetEventInformationBuilderImpl(
         BACnetContextTagObjectIdentifier lastReceivedObjectIdentifier, Long serviceRequestLength) {
-
       this.lastReceivedObjectIdentifier = lastReceivedObjectIdentifier;
       this.serviceRequestLength = serviceRequestLength;
     }

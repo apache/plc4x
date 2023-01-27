@@ -148,7 +148,6 @@ public class BACnetConstructedDataDoorStatus extends BACnetConstructedData imple
         BACnetDoorStatusTagged doorStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.doorStatus = doorStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

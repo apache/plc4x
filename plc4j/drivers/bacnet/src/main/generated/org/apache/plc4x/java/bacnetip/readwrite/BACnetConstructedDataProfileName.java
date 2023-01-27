@@ -148,7 +148,6 @@ public class BACnetConstructedDataProfileName extends BACnetConstructedData impl
         BACnetApplicationTagCharacterString profileName,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.profileName = profileName;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

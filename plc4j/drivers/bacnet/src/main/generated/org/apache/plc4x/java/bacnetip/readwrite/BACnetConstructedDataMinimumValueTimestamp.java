@@ -149,7 +149,6 @@ public class BACnetConstructedDataMinimumValueTimestamp extends BACnetConstructe
         BACnetDateTime minimumValueTimestamp,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.minimumValueTimestamp = minimumValueTimestamp;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

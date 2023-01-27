@@ -42,12 +42,8 @@ public class ApduDataExtDomainAddressSerialNumberResponse extends ApduDataExt im
     return (short) 0x2D;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtDomainAddressSerialNumberResponse(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtDomainAddressSerialNumberResponse() {
+    super();
   }
 
   @Override
@@ -81,22 +77,17 @@ public class ApduDataExtDomainAddressSerialNumberResponse extends ApduDataExt im
 
     readBuffer.closeContext("ApduDataExtDomainAddressSerialNumberResponse");
     // Create the instance
-    return new ApduDataExtDomainAddressSerialNumberResponseBuilderImpl(length);
+    return new ApduDataExtDomainAddressSerialNumberResponseBuilderImpl();
   }
 
   public static class ApduDataExtDomainAddressSerialNumberResponseBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtDomainAddressSerialNumberResponseBuilderImpl(Short length) {
+    public ApduDataExtDomainAddressSerialNumberResponseBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtDomainAddressSerialNumberResponse build(Short length) {
-
+    public ApduDataExtDomainAddressSerialNumberResponse build() {
       ApduDataExtDomainAddressSerialNumberResponse apduDataExtDomainAddressSerialNumberResponse =
-          new ApduDataExtDomainAddressSerialNumberResponse(length);
+          new ApduDataExtDomainAddressSerialNumberResponse();
       return apduDataExtDomainAddressSerialNumberResponse;
     }
   }

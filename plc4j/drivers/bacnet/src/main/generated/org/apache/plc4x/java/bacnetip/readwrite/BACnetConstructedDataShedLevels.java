@@ -189,7 +189,6 @@ public class BACnetConstructedDataShedLevels extends BACnetConstructedData imple
         List<BACnetApplicationTagUnsignedInteger> shedLevels,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.shedLevels = shedLevels;
       this.tagNumber = tagNumber;

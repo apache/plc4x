@@ -40,12 +40,8 @@ public abstract class ModbusADU implements Message {
   // Abstract accessors for discriminator values.
   public abstract DriverType getDriverType();
 
-  // Arguments.
-  protected final Boolean response;
-
-  public ModbusADU(Boolean response) {
+  public ModbusADU() {
     super();
-    this.response = response;
   }
 
   protected abstract void serializeModbusADUChild(WriteBuffer writeBuffer)
@@ -133,13 +129,12 @@ public abstract class ModbusADU implements Message {
 
     readBuffer.closeContext("ModbusADU");
     // Create the instance
-    ModbusADU _modbusADU = builder.build(response);
-
+    ModbusADU _modbusADU = builder.build();
     return _modbusADU;
   }
 
   public interface ModbusADUBuilder {
-    ModbusADU build(Boolean response);
+    ModbusADU build();
   }
 
   @Override

@@ -104,7 +104,6 @@ public class ConnectionResponse extends KnxNetIpMessage implements Message {
         "hpaiDataEndpoint",
         hpaiDataEndpoint,
         new DataWriterComplexDefault<>(writeBuffer),
-        (getStatus()) == (Status.NO_ERROR),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Optional Field (connectionResponseDataBlock) (Can be skipped, if the value is null)
@@ -112,7 +111,6 @@ public class ConnectionResponse extends KnxNetIpMessage implements Message {
         "connectionResponseDataBlock",
         connectionResponseDataBlock,
         new DataWriterComplexDefault<>(writeBuffer),
-        (getStatus()) == (Status.NO_ERROR),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("ConnectionResponse");
@@ -201,7 +199,6 @@ public class ConnectionResponse extends KnxNetIpMessage implements Message {
         Status status,
         HPAIDataEndpoint hpaiDataEndpoint,
         ConnectionResponseDataBlock connectionResponseDataBlock) {
-
       this.communicationChannelId = communicationChannelId;
       this.status = status;
       this.hpaiDataEndpoint = hpaiDataEndpoint;

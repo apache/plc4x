@@ -100,7 +100,6 @@ public class AirConditioningDataRefresh extends AirConditioningData implements M
     private final byte zoneGroup;
 
     public AirConditioningDataRefreshBuilderImpl(byte zoneGroup) {
-
       this.zoneGroup = zoneGroup;
     }
 

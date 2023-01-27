@@ -148,7 +148,6 @@ public class BACnetConstructedDataChannelNumber extends BACnetConstructedData im
         BACnetApplicationTagUnsignedInteger channelNumber,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.channelNumber = channelNumber;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -112,7 +112,6 @@ public class CBusCommandPointToMultiPoint extends CBusCommand implements Message
 
     public CBusCommandPointToMultiPointBuilderImpl(
         CBusPointToMultiPointCommand command, CBusOptions cBusOptions) {
-
       this.command = command;
       this.cBusOptions = cBusOptions;
     }

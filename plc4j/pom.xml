@@ -67,7 +67,7 @@
       <!--
         This plugin doesn't really do much, it makes sure the jacoco agent
         is downloaded and that the path to this is saved in an environment
-        variable so we can access this later on in the build.
+        variable, so we can access this later on in the build.
       -->
       <plugin>
         <groupId>org.jacoco</groupId>

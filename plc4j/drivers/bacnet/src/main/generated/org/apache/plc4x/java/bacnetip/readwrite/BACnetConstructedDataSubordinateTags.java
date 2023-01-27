@@ -186,7 +186,6 @@ public class BACnetConstructedDataSubordinateTags extends BACnetConstructedData 
         List<BACnetNameValueCollection> subordinateList,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.subordinateList = subordinateList;
       this.tagNumber = tagNumber;

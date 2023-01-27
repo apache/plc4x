@@ -113,7 +113,6 @@ public class BACnetConstructedDataGlobalGroupAll extends BACnetConstructedData i
 
     public BACnetConstructedDataGlobalGroupAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

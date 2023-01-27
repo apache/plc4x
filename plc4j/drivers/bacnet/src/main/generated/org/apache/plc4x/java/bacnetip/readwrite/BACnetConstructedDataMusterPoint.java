@@ -146,7 +146,6 @@ public class BACnetConstructedDataMusterPoint extends BACnetConstructedData impl
         BACnetApplicationTagBoolean musterPoint,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.musterPoint = musterPoint;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

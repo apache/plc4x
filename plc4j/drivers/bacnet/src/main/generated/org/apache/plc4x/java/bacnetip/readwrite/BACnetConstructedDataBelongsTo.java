@@ -144,7 +144,6 @@ public class BACnetConstructedDataBelongsTo extends BACnetConstructedData implem
         BACnetDeviceObjectReference belongsTo,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.belongsTo = belongsTo;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

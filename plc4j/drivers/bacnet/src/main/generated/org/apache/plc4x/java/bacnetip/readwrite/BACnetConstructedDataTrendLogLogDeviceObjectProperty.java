@@ -150,7 +150,6 @@ public class BACnetConstructedDataTrendLogLogDeviceObjectProperty extends BACnet
         BACnetDeviceObjectPropertyReference logDeviceObjectProperty,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.logDeviceObjectProperty = logDeviceObjectProperty;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

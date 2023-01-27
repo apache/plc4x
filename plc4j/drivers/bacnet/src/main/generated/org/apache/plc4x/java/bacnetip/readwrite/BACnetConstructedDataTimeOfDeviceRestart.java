@@ -147,7 +147,6 @@ public class BACnetConstructedDataTimeOfDeviceRestart extends BACnetConstructedD
         BACnetTimeStamp timeOfDeviceRestart,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.timeOfDeviceRestart = timeOfDeviceRestart;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

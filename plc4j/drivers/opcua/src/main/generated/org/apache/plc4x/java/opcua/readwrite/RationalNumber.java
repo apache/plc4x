@@ -117,7 +117,6 @@ public class RationalNumber extends ExtensionObjectDefinition implements Message
     private final long denominator;
 
     public RationalNumberBuilderImpl(int numerator, long denominator) {
-
       this.numerator = numerator;
       this.denominator = denominator;
     }

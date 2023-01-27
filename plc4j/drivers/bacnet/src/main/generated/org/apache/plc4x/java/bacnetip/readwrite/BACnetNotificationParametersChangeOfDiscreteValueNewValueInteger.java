@@ -121,7 +121,6 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger
 
     public BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilderImpl(
         BACnetApplicationTagSignedInteger integerValue, Short tagNumber) {
-
       this.integerValue = integerValue;
       this.tagNumber = tagNumber;
     }

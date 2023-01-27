@@ -52,8 +52,6 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
   protected final long maxNetworkMessageSize;
   protected final int noOfGroupProperties;
   protected final List<ExtensionObjectDefinition> groupProperties;
-  // Reserved Fields
-  private Short reservedField0;
 
   public PubSubGroupDataType(
       PascalString name,
@@ -124,10 +122,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (enabled)
     writeSimpleField("enabled", enabled, writeBoolean(writeBuffer));
@@ -285,8 +280,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
         securityKeyServices,
         maxNetworkMessageSize,
         noOfGroupProperties,
-        groupProperties,
-        reservedField0);
+        groupProperties);
   }
 
   public static class PubSubGroupDataTypeBuilderImpl
@@ -300,7 +294,6 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     private final long maxNetworkMessageSize;
     private final int noOfGroupProperties;
     private final List<ExtensionObjectDefinition> groupProperties;
-    private final Short reservedField0;
 
     public PubSubGroupDataTypeBuilderImpl(
         PascalString name,
@@ -311,8 +304,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
         List<ExtensionObjectDefinition> securityKeyServices,
         long maxNetworkMessageSize,
         int noOfGroupProperties,
-        List<ExtensionObjectDefinition> groupProperties,
-        Short reservedField0) {
+        List<ExtensionObjectDefinition> groupProperties) {
       this.name = name;
       this.enabled = enabled;
       this.securityMode = securityMode;
@@ -322,7 +314,6 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
       this.maxNetworkMessageSize = maxNetworkMessageSize;
       this.noOfGroupProperties = noOfGroupProperties;
       this.groupProperties = groupProperties;
-      this.reservedField0 = reservedField0;
     }
 
     public PubSubGroupDataType build() {
@@ -337,7 +328,6 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
               maxNetworkMessageSize,
               noOfGroupProperties,
               groupProperties);
-      pubSubGroupDataType.reservedField0 = reservedField0;
       return pubSubGroupDataType;
     }
   }

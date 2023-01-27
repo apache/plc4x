@@ -151,7 +151,6 @@ public class BACnetConstructedDataTotalRecordCount extends BACnetConstructedData
         BACnetApplicationTagUnsignedInteger totalRecordCount,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.totalRecordCount = totalRecordCount;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

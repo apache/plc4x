@@ -47,15 +47,15 @@ public class BACnetConfirmedServiceRequestReadPropertyConditional
   protected final byte[] bytesOfRemovedService;
 
   // Arguments.
-  protected final Long serviceRequestLength;
   protected final Long serviceRequestPayloadLength;
+  protected final Long serviceRequestLength;
 
   public BACnetConfirmedServiceRequestReadPropertyConditional(
-      byte[] bytesOfRemovedService, Long serviceRequestLength, Long serviceRequestPayloadLength) {
+      byte[] bytesOfRemovedService, Long serviceRequestPayloadLength, Long serviceRequestLength) {
     super(serviceRequestLength);
     this.bytesOfRemovedService = bytesOfRemovedService;
-    this.serviceRequestLength = serviceRequestLength;
     this.serviceRequestPayloadLength = serviceRequestPayloadLength;
+    this.serviceRequestLength = serviceRequestLength;
   }
 
   public byte[] getBytesOfRemovedService() {
@@ -96,7 +96,7 @@ public class BACnetConfirmedServiceRequestReadPropertyConditional
 
   public static BACnetConfirmedServiceRequestBuilder
       staticParseBACnetConfirmedServiceRequestBuilder(
-          ReadBuffer readBuffer, Long serviceRequestLength, Long serviceRequestPayloadLength)
+          ReadBuffer readBuffer, Long serviceRequestPayloadLength, Long serviceRequestLength)
           throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestReadPropertyConditional");
     PositionAware positionAware = readBuffer;
@@ -110,21 +110,20 @@ public class BACnetConfirmedServiceRequestReadPropertyConditional
     readBuffer.closeContext("BACnetConfirmedServiceRequestReadPropertyConditional");
     // Create the instance
     return new BACnetConfirmedServiceRequestReadPropertyConditionalBuilderImpl(
-        bytesOfRemovedService, serviceRequestLength, serviceRequestPayloadLength);
+        bytesOfRemovedService, serviceRequestPayloadLength, serviceRequestLength);
   }
 
   public static class BACnetConfirmedServiceRequestReadPropertyConditionalBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final byte[] bytesOfRemovedService;
-    private final Long serviceRequestLength;
     private final Long serviceRequestPayloadLength;
+    private final Long serviceRequestLength;
 
     public BACnetConfirmedServiceRequestReadPropertyConditionalBuilderImpl(
-        byte[] bytesOfRemovedService, Long serviceRequestLength, Long serviceRequestPayloadLength) {
-
+        byte[] bytesOfRemovedService, Long serviceRequestPayloadLength, Long serviceRequestLength) {
       this.bytesOfRemovedService = bytesOfRemovedService;
-      this.serviceRequestLength = serviceRequestLength;
       this.serviceRequestPayloadLength = serviceRequestPayloadLength;
+      this.serviceRequestLength = serviceRequestLength;
     }
 
     public BACnetConfirmedServiceRequestReadPropertyConditional build(Long serviceRequestLength) {
@@ -132,7 +131,7 @@ public class BACnetConfirmedServiceRequestReadPropertyConditional
       BACnetConfirmedServiceRequestReadPropertyConditional
           bACnetConfirmedServiceRequestReadPropertyConditional =
               new BACnetConfirmedServiceRequestReadPropertyConditional(
-                  bytesOfRemovedService, serviceRequestLength, serviceRequestPayloadLength);
+                  bytesOfRemovedService, serviceRequestPayloadLength, serviceRequestLength);
       return bACnetConfirmedServiceRequestReadPropertyConditional;
     }
   }

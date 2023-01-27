@@ -153,7 +153,6 @@ public class BACnetFaultParameterFaultStatusFlags extends BACnetFaultParameter i
         BACnetOpeningTag openingTag,
         BACnetDeviceObjectPropertyReferenceEnclosed statusFlagsReference,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.statusFlagsReference = statusFlagsReference;
       this.closingTag = closingTag;

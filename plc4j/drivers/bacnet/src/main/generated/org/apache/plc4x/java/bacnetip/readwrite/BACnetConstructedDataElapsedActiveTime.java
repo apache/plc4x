@@ -151,7 +151,6 @@ public class BACnetConstructedDataElapsedActiveTime extends BACnetConstructedDat
         BACnetApplicationTagUnsignedInteger elapsedActiveTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.elapsedActiveTime = elapsedActiveTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

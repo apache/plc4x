@@ -142,7 +142,6 @@ public class BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
     public BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilderImpl(
         BACnetApplicationTagUnsignedInteger referenceSequenceNumber,
         BACnetApplicationTagSignedInteger count) {
-
       this.referenceSequenceNumber = referenceSequenceNumber;
       this.count = count;
     }

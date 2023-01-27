@@ -174,7 +174,6 @@ public class SecurityDataStatusReport1 extends SecurityData implements Message {
         TamperStatus tamperStatus,
         PanicStatus panicStatus,
         List<ZoneStatus> zoneStatus) {
-
       this.armCodeType = armCodeType;
       this.tamperStatus = tamperStatus;
       this.panicStatus = panicStatus;

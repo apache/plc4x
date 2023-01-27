@@ -109,7 +109,6 @@ public class IdentifyReplyCommandTerminalLevels extends IdentifyReplyCommand imp
     private final Short numBytes;
 
     public IdentifyReplyCommandTerminalLevelsBuilderImpl(byte[] terminalLevels, Short numBytes) {
-
       this.terminalLevels = terminalLevels;
       this.numBytes = numBytes;
     }

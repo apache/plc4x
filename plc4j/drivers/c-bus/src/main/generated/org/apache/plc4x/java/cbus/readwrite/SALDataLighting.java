@@ -103,7 +103,6 @@ public class SALDataLighting extends SALData implements Message {
     private final LightingData lightingData;
 
     public SALDataLightingBuilderImpl(LightingData lightingData) {
-
       this.lightingData = lightingData;
     }
 

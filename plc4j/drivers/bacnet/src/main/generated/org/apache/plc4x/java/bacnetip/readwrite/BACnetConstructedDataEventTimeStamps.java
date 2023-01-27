@@ -238,7 +238,6 @@ public class BACnetConstructedDataEventTimeStamps extends BACnetConstructedData 
         List<BACnetTimeStamp> eventTimeStamps,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.eventTimeStamps = eventTimeStamps;
       this.tagNumber = tagNumber;

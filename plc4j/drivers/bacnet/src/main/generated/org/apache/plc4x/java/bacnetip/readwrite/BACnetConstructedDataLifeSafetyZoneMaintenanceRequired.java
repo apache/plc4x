@@ -148,7 +148,6 @@ public class BACnetConstructedDataLifeSafetyZoneMaintenanceRequired extends BACn
         BACnetApplicationTagBoolean maintenanceRequired,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maintenanceRequired = maintenanceRequired;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

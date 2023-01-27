@@ -146,7 +146,6 @@ public class HistoryReadResult extends ExtensionObjectDefinition implements Mess
 
     public HistoryReadResultBuilderImpl(
         StatusCode statusCode, PascalByteString continuationPoint, ExtensionObject historyData) {
-
       this.statusCode = statusCode;
       this.continuationPoint = continuationPoint;
       this.historyData = historyData;

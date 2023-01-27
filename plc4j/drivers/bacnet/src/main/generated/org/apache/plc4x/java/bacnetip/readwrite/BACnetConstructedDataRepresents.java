@@ -145,7 +145,6 @@ public class BACnetConstructedDataRepresents extends BACnetConstructedData imple
         BACnetDeviceObjectReference represents,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.represents = represents;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

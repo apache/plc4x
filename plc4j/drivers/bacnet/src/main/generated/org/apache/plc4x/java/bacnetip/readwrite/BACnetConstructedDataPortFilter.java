@@ -186,7 +186,6 @@ public class BACnetConstructedDataPortFilter extends BACnetConstructedData imple
         List<BACnetPortPermission> portFilter,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.portFilter = portFilter;
       this.tagNumber = tagNumber;

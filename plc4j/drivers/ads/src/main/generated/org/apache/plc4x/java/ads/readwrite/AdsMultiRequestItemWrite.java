@@ -134,7 +134,6 @@ public class AdsMultiRequestItemWrite extends AdsMultiRequestItem implements Mes
 
     public AdsMultiRequestItemWriteBuilderImpl(
         long itemIndexGroup, long itemIndexOffset, long itemWriteLength) {
-
       this.itemIndexGroup = itemIndexGroup;
       this.itemIndexOffset = itemIndexOffset;
       this.itemWriteLength = itemWriteLength;

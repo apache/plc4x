@@ -111,7 +111,6 @@ public class CANOpenHeartbeatPayload extends CANOpenPayload implements Message {
     private final NMTState state;
 
     public CANOpenHeartbeatPayloadBuilderImpl(NMTState state) {
-
       this.state = state;
     }
 

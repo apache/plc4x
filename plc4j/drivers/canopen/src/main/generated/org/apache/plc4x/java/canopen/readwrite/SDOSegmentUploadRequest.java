@@ -44,9 +44,6 @@ public class SDOSegmentUploadRequest extends SDORequest implements Message {
 
   // Properties.
   protected final boolean toggle;
-  // Reserved Fields
-  private Byte reservedField0;
-  private Long reservedField1;
 
   public SDOSegmentUploadRequest(boolean toggle) {
     super();
@@ -67,16 +64,10 @@ public class SDOSegmentUploadRequest extends SDORequest implements Message {
     writeSimpleField("toggle", toggle, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeUnsignedByte(writeBuffer, 4));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 4));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField1 != null ? reservedField1 : (long) 0x00,
-        writeSignedLong(writeBuffer, 56));
+    writeReservedField("reserved", (long) 0x00, writeSignedLong(writeBuffer, 56));
 
     writeBuffer.popContext("SDOSegmentUploadRequest");
   }
@@ -120,25 +111,18 @@ public class SDOSegmentUploadRequest extends SDORequest implements Message {
 
     readBuffer.closeContext("SDOSegmentUploadRequest");
     // Create the instance
-    return new SDOSegmentUploadRequestBuilderImpl(toggle, reservedField0, reservedField1);
+    return new SDOSegmentUploadRequestBuilderImpl(toggle);
   }
 
   public static class SDOSegmentUploadRequestBuilderImpl implements SDORequest.SDORequestBuilder {
     private final boolean toggle;
-    private final Byte reservedField0;
-    private final Long reservedField1;
 
-    public SDOSegmentUploadRequestBuilderImpl(
-        boolean toggle, Byte reservedField0, Long reservedField1) {
+    public SDOSegmentUploadRequestBuilderImpl(boolean toggle) {
       this.toggle = toggle;
-      this.reservedField0 = reservedField0;
-      this.reservedField1 = reservedField1;
     }
 
     public SDOSegmentUploadRequest build() {
       SDOSegmentUploadRequest sDOSegmentUploadRequest = new SDOSegmentUploadRequest(toggle);
-      sDOSegmentUploadRequest.reservedField0 = reservedField0;
-      sDOSegmentUploadRequest.reservedField1 = reservedField1;
       return sDOSegmentUploadRequest;
     }
   }

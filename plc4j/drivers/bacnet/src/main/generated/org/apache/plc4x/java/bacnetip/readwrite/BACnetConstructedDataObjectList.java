@@ -189,7 +189,6 @@ public class BACnetConstructedDataObjectList extends BACnetConstructedData imple
         List<BACnetApplicationTagObjectIdentifier> objectList,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.objectList = objectList;
       this.tagNumber = tagNumber;

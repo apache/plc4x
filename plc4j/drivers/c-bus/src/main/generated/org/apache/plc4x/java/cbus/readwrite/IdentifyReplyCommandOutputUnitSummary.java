@@ -183,7 +183,6 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
         Byte gavStoreEnabledByte2,
         short timeFromLastRecoverOfMainsInSeconds,
         Short numBytes) {
-
       this.unitFlags = unitFlags;
       this.gavStoreEnabledByte1 = gavStoreEnabledByte1;
       this.gavStoreEnabledByte2 = gavStoreEnabledByte2;

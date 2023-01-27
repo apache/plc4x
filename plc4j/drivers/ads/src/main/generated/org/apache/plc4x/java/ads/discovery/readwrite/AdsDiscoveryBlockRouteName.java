@@ -105,7 +105,6 @@ public class AdsDiscoveryBlockRouteName extends AdsDiscoveryBlock implements Mes
     private final AmsString routeName;
 
     public AdsDiscoveryBlockRouteNameBuilderImpl(AmsString routeName) {
-
       this.routeName = routeName;
     }
 

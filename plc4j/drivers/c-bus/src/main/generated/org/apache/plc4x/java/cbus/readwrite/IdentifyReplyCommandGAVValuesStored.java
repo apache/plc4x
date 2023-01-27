@@ -109,7 +109,6 @@ public class IdentifyReplyCommandGAVValuesStored extends IdentifyReplyCommand im
     private final Short numBytes;
 
     public IdentifyReplyCommandGAVValuesStoredBuilderImpl(byte[] values, Short numBytes) {
-
       this.values = values;
       this.numBytes = numBytes;
     }

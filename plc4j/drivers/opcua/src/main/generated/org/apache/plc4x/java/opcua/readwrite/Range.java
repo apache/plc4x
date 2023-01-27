@@ -117,7 +117,6 @@ public class Range extends ExtensionObjectDefinition implements Message {
     private final double high;
 
     public RangeBuilderImpl(double low, double high) {
-
       this.low = low;
       this.high = high;
     }

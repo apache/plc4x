@@ -153,7 +153,6 @@ public class BACnetConstructedDataProtocolObjectTypesSupported extends BACnetCon
         BACnetObjectTypesSupportedTagged protocolObjectTypesSupported,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.protocolObjectTypesSupported = protocolObjectTypesSupported;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

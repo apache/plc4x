@@ -130,7 +130,6 @@ public class WritePropertyMultipleError extends BACnetError implements Message {
 
     public WritePropertyMultipleErrorBuilderImpl(
         ErrorEnclosed errorType, BACnetObjectPropertyReferenceEnclosed firstFailedWriteAttempt) {
-
       this.errorType = errorType;
       this.firstFailedWriteAttempt = firstFailedWriteAttempt;
     }

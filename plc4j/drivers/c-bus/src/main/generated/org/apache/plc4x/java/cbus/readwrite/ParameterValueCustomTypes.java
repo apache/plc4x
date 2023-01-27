@@ -111,7 +111,6 @@ public class ParameterValueCustomTypes extends ParameterValue implements Message
     private final Short numBytes;
 
     public ParameterValueCustomTypesBuilderImpl(CustomTypes value, Short numBytes) {
-
       this.value = value;
       this.numBytes = numBytes;
     }

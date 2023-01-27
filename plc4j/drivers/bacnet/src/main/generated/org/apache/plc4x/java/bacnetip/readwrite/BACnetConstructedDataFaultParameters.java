@@ -146,7 +146,6 @@ public class BACnetConstructedDataFaultParameters extends BACnetConstructedData 
         BACnetFaultParameter faultParameters,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.faultParameters = faultParameters;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -113,7 +113,6 @@ public class BACnetPriorityValueTime extends BACnetPriorityValue implements Mess
 
     public BACnetPriorityValueTimeBuilderImpl(
         BACnetApplicationTagTime timeValue, BACnetObjectType objectTypeArgument) {
-
       this.timeValue = timeValue;
       this.objectTypeArgument = objectTypeArgument;
     }

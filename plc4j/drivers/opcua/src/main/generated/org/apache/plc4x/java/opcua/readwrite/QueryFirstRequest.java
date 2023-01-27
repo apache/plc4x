@@ -244,7 +244,6 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
         ExtensionObjectDefinition filter,
         long maxDataSetsToReturn,
         long maxReferencesToReturn) {
-
       this.requestHeader = requestHeader;
       this.view = view;
       this.noOfNodeTypes = noOfNodeTypes;

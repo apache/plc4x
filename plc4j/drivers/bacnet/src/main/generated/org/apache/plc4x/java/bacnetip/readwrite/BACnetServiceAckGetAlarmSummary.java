@@ -171,7 +171,6 @@ public class BACnetServiceAckGetAlarmSummary extends BACnetServiceAck implements
         BACnetEventStateTagged eventState,
         BACnetEventTransitionBitsTagged acknowledgedTransitions,
         Long serviceAckLength) {
-
       this.objectIdentifier = objectIdentifier;
       this.eventState = eventState;
       this.acknowledgedTransitions = acknowledgedTransitions;

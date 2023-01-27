@@ -143,7 +143,6 @@ public class BACnetConstructedDataRestartNotificationRecipients extends BACnetCo
         List<BACnetRecipient> restartNotificationRecipients,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.restartNotificationRecipients = restartNotificationRecipients;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -151,7 +151,6 @@ public class BACnetConstructedDataOccupancyUpperLimitEnforced extends BACnetCons
         BACnetApplicationTagBoolean occupancyUpperLimitEnforced,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.occupancyUpperLimitEnforced = occupancyUpperLimitEnforced;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

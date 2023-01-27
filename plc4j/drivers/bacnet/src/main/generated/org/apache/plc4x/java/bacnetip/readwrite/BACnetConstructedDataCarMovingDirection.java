@@ -150,7 +150,6 @@ public class BACnetConstructedDataCarMovingDirection extends BACnetConstructedDa
         BACnetLiftCarDirectionTagged carMovingDirection,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.carMovingDirection = carMovingDirection;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

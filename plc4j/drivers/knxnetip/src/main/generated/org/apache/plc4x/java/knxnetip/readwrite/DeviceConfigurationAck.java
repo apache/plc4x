@@ -112,7 +112,6 @@ public class DeviceConfigurationAck extends KnxNetIpMessage implements Message {
 
     public DeviceConfigurationAckBuilderImpl(
         DeviceConfigurationAckDataBlock deviceConfigurationAckDataBlock) {
-
       this.deviceConfigurationAckDataBlock = deviceConfigurationAckDataBlock;
     }
 

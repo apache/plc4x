@@ -145,7 +145,6 @@ public class UserIdentityToken extends ExtensionObjectDefinition implements Mess
 
     public UserIdentityTokenBuilderImpl(
         PascalString policyId, UserIdentityTokenDefinition userIdentityTokenDefinition) {
-
       this.policyId = policyId;
       this.userIdentityTokenDefinition = userIdentityTokenDefinition;
     }

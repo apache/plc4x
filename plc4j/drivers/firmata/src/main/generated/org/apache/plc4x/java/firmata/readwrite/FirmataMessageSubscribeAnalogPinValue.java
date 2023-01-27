@@ -46,16 +46,10 @@ public class FirmataMessageSubscribeAnalogPinValue extends FirmataMessage implem
   protected final byte pin;
   protected final boolean enable;
 
-  // Arguments.
-  protected final Boolean response;
-  // Reserved Fields
-  private Short reservedField0;
-
-  public FirmataMessageSubscribeAnalogPinValue(byte pin, boolean enable, Boolean response) {
-    super(response);
+  public FirmataMessageSubscribeAnalogPinValue(byte pin, boolean enable) {
+    super();
     this.pin = pin;
     this.enable = enable;
-    this.response = response;
   }
 
   public byte getPin() {
@@ -83,7 +77,7 @@ public class FirmataMessageSubscribeAnalogPinValue extends FirmataMessage implem
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
+        (short) 0x00,
         writeUnsignedShort(writeBuffer, 7),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -143,30 +137,22 @@ public class FirmataMessageSubscribeAnalogPinValue extends FirmataMessage implem
 
     readBuffer.closeContext("FirmataMessageSubscribeAnalogPinValue");
     // Create the instance
-    return new FirmataMessageSubscribeAnalogPinValueBuilderImpl(
-        pin, enable, response, reservedField0);
+    return new FirmataMessageSubscribeAnalogPinValueBuilderImpl(pin, enable);
   }
 
   public static class FirmataMessageSubscribeAnalogPinValueBuilderImpl
       implements FirmataMessage.FirmataMessageBuilder {
     private final byte pin;
     private final boolean enable;
-    private final Boolean response;
-    private final Short reservedField0;
 
-    public FirmataMessageSubscribeAnalogPinValueBuilderImpl(
-        byte pin, boolean enable, Boolean response, Short reservedField0) {
+    public FirmataMessageSubscribeAnalogPinValueBuilderImpl(byte pin, boolean enable) {
       this.pin = pin;
       this.enable = enable;
-      this.response = response;
-      this.reservedField0 = reservedField0;
     }
 
-    public FirmataMessageSubscribeAnalogPinValue build(Boolean response) {
-
+    public FirmataMessageSubscribeAnalogPinValue build() {
       FirmataMessageSubscribeAnalogPinValue firmataMessageSubscribeAnalogPinValue =
-          new FirmataMessageSubscribeAnalogPinValue(pin, enable, response);
-      firmataMessageSubscribeAnalogPinValue.reservedField0 = reservedField0;
+          new FirmataMessageSubscribeAnalogPinValue(pin, enable);
       return firmataMessageSubscribeAnalogPinValue;
     }
   }

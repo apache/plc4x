@@ -114,7 +114,6 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectName
 
     public BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilderImpl(
         BACnetContextTagCharacterString objectName) {
-
       this.objectName = objectName;
     }
 

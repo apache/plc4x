@@ -146,7 +146,6 @@ public class BACnetConstructedDataMinActualValue extends BACnetConstructedData i
         BACnetApplicationTagReal minActualValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.minActualValue = minActualValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

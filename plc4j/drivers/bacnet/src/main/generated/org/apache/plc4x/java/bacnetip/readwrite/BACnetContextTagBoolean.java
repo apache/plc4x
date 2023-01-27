@@ -115,9 +115,9 @@ public class BACnetContextTagBoolean extends BACnetContextTag implements Message
 
   public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer,
+      BACnetTagHeader header,
       Short tagNumberArgument,
-      BACnetDataType dataType,
-      BACnetTagHeader header)
+      BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagBoolean");
     PositionAware positionAware = readBuffer;
@@ -150,7 +150,6 @@ public class BACnetContextTagBoolean extends BACnetContextTag implements Message
 
     public BACnetContextTagBooleanBuilderImpl(
         short value, BACnetTagPayloadBoolean payload, Short tagNumberArgument) {
-
       this.value = value;
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;

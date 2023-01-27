@@ -113,7 +113,6 @@ public class BACnetConstructedDataAveragingAll extends BACnetConstructedData imp
 
     public BACnetConstructedDataAveragingAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

@@ -146,7 +146,6 @@ public class BACnetConstructedDataMultiStateOutputInterfaceValue extends BACnetC
         BACnetOptionalBinaryPV interfaceValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.interfaceValue = interfaceValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

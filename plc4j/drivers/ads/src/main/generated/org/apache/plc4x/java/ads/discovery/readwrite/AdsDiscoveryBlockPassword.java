@@ -105,7 +105,6 @@ public class AdsDiscoveryBlockPassword extends AdsDiscoveryBlock implements Mess
     private final AmsString password;
 
     public AdsDiscoveryBlockPasswordBuilderImpl(AmsString password) {
-
       this.password = password;
     }
 

@@ -202,7 +202,6 @@ public class MediaTransportControlDataFastForward extends MediaTransportControlD
     private final byte operation;
 
     public MediaTransportControlDataFastForwardBuilderImpl(byte operation) {
-
       this.operation = operation;
     }
 

@@ -254,7 +254,6 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
         List<DiagnosticInfo> inputArgumentDiagnosticInfos,
         int noOfOutputArguments,
         List<Variant> outputArguments) {
-
       this.statusCode = statusCode;
       this.noOfInputArgumentResults = noOfInputArgumentResults;
       this.inputArgumentResults = inputArgumentResults;

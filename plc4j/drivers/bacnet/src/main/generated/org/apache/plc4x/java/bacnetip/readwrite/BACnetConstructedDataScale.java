@@ -140,7 +140,6 @@ public class BACnetConstructedDataScale extends BACnetConstructedData implements
 
     public BACnetConstructedDataScaleBuilderImpl(
         BACnetScale scale, Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.scale = scale;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

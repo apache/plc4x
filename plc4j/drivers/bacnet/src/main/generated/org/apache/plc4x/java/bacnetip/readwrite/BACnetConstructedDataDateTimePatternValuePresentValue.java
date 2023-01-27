@@ -146,7 +146,6 @@ public class BACnetConstructedDataDateTimePatternValuePresentValue extends BACne
         BACnetDateTime presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.presentValue = presentValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

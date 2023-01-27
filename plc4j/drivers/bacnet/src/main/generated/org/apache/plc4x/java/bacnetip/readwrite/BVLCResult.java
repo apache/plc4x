@@ -111,7 +111,6 @@ public class BVLCResult extends BVLC implements Message {
     private final BVLCResultCode code;
 
     public BVLCResultBuilderImpl(BVLCResultCode code) {
-
       this.code = code;
     }
 

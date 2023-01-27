@@ -107,7 +107,6 @@ public class IdentifyReplyCommandType extends IdentifyReplyCommand implements Me
     private final Short numBytes;
 
     public IdentifyReplyCommandTypeBuilderImpl(String unitType, Short numBytes) {
-
       this.unitType = unitType;
       this.numBytes = numBytes;
     }

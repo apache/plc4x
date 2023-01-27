@@ -145,7 +145,6 @@ public class BACnetConstructedDataAccompaniment extends BACnetConstructedData im
         BACnetDeviceObjectReference accompaniment,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.accompaniment = accompaniment;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

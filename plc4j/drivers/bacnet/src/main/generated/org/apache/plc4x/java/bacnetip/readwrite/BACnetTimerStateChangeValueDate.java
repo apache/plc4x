@@ -114,7 +114,6 @@ public class BACnetTimerStateChangeValueDate extends BACnetTimerStateChangeValue
 
     public BACnetTimerStateChangeValueDateBuilderImpl(
         BACnetApplicationTagDate dateValue, BACnetObjectType objectTypeArgument) {
-
       this.dateValue = dateValue;
       this.objectTypeArgument = objectTypeArgument;
     }

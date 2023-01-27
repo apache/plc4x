@@ -247,7 +247,6 @@ public class AddNodesItem extends ExtensionObjectDefinition implements Message {
         NodeClass nodeClass,
         ExtensionObject nodeAttributes,
         ExpandedNodeId typeDefinition) {
-
       this.parentNodeId = parentNodeId;
       this.referenceTypeId = referenceTypeId;
       this.requestedNewNodeId = requestedNewNodeId;

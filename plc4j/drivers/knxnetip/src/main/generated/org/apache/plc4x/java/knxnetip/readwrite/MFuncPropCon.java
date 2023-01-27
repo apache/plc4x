@@ -42,12 +42,8 @@ public class MFuncPropCon extends CEMI implements Message {
     return (short) 0xFA;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public MFuncPropCon(Integer size) {
-    super(size);
-    this.size = size;
+  public MFuncPropCon() {
+    super();
   }
 
   @Override
@@ -81,21 +77,15 @@ public class MFuncPropCon extends CEMI implements Message {
 
     readBuffer.closeContext("MFuncPropCon");
     // Create the instance
-    return new MFuncPropConBuilderImpl(size);
+    return new MFuncPropConBuilderImpl();
   }
 
   public static class MFuncPropConBuilderImpl implements CEMI.CEMIBuilder {
-    private final Integer size;
 
-    public MFuncPropConBuilderImpl(Integer size) {
+    public MFuncPropConBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public MFuncPropCon build(Integer size) {
-
-      MFuncPropCon mFuncPropCon = new MFuncPropCon(size);
-
+    public MFuncPropCon build() {
+      MFuncPropCon mFuncPropCon = new MFuncPropCon();
       return mFuncPropCon;
     }
   }

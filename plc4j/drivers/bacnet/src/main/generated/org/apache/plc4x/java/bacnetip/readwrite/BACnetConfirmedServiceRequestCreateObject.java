@@ -153,7 +153,6 @@ public class BACnetConfirmedServiceRequestCreateObject extends BACnetConfirmedSe
         BACnetConfirmedServiceRequestCreateObjectObjectSpecifier objectSpecifier,
         BACnetPropertyValues listOfValues,
         Long serviceRequestLength) {
-
       this.objectSpecifier = objectSpecifier;
       this.listOfValues = listOfValues;
       this.serviceRequestLength = serviceRequestLength;

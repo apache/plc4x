@@ -150,7 +150,6 @@ public class BACnetConstructedDataAccessEventAuthenticationFactor extends BACnet
         BACnetAuthenticationFactor accessEventAuthenticationFactor,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.accessEventAuthenticationFactor = accessEventAuthenticationFactor;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

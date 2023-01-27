@@ -148,7 +148,6 @@ public class BACnetConstructedDataIPv6ZoneIndex extends BACnetConstructedData im
         BACnetApplicationTagCharacterString ipv6ZoneIndex,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipv6ZoneIndex = ipv6ZoneIndex;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

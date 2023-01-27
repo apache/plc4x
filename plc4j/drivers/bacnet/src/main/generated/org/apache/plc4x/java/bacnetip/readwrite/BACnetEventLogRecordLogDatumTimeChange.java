@@ -119,7 +119,6 @@ public class BACnetEventLogRecordLogDatumTimeChange extends BACnetEventLogRecord
 
     public BACnetEventLogRecordLogDatumTimeChangeBuilderImpl(
         BACnetContextTagReal timeChange, Short tagNumber) {
-
       this.timeChange = timeChange;
       this.tagNumber = tagNumber;
     }

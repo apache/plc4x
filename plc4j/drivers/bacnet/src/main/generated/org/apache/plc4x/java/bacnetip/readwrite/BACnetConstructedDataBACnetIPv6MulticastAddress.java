@@ -150,7 +150,6 @@ public class BACnetConstructedDataBACnetIPv6MulticastAddress extends BACnetConst
         BACnetApplicationTagOctetString ipv6MulticastAddress,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipv6MulticastAddress = ipv6MulticastAddress;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

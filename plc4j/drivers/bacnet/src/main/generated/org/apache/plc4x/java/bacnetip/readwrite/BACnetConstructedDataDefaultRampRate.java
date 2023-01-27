@@ -147,7 +147,6 @@ public class BACnetConstructedDataDefaultRampRate extends BACnetConstructedData 
         BACnetApplicationTagReal defaultRampRate,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.defaultRampRate = defaultRampRate;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

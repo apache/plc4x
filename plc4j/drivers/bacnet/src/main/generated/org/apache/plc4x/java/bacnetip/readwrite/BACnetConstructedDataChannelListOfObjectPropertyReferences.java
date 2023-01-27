@@ -187,7 +187,6 @@ public class BACnetConstructedDataChannelListOfObjectPropertyReferences
         List<BACnetDeviceObjectPropertyReference> references,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.references = references;
       this.tagNumber = tagNumber;

@@ -46,14 +46,10 @@ public class ApduDataMemoryResponse extends ApduData implements Message {
   protected final int address;
   protected final byte[] data;
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataMemoryResponse(int address, byte[] data, Short dataLength) {
-    super(dataLength);
+  public ApduDataMemoryResponse(int address, byte[] data) {
+    super();
     this.address = address;
     this.data = data;
-    this.dataLength = dataLength;
   }
 
   public int getAddress() {
@@ -123,25 +119,20 @@ public class ApduDataMemoryResponse extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataMemoryResponse");
     // Create the instance
-    return new ApduDataMemoryResponseBuilderImpl(address, data, dataLength);
+    return new ApduDataMemoryResponseBuilderImpl(address, data);
   }
 
   public static class ApduDataMemoryResponseBuilderImpl implements ApduData.ApduDataBuilder {
     private final int address;
     private final byte[] data;
-    private final Short dataLength;
 
-    public ApduDataMemoryResponseBuilderImpl(int address, byte[] data, Short dataLength) {
-
+    public ApduDataMemoryResponseBuilderImpl(int address, byte[] data) {
       this.address = address;
       this.data = data;
-      this.dataLength = dataLength;
     }
 
-    public ApduDataMemoryResponse build(Short dataLength) {
-
-      ApduDataMemoryResponse apduDataMemoryResponse =
-          new ApduDataMemoryResponse(address, data, dataLength);
+    public ApduDataMemoryResponse build() {
+      ApduDataMemoryResponse apduDataMemoryResponse = new ApduDataMemoryResponse(address, data);
       return apduDataMemoryResponse;
     }
   }

@@ -120,7 +120,6 @@ public class ModbusPDUReadCoilsResponse extends ModbusPDU implements Message {
     private final byte[] value;
 
     public ModbusPDUReadCoilsResponseBuilderImpl(byte[] value) {
-
       this.value = value;
     }
 

@@ -42,19 +42,14 @@ public class ExtensionObject implements Message {
   protected final ExtensionObjectEncodingMask encodingMask;
   protected final ExtensionObjectDefinition body;
 
-  // Arguments.
-  protected final Boolean includeEncodingMask;
-
   public ExtensionObject(
       ExpandedNodeId typeId,
       ExtensionObjectEncodingMask encodingMask,
-      ExtensionObjectDefinition body,
-      Boolean includeEncodingMask) {
+      ExtensionObjectDefinition body) {
     super();
     this.typeId = typeId;
     this.encodingMask = encodingMask;
     this.body = body;
-    this.includeEncodingMask = includeEncodingMask;
   }
 
   public ExpandedNodeId getTypeId() {
@@ -82,11 +77,7 @@ public class ExtensionObject implements Message {
     writeSimpleField("typeId", typeId, new DataWriterComplexDefault<>(writeBuffer));
 
     // Optional Field (encodingMask) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "encodingMask",
-        encodingMask,
-        new DataWriterComplexDefault<>(writeBuffer),
-        includeEncodingMask);
+    writeOptionalField("encodingMask", encodingMask, new DataWriterComplexDefault<>(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     String identifier = getIdentifier();
@@ -175,7 +166,7 @@ public class ExtensionObject implements Message {
     readBuffer.closeContext("ExtensionObject");
     // Create the instance
     ExtensionObject _extensionObject;
-    _extensionObject = new ExtensionObject(typeId, encodingMask, body, includeEncodingMask);
+    _extensionObject = new ExtensionObject(typeId, encodingMask, body);
     return _extensionObject;
   }
 

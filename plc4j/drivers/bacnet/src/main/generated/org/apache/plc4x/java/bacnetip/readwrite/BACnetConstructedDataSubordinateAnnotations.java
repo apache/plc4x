@@ -190,7 +190,6 @@ public class BACnetConstructedDataSubordinateAnnotations extends BACnetConstruct
         List<BACnetApplicationTagCharacterString> subordinateAnnotations,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.subordinateAnnotations = subordinateAnnotations;
       this.tagNumber = tagNumber;

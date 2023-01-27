@@ -108,7 +108,6 @@ public class SALDataMediaTransport extends SALData implements Message {
     private final MediaTransportControlData mediaTransportControlData;
 
     public SALDataMediaTransportBuilderImpl(MediaTransportControlData mediaTransportControlData) {
-
       this.mediaTransportControlData = mediaTransportControlData;
     }
 

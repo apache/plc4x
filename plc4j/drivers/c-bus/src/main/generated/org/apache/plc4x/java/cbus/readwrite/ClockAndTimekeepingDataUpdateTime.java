@@ -201,7 +201,6 @@ public class ClockAndTimekeepingDataUpdateTime extends ClockAndTimekeepingData i
 
     public ClockAndTimekeepingDataUpdateTimeBuilderImpl(
         short hours, short minute, short second, byte daylightSaving) {
-
       this.hours = hours;
       this.minute = minute;
       this.second = second;

@@ -141,7 +141,6 @@ public class BACnetConstructedDataExitPoints extends BACnetConstructedData imple
         List<BACnetDeviceObjectReference> exitPoints,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.exitPoints = exitPoints;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

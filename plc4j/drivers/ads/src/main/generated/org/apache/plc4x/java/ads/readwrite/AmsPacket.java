@@ -59,8 +59,6 @@ public abstract class AmsPacket implements Message {
   protected final int sourceAmsPort;
   protected final long errorCode;
   protected final long invokeId;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public AmsPacket(
       AmsNetId targetAmsNetId,
@@ -190,10 +188,7 @@ public abstract class AmsPacket implements Message {
     writeConstField("broadcast", BROADCAST, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x0,
-        writeSignedByte(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x0, writeSignedByte(writeBuffer, 7));
 
     // Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
@@ -449,7 +444,6 @@ public abstract class AmsPacket implements Message {
     AmsPacket _amsPacket =
         builder.build(
             targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId);
-    _amsPacket.reservedField0 = reservedField0;
     return _amsPacket;
   }
 

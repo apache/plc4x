@@ -133,7 +133,6 @@ public class AdsMultiRequestItemRead extends AdsMultiRequestItem implements Mess
 
     public AdsMultiRequestItemReadBuilderImpl(
         long itemIndexGroup, long itemIndexOffset, long itemReadLength) {
-
       this.itemIndexGroup = itemIndexGroup;
       this.itemIndexOffset = itemIndexOffset;
       this.itemReadLength = itemReadLength;

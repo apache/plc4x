@@ -114,7 +114,6 @@ public class BACnetTimerStateChangeValueBoolean extends BACnetTimerStateChangeVa
 
     public BACnetTimerStateChangeValueBooleanBuilderImpl(
         BACnetApplicationTagBoolean booleanValue, BACnetObjectType objectTypeArgument) {
-
       this.booleanValue = booleanValue;
       this.objectTypeArgument = objectTypeArgument;
     }

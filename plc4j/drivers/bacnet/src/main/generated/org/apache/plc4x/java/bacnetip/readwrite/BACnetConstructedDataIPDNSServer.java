@@ -188,7 +188,6 @@ public class BACnetConstructedDataIPDNSServer extends BACnetConstructedData impl
         List<BACnetApplicationTagOctetString> ipDnsServer,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.ipDnsServer = ipDnsServer;
       this.tagNumber = tagNumber;

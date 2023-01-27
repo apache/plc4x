@@ -187,7 +187,6 @@ public class BACnetConstructedDataAssignedLandingCalls extends BACnetConstructed
         List<BACnetAssignedLandingCalls> assignedLandingCalls,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.assignedLandingCalls = assignedLandingCalls;
       this.tagNumber = tagNumber;

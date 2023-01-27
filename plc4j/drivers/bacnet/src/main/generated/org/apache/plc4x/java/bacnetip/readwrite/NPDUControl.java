@@ -43,6 +43,7 @@ public class NPDUControl implements Message {
   protected final boolean sourceSpecified;
   protected final boolean expectingReply;
   protected final NPDUNetworkPriority networkPriority;
+
   // Reserved Fields
   private Byte reservedField0;
   private Byte reservedField1;

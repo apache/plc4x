@@ -152,7 +152,6 @@ public class BACnetConstructedDataBaseDeviceSecurityPolicy extends BACnetConstru
         BACnetSecurityLevelTagged baseDeviceSecurityPolicy,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.baseDeviceSecurityPolicy = baseDeviceSecurityPolicy;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -116,7 +116,6 @@ public class BACnetTimerStateChangeValueUnsigned extends BACnetTimerStateChangeV
 
     public BACnetTimerStateChangeValueUnsignedBuilderImpl(
         BACnetApplicationTagUnsignedInteger unsignedValue, BACnetObjectType objectTypeArgument) {
-
       this.unsignedValue = unsignedValue;
       this.objectTypeArgument = objectTypeArgument;
     }

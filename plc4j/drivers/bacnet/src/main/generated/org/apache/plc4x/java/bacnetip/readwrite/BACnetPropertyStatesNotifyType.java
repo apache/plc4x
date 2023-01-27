@@ -109,7 +109,6 @@ public class BACnetPropertyStatesNotifyType extends BACnetPropertyStates impleme
     private final BACnetNotifyTypeTagged notifyType;
 
     public BACnetPropertyStatesNotifyTypeBuilderImpl(BACnetNotifyTypeTagged notifyType) {
-
       this.notifyType = notifyType;
     }
 

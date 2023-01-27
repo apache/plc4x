@@ -110,7 +110,6 @@ public class BACnetPropertyStateActionUnknown extends BACnetPropertyStates imple
     private final BACnetContextTagUnknown unknownValue;
 
     public BACnetPropertyStateActionUnknownBuilderImpl(BACnetContextTagUnknown unknownValue) {
-
       this.unknownValue = unknownValue;
     }
 

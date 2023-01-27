@@ -148,7 +148,6 @@ public class BACnetConstructedDataPassbackMode extends BACnetConstructedData imp
         BACnetAccessPassbackModeTagged passbackMode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.passbackMode = passbackMode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

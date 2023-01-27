@@ -299,7 +299,6 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
         BACnetConstructedData itemData,
         BACnetContextTagUnsignedInteger firstSequenceNumber,
         Long serviceAckLength) {
-
       this.objectIdentifier = objectIdentifier;
       this.propertyIdentifier = propertyIdentifier;
       this.propertyArrayIndex = propertyArrayIndex;

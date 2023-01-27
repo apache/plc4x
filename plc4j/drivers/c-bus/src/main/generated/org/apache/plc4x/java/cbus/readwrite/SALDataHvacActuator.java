@@ -104,7 +104,6 @@ public class SALDataHvacActuator extends SALData implements Message {
     private final LightingData hvacActuatorData;
 
     public SALDataHvacActuatorBuilderImpl(LightingData hvacActuatorData) {
-
       this.hvacActuatorData = hvacActuatorData;
     }
 

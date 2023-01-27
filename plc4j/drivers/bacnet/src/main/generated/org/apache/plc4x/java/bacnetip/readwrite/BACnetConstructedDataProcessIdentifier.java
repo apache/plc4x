@@ -151,7 +151,6 @@ public class BACnetConstructedDataProcessIdentifier extends BACnetConstructedDat
         BACnetApplicationTagUnsignedInteger processIdentifier,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.processIdentifier = processIdentifier;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

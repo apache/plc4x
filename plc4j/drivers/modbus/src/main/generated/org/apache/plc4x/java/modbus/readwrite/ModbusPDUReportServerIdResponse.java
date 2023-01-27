@@ -121,7 +121,6 @@ public class ModbusPDUReportServerIdResponse extends ModbusPDU implements Messag
     private final byte[] value;
 
     public ModbusPDUReportServerIdResponseBuilderImpl(byte[] value) {
-
       this.value = value;
     }
 

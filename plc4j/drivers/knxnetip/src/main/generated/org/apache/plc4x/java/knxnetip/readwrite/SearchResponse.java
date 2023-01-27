@@ -163,7 +163,6 @@ public class SearchResponse extends KnxNetIpMessage implements Message {
         HPAIControlEndpoint hpaiControlEndpoint,
         DIBDeviceInfo dibDeviceInfo,
         DIBSuppSvcFamilies dibSuppSvcFamilies) {
-
       this.hpaiControlEndpoint = hpaiControlEndpoint;
       this.dibDeviceInfo = dibDeviceInfo;
       this.dibSuppSvcFamilies = dibSuppSvcFamilies;

@@ -46,14 +46,10 @@ public class FirmataMessageAnalogIO extends FirmataMessage implements Message {
   protected final byte pin;
   protected final List<Byte> data;
 
-  // Arguments.
-  protected final Boolean response;
-
-  public FirmataMessageAnalogIO(byte pin, List<Byte> data, Boolean response) {
-    super(response);
+  public FirmataMessageAnalogIO(byte pin, List<Byte> data) {
+    super();
     this.pin = pin;
     this.data = data;
-    this.response = response;
   }
 
   public byte getPin() {
@@ -129,26 +125,21 @@ public class FirmataMessageAnalogIO extends FirmataMessage implements Message {
 
     readBuffer.closeContext("FirmataMessageAnalogIO");
     // Create the instance
-    return new FirmataMessageAnalogIOBuilderImpl(pin, data, response);
+    return new FirmataMessageAnalogIOBuilderImpl(pin, data);
   }
 
   public static class FirmataMessageAnalogIOBuilderImpl
       implements FirmataMessage.FirmataMessageBuilder {
     private final byte pin;
     private final List<Byte> data;
-    private final Boolean response;
 
-    public FirmataMessageAnalogIOBuilderImpl(byte pin, List<Byte> data, Boolean response) {
-
+    public FirmataMessageAnalogIOBuilderImpl(byte pin, List<Byte> data) {
       this.pin = pin;
       this.data = data;
-      this.response = response;
     }
 
-    public FirmataMessageAnalogIO build(Boolean response) {
-
-      FirmataMessageAnalogIO firmataMessageAnalogIO =
-          new FirmataMessageAnalogIO(pin, data, response);
+    public FirmataMessageAnalogIO build() {
+      FirmataMessageAnalogIO firmataMessageAnalogIO = new FirmataMessageAnalogIO(pin, data);
       return firmataMessageAnalogIO;
     }
   }

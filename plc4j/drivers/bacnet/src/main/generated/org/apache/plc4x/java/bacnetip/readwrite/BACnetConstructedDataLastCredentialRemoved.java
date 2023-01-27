@@ -149,7 +149,6 @@ public class BACnetConstructedDataLastCredentialRemoved extends BACnetConstructe
         BACnetDeviceObjectReference lastCredentialRemoved,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastCredentialRemoved = lastCredentialRemoved;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

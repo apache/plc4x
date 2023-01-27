@@ -107,7 +107,6 @@ public class BACnetEventParameterNone extends BACnetEventParameter implements Me
     private final BACnetContextTagNull none;
 
     public BACnetEventParameterNoneBuilderImpl(BACnetContextTagNull none) {
-
       this.none = none;
     }
 

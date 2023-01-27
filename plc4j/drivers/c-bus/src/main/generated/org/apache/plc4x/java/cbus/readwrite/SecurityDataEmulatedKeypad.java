@@ -221,7 +221,6 @@ public class SecurityDataEmulatedKeypad extends SecurityData implements Message 
     private final byte key;
 
     public SecurityDataEmulatedKeypadBuilderImpl(byte key) {
-
       this.key = key;
     }
 

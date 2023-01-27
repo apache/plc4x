@@ -107,7 +107,6 @@ public class BACnetValueSourceNone extends BACnetValueSource implements Message 
     private final BACnetContextTagNull none;
 
     public BACnetValueSourceNoneBuilderImpl(BACnetContextTagNull none) {
-
       this.none = none;
     }
 

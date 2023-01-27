@@ -143,7 +143,6 @@ public class AdsReadRequest extends AmsPacket implements Message {
     private final long length;
 
     public AdsReadRequestBuilderImpl(long indexGroup, long indexOffset, long length) {
-
       this.indexGroup = indexGroup;
       this.indexOffset = indexOffset;
       this.length = length;

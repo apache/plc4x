@@ -148,7 +148,6 @@ public class BACnetConstructedDataLocalForwardingOnly extends BACnetConstructedD
         BACnetApplicationTagBoolean localForwardingOnly,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.localForwardingOnly = localForwardingOnly;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

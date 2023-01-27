@@ -152,7 +152,6 @@ public class BACnetConstructedDataScheduleDefault extends BACnetConstructedData 
         BACnetConstructedDataElement scheduleDefault,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.scheduleDefault = scheduleDefault;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

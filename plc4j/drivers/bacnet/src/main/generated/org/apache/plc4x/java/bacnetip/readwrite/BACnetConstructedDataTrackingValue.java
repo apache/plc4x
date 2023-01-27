@@ -148,7 +148,6 @@ public class BACnetConstructedDataTrackingValue extends BACnetConstructedData im
         BACnetLifeSafetyStateTagged trackingValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.trackingValue = trackingValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

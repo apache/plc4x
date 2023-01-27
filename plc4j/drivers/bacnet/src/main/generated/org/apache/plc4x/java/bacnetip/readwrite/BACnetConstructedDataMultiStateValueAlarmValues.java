@@ -145,7 +145,6 @@ public class BACnetConstructedDataMultiStateValueAlarmValues extends BACnetConst
         List<BACnetApplicationTagUnsignedInteger> alarmValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.alarmValues = alarmValues;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

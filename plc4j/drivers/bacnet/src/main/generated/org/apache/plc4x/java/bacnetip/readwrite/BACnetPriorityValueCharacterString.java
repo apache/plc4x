@@ -118,7 +118,6 @@ public class BACnetPriorityValueCharacterString extends BACnetPriorityValue impl
     public BACnetPriorityValueCharacterStringBuilderImpl(
         BACnetApplicationTagCharacterString characterStringValue,
         BACnetObjectType objectTypeArgument) {
-
       this.characterStringValue = characterStringValue;
       this.objectTypeArgument = objectTypeArgument;
     }

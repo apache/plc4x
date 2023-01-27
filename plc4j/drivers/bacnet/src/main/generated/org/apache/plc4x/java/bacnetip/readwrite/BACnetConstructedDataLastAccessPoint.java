@@ -146,7 +146,6 @@ public class BACnetConstructedDataLastAccessPoint extends BACnetConstructedData 
         BACnetDeviceObjectReference lastAccessPoint,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastAccessPoint = lastAccessPoint;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

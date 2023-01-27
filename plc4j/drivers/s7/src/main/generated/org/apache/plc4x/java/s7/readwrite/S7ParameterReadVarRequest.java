@@ -126,7 +126,6 @@ public class S7ParameterReadVarRequest extends S7Parameter implements Message {
     private final List<S7VarRequestParameterItem> items;
 
     public S7ParameterReadVarRequestBuilderImpl(List<S7VarRequestParameterItem> items) {
-
       this.items = items;
     }
 

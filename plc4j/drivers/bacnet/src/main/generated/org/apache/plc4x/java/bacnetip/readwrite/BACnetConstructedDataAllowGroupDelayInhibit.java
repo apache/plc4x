@@ -150,7 +150,6 @@ public class BACnetConstructedDataAllowGroupDelayInhibit extends BACnetConstruct
         BACnetApplicationTagBoolean allowGroupDelayInhibit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.allowGroupDelayInhibit = allowGroupDelayInhibit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

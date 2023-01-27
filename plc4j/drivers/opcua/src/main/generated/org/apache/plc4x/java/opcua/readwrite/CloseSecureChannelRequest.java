@@ -107,7 +107,6 @@ public class CloseSecureChannelRequest extends ExtensionObjectDefinition impleme
     private final ExtensionObjectDefinition requestHeader;
 
     public CloseSecureChannelRequestBuilderImpl(ExtensionObjectDefinition requestHeader) {
-
       this.requestHeader = requestHeader;
     }
 

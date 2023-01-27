@@ -124,7 +124,6 @@ public class StatusResult extends ExtensionObjectDefinition implements Message {
     private final DiagnosticInfo diagnosticInfo;
 
     public StatusResultBuilderImpl(StatusCode statusCode, DiagnosticInfo diagnosticInfo) {
-
       this.statusCode = statusCode;
       this.diagnosticInfo = diagnosticInfo;
     }

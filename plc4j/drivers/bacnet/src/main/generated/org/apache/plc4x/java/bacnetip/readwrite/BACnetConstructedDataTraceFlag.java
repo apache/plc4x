@@ -145,7 +145,6 @@ public class BACnetConstructedDataTraceFlag extends BACnetConstructedData implem
         BACnetApplicationTagBoolean traceFlag,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.traceFlag = traceFlag;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

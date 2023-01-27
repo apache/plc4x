@@ -103,7 +103,6 @@ public class SecurityDataOn extends SecurityData implements Message {
     private final byte[] data;
 
     public SecurityDataOnBuilderImpl(byte[] data) {
-
       this.data = data;
     }
 

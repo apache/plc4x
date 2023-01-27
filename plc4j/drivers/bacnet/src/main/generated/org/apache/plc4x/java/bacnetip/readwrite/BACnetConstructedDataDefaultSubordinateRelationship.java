@@ -153,7 +153,6 @@ public class BACnetConstructedDataDefaultSubordinateRelationship extends BACnetC
         BACnetRelationshipTagged defaultSubordinateRelationship,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.defaultSubordinateRelationship = defaultSubordinateRelationship;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -128,7 +128,6 @@ public class NodeIdFourByte extends NodeIdTypeDefinition implements Message {
     private final int id;
 
     public NodeIdFourByteBuilderImpl(short namespaceIndex, int id) {
-
       this.namespaceIndex = namespaceIndex;
       this.id = id;
     }

@@ -105,7 +105,6 @@ public class HistoryUpdateDetails extends ExtensionObjectDefinition implements M
     private final NodeId nodeId;
 
     public HistoryUpdateDetailsBuilderImpl(NodeId nodeId) {
-
       this.nodeId = nodeId;
     }
 

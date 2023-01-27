@@ -43,6 +43,7 @@ public class HVACHumidityModeAndFlags implements Message {
   protected final boolean setback;
   protected final boolean level;
   protected final HVACHumidityModeAndFlagsMode mode;
+
   // Reserved Fields
   private Boolean reservedField0;
 

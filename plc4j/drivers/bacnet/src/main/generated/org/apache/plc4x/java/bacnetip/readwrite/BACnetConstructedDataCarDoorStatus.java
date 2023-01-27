@@ -189,7 +189,6 @@ public class BACnetConstructedDataCarDoorStatus extends BACnetConstructedData im
         List<BACnetDoorStatusTagged> carDoorStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.carDoorStatus = carDoorStatus;
       this.tagNumber = tagNumber;

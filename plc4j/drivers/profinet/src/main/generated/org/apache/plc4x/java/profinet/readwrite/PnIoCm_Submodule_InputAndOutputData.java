@@ -249,7 +249,6 @@ public class PnIoCm_Submodule_InputAndOutputData extends PnIoCm_Submodule implem
         int outputSubmoduleDataLength,
         short outputLengthIoCs,
         short outputLengthIoPs) {
-
       this.inputSubmoduleDataLength = inputSubmoduleDataLength;
       this.inputLengthIoCs = inputLengthIoCs;
       this.inputLengthIoPs = inputLengthIoPs;

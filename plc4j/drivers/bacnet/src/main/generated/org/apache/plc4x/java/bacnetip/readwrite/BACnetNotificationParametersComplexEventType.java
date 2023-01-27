@@ -95,9 +95,9 @@ public class BACnetNotificationParametersComplexEventType extends BACnetNotifica
 
   public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersComplexEventType");
     PositionAware positionAware = readBuffer;
@@ -129,7 +129,6 @@ public class BACnetNotificationParametersComplexEventType extends BACnetNotifica
 
     public BACnetNotificationParametersComplexEventTypeBuilderImpl(
         BACnetPropertyValues listOfValues, Short tagNumber, BACnetObjectType objectTypeArgument) {
-
       this.listOfValues = listOfValues;
       this.tagNumber = tagNumber;
       this.objectTypeArgument = objectTypeArgument;

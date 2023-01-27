@@ -109,7 +109,6 @@ public class BACnetPropertyStatesPolarity extends BACnetPropertyStates implement
     private final BACnetPolarityTagged polarity;
 
     public BACnetPropertyStatesPolarityBuilderImpl(BACnetPolarityTagged polarity) {
-
       this.polarity = polarity;
     }
 

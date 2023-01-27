@@ -126,7 +126,6 @@ public class Plc4xConnectRequest extends Plc4xMessage implements Message {
     private final String connectionString;
 
     public Plc4xConnectRequestBuilderImpl(String connectionString) {
-
       this.connectionString = connectionString;
     }
 

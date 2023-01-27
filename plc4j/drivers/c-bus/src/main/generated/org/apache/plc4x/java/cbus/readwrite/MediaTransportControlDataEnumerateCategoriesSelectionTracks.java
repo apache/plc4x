@@ -173,7 +173,6 @@ public class MediaTransportControlDataEnumerateCategoriesSelectionTracks
 
     public MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilderImpl(
         byte enumerateType, short start) {
-
       this.enumerateType = enumerateType;
       this.start = start;
     }
