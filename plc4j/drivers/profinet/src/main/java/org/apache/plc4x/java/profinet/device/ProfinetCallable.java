@@ -24,7 +24,7 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 public interface ProfinetCallable<T> {
     void handle(T packet);
 
-    T create() throws PlcException;
+    T create();
 
     long getId();
 

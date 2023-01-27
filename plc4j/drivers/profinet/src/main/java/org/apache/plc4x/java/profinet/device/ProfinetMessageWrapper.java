@@ -54,17 +54,13 @@ public class ProfinetMessageWrapper {
 
             context.getChannel().send(frame);
 
-        } catch (IOException | PlcException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static void sendPnioMessage(ProfinetCallable<Ethernet_Frame> callable, ProfinetDeviceContext context) throws RuntimeException {
-        try {
-            Ethernet_Frame packet = callable.create();
-            context.getChannel().send(packet);
-        } catch (PlcException e) {
-            throw new RuntimeException(e);
-        }
+        Ethernet_Frame packet = callable.create();
+        context.getChannel().send(packet);
     }
 }

@@ -62,7 +62,7 @@ public class ProfinetDevice {
     private DatagramSocket socket = null;
     private String vendorId;
     private String deviceId;
-    private final List<Thread> threads = new ArrayList<>();
+    private Thread eventLoop = null;
 
     public ProfinetDevice(String deviceName, String deviceAccess, String subModules, BiFunction<String, String, ProfinetISO15745Profile> gsdHandler)  {
         this.gsdHandler = gsdHandler;
@@ -179,19 +179,8 @@ public class ProfinetDevice {
                 return null;
             };
 
-        Thread thread = new Thread(new ProfinetRunnable(null, subscription));
-        threads.add(thread);
-        thread.start();
-    }
-
-    /*
-        Attempts to clean up threads after a subscription has been interrupted
-     */
-    public void stopSubscription() {
-        for (Thread thread : threads) {
-            thread.interrupt();
-        }
-        threads.clear();
+        eventLoop = new Thread(new ProfinetRunnable(null, subscription));
+        eventLoop.start();
     }
 
     /*
@@ -342,7 +331,6 @@ public class ProfinetDevice {
     }
 
     public void handleAlarmResponse(PnDcp_Pdu_AlarmLow alarmPdu) {
-        stopSubscription();
         logger.error("Received Alarm Low packet, attempting to re-connect");
         deviceContext.setState(ProfinetDeviceState.IDLE);
     }
@@ -361,7 +349,7 @@ public class ProfinetDevice {
             this.id = id;
         }
 
-        public DceRpc_Packet create() throws PlcException {
+        public DceRpc_Packet create() {
             deviceContext.setSessionKey(deviceContext.getAndIncrementSessionKey());
 
             List<PnIoCm_Block> blocks = new ArrayList<>();
@@ -818,59 +806,75 @@ public class ProfinetDevice {
 
             WriteBufferByteBased buffer = new WriteBufferByteBased(deviceContext.getOutputReq().getDataLength());
             PnIoCm_IoCrBlockReqApi api = deviceContext.getOutputReq().getApis().get(0);
-            for (PnIoCm_IoCs iocs : api.getIoCss()) {
-                PnIoCm_DataUnitIoCs ioc = new PnIoCm_DataUnitIoCs(false, (byte) 0x03, false);
-                try {
+            try {
+                for (PnIoCm_IoCs iocs : api.getIoCss()) {
+                    PnIoCm_DataUnitIoCs ioc = new PnIoCm_DataUnitIoCs(false, (byte) 0x03, false);
                     ioc.serialize(buffer);
-                } catch (SerializationException e) {
-                    throw new RuntimeException(e);
                 }
-            }
 
-            for (PnIoCm_IoDataObject dataObject : api.getIoDataObjects()) {
-                // TODO: Need to specify the datatype length based on the gsd file
-                PnIoCm_DataUnitDataObject ioc = new PnIoCm_DataUnitDataObject(
-                    new byte[1],
-                    new PnIoCm_DataUnitIoCs(false, (byte) 0x03, false),
-                    1
-                );
-                try {
+                for (PnIoCm_IoDataObject dataObject : api.getIoDataObjects()) {
+                    // TODO: Need to specify the datatype length based on the gsd file
+                    PnIoCm_DataUnitDataObject ioc = new PnIoCm_DataUnitDataObject(
+                        new byte[1],
+                        new PnIoCm_DataUnitIoCs(false, (byte) 0x03, false),
+                        1
+                    );
                     ioc.serialize(buffer);
-                } catch (SerializationException e) {
-                    throw new RuntimeException(e);
                 }
-            }
 
-            while (buffer.getPos() < deviceContext.getOutputReq().getDataLength()) {
-                try {
+                while (buffer.getPos() < deviceContext.getOutputReq().getDataLength()) {
                     buffer.writeByte((byte) 0x00);
-                } catch (SerializationException e) {
-                    throw new RuntimeException(e);
                 }
+
+                int elapsedTime = (int) ((((System.nanoTime() - startTime)/(MIN_CYCLE_NANO_SEC))) % 65536);
+
+                Ethernet_Frame frame = new Ethernet_Frame(
+                    deviceContext.getMacAddress(),
+                    deviceContext.getLocalMacAddress(),
+                    new Ethernet_FramePayload_VirtualLan(
+                        VirtualLanPriority.INTERNETWORK_CONTROL,
+                        false,
+                        0,
+                        new Ethernet_FramePayload_PnDcp(
+                            new PnDcp_Pdu_RealTimeCyclic(
+                                deviceContext.getOutputReq().getFrameId(),
+                                new PnIo_CyclicServiceDataUnit(buffer.getBytes(), (short) deviceContext.getOutputReq().getDataLength()),
+                                elapsedTime,
+                                false,
+                                true,
+                                true,
+                                true,
+                                false,
+                                true))
+                    ));
+                return frame;
+            } catch (SerializationException e) {
+                deviceContext.setState(ProfinetDeviceState.ABORT);
+                logger.error("Error serializing cyclic data for device {}", deviceContext.getDeviceName());
+
+                int elapsedTime = (int) ((((System.nanoTime() - startTime)/(MIN_CYCLE_NANO_SEC))) % 65536);
+
+                Ethernet_Frame frame = new Ethernet_Frame(
+                    deviceContext.getMacAddress(),
+                    deviceContext.getLocalMacAddress(),
+                    new Ethernet_FramePayload_VirtualLan(
+                        VirtualLanPriority.INTERNETWORK_CONTROL,
+                        false,
+                        0,
+                        new Ethernet_FramePayload_PnDcp(
+                            new PnDcp_Pdu_RealTimeCyclic(
+                                deviceContext.getOutputReq().getFrameId(),
+                                new PnIo_CyclicServiceDataUnit(new byte[]{}, (short) 0),
+                                elapsedTime,
+                                false,
+                                true,
+                                true,
+                                true,
+                                false,
+                                true))
+                    ));
+                return frame;
             }
-
-            int elapsedTime = (int) ((((System.nanoTime() - startTime)/(MIN_CYCLE_NANO_SEC))) % 65536);
-
-            Ethernet_Frame test = new Ethernet_Frame(
-                deviceContext.getMacAddress(),
-                deviceContext.getLocalMacAddress(),
-                new Ethernet_FramePayload_VirtualLan(
-                    VirtualLanPriority.INTERNETWORK_CONTROL,
-                    false,
-                    0,
-                    new Ethernet_FramePayload_PnDcp(
-                        new PnDcp_Pdu_RealTimeCyclic(
-                            deviceContext.getOutputReq().getFrameId(),
-                            new PnIo_CyclicServiceDataUnit(buffer.getBytes(), (short) deviceContext.getOutputReq().getDataLength()),
-                            elapsedTime,
-                            false,
-                            true,
-                            true,
-                            true,
-                            false,
-                            true))
-                ));
-            return test;
         }
 
         @Override
