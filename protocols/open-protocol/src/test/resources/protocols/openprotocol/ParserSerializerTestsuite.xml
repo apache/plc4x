@@ -117,7 +117,7 @@
               <Mid dataType="uint" bitLength="32" stringRepresentation="SelectParameterSet">18</Mid>
             </requestMid>
             <error>
-              <Error dataType="uint" bitLength="16" stringRepresentation="ParameterSetIdNotPresent">2</Error>
+              <ApplicationCommunicationError dataType="uint" bitLength="16" stringRepresentation="ParameterSetIdNotPresent">2</ApplicationCommunicationError>
             </error>
           </OpenProtocolMessageApplicationCommandErrorRev1>
         </OpenProtocolMessageApplicationCommandError>
