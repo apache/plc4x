@@ -25,13 +25,6 @@ import java.util.List;
 
 public class StaticHelper {
 
-    public static int stringLength(String str) {
-        if (str == null) {
-            return 0;
-        }
-        return str.length();
-    }
-
     public static int arrayLength(byte[] arr) {
         return arr.length;
     }
@@ -218,9 +211,6 @@ public class StaticHelper {
     }
 
     public static boolean isSysexEnd(ReadBuffer io) {
-        int pos = io.getPos();
-        byte[] buffer = ((ReadBufferByteBased) io).getBytes(io.getPos(), io.getPos() + 2);
-        byte[] buffer2 = ((ReadBufferByteBased) io).getBytes(io.getPos(), io.getPos() + 2);
         return ((ReadBufferByteBased) io).getBytes(io.getPos(), io.getPos() + 2)[1] == (byte) 0x00;
     }
 

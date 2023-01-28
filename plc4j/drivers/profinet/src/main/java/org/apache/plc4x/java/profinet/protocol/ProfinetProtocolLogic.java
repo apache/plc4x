@@ -56,8 +56,7 @@ import java.util.regex.Pattern;
 public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> implements HasConfiguration<ProfinetConfiguration>, PlcSubscriber {
 
     private final Logger LOGGER = LoggerFactory.getLogger(ProfinetProtocolLogic.class);
-    public static final Pattern SUB_MODULE_ARRAY_PATTERN = Pattern.compile("^\\[((\\[[\\w, ]*\\]){1}[ ,]{0,2})*\\]");
-    public static final Pattern SUB_MODULE_SPLIT_ARRAY_PATTERN = Pattern.compile("(?:\\[(?:\\[([\\w, ]*)\\]){1}(?:[ ,]{0,2}))*\\]");
+
     private ProfinetDriverContext driverContext;
 
     public ProfinetProtocolLogic() {
@@ -98,10 +97,9 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     }
 
     private void onDeviceDiscovery() throws InterruptedException {
-        ProfinetPlcDiscoverer discoverer = new ProfinetPlcDiscoverer(this.driverContext.getChannel());
-        this.driverContext.getChannel().setDiscoverer(discoverer);
+        ProfinetPlcDiscoverer discoverer = new ProfinetPlcDiscoverer(driverContext.getChannel());
+        driverContext.getChannel().setDiscoverer(discoverer);
         DefaultPlcDiscoveryRequest request = new DefaultPlcDiscoveryRequest(discoverer, new LinkedHashMap<>());
-
         discoverer.ongoingDiscoverWithHandler(request, driverContext.getHandler(), 5000L, 30000L);
         waitForDeviceDiscovery();
     }
@@ -145,7 +143,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
     @Override
     public void onConnect(ConversationContext<Ethernet_Frame> context) {
-        InetAddress localIpAddress = null;
+        InetAddress localIpAddress;
         try {
             RawSocketChannel channel = (RawSocketChannel) context.getChannel();
             String localAddress = channel.getLocalAddress().toString().substring(1).split(":")[0];

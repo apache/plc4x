@@ -19,13 +19,10 @@
 
 package org.apache.plc4x.java.profinet.gsdml;
 
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import io.vavr.control.Option;
-import org.apache.commons.io.filefilter.FalseFileFilter;
-import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.io.File;
 import java.io.IOException;

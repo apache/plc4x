@@ -46,8 +46,6 @@ import java.util.function.ToIntFunction;
 
 public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProfinetDriver.class);
-
     public static final String DRIVER_CODE = "profinet";
 
     @Override

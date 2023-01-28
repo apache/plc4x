@@ -129,7 +129,7 @@ public class ProfinetDevice {
     }
 
     /*
-        Starts the subscription, sending data from controller to device.
+        Starts the device main loop, sending data from controller to device.
      */
     public void start(PlcSubscriber subscriber) {
         if (deviceContext.getSubscriptionHandle() == null) {

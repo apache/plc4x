@@ -40,5 +40,4 @@ public class ProfinetRunnable implements Runnable {
             operator.apply(null);
         }
 
-
 }

@@ -49,9 +49,6 @@ import java.util.function.Function;
 
 public class ProfinetPlcDiscoverer implements PlcDiscoverer {
 
-    private static final EtherType PN_EtherType = EtherType.getInstance((short) 0x8892);
-    private static final EtherType LLDP_EtherType = EtherType.getInstance((short) 0x88cc);
-
     // The constants for the different block names and their actual meaning.
     private static final String DEVICE_TYPE_NAME = "DEVICE_PROPERTIES_OPTION-1";
     private static final String DEVICE_NAME_OF_STATION = "DEVICE_PROPERTIES_OPTION-2";
@@ -62,19 +59,18 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
     private static final String DEVICE_OPTIONS = "DEVICE_PROPERTIES_OPTION-5";
     private static final String DEVICE_INSTANCE = "DEVICE_PROPERTIES_OPTION-7";
     private static final String IP_OPTION_IP = "IP_OPTION-2";
-    private final ProfinetChannel channel;
+    // Pre-Defined PROFINET discovery MAC address
+    private static final MacAddress PROFINET_BROADCAST_MAC_ADDRESS = new MacAddress(new byte[]{0x01, 0x0E, (byte) 0xCF, 0x00, 0x00, 0x00});
+    // Pre-Defined LLDP discovery MAC address
+    private static final MacAddress LLDP_BROADCAST_MAC_ADDRESS = new MacAddress(new byte[]{0x01, (byte) 0x80, (byte) 0xc2, 0x00, 0x00, 0x0e});
 
-    ExecutorService pool = Executors.newSingleThreadExecutor();
     Map<MacAddress, PcapHandle> openHandles;
     List<PlcDiscoveryItem> values = new ArrayList<>();
-
     Set<Timer> periodicTimers = new HashSet<>();
-
     private final Logger logger = LoggerFactory.getLogger(ProfinetPlcDiscoverer.class);
     private PlcDiscoveryItemHandler handler;
 
     public ProfinetPlcDiscoverer(ProfinetChannel channel) {
-        this.channel = channel;
         this.openHandles = channel.getOpenHandles();
     }
 
@@ -101,7 +97,6 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                     } catch (Exception e) {
                         logger.error("Error occurred while closing handle");
                     }
-
                 }
                 for (Timer timer : periodicTimers) {
                     timer.cancel();
@@ -113,8 +108,6 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
 
         return future;
     }
-
-
 
     public CompletableFuture<PlcDiscoveryResponse> discoverWithHandler(PlcDiscoveryRequest discoveryRequest, PlcDiscoveryItemHandler handler) {
         this.handler = handler;
@@ -236,7 +229,6 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
     public void processLldp(Lldp_Pdu pdu) {
 
         Map<String, String> options = new HashMap<>();
-
         boolean profibusDevice = false;
 
         List<LldpUnit> units = pdu.getLldpParameters();
@@ -279,7 +271,6 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
             }
         }
 
-        String remoteIpAddress = "invalid";
         options.put("packetType", "lldp");
 
         if (profibusDevice) {
@@ -307,8 +298,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
             Function<Object, Boolean> pnDcpTimer =
                 message -> {
                     Ethernet_Frame identificationRequest = new Ethernet_Frame(
-                        // Pre-Defined PROFINET discovery MAC address
-                        new MacAddress(new byte[]{0x01, 0x0E, (byte) 0xCF, 0x00, 0x00, 0x00}),
+                        PROFINET_BROADCAST_MAC_ADDRESS,
                         macAddress,
                         new Ethernet_FramePayload_VirtualLan(VirtualLanPriority.BEST_EFFORT, false, 0,
                             new Ethernet_FramePayload_PnDcp(
@@ -377,8 +367,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                     Ethernet_Frame identificationRequest = null;
                     try {
                         identificationRequest = new Ethernet_Frame(
-                            // Pre-Defined LLDP discovery MAC address
-                            new MacAddress(new byte[]{0x01, (byte) 0x80, (byte) 0xc2, 0x00, 0x00, 0x0e}),
+                            LLDP_BROADCAST_MAC_ADDRESS,
                             macAddress,
                             new Ethernet_FramePayload_LLDP(
                                 new Lldp_Pdu(
@@ -423,20 +412,9 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                     WriteBufferByteBased buffer = new WriteBufferByteBased(identificationRequest.getLengthInBytes());
                     try {
                         identificationRequest.serialize(buffer);
-                    } catch (SerializationException e) {
-                        throw new RuntimeException(e);
-                    }
-                    Packet packet = null;
-                    try {
-                        packet = EthernetPacket.newPacket(buffer.getData(), 0, identificationRequest.getLengthInBytes());
-                    } catch (IllegalRawDataException e) {
-                        throw new RuntimeException(e);
-                    }
-                    try {
+                        Packet packet = EthernetPacket.newPacket(buffer.getBytes(), 0, identificationRequest.getLengthInBytes());
                         handle.sendPacket(packet);
-                    } catch (PcapNativeException e) {
-                        throw new RuntimeException(e);
-                    } catch (NotOpenException e) {
+                    } catch (PcapNativeException | NotOpenException | SerializationException | IllegalRawDataException e) {
                         throw new RuntimeException(e);
                     }
                     return null;

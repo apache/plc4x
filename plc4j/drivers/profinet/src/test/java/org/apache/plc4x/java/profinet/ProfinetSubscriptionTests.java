@@ -19,27 +19,10 @@
 
 package org.apache.plc4x.java.profinet;
 
-import org.apache.plc4x.java.api.messages.PlcBrowseItem;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
-import org.apache.plc4x.java.api.types.PlcValueType;
-import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
-import org.apache.plc4x.java.profinet.device.ProfinetDevice;
-import org.apache.plc4x.java.profinet.device.ProfinetSubscriptionHandle;
-import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
-import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ProfinetSubscriptionTests {
-
 
 
 }

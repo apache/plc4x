@@ -93,9 +93,7 @@ public class ProfinetEmptyModule implements ProfinetModule{
     }
 
     @Override
-    public void populateOutputCR(int ioPsOffset, int ioCsOffset) {
-
-    }
+    public void populateOutputCR(int ioPsOffset, int ioCsOffset) {    }
 
     @Override
     public Map<String, ResponseItem<PlcValue>> parseTags(Map<String, ResponseItem<PlcValue>> tags, String addressSpace, ReadBuffer buffer) throws ParseException {

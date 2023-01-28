@@ -33,7 +33,6 @@ public class ProfinetTag implements PlcTag {
     private final String address;
     private final int quantity;
     private final PlcValueType dataType;
-    private String addressString;
 
     protected ProfinetTag(String address, Integer quantity, PlcValueType dataType) {
         this.address = address;

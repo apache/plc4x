@@ -37,7 +37,6 @@ import java.util.*;
 public class ProfinetModuleImpl implements ProfinetModule {
 
     private final ProfinetDeviceItem module;
-    private List<PnIoCm_Block_ExpectedSubmoduleReq> expectedSubmoduleReq = new ArrayList<>();
     private final int ioCsOffset;
     private final int ioPsOffset;
     private final int slot;

@@ -19,15 +19,18 @@
 
 package org.apache.plc4x.java.profinet.device;
 
-import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
 import org.apache.plc4x.java.profinet.readwrite.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Random;
 
 public class ProfinetMessageWrapper {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProfinetMessageWrapper.class);
 
     public static void sendUdpMessage(ProfinetCallable<DceRpc_Packet> callable, ProfinetDeviceContext context) throws RuntimeException {
         try {
@@ -55,7 +58,8 @@ public class ProfinetMessageWrapper {
             context.getChannel().send(frame);
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            logger.error("Unable to send UDP message");
+            context.setState(ProfinetDeviceState.ABORT);
         }
     }
 

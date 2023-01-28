@@ -26,7 +26,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.util.List;
 
-
 @JsonTypeName("Input")
 public class ProfinetIoDataInput  {
 

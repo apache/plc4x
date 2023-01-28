@@ -19,14 +19,12 @@
 
 package org.apache.plc4x.java.profinet;
 
-import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
 import org.apache.plc4x.java.profinet.device.ProfinetEmptyModule;
 import org.apache.plc4x.java.profinet.device.ProfinetModule;
 import org.apache.plc4x.java.profinet.device.ProfinetModuleImpl;
 import org.apache.plc4x.java.profinet.readwrite.PnIoCm_Block_ExpectedSubmoduleReq;
-import org.apache.plc4x.java.profinet.readwrite.PnIoCm_Submodule;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
