@@ -1,4 +1,4 @@
-/*
+'/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -240,7 +240,7 @@
 // This is actually not quite correct as depending pon the transportSize the length is either defined in bits or bytes.
 //@param hasNext In the serialization process, if you have multiple write
 //               requests the last element does not require padding.
-[type S7VarPayloadDataItem(bit 'hasNext')
+[type S7VarPayloadDataItem(bit hasNext)
     [simple   DataTransportErrorCode returnCode]
     [simple   DataTransportSize      transportSize]
     [implicit uint 16                dataLength 'COUNT(data) * ((transportSize == DataTransportSize.BIT) ? 1 : (transportSize.sizeInBits ? 8 : 1))']
