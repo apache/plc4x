@@ -340,7 +340,8 @@ public class S7IoTest {
                             new S7VarPayloadDataItem(
                                 DataTransportErrorCode.OK,
                                 DataTransportSize.BIT,
-                                new byte[]{0x1}
+                                new byte[]{0x1},
+                                    false
                             )
                         ),new S7ParameterReadVarResponse((short) 1)
                     ),

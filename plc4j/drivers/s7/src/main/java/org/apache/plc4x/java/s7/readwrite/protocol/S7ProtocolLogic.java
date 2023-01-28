@@ -279,12 +279,29 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
         List<S7VarRequestParameterItem> parameterItems = new ArrayList<>(request.getNumberOfTags());
         List<S7VarPayloadDataItem> payloadItems = new ArrayList<>(request.getNumberOfTags());
-        for (String tagName : request.getTagNames()) {
+
+        Iterator<String> iter = request.getTagNames().iterator();
+        
+        String tagName = null;
+        while(iter.hasNext()) {
+            tagName = iter.next();
             final S7Tag tag = (S7Tag) request.getTag(tagName);
             final PlcValue plcValue = request.getPlcValue(tagName);
             parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(tag)));
-            payloadItems.add(serializePlcValue(tag, plcValue));
+            payloadItems.add(serializePlcValue(tag, plcValue, iter.hasNext()));            
         }
+        
+        
+//        for (String tagName : request.getTagNames()) {
+//            final S7Tag tag = (S7Tag) request.getTag(tagName);
+//            final PlcValue plcValue = request.getPlcValue(tagName);
+//            parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(tag)));
+//            payloadItems.add(serializePlcValue(tag, plcValue));
+//
+//        }
+        
+        
+        
         final int tpduId = tpduGenerator.getAndIncrement();
         // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
         if (tpduGenerator.get() == 0xFFFF) {
@@ -303,7 +320,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 Integer.MAX_VALUE
             )
         );
-
+        
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> context.sendRequest(tpktPacket)
@@ -853,7 +870,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         return new DefaultPlcWriteResponse(plcWriteRequest, responses);
     }
 
-    private S7VarPayloadDataItem serializePlcValue(S7Tag tag, PlcValue plcValue) {
+    private S7VarPayloadDataItem serializePlcValue(S7Tag tag, PlcValue plcValue, Boolean hasNext) {
         try {
             DataTransportSize transportSize = tag.getDataType().getDataTransportSize();
             int stringLength = (tag instanceof S7StringTag) ? ((S7StringTag) tag).getStringLength() : 254;
@@ -870,7 +887,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             }
             if (byteBuffer != null) {
                 byte[] data = byteBuffer.array();
-                return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data);
+                return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data, hasNext);
             }
         } catch (SerializationException e) {
             logger.warn("Error serializing tag item of type: '{}'", tag.getDataType().name(), e);
