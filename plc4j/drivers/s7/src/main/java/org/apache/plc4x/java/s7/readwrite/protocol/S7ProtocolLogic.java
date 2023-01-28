@@ -58,11 +58,15 @@ import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.apache.commons.lang3.tuple.MutablePair;
 
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
@@ -85,7 +89,16 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     private final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
     private final AtomicInteger tpduGenerator = new AtomicInteger(10);
-
+    
+    /*
+     * Task group for managing connection redundancy.
+     */
+    private ExecutorService clientExecutorService = Executors.newFixedThreadPool(4, new BasicThreadFactory.Builder()
+                                                    .namingPattern("plc4x-app-thread-%d")
+                                                    .daemon(true)
+                                                    .priority(Thread.MAX_PRIORITY)
+                                                    .build());    
+    
     /*
      * Take into account that the size of this buffer depends on the final device.
      * S7-300 goes from 20 to 300 and for S7-400 it goes from 300 to 10000.
@@ -101,6 +114,17 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     private final S7PlcSubscriptionHandle usrHandle = new S7PlcSubscriptionHandle(EventType.USR, EventLogic);
     private final S7PlcSubscriptionHandle almHandle = new S7PlcSubscriptionHandle(EventType.ALM, EventLogic);
 
+    /*
+    * For the reconnection functionality by a "TimeOut" of the connection,
+    * you must keep track of open transactions. In general, an S7 device 
+    * supports a couple of simultaneous requests.
+    * The rhythm of execution must be determined by the TransactionManager.
+    * So far it is the way to indicate to the user that he must redo 
+    * his request.
+    */
+    private HashMap<Object,MutablePair<RequestTransactionManager.RequestTransaction, Object>> active_requests = new HashMap<>();
+
+    
     private S7DriverContext s7DriverContext;
     private RequestTransactionManager tm;
 
@@ -203,6 +227,27 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             });
     }
 
+    
+  /*
+    * It performs the sequential and safe shutdown of the driver. 
+    * Completion of pending requests, executors and associated tasks.
+    */    
+    @Override
+    public void onDisconnect(ConversationContext<TPKTPacket> context) {
+        //1. Clear all pending requests and their associated transaction          
+        cleanFutures(); 
+        //2. Here we shutdown the local task executor.
+        clientExecutorService.shutdown();
+        //3. Performs the shutdown of the transaction executor.
+        tm.shutdown();
+        //4. Finish the execution of the tasks for the handling of Events. 
+        EventLogic.stop();
+        //5. Executes the closing of the main channel.
+        context.getChannel().close();
+        //6. Here is the stop of any task or state machine that is added.        
+    }
+
+   
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
@@ -1017,5 +1062,27 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             future.completeExceptionally(e);
         }
     }
+    
+    private void cleanFutures(){
+        //TODO: Debe ser ejecutado si la conexion esta levanta.
+        active_requests.forEach((f,p)->{
+            CompletableFuture<Object> cf = (CompletableFuture<Object>) f;
+            try {
+                if (!cf.isDone()) {
+                    logger.info("CF");
+                    cf.cancel(true);
+                    logger.info("ClientCF");
+                    ((CompletableFuture<Object>) p.getRight()).completeExceptionally(new PlcRuntimeException("Disconnected"));                     
+                    logger.info("TM");
+                    p.getLeft().endRequest();
+                };
+            } catch (Exception ex){
+                logger.info(ex.toString());
+            }
+        });
+        active_requests.clear();   
+
+    }    
+    
 
 }
