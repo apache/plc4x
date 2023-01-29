@@ -22,18 +22,24 @@ package org.apache.plc4x.java.profinet.device;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.PlcBrowseItem;
-import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
 import org.apache.plc4x.java.profinet.gsdml.*;
 import org.apache.plc4x.java.profinet.readwrite.*;
+import org.apache.plc4x.java.profinet.tag.ProfinetTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +56,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class ProfinetDevice {
+public class ProfinetDevice implements PlcSubscriber{
 
     private final Logger logger = LoggerFactory.getLogger(ProfinetDevice.class);
     private static final int DEFAULT_NUMBER_OF_PORTS_TO_SCAN = 100;
@@ -63,6 +69,8 @@ public class ProfinetDevice {
     private String vendorId;
     private String deviceId;
     private Thread eventLoop = null;
+    Map<String, List<Consumer<PlcSubscriptionEvent>>> registrations = new HashMap<>();
+    Map<Consumer<PlcSubscriptionEvent>, Consumer<PlcSubscriptionEvent>> consumers = new HashMap<>();
 
     public ProfinetDevice(String deviceName, String deviceAccess, String subModules, BiFunction<String, String, ProfinetISO15745Profile> gsdHandler)  {
         this.gsdHandler = gsdHandler;
@@ -123,18 +131,51 @@ public class ProfinetDevice {
         );
     }
 
-    public boolean onConnect(PlcSubscriber subscriber) throws ExecutionException, InterruptedException, TimeoutException {
-        start(subscriber);
+    @Override
+    public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
+        return CompletableFuture.supplyAsync(() -> {
+            Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
+
+            return new DefaultPlcSubscriptionResponse(subscriptionRequest, values);
+        });
+    }
+
+    @Override
+    public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
+        return null;
+    }
+
+    @Override
+    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
+        // Register the current consumer for each of the given subscription handles
+        for (PlcSubscriptionHandle subscriptionHandle : handles) {
+            logger.debug("Registering Consumer");
+            ProfinetSubscriptionHandle profinetHandle = (ProfinetSubscriptionHandle) subscriptionHandle;
+            if (registrations.containsKey(profinetHandle.getAddressString())) {
+                registrations.get(profinetHandle.getAddressString()).add(consumer);
+            } else {
+                List<Consumer<PlcSubscriptionEvent>> consumers = new ArrayList<>();
+                consumers.add(consumer);
+                registrations.put(profinetHandle.getAddressString(), consumers);
+            }
+        }
+        return new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new PlcSubscriptionHandle[0]));
+    }
+
+    @Override
+    public void unregister(PlcConsumerRegistration registration) {
+
+    }
+
+    public boolean onConnect() throws ExecutionException, InterruptedException, TimeoutException {
+        start();
         return true;
     }
 
     /*
         Starts the device main loop, sending data from controller to device.
      */
-    public void start(PlcSubscriber subscriber) {
-        if (deviceContext.getSubscriptionHandle() == null) {
-            deviceContext.setSubscriptionHandle(new ProfinetSubscriptionHandle(subscriber));
-        }
+    public void start() {
         final long timeout = (long) deviceContext.getConfiguration().getReductionRatio() * deviceContext.getConfiguration().getSendClockFactor() * deviceContext.getConfiguration().getWatchdogFactor() * MIN_CYCLE_NANO_SEC;
         final int cycleTime = (int) (deviceContext.getConfiguration().getSendClockFactor() * deviceContext.getConfiguration().getReductionRatio() * (MIN_CYCLE_NANO_SEC/1000000.0));
         Function<Object, Boolean> subscription =
@@ -313,16 +354,40 @@ public class ProfinetDevice {
                 module.parseTags(tags, deviceContext.getDeviceName(), buffer);
             }
 
-            Map<String, ResponseItem<PlcValue>> publishedTags = new HashMap<>();
+            Map<Consumer<PlcSubscriptionEvent>, Map<String, ResponseItem<PlcValue>>> response = new HashMap<>();
             for (Map.Entry<String, ResponseItem<PlcValue>> entry : tags.entrySet()) {
-                Map<String, String> consumerTags = deviceContext.getSubscriptionHandle().getTags();
-                if (consumerTags.containsKey(entry.getKey())) {
-                    publishedTags.put(consumerTags.get(entry.getKey()), entry.getValue());
+                boolean processTag = false;
+                ProfinetSubscriptionHandle handle = deviceContext.getSubscriptionHandle(entry.getKey());
+                if (handle != null) {
+                    if (handle.getLastValue() == null) {
+                        processTag = true;
+                        handle.setLastValue(entry.getValue().getValue());
+                    } else if (handle.getSubscriptionType() == PlcSubscriptionType.CHANGE_OF_STATE && !entry.getValue().getValue().toString().equals(handle.getLastValue().toString())) {
+                        processTag = true;
+                        handle.setLastValue(entry.getValue().getValue());
+                    }
+                    if (handle.getSubscriptionType() == PlcSubscriptionType.CYCLIC) {
+                        processTag = true;
+                    }
+                    if (handle.getSubscriptionType() == PlcSubscriptionType.EVENT) {
+                        processTag = true;
+                    }
+                }
+                if (registrations.containsKey(entry.getKey()) && processTag) {
+                    List<Consumer<PlcSubscriptionEvent>> selectedRegistrations = registrations.get(entry.getKey());
+                    for (Consumer<PlcSubscriptionEvent> reg : selectedRegistrations) {
+                        if (response.containsKey(reg)) {
+                            response.get(reg).put(deviceContext.getSubscriptionHandle(entry.getKey()).getTag(), entry.getValue());
+                        } else {
+                            response.put(reg, new HashMap<>());
+                            response.get(reg).put(deviceContext.getSubscriptionHandle(entry.getKey()).getTag(), entry.getValue());
+                        }
+                    }
                 }
             }
 
-            for (Consumer<PlcSubscriptionEvent> consumer : deviceContext.getSubscriptionHandle().getConsumers()) {
-                consumer.accept(new DefaultPlcSubscriptionEvent(Instant.now(), publishedTags));
+            for (Map.Entry<Consumer<PlcSubscriptionEvent>, Map<String, ResponseItem<PlcValue>>> entry : response.entrySet()) {
+                entry.getKey().accept(new DefaultPlcSubscriptionEvent(Instant.now(), entry.getValue()));
             }
         } catch (ParseException e) {
             deviceContext.setState(ProfinetDeviceState.ABORT);

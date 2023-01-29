@@ -22,6 +22,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
@@ -53,7 +54,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> implements HasConfiguration<ProfinetConfiguration>, PlcSubscriber {
+public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> implements HasConfiguration<ProfinetConfiguration> {
 
     private final Logger LOGGER = LoggerFactory.getLogger(ProfinetProtocolLogic.class);
 
@@ -166,7 +167,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
         try {
             for (Map.Entry<String, ProfinetDevice> device : driverContext.getConfiguration().getDevices().getConfiguredDevices().entrySet()) {
-                device.getValue().onConnect(this);
+                device.getValue().onConnect();
             }
             context.fireConnected();
 
@@ -200,10 +201,13 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
 
             for (String fieldName : subscriptionRequest.getTagNames()) {
+                PlcSubscriptionTag tag = subscriptionRequest.getTag(fieldName);
                 final DefaultPlcSubscriptionTag fieldDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(fieldName);
-                String device = fieldDefaultPlcSubscription.getAddressString().split("\\.")[0].toUpperCase();
-                ProfinetSubscriptionHandle subscriptionHandle = driverContext.getConfiguration().getDevices().getConfiguredDevices().get(device).getDeviceContext().getSubscriptionHandle();
-                subscriptionHandle.addTag(fieldDefaultPlcSubscription.getAddressString(), fieldName);
+                String deviceString = fieldDefaultPlcSubscription.getAddressString().split("\\.")[0].toUpperCase();
+                ProfinetDevice device = driverContext.getConfiguration().getDevices().getConfiguredDevices().get(deviceString);
+
+                ProfinetSubscriptionHandle subscriptionHandle = new ProfinetSubscriptionHandle(device, fieldName, tag);
+                device.getDeviceContext().addSubscriptionHandle(fieldDefaultPlcSubscription.getAddressString(), subscriptionHandle);
 
                 if (!(fieldDefaultPlcSubscription.getTag() instanceof ProfinetTag)) {
                     values.put(fieldName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
@@ -213,23 +217,6 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             }
             return new DefaultPlcSubscriptionResponse(subscriptionRequest, values);
         });
-    }
-
-    @Override
-    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
-        List<PlcConsumerRegistration> registrations = new LinkedList<>();
-        // Register the current consumer for each of the given subscription handles
-        for (PlcSubscriptionHandle subscriptionHandle : handles) {
-            LOGGER.debug("Registering Consumer");
-            final PlcConsumerRegistration consumerRegistration = subscriptionHandle.register(consumer);
-            registrations.add(consumerRegistration);
-        }
-        return new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new PlcSubscriptionHandle[0]));
-    }
-
-    @Override
-    public void unregister(PlcConsumerRegistration registration) {
-
     }
 
     @Override

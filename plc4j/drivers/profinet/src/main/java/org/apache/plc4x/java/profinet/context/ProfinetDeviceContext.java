@@ -96,8 +96,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     private int sessionKey;
     private int sourcePort = DEFAULT_SEND_UDP_PORT;
     private int destinationPort = DEFAULT_UDP_PORT;
-    private ProfinetSubscriptionHandle subscriptionHandle;
-
+    private Map<String, ProfinetSubscriptionHandle> subscriptionHandles = new HashMap<>();
     private String deviceAccess;
     private ProfinetDeviceAccessPointItem deviceAccessItem;
     private ProfinetModule[] modules;
@@ -492,14 +491,6 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         this.destinationPort = port;
     }
 
-    public ProfinetSubscriptionHandle getSubscriptionHandle() {
-        return subscriptionHandle;
-    }
-
-    public void setSubscriptionHandle(ProfinetSubscriptionHandle subscriptionHandle) {
-        this.subscriptionHandle = subscriptionHandle;
-    }
-
     public String getDeviceAccess() {
         return deviceAccess;
     }
@@ -522,5 +513,17 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
 
     public void setActivityUuid(DceRpc_ActivityUuid activityUuid) {
         this.activityUuid = activityUuid;
+    }
+
+    public void addSubscriptionHandle(String tag, ProfinetSubscriptionHandle handle) {
+        subscriptionHandles.put(tag, handle);
+    }
+
+    public ProfinetSubscriptionHandle getSubscriptionHandle(String tag) {
+        return subscriptionHandles.getOrDefault(tag, null);
+    }
+
+    public void removeSubscriptionHandle(String tag) {
+        subscriptionHandles.remove(tag);
     }
 }
