@@ -103,7 +103,7 @@ public class S7PayloadReadVarResponse extends S7Payload implements Message {
         readCountArrayField(
             "items",
             new DataReaderComplexDefault<>(
-                () -> S7VarPayloadDataItem.staticParse(readBuffer, (boolean) (true)), readBuffer),
+                () -> S7VarPayloadDataItem.staticParse(readBuffer), readBuffer),
             CAST(parameter, S7ParameterReadVarResponse.class).getNumItems());
 
     readBuffer.closeContext("S7PayloadReadVarResponse");
