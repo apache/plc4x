@@ -27,7 +27,7 @@
 [discriminatedType OpenProtocolMessage(uint 24 revision)
     [implicit      uint 32              length               'lengthInBytes - 1'                encoding='"ASCII"'                      ]
     [discriminator Mid                  mid                                                     encoding='"ASCII"'                      ]
-    [optional      uint 24              midRevision                                                encoding='"ASCII"' nullBytesHex='202020']
+    [optional      uint 24              midRevision                                             encoding='"ASCII"' nullBytesHex='202020']
     [optional      uint 8               noAckFlag                                               encoding='"ASCII"' nullBytesHex='20'    ]
     [optional      uint 16              targetStationId                                         encoding='"ASCII"' nullBytesHex='2020'  ]
     [optional      uint 16              targetSpindleId                                         encoding='"ASCII"' nullBytesHex='2020'  ]
@@ -439,7 +439,7 @@
                     [const    uint   16         blockIdBatchCounter                                8     encoding='"ASCII"']
                     [simple   uint   32         batchCounter                                             encoding='"ASCII"']
                     [const    uint   16         blockIdTighteningStatus                            9     encoding='"ASCII"']
-                    [simple   TighteningStatus  tighteningStatus                                         encoding='"ASCII"']
+                    [simple   NokOk             tighteningStatus                                         encoding='"ASCII"']
                     [const    uint   16         blockIdTorqueStatus                                10    encoding='"ASCII"']
                     [simple   Status            torqueStatus                                             encoding='"ASCII"']
                     [const    uint   16         blockIdAngleStatus                                 11    encoding='"ASCII"']
@@ -467,7 +467,7 @@
                     [const    uint   16         blockIdBatchStatus                                 22    encoding='"ASCII"']
                     [simple   BatchStatus       batchStatus                                              encoding='"ASCII"']
                     [const    uint   16         blockIdTighteningId                                23    encoding='"ASCII"']
-                    [simple   uint   80         tighteningId                                             encoding='"ASCII"']
+                    [simple   string 80         tighteningId                                             encoding='"ASCII"']
                 ]
                 ['2' *Rev2
                     [const    uint   16         blockIdCellId                                     1     encoding='"ASCII"']
@@ -485,13 +485,26 @@
                     [const    uint   16         blockIdStrategy                                   7     encoding='"ASCII"']
                     [simple   Strategy          strategy                                                encoding='"ASCII"']
                     [const    uint   16         blockIdStrategyOptions                            8     encoding='"ASCII"']
-                    // TODO: Find out how to extract the 10 bits from a 5 byte large value
+                    // We don't need all 5 bytes to implement all bits.
+                    [reserved uint 8            '0x30'                                                                     ]
+                    [simple   uint 32           strategyOptions                                         encoding='"ASCII"']
+                    [virtual  bit               strategyOptionRbwMonitoring     '(strategyOptions & 0x0001) == 0x0001'    ]
+                    [virtual  bit               strategyOptionClickWrench       '(strategyOptions & 0x0002) == 0x0002'    ]
+                    [virtual  bit               strategyOptionDsControl         '(strategyOptions & 0x0004) == 0x0004'    ]
+                    [virtual  bit               strategyOptionCm                '(strategyOptions & 0x0008) == 0x0008'    ]
+                    [virtual  bit               strategyOptionRundown           '(strategyOptions & 0x0010) == 0x0010'    ]
+                    [virtual  bit               strategyOptionSelfTap           '(strategyOptions & 0x0020) == 0x0020'    ]
+                    [virtual  bit               strategyOptionPvtCompensate     '(strategyOptions & 0x0040) == 0x0040'    ]
+                    [virtual  bit               strategyOptionPvtMonitoring     '(strategyOptions & 0x0080) == 0x0080'    ]
+                    [virtual  bit               strategyOptionBatch             '(strategyOptions & 0x0100) == 0x0100'    ]
+                    [virtual  bit               strategyOptionAngle             '(strategyOptions & 0x0200) == 0x0200'    ]
+                    [virtual  bit               strategyOptionTorque            '(strategyOptions & 0x0400) == 0x0400'    ]
                     [const    uint   16         blockIdBatchSize                                  9     encoding='"ASCII"']
                     [simple   uint   32         batchSize                                               encoding='"ASCII"']
                     [const    uint   16         blockIdBatchCounter                               10    encoding='"ASCII"']
                     [simple   uint   32         batchCounter                                            encoding='"ASCII"']
                     [const    uint   16         blockIdTighteningStatus                           11    encoding='"ASCII"']
-                    [simple   TighteningStatus  tighteningStatus                                        encoding='"ASCII"']
+                    [simple   NokOk             tighteningStatus                                        encoding='"ASCII"']
                     [const    uint   16         blockIdBatchStatus                                12    encoding='"ASCII"']
                     [simple   BatchStatus       batchStatus                                             encoding='"ASCII"']
                     [const    uint   16         blockIdTorqueStatus                               13    encoding='"ASCII"']
@@ -509,7 +522,42 @@
                     [const    uint   16         blockIdPrevailTorqueCompensateStatus              19    encoding='"ASCII"']
                     [simple   Status            prevailTorqueCompensateStatus                           encoding='"ASCII"']
                     [const    uint   16         blockIdTighteningErrorStatus                      20    encoding='"ASCII"']
-                    // TODO: Find out how to extract the 32 bits from a 10 byte large value
+                    // Unfortunately we can only parse unsigned ints up to 64 bits, in this case we need to do a little
+                    // detour and parse it as a string, and then use a StaticHelper to parse the string and check if a
+                    // bit is set.
+                    [simple   string 80         tighteningErrorStatus                                   encoding='"ASCII"']
+                    [virtual  bit               tighteningErrorStatusRundownAngleMaxShutOff            'STATIC_CALL("isBitSet", tighteningErrorStatus, 1)']
+                    [virtual  bit               tighteningErrorStatusRundownAngleMinShutOff            'STATIC_CALL("isBitSet", tighteningErrorStatus, 2)']
+                    [virtual  bit               tighteningErrorStatusTorqueMaxShutOff                  'STATIC_CALL("isBitSet", tighteningErrorStatus, 3)']
+                    [virtual  bit               tighteningErrorStatusAngleMaxShutOff                   'STATIC_CALL("isBitSet", tighteningErrorStatus, 4)']
+                    [virtual  bit               tighteningErrorStatusSelfTapTorqueMaxShutOff           'STATIC_CALL("isBitSet", tighteningErrorStatus, 5)']
+                    [virtual  bit               tighteningErrorStatusSelfTapTorqueMinShutOff           'STATIC_CALL("isBitSet", tighteningErrorStatus, 6)']
+                    [virtual  bit               tighteningErrorStatusPrevailTorqueMaxShutOff           'STATIC_CALL("isBitSet", tighteningErrorStatus, 7)']
+                    [virtual  bit               tighteningErrorStatusPrevailTorqueMinShutOff           'STATIC_CALL("isBitSet", tighteningErrorStatus, 8)']
+                    [virtual  bit               tighteningErrorStatusPrevailTorqueCompensateOverflow   'STATIC_CALL("isBitSet", tighteningErrorStatus, 9)']
+                    [virtual  bit               tighteningErrorStatusCurrentMonitoringMaxShutOff       'STATIC_CALL("isBitSet", tighteningErrorStatus, 10)']
+                    [virtual  bit               tighteningErrorStatusPostViewTorqueMinTorqueShutOff    'STATIC_CALL("isBitSet", tighteningErrorStatus, 11)']
+                    [virtual  bit               tighteningErrorStatusPostViewTorqueMaxTorqueShutOff    'STATIC_CALL("isBitSet", tighteningErrorStatus, 12)']
+                    [virtual  bit               tighteningErrorStatusPortViewTorqueAngleTooSmall       'STATIC_CALL("isBitSet", tighteningErrorStatus, 13)']
+                    [virtual  bit               tighteningErrorStatusTriggerLost                       'STATIC_CALL("isBitSet", tighteningErrorStatus, 14)']
+                    [virtual  bit               tighteningErrorStatusTorqueLessThanTarget              'STATIC_CALL("isBitSet", tighteningErrorStatus, 15)']
+                    [virtual  bit               tighteningErrorStatusToolHot                           'STATIC_CALL("isBitSet", tighteningErrorStatus, 16)']
+                    [virtual  bit               tighteningErrorStatusMultistageAbort                   'STATIC_CALL("isBitSet", tighteningErrorStatus, 17)']
+                    [virtual  bit               tighteningErrorStatusRehit                             'STATIC_CALL("isBitSet", tighteningErrorStatus, 18)']
+                    [virtual  bit               tighteningErrorStatusDsMeasureFailed                   'STATIC_CALL("isBitSet", tighteningErrorStatus, 19)']
+                    [virtual  bit               tighteningErrorStatusCurrentLimitReached               'STATIC_CALL("isBitSet", tighteningErrorStatus, 20)']
+                    [virtual  bit               tighteningErrorStatusEndTimeOutShutoff                 'STATIC_CALL("isBitSet", tighteningErrorStatus, 21)']
+                    [virtual  bit               tighteningErrorStatusRemoveFastenerLimitExceeded       'STATIC_CALL("isBitSet", tighteningErrorStatus, 22)']
+                    [virtual  bit               tighteningErrorStatusDisableDrive                      'STATIC_CALL("isBitSet", tighteningErrorStatus, 23)']
+                    [virtual  bit               tighteningErrorStatusTransducerLost                    'STATIC_CALL("isBitSet", tighteningErrorStatus, 24)']
+                    [virtual  bit               tighteningErrorStatusTransducerShorted                 'STATIC_CALL("isBitSet", tighteningErrorStatus, 25)']
+                    [virtual  bit               tighteningErrorStatusTransducerCorrupt                 'STATIC_CALL("isBitSet", tighteningErrorStatus, 26)']
+                    [virtual  bit               tighteningErrorStatusSyncTimeout                       'STATIC_CALL("isBitSet", tighteningErrorStatus, 27)']
+                    [virtual  bit               tighteningErrorStatusDynamicCurrentMonitoringMin       'STATIC_CALL("isBitSet", tighteningErrorStatus, 28)']
+                    [virtual  bit               tighteningErrorStatusDynamicCurrentMonitoringMax       'STATIC_CALL("isBitSet", tighteningErrorStatus, 29)']
+                    [virtual  bit               tighteningErrorStatusAngleMaxMonitor                   'STATIC_CALL("isBitSet", tighteningErrorStatus, 30)']
+                    [virtual  bit               tighteningErrorStatusYieldNutOff                       'STATIC_CALL("isBitSet", tighteningErrorStatus, 31)']
+                    [virtual  bit               tighteningErrorStatusYieldTooFewSamples                'STATIC_CALL("isBitSet", tighteningErrorStatus, 32)']
                     [const    uint   16         blockIdTorqueMinLimit                             21    encoding='"ASCII"']
                     [simple   uint   48         torqueMinLimit                                          encoding='"ASCII"']
                     [const    uint   16         blockIdTorqueMaxLimit                             22    encoding='"ASCII"']
@@ -551,7 +599,7 @@
                     [const    uint   16         blockIdPrevailTorque                              40    encoding='"ASCII"']
                     [simple   uint   48         prevailTorque                                           encoding='"ASCII"']
                     [const    uint   16         blockIdTighteningId                               41    encoding='"ASCII"']
-                    [simple   uint   80         tighteningId                                            encoding='"ASCII"']
+                    [simple   string 80         tighteningId                                            encoding='"ASCII"']
                     [const    uint   16         blockIdJobSequenceNumber                          42    encoding='"ASCII"']
                     [simple   uint   40         jobSequenceNumber                                       encoding='"ASCII"']
                     [const    uint   16         blockIdSyncTighteningId                           43    encoding='"ASCII"']
@@ -585,7 +633,7 @@
                     [const    uint   16         blockIdBatchCounter                               10    encoding='"ASCII"']
                     [simple   uint   32         batchCounter                                            encoding='"ASCII"']
                     [const    uint   16         blockIdTighteningStatus                           11    encoding='"ASCII"']
-                    [simple   TighteningStatus  tighteningStatus                                        encoding='"ASCII"']
+                    [simple   NokOk             tighteningStatus                                        encoding='"ASCII"']
                     [const    uint   16         blockIdBatchStatus                                12    encoding='"ASCII"']
                     [simple   BatchStatus       batchStatus                                             encoding='"ASCII"']
                     [const    uint   16         blockIdTorqueStatus                               13    encoding='"ASCII"']
@@ -645,7 +693,7 @@
                     [const    uint   16         blockIdPrevailTorque                              40    encoding='"ASCII"']
                     [simple   uint   48         prevailTorque                                           encoding='"ASCII"']
                     [const    uint   16         blockIdTighteningId                               41    encoding='"ASCII"']
-                    [simple   uint   80         tighteningId                                            encoding='"ASCII"']
+                    [simple   string 80         tighteningId                                            encoding='"ASCII"']
                     [const    uint   16         blockIdJobSequenceNumber                          42    encoding='"ASCII"']
                     [simple   uint   40         jobSequenceNumber                                       encoding='"ASCII"']
                     [const    uint   16         blockIdSyncTighteningId                           43    encoding='"ASCII"']
@@ -685,7 +733,7 @@
                     [const    uint   16         blockIdBatchCounter                               10    encoding='"ASCII"']
                     [simple   uint   32         batchCounter                                            encoding='"ASCII"']
                     [const    uint   16         blockIdTighteningStatus                           11    encoding='"ASCII"']
-                    [simple   TighteningStatus  tighteningStatus                                        encoding='"ASCII"']
+                    [simple   NokOk             tighteningStatus                                        encoding='"ASCII"']
                     [const    uint   16         blockIdBatchStatus                                12    encoding='"ASCII"']
                     [simple   BatchStatus       batchStatus                                             encoding='"ASCII"']
                     [const    uint   16         blockIdTorqueStatus                               13    encoding='"ASCII"']
@@ -745,7 +793,7 @@
                     [const    uint   16         blockIdPrevailTorque                              40    encoding='"ASCII"']
                     [simple   uint   48         prevailTorque                                           encoding='"ASCII"']
                     [const    uint   16         blockIdTighteningId                               41    encoding='"ASCII"']
-                    [simple   uint   80         tighteningId                                            encoding='"ASCII"']
+                    [simple   string 80         tighteningId                                            encoding='"ASCII"']
                     [const    uint   16         blockIdJobSequenceNumber                          42    encoding='"ASCII"']
                     [simple   uint   40         jobSequenceNumber                                       encoding='"ASCII"']
                     [const    uint   16         blockIdSyncTighteningId                           43    encoding='"ASCII"']
@@ -791,7 +839,7 @@
                     [const    uint   16         blockIdBatchCounter                               10    encoding='"ASCII"']
                     [simple   uint   32         batchCounter                                            encoding='"ASCII"']
                     [const    uint   16         blockIdTighteningStatus                           11    encoding='"ASCII"']
-                    [simple   TighteningStatus  tighteningStatus                                        encoding='"ASCII"']
+                    [simple   NokOk             tighteningStatus                                        encoding='"ASCII"']
                     [const    uint   16         blockIdBatchStatus                                12    encoding='"ASCII"']
                     [simple   BatchStatus       batchStatus                                             encoding='"ASCII"']
                     [const    uint   16         blockIdTorqueStatus                               13    encoding='"ASCII"']
@@ -851,7 +899,7 @@
                     [const    uint   16         blockIdPrevailTorque                              40    encoding='"ASCII"']
                     [simple   uint   48         prevailTorque                                           encoding='"ASCII"']
                     [const    uint   16         blockIdTighteningId                               41    encoding='"ASCII"']
-                    [simple   uint   80         tighteningId                                            encoding='"ASCII"']
+                    [simple   string 80         tighteningId                                            encoding='"ASCII"']
                     [const    uint   16         blockIdJobSequenceNumber                          42    encoding='"ASCII"']
                     [simple   uint   40         jobSequenceNumber                                       encoding='"ASCII"']
                     [const    uint   16         blockIdSyncTighteningId                           43    encoding='"ASCII"']
@@ -899,7 +947,7 @@
                     [const    uint   16         blockIdBatchCounter                               10    encoding='"ASCII"']
                     [simple   uint   32         batchCounter                                            encoding='"ASCII"']
                     [const    uint   16         blockIdTighteningStatus                           11    encoding='"ASCII"']
-                    [simple   TighteningStatus  tighteningStatus                                        encoding='"ASCII"']
+                    [simple   NokOk             tighteningStatus                                        encoding='"ASCII"']
                     [const    uint   16         blockIdBatchStatus                                12    encoding='"ASCII"']
                     [simple   BatchStatus       batchStatus                                             encoding='"ASCII"']
                     [const    uint   16         blockIdTorqueStatus                               13    encoding='"ASCII"']
@@ -959,7 +1007,7 @@
                     [const    uint   16         blockIdPrevailTorque                              40    encoding='"ASCII"']
                     [simple   uint   48         prevailTorque                                           encoding='"ASCII"']
                     [const    uint   16         blockIdTighteningId                               41    encoding='"ASCII"']
-                    [simple   uint   80         tighteningId                                            encoding='"ASCII"']
+                    [simple   string 80         tighteningId                                            encoding='"ASCII"']
                     [const    uint   16         blockIdJobSequenceNumber                          42    encoding='"ASCII"']
                     [simple   uint   40         jobSequenceNumber                                       encoding='"ASCII"']
                     [const    uint   16         blockIdSyncTighteningId                           43    encoding='"ASCII"']
@@ -1012,7 +1060,7 @@
                     [const    uint   16         blockIdBatchCounter                               10    encoding='"ASCII"']
                     [simple   uint   32         batchCounter                                            encoding='"ASCII"']
                     [const    uint   16         blockIdTighteningStatus                           11    encoding='"ASCII"']
-                    [simple   TighteningStatus  tighteningStatus                                        encoding='"ASCII"']
+                    [simple   NokOk             tighteningStatus                                        encoding='"ASCII"']
                     [const    uint   16         blockIdBatchStatus                                12    encoding='"ASCII"']
                     [simple   BatchStatus       batchStatus                                             encoding='"ASCII"']
                     [const    uint   16         blockIdTorqueStatus                               13    encoding='"ASCII"']
@@ -1072,7 +1120,7 @@
                     [const    uint   16         blockIdPrevailTorque                              40    encoding='"ASCII"']
                     [simple   uint   48         prevailTorque                                           encoding='"ASCII"']
                     [const    uint   16         blockIdTighteningId                               41    encoding='"ASCII"']
-                    [simple   uint   80         tighteningId                                            encoding='"ASCII"']
+                    [simple   string 80         tighteningId                                            encoding='"ASCII"']
                     [const    uint   16         blockIdJobSequenceNumber                          42    encoding='"ASCII"']
                     [simple   uint   40         jobSequenceNumber                                       encoding='"ASCII"']
                     [const    uint   16         blockIdSyncTighteningId                           43    encoding='"ASCII"']
@@ -1128,7 +1176,7 @@
                     [const    uint   16         blockIdBatchCounter                               10    encoding='"ASCII"']
                     [simple   uint   32         batchCounter                                            encoding='"ASCII"']
                     [const    uint   16         blockIdTighteningStatus                           11    encoding='"ASCII"']
-                    [simple   TighteningStatus  tighteningStatus                                        encoding='"ASCII"']
+                    [simple   NokOk             tighteningStatus                                        encoding='"ASCII"']
                     [const    uint   16         blockIdBatchStatus                                12    encoding='"ASCII"']
                     [simple   BatchStatus       batchStatus                                             encoding='"ASCII"']
                     [const    uint   16         blockIdTorqueStatus                               13    encoding='"ASCII"']
@@ -1188,7 +1236,7 @@
                     [const    uint   16         blockIdPrevailTorque                              40    encoding='"ASCII"']
                     [simple   uint   48         prevailTorque                                           encoding='"ASCII"']
                     [const    uint   16         blockIdTighteningId                               41    encoding='"ASCII"']
-                    [simple   uint   80         tighteningId                                            encoding='"ASCII"']
+                    [simple   string 80         tighteningId                                            encoding='"ASCII"']
                     [const    uint   16         blockIdJobSequenceNumber                          42    encoding='"ASCII"']
                     [simple   uint   40         jobSequenceNumber                                       encoding='"ASCII"']
                     [const    uint   16         blockIdSyncTighteningId                           43    encoding='"ASCII"']
@@ -1231,14 +1279,215 @@
                     [simple   uint   32         batchSize                                               encoding='"ASCII"']
                     [simple   uint   32         batchCounter                                            encoding='"ASCII"']
                     [simple   BatchStatus       batchStatus                                             encoding='"ASCII"']
-                    [simple   TighteningStatus  tighteningStatus                                        encoding='"ASCII"']
+                    [simple   NokOk             tighteningStatus                                        encoding='"ASCII"']
                     [simple   Status            torqueStatus                                            encoding='"ASCII"']
                     [simple   Status            angleStatus                                             encoding='"ASCII"']
                     [simple   uint   48         torque                                                  encoding='"ASCII"']
                     [simple   uint   40         angle                                                   encoding='"ASCII"']
                     [simple   string 152        timeStamp                                               encoding='"ASCII"']
                     [simple   string 152        dateTimeOfLastChangeIndParameterSetSettings             encoding='"ASCII"']
-                    [simple   uint   80         tighteningId                                            encoding='"ASCII"']
+                    [simple   string 80         tighteningId                                            encoding='"ASCII"']
+                ]
+            ]
+        ]
+
+        ['AlarmSubscribe' *AlarmSubscribe
+            [typeSwitch revision
+                ['1' *Rev1
+                ]
+            ]
+        ]
+        ['Alarm' *Alarm
+            [typeSwitch revision
+                ['1' *Rev1
+                    [const    uint   16         blockIdErrorCode              1    encoding='"ASCII"']
+                    [simple   string 32         errorCode                          encoding='"ASCII"']
+                    [const    uint   16         blockIdControllerReadyStatus  2    encoding='"ASCII"']
+                    [simple   NokOk             controllerReadyStatus              encoding='"ASCII"']
+                    [const    uint   16         blockIdToolReadyStatus        3    encoding='"ASCII"']
+                    [simple   NokOk             toolReadyStatus                    encoding='"ASCII"']
+                    [const    uint   16         blockIdTime                   4    encoding='"ASCII"']
+                    [simple   string 152        alarmTime                          encoding='"ASCII"']
+                ]
+                ['2' *Rev2
+                    [const    uint   16         blockIdErrorCode              1    encoding='"ASCII"']
+                    [simple   string 40         errorCode                          encoding='"ASCII"']
+                    [const    uint   16         blockIdControllerReadyStatus  2    encoding='"ASCII"']
+                    [simple   NokOk             controllerReadyStatus              encoding='"ASCII"']
+                    [const    uint   16         blockIdToolReadyStatus        3    encoding='"ASCII"']
+                    [simple   NokOk             toolReadyStatus                    encoding='"ASCII"']
+                    [const    uint   16         blockIdTime                   4    encoding='"ASCII"']
+                    [simple   string 152        alarmTime                          encoding='"ASCII"']
+                    [const    uint   16         blockIdAlarmText              5    encoding='"ASCII"']
+                    [simple   string 400        alarmText                          encoding='"ASCII"']
+                ]
+            ]
+        ]
+        ['AlarmAcknowledge' *AlarmAcknowledge
+            [typeSwitch revision
+                ['1' *Rev1
+                ]
+            ]
+        ]
+        ['AlarmUnsubscribe' *AlarmUnsubscribe
+            [typeSwitch revision
+                ['1' *Rev1
+                ]
+            ]
+        ]
+
+        ['AlarmStatus' *AlarmStatus
+            [typeSwitch revision
+                ['1' *Rev1
+                    [const    uint   16         blockIdAlarmStatus              1   encoding='"ASCII"']
+                    [simple   AlarmActiveStatus controllerAlarmStatus               encoding='"ASCII"']
+                    [const    uint   16         blockIdErrorCode                2   encoding='"ASCII"']
+                    [simple   string 32         errorCode                           encoding='"ASCII"']
+                    [const    uint   16         blockIdControllerReadyStatus   3    encoding='"ASCII"']
+                    [simple   NokOk             controllerReadyStatus               encoding='"ASCII"']
+                    [const    uint   16         blockIdToolReadyStatus         4    encoding='"ASCII"']
+                    [simple   NokOk             toolReadyStatus                     encoding='"ASCII"']
+                    [const    uint   16         blockIdTime                    5    encoding='"ASCII"']
+                    [simple   string 152        alarmTime                           encoding='"ASCII"']
+                ]
+                ['2' *Rev2
+                    [const    uint   16         blockIdAlarmStatus              1   encoding='"ASCII"']
+                    [simple   AlarmActiveStatus controllerAlarmStatus               encoding='"ASCII"']
+                    [const    uint   16         blockIdErrorCode                2   encoding='"ASCII"']
+                    [simple   string 40         errorCode                           encoding='"ASCII"']
+                    [const    uint   16         blockIdControllerReadyStatus    3   encoding='"ASCII"']
+                    [simple   NokOk             controllerReadyStatus               encoding='"ASCII"']
+                    [const    uint   16         blockIdToolReadyStatus          4   encoding='"ASCII"']
+                    [simple   NokOk             toolReadyStatus                     encoding='"ASCII"']
+                    [const    uint   16         blockIdTime                     5   encoding='"ASCII"']
+                    [simple   string 152        alarmTime                           encoding='"ASCII"']
+                ]
+            ]
+        ]
+
+        ['AlarmStatusAcknowledge' *AlarmStatusAcknowledge
+            [typeSwitch revision
+                ['1' *Rev1
+                ]
+            ]
+        ]
+
+        ['SetTime' *SetTime
+            [typeSwitch revision
+                ['1' *Rev1
+                    [simple   string 152        timeToSet                                               encoding='"ASCII"']
+                ]
+            ]
+        ]
+
+        ['ExecuteDynamicJobRequest' *ExecuteDynamicJobRequest
+            [typeSwitch revision
+                ['1' *Rev1
+                    [const    uint   16         blockIdJobId                          1    encoding='"ASCII"']
+                    [simple   uint   32         jobId                                      encoding='"ASCII"']
+                    [const    uint   16         blockIdJobName                        2    encoding='"ASCII"']
+                    [simple   string 200        jobName                                    encoding='"ASCII"']
+                    [const    uint   16         blockIdNumberOfParameterSets          3    encoding='"ASCII"']
+                    //[implicit uint   16         numberOfParameterSets     'COUNT(jobList)' encoding='"ASCII"']
+                    [const    uint   16         blockIdJobList                        4    encoding='"ASCII"']
+                    // TODO [array    ParameterSetRev1      jobList     count 'numberOfParameterSets'  encoding='"ASCII"']
+                    [const    uint   16         blockIdForcedOrder                    5    encoding='"ASCII"']
+                    [simple   ForcedOrder       forcedOrder                                encoding='"ASCII"']
+                    [const    uint   16         blockIdLockAtJobDone                  6    encoding='"ASCII"']
+                    [simple   NoYes             lockAtJobDone                              encoding='"ASCII"']
+                    [const    uint   16         blockIdToolLoosening                  7    encoding='"ASCII"']
+                    [simple   ToolLoosening     toolLoosening                              encoding='"ASCII"']
+                    [const    uint   16         blockIdRepeatJob                      8    encoding='"ASCII"']
+                    [simple   NoYes             repeatJob                                  encoding='"ASCII"']
+                    [const    uint   16         blockIdJobBatchModeAndCountType       9    encoding='"ASCII"']
+                    [simple   JobBatchMode      jobBatchModeAndCountType                   encoding='"ASCII"']
+                    [const    uint   16         blockIdBatchStatusAtIncrementBypass   10   encoding='"ASCII"']
+                    [simple   OkNok             batchStatusAtIncrementBypass               encoding='"ASCII"']
+                    [const    uint   16         blockIdDecrementBatchAtOkLoosening    11   encoding='"ASCII"']
+                    [simple   NoYes             decrementBatchAtOkLoosening                encoding='"ASCII"']
+                    [const    uint   16         blockIdMaxTimeForFirstTightening      12   encoding='"ASCII"']
+                    [simple   uint   32         maxTimeForFirstTightening                  encoding='"ASCII"']
+                    [const    uint   16         blockIdMaxTimeToCompleteJob           13   encoding='"ASCII"']
+                    [simple   uint   40         maxTimeToCompleteJob                       encoding='"ASCII"']
+                    [const    uint   16         blockIdDisplayResultAtAutoSelect      14   encoding='"ASCII"']
+                    [simple   uint   32         displayResultAtAutoSelect                  encoding='"ASCII"']
+                    [const    uint   16         blockIdUseLineControl                 15   encoding='"ASCII"']
+                    [simple   NoYes             useLineControl                             encoding='"ASCII"']
+                    [const    uint   16         blockIdIdentifierResultPart           16   encoding='"ASCII"']
+                    [simple   IdentifierResult  identifierResultPart                       encoding='"ASCII"']
+                    [const    uint   16         blockIdResultOfNonTightenings         17   encoding='"ASCII"']
+                    [simple   NoYes             resultOfNonTightenings                     encoding='"ASCII"']
+                    [const    uint   16         blockIdResetAllIdentifiersAtJobDone   18   encoding='"ASCII"']
+                    [simple   NoYes             resetAllIdentifiersAtJobDone               encoding='"ASCII"']
+                    [const    uint   16         blockIdReserved                       19   encoding='"ASCII"']
+                    [simple   uint   8          jobRepair                                  encoding='"ASCII"']
+                ]
+                ['999' *Rev999
+                    [const    uint   16         blockIdJobId                          1    encoding='"ASCII"']
+                    [simple   uint   32         jobId                                      encoding='"ASCII"']
+                    [const    uint   16         blockIdJobName                        2    encoding='"ASCII"']
+                    [simple   string 200        jobName                                    encoding='"ASCII"']
+                    [const    uint   16         blockIdNumberOfParameterSets          3    encoding='"ASCII"']
+                    //[implicit uint   16         numberOfParameterSets     'COUNT(jobList)' encoding='"ASCII"']
+                    [const    uint   16         blockIdJobList                        4    encoding='"ASCII"']
+                    // TODO [array    ParameterSetRev999      jobList     count 'numberOfParameterSets'  encoding='"ASCII"']
+                    [const    uint   16         blockIdForcedOrder                    5    encoding='"ASCII"']
+                    [simple   ForcedOrder       forcedOrder                                encoding='"ASCII"']
+                    [const    uint   16         blockIdLockAtJobDone                  6    encoding='"ASCII"']
+                    [simple   NoYes             lockAtJobDone                              encoding='"ASCII"']
+                    [const    uint   16         blockIdToolLoosening                  7    encoding='"ASCII"']
+                    [simple   ToolLoosening     toolLoosening                              encoding='"ASCII"']
+                    [const    uint   16         blockIdRepeatJob                      8    encoding='"ASCII"']
+                    [simple   NoYes             repeatJob                                  encoding='"ASCII"']
+                    [const    uint   16         blockIdJobBatchModeAndCountType       9    encoding='"ASCII"']
+                    [simple   JobBatchMode      jobBatchModeAndCountType                   encoding='"ASCII"']
+                    [const    uint   16         blockIdBatchStatusAtIncrementBypass   10   encoding='"ASCII"']
+                    [simple   OkNok             batchStatusAtIncrementBypass               encoding='"ASCII"']
+                    [const    uint   16         blockIdDecrementBatchAtOkLoosening    11   encoding='"ASCII"']
+                    [simple   NoYes             decrementBatchAtOkLoosening                encoding='"ASCII"']
+                    [const    uint   16         blockIdMaxTimeForFirstTightening      12   encoding='"ASCII"']
+                    [simple   uint   32         maxTimeForFirstTightening                  encoding='"ASCII"']
+                    [const    uint   16         blockIdMaxTimeToCompleteJob           13   encoding='"ASCII"']
+                    [simple   uint   40         maxTimeToCompleteJob                       encoding='"ASCII"']
+                    [const    uint   16         blockIdDisplayResultAtAutoSelect      14   encoding='"ASCII"']
+                    [simple   uint   32         displayResultAtAutoSelect                  encoding='"ASCII"']
+                    [const    uint   16         blockIdUseLineControl                 15   encoding='"ASCII"']
+                    [simple   NoYes             useLineControl                             encoding='"ASCII"']
+                    [const    uint   16         blockIdIdentifierResultPart           16   encoding='"ASCII"']
+                    [simple   IdentifierResult  identifierResultPart                       encoding='"ASCII"']
+                    [const    uint   16         blockIdResultOfNonTightenings         17   encoding='"ASCII"']
+                    [simple   NoYes             resultOfNonTightenings                     encoding='"ASCII"']
+                    [const    uint   16         blockIdResetAllIdentifiersAtJobDone   18   encoding='"ASCII"']
+                    [simple   NoYes             resetAllIdentifiersAtJobDone               encoding='"ASCII"']
+                    [const    uint   16         blockIdReserved                       19   encoding='"ASCII"']
+                    [simple   uint   8          jobRepair                                  encoding='"ASCII"']
+                ]
+            ]
+        ]
+        ['IdentifierDownloadRequest' *IdentifierDownloadRequest
+            [typeSwitch revision
+                ['1' *Rev1
+                    [simple   string 800        identifierData                                          encoding='"ASCII"']
+                ]
+            ]
+        ]
+
+        ['ResultTracesCurve' *ResultTracesCurve
+            [typeSwitch revision
+                ['1' *Rev1
+                    // TODO: Need to be able to serialize enum arrays [implicit uint   24         numberOfTraceTypes    'COUNT(traceTypes)'  encoding='"ASCII"']
+                    // TODO: Need to be able to serialize enum arrays [array    TraceType         traceTypes     count 'numberOfTraceTypes'  encoding='"ASCII"']
+                ]
+            ]
+        ]
+
+        ['ResultTracesCurvePlotData' *ResultTracesCurvePlotData
+            [typeSwitch revision
+                ['1' *Rev1
+                    [simple   string 80         resultDataIdentifier                 encoding='"ASCII"']
+                    [simple   string 152        timeStamp                                               encoding='"ASCII"']
+                    [implicit uint   24         numberOfParameterDataFields    'COUNT(dataFields)'  encoding='"ASCII"']
+                    [array    VariableDataField dataFields     count 'numberOfParameterDataFields'  encoding='"ASCII"']
                 ]
             ]
         ]
@@ -1260,7 +1509,6 @@
             ]
         ]
 
-
         ['LinkLevelPositiveAcknowledge' *LinkLevelPositiveAcknowledge
             [typeSwitch revision
                 ['1' *Rev1
@@ -1273,6 +1521,12 @@
                 ['1' *Rev1
                     [simple   Mid                  midNumber                                            encoding='"ASCII"']
                     [simple   LinkLevelNegativeAcknowledgeError error                                  encoding='"ASCII"']
+                ]
+            ]
+        ]
+        ['KeepAliveOpenProtocolCommunication' *KeepAliveOpenProtocolCommunication
+            [typeSwitch revision
+                ['1' *Rev1
                 ]
             ]
         ]
@@ -1354,19 +1608,19 @@
     ['64'   OldTighteningResultUploadRequest            ]
     ['65'   OldTighteningResultUploadReply              ]
 
-    ['70'   AlarmSubscribe                              ] // *
-    ['71'   Alarm                                       ] // *
-    ['72'   AlarmAcknowledge                            ] // *
-    ['73'   AlarmUnsubscribe                            ] // *
+    ['70'   AlarmSubscribe                              ] // OK *
+    ['71'   Alarm                                       ] // OK *
+    ['72'   AlarmAcknowledge                            ] // OK *
+    ['73'   AlarmUnsubscribe                            ] // OK *
     ['74'   AlarmAcknowledgedOnController               ]
     ['75'   AlarmAcknowledgedOnControllerAcknowledge    ]
-    ['76'   AlarmStatus                                 ] // *
-    ['77'   AlarmStatusAcknowledge                      ] // *
+    ['76'   AlarmStatus                                 ] // OK *
+    ['77'   AlarmStatusAcknowledge                      ] // OK *
     ['78'   AcknowledgeAlarmRemotelyOnController        ]
 
     ['80'   ReadTimeUploadRequest                       ]
     ['81'   ReadTimeUploadReply                         ]
-    ['82'   SetTime                                     ] // *
+    ['82'   SetTime                                     ] // OK *
 
     ['90'   MultiSpindleStatusSubscribe                 ]
     ['91'   MultiSpindleStatus                          ]
@@ -1403,9 +1657,9 @@
     ['132'  SetJobLineControlAlert1                     ]
     ['133'  SetJobLineControlAlert2                     ]
 
-    ['140'  ExecuteDynamicJobRequest                    ] // *
+    ['140'  ExecuteDynamicJobRequest                    ] // OK *
 
-    ['150'  IdentifierDownloadRequest                   ] // *
+    ['150'  IdentifierDownloadRequest                   ] // OK *
     ['151'  MultipleIdentifiersWorkOrderSubscribe       ]
     ['152'  MultipleIdentifiersWorkOrder                ]
     ['153'  MultipleIdentifiersWorkOrderAcknowledge     ]
@@ -1479,8 +1733,8 @@
 
     ['700'  TighteningDataDownloadStatusForRadioTools   ]
 
-    ['900'  ResultTracesCurve                           ] // *
-    ['901'  ResultTracesCurvePlotData                   ] // *
+    ['900'  ResultTracesCurve                           ] // OK *
+    ['901'  ResultTracesCurvePlotData                   ] // OK *
 
     ['1201' LastOperationResultOverallData              ]
     ['1202' LastOperationResultObjectData               ]
@@ -1510,7 +1764,7 @@
 
     ['9997' LinkLevelPositiveAcknowledge                ] // OK
     ['9998' LinkLevelNegativeAcknowledge                ] // OK
-    ['9999' KeepAliveOpenProtocolCommunication          ] // *
+    ['9999' KeepAliveOpenProtocolCommunication          ] // OK *
 ]
 
 [enum uint 16 ApplicationCommunicationError encoding='"ASCII"'
@@ -1623,9 +1877,19 @@
     ['2' CounterClockwise]
 ]
 
-[enum uint 8 TighteningStatus encoding='"ASCII"'
+[enum uint 8 NokOk encoding='"ASCII"'
     ['0' NOK]
     ['1' OK ]
+]
+
+[enum uint 8 OkNok encoding='"ASCII"'
+    ['0' OK ]
+    ['1' NOK]
+]
+
+[enum uint 8 NoYes encoding='"ASCII"'
+    ['0' No ]
+    ['1' Yes]
 ]
 
 [enum uint 8 Status encoding='"ASCII"'
@@ -1690,4 +1954,41 @@
     ['6' AbortJobResult]
     ['7' SyncTightening]
     ['8' ReferenceSetup]
+]
+
+[enum uint 24 TraceType encoding='"ASCII"'
+    ['1'   AngleTrace      ]
+    ['2'   TorqueTrace     ]
+    ['3'   CurrentTrace    ]
+    ['4'   GradientTrace   ]
+    ['5'   StrokeTrace     ]
+    ['6'   ForceTrace      ]
+    ['999' UnsubscribeOnAll]
+]
+
+[enum uint 8 AlarmActiveStatus encoding='"ASCII"'
+    ['0'   NoAlarmIsActive]
+    ['1'   AlarmIsActive  ]
+]
+
+[enum uint 8 ForcedOrder encoding='"ASCII"'
+    ['0'   FreeOrder    ]
+    ['1'   ForcedOrder  ]
+    ['2'   FreeAndForced]
+]
+
+[enum uint 8 ToolLoosening encoding='"ASCII"'
+    ['0'   Enable    ]
+    ['1'   Disable  ]
+    ['2'   EnableOnlyOnNokTightening]
+]
+
+[enum uint 8 JobBatchMode encoding='"ASCII"'
+    ['0'   OnlyOkTighteningsAreCounted      ]
+    ['1'   BothOkAndNokTighteningsAreCounted]
+]
+
+[enum uint 8 IdentifierResult encoding='"ASCII"'
+    ['0'   JobVinNumber]
+    ['1'   Other       ]
 ]

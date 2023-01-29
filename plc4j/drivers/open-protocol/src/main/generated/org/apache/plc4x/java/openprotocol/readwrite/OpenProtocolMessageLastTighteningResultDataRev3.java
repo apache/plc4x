@@ -105,7 +105,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev3
   protected final Strategy strategy;
   protected final long batchSize;
   protected final long batchCounter;
-  protected final TighteningStatus tighteningStatus;
+  protected final NokOk tighteningStatus;
   protected final BatchStatus batchStatus;
   protected final Status torqueStatus;
   protected final Status angleStatus;
@@ -134,7 +134,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev3
   protected final BigInteger prevailTorqueMonitoringMin;
   protected final BigInteger prevailTorqueMonitoringMax;
   protected final BigInteger prevailTorque;
-  protected final BigInteger tighteningId;
+  protected final String tighteningId;
   protected final BigInteger jobSequenceNumber;
   protected final BigInteger syncTighteningId;
   protected final String toolSerialNumber;
@@ -161,7 +161,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev3
       Strategy strategy,
       long batchSize,
       long batchCounter,
-      TighteningStatus tighteningStatus,
+      NokOk tighteningStatus,
       BatchStatus batchStatus,
       Status torqueStatus,
       Status angleStatus,
@@ -190,7 +190,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev3
       BigInteger prevailTorqueMonitoringMin,
       BigInteger prevailTorqueMonitoringMax,
       BigInteger prevailTorque,
-      BigInteger tighteningId,
+      String tighteningId,
       BigInteger jobSequenceNumber,
       BigInteger syncTighteningId,
       String toolSerialNumber,
@@ -292,7 +292,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev3
     return batchCounter;
   }
 
-  public TighteningStatus getTighteningStatus() {
+  public NokOk getTighteningStatus() {
     return tighteningStatus;
   }
 
@@ -408,7 +408,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev3
     return prevailTorque;
   }
 
-  public BigInteger getTighteningId() {
+  public String getTighteningId() {
     return tighteningId;
   }
 
@@ -783,10 +783,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev3
     // Simple Field (tighteningStatus)
     writeSimpleEnumField(
         "tighteningStatus",
-        "TighteningStatus",
+        "NokOk",
         tighteningStatus,
         new DataWriterEnumDefault<>(
-            TighteningStatus::getValue, TighteningStatus::name, writeUnsignedShort(writeBuffer, 8)),
+            NokOk::getValue, NokOk::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdBatchStatus)
@@ -1212,7 +1212,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev3
     writeSimpleField(
         "tighteningId",
         tighteningId,
-        writeUnsignedBigInteger(writeBuffer, 80),
+        writeString(writeBuffer, 80),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdJobSequenceNumber)
@@ -1756,12 +1756,11 @@ public class OpenProtocolMessageLastTighteningResultDataRev3
             OpenProtocolMessageLastTighteningResultDataRev3.BLOCKIDTIGHTENINGSTATUS,
             WithOption.WithEncoding("ASCII"));
 
-    TighteningStatus tighteningStatus =
+    NokOk tighteningStatus =
         readEnumField(
             "tighteningStatus",
-            "TighteningStatus",
-            new DataReaderEnumDefault<>(
-                TighteningStatus::enumForValue, readUnsignedShort(readBuffer, 8)),
+            "NokOk",
+            new DataReaderEnumDefault<>(NokOk::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdBatchStatus =
@@ -2139,11 +2138,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev3
             OpenProtocolMessageLastTighteningResultDataRev3.BLOCKIDTIGHTENINGID,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger tighteningId =
+    String tighteningId =
         readSimpleField(
-            "tighteningId",
-            readUnsignedBigInteger(readBuffer, 80),
-            WithOption.WithEncoding("ASCII"));
+            "tighteningId", readString(readBuffer, 80), WithOption.WithEncoding("ASCII"));
 
     int blockIdJobSequenceNumber =
         readConstField(
@@ -2309,7 +2306,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev3
     private final Strategy strategy;
     private final long batchSize;
     private final long batchCounter;
-    private final TighteningStatus tighteningStatus;
+    private final NokOk tighteningStatus;
     private final BatchStatus batchStatus;
     private final Status torqueStatus;
     private final Status angleStatus;
@@ -2338,7 +2335,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev3
     private final BigInteger prevailTorqueMonitoringMin;
     private final BigInteger prevailTorqueMonitoringMax;
     private final BigInteger prevailTorque;
-    private final BigInteger tighteningId;
+    private final String tighteningId;
     private final BigInteger jobSequenceNumber;
     private final BigInteger syncTighteningId;
     private final String toolSerialNumber;
@@ -2358,7 +2355,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev3
         Strategy strategy,
         long batchSize,
         long batchCounter,
-        TighteningStatus tighteningStatus,
+        NokOk tighteningStatus,
         BatchStatus batchStatus,
         Status torqueStatus,
         Status angleStatus,
@@ -2387,7 +2384,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev3
         BigInteger prevailTorqueMonitoringMin,
         BigInteger prevailTorqueMonitoringMax,
         BigInteger prevailTorque,
-        BigInteger tighteningId,
+        String tighteningId,
         BigInteger jobSequenceNumber,
         BigInteger syncTighteningId,
         String toolSerialNumber,

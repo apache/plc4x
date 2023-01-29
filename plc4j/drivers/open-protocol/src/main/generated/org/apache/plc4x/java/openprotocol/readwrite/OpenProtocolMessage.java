@@ -429,6 +429,48 @@ public abstract class OpenProtocolMessage implements Message {
       builder =
           OpenProtocolMessageLastTighteningResultData.staticParseOpenProtocolMessageBuilder(
               readBuffer, revision);
+    } else if (EvaluationHelper.equals(mid, Mid.AlarmSubscribe)) {
+      builder =
+          OpenProtocolMessageAlarmSubscribe.staticParseOpenProtocolMessageBuilder(
+              readBuffer, revision);
+    } else if (EvaluationHelper.equals(mid, Mid.Alarm)) {
+      builder =
+          OpenProtocolMessageAlarm.staticParseOpenProtocolMessageBuilder(readBuffer, revision);
+    } else if (EvaluationHelper.equals(mid, Mid.AlarmAcknowledge)) {
+      builder =
+          OpenProtocolMessageAlarmAcknowledge.staticParseOpenProtocolMessageBuilder(
+              readBuffer, revision);
+    } else if (EvaluationHelper.equals(mid, Mid.AlarmUnsubscribe)) {
+      builder =
+          OpenProtocolMessageAlarmUnsubscribe.staticParseOpenProtocolMessageBuilder(
+              readBuffer, revision);
+    } else if (EvaluationHelper.equals(mid, Mid.AlarmStatus)) {
+      builder =
+          OpenProtocolMessageAlarmStatus.staticParseOpenProtocolMessageBuilder(
+              readBuffer, revision);
+    } else if (EvaluationHelper.equals(mid, Mid.AlarmStatusAcknowledge)) {
+      builder =
+          OpenProtocolMessageAlarmStatusAcknowledge.staticParseOpenProtocolMessageBuilder(
+              readBuffer, revision);
+    } else if (EvaluationHelper.equals(mid, Mid.SetTime)) {
+      builder =
+          OpenProtocolMessageSetTime.staticParseOpenProtocolMessageBuilder(readBuffer, revision);
+    } else if (EvaluationHelper.equals(mid, Mid.ExecuteDynamicJobRequest)) {
+      builder =
+          OpenProtocolMessageExecuteDynamicJobRequest.staticParseOpenProtocolMessageBuilder(
+              readBuffer, revision);
+    } else if (EvaluationHelper.equals(mid, Mid.IdentifierDownloadRequest)) {
+      builder =
+          OpenProtocolMessageIdentifierDownloadRequest.staticParseOpenProtocolMessageBuilder(
+              readBuffer, revision);
+    } else if (EvaluationHelper.equals(mid, Mid.ResultTracesCurve)) {
+      builder =
+          OpenProtocolMessageResultTracesCurve.staticParseOpenProtocolMessageBuilder(
+              readBuffer, revision);
+    } else if (EvaluationHelper.equals(mid, Mid.ResultTracesCurvePlotData)) {
+      builder =
+          OpenProtocolMessageResultTracesCurvePlotData.staticParseOpenProtocolMessageBuilder(
+              readBuffer, revision);
     } else if (EvaluationHelper.equals(mid, Mid.ProgramPsetSelectionInDynamicJob)) {
       builder =
           OpenProtocolMessageProgramPsetSelectionInDynamicJob.staticParseOpenProtocolMessageBuilder(
@@ -445,6 +487,10 @@ public abstract class OpenProtocolMessage implements Message {
       builder =
           OpenProtocolMessageLinkLevelNegativeAcknowledge.staticParseOpenProtocolMessageBuilder(
               readBuffer, revision);
+    } else if (EvaluationHelper.equals(mid, Mid.KeepAliveOpenProtocolCommunication)) {
+      builder =
+          OpenProtocolMessageKeepAliveOpenProtocolCommunication
+              .staticParseOpenProtocolMessageBuilder(readBuffer, revision);
     }
     if (builder == null) {
       throw new ParseException(

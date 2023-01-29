@@ -51,14 +51,14 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
   protected final long batchSize;
   protected final long batchCounter;
   protected final BatchStatus batchStatus;
-  protected final TighteningStatus tighteningStatus;
+  protected final NokOk tighteningStatus;
   protected final Status torqueStatus;
   protected final Status angleStatus;
   protected final BigInteger torque;
   protected final BigInteger angle;
   protected final String timeStamp;
   protected final String dateTimeOfLastChangeIndParameterSetSettings;
-  protected final BigInteger tighteningId;
+  protected final String tighteningId;
 
   public OpenProtocolMessageLastTighteningResultDataRev999Light(
       Long midRevision,
@@ -74,14 +74,14 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
       long batchSize,
       long batchCounter,
       BatchStatus batchStatus,
-      TighteningStatus tighteningStatus,
+      NokOk tighteningStatus,
       Status torqueStatus,
       Status angleStatus,
       BigInteger torque,
       BigInteger angle,
       String timeStamp,
       String dateTimeOfLastChangeIndParameterSetSettings,
-      BigInteger tighteningId) {
+      String tighteningId) {
     super(
         midRevision,
         noAckFlag,
@@ -130,7 +130,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
     return batchStatus;
   }
 
-  public TighteningStatus getTighteningStatus() {
+  public NokOk getTighteningStatus() {
     return tighteningStatus;
   }
 
@@ -158,7 +158,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
     return dateTimeOfLastChangeIndParameterSetSettings;
   }
 
-  public BigInteger getTighteningId() {
+  public String getTighteningId() {
     return tighteningId;
   }
 
@@ -210,10 +210,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
     // Simple Field (tighteningStatus)
     writeSimpleEnumField(
         "tighteningStatus",
-        "TighteningStatus",
+        "NokOk",
         tighteningStatus,
         new DataWriterEnumDefault<>(
-            TighteningStatus::getValue, TighteningStatus::name, writeUnsignedShort(writeBuffer, 8)),
+            NokOk::getValue, NokOk::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Simple Field (torqueStatus)
@@ -260,7 +260,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
     writeSimpleField(
         "tighteningId",
         tighteningId,
-        writeUnsignedBigInteger(writeBuffer, 80),
+        writeString(writeBuffer, 80),
         WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("OpenProtocolMessageLastTighteningResultDataRev999Light");
@@ -355,12 +355,11 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
                 BatchStatus::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
-    TighteningStatus tighteningStatus =
+    NokOk tighteningStatus =
         readEnumField(
             "tighteningStatus",
-            "TighteningStatus",
-            new DataReaderEnumDefault<>(
-                TighteningStatus::enumForValue, readUnsignedShort(readBuffer, 8)),
+            "NokOk",
+            new DataReaderEnumDefault<>(NokOk::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     Status torqueStatus =
@@ -394,11 +393,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
             readString(readBuffer, 152),
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger tighteningId =
+    String tighteningId =
         readSimpleField(
-            "tighteningId",
-            readUnsignedBigInteger(readBuffer, 80),
-            WithOption.WithEncoding("ASCII"));
+            "tighteningId", readString(readBuffer, 80), WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("OpenProtocolMessageLastTighteningResultDataRev999Light");
     // Create the instance
@@ -428,14 +425,14 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
     private final long batchSize;
     private final long batchCounter;
     private final BatchStatus batchStatus;
-    private final TighteningStatus tighteningStatus;
+    private final NokOk tighteningStatus;
     private final Status torqueStatus;
     private final Status angleStatus;
     private final BigInteger torque;
     private final BigInteger angle;
     private final String timeStamp;
     private final String dateTimeOfLastChangeIndParameterSetSettings;
-    private final BigInteger tighteningId;
+    private final String tighteningId;
 
     public OpenProtocolMessageLastTighteningResultDataRev999LightBuilderImpl(
         String vinNumber,
@@ -444,14 +441,14 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
         long batchSize,
         long batchCounter,
         BatchStatus batchStatus,
-        TighteningStatus tighteningStatus,
+        NokOk tighteningStatus,
         Status torqueStatus,
         Status angleStatus,
         BigInteger torque,
         BigInteger angle,
         String timeStamp,
         String dateTimeOfLastChangeIndParameterSetSettings,
-        BigInteger tighteningId) {
+        String tighteningId) {
       this.vinNumber = vinNumber;
       this.jobId = jobId;
       this.parameterSetId = parameterSetId;

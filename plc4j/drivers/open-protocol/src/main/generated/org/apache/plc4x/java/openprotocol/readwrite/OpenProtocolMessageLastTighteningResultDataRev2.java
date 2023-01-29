@@ -100,9 +100,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
   protected final long jobId;
   protected final long parameterSetNumber;
   protected final Strategy strategy;
+  protected final long strategyOptions;
   protected final long batchSize;
   protected final long batchCounter;
-  protected final TighteningStatus tighteningStatus;
+  protected final NokOk tighteningStatus;
   protected final BatchStatus batchStatus;
   protected final Status torqueStatus;
   protected final Status angleStatus;
@@ -111,6 +112,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
   protected final Status selfTapStatus;
   protected final Status prevailTorqueMonitoringStatus;
   protected final Status prevailTorqueCompensateStatus;
+  protected final String tighteningErrorStatus;
   protected final BigInteger torqueMinLimit;
   protected final BigInteger torqueMaxLimit;
   protected final BigInteger torqueFinalTarget;
@@ -131,7 +133,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
   protected final BigInteger prevailTorqueMonitoringMin;
   protected final BigInteger prevailTorqueMonitoringMax;
   protected final BigInteger prevailTorque;
-  protected final BigInteger tighteningId;
+  protected final String tighteningId;
   protected final BigInteger jobSequenceNumber;
   protected final BigInteger syncTighteningId;
   protected final String toolSerialNumber;
@@ -153,9 +155,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
       long jobId,
       long parameterSetNumber,
       Strategy strategy,
+      long strategyOptions,
       long batchSize,
       long batchCounter,
-      TighteningStatus tighteningStatus,
+      NokOk tighteningStatus,
       BatchStatus batchStatus,
       Status torqueStatus,
       Status angleStatus,
@@ -164,6 +167,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
       Status selfTapStatus,
       Status prevailTorqueMonitoringStatus,
       Status prevailTorqueCompensateStatus,
+      String tighteningErrorStatus,
       BigInteger torqueMinLimit,
       BigInteger torqueMaxLimit,
       BigInteger torqueFinalTarget,
@@ -184,7 +188,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
       BigInteger prevailTorqueMonitoringMin,
       BigInteger prevailTorqueMonitoringMax,
       BigInteger prevailTorque,
-      BigInteger tighteningId,
+      String tighteningId,
       BigInteger jobSequenceNumber,
       BigInteger syncTighteningId,
       String toolSerialNumber,
@@ -205,6 +209,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
     this.jobId = jobId;
     this.parameterSetNumber = parameterSetNumber;
     this.strategy = strategy;
+    this.strategyOptions = strategyOptions;
     this.batchSize = batchSize;
     this.batchCounter = batchCounter;
     this.tighteningStatus = tighteningStatus;
@@ -216,6 +221,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
     this.selfTapStatus = selfTapStatus;
     this.prevailTorqueMonitoringStatus = prevailTorqueMonitoringStatus;
     this.prevailTorqueCompensateStatus = prevailTorqueCompensateStatus;
+    this.tighteningErrorStatus = tighteningErrorStatus;
     this.torqueMinLimit = torqueMinLimit;
     this.torqueMaxLimit = torqueMaxLimit;
     this.torqueFinalTarget = torqueFinalTarget;
@@ -272,6 +278,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
     return strategy;
   }
 
+  public long getStrategyOptions() {
+    return strategyOptions;
+  }
+
   public long getBatchSize() {
     return batchSize;
   }
@@ -280,7 +290,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
     return batchCounter;
   }
 
-  public TighteningStatus getTighteningStatus() {
+  public NokOk getTighteningStatus() {
     return tighteningStatus;
   }
 
@@ -314,6 +324,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
 
   public Status getPrevailTorqueCompensateStatus() {
     return prevailTorqueCompensateStatus;
+  }
+
+  public String getTighteningErrorStatus() {
+    return tighteningErrorStatus;
   }
 
   public BigInteger getTorqueMinLimit() {
@@ -396,7 +410,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
     return prevailTorque;
   }
 
-  public BigInteger getTighteningId() {
+  public String getTighteningId() {
     return tighteningId;
   }
 
@@ -418,6 +432,242 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
 
   public String getDateTimeOfLastChangeIndParameterSetSettings() {
     return dateTimeOfLastChangeIndParameterSetSettings;
+  }
+
+  public boolean getStrategyOptionRbwMonitoring() {
+    return (boolean) ((((getStrategyOptions()) & (0x0001))) == (0x0001));
+  }
+
+  public boolean getStrategyOptionClickWrench() {
+    return (boolean) ((((getStrategyOptions()) & (0x0002))) == (0x0002));
+  }
+
+  public boolean getStrategyOptionDsControl() {
+    return (boolean) ((((getStrategyOptions()) & (0x0004))) == (0x0004));
+  }
+
+  public boolean getStrategyOptionCm() {
+    return (boolean) ((((getStrategyOptions()) & (0x0008))) == (0x0008));
+  }
+
+  public boolean getStrategyOptionRundown() {
+    return (boolean) ((((getStrategyOptions()) & (0x0010))) == (0x0010));
+  }
+
+  public boolean getStrategyOptionSelfTap() {
+    return (boolean) ((((getStrategyOptions()) & (0x0020))) == (0x0020));
+  }
+
+  public boolean getStrategyOptionPvtCompensate() {
+    return (boolean) ((((getStrategyOptions()) & (0x0040))) == (0x0040));
+  }
+
+  public boolean getStrategyOptionPvtMonitoring() {
+    return (boolean) ((((getStrategyOptions()) & (0x0080))) == (0x0080));
+  }
+
+  public boolean getStrategyOptionBatch() {
+    return (boolean) ((((getStrategyOptions()) & (0x0100))) == (0x0100));
+  }
+
+  public boolean getStrategyOptionAngle() {
+    return (boolean) ((((getStrategyOptions()) & (0x0200))) == (0x0200));
+  }
+
+  public boolean getStrategyOptionTorque() {
+    return (boolean) ((((getStrategyOptions()) & (0x0400))) == (0x0400));
+  }
+
+  public boolean getTighteningErrorStatusRundownAngleMaxShutOff() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 1));
+  }
+
+  public boolean getTighteningErrorStatusRundownAngleMinShutOff() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 2));
+  }
+
+  public boolean getTighteningErrorStatusTorqueMaxShutOff() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 3));
+  }
+
+  public boolean getTighteningErrorStatusAngleMaxShutOff() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 4));
+  }
+
+  public boolean getTighteningErrorStatusSelfTapTorqueMaxShutOff() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 5));
+  }
+
+  public boolean getTighteningErrorStatusSelfTapTorqueMinShutOff() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 6));
+  }
+
+  public boolean getTighteningErrorStatusPrevailTorqueMaxShutOff() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 7));
+  }
+
+  public boolean getTighteningErrorStatusPrevailTorqueMinShutOff() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 8));
+  }
+
+  public boolean getTighteningErrorStatusPrevailTorqueCompensateOverflow() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 9));
+  }
+
+  public boolean getTighteningErrorStatusCurrentMonitoringMaxShutOff() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 10));
+  }
+
+  public boolean getTighteningErrorStatusPostViewTorqueMinTorqueShutOff() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 11));
+  }
+
+  public boolean getTighteningErrorStatusPostViewTorqueMaxTorqueShutOff() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 12));
+  }
+
+  public boolean getTighteningErrorStatusPortViewTorqueAngleTooSmall() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 13));
+  }
+
+  public boolean getTighteningErrorStatusTriggerLost() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 14));
+  }
+
+  public boolean getTighteningErrorStatusTorqueLessThanTarget() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 15));
+  }
+
+  public boolean getTighteningErrorStatusToolHot() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 16));
+  }
+
+  public boolean getTighteningErrorStatusMultistageAbort() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 17));
+  }
+
+  public boolean getTighteningErrorStatusRehit() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 18));
+  }
+
+  public boolean getTighteningErrorStatusDsMeasureFailed() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 19));
+  }
+
+  public boolean getTighteningErrorStatusCurrentLimitReached() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 20));
+  }
+
+  public boolean getTighteningErrorStatusEndTimeOutShutoff() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 21));
+  }
+
+  public boolean getTighteningErrorStatusRemoveFastenerLimitExceeded() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 22));
+  }
+
+  public boolean getTighteningErrorStatusDisableDrive() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 23));
+  }
+
+  public boolean getTighteningErrorStatusTransducerLost() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 24));
+  }
+
+  public boolean getTighteningErrorStatusTransducerShorted() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 25));
+  }
+
+  public boolean getTighteningErrorStatusTransducerCorrupt() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 26));
+  }
+
+  public boolean getTighteningErrorStatusSyncTimeout() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 27));
+  }
+
+  public boolean getTighteningErrorStatusDynamicCurrentMonitoringMin() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 28));
+  }
+
+  public boolean getTighteningErrorStatusDynamicCurrentMonitoringMax() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 29));
+  }
+
+  public boolean getTighteningErrorStatusAngleMaxMonitor() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 30));
+  }
+
+  public boolean getTighteningErrorStatusYieldNutOff() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 31));
+  }
+
+  public boolean getTighteningErrorStatusYieldTooFewSamples() {
+    return (boolean)
+        (org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+            getTighteningErrorStatus(), 32));
   }
 
   public int getBlockIdCellId() {
@@ -709,6 +959,60 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
         writeUnsignedInt(writeBuffer, 16),
         WithOption.WithEncoding("ASCII"));
 
+    // Reserved Field (reserved)
+    writeReservedField("reserved", (short) 0x30, writeUnsignedShort(writeBuffer, 8));
+
+    // Simple Field (strategyOptions)
+    writeSimpleField(
+        "strategyOptions",
+        strategyOptions,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithEncoding("ASCII"));
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean strategyOptionRbwMonitoring = getStrategyOptionRbwMonitoring();
+    writeBuffer.writeVirtual("strategyOptionRbwMonitoring", strategyOptionRbwMonitoring);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean strategyOptionClickWrench = getStrategyOptionClickWrench();
+    writeBuffer.writeVirtual("strategyOptionClickWrench", strategyOptionClickWrench);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean strategyOptionDsControl = getStrategyOptionDsControl();
+    writeBuffer.writeVirtual("strategyOptionDsControl", strategyOptionDsControl);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean strategyOptionCm = getStrategyOptionCm();
+    writeBuffer.writeVirtual("strategyOptionCm", strategyOptionCm);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean strategyOptionRundown = getStrategyOptionRundown();
+    writeBuffer.writeVirtual("strategyOptionRundown", strategyOptionRundown);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean strategyOptionSelfTap = getStrategyOptionSelfTap();
+    writeBuffer.writeVirtual("strategyOptionSelfTap", strategyOptionSelfTap);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean strategyOptionPvtCompensate = getStrategyOptionPvtCompensate();
+    writeBuffer.writeVirtual("strategyOptionPvtCompensate", strategyOptionPvtCompensate);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean strategyOptionPvtMonitoring = getStrategyOptionPvtMonitoring();
+    writeBuffer.writeVirtual("strategyOptionPvtMonitoring", strategyOptionPvtMonitoring);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean strategyOptionBatch = getStrategyOptionBatch();
+    writeBuffer.writeVirtual("strategyOptionBatch", strategyOptionBatch);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean strategyOptionAngle = getStrategyOptionAngle();
+    writeBuffer.writeVirtual("strategyOptionAngle", strategyOptionAngle);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean strategyOptionTorque = getStrategyOptionTorque();
+    writeBuffer.writeVirtual("strategyOptionTorque", strategyOptionTorque);
+
     // Const Field (blockIdBatchSize)
     writeConstField(
         "blockIdBatchSize",
@@ -747,10 +1051,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
     // Simple Field (tighteningStatus)
     writeSimpleEnumField(
         "tighteningStatus",
-        "TighteningStatus",
+        "NokOk",
         tighteningStatus,
         new DataWriterEnumDefault<>(
-            TighteningStatus::getValue, TighteningStatus::name, writeUnsignedShort(writeBuffer, 8)),
+            NokOk::getValue, NokOk::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdBatchStatus)
@@ -887,6 +1191,196 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
         BLOCKIDTIGHTENINGERRORSTATUS,
         writeUnsignedInt(writeBuffer, 16),
         WithOption.WithEncoding("ASCII"));
+
+    // Simple Field (tighteningErrorStatus)
+    writeSimpleField(
+        "tighteningErrorStatus",
+        tighteningErrorStatus,
+        writeString(writeBuffer, 80),
+        WithOption.WithEncoding("ASCII"));
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusRundownAngleMaxShutOff =
+        getTighteningErrorStatusRundownAngleMaxShutOff();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusRundownAngleMaxShutOff", tighteningErrorStatusRundownAngleMaxShutOff);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusRundownAngleMinShutOff =
+        getTighteningErrorStatusRundownAngleMinShutOff();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusRundownAngleMinShutOff", tighteningErrorStatusRundownAngleMinShutOff);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusTorqueMaxShutOff = getTighteningErrorStatusTorqueMaxShutOff();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusTorqueMaxShutOff", tighteningErrorStatusTorqueMaxShutOff);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusAngleMaxShutOff = getTighteningErrorStatusAngleMaxShutOff();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusAngleMaxShutOff", tighteningErrorStatusAngleMaxShutOff);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusSelfTapTorqueMaxShutOff =
+        getTighteningErrorStatusSelfTapTorqueMaxShutOff();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusSelfTapTorqueMaxShutOff",
+        tighteningErrorStatusSelfTapTorqueMaxShutOff);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusSelfTapTorqueMinShutOff =
+        getTighteningErrorStatusSelfTapTorqueMinShutOff();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusSelfTapTorqueMinShutOff",
+        tighteningErrorStatusSelfTapTorqueMinShutOff);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusPrevailTorqueMaxShutOff =
+        getTighteningErrorStatusPrevailTorqueMaxShutOff();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusPrevailTorqueMaxShutOff",
+        tighteningErrorStatusPrevailTorqueMaxShutOff);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusPrevailTorqueMinShutOff =
+        getTighteningErrorStatusPrevailTorqueMinShutOff();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusPrevailTorqueMinShutOff",
+        tighteningErrorStatusPrevailTorqueMinShutOff);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusPrevailTorqueCompensateOverflow =
+        getTighteningErrorStatusPrevailTorqueCompensateOverflow();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusPrevailTorqueCompensateOverflow",
+        tighteningErrorStatusPrevailTorqueCompensateOverflow);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusCurrentMonitoringMaxShutOff =
+        getTighteningErrorStatusCurrentMonitoringMaxShutOff();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusCurrentMonitoringMaxShutOff",
+        tighteningErrorStatusCurrentMonitoringMaxShutOff);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusPostViewTorqueMinTorqueShutOff =
+        getTighteningErrorStatusPostViewTorqueMinTorqueShutOff();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusPostViewTorqueMinTorqueShutOff",
+        tighteningErrorStatusPostViewTorqueMinTorqueShutOff);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusPostViewTorqueMaxTorqueShutOff =
+        getTighteningErrorStatusPostViewTorqueMaxTorqueShutOff();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusPostViewTorqueMaxTorqueShutOff",
+        tighteningErrorStatusPostViewTorqueMaxTorqueShutOff);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusPortViewTorqueAngleTooSmall =
+        getTighteningErrorStatusPortViewTorqueAngleTooSmall();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusPortViewTorqueAngleTooSmall",
+        tighteningErrorStatusPortViewTorqueAngleTooSmall);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusTriggerLost = getTighteningErrorStatusTriggerLost();
+    writeBuffer.writeVirtual("tighteningErrorStatusTriggerLost", tighteningErrorStatusTriggerLost);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusTorqueLessThanTarget =
+        getTighteningErrorStatusTorqueLessThanTarget();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusTorqueLessThanTarget", tighteningErrorStatusTorqueLessThanTarget);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusToolHot = getTighteningErrorStatusToolHot();
+    writeBuffer.writeVirtual("tighteningErrorStatusToolHot", tighteningErrorStatusToolHot);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusMultistageAbort = getTighteningErrorStatusMultistageAbort();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusMultistageAbort", tighteningErrorStatusMultistageAbort);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusRehit = getTighteningErrorStatusRehit();
+    writeBuffer.writeVirtual("tighteningErrorStatusRehit", tighteningErrorStatusRehit);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusDsMeasureFailed = getTighteningErrorStatusDsMeasureFailed();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusDsMeasureFailed", tighteningErrorStatusDsMeasureFailed);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusCurrentLimitReached =
+        getTighteningErrorStatusCurrentLimitReached();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusCurrentLimitReached", tighteningErrorStatusCurrentLimitReached);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusEndTimeOutShutoff = getTighteningErrorStatusEndTimeOutShutoff();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusEndTimeOutShutoff", tighteningErrorStatusEndTimeOutShutoff);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusRemoveFastenerLimitExceeded =
+        getTighteningErrorStatusRemoveFastenerLimitExceeded();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusRemoveFastenerLimitExceeded",
+        tighteningErrorStatusRemoveFastenerLimitExceeded);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusDisableDrive = getTighteningErrorStatusDisableDrive();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusDisableDrive", tighteningErrorStatusDisableDrive);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusTransducerLost = getTighteningErrorStatusTransducerLost();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusTransducerLost", tighteningErrorStatusTransducerLost);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusTransducerShorted = getTighteningErrorStatusTransducerShorted();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusTransducerShorted", tighteningErrorStatusTransducerShorted);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusTransducerCorrupt = getTighteningErrorStatusTransducerCorrupt();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusTransducerCorrupt", tighteningErrorStatusTransducerCorrupt);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusSyncTimeout = getTighteningErrorStatusSyncTimeout();
+    writeBuffer.writeVirtual("tighteningErrorStatusSyncTimeout", tighteningErrorStatusSyncTimeout);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusDynamicCurrentMonitoringMin =
+        getTighteningErrorStatusDynamicCurrentMonitoringMin();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusDynamicCurrentMonitoringMin",
+        tighteningErrorStatusDynamicCurrentMonitoringMin);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusDynamicCurrentMonitoringMax =
+        getTighteningErrorStatusDynamicCurrentMonitoringMax();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusDynamicCurrentMonitoringMax",
+        tighteningErrorStatusDynamicCurrentMonitoringMax);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusAngleMaxMonitor = getTighteningErrorStatusAngleMaxMonitor();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusAngleMaxMonitor", tighteningErrorStatusAngleMaxMonitor);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusYieldNutOff = getTighteningErrorStatusYieldNutOff();
+    writeBuffer.writeVirtual("tighteningErrorStatusYieldNutOff", tighteningErrorStatusYieldNutOff);
+
+    // Virtual field (doesn't actually serialize anything, just makes the value available)
+    boolean tighteningErrorStatusYieldTooFewSamples = getTighteningErrorStatusYieldTooFewSamples();
+    writeBuffer.writeVirtual(
+        "tighteningErrorStatusYieldTooFewSamples", tighteningErrorStatusYieldTooFewSamples);
 
     // Const Field (blockIdTorqueMinLimit)
     writeConstField(
@@ -1176,7 +1670,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
     writeSimpleField(
         "tighteningId",
         tighteningId,
-        writeUnsignedBigInteger(writeBuffer, 80),
+        writeString(writeBuffer, 80),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdJobSequenceNumber)
@@ -1304,6 +1798,34 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
     // Const Field (blockIdStrategyOptions)
     lengthInBits += 16;
 
+    // Reserved Field (reserved)
+    lengthInBits += 8;
+
+    // Simple field (strategyOptions)
+    lengthInBits += 32;
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
     // Const Field (blockIdBatchSize)
     lengthInBits += 16;
 
@@ -1372,6 +1894,73 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
 
     // Const Field (blockIdTighteningErrorStatus)
     lengthInBits += 16;
+
+    // Simple field (tighteningErrorStatus)
+    lengthInBits += 80;
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
+
+    // A virtual field doesn't have any in- or output.
 
     // Const Field (blockIdTorqueMinLimit)
     lengthInBits += 16;
@@ -1628,6 +2217,54 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
             OpenProtocolMessageLastTighteningResultDataRev2.BLOCKIDSTRATEGYOPTIONS,
             WithOption.WithEncoding("ASCII"));
 
+    Short reservedField0 =
+        readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x30);
+
+    long strategyOptions =
+        readSimpleField(
+            "strategyOptions", readUnsignedLong(readBuffer, 32), WithOption.WithEncoding("ASCII"));
+    boolean strategyOptionRbwMonitoring =
+        readVirtualField(
+            "strategyOptionRbwMonitoring",
+            boolean.class,
+            (((strategyOptions) & (0x0001))) == (0x0001));
+    boolean strategyOptionClickWrench =
+        readVirtualField(
+            "strategyOptionClickWrench",
+            boolean.class,
+            (((strategyOptions) & (0x0002))) == (0x0002));
+    boolean strategyOptionDsControl =
+        readVirtualField(
+            "strategyOptionDsControl", boolean.class, (((strategyOptions) & (0x0004))) == (0x0004));
+    boolean strategyOptionCm =
+        readVirtualField(
+            "strategyOptionCm", boolean.class, (((strategyOptions) & (0x0008))) == (0x0008));
+    boolean strategyOptionRundown =
+        readVirtualField(
+            "strategyOptionRundown", boolean.class, (((strategyOptions) & (0x0010))) == (0x0010));
+    boolean strategyOptionSelfTap =
+        readVirtualField(
+            "strategyOptionSelfTap", boolean.class, (((strategyOptions) & (0x0020))) == (0x0020));
+    boolean strategyOptionPvtCompensate =
+        readVirtualField(
+            "strategyOptionPvtCompensate",
+            boolean.class,
+            (((strategyOptions) & (0x0040))) == (0x0040));
+    boolean strategyOptionPvtMonitoring =
+        readVirtualField(
+            "strategyOptionPvtMonitoring",
+            boolean.class,
+            (((strategyOptions) & (0x0080))) == (0x0080));
+    boolean strategyOptionBatch =
+        readVirtualField(
+            "strategyOptionBatch", boolean.class, (((strategyOptions) & (0x0100))) == (0x0100));
+    boolean strategyOptionAngle =
+        readVirtualField(
+            "strategyOptionAngle", boolean.class, (((strategyOptions) & (0x0200))) == (0x0200));
+    boolean strategyOptionTorque =
+        readVirtualField(
+            "strategyOptionTorque", boolean.class, (((strategyOptions) & (0x0400))) == (0x0400));
+
     int blockIdBatchSize =
         readConstField(
             "blockIdBatchSize",
@@ -1657,12 +2294,11 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
             OpenProtocolMessageLastTighteningResultDataRev2.BLOCKIDTIGHTENINGSTATUS,
             WithOption.WithEncoding("ASCII"));
 
-    TighteningStatus tighteningStatus =
+    NokOk tighteningStatus =
         readEnumField(
             "tighteningStatus",
-            "TighteningStatus",
-            new DataReaderEnumDefault<>(
-                TighteningStatus::enumForValue, readUnsignedShort(readBuffer, 8)),
+            "NokOk",
+            new DataReaderEnumDefault<>(NokOk::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdBatchStatus =
@@ -1784,6 +2420,202 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
             readUnsignedInt(readBuffer, 16),
             OpenProtocolMessageLastTighteningResultDataRev2.BLOCKIDTIGHTENINGERRORSTATUS,
             WithOption.WithEncoding("ASCII"));
+
+    String tighteningErrorStatus =
+        readSimpleField(
+            "tighteningErrorStatus", readString(readBuffer, 80), WithOption.WithEncoding("ASCII"));
+    boolean tighteningErrorStatusRundownAngleMaxShutOff =
+        readVirtualField(
+            "tighteningErrorStatusRundownAngleMaxShutOff",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 1));
+    boolean tighteningErrorStatusRundownAngleMinShutOff =
+        readVirtualField(
+            "tighteningErrorStatusRundownAngleMinShutOff",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 2));
+    boolean tighteningErrorStatusTorqueMaxShutOff =
+        readVirtualField(
+            "tighteningErrorStatusTorqueMaxShutOff",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 3));
+    boolean tighteningErrorStatusAngleMaxShutOff =
+        readVirtualField(
+            "tighteningErrorStatusAngleMaxShutOff",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 4));
+    boolean tighteningErrorStatusSelfTapTorqueMaxShutOff =
+        readVirtualField(
+            "tighteningErrorStatusSelfTapTorqueMaxShutOff",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 5));
+    boolean tighteningErrorStatusSelfTapTorqueMinShutOff =
+        readVirtualField(
+            "tighteningErrorStatusSelfTapTorqueMinShutOff",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 6));
+    boolean tighteningErrorStatusPrevailTorqueMaxShutOff =
+        readVirtualField(
+            "tighteningErrorStatusPrevailTorqueMaxShutOff",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 7));
+    boolean tighteningErrorStatusPrevailTorqueMinShutOff =
+        readVirtualField(
+            "tighteningErrorStatusPrevailTorqueMinShutOff",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 8));
+    boolean tighteningErrorStatusPrevailTorqueCompensateOverflow =
+        readVirtualField(
+            "tighteningErrorStatusPrevailTorqueCompensateOverflow",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 9));
+    boolean tighteningErrorStatusCurrentMonitoringMaxShutOff =
+        readVirtualField(
+            "tighteningErrorStatusCurrentMonitoringMaxShutOff",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 10));
+    boolean tighteningErrorStatusPostViewTorqueMinTorqueShutOff =
+        readVirtualField(
+            "tighteningErrorStatusPostViewTorqueMinTorqueShutOff",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 11));
+    boolean tighteningErrorStatusPostViewTorqueMaxTorqueShutOff =
+        readVirtualField(
+            "tighteningErrorStatusPostViewTorqueMaxTorqueShutOff",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 12));
+    boolean tighteningErrorStatusPortViewTorqueAngleTooSmall =
+        readVirtualField(
+            "tighteningErrorStatusPortViewTorqueAngleTooSmall",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 13));
+    boolean tighteningErrorStatusTriggerLost =
+        readVirtualField(
+            "tighteningErrorStatusTriggerLost",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 14));
+    boolean tighteningErrorStatusTorqueLessThanTarget =
+        readVirtualField(
+            "tighteningErrorStatusTorqueLessThanTarget",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 15));
+    boolean tighteningErrorStatusToolHot =
+        readVirtualField(
+            "tighteningErrorStatusToolHot",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 16));
+    boolean tighteningErrorStatusMultistageAbort =
+        readVirtualField(
+            "tighteningErrorStatusMultistageAbort",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 17));
+    boolean tighteningErrorStatusRehit =
+        readVirtualField(
+            "tighteningErrorStatusRehit",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 18));
+    boolean tighteningErrorStatusDsMeasureFailed =
+        readVirtualField(
+            "tighteningErrorStatusDsMeasureFailed",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 19));
+    boolean tighteningErrorStatusCurrentLimitReached =
+        readVirtualField(
+            "tighteningErrorStatusCurrentLimitReached",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 20));
+    boolean tighteningErrorStatusEndTimeOutShutoff =
+        readVirtualField(
+            "tighteningErrorStatusEndTimeOutShutoff",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 21));
+    boolean tighteningErrorStatusRemoveFastenerLimitExceeded =
+        readVirtualField(
+            "tighteningErrorStatusRemoveFastenerLimitExceeded",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 22));
+    boolean tighteningErrorStatusDisableDrive =
+        readVirtualField(
+            "tighteningErrorStatusDisableDrive",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 23));
+    boolean tighteningErrorStatusTransducerLost =
+        readVirtualField(
+            "tighteningErrorStatusTransducerLost",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 24));
+    boolean tighteningErrorStatusTransducerShorted =
+        readVirtualField(
+            "tighteningErrorStatusTransducerShorted",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 25));
+    boolean tighteningErrorStatusTransducerCorrupt =
+        readVirtualField(
+            "tighteningErrorStatusTransducerCorrupt",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 26));
+    boolean tighteningErrorStatusSyncTimeout =
+        readVirtualField(
+            "tighteningErrorStatusSyncTimeout",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 27));
+    boolean tighteningErrorStatusDynamicCurrentMonitoringMin =
+        readVirtualField(
+            "tighteningErrorStatusDynamicCurrentMonitoringMin",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 28));
+    boolean tighteningErrorStatusDynamicCurrentMonitoringMax =
+        readVirtualField(
+            "tighteningErrorStatusDynamicCurrentMonitoringMax",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 29));
+    boolean tighteningErrorStatusAngleMaxMonitor =
+        readVirtualField(
+            "tighteningErrorStatusAngleMaxMonitor",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 30));
+    boolean tighteningErrorStatusYieldNutOff =
+        readVirtualField(
+            "tighteningErrorStatusYieldNutOff",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 31));
+    boolean tighteningErrorStatusYieldTooFewSamples =
+        readVirtualField(
+            "tighteningErrorStatusYieldTooFewSamples",
+            boolean.class,
+            org.apache.plc4x.java.openprotocol.readwrite.utils.StaticHelper.isBitSet(
+                tighteningErrorStatus, 32));
 
     int blockIdTorqueMinLimit =
         readConstField(
@@ -2040,11 +2872,9 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
             OpenProtocolMessageLastTighteningResultDataRev2.BLOCKIDTIGHTENINGID,
             WithOption.WithEncoding("ASCII"));
 
-    BigInteger tighteningId =
+    String tighteningId =
         readSimpleField(
-            "tighteningId",
-            readUnsignedBigInteger(readBuffer, 80),
-            WithOption.WithEncoding("ASCII"));
+            "tighteningId", readString(readBuffer, 80), WithOption.WithEncoding("ASCII"));
 
     int blockIdJobSequenceNumber =
         readConstField(
@@ -2117,6 +2947,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
         jobId,
         parameterSetNumber,
         strategy,
+        strategyOptions,
         batchSize,
         batchCounter,
         tighteningStatus,
@@ -2128,6 +2959,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
         selfTapStatus,
         prevailTorqueMonitoringStatus,
         prevailTorqueCompensateStatus,
+        tighteningErrorStatus,
         torqueMinLimit,
         torqueMaxLimit,
         torqueFinalTarget,
@@ -2166,9 +2998,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
     private final long jobId;
     private final long parameterSetNumber;
     private final Strategy strategy;
+    private final long strategyOptions;
     private final long batchSize;
     private final long batchCounter;
-    private final TighteningStatus tighteningStatus;
+    private final NokOk tighteningStatus;
     private final BatchStatus batchStatus;
     private final Status torqueStatus;
     private final Status angleStatus;
@@ -2177,6 +3010,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
     private final Status selfTapStatus;
     private final Status prevailTorqueMonitoringStatus;
     private final Status prevailTorqueCompensateStatus;
+    private final String tighteningErrorStatus;
     private final BigInteger torqueMinLimit;
     private final BigInteger torqueMaxLimit;
     private final BigInteger torqueFinalTarget;
@@ -2197,7 +3031,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
     private final BigInteger prevailTorqueMonitoringMin;
     private final BigInteger prevailTorqueMonitoringMax;
     private final BigInteger prevailTorque;
-    private final BigInteger tighteningId;
+    private final String tighteningId;
     private final BigInteger jobSequenceNumber;
     private final BigInteger syncTighteningId;
     private final String toolSerialNumber;
@@ -2212,9 +3046,10 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
         long jobId,
         long parameterSetNumber,
         Strategy strategy,
+        long strategyOptions,
         long batchSize,
         long batchCounter,
-        TighteningStatus tighteningStatus,
+        NokOk tighteningStatus,
         BatchStatus batchStatus,
         Status torqueStatus,
         Status angleStatus,
@@ -2223,6 +3058,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
         Status selfTapStatus,
         Status prevailTorqueMonitoringStatus,
         Status prevailTorqueCompensateStatus,
+        String tighteningErrorStatus,
         BigInteger torqueMinLimit,
         BigInteger torqueMaxLimit,
         BigInteger torqueFinalTarget,
@@ -2243,7 +3079,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
         BigInteger prevailTorqueMonitoringMin,
         BigInteger prevailTorqueMonitoringMax,
         BigInteger prevailTorque,
-        BigInteger tighteningId,
+        String tighteningId,
         BigInteger jobSequenceNumber,
         BigInteger syncTighteningId,
         String toolSerialNumber,
@@ -2256,6 +3092,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
       this.jobId = jobId;
       this.parameterSetNumber = parameterSetNumber;
       this.strategy = strategy;
+      this.strategyOptions = strategyOptions;
       this.batchSize = batchSize;
       this.batchCounter = batchCounter;
       this.tighteningStatus = tighteningStatus;
@@ -2267,6 +3104,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
       this.selfTapStatus = selfTapStatus;
       this.prevailTorqueMonitoringStatus = prevailTorqueMonitoringStatus;
       this.prevailTorqueCompensateStatus = prevailTorqueCompensateStatus;
+      this.tighteningErrorStatus = tighteningErrorStatus;
       this.torqueMinLimit = torqueMinLimit;
       this.torqueMaxLimit = torqueMaxLimit;
       this.torqueFinalTarget = torqueFinalTarget;
@@ -2321,6 +3159,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
                   jobId,
                   parameterSetNumber,
                   strategy,
+                  strategyOptions,
                   batchSize,
                   batchCounter,
                   tighteningStatus,
@@ -2332,6 +3171,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
                   selfTapStatus,
                   prevailTorqueMonitoringStatus,
                   prevailTorqueCompensateStatus,
+                  tighteningErrorStatus,
                   torqueMinLimit,
                   torqueMaxLimit,
                   torqueFinalTarget,
@@ -2379,6 +3219,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
         && (getJobId() == that.getJobId())
         && (getParameterSetNumber() == that.getParameterSetNumber())
         && (getStrategy() == that.getStrategy())
+        && (getStrategyOptions() == that.getStrategyOptions())
         && (getBatchSize() == that.getBatchSize())
         && (getBatchCounter() == that.getBatchCounter())
         && (getTighteningStatus() == that.getTighteningStatus())
@@ -2390,6 +3231,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
         && (getSelfTapStatus() == that.getSelfTapStatus())
         && (getPrevailTorqueMonitoringStatus() == that.getPrevailTorqueMonitoringStatus())
         && (getPrevailTorqueCompensateStatus() == that.getPrevailTorqueCompensateStatus())
+        && (getTighteningErrorStatus() == that.getTighteningErrorStatus())
         && (getTorqueMinLimit() == that.getTorqueMinLimit())
         && (getTorqueMaxLimit() == that.getTorqueMaxLimit())
         && (getTorqueFinalTarget() == that.getTorqueFinalTarget())
@@ -2432,6 +3274,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
         getJobId(),
         getParameterSetNumber(),
         getStrategy(),
+        getStrategyOptions(),
         getBatchSize(),
         getBatchCounter(),
         getTighteningStatus(),
@@ -2443,6 +3286,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev2
         getSelfTapStatus(),
         getPrevailTorqueMonitoringStatus(),
         getPrevailTorqueCompensateStatus(),
+        getTighteningErrorStatus(),
         getTorqueMinLimit(),
         getTorqueMaxLimit(),
         getTorqueFinalTarget(),
