@@ -1607,9 +1607,6 @@ public enum BACnetVendorId {
   KOMFORTIQ_INC((int) 1397, (int) 1397, (String) "Komfort IQ, Inc."),
   COOL_TERA_LIMITED((int) 1398, (int) 1398, (String) "CoolTera Limited"),
   HADRON_SOLUTIONS_SRLS((int) 1399, (int) 1399, (String) "Hadron Solutions S.r.l.s"),
-  BITPOOL((int) 1401, (int) 1401, (String) "Bitpool"),
-  SONICULLC((int) 1402, (int) 1402, (String) "Sonicu, LLC"),
-  RISHABH_INSTRUMENTS_LIMITED((int) 1403, (int) 1403, (String) "Rishabh Instruments Limited"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

@@ -247,6 +247,7 @@
     [array    byte                   data       count 'transportSize.sizeInBits ? CEIL(dataLength / 8.0) : dataLength']
     [padding  uint 8                 pad        '0x00' '(COUNT(data) % 2)']
     //[padding  uint 8                 pad        '0x00' '(PADCOUNT(data, hasNext) % 2)']
+
 ]
 
 [type S7VarPayloadStatusItem
