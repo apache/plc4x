@@ -1428,6 +1428,9 @@ const (
 	BACnetVendorId_KOMFORTIQ_INC                                                                BACnetVendorId = 1397
 	BACnetVendorId_COOL_TERA_LIMITED                                                            BACnetVendorId = 1398
 	BACnetVendorId_HADRON_SOLUTIONS_SRLS                                                        BACnetVendorId = 1399
+	BACnetVendorId_BITPOOL                                                                      BACnetVendorId = 1401
+	BACnetVendorId_SONICULLC                                                                    BACnetVendorId = 1402
+	BACnetVendorId_RISHABH_INSTRUMENTS_LIMITED                                                  BACnetVendorId = 1403
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2828,6 +2831,9 @@ func init() {
 		BACnetVendorId_KOMFORTIQ_INC,
 		BACnetVendorId_COOL_TERA_LIMITED,
 		BACnetVendorId_HADRON_SOLUTIONS_SRLS,
+		BACnetVendorId_BITPOOL,
+		BACnetVendorId_SONICULLC,
+		BACnetVendorId_RISHABH_INSTRUMENTS_LIMITED,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4621,6 +4627,18 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 140:
 		{ /* '140' */
 			return 140
+		}
+	case 1401:
+		{ /* '1401' */
+			return 1401
+		}
+	case 1402:
+		{ /* '1402' */
+			return 1402
+		}
+	case 1403:
+		{ /* '1403' */
+			return 1403
 		}
 	case 141:
 		{ /* '141' */
@@ -10212,6 +10230,18 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '140' */
 			return "Viconics Electronics, Inc."
 		}
+	case 1401:
+		{ /* '1401' */
+			return "Bitpool"
+		}
+	case 1402:
+		{ /* '1402' */
+			return "Sonicu, LLC"
+		}
+	case 1403:
+		{ /* '1403' */
+			return "Rishabh Instruments Limited"
+		}
 	case 141:
 		{ /* '141' */
 			return "Yaskawa America, Inc."
@@ -14907,6 +14937,12 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_CIMETRICS_TECHNOLOGY, true
 	case 140:
 		return BACnetVendorId_VICONICS_ELECTRONICS_INC, true
+	case 1401:
+		return BACnetVendorId_BITPOOL, true
+	case 1402:
+		return BACnetVendorId_SONICULLC, true
+	case 1403:
+		return BACnetVendorId_RISHABH_INSTRUMENTS_LIMITED, true
 	case 141:
 		return BACnetVendorId_YASKAWA_AMERICA_INC, true
 	case 142:
@@ -17699,6 +17735,12 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_CIMETRICS_TECHNOLOGY, true
 	case "VICONICS_ELECTRONICS_INC":
 		return BACnetVendorId_VICONICS_ELECTRONICS_INC, true
+	case "BITPOOL":
+		return BACnetVendorId_BITPOOL, true
+	case "SONICULLC":
+		return BACnetVendorId_SONICULLC, true
+	case "RISHABH_INSTRUMENTS_LIMITED":
+		return BACnetVendorId_RISHABH_INSTRUMENTS_LIMITED, true
 	case "YASKAWA_AMERICA_INC":
 		return BACnetVendorId_YASKAWA_AMERICA_INC, true
 	case "DEO_SCONTROLSYSTEMS_GMBH":
@@ -20548,6 +20590,12 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "CIMETRICS_TECHNOLOGY"
 	case BACnetVendorId_VICONICS_ELECTRONICS_INC:
 		return "VICONICS_ELECTRONICS_INC"
+	case BACnetVendorId_BITPOOL:
+		return "BITPOOL"
+	case BACnetVendorId_SONICULLC:
+		return "SONICULLC"
+	case BACnetVendorId_RISHABH_INSTRUMENTS_LIMITED:
+		return "RISHABH_INSTRUMENTS_LIMITED"
 	case BACnetVendorId_YASKAWA_AMERICA_INC:
 		return "YASKAWA_AMERICA_INC"
 	case BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH:
