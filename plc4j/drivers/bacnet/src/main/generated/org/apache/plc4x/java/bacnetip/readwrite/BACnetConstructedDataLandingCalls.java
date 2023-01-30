@@ -103,7 +103,7 @@ public class BACnetConstructedDataLandingCalls extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLandingCallsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -127,21 +127,20 @@ public class BACnetConstructedDataLandingCalls extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataLandingCalls");
     // Create the instance
-    return new BACnetConstructedDataLandingCallsBuilder(
+    return new BACnetConstructedDataLandingCallsBuilderImpl(
         landingCallStatus, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLandingCallsBuilder
+  public static class BACnetConstructedDataLandingCallsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetLandingCallStatus> landingCallStatus;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLandingCallsBuilder(
+    public BACnetConstructedDataLandingCallsBuilderImpl(
         List<BACnetLandingCallStatus> landingCallStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.landingCallStatus = landingCallStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

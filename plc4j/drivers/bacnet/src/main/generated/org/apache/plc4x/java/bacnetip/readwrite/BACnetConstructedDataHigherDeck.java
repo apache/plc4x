@@ -109,7 +109,7 @@ public class BACnetConstructedDataHigherDeck extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataHigherDeckBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,20 @@ public class BACnetConstructedDataHigherDeck extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataHigherDeck");
     // Create the instance
-    return new BACnetConstructedDataHigherDeckBuilder(higherDeck, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataHigherDeckBuilderImpl(
+        higherDeck, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataHigherDeckBuilder
+  public static class BACnetConstructedDataHigherDeckBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagObjectIdentifier higherDeck;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataHigherDeckBuilder(
+    public BACnetConstructedDataHigherDeckBuilderImpl(
         BACnetApplicationTagObjectIdentifier higherDeck,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.higherDeck = higherDeck;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

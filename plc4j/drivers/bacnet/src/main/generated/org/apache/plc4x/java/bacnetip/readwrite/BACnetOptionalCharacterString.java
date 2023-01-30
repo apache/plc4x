@@ -114,9 +114,13 @@ public abstract class BACnetOptionalCharacterString implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetOptionalCharacterStringBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetOptionalCharacterStringNull.staticParseBuilder(readBuffer);
+      builder =
+          BACnetOptionalCharacterStringNull.staticParseBACnetOptionalCharacterStringBuilder(
+              readBuffer);
     } else if (true) {
-      builder = BACnetOptionalCharacterStringValue.staticParseBuilder(readBuffer);
+      builder =
+          BACnetOptionalCharacterStringValue.staticParseBACnetOptionalCharacterStringBuilder(
+              readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -133,7 +137,7 @@ public abstract class BACnetOptionalCharacterString implements Message {
     return _bACnetOptionalCharacterString;
   }
 
-  public static interface BACnetOptionalCharacterStringBuilder {
+  public interface BACnetOptionalCharacterStringBuilder {
     BACnetOptionalCharacterString build(BACnetTagHeader peekedTagHeader);
   }
 

@@ -105,7 +105,7 @@ public class CALDataAcknowledge extends CALData implements Message {
     return lengthInBits;
   }
 
-  public static CALDataAcknowledgeBuilder staticParseBuilder(
+  public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer, RequestContext requestContext) throws ParseException {
     readBuffer.pullContext("CALDataAcknowledge");
     PositionAware positionAware = readBuffer;
@@ -122,16 +122,16 @@ public class CALDataAcknowledge extends CALData implements Message {
 
     readBuffer.closeContext("CALDataAcknowledge");
     // Create the instance
-    return new CALDataAcknowledgeBuilder(paramNo, code, requestContext);
+    return new CALDataAcknowledgeBuilderImpl(paramNo, code, requestContext);
   }
 
-  public static class CALDataAcknowledgeBuilder implements CALData.CALDataBuilder {
+  public static class CALDataAcknowledgeBuilderImpl implements CALData.CALDataBuilder {
     private final Parameter paramNo;
     private final short code;
     private final RequestContext requestContext;
 
-    public CALDataAcknowledgeBuilder(Parameter paramNo, short code, RequestContext requestContext) {
-
+    public CALDataAcknowledgeBuilderImpl(
+        Parameter paramNo, short code, RequestContext requestContext) {
       this.paramNo = paramNo;
       this.code = code;
       this.requestContext = requestContext;

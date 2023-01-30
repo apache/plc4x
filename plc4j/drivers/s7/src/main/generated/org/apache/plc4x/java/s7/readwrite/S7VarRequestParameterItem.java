@@ -96,7 +96,8 @@ public abstract class S7VarRequestParameterItem implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     S7VarRequestParameterItemBuilder builder = null;
     if (EvaluationHelper.equals(itemType, (short) 0x12)) {
-      builder = S7VarRequestParameterItemAddress.staticParseBuilder(readBuffer);
+      builder =
+          S7VarRequestParameterItemAddress.staticParseS7VarRequestParameterItemBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -113,7 +114,7 @@ public abstract class S7VarRequestParameterItem implements Message {
     return _s7VarRequestParameterItem;
   }
 
-  public static interface S7VarRequestParameterItemBuilder {
+  public interface S7VarRequestParameterItemBuilder {
     S7VarRequestParameterItem build();
   }
 

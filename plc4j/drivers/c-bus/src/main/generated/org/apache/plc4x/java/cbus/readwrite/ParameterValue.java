@@ -118,36 +118,48 @@ public abstract class ParameterValue implements Message {
     ParameterValueBuilder builder = null;
     if (EvaluationHelper.equals(parameterType, ParameterType.APPLICATION_ADDRESS_1)) {
       builder =
-          ParameterValueApplicationAddress1.staticParseBuilder(readBuffer, parameterType, numBytes);
+          ParameterValueApplicationAddress1.staticParseParameterValueBuilder(
+              readBuffer, parameterType, numBytes);
     } else if (EvaluationHelper.equals(parameterType, ParameterType.APPLICATION_ADDRESS_2)) {
       builder =
-          ParameterValueApplicationAddress2.staticParseBuilder(readBuffer, parameterType, numBytes);
+          ParameterValueApplicationAddress2.staticParseParameterValueBuilder(
+              readBuffer, parameterType, numBytes);
     } else if (EvaluationHelper.equals(parameterType, ParameterType.INTERFACE_OPTIONS_1)) {
       builder =
-          ParameterValueInterfaceOptions1.staticParseBuilder(readBuffer, parameterType, numBytes);
+          ParameterValueInterfaceOptions1.staticParseParameterValueBuilder(
+              readBuffer, parameterType, numBytes);
     } else if (EvaluationHelper.equals(parameterType, ParameterType.BAUD_RATE_SELECTOR)) {
       builder =
-          ParameterValueBaudRateSelector.staticParseBuilder(readBuffer, parameterType, numBytes);
+          ParameterValueBaudRateSelector.staticParseParameterValueBuilder(
+              readBuffer, parameterType, numBytes);
     } else if (EvaluationHelper.equals(parameterType, ParameterType.INTERFACE_OPTIONS_2)) {
       builder =
-          ParameterValueInterfaceOptions2.staticParseBuilder(readBuffer, parameterType, numBytes);
+          ParameterValueInterfaceOptions2.staticParseParameterValueBuilder(
+              readBuffer, parameterType, numBytes);
     } else if (EvaluationHelper.equals(
         parameterType, ParameterType.INTERFACE_OPTIONS_1_POWER_UP_SETTINGS)) {
       builder =
-          ParameterValueInterfaceOptions1PowerUpSettings.staticParseBuilder(
+          ParameterValueInterfaceOptions1PowerUpSettings.staticParseParameterValueBuilder(
               readBuffer, parameterType, numBytes);
     } else if (EvaluationHelper.equals(parameterType, ParameterType.INTERFACE_OPTIONS_3)) {
       builder =
-          ParameterValueInterfaceOptions3.staticParseBuilder(readBuffer, parameterType, numBytes);
+          ParameterValueInterfaceOptions3.staticParseParameterValueBuilder(
+              readBuffer, parameterType, numBytes);
     } else if (EvaluationHelper.equals(parameterType, ParameterType.CUSTOM_MANUFACTURER)) {
       builder =
-          ParameterValueCustomManufacturer.staticParseBuilder(readBuffer, parameterType, numBytes);
+          ParameterValueCustomManufacturer.staticParseParameterValueBuilder(
+              readBuffer, parameterType, numBytes);
     } else if (EvaluationHelper.equals(parameterType, ParameterType.SERIAL_NUMBER)) {
-      builder = ParameterValueSerialNumber.staticParseBuilder(readBuffer, parameterType, numBytes);
+      builder =
+          ParameterValueSerialNumber.staticParseParameterValueBuilder(
+              readBuffer, parameterType, numBytes);
     } else if (EvaluationHelper.equals(parameterType, ParameterType.CUSTOM_TYPE)) {
-      builder = ParameterValueCustomTypes.staticParseBuilder(readBuffer, parameterType, numBytes);
+      builder =
+          ParameterValueCustomTypes.staticParseParameterValueBuilder(
+              readBuffer, parameterType, numBytes);
     } else if (true) {
-      builder = ParameterValueRaw.staticParseBuilder(readBuffer, parameterType, numBytes);
+      builder =
+          ParameterValueRaw.staticParseParameterValueBuilder(readBuffer, parameterType, numBytes);
     }
     if (builder == null) {
       throw new ParseException(
@@ -165,7 +177,7 @@ public abstract class ParameterValue implements Message {
     return _parameterValue;
   }
 
-  public static interface ParameterValueBuilder {
+  public interface ParameterValueBuilder {
     ParameterValue build(Short numBytes);
   }
 

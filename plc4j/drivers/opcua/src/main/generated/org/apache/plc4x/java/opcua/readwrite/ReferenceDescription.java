@@ -50,8 +50,6 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
   protected final LocalizedText displayName;
   protected final NodeClass nodeClass;
   protected final ExpandedNodeId typeDefinition;
-  // Reserved Fields
-  private Short reservedField0;
 
   public ReferenceDescription(
       NodeId referenceTypeId,
@@ -111,10 +109,7 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
         "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (isForward)
     writeSimpleField("isForward", isForward, writeBoolean(writeBuffer));
@@ -179,7 +174,7 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static ReferenceDescriptionBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ReferenceDescription");
     PositionAware positionAware = readBuffer;
@@ -228,18 +223,11 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("ReferenceDescription");
     // Create the instance
-    return new ReferenceDescriptionBuilder(
-        referenceTypeId,
-        isForward,
-        nodeId,
-        browseName,
-        displayName,
-        nodeClass,
-        typeDefinition,
-        reservedField0);
+    return new ReferenceDescriptionBuilderImpl(
+        referenceTypeId, isForward, nodeId, browseName, displayName, nodeClass, typeDefinition);
   }
 
-  public static class ReferenceDescriptionBuilder
+  public static class ReferenceDescriptionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId referenceTypeId;
     private final boolean isForward;
@@ -248,17 +236,15 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
     private final LocalizedText displayName;
     private final NodeClass nodeClass;
     private final ExpandedNodeId typeDefinition;
-    private final Short reservedField0;
 
-    public ReferenceDescriptionBuilder(
+    public ReferenceDescriptionBuilderImpl(
         NodeId referenceTypeId,
         boolean isForward,
         ExpandedNodeId nodeId,
         QualifiedName browseName,
         LocalizedText displayName,
         NodeClass nodeClass,
-        ExpandedNodeId typeDefinition,
-        Short reservedField0) {
+        ExpandedNodeId typeDefinition) {
       this.referenceTypeId = referenceTypeId;
       this.isForward = isForward;
       this.nodeId = nodeId;
@@ -266,7 +252,6 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
       this.displayName = displayName;
       this.nodeClass = nodeClass;
       this.typeDefinition = typeDefinition;
-      this.reservedField0 = reservedField0;
     }
 
     public ReferenceDescription build() {
@@ -279,7 +264,6 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
               displayName,
               nodeClass,
               typeDefinition);
-      referenceDescription.reservedField0 = reservedField0;
       return referenceDescription;
     }
   }

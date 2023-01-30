@@ -116,7 +116,7 @@ public class AddReferencesRequest extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static AddReferencesRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AddReferencesRequest");
     PositionAware positionAware = readBuffer;
@@ -142,20 +142,19 @@ public class AddReferencesRequest extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("AddReferencesRequest");
     // Create the instance
-    return new AddReferencesRequestBuilder(requestHeader, noOfReferencesToAdd, referencesToAdd);
+    return new AddReferencesRequestBuilderImpl(requestHeader, noOfReferencesToAdd, referencesToAdd);
   }
 
-  public static class AddReferencesRequestBuilder
+  public static class AddReferencesRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfReferencesToAdd;
     private final List<ExtensionObjectDefinition> referencesToAdd;
 
-    public AddReferencesRequestBuilder(
+    public AddReferencesRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfReferencesToAdd,
         List<ExtensionObjectDefinition> referencesToAdd) {
-
       this.requestHeader = requestHeader;
       this.noOfReferencesToAdd = noOfReferencesToAdd;
       this.referencesToAdd = referencesToAdd;

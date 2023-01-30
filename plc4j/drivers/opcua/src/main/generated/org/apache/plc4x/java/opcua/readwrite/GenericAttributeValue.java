@@ -95,7 +95,7 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static GenericAttributeValueBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("GenericAttributeValue");
     PositionAware positionAware = readBuffer;
@@ -111,16 +111,15 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("GenericAttributeValue");
     // Create the instance
-    return new GenericAttributeValueBuilder(attributeId, value);
+    return new GenericAttributeValueBuilderImpl(attributeId, value);
   }
 
-  public static class GenericAttributeValueBuilder
+  public static class GenericAttributeValueBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long attributeId;
     private final Variant value;
 
-    public GenericAttributeValueBuilder(long attributeId, Variant value) {
-
+    public GenericAttributeValueBuilderImpl(long attributeId, Variant value) {
       this.attributeId = attributeId;
       this.value = value;
     }

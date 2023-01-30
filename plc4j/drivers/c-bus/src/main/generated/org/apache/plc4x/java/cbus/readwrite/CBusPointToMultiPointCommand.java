@@ -114,9 +114,13 @@ public abstract class CBusPointToMultiPointCommand implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     CBusPointToMultiPointCommandBuilder builder = null;
     if (EvaluationHelper.equals(peekedApplication, (byte) 0xFF)) {
-      builder = CBusPointToMultiPointCommandStatus.staticParseBuilder(readBuffer, cBusOptions);
+      builder =
+          CBusPointToMultiPointCommandStatus.staticParseCBusPointToMultiPointCommandBuilder(
+              readBuffer, cBusOptions);
     } else if (true) {
-      builder = CBusPointToMultiPointCommandNormal.staticParseBuilder(readBuffer, cBusOptions);
+      builder =
+          CBusPointToMultiPointCommandNormal.staticParseCBusPointToMultiPointCommandBuilder(
+              readBuffer, cBusOptions);
     }
     if (builder == null) {
       throw new ParseException(
@@ -134,7 +138,7 @@ public abstract class CBusPointToMultiPointCommand implements Message {
     return _cBusPointToMultiPointCommand;
   }
 
-  public static interface CBusPointToMultiPointCommandBuilder {
+  public interface CBusPointToMultiPointCommandBuilder {
     CBusPointToMultiPointCommand build(byte peekedApplication, CBusOptions cBusOptions);
   }
 

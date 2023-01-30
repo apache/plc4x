@@ -148,7 +148,7 @@ public class BrowseNextResponse extends ExtensionObjectDefinition implements Mes
     return lengthInBits;
   }
 
-  public static BrowseNextResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("BrowseNextResponse");
     PositionAware positionAware = readBuffer;
@@ -183,11 +183,11 @@ public class BrowseNextResponse extends ExtensionObjectDefinition implements Mes
 
     readBuffer.closeContext("BrowseNextResponse");
     // Create the instance
-    return new BrowseNextResponseBuilder(
+    return new BrowseNextResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class BrowseNextResponseBuilder
+  public static class BrowseNextResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -195,13 +195,12 @@ public class BrowseNextResponse extends ExtensionObjectDefinition implements Mes
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public BrowseNextResponseBuilder(
+    public BrowseNextResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<ExtensionObjectDefinition> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

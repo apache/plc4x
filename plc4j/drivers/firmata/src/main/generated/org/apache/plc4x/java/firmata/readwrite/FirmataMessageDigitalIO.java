@@ -46,14 +46,10 @@ public class FirmataMessageDigitalIO extends FirmataMessage implements Message {
   protected final byte pinBlock;
   protected final List<Byte> data;
 
-  // Arguments.
-  protected final Boolean response;
-
-  public FirmataMessageDigitalIO(byte pinBlock, List<Byte> data, Boolean response) {
-    super(response);
+  public FirmataMessageDigitalIO(byte pinBlock, List<Byte> data) {
+    super();
     this.pinBlock = pinBlock;
     this.data = data;
-    this.response = response;
   }
 
   public byte getPinBlock() {
@@ -109,7 +105,7 @@ public class FirmataMessageDigitalIO extends FirmataMessage implements Message {
     return lengthInBits;
   }
 
-  public static FirmataMessageDigitalIOBuilder staticParseBuilder(
+  public static FirmataMessageBuilder staticParseFirmataMessageBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataMessageDigitalIO");
     PositionAware positionAware = readBuffer;
@@ -131,26 +127,21 @@ public class FirmataMessageDigitalIO extends FirmataMessage implements Message {
 
     readBuffer.closeContext("FirmataMessageDigitalIO");
     // Create the instance
-    return new FirmataMessageDigitalIOBuilder(pinBlock, data, response);
+    return new FirmataMessageDigitalIOBuilderImpl(pinBlock, data);
   }
 
-  public static class FirmataMessageDigitalIOBuilder
+  public static class FirmataMessageDigitalIOBuilderImpl
       implements FirmataMessage.FirmataMessageBuilder {
     private final byte pinBlock;
     private final List<Byte> data;
-    private final Boolean response;
 
-    public FirmataMessageDigitalIOBuilder(byte pinBlock, List<Byte> data, Boolean response) {
-
+    public FirmataMessageDigitalIOBuilderImpl(byte pinBlock, List<Byte> data) {
       this.pinBlock = pinBlock;
       this.data = data;
-      this.response = response;
     }
 
-    public FirmataMessageDigitalIO build(Boolean response) {
-
-      FirmataMessageDigitalIO firmataMessageDigitalIO =
-          new FirmataMessageDigitalIO(pinBlock, data, response);
+    public FirmataMessageDigitalIO build() {
+      FirmataMessageDigitalIO firmataMessageDigitalIO = new FirmataMessageDigitalIO(pinBlock, data);
       return firmataMessageDigitalIO;
     }
   }

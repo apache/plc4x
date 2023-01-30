@@ -109,7 +109,7 @@ public class BACnetConstructedDataIsUTC extends BACnetConstructedData implements
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIsUTCBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,20 +132,19 @@ public class BACnetConstructedDataIsUTC extends BACnetConstructedData implements
 
     readBuffer.closeContext("BACnetConstructedDataIsUTC");
     // Create the instance
-    return new BACnetConstructedDataIsUTCBuilder(isUtc, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIsUTCBuilderImpl(isUtc, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIsUTCBuilder
+  public static class BACnetConstructedDataIsUTCBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean isUtc;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIsUTCBuilder(
+    public BACnetConstructedDataIsUTCBuilderImpl(
         BACnetApplicationTagBoolean isUtc,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.isUtc = isUtc;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

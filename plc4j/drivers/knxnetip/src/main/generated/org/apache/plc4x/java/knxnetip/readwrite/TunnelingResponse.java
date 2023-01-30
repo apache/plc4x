@@ -87,7 +87,7 @@ public class TunnelingResponse extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static TunnelingResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TunnelingResponse");
     PositionAware positionAware = readBuffer;
@@ -103,14 +103,14 @@ public class TunnelingResponse extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("TunnelingResponse");
     // Create the instance
-    return new TunnelingResponseBuilder(tunnelingResponseDataBlock);
+    return new TunnelingResponseBuilderImpl(tunnelingResponseDataBlock);
   }
 
-  public static class TunnelingResponseBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class TunnelingResponseBuilderImpl
+      implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final TunnelingResponseDataBlock tunnelingResponseDataBlock;
 
-    public TunnelingResponseBuilder(TunnelingResponseDataBlock tunnelingResponseDataBlock) {
-
+    public TunnelingResponseBuilderImpl(TunnelingResponseDataBlock tunnelingResponseDataBlock) {
       this.tunnelingResponseDataBlock = tunnelingResponseDataBlock;
     }
 

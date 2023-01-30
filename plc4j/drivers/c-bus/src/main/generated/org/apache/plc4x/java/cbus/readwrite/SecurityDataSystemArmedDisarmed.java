@@ -82,7 +82,7 @@ public class SecurityDataSystemArmedDisarmed extends SecurityData implements Mes
     return lengthInBits;
   }
 
-  public static SecurityDataSystemArmedDisarmedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataSystemArmedDisarmed");
     PositionAware positionAware = readBuffer;
@@ -97,15 +97,14 @@ public class SecurityDataSystemArmedDisarmed extends SecurityData implements Mes
 
     readBuffer.closeContext("SecurityDataSystemArmedDisarmed");
     // Create the instance
-    return new SecurityDataSystemArmedDisarmedBuilder(armCodeType);
+    return new SecurityDataSystemArmedDisarmedBuilderImpl(armCodeType);
   }
 
-  public static class SecurityDataSystemArmedDisarmedBuilder
+  public static class SecurityDataSystemArmedDisarmedBuilderImpl
       implements SecurityData.SecurityDataBuilder {
     private final SecurityArmCode armCodeType;
 
-    public SecurityDataSystemArmedDisarmedBuilder(SecurityArmCode armCodeType) {
-
+    public SecurityDataSystemArmedDisarmedBuilderImpl(SecurityArmCode armCodeType) {
       this.armCodeType = armCodeType;
     }
 

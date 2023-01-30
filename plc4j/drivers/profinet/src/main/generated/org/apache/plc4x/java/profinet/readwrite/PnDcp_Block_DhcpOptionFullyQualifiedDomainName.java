@@ -72,8 +72,8 @@ public class PnDcp_Block_DhcpOptionFullyQualifiedDomainName extends PnDcp_Block 
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DhcpOptionFullyQualifiedDomainNameBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DhcpOptionFullyQualifiedDomainName");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -81,13 +81,13 @@ public class PnDcp_Block_DhcpOptionFullyQualifiedDomainName extends PnDcp_Block 
 
     readBuffer.closeContext("PnDcp_Block_DhcpOptionFullyQualifiedDomainName");
     // Create the instance
-    return new PnDcp_Block_DhcpOptionFullyQualifiedDomainNameBuilder();
+    return new PnDcp_Block_DhcpOptionFullyQualifiedDomainNameBuilderImpl();
   }
 
-  public static class PnDcp_Block_DhcpOptionFullyQualifiedDomainNameBuilder
+  public static class PnDcp_Block_DhcpOptionFullyQualifiedDomainNameBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_DhcpOptionFullyQualifiedDomainNameBuilder() {}
+    public PnDcp_Block_DhcpOptionFullyQualifiedDomainNameBuilderImpl() {}
 
     public PnDcp_Block_DhcpOptionFullyQualifiedDomainName build() {
       PnDcp_Block_DhcpOptionFullyQualifiedDomainName

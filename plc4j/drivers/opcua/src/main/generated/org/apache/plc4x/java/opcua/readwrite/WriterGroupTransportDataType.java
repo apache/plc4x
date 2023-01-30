@@ -69,7 +69,7 @@ public class WriterGroupTransportDataType extends ExtensionObjectDefinition impl
     return lengthInBits;
   }
 
-  public static WriterGroupTransportDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("WriterGroupTransportDataType");
     PositionAware positionAware = readBuffer;
@@ -78,13 +78,13 @@ public class WriterGroupTransportDataType extends ExtensionObjectDefinition impl
 
     readBuffer.closeContext("WriterGroupTransportDataType");
     // Create the instance
-    return new WriterGroupTransportDataTypeBuilder();
+    return new WriterGroupTransportDataTypeBuilderImpl();
   }
 
-  public static class WriterGroupTransportDataTypeBuilder
+  public static class WriterGroupTransportDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public WriterGroupTransportDataTypeBuilder() {}
+    public WriterGroupTransportDataTypeBuilderImpl() {}
 
     public WriterGroupTransportDataType build() {
       WriterGroupTransportDataType writerGroupTransportDataType =

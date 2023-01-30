@@ -113,9 +113,9 @@ public abstract class BACnetRecipient implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetRecipientBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetRecipientDevice.staticParseBuilder(readBuffer);
+      builder = BACnetRecipientDevice.staticParseBACnetRecipientBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetRecipientAddress.staticParseBuilder(readBuffer);
+      builder = BACnetRecipientAddress.staticParseBACnetRecipientBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -132,7 +132,7 @@ public abstract class BACnetRecipient implements Message {
     return _bACnetRecipient;
   }
 
-  public static interface BACnetRecipientBuilder {
+  public interface BACnetRecipientBuilder {
     BACnetRecipient build(BACnetTagHeader peekedTagHeader);
   }
 

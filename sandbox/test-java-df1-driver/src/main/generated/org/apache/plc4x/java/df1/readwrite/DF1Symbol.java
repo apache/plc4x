@@ -127,11 +127,11 @@ public abstract class DF1Symbol implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     DF1SymbolBuilder builder = null;
     if (EvaluationHelper.equals(symbolType, (short) 0x02)) {
-      builder = DF1SymbolMessageFrame.staticParseBuilder(readBuffer);
+      builder = DF1SymbolMessageFrame.staticParseDF1SymbolBuilder(readBuffer);
     } else if (EvaluationHelper.equals(symbolType, (short) 0x06)) {
-      builder = DF1SymbolMessageFrameACK.staticParseBuilder(readBuffer);
+      builder = DF1SymbolMessageFrameACK.staticParseDF1SymbolBuilder(readBuffer);
     } else if (EvaluationHelper.equals(symbolType, (short) 0x15)) {
-      builder = DF1SymbolMessageFrameNAK.staticParseBuilder(readBuffer);
+      builder = DF1SymbolMessageFrameNAK.staticParseDF1SymbolBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -148,7 +148,7 @@ public abstract class DF1Symbol implements Message {
     return _dF1Symbol;
   }
 
-  public static interface DF1SymbolBuilder {
+  public interface DF1SymbolBuilder {
     DF1Symbol build();
   }
 

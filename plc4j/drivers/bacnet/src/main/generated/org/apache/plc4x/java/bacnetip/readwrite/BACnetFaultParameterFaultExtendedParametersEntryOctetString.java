@@ -83,8 +83,9 @@ public class BACnetFaultParameterFaultExtendedParametersEntryOctetString
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder
-      staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static BACnetFaultParameterFaultExtendedParametersEntryBuilder
+      staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryOctetString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -100,17 +101,17 @@ public class BACnetFaultParameterFaultExtendedParametersEntryOctetString
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtendedParametersEntryOctetString");
     // Create the instance
-    return new BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder(octetStringValue);
+    return new BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilderImpl(
+        octetStringValue);
   }
 
-  public static class BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder
+  public static class BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilderImpl
       implements BACnetFaultParameterFaultExtendedParametersEntry
           .BACnetFaultParameterFaultExtendedParametersEntryBuilder {
     private final BACnetApplicationTagOctetString octetStringValue;
 
-    public BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder(
+    public BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilderImpl(
         BACnetApplicationTagOctetString octetStringValue) {
-
       this.octetStringValue = octetStringValue;
     }
 

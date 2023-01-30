@@ -204,7 +204,7 @@ public class ModbusPDUReadDeviceIdentificationResponse extends ModbusPDU impleme
     return lengthInBits;
   }
 
-  public static ModbusPDUReadDeviceIdentificationResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadDeviceIdentificationResponse");
     PositionAware positionAware = readBuffer;
@@ -255,11 +255,11 @@ public class ModbusPDUReadDeviceIdentificationResponse extends ModbusPDU impleme
 
     readBuffer.closeContext("ModbusPDUReadDeviceIdentificationResponse");
     // Create the instance
-    return new ModbusPDUReadDeviceIdentificationResponseBuilder(
+    return new ModbusPDUReadDeviceIdentificationResponseBuilderImpl(
         level, individualAccess, conformityLevel, moreFollows, nextObjectId, objects);
   }
 
-  public static class ModbusPDUReadDeviceIdentificationResponseBuilder
+  public static class ModbusPDUReadDeviceIdentificationResponseBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final ModbusDeviceInformationLevel level;
     private final boolean individualAccess;
@@ -268,14 +268,13 @@ public class ModbusPDUReadDeviceIdentificationResponse extends ModbusPDU impleme
     private final short nextObjectId;
     private final List<ModbusDeviceInformationObject> objects;
 
-    public ModbusPDUReadDeviceIdentificationResponseBuilder(
+    public ModbusPDUReadDeviceIdentificationResponseBuilderImpl(
         ModbusDeviceInformationLevel level,
         boolean individualAccess,
         ModbusDeviceInformationConformityLevel conformityLevel,
         ModbusDeviceInformationMoreFollows moreFollows,
         short nextObjectId,
         List<ModbusDeviceInformationObject> objects) {
-
       this.level = level;
       this.individualAccess = individualAccess;
       this.conformityLevel = conformityLevel;

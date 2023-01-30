@@ -133,7 +133,7 @@ public abstract class MeasurementData implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     MeasurementDataBuilder builder = null;
     if (EvaluationHelper.equals(commandType, MeasurementCommandType.MEASUREMENT_EVENT)) {
-      builder = MeasurementDataChannelMeasurementData.staticParseBuilder(readBuffer);
+      builder = MeasurementDataChannelMeasurementData.staticParseMeasurementDataBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -150,7 +150,7 @@ public abstract class MeasurementData implements Message {
     return _measurementData;
   }
 
-  public static interface MeasurementDataBuilder {
+  public interface MeasurementDataBuilder {
     MeasurementData build(MeasurementCommandTypeContainer commandTypeContainer);
   }
 

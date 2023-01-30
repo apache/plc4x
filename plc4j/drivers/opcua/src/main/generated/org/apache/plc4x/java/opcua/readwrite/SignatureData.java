@@ -95,8 +95,8 @@ public class SignatureData extends ExtensionObjectDefinition implements Message 
     return lengthInBits;
   }
 
-  public static SignatureDataBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SignatureData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -115,16 +115,15 @@ public class SignatureData extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("SignatureData");
     // Create the instance
-    return new SignatureDataBuilder(algorithm, signature);
+    return new SignatureDataBuilderImpl(algorithm, signature);
   }
 
-  public static class SignatureDataBuilder
+  public static class SignatureDataBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString algorithm;
     private final PascalByteString signature;
 
-    public SignatureDataBuilder(PascalString algorithm, PascalByteString signature) {
-
+    public SignatureDataBuilderImpl(PascalString algorithm, PascalByteString signature) {
       this.algorithm = algorithm;
       this.signature = signature;
     }

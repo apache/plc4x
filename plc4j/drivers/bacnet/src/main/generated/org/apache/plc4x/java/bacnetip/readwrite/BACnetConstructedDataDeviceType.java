@@ -109,7 +109,7 @@ public class BACnetConstructedDataDeviceType extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDeviceTypeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,20 @@ public class BACnetConstructedDataDeviceType extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataDeviceType");
     // Create the instance
-    return new BACnetConstructedDataDeviceTypeBuilder(deviceType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDeviceTypeBuilderImpl(
+        deviceType, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDeviceTypeBuilder
+  public static class BACnetConstructedDataDeviceTypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString deviceType;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDeviceTypeBuilder(
+    public BACnetConstructedDataDeviceTypeBuilderImpl(
         BACnetApplicationTagCharacterString deviceType,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.deviceType = deviceType;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

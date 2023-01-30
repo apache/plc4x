@@ -42,12 +42,8 @@ public class ApduDataIndividualAddressResponse extends ApduData implements Messa
     return (byte) 0x5;
   }
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataIndividualAddressResponse(Short dataLength) {
-    super(dataLength);
-    this.dataLength = dataLength;
+  public ApduDataIndividualAddressResponse() {
+    super();
   }
 
   @Override
@@ -72,8 +68,8 @@ public class ApduDataIndividualAddressResponse extends ApduData implements Messa
     return lengthInBits;
   }
 
-  public static ApduDataIndividualAddressResponseBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short dataLength) throws ParseException {
+  public static ApduDataBuilder staticParseApduDataBuilder(ReadBuffer readBuffer, Short dataLength)
+      throws ParseException {
     readBuffer.pullContext("ApduDataIndividualAddressResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -81,21 +77,17 @@ public class ApduDataIndividualAddressResponse extends ApduData implements Messa
 
     readBuffer.closeContext("ApduDataIndividualAddressResponse");
     // Create the instance
-    return new ApduDataIndividualAddressResponseBuilder(dataLength);
+    return new ApduDataIndividualAddressResponseBuilderImpl();
   }
 
-  public static class ApduDataIndividualAddressResponseBuilder implements ApduData.ApduDataBuilder {
-    private final Short dataLength;
+  public static class ApduDataIndividualAddressResponseBuilderImpl
+      implements ApduData.ApduDataBuilder {
 
-    public ApduDataIndividualAddressResponseBuilder(Short dataLength) {
+    public ApduDataIndividualAddressResponseBuilderImpl() {}
 
-      this.dataLength = dataLength;
-    }
-
-    public ApduDataIndividualAddressResponse build(Short dataLength) {
-
+    public ApduDataIndividualAddressResponse build() {
       ApduDataIndividualAddressResponse apduDataIndividualAddressResponse =
-          new ApduDataIndividualAddressResponse(dataLength);
+          new ApduDataIndividualAddressResponse();
       return apduDataIndividualAddressResponse;
     }
   }

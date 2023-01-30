@@ -67,7 +67,7 @@ public class TelephonyDataRejectIncomingCall extends TelephonyData implements Me
     return lengthInBits;
   }
 
-  public static TelephonyDataRejectIncomingCallBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static TelephonyDataBuilder staticParseTelephonyDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TelephonyDataRejectIncomingCall");
     PositionAware positionAware = readBuffer;
@@ -76,13 +76,13 @@ public class TelephonyDataRejectIncomingCall extends TelephonyData implements Me
 
     readBuffer.closeContext("TelephonyDataRejectIncomingCall");
     // Create the instance
-    return new TelephonyDataRejectIncomingCallBuilder();
+    return new TelephonyDataRejectIncomingCallBuilderImpl();
   }
 
-  public static class TelephonyDataRejectIncomingCallBuilder
+  public static class TelephonyDataRejectIncomingCallBuilderImpl
       implements TelephonyData.TelephonyDataBuilder {
 
-    public TelephonyDataRejectIncomingCallBuilder() {}
+    public TelephonyDataRejectIncomingCallBuilderImpl() {}
 
     public TelephonyDataRejectIncomingCall build(
         TelephonyCommandTypeContainer commandTypeContainer, byte argument) {

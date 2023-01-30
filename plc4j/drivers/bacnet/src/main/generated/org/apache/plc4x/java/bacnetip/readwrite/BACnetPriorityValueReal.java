@@ -87,7 +87,7 @@ public class BACnetPriorityValueReal extends BACnetPriorityValue implements Mess
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueRealBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueReal");
     PositionAware positionAware = readBuffer;
@@ -103,17 +103,16 @@ public class BACnetPriorityValueReal extends BACnetPriorityValue implements Mess
 
     readBuffer.closeContext("BACnetPriorityValueReal");
     // Create the instance
-    return new BACnetPriorityValueRealBuilder(realValue, objectTypeArgument);
+    return new BACnetPriorityValueRealBuilderImpl(realValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueRealBuilder
+  public static class BACnetPriorityValueRealBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagReal realValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueRealBuilder(
+    public BACnetPriorityValueRealBuilderImpl(
         BACnetApplicationTagReal realValue, BACnetObjectType objectTypeArgument) {
-
       this.realValue = realValue;
       this.objectTypeArgument = objectTypeArgument;
     }

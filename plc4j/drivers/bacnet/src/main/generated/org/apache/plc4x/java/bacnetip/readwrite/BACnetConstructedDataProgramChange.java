@@ -109,7 +109,7 @@ public class BACnetConstructedDataProgramChange extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataProgramChangeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataProgramChange extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataProgramChange");
     // Create the instance
-    return new BACnetConstructedDataProgramChangeBuilder(
+    return new BACnetConstructedDataProgramChangeBuilderImpl(
         programChange, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataProgramChangeBuilder
+  public static class BACnetConstructedDataProgramChangeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetProgramRequestTagged programChange;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataProgramChangeBuilder(
+    public BACnetConstructedDataProgramChangeBuilderImpl(
         BACnetProgramRequestTagged programChange,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.programChange = programChange;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

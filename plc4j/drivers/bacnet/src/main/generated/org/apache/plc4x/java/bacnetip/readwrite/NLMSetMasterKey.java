@@ -86,7 +86,7 @@ public class NLMSetMasterKey extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMSetMasterKeyBuilder staticParseBuilder(ReadBuffer readBuffer, Integer apduLength)
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
       throws ParseException {
     readBuffer.pullContext("NLMSetMasterKey");
     PositionAware positionAware = readBuffer;
@@ -101,15 +101,14 @@ public class NLMSetMasterKey extends NLM implements Message {
 
     readBuffer.closeContext("NLMSetMasterKey");
     // Create the instance
-    return new NLMSetMasterKeyBuilder(key, apduLength);
+    return new NLMSetMasterKeyBuilderImpl(key, apduLength);
   }
 
-  public static class NLMSetMasterKeyBuilder implements NLM.NLMBuilder {
+  public static class NLMSetMasterKeyBuilderImpl implements NLM.NLMBuilder {
     private final NLMUpdateKeyUpdateKeyEntry key;
     private final Integer apduLength;
 
-    public NLMSetMasterKeyBuilder(NLMUpdateKeyUpdateKeyEntry key, Integer apduLength) {
-
+    public NLMSetMasterKeyBuilderImpl(NLMUpdateKeyUpdateKeyEntry key, Integer apduLength) {
       this.key = key;
       this.apduLength = apduLength;
     }

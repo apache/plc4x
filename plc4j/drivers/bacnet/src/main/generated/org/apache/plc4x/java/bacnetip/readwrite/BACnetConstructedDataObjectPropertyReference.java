@@ -111,7 +111,7 @@ public class BACnetConstructedDataObjectPropertyReference extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataObjectPropertyReferenceBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataObjectPropertyReference extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataObjectPropertyReference");
     // Create the instance
-    return new BACnetConstructedDataObjectPropertyReferenceBuilder(
+    return new BACnetConstructedDataObjectPropertyReferenceBuilderImpl(
         propertyReference, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataObjectPropertyReferenceBuilder
+  public static class BACnetConstructedDataObjectPropertyReferenceBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectPropertyReference propertyReference;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataObjectPropertyReferenceBuilder(
+    public BACnetConstructedDataObjectPropertyReferenceBuilderImpl(
         BACnetDeviceObjectPropertyReference propertyReference,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.propertyReference = propertyReference;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

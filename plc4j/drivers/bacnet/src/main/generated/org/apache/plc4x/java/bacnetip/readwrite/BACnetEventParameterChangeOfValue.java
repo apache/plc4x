@@ -121,8 +121,8 @@ public class BACnetEventParameterChangeOfValue extends BACnetEventParameter impl
     return lengthInBits;
   }
 
-  public static BACnetEventParameterChangeOfValueBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -163,23 +163,22 @@ public class BACnetEventParameterChangeOfValue extends BACnetEventParameter impl
 
     readBuffer.closeContext("BACnetEventParameterChangeOfValue");
     // Create the instance
-    return new BACnetEventParameterChangeOfValueBuilder(
+    return new BACnetEventParameterChangeOfValueBuilderImpl(
         openingTag, timeDelay, covCriteria, closingTag);
   }
 
-  public static class BACnetEventParameterChangeOfValueBuilder
+  public static class BACnetEventParameterChangeOfValueBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
     private final BACnetEventParameterChangeOfValueCivCriteria covCriteria;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterChangeOfValueBuilder(
+    public BACnetEventParameterChangeOfValueBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetEventParameterChangeOfValueCivCriteria covCriteria,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.covCriteria = covCriteria;

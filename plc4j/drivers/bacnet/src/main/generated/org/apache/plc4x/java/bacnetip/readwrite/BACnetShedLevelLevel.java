@@ -81,7 +81,7 @@ public class BACnetShedLevelLevel extends BACnetShedLevel implements Message {
     return lengthInBits;
   }
 
-  public static BACnetShedLevelLevelBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetShedLevelBuilder staticParseBACnetShedLevelBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetShedLevelLevel");
     PositionAware positionAware = readBuffer;
@@ -102,15 +102,14 @@ public class BACnetShedLevelLevel extends BACnetShedLevel implements Message {
 
     readBuffer.closeContext("BACnetShedLevelLevel");
     // Create the instance
-    return new BACnetShedLevelLevelBuilder(level);
+    return new BACnetShedLevelLevelBuilderImpl(level);
   }
 
-  public static class BACnetShedLevelLevelBuilder
+  public static class BACnetShedLevelLevelBuilderImpl
       implements BACnetShedLevel.BACnetShedLevelBuilder {
     private final BACnetContextTagUnsignedInteger level;
 
-    public BACnetShedLevelLevelBuilder(BACnetContextTagUnsignedInteger level) {
-
+    public BACnetShedLevelLevelBuilderImpl(BACnetContextTagUnsignedInteger level) {
       this.level = level;
     }
 

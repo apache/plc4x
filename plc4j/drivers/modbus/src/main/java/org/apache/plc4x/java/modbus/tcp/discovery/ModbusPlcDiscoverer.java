@@ -132,7 +132,7 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                 int transactionIdentifier = 1;
                 for (short unitIdentifier = 1; unitIdentifier <= 247; unitIdentifier++) {
                     ModbusTcpADU packet = new ModbusTcpADU(transactionIdentifier++, unitIdentifier,
-                        new ModbusPDUReadCoilsRequest(1, 1), false);
+                        new ModbusPDUReadCoilsRequest(1, 1));
                     byte[] deviceIdentificationBytes = null;
                     try {
                         // Serialize the request to its byte form.

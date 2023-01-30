@@ -110,8 +110,8 @@ public class NLMNetworkNumberIs extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMNetworkNumberIsBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMNetworkNumberIs");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -127,17 +127,17 @@ public class NLMNetworkNumberIs extends NLM implements Message {
 
     readBuffer.closeContext("NLMNetworkNumberIs");
     // Create the instance
-    return new NLMNetworkNumberIsBuilder(
+    return new NLMNetworkNumberIsBuilderImpl(
         networkNumber, networkNumberConfigured, apduLength, reservedField0);
   }
 
-  public static class NLMNetworkNumberIsBuilder implements NLM.NLMBuilder {
+  public static class NLMNetworkNumberIsBuilderImpl implements NLM.NLMBuilder {
     private final int networkNumber;
     private final boolean networkNumberConfigured;
     private final Integer apduLength;
     private final Short reservedField0;
 
-    public NLMNetworkNumberIsBuilder(
+    public NLMNetworkNumberIsBuilderImpl(
         int networkNumber,
         boolean networkNumberConfigured,
         Integer apduLength,

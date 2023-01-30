@@ -82,7 +82,7 @@ public class KnxNetIpRouting extends ServiceId implements Message {
     return lengthInBits;
   }
 
-  public static KnxNetIpRoutingBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static ServiceIdBuilder staticParseServiceIdBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("KnxNetIpRouting");
     PositionAware positionAware = readBuffer;
@@ -93,14 +93,13 @@ public class KnxNetIpRouting extends ServiceId implements Message {
 
     readBuffer.closeContext("KnxNetIpRouting");
     // Create the instance
-    return new KnxNetIpRoutingBuilder(version);
+    return new KnxNetIpRoutingBuilderImpl(version);
   }
 
-  public static class KnxNetIpRoutingBuilder implements ServiceId.ServiceIdBuilder {
+  public static class KnxNetIpRoutingBuilderImpl implements ServiceId.ServiceIdBuilder {
     private final short version;
 
-    public KnxNetIpRoutingBuilder(short version) {
-
+    public KnxNetIpRoutingBuilderImpl(short version) {
       this.version = version;
     }
 

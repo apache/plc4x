@@ -86,7 +86,7 @@ public class SysexCommandPinStateQuery extends SysexCommand implements Message {
     return lengthInBits;
   }
 
-  public static SysexCommandPinStateQueryBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandPinStateQuery");
     PositionAware positionAware = readBuffer;
@@ -97,14 +97,14 @@ public class SysexCommandPinStateQuery extends SysexCommand implements Message {
 
     readBuffer.closeContext("SysexCommandPinStateQuery");
     // Create the instance
-    return new SysexCommandPinStateQueryBuilder(pin);
+    return new SysexCommandPinStateQueryBuilderImpl(pin);
   }
 
-  public static class SysexCommandPinStateQueryBuilder implements SysexCommand.SysexCommandBuilder {
+  public static class SysexCommandPinStateQueryBuilderImpl
+      implements SysexCommand.SysexCommandBuilder {
     private final short pin;
 
-    public SysexCommandPinStateQueryBuilder(short pin) {
-
+    public SysexCommandPinStateQueryBuilderImpl(short pin) {
       this.pin = pin;
     }
 

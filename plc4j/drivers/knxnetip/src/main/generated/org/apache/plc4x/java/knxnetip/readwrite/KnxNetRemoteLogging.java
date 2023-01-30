@@ -82,7 +82,7 @@ public class KnxNetRemoteLogging extends ServiceId implements Message {
     return lengthInBits;
   }
 
-  public static KnxNetRemoteLoggingBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static ServiceIdBuilder staticParseServiceIdBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("KnxNetRemoteLogging");
     PositionAware positionAware = readBuffer;
@@ -93,14 +93,13 @@ public class KnxNetRemoteLogging extends ServiceId implements Message {
 
     readBuffer.closeContext("KnxNetRemoteLogging");
     // Create the instance
-    return new KnxNetRemoteLoggingBuilder(version);
+    return new KnxNetRemoteLoggingBuilderImpl(version);
   }
 
-  public static class KnxNetRemoteLoggingBuilder implements ServiceId.ServiceIdBuilder {
+  public static class KnxNetRemoteLoggingBuilderImpl implements ServiceId.ServiceIdBuilder {
     private final short version;
 
-    public KnxNetRemoteLoggingBuilder(short version) {
-
+    public KnxNetRemoteLoggingBuilderImpl(short version) {
       this.version = version;
     }
 

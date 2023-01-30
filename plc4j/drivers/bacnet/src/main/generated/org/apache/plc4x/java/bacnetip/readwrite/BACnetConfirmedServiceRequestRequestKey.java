@@ -47,15 +47,15 @@ public class BACnetConfirmedServiceRequestRequestKey extends BACnetConfirmedServ
   protected final byte[] bytesOfRemovedService;
 
   // Arguments.
-  protected final Long serviceRequestLength;
   protected final Long serviceRequestPayloadLength;
+  protected final Long serviceRequestLength;
 
   public BACnetConfirmedServiceRequestRequestKey(
-      byte[] bytesOfRemovedService, Long serviceRequestLength, Long serviceRequestPayloadLength) {
+      byte[] bytesOfRemovedService, Long serviceRequestPayloadLength, Long serviceRequestLength) {
     super(serviceRequestLength);
     this.bytesOfRemovedService = bytesOfRemovedService;
-    this.serviceRequestLength = serviceRequestLength;
     this.serviceRequestPayloadLength = serviceRequestPayloadLength;
+    this.serviceRequestLength = serviceRequestLength;
   }
 
   public byte[] getBytesOfRemovedService() {
@@ -94,9 +94,10 @@ public class BACnetConfirmedServiceRequestRequestKey extends BACnetConfirmedServ
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestRequestKeyBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength, Long serviceRequestPayloadLength)
-      throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestPayloadLength, Long serviceRequestLength)
+          throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestRequestKey");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -108,29 +109,28 @@ public class BACnetConfirmedServiceRequestRequestKey extends BACnetConfirmedServ
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestRequestKey");
     // Create the instance
-    return new BACnetConfirmedServiceRequestRequestKeyBuilder(
-        bytesOfRemovedService, serviceRequestLength, serviceRequestPayloadLength);
+    return new BACnetConfirmedServiceRequestRequestKeyBuilderImpl(
+        bytesOfRemovedService, serviceRequestPayloadLength, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestRequestKeyBuilder
+  public static class BACnetConfirmedServiceRequestRequestKeyBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final byte[] bytesOfRemovedService;
-    private final Long serviceRequestLength;
     private final Long serviceRequestPayloadLength;
+    private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestRequestKeyBuilder(
-        byte[] bytesOfRemovedService, Long serviceRequestLength, Long serviceRequestPayloadLength) {
-
+    public BACnetConfirmedServiceRequestRequestKeyBuilderImpl(
+        byte[] bytesOfRemovedService, Long serviceRequestPayloadLength, Long serviceRequestLength) {
       this.bytesOfRemovedService = bytesOfRemovedService;
-      this.serviceRequestLength = serviceRequestLength;
       this.serviceRequestPayloadLength = serviceRequestPayloadLength;
+      this.serviceRequestLength = serviceRequestLength;
     }
 
     public BACnetConfirmedServiceRequestRequestKey build(Long serviceRequestLength) {
 
       BACnetConfirmedServiceRequestRequestKey bACnetConfirmedServiceRequestRequestKey =
           new BACnetConfirmedServiceRequestRequestKey(
-              bytesOfRemovedService, serviceRequestLength, serviceRequestPayloadLength);
+              bytesOfRemovedService, serviceRequestPayloadLength, serviceRequestLength);
       return bACnetConfirmedServiceRequestRequestKey;
     }
   }

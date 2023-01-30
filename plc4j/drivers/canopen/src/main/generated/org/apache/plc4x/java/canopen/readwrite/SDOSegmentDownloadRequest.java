@@ -126,7 +126,7 @@ public class SDOSegmentDownloadRequest extends SDORequest implements Message {
     return lengthInBits;
   }
 
-  public static SDOSegmentDownloadRequestBuilder staticParseBuilder(
+  public static SDORequestBuilder staticParseSDORequestBuilder(
       ReadBuffer readBuffer, SDORequestCommand command) throws ParseException {
     readBuffer.pullContext("SDOSegmentDownloadRequest");
     PositionAware positionAware = readBuffer;
@@ -145,16 +145,15 @@ public class SDOSegmentDownloadRequest extends SDORequest implements Message {
 
     readBuffer.closeContext("SDOSegmentDownloadRequest");
     // Create the instance
-    return new SDOSegmentDownloadRequestBuilder(toggle, last, data);
+    return new SDOSegmentDownloadRequestBuilderImpl(toggle, last, data);
   }
 
-  public static class SDOSegmentDownloadRequestBuilder implements SDORequest.SDORequestBuilder {
+  public static class SDOSegmentDownloadRequestBuilderImpl implements SDORequest.SDORequestBuilder {
     private final boolean toggle;
     private final boolean last;
     private final byte[] data;
 
-    public SDOSegmentDownloadRequestBuilder(boolean toggle, boolean last, byte[] data) {
-
+    public SDOSegmentDownloadRequestBuilderImpl(boolean toggle, boolean last, byte[] data) {
       this.toggle = toggle;
       this.last = last;
       this.data = data;

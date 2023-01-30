@@ -66,7 +66,7 @@ public class SecurityDataOtherAlarmCleared extends SecurityData implements Messa
     return lengthInBits;
   }
 
-  public static SecurityDataOtherAlarmClearedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataOtherAlarmCleared");
     PositionAware positionAware = readBuffer;
@@ -75,13 +75,13 @@ public class SecurityDataOtherAlarmCleared extends SecurityData implements Messa
 
     readBuffer.closeContext("SecurityDataOtherAlarmCleared");
     // Create the instance
-    return new SecurityDataOtherAlarmClearedBuilder();
+    return new SecurityDataOtherAlarmClearedBuilderImpl();
   }
 
-  public static class SecurityDataOtherAlarmClearedBuilder
+  public static class SecurityDataOtherAlarmClearedBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataOtherAlarmClearedBuilder() {}
+    public SecurityDataOtherAlarmClearedBuilderImpl() {}
 
     public SecurityDataOtherAlarmCleared build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

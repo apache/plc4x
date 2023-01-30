@@ -59,6 +59,7 @@
               <protocolName>ads.discovery</protocolName>
               <languageName>java</languageName>
               <outputFlavor>read-write</outputFlavor>
+              <outputDir>src/main/generated</outputDir>
             </configuration>
           </execution>
         </executions>

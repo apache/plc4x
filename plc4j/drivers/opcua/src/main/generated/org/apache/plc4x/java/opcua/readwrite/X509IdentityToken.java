@@ -84,7 +84,7 @@ public class X509IdentityToken extends UserIdentityTokenDefinition implements Me
     return lengthInBits;
   }
 
-  public static X509IdentityTokenBuilder staticParseBuilder(
+  public static UserIdentityTokenDefinitionBuilder staticParseUserIdentityTokenDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("X509IdentityToken");
     PositionAware positionAware = readBuffer;
@@ -99,15 +99,14 @@ public class X509IdentityToken extends UserIdentityTokenDefinition implements Me
 
     readBuffer.closeContext("X509IdentityToken");
     // Create the instance
-    return new X509IdentityTokenBuilder(certificateData);
+    return new X509IdentityTokenBuilderImpl(certificateData);
   }
 
-  public static class X509IdentityTokenBuilder
+  public static class X509IdentityTokenBuilderImpl
       implements UserIdentityTokenDefinition.UserIdentityTokenDefinitionBuilder {
     private final PascalByteString certificateData;
 
-    public X509IdentityTokenBuilder(PascalByteString certificateData) {
-
+    public X509IdentityTokenBuilderImpl(PascalByteString certificateData) {
       this.certificateData = certificateData;
     }
 

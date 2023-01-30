@@ -166,11 +166,17 @@ public abstract class BACnetEventLogRecordLogDatum implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetEventLogRecordLogDatumBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetEventLogRecordLogDatumLogStatus.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetEventLogRecordLogDatumLogStatus.staticParseBACnetEventLogRecordLogDatumBuilder(
+              readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetEventLogRecordLogDatumNotification.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetEventLogRecordLogDatumNotification.staticParseBACnetEventLogRecordLogDatumBuilder(
+              readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetEventLogRecordLogDatumTimeChange.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetEventLogRecordLogDatumTimeChange.staticParseBACnetEventLogRecordLogDatumBuilder(
+              readBuffer, tagNumber);
     }
     if (builder == null) {
       throw new ParseException(
@@ -194,7 +200,7 @@ public abstract class BACnetEventLogRecordLogDatum implements Message {
     return _bACnetEventLogRecordLogDatum;
   }
 
-  public static interface BACnetEventLogRecordLogDatumBuilder {
+  public interface BACnetEventLogRecordLogDatumBuilder {
     BACnetEventLogRecordLogDatum build(
         BACnetOpeningTag openingTag,
         BACnetTagHeader peekedTagHeader,

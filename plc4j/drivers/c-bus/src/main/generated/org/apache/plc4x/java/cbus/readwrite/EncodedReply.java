@@ -145,9 +145,12 @@ public abstract class EncodedReply implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     EncodedReplyBuilder builder = null;
     if (EvaluationHelper.equals(isMonitoredSAL, (boolean) true)) {
-      builder = MonitoredSALReply.staticParseBuilder(readBuffer, cBusOptions, requestContext);
+      builder =
+          MonitoredSALReply.staticParseEncodedReplyBuilder(readBuffer, cBusOptions, requestContext);
     } else if (true) {
-      builder = EncodedReplyCALReply.staticParseBuilder(readBuffer, cBusOptions, requestContext);
+      builder =
+          EncodedReplyCALReply.staticParseEncodedReplyBuilder(
+              readBuffer, cBusOptions, requestContext);
     }
     if (builder == null) {
       throw new ParseException(
@@ -164,7 +167,7 @@ public abstract class EncodedReply implements Message {
     return _encodedReply;
   }
 
-  public static interface EncodedReplyBuilder {
+  public interface EncodedReplyBuilder {
     EncodedReply build(byte peekedByte, CBusOptions cBusOptions, RequestContext requestContext);
   }
 

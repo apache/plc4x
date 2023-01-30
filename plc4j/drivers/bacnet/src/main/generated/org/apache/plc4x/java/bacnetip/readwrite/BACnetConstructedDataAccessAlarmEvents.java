@@ -104,7 +104,7 @@ public class BACnetConstructedDataAccessAlarmEvents extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessAlarmEventsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,21 +131,20 @@ public class BACnetConstructedDataAccessAlarmEvents extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataAccessAlarmEvents");
     // Create the instance
-    return new BACnetConstructedDataAccessAlarmEventsBuilder(
+    return new BACnetConstructedDataAccessAlarmEventsBuilderImpl(
         accessAlarmEvents, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessAlarmEventsBuilder
+  public static class BACnetConstructedDataAccessAlarmEventsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetAccessEventTagged> accessAlarmEvents;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessAlarmEventsBuilder(
+    public BACnetConstructedDataAccessAlarmEventsBuilderImpl(
         List<BACnetAccessEventTagged> accessAlarmEvents,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.accessAlarmEvents = accessAlarmEvents;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

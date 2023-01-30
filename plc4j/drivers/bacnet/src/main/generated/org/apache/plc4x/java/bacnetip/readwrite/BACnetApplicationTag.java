@@ -134,31 +134,43 @@ public abstract class BACnetApplicationTag implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetApplicationTagBuilder builder = null;
     if (EvaluationHelper.equals(actualTagNumber, (short) 0x0)) {
-      builder = BACnetApplicationTagNull.staticParseBuilder(readBuffer);
+      builder = BACnetApplicationTagNull.staticParseBACnetApplicationTagBuilder(readBuffer);
     } else if (EvaluationHelper.equals(actualTagNumber, (short) 0x1)) {
-      builder = BACnetApplicationTagBoolean.staticParseBuilder(readBuffer, header);
+      builder =
+          BACnetApplicationTagBoolean.staticParseBACnetApplicationTagBuilder(readBuffer, header);
     } else if (EvaluationHelper.equals(actualTagNumber, (short) 0x2)) {
-      builder = BACnetApplicationTagUnsignedInteger.staticParseBuilder(readBuffer, header);
+      builder =
+          BACnetApplicationTagUnsignedInteger.staticParseBACnetApplicationTagBuilder(
+              readBuffer, header);
     } else if (EvaluationHelper.equals(actualTagNumber, (short) 0x3)) {
-      builder = BACnetApplicationTagSignedInteger.staticParseBuilder(readBuffer, header);
+      builder =
+          BACnetApplicationTagSignedInteger.staticParseBACnetApplicationTagBuilder(
+              readBuffer, header);
     } else if (EvaluationHelper.equals(actualTagNumber, (short) 0x4)) {
-      builder = BACnetApplicationTagReal.staticParseBuilder(readBuffer);
+      builder = BACnetApplicationTagReal.staticParseBACnetApplicationTagBuilder(readBuffer);
     } else if (EvaluationHelper.equals(actualTagNumber, (short) 0x5)) {
-      builder = BACnetApplicationTagDouble.staticParseBuilder(readBuffer);
+      builder = BACnetApplicationTagDouble.staticParseBACnetApplicationTagBuilder(readBuffer);
     } else if (EvaluationHelper.equals(actualTagNumber, (short) 0x6)) {
-      builder = BACnetApplicationTagOctetString.staticParseBuilder(readBuffer, header);
+      builder =
+          BACnetApplicationTagOctetString.staticParseBACnetApplicationTagBuilder(
+              readBuffer, header);
     } else if (EvaluationHelper.equals(actualTagNumber, (short) 0x7)) {
-      builder = BACnetApplicationTagCharacterString.staticParseBuilder(readBuffer, header);
+      builder =
+          BACnetApplicationTagCharacterString.staticParseBACnetApplicationTagBuilder(
+              readBuffer, header);
     } else if (EvaluationHelper.equals(actualTagNumber, (short) 0x8)) {
-      builder = BACnetApplicationTagBitString.staticParseBuilder(readBuffer, header);
+      builder =
+          BACnetApplicationTagBitString.staticParseBACnetApplicationTagBuilder(readBuffer, header);
     } else if (EvaluationHelper.equals(actualTagNumber, (short) 0x9)) {
-      builder = BACnetApplicationTagEnumerated.staticParseBuilder(readBuffer, header);
+      builder =
+          BACnetApplicationTagEnumerated.staticParseBACnetApplicationTagBuilder(readBuffer, header);
     } else if (EvaluationHelper.equals(actualTagNumber, (short) 0xA)) {
-      builder = BACnetApplicationTagDate.staticParseBuilder(readBuffer);
+      builder = BACnetApplicationTagDate.staticParseBACnetApplicationTagBuilder(readBuffer);
     } else if (EvaluationHelper.equals(actualTagNumber, (short) 0xB)) {
-      builder = BACnetApplicationTagTime.staticParseBuilder(readBuffer);
+      builder = BACnetApplicationTagTime.staticParseBACnetApplicationTagBuilder(readBuffer);
     } else if (EvaluationHelper.equals(actualTagNumber, (short) 0xC)) {
-      builder = BACnetApplicationTagObjectIdentifier.staticParseBuilder(readBuffer);
+      builder =
+          BACnetApplicationTagObjectIdentifier.staticParseBACnetApplicationTagBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -175,7 +187,7 @@ public abstract class BACnetApplicationTag implements Message {
     return _bACnetApplicationTag;
   }
 
-  public static interface BACnetApplicationTagBuilder {
+  public interface BACnetApplicationTagBuilder {
     BACnetApplicationTag build(BACnetTagHeader header);
   }
 

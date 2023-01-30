@@ -140,14 +140,17 @@ public abstract class ReplyOrConfirmation implements Message {
     ReplyOrConfirmationBuilder builder = null;
     if (EvaluationHelper.equals(isAlpha, (boolean) false)
         && EvaluationHelper.equals(peekedByte, (byte) 0x21)) {
-      builder = ServerErrorReply.staticParseBuilder(readBuffer, cBusOptions, requestContext);
+      builder =
+          ServerErrorReply.staticParseReplyOrConfirmationBuilder(
+              readBuffer, cBusOptions, requestContext);
     } else if (EvaluationHelper.equals(isAlpha, (boolean) true)) {
       builder =
-          ReplyOrConfirmationConfirmation.staticParseBuilder(
+          ReplyOrConfirmationConfirmation.staticParseReplyOrConfirmationBuilder(
               readBuffer, cBusOptions, requestContext);
     } else if (EvaluationHelper.equals(isAlpha, (boolean) false)) {
       builder =
-          ReplyOrConfirmationReply.staticParseBuilder(readBuffer, cBusOptions, requestContext);
+          ReplyOrConfirmationReply.staticParseReplyOrConfirmationBuilder(
+              readBuffer, cBusOptions, requestContext);
     }
     if (builder == null) {
       throw new ParseException(
@@ -168,7 +171,7 @@ public abstract class ReplyOrConfirmation implements Message {
     return _replyOrConfirmation;
   }
 
-  public static interface ReplyOrConfirmationBuilder {
+  public interface ReplyOrConfirmationBuilder {
     ReplyOrConfirmation build(
         byte peekedByte, CBusOptions cBusOptions, RequestContext requestContext);
   }

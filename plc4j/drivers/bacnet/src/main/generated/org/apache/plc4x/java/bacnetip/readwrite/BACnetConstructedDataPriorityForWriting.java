@@ -111,7 +111,7 @@ public class BACnetConstructedDataPriorityForWriting extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPriorityForWritingBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,21 +137,20 @@ public class BACnetConstructedDataPriorityForWriting extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataPriorityForWriting");
     // Create the instance
-    return new BACnetConstructedDataPriorityForWritingBuilder(
+    return new BACnetConstructedDataPriorityForWritingBuilderImpl(
         priorityForWriting, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPriorityForWritingBuilder
+  public static class BACnetConstructedDataPriorityForWritingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger priorityForWriting;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPriorityForWritingBuilder(
+    public BACnetConstructedDataPriorityForWritingBuilderImpl(
         BACnetApplicationTagUnsignedInteger priorityForWriting,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.priorityForWriting = priorityForWriting;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

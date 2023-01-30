@@ -42,12 +42,8 @@ public class ApduDataUserMessage extends ApduData implements Message {
     return (byte) 0xB;
   }
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataUserMessage(Short dataLength) {
-    super(dataLength);
-    this.dataLength = dataLength;
+  public ApduDataUserMessage() {
+    super();
   }
 
   @Override
@@ -72,8 +68,8 @@ public class ApduDataUserMessage extends ApduData implements Message {
     return lengthInBits;
   }
 
-  public static ApduDataUserMessageBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short dataLength) throws ParseException {
+  public static ApduDataBuilder staticParseApduDataBuilder(ReadBuffer readBuffer, Short dataLength)
+      throws ParseException {
     readBuffer.pullContext("ApduDataUserMessage");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -81,21 +77,15 @@ public class ApduDataUserMessage extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataUserMessage");
     // Create the instance
-    return new ApduDataUserMessageBuilder(dataLength);
+    return new ApduDataUserMessageBuilderImpl();
   }
 
-  public static class ApduDataUserMessageBuilder implements ApduData.ApduDataBuilder {
-    private final Short dataLength;
+  public static class ApduDataUserMessageBuilderImpl implements ApduData.ApduDataBuilder {
 
-    public ApduDataUserMessageBuilder(Short dataLength) {
+    public ApduDataUserMessageBuilderImpl() {}
 
-      this.dataLength = dataLength;
-    }
-
-    public ApduDataUserMessage build(Short dataLength) {
-
-      ApduDataUserMessage apduDataUserMessage = new ApduDataUserMessage(dataLength);
-
+    public ApduDataUserMessage build() {
+      ApduDataUserMessage apduDataUserMessage = new ApduDataUserMessage();
       return apduDataUserMessage;
     }
   }

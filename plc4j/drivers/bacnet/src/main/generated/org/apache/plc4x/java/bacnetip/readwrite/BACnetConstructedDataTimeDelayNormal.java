@@ -110,7 +110,7 @@ public class BACnetConstructedDataTimeDelayNormal extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTimeDelayNormalBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,21 +135,20 @@ public class BACnetConstructedDataTimeDelayNormal extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataTimeDelayNormal");
     // Create the instance
-    return new BACnetConstructedDataTimeDelayNormalBuilder(
+    return new BACnetConstructedDataTimeDelayNormalBuilderImpl(
         timeDelayNormal, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTimeDelayNormalBuilder
+  public static class BACnetConstructedDataTimeDelayNormalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger timeDelayNormal;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTimeDelayNormalBuilder(
+    public BACnetConstructedDataTimeDelayNormalBuilderImpl(
         BACnetApplicationTagUnsignedInteger timeDelayNormal,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.timeDelayNormal = timeDelayNormal;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

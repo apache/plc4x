@@ -103,7 +103,7 @@ public class DescriptionResponse extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static DescriptionResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("DescriptionResponse");
     PositionAware positionAware = readBuffer;
@@ -125,16 +125,16 @@ public class DescriptionResponse extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("DescriptionResponse");
     // Create the instance
-    return new DescriptionResponseBuilder(dibDeviceInfo, dibSuppSvcFamilies);
+    return new DescriptionResponseBuilderImpl(dibDeviceInfo, dibSuppSvcFamilies);
   }
 
-  public static class DescriptionResponseBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class DescriptionResponseBuilderImpl
+      implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final DIBDeviceInfo dibDeviceInfo;
     private final DIBSuppSvcFamilies dibSuppSvcFamilies;
 
-    public DescriptionResponseBuilder(
+    public DescriptionResponseBuilderImpl(
         DIBDeviceInfo dibDeviceInfo, DIBSuppSvcFamilies dibSuppSvcFamilies) {
-
       this.dibDeviceInfo = dibDeviceInfo;
       this.dibSuppSvcFamilies = dibSuppSvcFamilies;
     }

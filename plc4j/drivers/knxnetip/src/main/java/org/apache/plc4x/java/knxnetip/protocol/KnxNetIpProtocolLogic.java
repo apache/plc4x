@@ -345,11 +345,9 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                     new ArrayList<>(0),
                     new LDataExtended(false, false, CEMIPriority.LOW, false, false,
                         true, (byte) 6, (byte) 0, knxNetIpDriverContext.getClientKnxAddress(), destinationAddress,
-                        new ApduDataContainer(true, (byte) 0, new ApduDataGroupValueWrite(dataFirstByte, data, (short) -1), (short) -1)
-                    ),
-                    -1
-                ),
-                -1
+                        new ApduDataContainer(true, (byte) 0, new ApduDataGroupValueWrite(dataFirstByte, data))
+                    )
+                )
             );
 
             // Start a new request-transaction (Is ended in the response-handler)

@@ -124,49 +124,49 @@ public abstract class NLM implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     NLMBuilder builder = null;
     if (EvaluationHelper.equals(messageType, (short) 0x00)) {
-      builder = NLMWhoIsRouterToNetwork.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMWhoIsRouterToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x01)) {
-      builder = NLMIAmRouterToNetwork.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMIAmRouterToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x02)) {
-      builder = NLMICouldBeRouterToNetwork.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMICouldBeRouterToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x03)) {
-      builder = NLMRejectRouterToNetwork.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMRejectRouterToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x04)) {
-      builder = NLMRouterBusyToNetwork.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMRouterBusyToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x05)) {
-      builder = NLMRouterAvailableToNetwork.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMRouterAvailableToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x06)) {
-      builder = NLMInitalizeRoutingTable.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMInitalizeRoutingTable.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x07)) {
-      builder = NLMInitalizeRoutingTableAck.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMInitalizeRoutingTableAck.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x08)) {
-      builder = NLMEstablishConnectionToNetwork.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMEstablishConnectionToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x09)) {
-      builder = NLMDisconnectConnectionToNetwork.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMDisconnectConnectionToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x0A)) {
-      builder = NLMChallengeRequest.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMChallengeRequest.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x0B)) {
-      builder = NLMSecurityPayload.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMSecurityPayload.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x0C)) {
-      builder = NLMSecurityResponse.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMSecurityResponse.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x0D)) {
-      builder = NLMRequestKeyUpdate.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMRequestKeyUpdate.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x0E)) {
-      builder = NLMUpdateKeyUpdate.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMUpdateKeyUpdate.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x0F)) {
-      builder = NLMUpdateKeyDistributionKey.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMUpdateKeyDistributionKey.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x10)) {
-      builder = NLMRequestMasterKey.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMRequestMasterKey.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x11)) {
-      builder = NLMSetMasterKey.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMSetMasterKey.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x12)) {
-      builder = NLMWhatIsNetworkNumber.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMWhatIsNetworkNumber.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x13)) {
-      builder = NLMNetworkNumberIs.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMNetworkNumberIs.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (true && EvaluationHelper.equals(isVendorProprietaryMessage, (boolean) false)) {
-      builder = NLMReserved.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMReserved.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (true) {
-      builder = NLMVendorProprietaryMessage.staticParseBuilder(readBuffer, apduLength);
+      builder = NLMVendorProprietaryMessage.staticParseNLMBuilder(readBuffer, apduLength);
     }
     if (builder == null) {
       throw new ParseException(
@@ -187,7 +187,7 @@ public abstract class NLM implements Message {
     return _nLM;
   }
 
-  public static interface NLMBuilder {
+  public interface NLMBuilder {
     NLM build(Integer apduLength);
   }
 

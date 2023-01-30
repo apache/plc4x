@@ -136,7 +136,7 @@ public class BACnetConstructedDataBitStringValueAlarmValues extends BACnetConstr
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBitStringValueAlarmValuesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -172,23 +172,22 @@ public class BACnetConstructedDataBitStringValueAlarmValues extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataBitStringValueAlarmValues");
     // Create the instance
-    return new BACnetConstructedDataBitStringValueAlarmValuesBuilder(
+    return new BACnetConstructedDataBitStringValueAlarmValuesBuilderImpl(
         numberOfDataElements, alarmValues, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBitStringValueAlarmValuesBuilder
+  public static class BACnetConstructedDataBitStringValueAlarmValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagBitString> alarmValues;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBitStringValueAlarmValuesBuilder(
+    public BACnetConstructedDataBitStringValueAlarmValuesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagBitString> alarmValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.alarmValues = alarmValues;
       this.tagNumber = tagNumber;

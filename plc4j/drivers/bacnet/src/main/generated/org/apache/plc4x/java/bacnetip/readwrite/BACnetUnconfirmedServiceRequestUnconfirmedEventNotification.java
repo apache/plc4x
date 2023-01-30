@@ -262,9 +262,9 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Integer serviceRequestLength)
-          throws ParseException {
+  public static BACnetUnconfirmedServiceRequestBuilder
+      staticParseBACnetUnconfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestUnconfirmedEventNotification");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -407,7 +407,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestUnconfirmedEventNotification");
     // Create the instance
-    return new BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder(
+    return new BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilderImpl(
         processIdentifier,
         initiatingDeviceIdentifier,
         eventObjectIdentifier,
@@ -424,7 +424,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
         serviceRequestLength);
   }
 
-  public static class BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder
+  public static class BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilderImpl
       implements BACnetUnconfirmedServiceRequest.BACnetUnconfirmedServiceRequestBuilder {
     private final BACnetContextTagUnsignedInteger processIdentifier;
     private final BACnetContextTagObjectIdentifier initiatingDeviceIdentifier;
@@ -441,7 +441,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
     private final BACnetNotificationParameters eventValues;
     private final Integer serviceRequestLength;
 
-    public BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder(
+    public BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilderImpl(
         BACnetContextTagUnsignedInteger processIdentifier,
         BACnetContextTagObjectIdentifier initiatingDeviceIdentifier,
         BACnetContextTagObjectIdentifier eventObjectIdentifier,
@@ -456,7 +456,6 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
         BACnetEventStateTagged toState,
         BACnetNotificationParameters eventValues,
         Integer serviceRequestLength) {
-
       this.processIdentifier = processIdentifier;
       this.initiatingDeviceIdentifier = initiatingDeviceIdentifier;
       this.eventObjectIdentifier = eventObjectIdentifier;

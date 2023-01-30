@@ -31,7 +31,7 @@
     <raw>303032303030303130303520202020202020202000</raw>
     <root-type>OpenProtocolMessage</root-type>
     <parser-arguments>
-      <connectionRevision>Revision5</connectionRevision>
+      <selectedRevision>1</selectedRevision>
     </parser-arguments>
     <xml>
       <OpenProtocolMessage>
@@ -39,9 +39,7 @@
         <mid>
           <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationCommunicationStart">1</Mid>
         </mid>
-        <selectedRevision>
-          <OpenProtocolRevision dataType="uint" bitLength="24" stringRepresentation="Revision5">5</OpenProtocolRevision>
-        </selectedRevision>
+        <midRevision dataType="uint" bitLength="24">5</midRevision>
         <OpenProtocolMessageApplicationCommunicationStart>
         </OpenProtocolMessageApplicationCommunicationStart>
         <end dataType="uint" bitLength="8">0</end>
@@ -55,7 +53,7 @@
     <raw>30303537303030322020202020202020202020203031303030313032303130334169726261673120202020202020202020202020202020202000</raw>
     <root-type>OpenProtocolMessage</root-type>
     <parser-arguments>
-      <connectionRevision>Revision1</connectionRevision>
+      <selectedRevision>1</selectedRevision>
     </parser-arguments>
     <xml>
       <OpenProtocolMessage>
@@ -63,30 +61,200 @@
         <mid>
           <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationCommunicationStartAcknowledge">2</Mid>
         </mid>
-        <selectedRevision>
-        </selectedRevision>
         <OpenProtocolMessageApplicationCommunicationStartAcknowledge>
-          <blocks isList="true">
-            <ApplicationCommunicationStartAcknowledgeBlock>
-              <blockType dataType="uint" bitLength="16">1</blockType>
-              <ApplicationCommunicationStartAcknowledgeBlockCellId>
-                <cellId dataType="uint" bitLength="32">1</cellId>
-              </ApplicationCommunicationStartAcknowledgeBlockCellId>
-            </ApplicationCommunicationStartAcknowledgeBlock>
-            <ApplicationCommunicationStartAcknowledgeBlock>
-              <blockType dataType="uint" bitLength="16">2</blockType>
-              <ApplicationCommunicationStartAcknowledgeBlockChannelId>
-                <channelId dataType="uint" bitLength="16">1</channelId>
-              </ApplicationCommunicationStartAcknowledgeBlockChannelId>
-            </ApplicationCommunicationStartAcknowledgeBlock>
-            <ApplicationCommunicationStartAcknowledgeBlock>
-              <blockType dataType="uint" bitLength="16">3</blockType>
-              <ApplicationCommunicationStartAcknowledgeBlockControllerName>
-                <controllerName dataType="string" bitLength="200" encoding="ASCII">Airbag1</controllerName>
-              </ApplicationCommunicationStartAcknowledgeBlockControllerName>
-            </ApplicationCommunicationStartAcknowledgeBlock>
-          </blocks>
+          <OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev1>
+            <blockIdCellId dataType="uint" bitLength="16">1</blockIdCellId>
+            <cellId dataType="uint" bitLength="32">1</cellId>
+            <blockIdChannelId dataType="uint" bitLength="16">2</blockIdChannelId>
+            <channelId dataType="uint" bitLength="16">1</channelId>
+            <blockIdControllerName dataType="uint" bitLength="16">3</blockIdControllerName>
+            <controllerName dataType="string" bitLength="200" encoding="ASCII">Airbag1</controllerName>
+          </OpenProtocolMessageApplicationCommunicationStartAcknowledgeRev1>
         </OpenProtocolMessageApplicationCommunicationStartAcknowledge>
+        <end dataType="uint" bitLength="8">0</end>
+      </OpenProtocolMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>MID 0003 Application Communication stop</name>
+    <!--  0 0 2 0 0 0 0 3 _ _ _ _ _ _ _ _ _ _ _ _ NULL -->
+    <raw>303032303030303320202020202020202020202000</raw>
+    <root-type>OpenProtocolMessage</root-type>
+    <parser-arguments>
+      <selectedRevision>1</selectedRevision>
+    </parser-arguments>
+    <xml>
+      <OpenProtocolMessage>
+        <length dataType="uint" bitLength="32">20</length>
+        <mid>
+          <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationCommunicationStop">3</Mid>
+        </mid>
+        <OpenProtocolMessageApplicationCommunicationStop>
+        </OpenProtocolMessageApplicationCommunicationStop>
+        <end dataType="uint" bitLength="8">0</end>
+      </OpenProtocolMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>MID 0004 Application Communication negative acknowledge</name>
+    <!--  0 0 2 6 0 0 0 4                         0 0 1 8 0 2 NUL -->
+    <raw>303032363030303420202020202020202020202030303138303200</raw>
+    <root-type>OpenProtocolMessage</root-type>
+    <parser-arguments>
+      <selectedRevision>1</selectedRevision>
+    </parser-arguments>
+    <xml>
+      <OpenProtocolMessage>
+        <length dataType="uint" bitLength="32">26</length>
+        <mid>
+          <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationCommandError">4</Mid>
+        </mid>
+        <OpenProtocolMessageApplicationCommandError>
+          <OpenProtocolMessageApplicationCommandErrorRev1>
+            <requestMid>
+              <Mid dataType="uint" bitLength="32" stringRepresentation="SelectParameterSet">18</Mid>
+            </requestMid>
+            <error>
+              <ApplicationCommunicationError dataType="uint" bitLength="16" stringRepresentation="ParameterSetIdNotPresent">2</ApplicationCommunicationError>
+            </error>
+          </OpenProtocolMessageApplicationCommandErrorRev1>
+        </OpenProtocolMessageApplicationCommandError>
+        <end dataType="uint" bitLength="8">0</end>
+      </OpenProtocolMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>MID 0005 Application Communication positive acknowledge</name>
+    <!--  0 0 2 4 0 0 0 5 _ _ _ _ _ _ _ _ _ _ _ _ 0 0 1 8 NULL -->
+    <raw>30303234303030352020202020202020202020203030313800</raw>
+    <root-type>OpenProtocolMessage</root-type>
+    <parser-arguments>
+      <selectedRevision>1</selectedRevision>
+    </parser-arguments>
+    <xml>
+      <OpenProtocolMessage>
+        <length dataType="uint" bitLength="32">24</length>
+        <mid>
+          <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationCommandAccepted">5</Mid>
+        </mid>
+        <OpenProtocolMessageApplicationCommandAccepted>
+          <OpenProtocolMessageApplicationCommandAcceptedRev1>
+            <midNumberAccepted>
+              <Mid dataType="uint" bitLength="32" stringRepresentation="SelectParameterSet">18</Mid>
+            </midNumberAccepted>
+          </OpenProtocolMessageApplicationCommandAcceptedRev1>
+        </OpenProtocolMessageApplicationCommandAccepted>
+        <end dataType="uint" bitLength="8">0</end>
+      </OpenProtocolMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>MID 0006 Application data message request</name>
+    <!--  0 0 3 3 0 0 0 6 _ _ _ _ _ _ _ _ _ _ _ _ 0 0 1 8 0 0 6 0 4 H u r z NULL -->
+    <raw>30303333303030362020202020202020202020203030313830303630344875727A00</raw>
+    <root-type>OpenProtocolMessage</root-type>
+    <parser-arguments>
+      <selectedRevision>1</selectedRevision>
+    </parser-arguments>
+    <xml>
+      <OpenProtocolMessage>
+        <length dataType="uint" bitLength="32">33</length>
+        <mid>
+          <Mid dataType="uint" bitLength="32" stringRepresentation="ApplicationGenericDataRequest">6</Mid>
+        </mid>
+        <OpenProtocolMessageApplicationGenericDataRequest>
+          <OpenProtocolMessageApplicationGenericDataRequestRev1>
+            <requestMid>
+              <Mid dataType="uint" bitLength="32" stringRepresentation="SelectParameterSet">18</Mid>
+            </requestMid>
+            <wantedRevision dataType="uint" bitLength="24">6</wantedRevision>
+            <extraDataLength dataType="uint" bitLength="16">4</extraDataLength>
+            <extraData dataType="byte" bitLength="32">0x4875727a</extraData>
+          </OpenProtocolMessageApplicationGenericDataRequestRev1>
+        </OpenProtocolMessageApplicationGenericDataRequest>
+        <end dataType="uint" bitLength="8">0</end>
+      </OpenProtocolMessage>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>MID 0061 Last tightening result data REV1</name>
+    <!--  0 2 3 1 0 0 6 1 0 0 1 0 _ _ _ _ _ _ _ _ 0 1 0 0 0 1 0 2 0 1 0 3 a i r b a g 7 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 0 4 K P O L 3 4 5 6 J K L O 8 9 7 _ _ _ _ _ _ _ _ _ _ 0 5 0 0 0 6 0 0 3 0 7 0 0 0 0 0 8 0 0 0 0 0 9 0 1 0 0 1 1 1 1 2 0 0 0 8 4 0 1 3 0 0 1 4 0 0 1 4 0 0 1 2 0 0 1 5 0 0 0 7 3 9 1 6 0 0 0 0 0 1 7 0 9 9 9 9 1 8 0 0 0 0 0 1 9 0 0 0 0 0 2 0 2 0 0 1 - 0 6 - 0 2 : 0 9 : 5 4 : 0 9 2 1 2 0 0 1 - 0 5 - 2 9 : 1 2 : 3 4 : 3 3 2 2 1 2 3 3 4 5 6 7 5 _ _ _ _ NULL -->
+    <raw>30323331303036313030313020202020202020203031303030313032303130336169726261673720202020202020202020202020202020202030344B504F4C333435364A4B4C4F383937202020202020202020203035303030363030333037303030303038303030303039303130303131313132303030383430313330303134303031343030313230303135303030373339313630303030303137303939393931383030303030313930303030303230323030312D30362D30323A30393A35343A30393231323030312D30352D32393A31323A33343A333332323132333334353637352020202000</raw>
+    <root-type>OpenProtocolMessage</root-type>
+    <parser-arguments>
+      <selectedRevision>1</selectedRevision>
+    </parser-arguments>
+    <xml>
+      <OpenProtocolMessage>
+        <length dataType="uint" bitLength="32">231</length>
+        <mid>
+          <Mid dataType="uint" bitLength="32" stringRepresentation="LastTighteningResultData">61</Mid>
+        </mid>
+        <midRevision dataType="uint" bitLength="24">1</midRevision>
+        <noAckFlag dataType="uint" bitLength="8">0</noAckFlag>
+        <OpenProtocolMessageLastTighteningResultData>
+          <OpenProtocolMessageLastTighteningResultDataRev1>
+            <blockIdCellId dataType="uint" bitLength="16">1</blockIdCellId>
+            <cellId dataType="uint" bitLength="32">1</cellId>
+            <blockIdChannelId dataType="uint" bitLength="16">2</blockIdChannelId>
+            <channelId dataType="uint" bitLength="16">1</channelId>
+            <blockIdTorqueControllerName dataType="uint" bitLength="16">3</blockIdTorqueControllerName>
+            <torqueControllerName dataType="string" bitLength="200" encoding="ASCII">airbag7</torqueControllerName>
+            <blockIdVinNumber dataType="uint" bitLength="16">4</blockIdVinNumber>
+            <vinNumber dataType="string" bitLength="200" encoding="ASCII">KPOL3456JKLO897</vinNumber>
+            <blockIdJobId dataType="uint" bitLength="16">5</blockIdJobId>
+            <jobId dataType="uint" bitLength="16">0</jobId>
+            <blockIdParameterSetId dataType="uint" bitLength="16">6</blockIdParameterSetId>
+            <parameterSetId dataType="uint" bitLength="24">3</parameterSetId>
+            <blockIdBatchSize dataType="uint" bitLength="16">7</blockIdBatchSize>
+            <batchSize dataType="uint" bitLength="32">0</batchSize>
+            <blockIdBatchCounter dataType="uint" bitLength="16">8</blockIdBatchCounter>
+            <batchCounter dataType="uint" bitLength="32">0</batchCounter>
+            <blockIdTighteningStatus dataType="uint" bitLength="16">9</blockIdTighteningStatus>
+            <tighteningStatus>
+              <NokOk dataType="uint" bitLength="8" stringRepresentation="NOK">0</NokOk>
+            </tighteningStatus>
+            <blockIdTorqueStatus dataType="uint" bitLength="16">10</blockIdTorqueStatus>
+            <torqueStatus>
+              <Status dataType="uint" bitLength="8" stringRepresentation="Low">0</Status>
+            </torqueStatus>
+            <blockIdAngleStatus dataType="uint" bitLength="16">11</blockIdAngleStatus>
+            <angleStatus>
+              <Status dataType="uint" bitLength="8" stringRepresentation="OK">1</Status>
+            </angleStatus>
+            <blockIdTorqueMinLimit dataType="uint" bitLength="16">12</blockIdTorqueMinLimit>
+            <torqueMinLimit dataType="uint" bitLength="48">840</torqueMinLimit>
+            <blockIdTorqueMaxLimit dataType="uint" bitLength="16">13</blockIdTorqueMaxLimit>
+            <torqueMaxLimit dataType="uint" bitLength="48">1400</torqueMaxLimit>
+            <blockIdTorqueFinalTarget dataType="uint" bitLength="16">14</blockIdTorqueFinalTarget>
+            <torqueFinalTarget dataType="uint" bitLength="48">1200</torqueFinalTarget>
+            <blockIdTorque dataType="uint" bitLength="16">15</blockIdTorque>
+            <torque dataType="uint" bitLength="48">739</torque>
+            <blockIdAngleMin dataType="uint" bitLength="16">16</blockIdAngleMin>
+            <angleMin dataType="uint" bitLength="40">0</angleMin>
+            <blockIdAngleMax dataType="uint" bitLength="16">17</blockIdAngleMax>
+            <angleMax dataType="uint" bitLength="40">9999</angleMax>
+            <blockIdFinalAngleTarget dataType="uint" bitLength="16">18</blockIdFinalAngleTarget>
+            <finalAngleTarget dataType="uint" bitLength="40">0</finalAngleTarget>
+            <blockIdAngle dataType="uint" bitLength="16">19</blockIdAngle>
+            <angle dataType="uint" bitLength="40">0</angle>
+            <blockIdTimeStamp dataType="uint" bitLength="16">20</blockIdTimeStamp>
+            <timeStamp dataType="string" bitLength="152" encoding="ASCII">2001-06-02:09:54:09</timeStamp>
+            <blockIdDateTimeOfLastChangeIndParameterSetSettings dataType="uint" bitLength="16">21</blockIdDateTimeOfLastChangeIndParameterSetSettings>
+            <dateTimeOfLastChangeIndParameterSetSettings dataType="string" bitLength="152" encoding="ASCII">2001-05-29:12:34:33</dateTimeOfLastChangeIndParameterSetSettings>
+            <blockIdBatchStatus dataType="uint" bitLength="16">22</blockIdBatchStatus>
+            <batchStatus>
+              <BatchStatus dataType="uint" bitLength="8" stringRepresentation="OK">1</BatchStatus>
+            </batchStatus>
+            <blockIdTighteningId dataType="uint" bitLength="16">23</blockIdTighteningId>
+            <tighteningId dataType="string" bitLength="80" encoding="ASCII">345675</tighteningId>
+          </OpenProtocolMessageLastTighteningResultDataRev1>
+        </OpenProtocolMessageLastTighteningResultData>
         <end dataType="uint" bitLength="8">0</end>
       </OpenProtocolMessage>
     </xml>

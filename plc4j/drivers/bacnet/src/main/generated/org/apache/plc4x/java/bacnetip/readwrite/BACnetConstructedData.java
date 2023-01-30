@@ -213,7 +213,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ABSENTEE_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataAbsenteeLimit.staticParseBuilder(
+          BACnetConstructedDataAbsenteeLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -223,7 +223,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ACCEPTED_MODES)) {
       builder =
-          BACnetConstructedDataAcceptedModes.staticParseBuilder(
+          BACnetConstructedDataAcceptedModes.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -234,7 +234,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ACCESS_ALARM_EVENTS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataAccessAlarmEvents.staticParseBuilder(
+          BACnetConstructedDataAccessAlarmEvents.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -244,7 +244,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ACCESS_DOORS)) {
       builder =
-          BACnetConstructedDataAccessDoors.staticParseBuilder(
+          BACnetConstructedDataAccessDoors.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -255,7 +255,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ACCESS_EVENT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataAccessEvent.staticParseBuilder(
+          BACnetConstructedDataAccessEvent.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -266,17 +266,18 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument,
             BACnetPropertyIdentifier.ACCESS_EVENT_AUTHENTICATION_FACTOR)) {
       builder =
-          BACnetConstructedDataAccessEventAuthenticationFactor.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataAccessEventAuthenticationFactor
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ACCESS_EVENT_CREDENTIAL)) {
       builder =
-          BACnetConstructedDataAccessEventCredential.staticParseBuilder(
+          BACnetConstructedDataAccessEventCredential.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -287,7 +288,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ACCESS_EVENT_TAG)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataAccessEventTag.staticParseBuilder(
+          BACnetConstructedDataAccessEventTag.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -297,7 +298,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ACCESS_EVENT_TIME)) {
       builder =
-          BACnetConstructedDataAccessEventTime.staticParseBuilder(
+          BACnetConstructedDataAccessEventTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -308,7 +309,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ACCESS_TRANSACTION_EVENTS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataAccessTransactionEvents.staticParseBuilder(
+          BACnetConstructedDataAccessTransactionEvents.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -318,7 +319,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ACCOMPANIMENT)) {
       builder =
-          BACnetConstructedDataAccompaniment.staticParseBuilder(
+          BACnetConstructedDataAccompaniment.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -329,7 +330,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ACCOMPANIMENT_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataAccompanimentTime.staticParseBuilder(
+          BACnetConstructedDataAccompanimentTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -340,7 +341,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ACK_REQUIRED)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataAckRequired.staticParseBuilder(
+          BACnetConstructedDataAckRequired.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -351,7 +352,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ACKED_TRANSITIONS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataAckedTransitions.staticParseBuilder(
+          BACnetConstructedDataAckedTransitions.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -361,7 +362,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ACTION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataLoopAction.staticParseBuilder(
+          BACnetConstructedDataLoopAction.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -370,7 +371,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.COMMAND)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ACTION)) {
       builder =
-          BACnetConstructedDataCommandAction.staticParseBuilder(
+          BACnetConstructedDataCommandAction.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -379,7 +380,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (true
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ACTION)) {
       builder =
-          BACnetConstructedDataAction.staticParseBuilder(
+          BACnetConstructedDataAction.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -389,7 +390,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ACTION_TEXT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataActionText.staticParseBuilder(
+          BACnetConstructedDataActionText.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -399,7 +400,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ACTIVATION_TIME)) {
       builder =
-          BACnetConstructedDataActivationTime.staticParseBuilder(
+          BACnetConstructedDataActivationTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -410,7 +411,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ACTIVE_AUTHENTICATION_POLICY)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataActiveAuthenticationPolicy.staticParseBuilder(
+          BACnetConstructedDataActiveAuthenticationPolicy.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -421,17 +422,18 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument,
             BACnetPropertyIdentifier.ACTIVE_COV_MULTIPLE_SUBSCRIPTIONS)) {
       builder =
-          BACnetConstructedDataActiveCOVMultipleSubscriptions.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataActiveCOVMultipleSubscriptions
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ACTIVE_COV_SUBSCRIPTIONS)) {
       builder =
-          BACnetConstructedDataActiveCOVSubscriptions.staticParseBuilder(
+          BACnetConstructedDataActiveCOVSubscriptions.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -441,7 +443,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ACTIVE_TEXT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataActiveText.staticParseBuilder(
+          BACnetConstructedDataActiveText.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -451,7 +453,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ACTIVE_VT_SESSIONS)) {
       builder =
-          BACnetConstructedDataActiveVTSessions.staticParseBuilder(
+          BACnetConstructedDataActiveVTSessions.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -461,7 +463,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ACTUAL_SHED_LEVEL)) {
       builder =
-          BACnetConstructedDataActualShedLevel.staticParseBuilder(
+          BACnetConstructedDataActualShedLevel.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -472,7 +474,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ADJUST_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
       builder =
-          BACnetConstructedDataAccessZoneAdjustValue.staticParseBuilder(
+          BACnetConstructedDataAccessZoneAdjustValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -483,7 +485,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ADJUST_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataPulseConverterAdjustValue.staticParseBuilder(
+          BACnetConstructedDataPulseConverterAdjustValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -494,7 +496,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ADJUST_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
       builder =
-          BACnetConstructedDataAdjustValue.staticParseBuilder(
+          BACnetConstructedDataAdjustValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -504,7 +506,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALARM_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataAlarmValue.staticParseBuilder(
+          BACnetConstructedDataAlarmValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -514,7 +516,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ALARM_VALUES)) {
       builder =
-          BACnetConstructedDataAccessDoorAlarmValues.staticParseBuilder(
+          BACnetConstructedDataAccessDoorAlarmValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -524,7 +526,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ALARM_VALUES)) {
       builder =
-          BACnetConstructedDataAccessZoneAlarmValues.staticParseBuilder(
+          BACnetConstructedDataAccessZoneAlarmValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -535,7 +537,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ALARM_VALUES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 8)) {
       builder =
-          BACnetConstructedDataBitStringValueAlarmValues.staticParseBuilder(
+          BACnetConstructedDataBitStringValueAlarmValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -545,17 +547,18 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ALARM_VALUES)) {
       builder =
-          BACnetConstructedDataCharacterStringValueAlarmValues.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataCharacterStringValueAlarmValues
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.LIFE_SAFETY_POINT)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ALARM_VALUES)) {
       builder =
-          BACnetConstructedDataLifeSafetyPointAlarmValues.staticParseBuilder(
+          BACnetConstructedDataLifeSafetyPointAlarmValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -565,7 +568,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ALARM_VALUES)) {
       builder =
-          BACnetConstructedDataLifeSafetyZoneAlarmValues.staticParseBuilder(
+          BACnetConstructedDataLifeSafetyZoneAlarmValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -576,7 +579,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ALARM_VALUES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataMultiStateInputAlarmValues.staticParseBuilder(
+          BACnetConstructedDataMultiStateInputAlarmValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -587,7 +590,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ALARM_VALUES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataMultiStateValueAlarmValues.staticParseBuilder(
+          BACnetConstructedDataMultiStateValueAlarmValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -597,7 +600,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ALARM_VALUES)) {
       builder =
-          BACnetConstructedDataTimerAlarmValues.staticParseBuilder(
+          BACnetConstructedDataTimerAlarmValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -607,7 +610,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ALARM_VALUES)) {
       builder =
-          BACnetConstructedDataAlarmValues.staticParseBuilder(
+          BACnetConstructedDataAlarmValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -618,7 +621,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ALIGN_INTERVALS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataAlignIntervals.staticParseBuilder(
+          BACnetConstructedDataAlignIntervals.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -627,7 +630,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.ACCESS_CREDENTIAL)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataAccessCredentialAll.staticParseBuilder(
+          BACnetConstructedDataAccessCredentialAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -636,7 +639,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.ACCESS_DOOR)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataAccessDoorAll.staticParseBuilder(
+          BACnetConstructedDataAccessDoorAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -645,7 +648,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.ACCESS_POINT)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataAccessPointAll.staticParseBuilder(
+          BACnetConstructedDataAccessPointAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -654,7 +657,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.ACCESS_RIGHTS)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataAccessRightsAll.staticParseBuilder(
+          BACnetConstructedDataAccessRightsAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -663,7 +666,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.ACCESS_USER)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataAccessUserAll.staticParseBuilder(
+          BACnetConstructedDataAccessUserAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -672,7 +675,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.ACCESS_ZONE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataAccessZoneAll.staticParseBuilder(
+          BACnetConstructedDataAccessZoneAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -681,7 +684,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.ACCUMULATOR)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataAccumulatorAll.staticParseBuilder(
+          BACnetConstructedDataAccumulatorAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -690,7 +693,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.ALERT_ENROLLMENT)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataAlertEnrollmentAll.staticParseBuilder(
+          BACnetConstructedDataAlertEnrollmentAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -699,7 +702,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.ANALOG_INPUT)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataAnalogInputAll.staticParseBuilder(
+          BACnetConstructedDataAnalogInputAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -708,7 +711,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.ANALOG_OUTPUT)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataAnalogOutputAll.staticParseBuilder(
+          BACnetConstructedDataAnalogOutputAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -717,7 +720,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.ANALOG_VALUE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataAnalogValueAll.staticParseBuilder(
+          BACnetConstructedDataAnalogValueAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -726,7 +729,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.AVERAGING)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataAveragingAll.staticParseBuilder(
+          BACnetConstructedDataAveragingAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -735,7 +738,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.BINARY_INPUT)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataBinaryInputAll.staticParseBuilder(
+          BACnetConstructedDataBinaryInputAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -744,7 +747,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.BINARY_LIGHTING_OUTPUT)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataBinaryLightingOutputAll.staticParseBuilder(
+          BACnetConstructedDataBinaryLightingOutputAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -753,7 +756,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.BINARY_OUTPUT)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataBinaryOutputAll.staticParseBuilder(
+          BACnetConstructedDataBinaryOutputAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -762,7 +765,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.BINARY_VALUE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataBinaryValueAll.staticParseBuilder(
+          BACnetConstructedDataBinaryValueAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -771,7 +774,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.BITSTRING_VALUE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataBitstringValueAll.staticParseBuilder(
+          BACnetConstructedDataBitstringValueAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -780,7 +783,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.CALENDAR)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataCalendarAll.staticParseBuilder(
+          BACnetConstructedDataCalendarAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -789,7 +792,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.CHANNEL)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataChannelAll.staticParseBuilder(
+          BACnetConstructedDataChannelAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -798,7 +801,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.CHARACTERSTRING_VALUE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataCharacterstringValueAll.staticParseBuilder(
+          BACnetConstructedDataCharacterstringValueAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -807,7 +810,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.COMMAND)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataCommandAll.staticParseBuilder(
+          BACnetConstructedDataCommandAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -816,7 +819,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.CREDENTIAL_DATA_INPUT)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataCredentialDataInputAll.staticParseBuilder(
+          BACnetConstructedDataCredentialDataInputAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -825,7 +828,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.DATEPATTERN_VALUE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataDatepatternValueAll.staticParseBuilder(
+          BACnetConstructedDataDatepatternValueAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -834,7 +837,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.DATE_VALUE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataDateValueAll.staticParseBuilder(
+          BACnetConstructedDataDateValueAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -843,7 +846,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.DATETIMEPATTERN_VALUE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataDatetimepatternValueAll.staticParseBuilder(
+          BACnetConstructedDataDatetimepatternValueAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -852,7 +855,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.DATETIME_VALUE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataDatetimeValueAll.staticParseBuilder(
+          BACnetConstructedDataDatetimeValueAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -861,7 +864,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.DEVICE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataDeviceAll.staticParseBuilder(
+          BACnetConstructedDataDeviceAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -870,7 +873,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.ELEVATOR_GROUP)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataElevatorGroupAll.staticParseBuilder(
+          BACnetConstructedDataElevatorGroupAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -879,7 +882,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.ESCALATOR)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataEscalatorAll.staticParseBuilder(
+          BACnetConstructedDataEscalatorAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -888,7 +891,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.EVENT_ENROLLMENT)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataEventEnrollmentAll.staticParseBuilder(
+          BACnetConstructedDataEventEnrollmentAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -897,7 +900,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.EVENT_LOG)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataEventLogAll.staticParseBuilder(
+          BACnetConstructedDataEventLogAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -906,7 +909,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.FILE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataFileAll.staticParseBuilder(
+          BACnetConstructedDataFileAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -915,7 +918,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.GLOBAL_GROUP)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataGlobalGroupAll.staticParseBuilder(
+          BACnetConstructedDataGlobalGroupAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -924,7 +927,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.GROUP)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataGroupAll.staticParseBuilder(
+          BACnetConstructedDataGroupAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -933,7 +936,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.INTEGER_VALUE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataIntegerValueAll.staticParseBuilder(
+          BACnetConstructedDataIntegerValueAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -942,7 +945,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.LARGE_ANALOG_VALUE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataLargeAnalogValueAll.staticParseBuilder(
+          BACnetConstructedDataLargeAnalogValueAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -951,7 +954,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.LIFE_SAFETY_POINT)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataLifeSafetyPointAll.staticParseBuilder(
+          BACnetConstructedDataLifeSafetyPointAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -960,7 +963,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.LIFE_SAFETY_ZONE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataLifeSafetyZoneAll.staticParseBuilder(
+          BACnetConstructedDataLifeSafetyZoneAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -969,7 +972,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.LIFT)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataLiftAll.staticParseBuilder(
+          BACnetConstructedDataLiftAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -978,7 +981,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.LIGHTING_OUTPUT)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataLightingOutputAll.staticParseBuilder(
+          BACnetConstructedDataLightingOutputAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -987,7 +990,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.LOAD_CONTROL)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataLoadControlAll.staticParseBuilder(
+          BACnetConstructedDataLoadControlAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -996,7 +999,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.LOOP)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataLoopAll.staticParseBuilder(
+          BACnetConstructedDataLoopAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1005,7 +1008,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.MULTI_STATE_INPUT)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataMultiStateInputAll.staticParseBuilder(
+          BACnetConstructedDataMultiStateInputAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1014,7 +1017,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.MULTI_STATE_OUTPUT)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataMultiStateOutputAll.staticParseBuilder(
+          BACnetConstructedDataMultiStateOutputAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1023,7 +1026,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.MULTI_STATE_VALUE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataMultiStateValueAll.staticParseBuilder(
+          BACnetConstructedDataMultiStateValueAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1032,7 +1035,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.NETWORK_PORT)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataNetworkPortAll.staticParseBuilder(
+          BACnetConstructedDataNetworkPortAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1041,7 +1044,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.NETWORK_SECURITY)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataNetworkSecurityAll.staticParseBuilder(
+          BACnetConstructedDataNetworkSecurityAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1050,7 +1053,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.NOTIFICATION_CLASS)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataNotificationClassAll.staticParseBuilder(
+          BACnetConstructedDataNotificationClassAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1059,7 +1062,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.NOTIFICATION_FORWARDER)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataNotificationForwarderAll.staticParseBuilder(
+          BACnetConstructedDataNotificationForwarderAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1068,7 +1071,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.OCTETSTRING_VALUE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataOctetstringValueAll.staticParseBuilder(
+          BACnetConstructedDataOctetstringValueAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1077,7 +1080,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.POSITIVE_INTEGER_VALUE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataPositiveIntegerValueAll.staticParseBuilder(
+          BACnetConstructedDataPositiveIntegerValueAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1086,7 +1089,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.PROGRAM)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataProgramAll.staticParseBuilder(
+          BACnetConstructedDataProgramAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1095,7 +1098,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.PULSE_CONVERTER)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataPulseConverterAll.staticParseBuilder(
+          BACnetConstructedDataPulseConverterAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1104,7 +1107,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.SCHEDULE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataScheduleAll.staticParseBuilder(
+          BACnetConstructedDataScheduleAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1113,7 +1116,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.STRUCTURED_VIEW)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataStructuredViewAll.staticParseBuilder(
+          BACnetConstructedDataStructuredViewAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1122,7 +1125,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.TIMEPATTERN_VALUE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataTimepatternValueAll.staticParseBuilder(
+          BACnetConstructedDataTimepatternValueAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1131,7 +1134,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.TIME_VALUE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataTimeValueAll.staticParseBuilder(
+          BACnetConstructedDataTimeValueAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1140,7 +1143,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.TIMER)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataTimerAll.staticParseBuilder(
+          BACnetConstructedDataTimerAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1149,7 +1152,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.TREND_LOG)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataTrendLogAll.staticParseBuilder(
+          BACnetConstructedDataTrendLogAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1158,7 +1161,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.TREND_LOG_MULTIPLE)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ALL)) {
       builder =
-          BACnetConstructedDataTrendLogMultipleAll.staticParseBuilder(
+          BACnetConstructedDataTrendLogMultipleAll.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1169,7 +1172,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ALL_WRITES_SUCCESSFUL)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataAllWritesSuccessful.staticParseBuilder(
+          BACnetConstructedDataAllWritesSuccessful.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1180,7 +1183,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ALLOW_GROUP_DELAY_INHIBIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataAllowGroupDelayInhibit.staticParseBuilder(
+          BACnetConstructedDataAllowGroupDelayInhibit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1190,7 +1193,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.APDU_LENGTH)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataAPDULength.staticParseBuilder(
+          BACnetConstructedDataAPDULength.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1201,7 +1204,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.APDU_SEGMENT_TIMEOUT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataAPDUSegmentTimeout.staticParseBuilder(
+          BACnetConstructedDataAPDUSegmentTimeout.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1212,7 +1215,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.APDU_TIMEOUT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataAPDUTimeout.staticParseBuilder(
+          BACnetConstructedDataAPDUTimeout.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1223,7 +1226,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.APPLICATION_SOFTWARE_VERSION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataApplicationSoftwareVersion.staticParseBuilder(
+          BACnetConstructedDataApplicationSoftwareVersion.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1233,7 +1236,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ARCHIVE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataArchive.staticParseBuilder(
+          BACnetConstructedDataArchive.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1243,7 +1246,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ASSIGNED_ACCESS_RIGHTS)) {
       builder =
-          BACnetConstructedDataAssignedAccessRights.staticParseBuilder(
+          BACnetConstructedDataAssignedAccessRights.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1253,7 +1256,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ASSIGNED_LANDING_CALLS)) {
       builder =
-          BACnetConstructedDataAssignedLandingCalls.staticParseBuilder(
+          BACnetConstructedDataAssignedLandingCalls.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1264,7 +1267,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ATTEMPTED_SAMPLES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataAttemptedSamples.staticParseBuilder(
+          BACnetConstructedDataAttemptedSamples.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1274,7 +1277,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.AUTHENTICATION_FACTORS)) {
       builder =
-          BACnetConstructedDataAuthenticationFactors.staticParseBuilder(
+          BACnetConstructedDataAuthenticationFactors.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1284,7 +1287,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.AUTHENTICATION_POLICY_LIST)) {
       builder =
-          BACnetConstructedDataAuthenticationPolicyList.staticParseBuilder(
+          BACnetConstructedDataAuthenticationPolicyList.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1295,7 +1298,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.AUTHENTICATION_POLICY_NAMES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataAuthenticationPolicyNames.staticParseBuilder(
+          BACnetConstructedDataAuthenticationPolicyNames.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1306,7 +1309,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.AUTHENTICATION_STATUS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataAuthenticationStatus.staticParseBuilder(
+          BACnetConstructedDataAuthenticationStatus.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1317,7 +1320,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.AUTHORIZATION_EXEMPTIONS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataAuthorizationExemptions.staticParseBuilder(
+          BACnetConstructedDataAuthorizationExemptions.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1328,7 +1331,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.AUTHORIZATION_MODE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataAuthorizationMode.staticParseBuilder(
+          BACnetConstructedDataAuthorizationMode.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1339,7 +1342,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.AUTO_SLAVE_DISCOVERY)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataAutoSlaveDiscovery.staticParseBuilder(
+          BACnetConstructedDataAutoSlaveDiscovery.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1350,7 +1353,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.AVERAGE_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataAverageValue.staticParseBuilder(
+          BACnetConstructedDataAverageValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1361,7 +1364,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.BACKUP_AND_RESTORE_STATE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataBackupAndRestoreState.staticParseBuilder(
+          BACnetConstructedDataBackupAndRestoreState.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1372,7 +1375,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.BACKUP_FAILURE_TIMEOUT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataBackupFailureTimeout.staticParseBuilder(
+          BACnetConstructedDataBackupFailureTimeout.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1383,7 +1386,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.BACKUP_PREPARATION_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataBackupPreparationTime.staticParseBuilder(
+          BACnetConstructedDataBackupPreparationTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1393,7 +1396,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.BACNET_IP_GLOBAL_ADDRESS)) {
       builder =
-          BACnetConstructedDataBACnetIPGlobalAddress.staticParseBuilder(
+          BACnetConstructedDataBACnetIPGlobalAddress.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1404,7 +1407,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.BACNET_IP_MODE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataBACnetIPMode.staticParseBuilder(
+          BACnetConstructedDataBACnetIPMode.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1415,7 +1418,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.BACNET_IP_MULTICAST_ADDRESS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
       builder =
-          BACnetConstructedDataBACnetIPMulticastAddress.staticParseBuilder(
+          BACnetConstructedDataBACnetIPMulticastAddress.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1426,7 +1429,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.BACNET_IP_NAT_TRAVERSAL)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataBACnetIPNATTraversal.staticParseBuilder(
+          BACnetConstructedDataBACnetIPNATTraversal.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1437,7 +1440,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.BACNET_IP_UDP_PORT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataBACnetIPUDPPort.staticParseBuilder(
+          BACnetConstructedDataBACnetIPUDPPort.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1448,7 +1451,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.BACNET_IPV6_MODE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataBACnetIPv6Mode.staticParseBuilder(
+          BACnetConstructedDataBACnetIPv6Mode.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1459,7 +1462,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.BACNET_IPV6_UDP_PORT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataBACnetIPv6UDPPort.staticParseBuilder(
+          BACnetConstructedDataBACnetIPv6UDPPort.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1470,7 +1473,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.BACNET_IPV6_MULTICAST_ADDRESS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
       builder =
-          BACnetConstructedDataBACnetIPv6MulticastAddress.staticParseBuilder(
+          BACnetConstructedDataBACnetIPv6MulticastAddress.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1481,7 +1484,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.BASE_DEVICE_SECURITY_POLICY)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataBaseDeviceSecurityPolicy.staticParseBuilder(
+          BACnetConstructedDataBaseDeviceSecurityPolicy.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1492,7 +1495,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.BBMD_ACCEPT_FD_REGISTRATIONS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataBBMDAcceptFDRegistrations.staticParseBuilder(
+          BACnetConstructedDataBBMDAcceptFDRegistrations.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1503,17 +1506,18 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument,
             BACnetPropertyIdentifier.BBMD_BROADCAST_DISTRIBUTION_TABLE)) {
       builder =
-          BACnetConstructedDataBBMDBroadcastDistributionTable.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataBBMDBroadcastDistributionTable
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.BBMD_FOREIGN_DEVICE_TABLE)) {
       builder =
-          BACnetConstructedDataBBMDForeignDeviceTable.staticParseBuilder(
+          BACnetConstructedDataBBMDForeignDeviceTable.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1523,7 +1527,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.BELONGS_TO)) {
       builder =
-          BACnetConstructedDataBelongsTo.staticParseBuilder(
+          BACnetConstructedDataBelongsTo.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1533,7 +1537,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.BIAS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataBias.staticParseBuilder(
+          BACnetConstructedDataBias.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1543,7 +1547,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.BIT_MASK)
         && EvaluationHelper.equals(peekedTagNumber, (short) 8)) {
       builder =
-          BACnetConstructedDataBitMask.staticParseBuilder(
+          BACnetConstructedDataBitMask.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1553,7 +1557,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.BIT_TEXT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataBitText.staticParseBuilder(
+          BACnetConstructedDataBitText.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1564,7 +1568,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.BLINK_WARN_ENABLE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataBlinkWarnEnable.staticParseBuilder(
+          BACnetConstructedDataBlinkWarnEnable.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1574,7 +1578,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.BUFFER_SIZE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataBufferSize.staticParseBuilder(
+          BACnetConstructedDataBufferSize.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1585,7 +1589,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CAR_ASSIGNED_DIRECTION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataCarAssignedDirection.staticParseBuilder(
+          BACnetConstructedDataCarAssignedDirection.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1596,7 +1600,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CAR_DOOR_COMMAND)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataCarDoorCommand.staticParseBuilder(
+          BACnetConstructedDataCarDoorCommand.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1607,7 +1611,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CAR_DOOR_STATUS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataCarDoorStatus.staticParseBuilder(
+          BACnetConstructedDataCarDoorStatus.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1618,7 +1622,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CAR_DOOR_TEXT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataCarDoorText.staticParseBuilder(
+          BACnetConstructedDataCarDoorText.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1629,7 +1633,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CAR_DOOR_ZONE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataCarDoorZone.staticParseBuilder(
+          BACnetConstructedDataCarDoorZone.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1640,7 +1644,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CAR_DRIVE_STATUS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataCarDriveStatus.staticParseBuilder(
+          BACnetConstructedDataCarDriveStatus.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1650,7 +1654,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.CAR_LOAD)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataCarLoad.staticParseBuilder(
+          BACnetConstructedDataCarLoad.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1661,7 +1665,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CAR_LOAD_UNITS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataCarLoadUnits.staticParseBuilder(
+          BACnetConstructedDataCarLoadUnits.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1671,7 +1675,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.CAR_MODE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataCarMode.staticParseBuilder(
+          BACnetConstructedDataCarMode.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1682,7 +1686,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CAR_MOVING_DIRECTION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataCarMovingDirection.staticParseBuilder(
+          BACnetConstructedDataCarMovingDirection.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1693,7 +1697,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CAR_POSITION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataCarPosition.staticParseBuilder(
+          BACnetConstructedDataCarPosition.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1704,7 +1708,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CHANGE_OF_STATE_COUNT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataChangeOfStateCount.staticParseBuilder(
+          BACnetConstructedDataChangeOfStateCount.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1714,7 +1718,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.CHANGE_OF_STATE_TIME)) {
       builder =
-          BACnetConstructedDataChangeOfStateTime.staticParseBuilder(
+          BACnetConstructedDataChangeOfStateTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1725,7 +1729,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CHANGES_PENDING)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataChangesPending.staticParseBuilder(
+          BACnetConstructedDataChangesPending.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1736,7 +1740,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CHANNEL_NUMBER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataChannelNumber.staticParseBuilder(
+          BACnetConstructedDataChannelNumber.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1746,7 +1750,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.CLIENT_COV_INCREMENT)) {
       builder =
-          BACnetConstructedDataClientCOVIncrement.staticParseBuilder(
+          BACnetConstructedDataClientCOVIncrement.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1756,7 +1760,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.COMMAND)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataCommand.staticParseBuilder(
+          BACnetConstructedDataCommand.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1766,7 +1770,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.COMMAND_TIME_ARRAY)) {
       builder =
-          BACnetConstructedDataCommandTimeArray.staticParseBuilder(
+          BACnetConstructedDataCommandTimeArray.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1777,7 +1781,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CONFIGURATION_FILES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 12)) {
       builder =
-          BACnetConstructedDataConfigurationFiles.staticParseBuilder(
+          BACnetConstructedDataConfigurationFiles.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1788,7 +1792,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CONTROL_GROUPS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataControlGroups.staticParseBuilder(
+          BACnetConstructedDataControlGroups.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1798,7 +1802,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.CONTROLLED_VARIABLE_REFERENCE)) {
       builder =
-          BACnetConstructedDataControlledVariableReference.staticParseBuilder(
+          BACnetConstructedDataControlledVariableReference.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1809,7 +1813,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CONTROLLED_VARIABLE_UNITS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataControlledVariableUnits.staticParseBuilder(
+          BACnetConstructedDataControlledVariableUnits.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1820,7 +1824,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CONTROLLED_VARIABLE_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataControlledVariableValue.staticParseBuilder(
+          BACnetConstructedDataControlledVariableValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1830,7 +1834,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.COUNT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataCount.staticParseBuilder(
+          BACnetConstructedDataCount.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1841,7 +1845,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.COUNT_BEFORE_CHANGE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataCountBeforeChange.staticParseBuilder(
+          BACnetConstructedDataCountBeforeChange.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1851,7 +1855,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.COUNT_CHANGE_TIME)) {
       builder =
-          BACnetConstructedDataCountChangeTime.staticParseBuilder(
+          BACnetConstructedDataCountChangeTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1862,7 +1866,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.COV_INCREMENT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataIntegerValueCOVIncrement.staticParseBuilder(
+          BACnetConstructedDataIntegerValueCOVIncrement.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1873,7 +1877,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.COV_INCREMENT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
       builder =
-          BACnetConstructedDataLargeAnalogValueCOVIncrement.staticParseBuilder(
+          BACnetConstructedDataLargeAnalogValueCOVIncrement.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1884,18 +1888,19 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.COV_INCREMENT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataPositiveIntegerValueCOVIncrement.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataPositiveIntegerValueCOVIncrement
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.COV_INCREMENT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataCOVIncrement.staticParseBuilder(
+          BACnetConstructedDataCOVIncrement.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1905,7 +1910,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.COV_PERIOD)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataCOVPeriod.staticParseBuilder(
+          BACnetConstructedDataCOVPeriod.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1916,7 +1921,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.COV_RESUBSCRIPTION_INTERVAL)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataCOVResubscriptionInterval.staticParseBuilder(
+          BACnetConstructedDataCOVResubscriptionInterval.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1926,7 +1931,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.COVU_PERIOD)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataCOVUPeriod.staticParseBuilder(
+          BACnetConstructedDataCOVUPeriod.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1936,7 +1941,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.COVU_RECIPIENTS)) {
       builder =
-          BACnetConstructedDataCOVURecipients.staticParseBuilder(
+          BACnetConstructedDataCOVURecipients.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1947,7 +1952,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CREDENTIAL_DISABLE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataCredentialDisable.staticParseBuilder(
+          BACnetConstructedDataCredentialDisable.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1958,7 +1963,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.CREDENTIAL_STATUS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataCredentialStatus.staticParseBuilder(
+          BACnetConstructedDataCredentialStatus.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1968,7 +1973,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.CREDENTIALS)) {
       builder =
-          BACnetConstructedDataCredentials.staticParseBuilder(
+          BACnetConstructedDataCredentials.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1978,7 +1983,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.CREDENTIALS_IN_ZONE)) {
       builder =
-          BACnetConstructedDataCredentialsInZone.staticParseBuilder(
+          BACnetConstructedDataCredentialsInZone.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1988,7 +1993,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.CURRENT_COMMAND_PRIORITY)) {
       builder =
-          BACnetConstructedDataCurrentCommandPriority.staticParseBuilder(
+          BACnetConstructedDataCurrentCommandPriority.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -1999,7 +2004,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DATABASE_REVISION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataDatabaseRevision.staticParseBuilder(
+          BACnetConstructedDataDatabaseRevision.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2009,7 +2014,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.DATE_LIST)) {
       builder =
-          BACnetConstructedDataDateList.staticParseBuilder(
+          BACnetConstructedDataDateList.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2020,7 +2025,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DAYLIGHT_SAVINGS_STATUS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataDaylightSavingsStatus.staticParseBuilder(
+          BACnetConstructedDataDaylightSavingsStatus.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2031,7 +2036,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DAYS_REMAINING)
         && EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
       builder =
-          BACnetConstructedDataDaysRemaining.staticParseBuilder(
+          BACnetConstructedDataDaysRemaining.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2041,7 +2046,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.DEADBAND)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataIntegerValueDeadband.staticParseBuilder(
+          BACnetConstructedDataIntegerValueDeadband.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2051,7 +2056,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.DEADBAND)
         && EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
       builder =
-          BACnetConstructedDataLargeAnalogValueDeadband.staticParseBuilder(
+          BACnetConstructedDataLargeAnalogValueDeadband.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2061,7 +2066,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.DEADBAND)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataPositiveIntegerValueDeadband.staticParseBuilder(
+          BACnetConstructedDataPositiveIntegerValueDeadband.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2071,7 +2076,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.DEADBAND)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataDeadband.staticParseBuilder(
+          BACnetConstructedDataDeadband.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2082,7 +2087,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DEFAULT_FADE_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataDefaultFadeTime.staticParseBuilder(
+          BACnetConstructedDataDefaultFadeTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2093,7 +2098,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DEFAULT_RAMP_RATE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataDefaultRampRate.staticParseBuilder(
+          BACnetConstructedDataDefaultRampRate.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2104,7 +2109,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DEFAULT_STEP_INCREMENT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataDefaultStepIncrement.staticParseBuilder(
+          BACnetConstructedDataDefaultStepIncrement.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2115,18 +2120,19 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DEFAULT_SUBORDINATE_RELATIONSHIP)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataDefaultSubordinateRelationship.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataDefaultSubordinateRelationship
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.DEFAULT_TIMEOUT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataDefaultTimeout.staticParseBuilder(
+          BACnetConstructedDataDefaultTimeout.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2137,7 +2143,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DEPLOYED_PROFILE_LOCATION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataDeployedProfileLocation.staticParseBuilder(
+          BACnetConstructedDataDeployedProfileLocation.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2148,7 +2154,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DERIVATIVE_CONSTANT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataDerivativeConstant.staticParseBuilder(
+          BACnetConstructedDataDerivativeConstant.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2159,7 +2165,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DERIVATIVE_CONSTANT_UNITS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataDerivativeConstantUnits.staticParseBuilder(
+          BACnetConstructedDataDerivativeConstantUnits.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2169,7 +2175,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.DESCRIPTION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataDescription.staticParseBuilder(
+          BACnetConstructedDataDescription.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2180,7 +2186,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DESCRIPTION_OF_HALT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataDescriptionOfHalt.staticParseBuilder(
+          BACnetConstructedDataDescriptionOfHalt.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2190,7 +2196,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.DEVICE_ADDRESS_BINDING)) {
       builder =
-          BACnetConstructedDataDeviceAddressBinding.staticParseBuilder(
+          BACnetConstructedDataDeviceAddressBinding.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2200,7 +2206,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.DEVICE_TYPE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataDeviceType.staticParseBuilder(
+          BACnetConstructedDataDeviceType.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2211,7 +2217,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DIRECT_READING)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataDirectReading.staticParseBuilder(
+          BACnetConstructedDataDirectReading.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2222,7 +2228,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DISTRIBUTION_KEY_REVISION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataDistributionKeyRevision.staticParseBuilder(
+          BACnetConstructedDataDistributionKeyRevision.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2232,7 +2238,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.DO_NOT_HIDE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataDoNotHide.staticParseBuilder(
+          BACnetConstructedDataDoNotHide.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2243,7 +2249,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DOOR_ALARM_STATE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataDoorAlarmState.staticParseBuilder(
+          BACnetConstructedDataDoorAlarmState.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2254,7 +2260,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DOOR_EXTENDED_PULSE_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataDoorExtendedPulseTime.staticParseBuilder(
+          BACnetConstructedDataDoorExtendedPulseTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2264,7 +2270,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.DOOR_MEMBERS)) {
       builder =
-          BACnetConstructedDataDoorMembers.staticParseBuilder(
+          BACnetConstructedDataDoorMembers.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2275,7 +2281,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DOOR_OPEN_TOO_LONG_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataDoorOpenTooLongTime.staticParseBuilder(
+          BACnetConstructedDataDoorOpenTooLongTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2286,7 +2292,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DOOR_PULSE_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataDoorPulseTime.staticParseBuilder(
+          BACnetConstructedDataDoorPulseTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2296,7 +2302,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.DOOR_STATUS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataDoorStatus.staticParseBuilder(
+          BACnetConstructedDataDoorStatus.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2307,7 +2313,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.DOOR_UNLOCK_DELAY_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataDoorUnlockDelayTime.staticParseBuilder(
+          BACnetConstructedDataDoorUnlockDelayTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2317,7 +2323,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.DUTY_WINDOW)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataDutyWindow.staticParseBuilder(
+          BACnetConstructedDataDutyWindow.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2327,7 +2333,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.EFFECTIVE_PERIOD)) {
       builder =
-          BACnetConstructedDataEffectivePeriod.staticParseBuilder(
+          BACnetConstructedDataEffectivePeriod.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2338,7 +2344,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.EGRESS_ACTIVE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataEgressActive.staticParseBuilder(
+          BACnetConstructedDataEgressActive.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2348,7 +2354,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.EGRESS_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataEgressTime.staticParseBuilder(
+          BACnetConstructedDataEgressTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2359,7 +2365,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ELAPSED_ACTIVE_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataElapsedActiveTime.staticParseBuilder(
+          BACnetConstructedDataElapsedActiveTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2370,7 +2376,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ELEVATOR_GROUP)
         && EvaluationHelper.equals(peekedTagNumber, (short) 12)) {
       builder =
-          BACnetConstructedDataElevatorGroup.staticParseBuilder(
+          BACnetConstructedDataElevatorGroup.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2380,7 +2386,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ENABLE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataEnable.staticParseBuilder(
+          BACnetConstructedDataEnable.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2391,7 +2397,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ENERGY_METER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataEnergyMeter.staticParseBuilder(
+          BACnetConstructedDataEnergyMeter.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2401,7 +2407,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ENERGY_METER_REF)) {
       builder =
-          BACnetConstructedDataEnergyMeterRef.staticParseBuilder(
+          BACnetConstructedDataEnergyMeterRef.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2411,7 +2417,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ENTRY_POINTS)) {
       builder =
-          BACnetConstructedDataEntryPoints.staticParseBuilder(
+          BACnetConstructedDataEntryPoints.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2421,7 +2427,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ERROR_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataErrorLimit.staticParseBuilder(
+          BACnetConstructedDataErrorLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2432,7 +2438,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.ESCALATOR_MODE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataEscalatorMode.staticParseBuilder(
+          BACnetConstructedDataEscalatorMode.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2443,7 +2449,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.EVENT_ALGORITHM_INHIBIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataEventAlgorithmInhibit.staticParseBuilder(
+          BACnetConstructedDataEventAlgorithmInhibit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2453,7 +2459,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.EVENT_ALGORITHM_INHIBIT_REF)) {
       builder =
-          BACnetConstructedDataEventAlgorithmInhibitRef.staticParseBuilder(
+          BACnetConstructedDataEventAlgorithmInhibitRef.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2464,7 +2470,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.EVENT_DETECTION_ENABLE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataEventDetectionEnable.staticParseBuilder(
+          BACnetConstructedDataEventDetectionEnable.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2475,7 +2481,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.EVENT_ENABLE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 8)) {
       builder =
-          BACnetConstructedDataEventEnable.staticParseBuilder(
+          BACnetConstructedDataEventEnable.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2485,7 +2491,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.EVENT_MESSAGE_TEXTS)) {
       builder =
-          BACnetConstructedDataEventMessageTexts.staticParseBuilder(
+          BACnetConstructedDataEventMessageTexts.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2495,7 +2501,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.EVENT_MESSAGE_TEXTS_CONFIG)) {
       builder =
-          BACnetConstructedDataEventMessageTextsConfig.staticParseBuilder(
+          BACnetConstructedDataEventMessageTextsConfig.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2505,7 +2511,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.EVENT_PARAMETERS)) {
       builder =
-          BACnetConstructedDataEventParameters.staticParseBuilder(
+          BACnetConstructedDataEventParameters.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2515,7 +2521,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.EVENT_STATE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataEventState.staticParseBuilder(
+          BACnetConstructedDataEventState.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2525,7 +2531,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.EVENT_TIME_STAMPS)) {
       builder =
-          BACnetConstructedDataEventTimeStamps.staticParseBuilder(
+          BACnetConstructedDataEventTimeStamps.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2535,7 +2541,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.EVENT_TYPE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataEventType.staticParseBuilder(
+          BACnetConstructedDataEventType.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2545,7 +2551,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.EXCEPTION_SCHEDULE)) {
       builder =
-          BACnetConstructedDataExceptionSchedule.staticParseBuilder(
+          BACnetConstructedDataExceptionSchedule.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2556,7 +2562,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.EXECUTION_DELAY)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataExecutionDelay.staticParseBuilder(
+          BACnetConstructedDataExecutionDelay.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2566,7 +2572,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.EXIT_POINTS)) {
       builder =
-          BACnetConstructedDataExitPoints.staticParseBuilder(
+          BACnetConstructedDataExitPoints.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2576,7 +2582,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.EXPECTED_SHED_LEVEL)) {
       builder =
-          BACnetConstructedDataExpectedShedLevel.staticParseBuilder(
+          BACnetConstructedDataExpectedShedLevel.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2586,7 +2592,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.EXPIRATION_TIME)) {
       builder =
-          BACnetConstructedDataExpirationTime.staticParseBuilder(
+          BACnetConstructedDataExpirationTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2597,7 +2603,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.EXTENDED_TIME_ENABLE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataExtendedTimeEnable.staticParseBuilder(
+          BACnetConstructedDataExtendedTimeEnable.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2607,7 +2613,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAILED_ATTEMPT_EVENTS)) {
       builder =
-          BACnetConstructedDataFailedAttemptEvents.staticParseBuilder(
+          BACnetConstructedDataFailedAttemptEvents.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2618,7 +2624,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAILED_ATTEMPTS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataFailedAttempts.staticParseBuilder(
+          BACnetConstructedDataFailedAttempts.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2629,7 +2635,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAILED_ATTEMPTS_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataFailedAttemptsTime.staticParseBuilder(
+          BACnetConstructedDataFailedAttemptsTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2640,7 +2646,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_HIGH_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataAccumulatorFaultHighLimit.staticParseBuilder(
+          BACnetConstructedDataAccumulatorFaultHighLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2651,7 +2657,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_HIGH_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataAnalogInputFaultHighLimit.staticParseBuilder(
+          BACnetConstructedDataAnalogInputFaultHighLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2662,7 +2668,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_HIGH_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataAnalogValueFaultHighLimit.staticParseBuilder(
+          BACnetConstructedDataAnalogValueFaultHighLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2673,7 +2679,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_HIGH_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
       builder =
-          BACnetConstructedDataIntegerValueFaultHighLimit.staticParseBuilder(
+          BACnetConstructedDataIntegerValueFaultHighLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2684,29 +2690,31 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_HIGH_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
       builder =
-          BACnetConstructedDataLargeAnalogValueFaultHighLimit.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataLargeAnalogValueFaultHighLimit
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.POSITIVE_INTEGER_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_HIGH_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataPositiveIntegerValueFaultHighLimit.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataPositiveIntegerValueFaultHighLimit
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_HIGH_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataFaultHighLimit.staticParseBuilder(
+          BACnetConstructedDataFaultHighLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2717,7 +2725,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_LOW_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataAccumulatorFaultLowLimit.staticParseBuilder(
+          BACnetConstructedDataAccumulatorFaultLowLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2728,7 +2736,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_LOW_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataAnalogInputFaultLowLimit.staticParseBuilder(
+          BACnetConstructedDataAnalogInputFaultLowLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2739,7 +2747,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_LOW_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataAnalogValueFaultLowLimit.staticParseBuilder(
+          BACnetConstructedDataAnalogValueFaultLowLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2750,18 +2758,19 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_LOW_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
       builder =
-          BACnetConstructedDataLargeAnalogValueFaultLowLimit.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataLargeAnalogValueFaultLowLimit
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.INTEGER_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_LOW_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
       builder =
-          BACnetConstructedDataIntegerValueFaultLowLimit.staticParseBuilder(
+          BACnetConstructedDataIntegerValueFaultLowLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2772,18 +2781,19 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_LOW_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataPositiveIntegerValueFaultLowLimit.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataPositiveIntegerValueFaultLowLimit
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_LOW_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataFaultLowLimit.staticParseBuilder(
+          BACnetConstructedDataFaultLowLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2793,7 +2803,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_PARAMETERS)) {
       builder =
-          BACnetConstructedDataFaultParameters.staticParseBuilder(
+          BACnetConstructedDataFaultParameters.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2803,7 +2813,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_SIGNALS)) {
       builder =
-          BACnetConstructedDataEscalatorFaultSignals.staticParseBuilder(
+          BACnetConstructedDataEscalatorFaultSignals.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2813,7 +2823,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_SIGNALS)) {
       builder =
-          BACnetConstructedDataLiftFaultSignals.staticParseBuilder(
+          BACnetConstructedDataLiftFaultSignals.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2823,7 +2833,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_SIGNALS)) {
       builder =
-          BACnetConstructedDataFaultSignals.staticParseBuilder(
+          BACnetConstructedDataFaultSignals.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2833,7 +2843,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_TYPE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataFaultType.staticParseBuilder(
+          BACnetConstructedDataFaultType.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2843,7 +2853,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_VALUES)) {
       builder =
-          BACnetConstructedDataAccessDoorFaultValues.staticParseBuilder(
+          BACnetConstructedDataAccessDoorFaultValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2853,17 +2863,18 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_VALUES)) {
       builder =
-          BACnetConstructedDataCharacterStringValueFaultValues.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataCharacterStringValueFaultValues
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.LIFE_SAFETY_POINT)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_VALUES)) {
       builder =
-          BACnetConstructedDataLifeSafetyPointFaultValues.staticParseBuilder(
+          BACnetConstructedDataLifeSafetyPointFaultValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2873,7 +2884,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_VALUES)) {
       builder =
-          BACnetConstructedDataLifeSafetyZoneFaultValues.staticParseBuilder(
+          BACnetConstructedDataLifeSafetyZoneFaultValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2884,7 +2895,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_VALUES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataMultiStateInputFaultValues.staticParseBuilder(
+          BACnetConstructedDataMultiStateInputFaultValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2895,7 +2906,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_VALUES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataMultiStateValueFaultValues.staticParseBuilder(
+          BACnetConstructedDataMultiStateValueFaultValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2905,7 +2916,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.FAULT_VALUES)) {
       builder =
-          BACnetConstructedDataFaultValues.staticParseBuilder(
+          BACnetConstructedDataFaultValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2915,7 +2926,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.FD_BBMD_ADDRESS)) {
       builder =
-          BACnetConstructedDataFDBBMDAddress.staticParseBuilder(
+          BACnetConstructedDataFDBBMDAddress.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2926,7 +2937,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FD_SUBSCRIPTION_LIFETIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataFDSubscriptionLifetime.staticParseBuilder(
+          BACnetConstructedDataFDSubscriptionLifetime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2937,18 +2948,19 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FEEDBACK_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataBinaryLightingOutputFeedbackValue.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataBinaryLightingOutputFeedbackValue
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.BINARY_OUTPUT)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.FEEDBACK_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataBinaryOutputFeedbackValue.staticParseBuilder(
+          BACnetConstructedDataBinaryOutputFeedbackValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2959,7 +2971,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FEEDBACK_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataLightingOutputFeedbackValue.staticParseBuilder(
+          BACnetConstructedDataLightingOutputFeedbackValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2970,18 +2982,19 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FEEDBACK_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataMultiStateOutputFeedbackValue.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataMultiStateOutputFeedbackValue
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.FILE_ACCESS_METHOD)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataFileAccessMethod.staticParseBuilder(
+          BACnetConstructedDataFileAccessMethod.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -2991,7 +3004,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.FILE_SIZE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataFileSize.staticParseBuilder(
+          BACnetConstructedDataFileSize.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3001,7 +3014,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.FILE_TYPE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataFileType.staticParseBuilder(
+          BACnetConstructedDataFileType.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3012,7 +3025,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FIRMWARE_REVISION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataFirmwareRevision.staticParseBuilder(
+          BACnetConstructedDataFirmwareRevision.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3022,7 +3035,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.FLOOR_TEXT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataFloorText.staticParseBuilder(
+          BACnetConstructedDataFloorText.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3033,7 +3046,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.FULL_DUTY_BASELINE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataFullDutyBaseline.staticParseBuilder(
+          BACnetConstructedDataFullDutyBaseline.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3044,7 +3057,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.GLOBAL_IDENTIFIER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataGlobalIdentifier.staticParseBuilder(
+          BACnetConstructedDataGlobalIdentifier.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3054,7 +3067,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.GROUP_ID)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataGroupID.staticParseBuilder(
+          BACnetConstructedDataGroupID.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3065,7 +3078,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.GROUP_MEMBER_NAMES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataGroupMemberNames.staticParseBuilder(
+          BACnetConstructedDataGroupMemberNames.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3075,7 +3088,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.GROUP_MEMBERS)) {
       builder =
-          BACnetConstructedDataGlobalGroupGroupMembers.staticParseBuilder(
+          BACnetConstructedDataGlobalGroupGroupMembers.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3086,7 +3099,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.GROUP_MEMBERS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 12)) {
       builder =
-          BACnetConstructedDataElevatorGroupGroupMembers.staticParseBuilder(
+          BACnetConstructedDataElevatorGroupGroupMembers.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3097,7 +3110,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.GROUP_MEMBERS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 12)) {
       builder =
-          BACnetConstructedDataGroupMembers.staticParseBuilder(
+          BACnetConstructedDataGroupMembers.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3107,7 +3120,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.GROUP_MODE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataGroupMode.staticParseBuilder(
+          BACnetConstructedDataGroupMode.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3117,7 +3130,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.HIGH_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataAccumulatorHighLimit.staticParseBuilder(
+          BACnetConstructedDataAccumulatorHighLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3127,7 +3140,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.HIGH_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
       builder =
-          BACnetConstructedDataLargeAnalogValueHighLimit.staticParseBuilder(
+          BACnetConstructedDataLargeAnalogValueHighLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3137,7 +3150,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.HIGH_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
       builder =
-          BACnetConstructedDataIntegerValueHighLimit.staticParseBuilder(
+          BACnetConstructedDataIntegerValueHighLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3147,17 +3160,18 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.HIGH_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataPositiveIntegerValueHighLimit.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataPositiveIntegerValueHighLimit
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.HIGH_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataHighLimit.staticParseBuilder(
+          BACnetConstructedDataHighLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3167,7 +3181,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.HIGHER_DECK)
         && EvaluationHelper.equals(peekedTagNumber, (short) 12)) {
       builder =
-          BACnetConstructedDataHigherDeck.staticParseBuilder(
+          BACnetConstructedDataHigherDeck.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3177,7 +3191,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.IN_PROCESS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataInProcess.staticParseBuilder(
+          BACnetConstructedDataInProcess.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3187,7 +3201,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.IN_PROGRESS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataInProgress.staticParseBuilder(
+          BACnetConstructedDataInProgress.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3198,7 +3212,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.INACTIVE_TEXT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataInactiveText.staticParseBuilder(
+          BACnetConstructedDataInactiveText.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3209,7 +3223,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.INITIAL_TIMEOUT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataInitialTimeout.staticParseBuilder(
+          BACnetConstructedDataInitialTimeout.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3219,7 +3233,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.INPUT_REFERENCE)) {
       builder =
-          BACnetConstructedDataInputReference.staticParseBuilder(
+          BACnetConstructedDataInputReference.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3230,7 +3244,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.INSTALLATION_ID)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataInstallationID.staticParseBuilder(
+          BACnetConstructedDataInstallationID.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3240,7 +3254,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.INSTANCE_OF)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataInstanceOf.staticParseBuilder(
+          BACnetConstructedDataInstanceOf.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3251,7 +3265,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.INSTANTANEOUS_POWER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataInstantaneousPower.staticParseBuilder(
+          BACnetConstructedDataInstantaneousPower.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3262,7 +3276,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.INTEGRAL_CONSTANT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataIntegralConstant.staticParseBuilder(
+          BACnetConstructedDataIntegralConstant.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3273,7 +3287,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.INTEGRAL_CONSTANT_UNITS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataIntegralConstantUnits.staticParseBuilder(
+          BACnetConstructedDataIntegralConstantUnits.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3283,7 +3297,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.INTERFACE_VALUE)) {
       builder =
-          BACnetConstructedDataAnalogInputInterfaceValue.staticParseBuilder(
+          BACnetConstructedDataAnalogInputInterfaceValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3293,7 +3307,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.INTERFACE_VALUE)) {
       builder =
-          BACnetConstructedDataAnalogOutputInterfaceValue.staticParseBuilder(
+          BACnetConstructedDataAnalogOutputInterfaceValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3303,7 +3317,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.INTERFACE_VALUE)) {
       builder =
-          BACnetConstructedDataBinaryInputInterfaceValue.staticParseBuilder(
+          BACnetConstructedDataBinaryInputInterfaceValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3313,7 +3327,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.INTERFACE_VALUE)) {
       builder =
-          BACnetConstructedDataBinaryOutputInterfaceValue.staticParseBuilder(
+          BACnetConstructedDataBinaryOutputInterfaceValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3323,28 +3337,30 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.INTERFACE_VALUE)) {
       builder =
-          BACnetConstructedDataMultiStateInputInterfaceValue.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataMultiStateInputInterfaceValue
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.MULTI_STATE_OUTPUT)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.INTERFACE_VALUE)) {
       builder =
-          BACnetConstructedDataMultiStateOutputInterfaceValue.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataMultiStateOutputInterfaceValue
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.INTERVAL_OFFSET)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataIntervalOffset.staticParseBuilder(
+          BACnetConstructedDataIntervalOffset.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3354,7 +3370,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.IP_ADDRESS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
       builder =
-          BACnetConstructedDataIPAddress.staticParseBuilder(
+          BACnetConstructedDataIPAddress.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3365,7 +3381,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.IP_DEFAULT_GATEWAY)
         && EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
       builder =
-          BACnetConstructedDataIPDefaultGateway.staticParseBuilder(
+          BACnetConstructedDataIPDefaultGateway.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3376,7 +3392,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.IP_DHCP_ENABLE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataIPDHCPEnable.staticParseBuilder(
+          BACnetConstructedDataIPDHCPEnable.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3387,7 +3403,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.IP_DHCP_LEASE_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataIPDHCPLeaseTime.staticParseBuilder(
+          BACnetConstructedDataIPDHCPLeaseTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3398,7 +3414,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.IP_DHCP_LEASE_TIME_REMAINING)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataIPDHCPLeaseTimeRemaining.staticParseBuilder(
+          BACnetConstructedDataIPDHCPLeaseTimeRemaining.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3409,7 +3425,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.IP_DHCP_SERVER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
       builder =
-          BACnetConstructedDataIPDHCPServer.staticParseBuilder(
+          BACnetConstructedDataIPDHCPServer.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3420,7 +3436,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.IP_DNS_SERVER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
       builder =
-          BACnetConstructedDataIPDNSServer.staticParseBuilder(
+          BACnetConstructedDataIPDNSServer.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3431,7 +3447,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.IP_SUBNET_MASK)
         && EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
       builder =
-          BACnetConstructedDataIPSubnetMask.staticParseBuilder(
+          BACnetConstructedDataIPSubnetMask.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3442,7 +3458,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.IPV6_ADDRESS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
       builder =
-          BACnetConstructedDataIPv6Address.staticParseBuilder(
+          BACnetConstructedDataIPv6Address.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3453,7 +3469,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.IPV6_AUTO_ADDRESSING_ENABLE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataIPv6AutoAddressingEnable.staticParseBuilder(
+          BACnetConstructedDataIPv6AutoAddressingEnable.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3464,7 +3480,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.IPV6_DEFAULT_GATEWAY)
         && EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
       builder =
-          BACnetConstructedDataIPv6DefaultGateway.staticParseBuilder(
+          BACnetConstructedDataIPv6DefaultGateway.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3475,7 +3491,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.IPV6_DHCP_LEASE_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataIPv6DHCPLeaseTime.staticParseBuilder(
+          BACnetConstructedDataIPv6DHCPLeaseTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3486,7 +3502,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.IPV6_DHCP_LEASE_TIME_REMAINING)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataIPv6DHCPLeaseTimeRemaining.staticParseBuilder(
+          BACnetConstructedDataIPv6DHCPLeaseTimeRemaining.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3497,7 +3513,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.IPV6_DHCP_SERVER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
       builder =
-          BACnetConstructedDataIPv6DHCPServer.staticParseBuilder(
+          BACnetConstructedDataIPv6DHCPServer.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3508,7 +3524,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.IPV6_DNS_SERVER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
       builder =
-          BACnetConstructedDataIPv6DNSServer.staticParseBuilder(
+          BACnetConstructedDataIPv6DNSServer.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3519,7 +3535,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.IPV6_PREFIX_LENGTH)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataIPv6PrefixLength.staticParseBuilder(
+          BACnetConstructedDataIPv6PrefixLength.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3530,7 +3546,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.IPV6_ZONE_INDEX)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataIPv6ZoneIndex.staticParseBuilder(
+          BACnetConstructedDataIPv6ZoneIndex.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3540,7 +3556,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.IS_UTC)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataIsUTC.staticParseBuilder(
+          BACnetConstructedDataIsUTC.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3549,7 +3565,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (true
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.KEY_SETS)) {
       builder =
-          BACnetConstructedDataKeySets.staticParseBuilder(
+          BACnetConstructedDataKeySets.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3559,7 +3575,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LANDING_CALL_CONTROL)) {
       builder =
-          BACnetConstructedDataLandingCallControl.staticParseBuilder(
+          BACnetConstructedDataLandingCallControl.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3569,7 +3585,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LANDING_CALLS)) {
       builder =
-          BACnetConstructedDataLandingCalls.staticParseBuilder(
+          BACnetConstructedDataLandingCalls.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3579,7 +3595,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LANDING_DOOR_STATUS)) {
       builder =
-          BACnetConstructedDataLandingDoorStatus.staticParseBuilder(
+          BACnetConstructedDataLandingDoorStatus.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3590,7 +3606,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.LAST_ACCESS_EVENT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataLastAccessEvent.staticParseBuilder(
+          BACnetConstructedDataLastAccessEvent.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3600,7 +3616,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LAST_ACCESS_POINT)) {
       builder =
-          BACnetConstructedDataLastAccessPoint.staticParseBuilder(
+          BACnetConstructedDataLastAccessPoint.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3610,7 +3626,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LAST_COMMAND_TIME)) {
       builder =
-          BACnetConstructedDataLastCommandTime.staticParseBuilder(
+          BACnetConstructedDataLastCommandTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3620,7 +3636,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LAST_CREDENTIAL_ADDED)) {
       builder =
-          BACnetConstructedDataLastCredentialAdded.staticParseBuilder(
+          BACnetConstructedDataLastCredentialAdded.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3630,7 +3646,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LAST_CREDENTIAL_ADDED_TIME)) {
       builder =
-          BACnetConstructedDataLastCredentialAddedTime.staticParseBuilder(
+          BACnetConstructedDataLastCredentialAddedTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3640,7 +3656,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LAST_CREDENTIAL_REMOVED)) {
       builder =
-          BACnetConstructedDataLastCredentialRemoved.staticParseBuilder(
+          BACnetConstructedDataLastCredentialRemoved.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3650,7 +3666,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LAST_CREDENTIAL_REMOVED_TIME)) {
       builder =
-          BACnetConstructedDataLastCredentialRemovedTime.staticParseBuilder(
+          BACnetConstructedDataLastCredentialRemovedTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3660,7 +3676,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LAST_KEY_SERVER)) {
       builder =
-          BACnetConstructedDataLastKeyServer.staticParseBuilder(
+          BACnetConstructedDataLastKeyServer.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3671,7 +3687,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.LAST_NOTIFY_RECORD)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataLastNotifyRecord.staticParseBuilder(
+          BACnetConstructedDataLastNotifyRecord.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3682,7 +3698,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.LAST_PRIORITY)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataLastPriority.staticParseBuilder(
+          BACnetConstructedDataLastPriority.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3693,7 +3709,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.LAST_RESTART_REASON)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataLastRestartReason.staticParseBuilder(
+          BACnetConstructedDataLastRestartReason.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3703,7 +3719,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LAST_RESTORE_TIME)) {
       builder =
-          BACnetConstructedDataLastRestoreTime.staticParseBuilder(
+          BACnetConstructedDataLastRestoreTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3714,7 +3730,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.LAST_STATE_CHANGE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataLastStateChange.staticParseBuilder(
+          BACnetConstructedDataLastStateChange.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3724,7 +3740,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LAST_USE_TIME)) {
       builder =
-          BACnetConstructedDataLastUseTime.staticParseBuilder(
+          BACnetConstructedDataLastUseTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3735,7 +3751,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.LIFE_SAFETY_ALARM_VALUES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataLifeSafetyAlarmValues.staticParseBuilder(
+          BACnetConstructedDataLifeSafetyAlarmValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3745,7 +3761,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LIGHTING_COMMAND)) {
       builder =
-          BACnetConstructedDataLightingCommand.staticParseBuilder(
+          BACnetConstructedDataLightingCommand.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3756,18 +3772,19 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.LIGHTING_COMMAND_DEFAULT_PRIORITY)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataLightingCommandDefaultPriority.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataLightingCommandDefaultPriority
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LIMIT_ENABLE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 8)) {
       builder =
-          BACnetConstructedDataLimitEnable.staticParseBuilder(
+          BACnetConstructedDataLimitEnable.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3778,7 +3795,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.LIMIT_MONITORING_INTERVAL)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataLimitMonitoringInterval.staticParseBuilder(
+          BACnetConstructedDataLimitMonitoringInterval.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3788,7 +3805,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.LINK_SPEED)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataLinkSpeed.staticParseBuilder(
+          BACnetConstructedDataLinkSpeed.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3799,7 +3816,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.LINK_SPEED_AUTONEGOTIATE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataLinkSpeedAutonegotiate.staticParseBuilder(
+          BACnetConstructedDataLinkSpeedAutonegotiate.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3809,7 +3826,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.LINK_SPEEDS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataLinkSpeeds.staticParseBuilder(
+          BACnetConstructedDataLinkSpeeds.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3819,7 +3836,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LIST_OF_GROUP_MEMBERS)) {
       builder =
-          BACnetConstructedDataListOfGroupMembers.staticParseBuilder(
+          BACnetConstructedDataListOfGroupMembers.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3830,28 +3847,30 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument,
             BACnetPropertyIdentifier.LIST_OF_OBJECT_PROPERTY_REFERENCES)) {
       builder =
-          BACnetConstructedDataChannelListOfObjectPropertyReferences.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataChannelListOfObjectPropertyReferences
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument,
             BACnetPropertyIdentifier.LIST_OF_OBJECT_PROPERTY_REFERENCES)) {
       builder =
-          BACnetConstructedDataListOfObjectPropertyReferences.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataListOfObjectPropertyReferences
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.LOCAL_DATE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 10)) {
       builder =
-          BACnetConstructedDataLocalDate.staticParseBuilder(
+          BACnetConstructedDataLocalDate.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3862,7 +3881,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.LOCAL_FORWARDING_ONLY)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataLocalForwardingOnly.staticParseBuilder(
+          BACnetConstructedDataLocalForwardingOnly.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3872,7 +3891,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.LOCAL_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 11)) {
       builder =
-          BACnetConstructedDataLocalTime.staticParseBuilder(
+          BACnetConstructedDataLocalTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3882,7 +3901,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.LOCATION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataLocation.staticParseBuilder(
+          BACnetConstructedDataLocation.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3892,7 +3911,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.LOCK_STATUS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataLockStatus.staticParseBuilder(
+          BACnetConstructedDataLockStatus.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3902,7 +3921,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.LOCKOUT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataLockout.staticParseBuilder(
+          BACnetConstructedDataLockout.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3913,7 +3932,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.LOCKOUT_RELINQUISH_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataLockoutRelinquishTime.staticParseBuilder(
+          BACnetConstructedDataLockoutRelinquishTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3923,7 +3942,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LOG_BUFFER)) {
       builder =
-          BACnetConstructedDataEventLogLogBuffer.staticParseBuilder(
+          BACnetConstructedDataEventLogLogBuffer.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3933,7 +3952,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LOG_BUFFER)) {
       builder =
-          BACnetConstructedDataTrendLogLogBuffer.staticParseBuilder(
+          BACnetConstructedDataTrendLogLogBuffer.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3943,7 +3962,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LOG_BUFFER)) {
       builder =
-          BACnetConstructedDataTrendLogMultipleLogBuffer.staticParseBuilder(
+          BACnetConstructedDataTrendLogMultipleLogBuffer.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3953,7 +3972,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LOG_BUFFER)) {
       builder =
-          BACnetConstructedDataLogBuffer.staticParseBuilder(
+          BACnetConstructedDataLogBuffer.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3963,27 +3982,29 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LOG_DEVICE_OBJECT_PROPERTY)) {
       builder =
-          BACnetConstructedDataTrendLogLogDeviceObjectProperty.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataTrendLogLogDeviceObjectProperty
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.TREND_LOG_MULTIPLE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LOG_DEVICE_OBJECT_PROPERTY)) {
       builder =
-          BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LOG_DEVICE_OBJECT_PROPERTY)) {
       builder =
-          BACnetConstructedDataLogDeviceObjectProperty.staticParseBuilder(
+          BACnetConstructedDataLogDeviceObjectProperty.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -3994,7 +4015,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.LOG_INTERVAL)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataLogInterval.staticParseBuilder(
+          BACnetConstructedDataLogInterval.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4005,7 +4026,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.LOGGING_OBJECT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 12)) {
       builder =
-          BACnetConstructedDataLoggingObject.staticParseBuilder(
+          BACnetConstructedDataLoggingObject.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4015,7 +4036,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LOGGING_RECORD)) {
       builder =
-          BACnetConstructedDataLoggingRecord.staticParseBuilder(
+          BACnetConstructedDataLoggingRecord.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4026,7 +4047,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.LOGGING_TYPE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataLoggingType.staticParseBuilder(
+          BACnetConstructedDataLoggingType.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4036,7 +4057,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.LOW_DIFF_LIMIT)) {
       builder =
-          BACnetConstructedDataLowDiffLimit.staticParseBuilder(
+          BACnetConstructedDataLowDiffLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4046,7 +4067,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.LOW_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataAccumulatorLowLimit.staticParseBuilder(
+          BACnetConstructedDataAccumulatorLowLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4056,7 +4077,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.LOW_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
       builder =
-          BACnetConstructedDataLargeAnalogValueLowLimit.staticParseBuilder(
+          BACnetConstructedDataLargeAnalogValueLowLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4066,7 +4087,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.LOW_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
       builder =
-          BACnetConstructedDataIntegerValueLowLimit.staticParseBuilder(
+          BACnetConstructedDataIntegerValueLowLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4076,7 +4097,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.LOW_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataPositiveIntegerValueLowLimit.staticParseBuilder(
+          BACnetConstructedDataPositiveIntegerValueLowLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4086,7 +4107,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.LOW_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataLowLimit.staticParseBuilder(
+          BACnetConstructedDataLowLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4096,7 +4117,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.LOWER_DECK)
         && EvaluationHelper.equals(peekedTagNumber, (short) 12)) {
       builder =
-          BACnetConstructedDataLowerDeck.staticParseBuilder(
+          BACnetConstructedDataLowerDeck.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4106,7 +4127,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.MAC_ADDRESS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
       builder =
-          BACnetConstructedDataMACAddress.staticParseBuilder(
+          BACnetConstructedDataMACAddress.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4117,7 +4138,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MACHINE_ROOM_ID)
         && EvaluationHelper.equals(peekedTagNumber, (short) 12)) {
       builder =
-          BACnetConstructedDataMachineRoomID.staticParseBuilder(
+          BACnetConstructedDataMachineRoomID.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4128,18 +4149,19 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAINTENANCE_REQUIRED)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataLifeSafetyZoneMaintenanceRequired.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataLifeSafetyZoneMaintenanceRequired
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAINTENANCE_REQUIRED)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataMaintenanceRequired.staticParseBuilder(
+          BACnetConstructedDataMaintenanceRequired.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4149,7 +4171,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAKING_CAR_CALL)) {
       builder =
-          BACnetConstructedDataMakingCarCall.staticParseBuilder(
+          BACnetConstructedDataMakingCarCall.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4159,7 +4181,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.MANIPULATED_VARIABLE_REFERENCE)) {
       builder =
-          BACnetConstructedDataManipulatedVariableReference.staticParseBuilder(
+          BACnetConstructedDataManipulatedVariableReference.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4169,7 +4191,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.MANUAL_SLAVE_ADDRESS_BINDING)) {
       builder =
-          BACnetConstructedDataManualSlaveAddressBinding.staticParseBuilder(
+          BACnetConstructedDataManualSlaveAddressBinding.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4180,7 +4202,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MASKED_ALARM_VALUES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataMaskedAlarmValues.staticParseBuilder(
+          BACnetConstructedDataMaskedAlarmValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4191,7 +4213,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_ACTUAL_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataMaxActualValue.staticParseBuilder(
+          BACnetConstructedDataMaxActualValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4202,7 +4224,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_APDU_LENGTH_ACCEPTED)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataMaxAPDULengthAccepted.staticParseBuilder(
+          BACnetConstructedDataMaxAPDULengthAccepted.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4213,7 +4235,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_FAILED_ATTEMPTS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataMaxFailedAttempts.staticParseBuilder(
+          BACnetConstructedDataMaxFailedAttempts.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4224,7 +4246,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_INFO_FRAMES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataDeviceMaxInfoFrames.staticParseBuilder(
+          BACnetConstructedDataDeviceMaxInfoFrames.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4235,7 +4257,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_INFO_FRAMES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataNetworkPortMaxInfoFrames.staticParseBuilder(
+          BACnetConstructedDataNetworkPortMaxInfoFrames.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4246,7 +4268,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_INFO_FRAMES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataMaxInfoFrames.staticParseBuilder(
+          BACnetConstructedDataMaxInfoFrames.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4256,7 +4278,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_MASTER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataDeviceMaxMaster.staticParseBuilder(
+          BACnetConstructedDataDeviceMaxMaster.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4266,7 +4288,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_MASTER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataNetworkPortMaxMaster.staticParseBuilder(
+          BACnetConstructedDataNetworkPortMaxMaster.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4276,7 +4298,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_MASTER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataMaxMaster.staticParseBuilder(
+          BACnetConstructedDataMaxMaster.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4287,7 +4309,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_PRES_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataAccumulatorMaxPresValue.staticParseBuilder(
+          BACnetConstructedDataAccumulatorMaxPresValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4298,7 +4320,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_PRES_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataAnalogInputMaxPresValue.staticParseBuilder(
+          BACnetConstructedDataAnalogInputMaxPresValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4309,7 +4331,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_PRES_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataAnalogOutputMaxPresValue.staticParseBuilder(
+          BACnetConstructedDataAnalogOutputMaxPresValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4320,7 +4342,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_PRES_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataAnalogValueMaxPresValue.staticParseBuilder(
+          BACnetConstructedDataAnalogValueMaxPresValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4331,7 +4353,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_PRES_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
       builder =
-          BACnetConstructedDataLargeAnalogValueMaxPresValue.staticParseBuilder(
+          BACnetConstructedDataLargeAnalogValueMaxPresValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4342,7 +4364,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_PRES_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
       builder =
-          BACnetConstructedDataIntegerValueMaxPresValue.staticParseBuilder(
+          BACnetConstructedDataIntegerValueMaxPresValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4353,18 +4375,19 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_PRES_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataPositiveIntegerValueMaxPresValue.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataPositiveIntegerValueMaxPresValue
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.TIMER)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_PRES_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataTimerMaxPresValue.staticParseBuilder(
+          BACnetConstructedDataTimerMaxPresValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4375,7 +4398,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_PRES_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataMaxPresValue.staticParseBuilder(
+          BACnetConstructedDataMaxPresValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4386,7 +4409,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAX_SEGMENTS_ACCEPTED)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataMaxSegmentsAccepted.staticParseBuilder(
+          BACnetConstructedDataMaxSegmentsAccepted.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4397,7 +4420,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAXIMUM_OUTPUT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataMaximumOutput.staticParseBuilder(
+          BACnetConstructedDataMaximumOutput.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4408,7 +4431,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAXIMUM_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataMaximumValue.staticParseBuilder(
+          BACnetConstructedDataMaximumValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4418,7 +4441,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.MAXIMUM_VALUE_TIMESTAMP)) {
       builder =
-          BACnetConstructedDataMaximumValueTimestamp.staticParseBuilder(
+          BACnetConstructedDataMaximumValueTimestamp.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4428,7 +4451,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.MEMBER_OF)) {
       builder =
-          BACnetConstructedDataMemberOf.staticParseBuilder(
+          BACnetConstructedDataMemberOf.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4439,7 +4462,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MEMBER_STATUS_FLAGS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 8)) {
       builder =
-          BACnetConstructedDataMemberStatusFlags.staticParseBuilder(
+          BACnetConstructedDataMemberStatusFlags.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4448,7 +4471,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (true
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.MEMBERS)) {
       builder =
-          BACnetConstructedDataMembers.staticParseBuilder(
+          BACnetConstructedDataMembers.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4459,7 +4482,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MIN_ACTUAL_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataMinActualValue.staticParseBuilder(
+          BACnetConstructedDataMinActualValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4470,7 +4493,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MIN_PRES_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataAccumulatorMinPresValue.staticParseBuilder(
+          BACnetConstructedDataAccumulatorMinPresValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4481,7 +4504,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MIN_PRES_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
       builder =
-          BACnetConstructedDataIntegerValueMinPresValue.staticParseBuilder(
+          BACnetConstructedDataIntegerValueMinPresValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4492,18 +4515,19 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MIN_PRES_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataPositiveIntegerValueMinPresValue.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataPositiveIntegerValueMinPresValue
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.LARGE_ANALOG_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.MIN_PRES_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
       builder =
-          BACnetConstructedDataLargeAnalogValueMinPresValue.staticParseBuilder(
+          BACnetConstructedDataLargeAnalogValueMinPresValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4514,7 +4538,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MIN_PRES_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataTimerMinPresValue.staticParseBuilder(
+          BACnetConstructedDataTimerMinPresValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4525,7 +4549,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MIN_PRES_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataMinPresValue.staticParseBuilder(
+          BACnetConstructedDataMinPresValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4536,7 +4560,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MINIMUM_OFF_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataMinimumOffTime.staticParseBuilder(
+          BACnetConstructedDataMinimumOffTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4547,7 +4571,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MINIMUM_ON_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataMinimumOnTime.staticParseBuilder(
+          BACnetConstructedDataMinimumOnTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4558,7 +4582,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MINIMUM_OUTPUT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataMinimumOutput.staticParseBuilder(
+          BACnetConstructedDataMinimumOutput.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4569,7 +4593,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MINIMUM_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataMinimumValue.staticParseBuilder(
+          BACnetConstructedDataMinimumValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4579,7 +4603,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.MINIMUM_VALUE_TIMESTAMP)) {
       builder =
-          BACnetConstructedDataMinimumValueTimestamp.staticParseBuilder(
+          BACnetConstructedDataMinimumValueTimestamp.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4589,7 +4613,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.MODE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataMode.staticParseBuilder(
+          BACnetConstructedDataMode.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4599,7 +4623,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.MODEL_NAME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataModelName.staticParseBuilder(
+          BACnetConstructedDataModelName.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4609,7 +4633,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.MODIFICATION_DATE)) {
       builder =
-          BACnetConstructedDataModificationDate.staticParseBuilder(
+          BACnetConstructedDataModificationDate.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4620,7 +4644,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.MUSTER_POINT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataMusterPoint.staticParseBuilder(
+          BACnetConstructedDataMusterPoint.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4630,7 +4654,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.NEGATIVE_ACCESS_RULES)) {
       builder =
-          BACnetConstructedDataNegativeAccessRules.staticParseBuilder(
+          BACnetConstructedDataNegativeAccessRules.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4641,18 +4665,19 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument,
             BACnetPropertyIdentifier.NETWORK_ACCESS_SECURITY_POLICIES)) {
       builder =
-          BACnetConstructedDataNetworkAccessSecurityPolicies.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataNetworkAccessSecurityPolicies
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.NETWORK_INTERFACE_NAME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataNetworkInterfaceName.staticParseBuilder(
+          BACnetConstructedDataNetworkInterfaceName.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4663,7 +4688,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.NETWORK_NUMBER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataNetworkNumber.staticParseBuilder(
+          BACnetConstructedDataNetworkNumber.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4674,7 +4699,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.NETWORK_NUMBER_QUALITY)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataNetworkNumberQuality.staticParseBuilder(
+          BACnetConstructedDataNetworkNumberQuality.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4685,7 +4710,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.NETWORK_TYPE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataNetworkType.staticParseBuilder(
+          BACnetConstructedDataNetworkType.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4696,7 +4721,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.NEXT_STOPPING_FLOOR)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataNextStoppingFloor.staticParseBuilder(
+          BACnetConstructedDataNextStoppingFloor.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4707,7 +4732,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.NODE_SUBTYPE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataNodeSubtype.staticParseBuilder(
+          BACnetConstructedDataNodeSubtype.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4717,7 +4742,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.NODE_TYPE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataNodeType.staticParseBuilder(
+          BACnetConstructedDataNodeType.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4728,7 +4753,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.NOTIFICATION_CLASS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataNotificationClass.staticParseBuilder(
+          BACnetConstructedDataNotificationClass.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4739,7 +4764,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.NOTIFICATION_THRESHOLD)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataNotificationThreshold.staticParseBuilder(
+          BACnetConstructedDataNotificationThreshold.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4749,7 +4774,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.NOTIFY_TYPE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataNotifyType.staticParseBuilder(
+          BACnetConstructedDataNotifyType.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4760,7 +4785,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.NUMBER_OF_APDU_RETRIES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataNumberOfAPDURetries.staticParseBuilder(
+          BACnetConstructedDataNumberOfAPDURetries.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4771,18 +4796,19 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.NUMBER_OF_AUTHENTICATION_POLICIES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataNumberOfAuthenticationPolicies.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataNumberOfAuthenticationPolicies
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.NUMBER_OF_STATES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataNumberOfStates.staticParseBuilder(
+          BACnetConstructedDataNumberOfStates.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4793,7 +4819,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.OBJECT_IDENTIFIER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 12)) {
       builder =
-          BACnetConstructedDataObjectIdentifier.staticParseBuilder(
+          BACnetConstructedDataObjectIdentifier.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4803,7 +4829,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.OBJECT_LIST)) {
       builder =
-          BACnetConstructedDataObjectList.staticParseBuilder(
+          BACnetConstructedDataObjectList.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4813,7 +4839,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.OBJECT_NAME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataObjectName.staticParseBuilder(
+          BACnetConstructedDataObjectName.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4823,7 +4849,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.OBJECT_PROPERTY_REFERENCE)) {
       builder =
-          BACnetConstructedDataObjectPropertyReference.staticParseBuilder(
+          BACnetConstructedDataObjectPropertyReference.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4833,7 +4859,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.OBJECT_TYPE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataObjectType.staticParseBuilder(
+          BACnetConstructedDataObjectType.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4844,7 +4870,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.OCCUPANCY_COUNT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataOccupancyCount.staticParseBuilder(
+          BACnetConstructedDataOccupancyCount.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4855,7 +4881,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.OCCUPANCY_COUNT_ADJUST)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataOccupancyCountAdjust.staticParseBuilder(
+          BACnetConstructedDataOccupancyCountAdjust.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4866,7 +4892,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.OCCUPANCY_COUNT_ENABLE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataOccupancyCountEnable.staticParseBuilder(
+          BACnetConstructedDataOccupancyCountEnable.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4877,7 +4903,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.OCCUPANCY_LOWER_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataOccupancyLowerLimit.staticParseBuilder(
+          BACnetConstructedDataOccupancyLowerLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4888,7 +4914,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.OCCUPANCY_LOWER_LIMIT_ENFORCED)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataOccupancyLowerLimitEnforced.staticParseBuilder(
+          BACnetConstructedDataOccupancyLowerLimitEnforced.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4899,7 +4925,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.OCCUPANCY_STATE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataOccupancyState.staticParseBuilder(
+          BACnetConstructedDataOccupancyState.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4910,7 +4936,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.OCCUPANCY_UPPER_LIMIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataOccupancyUpperLimit.staticParseBuilder(
+          BACnetConstructedDataOccupancyUpperLimit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4921,7 +4947,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.OCCUPANCY_UPPER_LIMIT_ENFORCED)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataOccupancyUpperLimitEnforced.staticParseBuilder(
+          BACnetConstructedDataOccupancyUpperLimitEnforced.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4932,7 +4958,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.OPERATION_DIRECTION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataOperationDirection.staticParseBuilder(
+          BACnetConstructedDataOperationDirection.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4943,7 +4969,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.OPERATION_EXPECTED)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataOperationExpected.staticParseBuilder(
+          BACnetConstructedDataOperationExpected.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4952,7 +4978,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (true
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.OPTIONAL)) {
       builder =
-          BACnetConstructedDataOptional.staticParseBuilder(
+          BACnetConstructedDataOptional.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4963,7 +4989,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.OUT_OF_SERVICE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataOutOfService.staticParseBuilder(
+          BACnetConstructedDataOutOfService.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4974,7 +5000,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.OUTPUT_UNITS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataOutputUnits.staticParseBuilder(
+          BACnetConstructedDataOutputUnits.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4985,7 +5011,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PACKET_REORDER_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataPacketReorderTime.staticParseBuilder(
+          BACnetConstructedDataPacketReorderTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -4995,7 +5021,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.PASSBACK_MODE)) {
       builder =
-          BACnetConstructedDataPassbackMode.staticParseBuilder(
+          BACnetConstructedDataPassbackMode.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5006,7 +5032,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PASSBACK_TIMEOUT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataPassbackTimeout.staticParseBuilder(
+          BACnetConstructedDataPassbackTimeout.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5017,7 +5043,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PASSENGER_ALARM)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataPassengerAlarm.staticParseBuilder(
+          BACnetConstructedDataPassengerAlarm.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5027,7 +5053,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.POLARITY)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataPolarity.staticParseBuilder(
+          BACnetConstructedDataPolarity.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5037,7 +5063,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.PORT_FILTER)) {
       builder =
-          BACnetConstructedDataPortFilter.staticParseBuilder(
+          BACnetConstructedDataPortFilter.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5047,7 +5073,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.POSITIVE_ACCESS_RULES)) {
       builder =
-          BACnetConstructedDataPositiveAccessRules.staticParseBuilder(
+          BACnetConstructedDataPositiveAccessRules.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5057,7 +5083,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.POWER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataPower.staticParseBuilder(
+          BACnetConstructedDataPower.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5067,7 +5093,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.POWER_MODE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataPowerMode.staticParseBuilder(
+          BACnetConstructedDataPowerMode.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5076,7 +5102,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (true
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.PRESCALE)) {
       builder =
-          BACnetConstructedDataPrescale.staticParseBuilder(
+          BACnetConstructedDataPrescale.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5087,7 +5113,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataAccessDoorPresentValue.staticParseBuilder(
+          BACnetConstructedDataAccessDoorPresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5098,7 +5124,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 12)) {
       builder =
-          BACnetConstructedDataAlertEnrollmentPresentValue.staticParseBuilder(
+          BACnetConstructedDataAlertEnrollmentPresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5109,7 +5135,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataAnalogInputPresentValue.staticParseBuilder(
+          BACnetConstructedDataAnalogInputPresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5120,7 +5146,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataAnalogOutputPresentValue.staticParseBuilder(
+          BACnetConstructedDataAnalogOutputPresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5131,7 +5157,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataAnalogValuePresentValue.staticParseBuilder(
+          BACnetConstructedDataAnalogValuePresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5142,7 +5168,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataBinaryInputPresentValue.staticParseBuilder(
+          BACnetConstructedDataBinaryInputPresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5153,7 +5179,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataBinaryOutputPresentValue.staticParseBuilder(
+          BACnetConstructedDataBinaryOutputPresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5164,7 +5190,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataBinaryValuePresentValue.staticParseBuilder(
+          BACnetConstructedDataBinaryValuePresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5175,18 +5201,19 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataBinaryLightingOutputPresentValue.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataBinaryLightingOutputPresentValue
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.BITSTRING_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 8)) {
       builder =
-          BACnetConstructedDataBitStringValuePresentValue.staticParseBuilder(
+          BACnetConstructedDataBitStringValuePresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5197,7 +5224,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataCalendarPresentValue.staticParseBuilder(
+          BACnetConstructedDataCalendarPresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5207,7 +5234,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)) {
       builder =
-          BACnetConstructedDataChannelPresentValue.staticParseBuilder(
+          BACnetConstructedDataChannelPresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5218,28 +5245,30 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataCharacterStringValuePresentValue.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataCharacterStringValuePresentValue
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.CREDENTIAL_DATA_INPUT)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)) {
       builder =
-          BACnetConstructedDataCredentialDataInputPresentValue.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataCredentialDataInputPresentValue
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.DATE_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 10)) {
       builder =
-          BACnetConstructedDataDateValuePresentValue.staticParseBuilder(
+          BACnetConstructedDataDateValuePresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5250,7 +5279,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 10)) {
       builder =
-          BACnetConstructedDataDatePatternValuePresentValue.staticParseBuilder(
+          BACnetConstructedDataDatePatternValuePresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5261,7 +5290,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 11)) {
       builder =
-          BACnetConstructedDataDateTimeValuePresentValue.staticParseBuilder(
+          BACnetConstructedDataDateTimeValuePresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5272,18 +5301,19 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 11)) {
       builder =
-          BACnetConstructedDataDateTimePatternValuePresentValue.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataDateTimePatternValuePresentValue
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.INTEGER_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
       builder =
-          BACnetConstructedDataIntegerValuePresentValue.staticParseBuilder(
+          BACnetConstructedDataIntegerValuePresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5294,7 +5324,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
       builder =
-          BACnetConstructedDataLargeAnalogValuePresentValue.staticParseBuilder(
+          BACnetConstructedDataLargeAnalogValuePresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5305,7 +5335,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataLightingOutputPresentValue.staticParseBuilder(
+          BACnetConstructedDataLightingOutputPresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5316,7 +5346,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataLifeSafetyPointPresentValue.staticParseBuilder(
+          BACnetConstructedDataLifeSafetyPointPresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5327,7 +5357,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataLifeSafetyZonePresentValue.staticParseBuilder(
+          BACnetConstructedDataLifeSafetyZonePresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5338,7 +5368,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataLoadControlPresentValue.staticParseBuilder(
+          BACnetConstructedDataLoadControlPresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5349,7 +5379,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataLoopPresentValue.staticParseBuilder(
+          BACnetConstructedDataLoopPresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5360,7 +5390,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataPulseConverterPresentValue.staticParseBuilder(
+          BACnetConstructedDataPulseConverterPresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5370,7 +5400,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)) {
       builder =
-          BACnetConstructedDataGroupPresentValue.staticParseBuilder(
+          BACnetConstructedDataGroupPresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5380,7 +5410,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)) {
       builder =
-          BACnetConstructedDataGlobalGroupPresentValue.staticParseBuilder(
+          BACnetConstructedDataGlobalGroupPresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5391,7 +5421,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
       builder =
-          BACnetConstructedDataOctetStringValuePresentValue.staticParseBuilder(
+          BACnetConstructedDataOctetStringValuePresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5401,7 +5431,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)) {
       builder =
-          BACnetConstructedDataSchedulePresentValue.staticParseBuilder(
+          BACnetConstructedDataSchedulePresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5412,7 +5442,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 11)) {
       builder =
-          BACnetConstructedDataTimeValuePresentValue.staticParseBuilder(
+          BACnetConstructedDataTimeValuePresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5423,7 +5453,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 11)) {
       builder =
-          BACnetConstructedDataTimePatternValuePresentValue.staticParseBuilder(
+          BACnetConstructedDataTimePatternValuePresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5434,7 +5464,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRESENT_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataPresentValue.staticParseBuilder(
+          BACnetConstructedDataPresentValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5443,7 +5473,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (true
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.PRIORITY)) {
       builder =
-          BACnetConstructedDataPriority.staticParseBuilder(
+          BACnetConstructedDataPriority.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5453,7 +5483,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRIORITY_ARRAY)) {
       builder =
-          BACnetConstructedDataPriorityArray.staticParseBuilder(
+          BACnetConstructedDataPriorityArray.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5464,7 +5494,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PRIORITY_FOR_WRITING)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataPriorityForWriting.staticParseBuilder(
+          BACnetConstructedDataPriorityForWriting.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5475,7 +5505,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PROCESS_IDENTIFIER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataProcessIdentifier.staticParseBuilder(
+          BACnetConstructedDataProcessIdentifier.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5485,7 +5515,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.PROCESS_IDENTIFIER_FILTER)) {
       builder =
-          BACnetConstructedDataProcessIdentifierFilter.staticParseBuilder(
+          BACnetConstructedDataProcessIdentifierFilter.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5496,7 +5526,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PROFILE_LOCATION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataProfileLocation.staticParseBuilder(
+          BACnetConstructedDataProfileLocation.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5507,7 +5537,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PROFILE_NAME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataProfileName.staticParseBuilder(
+          BACnetConstructedDataProfileName.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5518,7 +5548,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PROGRAM_CHANGE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataProgramChange.staticParseBuilder(
+          BACnetConstructedDataProgramChange.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5529,7 +5559,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PROGRAM_LOCATION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataProgramLocation.staticParseBuilder(
+          BACnetConstructedDataProgramLocation.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5540,7 +5570,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PROGRAM_STATE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataProgramState.staticParseBuilder(
+          BACnetConstructedDataProgramState.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5551,7 +5581,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PROPERTY_LIST)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataPropertyList.staticParseBuilder(
+          BACnetConstructedDataPropertyList.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5562,7 +5592,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PROPORTIONAL_CONSTANT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataProportionalConstant.staticParseBuilder(
+          BACnetConstructedDataProportionalConstant.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5573,7 +5603,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PROPORTIONAL_CONSTANT_UNITS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataProportionalConstantUnits.staticParseBuilder(
+          BACnetConstructedDataProportionalConstantUnits.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5584,7 +5614,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PROTOCOL_LEVEL)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataProtocolLevel.staticParseBuilder(
+          BACnetConstructedDataProtocolLevel.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5595,7 +5625,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PROTOCOL_OBJECT_TYPES_SUPPORTED)
         && EvaluationHelper.equals(peekedTagNumber, (short) 8)) {
       builder =
-          BACnetConstructedDataProtocolObjectTypesSupported.staticParseBuilder(
+          BACnetConstructedDataProtocolObjectTypesSupported.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5606,7 +5636,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PROTOCOL_REVISION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataProtocolRevision.staticParseBuilder(
+          BACnetConstructedDataProtocolRevision.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5617,7 +5647,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PROTOCOL_SERVICES_SUPPORTED)
         && EvaluationHelper.equals(peekedTagNumber, (short) 8)) {
       builder =
-          BACnetConstructedDataProtocolServicesSupported.staticParseBuilder(
+          BACnetConstructedDataProtocolServicesSupported.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5628,7 +5658,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.PROTOCOL_VERSION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataProtocolVersion.staticParseBuilder(
+          BACnetConstructedDataProtocolVersion.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5638,7 +5668,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.PULSE_RATE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataPulseRate.staticParseBuilder(
+          BACnetConstructedDataPulseRate.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5648,7 +5678,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.READ_ONLY)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataReadOnly.staticParseBuilder(
+          BACnetConstructedDataReadOnly.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5659,7 +5689,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.REASON_FOR_DISABLE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataReasonForDisable.staticParseBuilder(
+          BACnetConstructedDataReasonForDisable.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5670,7 +5700,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.REASON_FOR_HALT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataReasonForHalt.staticParseBuilder(
+          BACnetConstructedDataReasonForHalt.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5680,7 +5710,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RECIPIENT_LIST)) {
       builder =
-          BACnetConstructedDataRecipientList.staticParseBuilder(
+          BACnetConstructedDataRecipientList.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5691,7 +5721,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.RECORD_COUNT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataFileRecordCount.staticParseBuilder(
+          BACnetConstructedDataFileRecordCount.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5702,7 +5732,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.RECORD_COUNT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataRecordCount.staticParseBuilder(
+          BACnetConstructedDataRecordCount.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5713,7 +5743,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.RECORDS_SINCE_NOTIFICATION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataRecordsSinceNotification.staticParseBuilder(
+          BACnetConstructedDataRecordsSinceNotification.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5724,7 +5754,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.REFERENCE_PORT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataReferencePort.staticParseBuilder(
+          BACnetConstructedDataReferencePort.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5734,7 +5764,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.REGISTERED_CAR_CALL)) {
       builder =
-          BACnetConstructedDataRegisteredCarCall.staticParseBuilder(
+          BACnetConstructedDataRegisteredCarCall.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5744,7 +5774,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.RELIABILITY)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataReliability.staticParseBuilder(
+          BACnetConstructedDataReliability.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5755,7 +5785,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELIABILITY_EVALUATION_INHIBIT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataReliabilityEvaluationInhibit.staticParseBuilder(
+          BACnetConstructedDataReliabilityEvaluationInhibit.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5766,7 +5796,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataAccessDoorRelinquishDefault.staticParseBuilder(
+          BACnetConstructedDataAccessDoorRelinquishDefault.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5777,18 +5807,19 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataAnalogOutputRelinquishDefault.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataAnalogOutputRelinquishDefault
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.ANALOG_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataAnalogValueRelinquishDefault.staticParseBuilder(
+          BACnetConstructedDataAnalogValueRelinquishDefault.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5799,18 +5830,19 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataBinaryOutputRelinquishDefault.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataBinaryOutputRelinquishDefault
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.BINARY_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataBinaryValueRelinquishDefault.staticParseBuilder(
+          BACnetConstructedDataBinaryValueRelinquishDefault.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5821,40 +5853,43 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataBinaryLightingOutputRelinquishDefault.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataBinaryLightingOutputRelinquishDefault
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.BITSTRING_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 8)) {
       builder =
-          BACnetConstructedDataBitStringValueRelinquishDefault.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataBitStringValueRelinquishDefault
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.CHARACTERSTRING_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataCharacterStringValueRelinquishDefault.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataCharacterStringValueRelinquishDefault
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.DATE_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 10)) {
       builder =
-          BACnetConstructedDataDateValueRelinquishDefault.staticParseBuilder(
+          BACnetConstructedDataDateValueRelinquishDefault.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5865,71 +5900,77 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 10)) {
       builder =
-          BACnetConstructedDataDatePatternValueRelinquishDefault.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataDatePatternValueRelinquishDefault
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.DATETIME_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)) {
       builder =
-          BACnetConstructedDataDateTimeValueRelinquishDefault.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataDateTimeValueRelinquishDefault
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.DATETIMEPATTERN_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)) {
       builder =
-          BACnetConstructedDataDateTimePatternValueRelinquishDefault.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataDateTimePatternValueRelinquishDefault
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.LARGE_ANALOG_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
       builder =
-          BACnetConstructedDataLargeAnalogValueRelinquishDefault.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataLargeAnalogValueRelinquishDefault
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.LIGHTING_OUTPUT)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataLightingOutputRelinquishDefault.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataLightingOutputRelinquishDefault
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.TIMEPATTERN_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 11)) {
       builder =
-          BACnetConstructedDataTimePatternValueRelinquishDefault.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataTimePatternValueRelinquishDefault
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.TIME_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 11)) {
       builder =
-          BACnetConstructedDataTimeValueRelinquishDefault.staticParseBuilder(
+          BACnetConstructedDataTimeValueRelinquishDefault.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -5940,62 +5981,67 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
       builder =
-          BACnetConstructedDataIntegerValueRelinquishDefault.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataIntegerValueRelinquishDefault
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.OCTETSTRING_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
       builder =
-          BACnetConstructedDataOctetStringValueRelinquishDefault.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataOctetStringValueRelinquishDefault
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.POSITIVE_INTEGER_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataPositiveIntegerValueRelinquishDefault.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataPositiveIntegerValueRelinquishDefault
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.MULTI_STATE_OUTPUT)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataMultiStateOutputRelinquishDefault.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataMultiStateOutputRelinquishDefault
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.MULTI_STATE_VALUE)
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataMultiStateValueRelinquishDefault.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataMultiStateValueRelinquishDefault
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RELINQUISH_DEFAULT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataRelinquishDefault.staticParseBuilder(
+          BACnetConstructedDataRelinquishDefault.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6005,7 +6051,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.REPRESENTS)) {
       builder =
-          BACnetConstructedDataRepresents.staticParseBuilder(
+          BACnetConstructedDataRepresents.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6015,7 +6061,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.REQUESTED_SHED_LEVEL)) {
       builder =
-          BACnetConstructedDataRequestedShedLevel.staticParseBuilder(
+          BACnetConstructedDataRequestedShedLevel.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6026,7 +6072,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.REQUESTED_UPDATE_INTERVAL)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataRequestedUpdateInterval.staticParseBuilder(
+          BACnetConstructedDataRequestedUpdateInterval.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6035,7 +6081,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (true
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.REQUIRED)) {
       builder =
-          BACnetConstructedDataRequired.staticParseBuilder(
+          BACnetConstructedDataRequired.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6045,7 +6091,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.RESOLUTION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
       builder =
-          BACnetConstructedDataLargeAnalogValueResolution.staticParseBuilder(
+          BACnetConstructedDataLargeAnalogValueResolution.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6055,7 +6101,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.RESOLUTION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
       builder =
-          BACnetConstructedDataIntegerValueResolution.staticParseBuilder(
+          BACnetConstructedDataIntegerValueResolution.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6065,17 +6111,18 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.RESOLUTION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataPositiveIntegerValueResolution.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataPositiveIntegerValueResolution
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (EvaluationHelper.equals(objectTypeArgument, BACnetObjectType.TIMER)
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.RESOLUTION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataTimerResolution.staticParseBuilder(
+          BACnetConstructedDataTimerResolution.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6085,7 +6132,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.RESOLUTION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataResolution.staticParseBuilder(
+          BACnetConstructedDataResolution.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6095,18 +6142,19 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RESTART_NOTIFICATION_RECIPIENTS)) {
       builder =
-          BACnetConstructedDataRestartNotificationRecipients.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataRestartNotificationRecipients
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.RESTORE_COMPLETION_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataRestoreCompletionTime.staticParseBuilder(
+          BACnetConstructedDataRestoreCompletionTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6117,7 +6165,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.RESTORE_PREPARATION_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataRestorePreparationTime.staticParseBuilder(
+          BACnetConstructedDataRestorePreparationTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6127,7 +6175,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ROUTING_TABLE)) {
       builder =
-          BACnetConstructedDataRoutingTable.staticParseBuilder(
+          BACnetConstructedDataRoutingTable.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6136,7 +6184,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (true
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.SCALE)) {
       builder =
-          BACnetConstructedDataScale.staticParseBuilder(
+          BACnetConstructedDataScale.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6147,7 +6195,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.SCALE_FACTOR)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataScaleFactor.staticParseBuilder(
+          BACnetConstructedDataScaleFactor.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6157,7 +6205,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.SCHEDULE_DEFAULT)) {
       builder =
-          BACnetConstructedDataScheduleDefault.staticParseBuilder(
+          BACnetConstructedDataScheduleDefault.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6168,7 +6216,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.SECURED_STATUS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataSecuredStatus.staticParseBuilder(
+          BACnetConstructedDataSecuredStatus.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6179,7 +6227,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.SECURITY_PDU_TIMEOUT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataSecurityPDUTimeout.staticParseBuilder(
+          BACnetConstructedDataSecurityPDUTimeout.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6190,7 +6238,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.SECURITY_TIME_WINDOW)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataSecurityTimeWindow.staticParseBuilder(
+          BACnetConstructedDataSecurityTimeWindow.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6201,7 +6249,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.SEGMENTATION_SUPPORTED)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataSegmentationSupported.staticParseBuilder(
+          BACnetConstructedDataSegmentationSupported.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6212,7 +6260,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.SERIAL_NUMBER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataSerialNumber.staticParseBuilder(
+          BACnetConstructedDataSerialNumber.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6222,7 +6270,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.SETPOINT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataSetpoint.staticParseBuilder(
+          BACnetConstructedDataSetpoint.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6232,7 +6280,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.SETPOINT_REFERENCE)) {
       builder =
-          BACnetConstructedDataSetpointReference.staticParseBuilder(
+          BACnetConstructedDataSetpointReference.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6242,7 +6290,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.SETTING)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataSetting.staticParseBuilder(
+          BACnetConstructedDataSetting.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6253,7 +6301,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.SHED_DURATION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataShedDuration.staticParseBuilder(
+          BACnetConstructedDataShedDuration.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6264,7 +6312,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.SHED_LEVEL_DESCRIPTIONS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataShedLevelDescriptions.staticParseBuilder(
+          BACnetConstructedDataShedLevelDescriptions.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6274,7 +6322,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.SHED_LEVELS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataShedLevels.staticParseBuilder(
+          BACnetConstructedDataShedLevels.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6284,7 +6332,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.SILENCED)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataSilenced.staticParseBuilder(
+          BACnetConstructedDataSilenced.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6294,7 +6342,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.SLAVE_ADDRESS_BINDING)) {
       builder =
-          BACnetConstructedDataSlaveAddressBinding.staticParseBuilder(
+          BACnetConstructedDataSlaveAddressBinding.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6305,7 +6353,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.SLAVE_PROXY_ENABLE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataSlaveProxyEnable.staticParseBuilder(
+          BACnetConstructedDataSlaveProxyEnable.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6315,7 +6363,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.START_TIME)) {
       builder =
-          BACnetConstructedDataStartTime.staticParseBuilder(
+          BACnetConstructedDataStartTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6325,7 +6373,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.STATE_CHANGE_VALUES)) {
       builder =
-          BACnetConstructedDataStateChangeValues.staticParseBuilder(
+          BACnetConstructedDataStateChangeValues.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6336,7 +6384,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.STATE_DESCRIPTION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataStateDescription.staticParseBuilder(
+          BACnetConstructedDataStateDescription.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6346,7 +6394,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.STATE_TEXT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataStateText.staticParseBuilder(
+          BACnetConstructedDataStateText.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6357,7 +6405,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.STATUS_FLAGS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 8)) {
       builder =
-          BACnetConstructedDataStatusFlags.staticParseBuilder(
+          BACnetConstructedDataStatusFlags.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6367,7 +6415,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.STOP_TIME)) {
       builder =
-          BACnetConstructedDataStopTime.staticParseBuilder(
+          BACnetConstructedDataStopTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6378,7 +6426,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.STOP_WHEN_FULL)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataStopWhenFull.staticParseBuilder(
+          BACnetConstructedDataStopWhenFull.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6389,7 +6437,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.STRIKE_COUNT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataStrikeCount.staticParseBuilder(
+          BACnetConstructedDataStrikeCount.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6399,7 +6447,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.STRUCTURED_OBJECT_LIST)) {
       builder =
-          BACnetConstructedDataStructuredObjectList.staticParseBuilder(
+          BACnetConstructedDataStructuredObjectList.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6409,7 +6457,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.SUBORDINATE_ANNOTATIONS)) {
       builder =
-          BACnetConstructedDataSubordinateAnnotations.staticParseBuilder(
+          BACnetConstructedDataSubordinateAnnotations.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6419,7 +6467,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.SUBORDINATE_LIST)) {
       builder =
-          BACnetConstructedDataSubordinateList.staticParseBuilder(
+          BACnetConstructedDataSubordinateList.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6430,7 +6478,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.SUBORDINATE_NODE_TYPES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataSubordinateNodeTypes.staticParseBuilder(
+          BACnetConstructedDataSubordinateNodeTypes.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6441,7 +6489,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.SUBORDINATE_RELATIONSHIPS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataSubordinateRelationships.staticParseBuilder(
+          BACnetConstructedDataSubordinateRelationships.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6451,7 +6499,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.SUBORDINATE_TAGS)) {
       builder =
-          BACnetConstructedDataSubordinateTags.staticParseBuilder(
+          BACnetConstructedDataSubordinateTags.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6461,7 +6509,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.SUBSCRIBED_RECIPIENTS)) {
       builder =
-          BACnetConstructedDataSubscribedRecipients.staticParseBuilder(
+          BACnetConstructedDataSubscribedRecipients.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6471,7 +6519,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.SUPPORTED_FORMAT_CLASSES)) {
       builder =
-          BACnetConstructedDataSupportedFormatClasses.staticParseBuilder(
+          BACnetConstructedDataSupportedFormatClasses.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6481,7 +6529,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.SUPPORTED_FORMATS)) {
       builder =
-          BACnetConstructedDataSupportedFormats.staticParseBuilder(
+          BACnetConstructedDataSupportedFormats.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6491,7 +6539,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.SUPPORTED_SECURITY_ALGORITHMS)) {
       builder =
-          BACnetConstructedDataSupportedSecurityAlgorithms.staticParseBuilder(
+          BACnetConstructedDataSupportedSecurityAlgorithms.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6502,7 +6550,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.SYSTEM_STATUS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataSystemStatus.staticParseBuilder(
+          BACnetConstructedDataSystemStatus.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6511,7 +6559,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (true
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.TAGS)) {
       builder =
-          BACnetConstructedDataTags.staticParseBuilder(
+          BACnetConstructedDataTags.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6521,7 +6569,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.THREAT_AUTHORITY)) {
       builder =
-          BACnetConstructedDataThreatAuthority.staticParseBuilder(
+          BACnetConstructedDataThreatAuthority.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6531,7 +6579,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.THREAT_LEVEL)) {
       builder =
-          BACnetConstructedDataThreatLevel.staticParseBuilder(
+          BACnetConstructedDataThreatLevel.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6541,7 +6589,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.TIME_DELAY)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataTimeDelay.staticParseBuilder(
+          BACnetConstructedDataTimeDelay.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6552,7 +6600,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.TIME_DELAY_NORMAL)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataTimeDelayNormal.staticParseBuilder(
+          BACnetConstructedDataTimeDelayNormal.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6562,7 +6610,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.TIME_OF_ACTIVE_TIME_RESET)) {
       builder =
-          BACnetConstructedDataTimeOfActiveTimeReset.staticParseBuilder(
+          BACnetConstructedDataTimeOfActiveTimeReset.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6572,7 +6620,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.TIME_OF_DEVICE_RESTART)) {
       builder =
-          BACnetConstructedDataTimeOfDeviceRestart.staticParseBuilder(
+          BACnetConstructedDataTimeOfDeviceRestart.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6582,7 +6630,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.TIME_OF_STATE_COUNT_RESET)) {
       builder =
-          BACnetConstructedDataTimeOfStateCountReset.staticParseBuilder(
+          BACnetConstructedDataTimeOfStateCountReset.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6592,7 +6640,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.TIME_OF_STRIKE_COUNT_RESET)) {
       builder =
-          BACnetConstructedDataTimeOfStrikeCountReset.staticParseBuilder(
+          BACnetConstructedDataTimeOfStrikeCountReset.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6603,7 +6651,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.TIME_SYNCHRONIZATION_INTERVAL)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataTimeSynchronizationInterval.staticParseBuilder(
+          BACnetConstructedDataTimeSynchronizationInterval.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6613,18 +6661,19 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.TIME_SYNCHRONIZATION_RECIPIENTS)) {
       builder =
-          BACnetConstructedDataTimeSynchronizationRecipients.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataTimeSynchronizationRecipients
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.TIMER_RUNNING)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataTimerRunning.staticParseBuilder(
+          BACnetConstructedDataTimerRunning.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6634,7 +6683,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.TIMER_STATE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataTimerState.staticParseBuilder(
+          BACnetConstructedDataTimerState.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6645,7 +6694,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.TOTAL_RECORD_COUNT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataTotalRecordCount.staticParseBuilder(
+          BACnetConstructedDataTotalRecordCount.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6655,7 +6704,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.TRACE_FLAG)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataTraceFlag.staticParseBuilder(
+          BACnetConstructedDataTraceFlag.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6666,7 +6715,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.TRACKING_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataLightingOutputTrackingValue.staticParseBuilder(
+          BACnetConstructedDataLightingOutputTrackingValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6677,7 +6726,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.TRACKING_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataLightingOutputTrackingValue.staticParseBuilder(
+          BACnetConstructedDataLightingOutputTrackingValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6688,7 +6737,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.TRACKING_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataTrackingValue.staticParseBuilder(
+          BACnetConstructedDataTrackingValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6699,7 +6748,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.TRANSACTION_NOTIFICATION_CLASS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataTransactionNotificationClass.staticParseBuilder(
+          BACnetConstructedDataTransactionNotificationClass.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6709,7 +6758,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.TRANSITION)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataTransition.staticParseBuilder(
+          BACnetConstructedDataTransition.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6719,7 +6768,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.TRIGGER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetConstructedDataTrigger.staticParseBuilder(
+          BACnetConstructedDataTrigger.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6729,7 +6778,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.UNITS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataUnits.staticParseBuilder(
+          BACnetConstructedDataUnits.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6740,7 +6789,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.UPDATE_INTERVAL)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataUpdateInterval.staticParseBuilder(
+          BACnetConstructedDataUpdateInterval.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6751,7 +6800,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.UPDATE_KEY_SET_TIMEOUT)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataUpdateKeySetTimeout.staticParseBuilder(
+          BACnetConstructedDataUpdateKeySetTimeout.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6761,17 +6810,18 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.UPDATE_TIME)) {
       builder =
-          BACnetConstructedDataCredentialDataInputUpdateTime.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataCredentialDataInputUpdateTime
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.UPDATE_TIME)) {
       builder =
-          BACnetConstructedDataUpdateTime.staticParseBuilder(
+          BACnetConstructedDataUpdateTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6782,7 +6832,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.USER_EXTERNAL_IDENTIFIER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataUserExternalIdentifier.staticParseBuilder(
+          BACnetConstructedDataUserExternalIdentifier.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6793,7 +6843,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.USER_INFORMATION_REFERENCE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataUserInformationReference.staticParseBuilder(
+          BACnetConstructedDataUserInformationReference.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6803,7 +6853,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.USER_NAME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataUserName.staticParseBuilder(
+          BACnetConstructedDataUserName.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6813,7 +6863,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.USER_TYPE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataUserType.staticParseBuilder(
+          BACnetConstructedDataUserType.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6824,7 +6874,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.USES_REMAINING)
         && EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
       builder =
-          BACnetConstructedDataUsesRemaining.staticParseBuilder(
+          BACnetConstructedDataUsesRemaining.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6834,7 +6884,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.UTC_OFFSET)
         && EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
       builder =
-          BACnetConstructedDataUTCOffset.staticParseBuilder(
+          BACnetConstructedDataUTCOffset.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6845,18 +6895,19 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument,
             BACnetPropertyIdentifier.UTC_TIME_SYNCHRONIZATION_RECIPIENTS)) {
       builder =
-          BACnetConstructedDataUTCTimeSynchronizationRecipients.staticParseBuilder(
-              readBuffer,
-              tagNumber,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              arrayIndexArgument);
+          BACnetConstructedDataUTCTimeSynchronizationRecipients
+              .staticParseBACnetConstructedDataBuilder(
+                  readBuffer,
+                  tagNumber,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  arrayIndexArgument);
     } else if (true
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.VALID_SAMPLES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataValidSamples.staticParseBuilder(
+          BACnetConstructedDataValidSamples.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6867,7 +6918,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.VALUE_BEFORE_CHANGE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataValueBeforeChange.staticParseBuilder(
+          BACnetConstructedDataValueBeforeChange.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6877,7 +6928,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.VALUE_CHANGE_TIME)) {
       builder =
-          BACnetConstructedDataValueChangeTime.staticParseBuilder(
+          BACnetConstructedDataValueChangeTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6887,7 +6938,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.VALUE_SET)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataValueSet.staticParseBuilder(
+          BACnetConstructedDataValueSet.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6897,7 +6948,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.VALUE_SOURCE)) {
       builder =
-          BACnetConstructedDataValueSource.staticParseBuilder(
+          BACnetConstructedDataValueSource.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6907,7 +6958,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.VALUE_SOURCE_ARRAY)) {
       builder =
-          BACnetConstructedDataValueSourceArray.staticParseBuilder(
+          BACnetConstructedDataValueSourceArray.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6918,7 +6969,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.VARIANCE_VALUE)
         && EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetConstructedDataVarianceValue.staticParseBuilder(
+          BACnetConstructedDataVarianceValue.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6929,7 +6980,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.VENDOR_IDENTIFIER)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataVendorIdentifier.staticParseBuilder(
+          BACnetConstructedDataVendorIdentifier.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6939,7 +6990,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.VENDOR_NAME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
       builder =
-          BACnetConstructedDataVendorName.staticParseBuilder(
+          BACnetConstructedDataVendorName.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6950,7 +7001,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.VERIFICATION_TIME)
         && EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
       builder =
-          BACnetConstructedDataVerificationTime.staticParseBuilder(
+          BACnetConstructedDataVerificationTime.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6960,7 +7011,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.VIRTUAL_MAC_ADDRESS_TABLE)) {
       builder =
-          BACnetConstructedDataVirtualMACAddressTable.staticParseBuilder(
+          BACnetConstructedDataVirtualMACAddressTable.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6971,7 +7022,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.VT_CLASSES_SUPPORTED)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataVTClassesSupported.staticParseBuilder(
+          BACnetConstructedDataVTClassesSupported.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6981,7 +7032,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.WEEKLY_SCHEDULE)) {
       builder =
-          BACnetConstructedDataWeeklySchedule.staticParseBuilder(
+          BACnetConstructedDataWeeklySchedule.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -6992,7 +7043,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.WINDOW_INTERVAL)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataWindowInterval.staticParseBuilder(
+          BACnetConstructedDataWindowInterval.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -7003,7 +7054,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.WINDOW_SAMPLES)
         && EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetConstructedDataWindowSamples.staticParseBuilder(
+          BACnetConstructedDataWindowSamples.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -7014,7 +7065,7 @@ public abstract class BACnetConstructedData implements Message {
             propertyIdentifierArgument, BACnetPropertyIdentifier.WRITE_STATUS)
         && EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetConstructedDataWriteStatus.staticParseBuilder(
+          BACnetConstructedDataWriteStatus.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -7024,7 +7075,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ZONE_FROM)) {
       builder =
-          BACnetConstructedDataZoneFrom.staticParseBuilder(
+          BACnetConstructedDataZoneFrom.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -7034,7 +7085,7 @@ public abstract class BACnetConstructedData implements Message {
         && EvaluationHelper.equals(
             propertyIdentifierArgument, BACnetPropertyIdentifier.ZONE_MEMBERS)) {
       builder =
-          BACnetConstructedDataZoneMembers.staticParseBuilder(
+          BACnetConstructedDataZoneMembers.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -7043,7 +7094,7 @@ public abstract class BACnetConstructedData implements Message {
     } else if (true
         && EvaluationHelper.equals(propertyIdentifierArgument, BACnetPropertyIdentifier.ZONE_TO)) {
       builder =
-          BACnetConstructedDataZoneTo.staticParseBuilder(
+          BACnetConstructedDataZoneTo.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -7051,7 +7102,7 @@ public abstract class BACnetConstructedData implements Message {
               arrayIndexArgument);
     } else if (true) {
       builder =
-          BACnetConstructedDataUnspecified.staticParseBuilder(
+          BACnetConstructedDataUnspecified.staticParseBACnetConstructedDataBuilder(
               readBuffer,
               tagNumber,
               objectTypeArgument,
@@ -7086,7 +7137,7 @@ public abstract class BACnetConstructedData implements Message {
     return _bACnetConstructedData;
   }
 
-  public static interface BACnetConstructedDataBuilder {
+  public interface BACnetConstructedDataBuilder {
     BACnetConstructedData build(
         BACnetOpeningTag openingTag,
         BACnetTagHeader peekedTagHeader,

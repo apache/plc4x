@@ -69,7 +69,7 @@ public class DataTypeDefinition extends ExtensionObjectDefinition implements Mes
     return lengthInBits;
   }
 
-  public static DataTypeDefinitionBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DataTypeDefinition");
     PositionAware positionAware = readBuffer;
@@ -78,13 +78,13 @@ public class DataTypeDefinition extends ExtensionObjectDefinition implements Mes
 
     readBuffer.closeContext("DataTypeDefinition");
     // Create the instance
-    return new DataTypeDefinitionBuilder();
+    return new DataTypeDefinitionBuilderImpl();
   }
 
-  public static class DataTypeDefinitionBuilder
+  public static class DataTypeDefinitionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public DataTypeDefinitionBuilder() {}
+    public DataTypeDefinitionBuilderImpl() {}
 
     public DataTypeDefinition build() {
       DataTypeDefinition dataTypeDefinition = new DataTypeDefinition();

@@ -91,7 +91,7 @@ public class BACnetApplicationTagCharacterString extends BACnetApplicationTag im
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagCharacterStringBuilder staticParseBuilder(
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
       ReadBuffer readBuffer, BACnetTagHeader header) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagCharacterString");
     PositionAware positionAware = readBuffer;
@@ -110,15 +110,14 @@ public class BACnetApplicationTagCharacterString extends BACnetApplicationTag im
 
     readBuffer.closeContext("BACnetApplicationTagCharacterString");
     // Create the instance
-    return new BACnetApplicationTagCharacterStringBuilder(payload);
+    return new BACnetApplicationTagCharacterStringBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagCharacterStringBuilder
+  public static class BACnetApplicationTagCharacterStringBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadCharacterString payload;
 
-    public BACnetApplicationTagCharacterStringBuilder(BACnetTagPayloadCharacterString payload) {
-
+    public BACnetApplicationTagCharacterStringBuilderImpl(BACnetTagPayloadCharacterString payload) {
       this.payload = payload;
     }
 

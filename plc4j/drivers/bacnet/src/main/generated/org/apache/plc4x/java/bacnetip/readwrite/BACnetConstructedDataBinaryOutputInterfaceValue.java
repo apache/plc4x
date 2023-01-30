@@ -110,7 +110,7 @@ public class BACnetConstructedDataBinaryOutputInterfaceValue extends BACnetConst
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBinaryOutputInterfaceValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,21 +132,20 @@ public class BACnetConstructedDataBinaryOutputInterfaceValue extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataBinaryOutputInterfaceValue");
     // Create the instance
-    return new BACnetConstructedDataBinaryOutputInterfaceValueBuilder(
+    return new BACnetConstructedDataBinaryOutputInterfaceValueBuilderImpl(
         interfaceValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBinaryOutputInterfaceValueBuilder
+  public static class BACnetConstructedDataBinaryOutputInterfaceValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetOptionalBinaryPV interfaceValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBinaryOutputInterfaceValueBuilder(
+    public BACnetConstructedDataBinaryOutputInterfaceValueBuilderImpl(
         BACnetOptionalBinaryPV interfaceValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.interfaceValue = interfaceValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

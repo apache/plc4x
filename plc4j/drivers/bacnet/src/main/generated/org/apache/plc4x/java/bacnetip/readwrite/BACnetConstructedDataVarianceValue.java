@@ -109,7 +109,7 @@ public class BACnetConstructedDataVarianceValue extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataVarianceValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -132,21 +132,20 @@ public class BACnetConstructedDataVarianceValue extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataVarianceValue");
     // Create the instance
-    return new BACnetConstructedDataVarianceValueBuilder(
+    return new BACnetConstructedDataVarianceValueBuilderImpl(
         varianceValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataVarianceValueBuilder
+  public static class BACnetConstructedDataVarianceValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal varianceValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataVarianceValueBuilder(
+    public BACnetConstructedDataVarianceValueBuilderImpl(
         BACnetApplicationTagReal varianceValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.varianceValue = varianceValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

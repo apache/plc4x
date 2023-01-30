@@ -49,16 +49,10 @@ public class PnDcp_Block_DevicePropertiesDeviceOptions extends PnDcp_Block imple
   // Properties.
   protected final List<PnDcp_SupportedDeviceOption> supportedOptions;
 
-  // Arguments.
-  protected final Integer blockLength;
-  // Reserved Fields
-  private Integer reservedField0;
-
   public PnDcp_Block_DevicePropertiesDeviceOptions(
-      List<PnDcp_SupportedDeviceOption> supportedOptions, Integer blockLength) {
+      List<PnDcp_SupportedDeviceOption> supportedOptions) {
     super();
     this.supportedOptions = supportedOptions;
-    this.blockLength = blockLength;
   }
 
   public List<PnDcp_SupportedDeviceOption> getSupportedOptions() {
@@ -72,10 +66,7 @@ public class PnDcp_Block_DevicePropertiesDeviceOptions extends PnDcp_Block imple
     writeBuffer.pushContext("PnDcp_Block_DevicePropertiesDeviceOptions");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+    writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
 
     // Array Field (supportedOptions)
     writeComplexTypeArrayField("supportedOptions", supportedOptions, writeBuffer);
@@ -106,7 +97,7 @@ public class PnDcp_Block_DevicePropertiesDeviceOptions extends PnDcp_Block imple
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DevicePropertiesDeviceOptionsBuilder staticParseBuilder(
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(
       ReadBuffer readBuffer, Integer blockLength) throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DevicePropertiesDeviceOptions");
     PositionAware positionAware = readBuffer;
@@ -125,29 +116,21 @@ public class PnDcp_Block_DevicePropertiesDeviceOptions extends PnDcp_Block imple
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesDeviceOptions");
     // Create the instance
-    return new PnDcp_Block_DevicePropertiesDeviceOptionsBuilder(
-        supportedOptions, blockLength, reservedField0);
+    return new PnDcp_Block_DevicePropertiesDeviceOptionsBuilderImpl(supportedOptions);
   }
 
-  public static class PnDcp_Block_DevicePropertiesDeviceOptionsBuilder
+  public static class PnDcp_Block_DevicePropertiesDeviceOptionsBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final List<PnDcp_SupportedDeviceOption> supportedOptions;
-    private final Integer blockLength;
-    private final Integer reservedField0;
 
-    public PnDcp_Block_DevicePropertiesDeviceOptionsBuilder(
-        List<PnDcp_SupportedDeviceOption> supportedOptions,
-        Integer blockLength,
-        Integer reservedField0) {
+    public PnDcp_Block_DevicePropertiesDeviceOptionsBuilderImpl(
+        List<PnDcp_SupportedDeviceOption> supportedOptions) {
       this.supportedOptions = supportedOptions;
-      this.blockLength = blockLength;
-      this.reservedField0 = reservedField0;
     }
 
     public PnDcp_Block_DevicePropertiesDeviceOptions build() {
       PnDcp_Block_DevicePropertiesDeviceOptions pnDcp_Block_DevicePropertiesDeviceOptions =
-          new PnDcp_Block_DevicePropertiesDeviceOptions(supportedOptions, blockLength);
-      pnDcp_Block_DevicePropertiesDeviceOptions.reservedField0 = reservedField0;
+          new PnDcp_Block_DevicePropertiesDeviceOptions(supportedOptions);
       return pnDcp_Block_DevicePropertiesDeviceOptions;
     }
   }

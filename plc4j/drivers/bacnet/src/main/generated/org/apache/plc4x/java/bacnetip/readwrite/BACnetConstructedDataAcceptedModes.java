@@ -103,7 +103,7 @@ public class BACnetConstructedDataAcceptedModes extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAcceptedModesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -130,21 +130,20 @@ public class BACnetConstructedDataAcceptedModes extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataAcceptedModes");
     // Create the instance
-    return new BACnetConstructedDataAcceptedModesBuilder(
+    return new BACnetConstructedDataAcceptedModesBuilderImpl(
         acceptedModes, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAcceptedModesBuilder
+  public static class BACnetConstructedDataAcceptedModesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetLifeSafetyModeTagged> acceptedModes;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAcceptedModesBuilder(
+    public BACnetConstructedDataAcceptedModesBuilderImpl(
         List<BACnetLifeSafetyModeTagged> acceptedModes,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.acceptedModes = acceptedModes;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

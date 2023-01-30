@@ -72,7 +72,7 @@ public class SysexCommandSysexNonRealtime extends SysexCommand implements Messag
     return lengthInBits;
   }
 
-  public static SysexCommandSysexNonRealtimeBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandSysexNonRealtime");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class SysexCommandSysexNonRealtime extends SysexCommand implements Messag
 
     readBuffer.closeContext("SysexCommandSysexNonRealtime");
     // Create the instance
-    return new SysexCommandSysexNonRealtimeBuilder();
+    return new SysexCommandSysexNonRealtimeBuilderImpl();
   }
 
-  public static class SysexCommandSysexNonRealtimeBuilder
+  public static class SysexCommandSysexNonRealtimeBuilderImpl
       implements SysexCommand.SysexCommandBuilder {
 
-    public SysexCommandSysexNonRealtimeBuilder() {}
+    public SysexCommandSysexNonRealtimeBuilderImpl() {}
 
     public SysexCommandSysexNonRealtime build() {
       SysexCommandSysexNonRealtime sysexCommandSysexNonRealtime =

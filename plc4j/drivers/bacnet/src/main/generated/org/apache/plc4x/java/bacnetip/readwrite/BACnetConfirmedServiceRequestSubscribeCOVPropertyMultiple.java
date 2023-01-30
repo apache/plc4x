@@ -163,8 +163,9 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -228,7 +229,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple");
     // Create the instance
-    return new BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder(
+    return new BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilderImpl(
         subscriberProcessIdentifier,
         issueConfirmedNotifications,
         lifetime,
@@ -237,7 +238,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
         serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+  public static class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagUnsignedInteger subscriberProcessIdentifier;
     private final BACnetContextTagBoolean issueConfirmedNotifications;
@@ -248,7 +249,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
         listOfCovSubscriptionSpecifications;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder(
+    public BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilderImpl(
         BACnetContextTagUnsignedInteger subscriberProcessIdentifier,
         BACnetContextTagBoolean issueConfirmedNotifications,
         BACnetContextTagUnsignedInteger lifetime,
@@ -256,7 +257,6 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
         BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList
             listOfCovSubscriptionSpecifications,
         Long serviceRequestLength) {
-
       this.subscriberProcessIdentifier = subscriberProcessIdentifier;
       this.issueConfirmedNotifications = issueConfirmedNotifications;
       this.lifetime = lifetime;

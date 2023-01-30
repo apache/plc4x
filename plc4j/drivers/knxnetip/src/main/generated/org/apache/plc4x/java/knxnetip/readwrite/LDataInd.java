@@ -47,19 +47,14 @@ public class LDataInd extends CEMI implements Message {
   protected final List<CEMIAdditionalInformation> additionalInformation;
   protected final LDataFrame dataFrame;
 
-  // Arguments.
-  protected final Integer size;
-
   public LDataInd(
       short additionalInformationLength,
       List<CEMIAdditionalInformation> additionalInformation,
-      LDataFrame dataFrame,
-      Integer size) {
-    super(size);
+      LDataFrame dataFrame) {
+    super();
     this.additionalInformationLength = additionalInformationLength;
     this.additionalInformation = additionalInformation;
     this.dataFrame = dataFrame;
-    this.size = size;
   }
 
   public short getAdditionalInformationLength() {
@@ -121,7 +116,7 @@ public class LDataInd extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static LDataIndBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("LDataInd");
     PositionAware positionAware = readBuffer;
@@ -145,31 +140,26 @@ public class LDataInd extends CEMI implements Message {
 
     readBuffer.closeContext("LDataInd");
     // Create the instance
-    return new LDataIndBuilder(additionalInformationLength, additionalInformation, dataFrame, size);
+    return new LDataIndBuilderImpl(additionalInformationLength, additionalInformation, dataFrame);
   }
 
-  public static class LDataIndBuilder implements CEMI.CEMIBuilder {
+  public static class LDataIndBuilderImpl implements CEMI.CEMIBuilder {
     private final short additionalInformationLength;
     private final List<CEMIAdditionalInformation> additionalInformation;
     private final LDataFrame dataFrame;
-    private final Integer size;
 
-    public LDataIndBuilder(
+    public LDataIndBuilderImpl(
         short additionalInformationLength,
         List<CEMIAdditionalInformation> additionalInformation,
-        LDataFrame dataFrame,
-        Integer size) {
-
+        LDataFrame dataFrame) {
       this.additionalInformationLength = additionalInformationLength;
       this.additionalInformation = additionalInformation;
       this.dataFrame = dataFrame;
-      this.size = size;
     }
 
-    public LDataInd build(Integer size) {
-
+    public LDataInd build() {
       LDataInd lDataInd =
-          new LDataInd(additionalInformationLength, additionalInformation, dataFrame, size);
+          new LDataInd(additionalInformationLength, additionalInformation, dataFrame);
       return lDataInd;
     }
   }

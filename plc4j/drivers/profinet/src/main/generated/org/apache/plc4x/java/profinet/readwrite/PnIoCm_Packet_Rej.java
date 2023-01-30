@@ -83,7 +83,7 @@ public class PnIoCm_Packet_Rej extends PnIoCm_Packet implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_Packet_RejBuilder staticParseBuilder(
+  public static PnIoCm_PacketBuilder staticParsePnIoCm_PacketBuilder(
       ReadBuffer readBuffer, DceRpc_PacketType packetType) throws ParseException {
     readBuffer.pullContext("PnIoCm_Packet_Rej");
     PositionAware positionAware = readBuffer;
@@ -94,14 +94,13 @@ public class PnIoCm_Packet_Rej extends PnIoCm_Packet implements Message {
 
     readBuffer.closeContext("PnIoCm_Packet_Rej");
     // Create the instance
-    return new PnIoCm_Packet_RejBuilder(status);
+    return new PnIoCm_Packet_RejBuilderImpl(status);
   }
 
-  public static class PnIoCm_Packet_RejBuilder implements PnIoCm_Packet.PnIoCm_PacketBuilder {
+  public static class PnIoCm_Packet_RejBuilderImpl implements PnIoCm_Packet.PnIoCm_PacketBuilder {
     private final long status;
 
-    public PnIoCm_Packet_RejBuilder(long status) {
-
+    public PnIoCm_Packet_RejBuilderImpl(long status) {
       this.status = status;
     }
 

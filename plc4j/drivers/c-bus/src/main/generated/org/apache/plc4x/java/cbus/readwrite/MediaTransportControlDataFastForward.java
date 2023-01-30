@@ -168,7 +168,7 @@ public class MediaTransportControlDataFastForward extends MediaTransportControlD
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataFastForwardBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataFastForward");
     PositionAware positionAware = readBuffer;
@@ -194,15 +194,14 @@ public class MediaTransportControlDataFastForward extends MediaTransportControlD
 
     readBuffer.closeContext("MediaTransportControlDataFastForward");
     // Create the instance
-    return new MediaTransportControlDataFastForwardBuilder(operation);
+    return new MediaTransportControlDataFastForwardBuilderImpl(operation);
   }
 
-  public static class MediaTransportControlDataFastForwardBuilder
+  public static class MediaTransportControlDataFastForwardBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte operation;
 
-    public MediaTransportControlDataFastForwardBuilder(byte operation) {
-
+    public MediaTransportControlDataFastForwardBuilderImpl(byte operation) {
       this.operation = operation;
     }
 

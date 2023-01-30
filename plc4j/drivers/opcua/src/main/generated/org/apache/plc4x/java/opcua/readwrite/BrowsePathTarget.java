@@ -95,8 +95,8 @@ public class BrowsePathTarget extends ExtensionObjectDefinition implements Messa
     return lengthInBits;
   }
 
-  public static BrowsePathTargetBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("BrowsePathTarget");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -113,16 +113,15 @@ public class BrowsePathTarget extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("BrowsePathTarget");
     // Create the instance
-    return new BrowsePathTargetBuilder(targetId, remainingPathIndex);
+    return new BrowsePathTargetBuilderImpl(targetId, remainingPathIndex);
   }
 
-  public static class BrowsePathTargetBuilder
+  public static class BrowsePathTargetBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExpandedNodeId targetId;
     private final long remainingPathIndex;
 
-    public BrowsePathTargetBuilder(ExpandedNodeId targetId, long remainingPathIndex) {
-
+    public BrowsePathTargetBuilderImpl(ExpandedNodeId targetId, long remainingPathIndex) {
       this.targetId = targetId;
       this.remainingPathIndex = remainingPathIndex;
     }

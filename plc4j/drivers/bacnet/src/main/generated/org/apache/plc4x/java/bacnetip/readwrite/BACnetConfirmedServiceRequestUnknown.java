@@ -47,15 +47,15 @@ public class BACnetConfirmedServiceRequestUnknown extends BACnetConfirmedService
   protected final byte[] unknownBytes;
 
   // Arguments.
-  protected final Long serviceRequestLength;
   protected final Long serviceRequestPayloadLength;
+  protected final Long serviceRequestLength;
 
   public BACnetConfirmedServiceRequestUnknown(
-      byte[] unknownBytes, Long serviceRequestLength, Long serviceRequestPayloadLength) {
+      byte[] unknownBytes, Long serviceRequestPayloadLength, Long serviceRequestLength) {
     super(serviceRequestLength);
     this.unknownBytes = unknownBytes;
-    this.serviceRequestLength = serviceRequestLength;
     this.serviceRequestPayloadLength = serviceRequestPayloadLength;
+    this.serviceRequestLength = serviceRequestLength;
   }
 
   public byte[] getUnknownBytes() {
@@ -93,9 +93,10 @@ public class BACnetConfirmedServiceRequestUnknown extends BACnetConfirmedService
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestUnknownBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength, Long serviceRequestPayloadLength)
-      throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestPayloadLength, Long serviceRequestLength)
+          throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestUnknown");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -106,29 +107,28 @@ public class BACnetConfirmedServiceRequestUnknown extends BACnetConfirmedService
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestUnknown");
     // Create the instance
-    return new BACnetConfirmedServiceRequestUnknownBuilder(
-        unknownBytes, serviceRequestLength, serviceRequestPayloadLength);
+    return new BACnetConfirmedServiceRequestUnknownBuilderImpl(
+        unknownBytes, serviceRequestPayloadLength, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestUnknownBuilder
+  public static class BACnetConfirmedServiceRequestUnknownBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final byte[] unknownBytes;
-    private final Long serviceRequestLength;
     private final Long serviceRequestPayloadLength;
+    private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestUnknownBuilder(
-        byte[] unknownBytes, Long serviceRequestLength, Long serviceRequestPayloadLength) {
-
+    public BACnetConfirmedServiceRequestUnknownBuilderImpl(
+        byte[] unknownBytes, Long serviceRequestPayloadLength, Long serviceRequestLength) {
       this.unknownBytes = unknownBytes;
-      this.serviceRequestLength = serviceRequestLength;
       this.serviceRequestPayloadLength = serviceRequestPayloadLength;
+      this.serviceRequestLength = serviceRequestLength;
     }
 
     public BACnetConfirmedServiceRequestUnknown build(Long serviceRequestLength) {
 
       BACnetConfirmedServiceRequestUnknown bACnetConfirmedServiceRequestUnknown =
           new BACnetConfirmedServiceRequestUnknown(
-              unknownBytes, serviceRequestLength, serviceRequestPayloadLength);
+              unknownBytes, serviceRequestPayloadLength, serviceRequestLength);
       return bACnetConfirmedServiceRequestUnknown;
     }
   }

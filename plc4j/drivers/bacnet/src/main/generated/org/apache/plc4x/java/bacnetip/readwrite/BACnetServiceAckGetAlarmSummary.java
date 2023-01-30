@@ -119,7 +119,7 @@ public class BACnetServiceAckGetAlarmSummary extends BACnetServiceAck implements
     return lengthInBits;
   }
 
-  public static BACnetServiceAckGetAlarmSummaryBuilder staticParseBuilder(
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckGetAlarmSummary");
     PositionAware positionAware = readBuffer;
@@ -155,23 +155,22 @@ public class BACnetServiceAckGetAlarmSummary extends BACnetServiceAck implements
 
     readBuffer.closeContext("BACnetServiceAckGetAlarmSummary");
     // Create the instance
-    return new BACnetServiceAckGetAlarmSummaryBuilder(
+    return new BACnetServiceAckGetAlarmSummaryBuilderImpl(
         objectIdentifier, eventState, acknowledgedTransitions, serviceAckLength);
   }
 
-  public static class BACnetServiceAckGetAlarmSummaryBuilder
+  public static class BACnetServiceAckGetAlarmSummaryBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetApplicationTagObjectIdentifier objectIdentifier;
     private final BACnetEventStateTagged eventState;
     private final BACnetEventTransitionBitsTagged acknowledgedTransitions;
     private final Long serviceAckLength;
 
-    public BACnetServiceAckGetAlarmSummaryBuilder(
+    public BACnetServiceAckGetAlarmSummaryBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectIdentifier,
         BACnetEventStateTagged eventState,
         BACnetEventTransitionBitsTagged acknowledgedTransitions,
         Long serviceAckLength) {
-
       this.objectIdentifier = objectIdentifier;
       this.eventState = eventState;
       this.acknowledgedTransitions = acknowledgedTransitions;

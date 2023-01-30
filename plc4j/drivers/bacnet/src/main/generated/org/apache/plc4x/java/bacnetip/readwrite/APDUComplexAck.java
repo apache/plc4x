@@ -243,7 +243,7 @@ public class APDUComplexAck extends APDU implements Message {
     return lengthInBits;
   }
 
-  public static APDUComplexAckBuilder staticParseBuilder(ReadBuffer readBuffer, Integer apduLength)
+  public static APDUBuilder staticParseAPDUBuilder(ReadBuffer readBuffer, Integer apduLength)
       throws ParseException {
     readBuffer.pullContext("APDUComplexAck");
     PositionAware positionAware = readBuffer;
@@ -304,7 +304,7 @@ public class APDUComplexAck extends APDU implements Message {
 
     readBuffer.closeContext("APDUComplexAck");
     // Create the instance
-    return new APDUComplexAckBuilder(
+    return new APDUComplexAckBuilderImpl(
         segmentedMessage,
         moreFollows,
         originalInvokeId,
@@ -317,7 +317,7 @@ public class APDUComplexAck extends APDU implements Message {
         reservedField0);
   }
 
-  public static class APDUComplexAckBuilder implements APDU.APDUBuilder {
+  public static class APDUComplexAckBuilderImpl implements APDU.APDUBuilder {
     private final boolean segmentedMessage;
     private final boolean moreFollows;
     private final short originalInvokeId;
@@ -329,7 +329,7 @@ public class APDUComplexAck extends APDU implements Message {
     private final Integer apduLength;
     private final Byte reservedField0;
 
-    public APDUComplexAckBuilder(
+    public APDUComplexAckBuilderImpl(
         boolean segmentedMessage,
         boolean moreFollows,
         short originalInvokeId,

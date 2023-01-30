@@ -81,7 +81,7 @@ public class BACnetValueSourceObject extends BACnetValueSource implements Messag
     return lengthInBits;
   }
 
-  public static BACnetValueSourceObjectBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetValueSourceBuilder staticParseBACnetValueSourceBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetValueSourceObject");
     PositionAware positionAware = readBuffer;
@@ -97,15 +97,14 @@ public class BACnetValueSourceObject extends BACnetValueSource implements Messag
 
     readBuffer.closeContext("BACnetValueSourceObject");
     // Create the instance
-    return new BACnetValueSourceObjectBuilder(object);
+    return new BACnetValueSourceObjectBuilderImpl(object);
   }
 
-  public static class BACnetValueSourceObjectBuilder
+  public static class BACnetValueSourceObjectBuilderImpl
       implements BACnetValueSource.BACnetValueSourceBuilder {
     private final BACnetDeviceObjectReferenceEnclosed object;
 
-    public BACnetValueSourceObjectBuilder(BACnetDeviceObjectReferenceEnclosed object) {
-
+    public BACnetValueSourceObjectBuilderImpl(BACnetDeviceObjectReferenceEnclosed object) {
       this.object = object;
     }
 

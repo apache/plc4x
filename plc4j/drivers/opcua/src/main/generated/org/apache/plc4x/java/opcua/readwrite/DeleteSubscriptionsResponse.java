@@ -148,7 +148,7 @@ public class DeleteSubscriptionsResponse extends ExtensionObjectDefinition imple
     return lengthInBits;
   }
 
-  public static DeleteSubscriptionsResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DeleteSubscriptionsResponse");
     PositionAware positionAware = readBuffer;
@@ -181,11 +181,11 @@ public class DeleteSubscriptionsResponse extends ExtensionObjectDefinition imple
 
     readBuffer.closeContext("DeleteSubscriptionsResponse");
     // Create the instance
-    return new DeleteSubscriptionsResponseBuilder(
+    return new DeleteSubscriptionsResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class DeleteSubscriptionsResponseBuilder
+  public static class DeleteSubscriptionsResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -193,13 +193,12 @@ public class DeleteSubscriptionsResponse extends ExtensionObjectDefinition imple
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public DeleteSubscriptionsResponseBuilder(
+    public DeleteSubscriptionsResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<StatusCode> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

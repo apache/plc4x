@@ -69,7 +69,7 @@ public class PublishedDataSetSourceDataType extends ExtensionObjectDefinition im
     return lengthInBits;
   }
 
-  public static PublishedDataSetSourceDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("PublishedDataSetSourceDataType");
     PositionAware positionAware = readBuffer;
@@ -78,13 +78,13 @@ public class PublishedDataSetSourceDataType extends ExtensionObjectDefinition im
 
     readBuffer.closeContext("PublishedDataSetSourceDataType");
     // Create the instance
-    return new PublishedDataSetSourceDataTypeBuilder();
+    return new PublishedDataSetSourceDataTypeBuilderImpl();
   }
 
-  public static class PublishedDataSetSourceDataTypeBuilder
+  public static class PublishedDataSetSourceDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public PublishedDataSetSourceDataTypeBuilder() {}
+    public PublishedDataSetSourceDataTypeBuilderImpl() {}
 
     public PublishedDataSetSourceDataType build() {
       PublishedDataSetSourceDataType publishedDataSetSourceDataType =

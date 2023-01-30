@@ -94,7 +94,7 @@ public class BACnetApplicationTagSignedInteger extends BACnetApplicationTag impl
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagSignedIntegerBuilder staticParseBuilder(
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
       ReadBuffer readBuffer, BACnetTagHeader header) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagSignedInteger");
     PositionAware positionAware = readBuffer;
@@ -114,15 +114,14 @@ public class BACnetApplicationTagSignedInteger extends BACnetApplicationTag impl
 
     readBuffer.closeContext("BACnetApplicationTagSignedInteger");
     // Create the instance
-    return new BACnetApplicationTagSignedIntegerBuilder(payload);
+    return new BACnetApplicationTagSignedIntegerBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagSignedIntegerBuilder
+  public static class BACnetApplicationTagSignedIntegerBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadSignedInteger payload;
 
-    public BACnetApplicationTagSignedIntegerBuilder(BACnetTagPayloadSignedInteger payload) {
-
+    public BACnetApplicationTagSignedIntegerBuilderImpl(BACnetTagPayloadSignedInteger payload) {
       this.payload = payload;
     }
 

@@ -68,7 +68,7 @@ public class ApduControlDisconnect extends ApduControl implements Message {
     return lengthInBits;
   }
 
-  public static ApduControlDisconnectBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static ApduControlBuilder staticParseApduControlBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ApduControlDisconnect");
     PositionAware positionAware = readBuffer;
@@ -77,12 +77,12 @@ public class ApduControlDisconnect extends ApduControl implements Message {
 
     readBuffer.closeContext("ApduControlDisconnect");
     // Create the instance
-    return new ApduControlDisconnectBuilder();
+    return new ApduControlDisconnectBuilderImpl();
   }
 
-  public static class ApduControlDisconnectBuilder implements ApduControl.ApduControlBuilder {
+  public static class ApduControlDisconnectBuilderImpl implements ApduControl.ApduControlBuilder {
 
-    public ApduControlDisconnectBuilder() {}
+    public ApduControlDisconnectBuilderImpl() {}
 
     public ApduControlDisconnect build() {
       ApduControlDisconnect apduControlDisconnect = new ApduControlDisconnect();

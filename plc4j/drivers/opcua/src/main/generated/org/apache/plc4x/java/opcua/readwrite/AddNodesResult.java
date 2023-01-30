@@ -95,8 +95,8 @@ public class AddNodesResult extends ExtensionObjectDefinition implements Message
     return lengthInBits;
   }
 
-  public static AddNodesResultBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AddNodesResult");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -114,16 +114,15 @@ public class AddNodesResult extends ExtensionObjectDefinition implements Message
 
     readBuffer.closeContext("AddNodesResult");
     // Create the instance
-    return new AddNodesResultBuilder(statusCode, addedNodeId);
+    return new AddNodesResultBuilderImpl(statusCode, addedNodeId);
   }
 
-  public static class AddNodesResultBuilder
+  public static class AddNodesResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final NodeId addedNodeId;
 
-    public AddNodesResultBuilder(StatusCode statusCode, NodeId addedNodeId) {
-
+    public AddNodesResultBuilderImpl(StatusCode statusCode, NodeId addedNodeId) {
       this.statusCode = statusCode;
       this.addedNodeId = addedNodeId;
     }

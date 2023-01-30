@@ -40,12 +40,8 @@ public abstract class ApduData implements Message {
   // Abstract accessors for discriminator values.
   public abstract Byte getApciType();
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduData(Short dataLength) {
+  public ApduData() {
     super();
-    this.dataLength = dataLength;
   }
 
   protected abstract void serializeApduDataChild(WriteBuffer writeBuffer)
@@ -114,37 +110,38 @@ public abstract class ApduData implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ApduDataBuilder builder = null;
     if (EvaluationHelper.equals(apciType, (byte) 0x0)) {
-      builder = ApduDataGroupValueRead.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduDataGroupValueRead.staticParseApduDataBuilder(readBuffer, dataLength);
     } else if (EvaluationHelper.equals(apciType, (byte) 0x1)) {
-      builder = ApduDataGroupValueResponse.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduDataGroupValueResponse.staticParseApduDataBuilder(readBuffer, dataLength);
     } else if (EvaluationHelper.equals(apciType, (byte) 0x2)) {
-      builder = ApduDataGroupValueWrite.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduDataGroupValueWrite.staticParseApduDataBuilder(readBuffer, dataLength);
     } else if (EvaluationHelper.equals(apciType, (byte) 0x3)) {
-      builder = ApduDataIndividualAddressWrite.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduDataIndividualAddressWrite.staticParseApduDataBuilder(readBuffer, dataLength);
     } else if (EvaluationHelper.equals(apciType, (byte) 0x4)) {
-      builder = ApduDataIndividualAddressRead.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduDataIndividualAddressRead.staticParseApduDataBuilder(readBuffer, dataLength);
     } else if (EvaluationHelper.equals(apciType, (byte) 0x5)) {
-      builder = ApduDataIndividualAddressResponse.staticParseBuilder(readBuffer, dataLength);
+      builder =
+          ApduDataIndividualAddressResponse.staticParseApduDataBuilder(readBuffer, dataLength);
     } else if (EvaluationHelper.equals(apciType, (byte) 0x6)) {
-      builder = ApduDataAdcRead.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduDataAdcRead.staticParseApduDataBuilder(readBuffer, dataLength);
     } else if (EvaluationHelper.equals(apciType, (byte) 0x7)) {
-      builder = ApduDataAdcResponse.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduDataAdcResponse.staticParseApduDataBuilder(readBuffer, dataLength);
     } else if (EvaluationHelper.equals(apciType, (byte) 0x8)) {
-      builder = ApduDataMemoryRead.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduDataMemoryRead.staticParseApduDataBuilder(readBuffer, dataLength);
     } else if (EvaluationHelper.equals(apciType, (byte) 0x9)) {
-      builder = ApduDataMemoryResponse.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduDataMemoryResponse.staticParseApduDataBuilder(readBuffer, dataLength);
     } else if (EvaluationHelper.equals(apciType, (byte) 0xA)) {
-      builder = ApduDataMemoryWrite.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduDataMemoryWrite.staticParseApduDataBuilder(readBuffer, dataLength);
     } else if (EvaluationHelper.equals(apciType, (byte) 0xB)) {
-      builder = ApduDataUserMessage.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduDataUserMessage.staticParseApduDataBuilder(readBuffer, dataLength);
     } else if (EvaluationHelper.equals(apciType, (byte) 0xC)) {
-      builder = ApduDataDeviceDescriptorRead.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduDataDeviceDescriptorRead.staticParseApduDataBuilder(readBuffer, dataLength);
     } else if (EvaluationHelper.equals(apciType, (byte) 0xD)) {
-      builder = ApduDataDeviceDescriptorResponse.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduDataDeviceDescriptorResponse.staticParseApduDataBuilder(readBuffer, dataLength);
     } else if (EvaluationHelper.equals(apciType, (byte) 0xE)) {
-      builder = ApduDataRestart.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduDataRestart.staticParseApduDataBuilder(readBuffer, dataLength);
     } else if (EvaluationHelper.equals(apciType, (byte) 0xF)) {
-      builder = ApduDataOther.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduDataOther.staticParseApduDataBuilder(readBuffer, dataLength);
     }
     if (builder == null) {
       throw new ParseException(
@@ -157,13 +154,12 @@ public abstract class ApduData implements Message {
 
     readBuffer.closeContext("ApduData");
     // Create the instance
-    ApduData _apduData = builder.build(dataLength);
-
+    ApduData _apduData = builder.build();
     return _apduData;
   }
 
-  public static interface ApduDataBuilder {
-    ApduData build(Short dataLength);
+  public interface ApduDataBuilder {
+    ApduData build();
   }
 
   @Override

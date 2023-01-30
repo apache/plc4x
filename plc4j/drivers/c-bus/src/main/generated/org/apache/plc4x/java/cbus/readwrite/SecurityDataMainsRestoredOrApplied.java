@@ -66,7 +66,7 @@ public class SecurityDataMainsRestoredOrApplied extends SecurityData implements 
     return lengthInBits;
   }
 
-  public static SecurityDataMainsRestoredOrAppliedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataMainsRestoredOrApplied");
     PositionAware positionAware = readBuffer;
@@ -75,13 +75,13 @@ public class SecurityDataMainsRestoredOrApplied extends SecurityData implements 
 
     readBuffer.closeContext("SecurityDataMainsRestoredOrApplied");
     // Create the instance
-    return new SecurityDataMainsRestoredOrAppliedBuilder();
+    return new SecurityDataMainsRestoredOrAppliedBuilderImpl();
   }
 
-  public static class SecurityDataMainsRestoredOrAppliedBuilder
+  public static class SecurityDataMainsRestoredOrAppliedBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataMainsRestoredOrAppliedBuilder() {}
+    public SecurityDataMainsRestoredOrAppliedBuilderImpl() {}
 
     public SecurityDataMainsRestoredOrApplied build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

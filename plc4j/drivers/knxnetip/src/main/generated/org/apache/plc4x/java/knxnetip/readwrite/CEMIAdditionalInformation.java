@@ -100,9 +100,13 @@ public abstract class CEMIAdditionalInformation implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     CEMIAdditionalInformationBuilder builder = null;
     if (EvaluationHelper.equals(additionalInformationType, (short) 0x03)) {
-      builder = CEMIAdditionalInformationBusmonitorInfo.staticParseBuilder(readBuffer);
+      builder =
+          CEMIAdditionalInformationBusmonitorInfo.staticParseCEMIAdditionalInformationBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(additionalInformationType, (short) 0x04)) {
-      builder = CEMIAdditionalInformationRelativeTimestamp.staticParseBuilder(readBuffer);
+      builder =
+          CEMIAdditionalInformationRelativeTimestamp.staticParseCEMIAdditionalInformationBuilder(
+              readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -119,7 +123,7 @@ public abstract class CEMIAdditionalInformation implements Message {
     return _cEMIAdditionalInformation;
   }
 
-  public static interface CEMIAdditionalInformationBuilder {
+  public interface CEMIAdditionalInformationBuilder {
     CEMIAdditionalInformation build();
   }
 

@@ -109,7 +109,7 @@ public class BACnetConstructedDataFileType extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFileTypeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,19 @@ public class BACnetConstructedDataFileType extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataFileType");
     // Create the instance
-    return new BACnetConstructedDataFileTypeBuilder(fileType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataFileTypeBuilderImpl(fileType, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFileTypeBuilder
+  public static class BACnetConstructedDataFileTypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString fileType;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFileTypeBuilder(
+    public BACnetConstructedDataFileTypeBuilderImpl(
         BACnetApplicationTagCharacterString fileType,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.fileType = fileType;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -89,7 +89,7 @@ public class BACnetLogRecordLogDatumRealValue extends BACnetLogRecordLogDatum im
     return lengthInBits;
   }
 
-  public static BACnetLogRecordLogDatumRealValueBuilder staticParseBuilder(
+  public static BACnetLogRecordLogDatumBuilder staticParseBACnetLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumRealValue");
     PositionAware positionAware = readBuffer;
@@ -108,17 +108,16 @@ public class BACnetLogRecordLogDatumRealValue extends BACnetLogRecordLogDatum im
 
     readBuffer.closeContext("BACnetLogRecordLogDatumRealValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumRealValueBuilder(realValue, tagNumber);
+    return new BACnetLogRecordLogDatumRealValueBuilderImpl(realValue, tagNumber);
   }
 
-  public static class BACnetLogRecordLogDatumRealValueBuilder
+  public static class BACnetLogRecordLogDatumRealValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagReal realValue;
     private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumRealValueBuilder(
+    public BACnetLogRecordLogDatumRealValueBuilderImpl(
         BACnetContextTagReal realValue, Short tagNumber) {
-
       this.realValue = realValue;
       this.tagNumber = tagNumber;
     }

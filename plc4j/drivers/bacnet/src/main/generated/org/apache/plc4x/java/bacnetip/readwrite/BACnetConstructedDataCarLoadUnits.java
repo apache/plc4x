@@ -109,7 +109,7 @@ public class BACnetConstructedDataCarLoadUnits extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCarLoadUnitsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,19 @@ public class BACnetConstructedDataCarLoadUnits extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataCarLoadUnits");
     // Create the instance
-    return new BACnetConstructedDataCarLoadUnitsBuilder(units, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCarLoadUnitsBuilderImpl(units, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCarLoadUnitsBuilder
+  public static class BACnetConstructedDataCarLoadUnitsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEngineeringUnitsTagged units;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCarLoadUnitsBuilder(
+    public BACnetConstructedDataCarLoadUnitsBuilderImpl(
         BACnetEngineeringUnitsTagged units,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.units = units;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

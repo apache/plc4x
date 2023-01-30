@@ -150,16 +150,18 @@ public abstract class CBusCommand implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     CBusCommandBuilder builder = null;
     if (true && EvaluationHelper.equals(isDeviceManagement, (boolean) true)) {
-      builder = CBusCommandDeviceManagement.staticParseBuilder(readBuffer, cBusOptions);
+      builder = CBusCommandDeviceManagement.staticParseCBusCommandBuilder(readBuffer, cBusOptions);
     } else if (EvaluationHelper.equals(
         destinationAddressType, DestinationAddressType.PointToPointToMultiPoint)) {
-      builder = CBusCommandPointToPointToMultiPoint.staticParseBuilder(readBuffer, cBusOptions);
+      builder =
+          CBusCommandPointToPointToMultiPoint.staticParseCBusCommandBuilder(
+              readBuffer, cBusOptions);
     } else if (EvaluationHelper.equals(
         destinationAddressType, DestinationAddressType.PointToMultiPoint)) {
-      builder = CBusCommandPointToMultiPoint.staticParseBuilder(readBuffer, cBusOptions);
+      builder = CBusCommandPointToMultiPoint.staticParseCBusCommandBuilder(readBuffer, cBusOptions);
     } else if (EvaluationHelper.equals(
         destinationAddressType, DestinationAddressType.PointToPoint)) {
-      builder = CBusCommandPointToPoint.staticParseBuilder(readBuffer, cBusOptions);
+      builder = CBusCommandPointToPoint.staticParseCBusCommandBuilder(readBuffer, cBusOptions);
     }
     if (builder == null) {
       throw new ParseException(
@@ -179,7 +181,7 @@ public abstract class CBusCommand implements Message {
     return _cBusCommand;
   }
 
-  public static interface CBusCommandBuilder {
+  public interface CBusCommandBuilder {
     CBusCommand build(CBusHeader header, CBusOptions cBusOptions);
   }
 

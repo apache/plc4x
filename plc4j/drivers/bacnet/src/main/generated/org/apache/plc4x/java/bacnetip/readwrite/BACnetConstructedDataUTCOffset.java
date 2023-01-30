@@ -109,7 +109,7 @@ public class BACnetConstructedDataUTCOffset extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataUTCOffsetBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,19 @@ public class BACnetConstructedDataUTCOffset extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataUTCOffset");
     // Create the instance
-    return new BACnetConstructedDataUTCOffsetBuilder(utcOffset, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataUTCOffsetBuilderImpl(utcOffset, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataUTCOffsetBuilder
+  public static class BACnetConstructedDataUTCOffsetBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger utcOffset;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataUTCOffsetBuilder(
+    public BACnetConstructedDataUTCOffsetBuilderImpl(
         BACnetApplicationTagSignedInteger utcOffset,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.utcOffset = utcOffset;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

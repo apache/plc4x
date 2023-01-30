@@ -81,7 +81,7 @@ public class BACnetRecipientAddress extends BACnetRecipient implements Message {
     return lengthInBits;
   }
 
-  public static BACnetRecipientAddressBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetRecipientBuilder staticParseBACnetRecipientBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetRecipientAddress");
     PositionAware positionAware = readBuffer;
@@ -96,15 +96,14 @@ public class BACnetRecipientAddress extends BACnetRecipient implements Message {
 
     readBuffer.closeContext("BACnetRecipientAddress");
     // Create the instance
-    return new BACnetRecipientAddressBuilder(addressValue);
+    return new BACnetRecipientAddressBuilderImpl(addressValue);
   }
 
-  public static class BACnetRecipientAddressBuilder
+  public static class BACnetRecipientAddressBuilderImpl
       implements BACnetRecipient.BACnetRecipientBuilder {
     private final BACnetAddressEnclosed addressValue;
 
-    public BACnetRecipientAddressBuilder(BACnetAddressEnclosed addressValue) {
-
+    public BACnetRecipientAddressBuilderImpl(BACnetAddressEnclosed addressValue) {
       this.addressValue = addressValue;
     }
 

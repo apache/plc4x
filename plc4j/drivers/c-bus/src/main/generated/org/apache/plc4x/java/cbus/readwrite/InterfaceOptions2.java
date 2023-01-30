@@ -40,6 +40,7 @@ public class InterfaceOptions2 implements Message {
   // Properties.
   protected final boolean burden;
   protected final boolean clockGen;
+
   // Reserved Fields
   private Boolean reservedField0;
   private Boolean reservedField1;

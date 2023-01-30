@@ -201,9 +201,9 @@ func BACnetNotificationParametersChangeOfValueNewValueParseWithBuffer(readBuffer
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetNotificationParametersChangeOfValueNewValueChangedBits
-		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfValueNewValueChangedBitsParseWithBuffer(readBuffer, tagNumber, peekedTagNumber)
+		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfValueNewValueChangedBitsParseWithBuffer(readBuffer, peekedTagNumber, tagNumber)
 	case peekedTagNumber == uint8(1): // BACnetNotificationParametersChangeOfValueNewValueChangedValue
-		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfValueNewValueChangedValueParseWithBuffer(readBuffer, tagNumber, peekedTagNumber)
+		_childTemp, typeSwitchError = BACnetNotificationParametersChangeOfValueNewValueChangedValueParseWithBuffer(readBuffer, peekedTagNumber, tagNumber)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}

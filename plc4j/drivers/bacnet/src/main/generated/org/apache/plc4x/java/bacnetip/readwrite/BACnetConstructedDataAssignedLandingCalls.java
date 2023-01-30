@@ -136,7 +136,7 @@ public class BACnetConstructedDataAssignedLandingCalls extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAssignedLandingCallsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -171,23 +171,22 @@ public class BACnetConstructedDataAssignedLandingCalls extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataAssignedLandingCalls");
     // Create the instance
-    return new BACnetConstructedDataAssignedLandingCallsBuilder(
+    return new BACnetConstructedDataAssignedLandingCallsBuilderImpl(
         numberOfDataElements, assignedLandingCalls, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAssignedLandingCallsBuilder
+  public static class BACnetConstructedDataAssignedLandingCallsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetAssignedLandingCalls> assignedLandingCalls;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAssignedLandingCallsBuilder(
+    public BACnetConstructedDataAssignedLandingCallsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetAssignedLandingCalls> assignedLandingCalls,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.assignedLandingCalls = assignedLandingCalls;
       this.tagNumber = tagNumber;

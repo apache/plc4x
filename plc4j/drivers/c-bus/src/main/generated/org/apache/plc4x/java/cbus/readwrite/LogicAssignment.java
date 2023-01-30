@@ -44,6 +44,7 @@ public class LogicAssignment implements Message {
   protected final boolean assignedToGav15;
   protected final boolean assignedToGav14;
   protected final boolean assignedToGav13;
+
   // Reserved Fields
   private Boolean reservedField0;
   private Boolean reservedField1;

@@ -191,11 +191,11 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersAccessEventBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersAccessEvent");
     PositionAware positionAware = readBuffer;
@@ -270,7 +270,7 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
 
     readBuffer.closeContext("BACnetNotificationParametersAccessEvent");
     // Create the instance
-    return new BACnetNotificationParametersAccessEventBuilder(
+    return new BACnetNotificationParametersAccessEventBuilderImpl(
         innerOpeningTag,
         accessEvent,
         statusFlags,
@@ -283,7 +283,7 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
         objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersAccessEventBuilder
+  public static class BACnetNotificationParametersAccessEventBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final BACnetAccessEventTagged accessEvent;
@@ -296,7 +296,7 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersAccessEventBuilder(
+    public BACnetNotificationParametersAccessEventBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetAccessEventTagged accessEvent,
         BACnetStatusFlagsTagged statusFlags,
@@ -307,7 +307,6 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
         BACnetClosingTag innerClosingTag,
         Short tagNumber,
         BACnetObjectType objectTypeArgument) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.accessEvent = accessEvent;
       this.statusFlags = statusFlags;

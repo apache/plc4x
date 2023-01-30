@@ -225,7 +225,7 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
     return lengthInBits;
   }
 
-  public static SessionSecurityDiagnosticsDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SessionSecurityDiagnosticsDataType");
     PositionAware positionAware = readBuffer;
@@ -286,7 +286,7 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
 
     readBuffer.closeContext("SessionSecurityDiagnosticsDataType");
     // Create the instance
-    return new SessionSecurityDiagnosticsDataTypeBuilder(
+    return new SessionSecurityDiagnosticsDataTypeBuilderImpl(
         sessionId,
         clientUserIdOfSession,
         noOfClientUserIdHistory,
@@ -299,7 +299,7 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
         clientCertificate);
   }
 
-  public static class SessionSecurityDiagnosticsDataTypeBuilder
+  public static class SessionSecurityDiagnosticsDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId sessionId;
     private final PascalString clientUserIdOfSession;
@@ -312,7 +312,7 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
     private final PascalString securityPolicyUri;
     private final PascalByteString clientCertificate;
 
-    public SessionSecurityDiagnosticsDataTypeBuilder(
+    public SessionSecurityDiagnosticsDataTypeBuilderImpl(
         NodeId sessionId,
         PascalString clientUserIdOfSession,
         int noOfClientUserIdHistory,
@@ -323,7 +323,6 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
         MessageSecurityMode securityMode,
         PascalString securityPolicyUri,
         PascalByteString clientCertificate) {
-
       this.sessionId = sessionId;
       this.clientUserIdOfSession = clientUserIdOfSession;
       this.noOfClientUserIdHistory = noOfClientUserIdHistory;

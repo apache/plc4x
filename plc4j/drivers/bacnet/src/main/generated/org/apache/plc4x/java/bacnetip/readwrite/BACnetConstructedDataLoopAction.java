@@ -109,7 +109,7 @@ public class BACnetConstructedDataLoopAction extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLoopActionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,19 @@ public class BACnetConstructedDataLoopAction extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataLoopAction");
     // Create the instance
-    return new BACnetConstructedDataLoopActionBuilder(action, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLoopActionBuilderImpl(action, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLoopActionBuilder
+  public static class BACnetConstructedDataLoopActionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetActionTagged action;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLoopActionBuilder(
+    public BACnetConstructedDataLoopActionBuilderImpl(
         BACnetActionTagged action,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.action = action;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

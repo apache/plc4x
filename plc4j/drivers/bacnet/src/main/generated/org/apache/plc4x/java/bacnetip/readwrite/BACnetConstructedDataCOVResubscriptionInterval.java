@@ -113,7 +113,7 @@ public class BACnetConstructedDataCOVResubscriptionInterval extends BACnetConstr
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCOVResubscriptionIntervalBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -139,21 +139,20 @@ public class BACnetConstructedDataCOVResubscriptionInterval extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataCOVResubscriptionInterval");
     // Create the instance
-    return new BACnetConstructedDataCOVResubscriptionIntervalBuilder(
+    return new BACnetConstructedDataCOVResubscriptionIntervalBuilderImpl(
         covResubscriptionInterval, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCOVResubscriptionIntervalBuilder
+  public static class BACnetConstructedDataCOVResubscriptionIntervalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger covResubscriptionInterval;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCOVResubscriptionIntervalBuilder(
+    public BACnetConstructedDataCOVResubscriptionIntervalBuilderImpl(
         BACnetApplicationTagUnsignedInteger covResubscriptionInterval,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.covResubscriptionInterval = covResubscriptionInterval;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -72,8 +72,8 @@ public class PnDcp_Block_DevicePropertiesStandardGateway extends PnDcp_Block imp
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DevicePropertiesStandardGatewayBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DevicePropertiesStandardGateway");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -81,13 +81,13 @@ public class PnDcp_Block_DevicePropertiesStandardGateway extends PnDcp_Block imp
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesStandardGateway");
     // Create the instance
-    return new PnDcp_Block_DevicePropertiesStandardGatewayBuilder();
+    return new PnDcp_Block_DevicePropertiesStandardGatewayBuilderImpl();
   }
 
-  public static class PnDcp_Block_DevicePropertiesStandardGatewayBuilder
+  public static class PnDcp_Block_DevicePropertiesStandardGatewayBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_DevicePropertiesStandardGatewayBuilder() {}
+    public PnDcp_Block_DevicePropertiesStandardGatewayBuilderImpl() {}
 
     public PnDcp_Block_DevicePropertiesStandardGateway build() {
       PnDcp_Block_DevicePropertiesStandardGateway pnDcp_Block_DevicePropertiesStandardGateway =

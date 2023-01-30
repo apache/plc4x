@@ -96,7 +96,7 @@ public class RegisterServerRequest extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static RegisterServerRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RegisterServerRequest");
     PositionAware positionAware = readBuffer;
@@ -119,17 +119,16 @@ public class RegisterServerRequest extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("RegisterServerRequest");
     // Create the instance
-    return new RegisterServerRequestBuilder(requestHeader, server);
+    return new RegisterServerRequestBuilderImpl(requestHeader, server);
   }
 
-  public static class RegisterServerRequestBuilder
+  public static class RegisterServerRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final ExtensionObjectDefinition server;
 
-    public RegisterServerRequestBuilder(
+    public RegisterServerRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader, ExtensionObjectDefinition server) {
-
       this.requestHeader = requestHeader;
       this.server = server;
     }

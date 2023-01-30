@@ -86,7 +86,7 @@ func (m *_BACnetServiceAckRequestKey) GetBytesOfRemovedService() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckRequestKey factory function for _BACnetServiceAckRequestKey
-func NewBACnetServiceAckRequestKey(bytesOfRemovedService []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) *_BACnetServiceAckRequestKey {
+func NewBACnetServiceAckRequestKey(bytesOfRemovedService []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckRequestKey {
 	_result := &_BACnetServiceAckRequestKey{
 		BytesOfRemovedService: bytesOfRemovedService,
 		_BACnetServiceAck:     NewBACnetServiceAck(serviceAckLength),
@@ -129,11 +129,11 @@ func (m *_BACnetServiceAckRequestKey) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckRequestKeyParse(theBytes []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckRequestKey, error) {
-	return BACnetServiceAckRequestKeyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckLength, serviceAckPayloadLength)
+func BACnetServiceAckRequestKeyParse(theBytes []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckRequestKey, error) {
+	return BACnetServiceAckRequestKeyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckPayloadLength, serviceAckLength)
 }
 
-func BACnetServiceAckRequestKeyParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckRequestKey, error) {
+func BACnetServiceAckRequestKeyParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckRequestKey, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckRequestKey"); pullErr != nil {

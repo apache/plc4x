@@ -110,7 +110,7 @@ public class BACnetConstructedDataPositiveIntegerValueCOVIncrement extends BACne
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,21 +135,20 @@ public class BACnetConstructedDataPositiveIntegerValueCOVIncrement extends BACne
 
     readBuffer.closeContext("BACnetConstructedDataPositiveIntegerValueCOVIncrement");
     // Create the instance
-    return new BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder(
+    return new BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilderImpl(
         covIncrement, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder
+  public static class BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger covIncrement;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder(
+    public BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilderImpl(
         BACnetApplicationTagUnsignedInteger covIncrement,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.covIncrement = covIncrement;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

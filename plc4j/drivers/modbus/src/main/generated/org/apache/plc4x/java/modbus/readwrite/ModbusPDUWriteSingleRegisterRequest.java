@@ -102,7 +102,7 @@ public class ModbusPDUWriteSingleRegisterRequest extends ModbusPDU implements Me
     return lengthInBits;
   }
 
-  public static ModbusPDUWriteSingleRegisterRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUWriteSingleRegisterRequest");
     PositionAware positionAware = readBuffer;
@@ -115,16 +115,15 @@ public class ModbusPDUWriteSingleRegisterRequest extends ModbusPDU implements Me
 
     readBuffer.closeContext("ModbusPDUWriteSingleRegisterRequest");
     // Create the instance
-    return new ModbusPDUWriteSingleRegisterRequestBuilder(address, value);
+    return new ModbusPDUWriteSingleRegisterRequestBuilderImpl(address, value);
   }
 
-  public static class ModbusPDUWriteSingleRegisterRequestBuilder
+  public static class ModbusPDUWriteSingleRegisterRequestBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final int address;
     private final int value;
 
-    public ModbusPDUWriteSingleRegisterRequestBuilder(int address, int value) {
-
+    public ModbusPDUWriteSingleRegisterRequestBuilderImpl(int address, int value) {
       this.address = address;
       this.value = value;
     }

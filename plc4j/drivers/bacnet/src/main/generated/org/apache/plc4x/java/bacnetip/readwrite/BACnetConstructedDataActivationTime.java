@@ -109,7 +109,7 @@ public class BACnetConstructedDataActivationTime extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataActivationTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,21 +131,20 @@ public class BACnetConstructedDataActivationTime extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataActivationTime");
     // Create the instance
-    return new BACnetConstructedDataActivationTimeBuilder(
+    return new BACnetConstructedDataActivationTimeBuilderImpl(
         activationTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataActivationTimeBuilder
+  public static class BACnetConstructedDataActivationTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime activationTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataActivationTimeBuilder(
+    public BACnetConstructedDataActivationTimeBuilderImpl(
         BACnetDateTime activationTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.activationTime = activationTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

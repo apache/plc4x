@@ -160,33 +160,35 @@ public abstract class BVLC implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BVLCBuilder builder = null;
     if (EvaluationHelper.equals(bvlcFunction, (short) 0x00)) {
-      builder = BVLCResult.staticParseBuilder(readBuffer);
+      builder = BVLCResult.staticParseBVLCBuilder(readBuffer);
     } else if (EvaluationHelper.equals(bvlcFunction, (short) 0x01)) {
       builder =
-          BVLCWriteBroadcastDistributionTable.staticParseBuilder(readBuffer, bvlcPayloadLength);
+          BVLCWriteBroadcastDistributionTable.staticParseBVLCBuilder(readBuffer, bvlcPayloadLength);
     } else if (EvaluationHelper.equals(bvlcFunction, (short) 0x02)) {
-      builder = BVLCReadBroadcastDistributionTable.staticParseBuilder(readBuffer);
+      builder = BVLCReadBroadcastDistributionTable.staticParseBVLCBuilder(readBuffer);
     } else if (EvaluationHelper.equals(bvlcFunction, (short) 0x03)) {
       builder =
-          BVLCReadBroadcastDistributionTableAck.staticParseBuilder(readBuffer, bvlcPayloadLength);
+          BVLCReadBroadcastDistributionTableAck.staticParseBVLCBuilder(
+              readBuffer, bvlcPayloadLength);
     } else if (EvaluationHelper.equals(bvlcFunction, (short) 0x04)) {
-      builder = BVLCForwardedNPDU.staticParseBuilder(readBuffer, bvlcPayloadLength);
+      builder = BVLCForwardedNPDU.staticParseBVLCBuilder(readBuffer, bvlcPayloadLength);
     } else if (EvaluationHelper.equals(bvlcFunction, (short) 0x05)) {
-      builder = BVLCRegisterForeignDevice.staticParseBuilder(readBuffer);
+      builder = BVLCRegisterForeignDevice.staticParseBVLCBuilder(readBuffer);
     } else if (EvaluationHelper.equals(bvlcFunction, (short) 0x06)) {
-      builder = BVLCReadForeignDeviceTable.staticParseBuilder(readBuffer);
+      builder = BVLCReadForeignDeviceTable.staticParseBVLCBuilder(readBuffer);
     } else if (EvaluationHelper.equals(bvlcFunction, (short) 0x07)) {
-      builder = BVLCReadForeignDeviceTableAck.staticParseBuilder(readBuffer, bvlcPayloadLength);
+      builder = BVLCReadForeignDeviceTableAck.staticParseBVLCBuilder(readBuffer, bvlcPayloadLength);
     } else if (EvaluationHelper.equals(bvlcFunction, (short) 0x08)) {
-      builder = BVLCDeleteForeignDeviceTableEntry.staticParseBuilder(readBuffer);
+      builder = BVLCDeleteForeignDeviceTableEntry.staticParseBVLCBuilder(readBuffer);
     } else if (EvaluationHelper.equals(bvlcFunction, (short) 0x09)) {
-      builder = BVLCDistributeBroadcastToNetwork.staticParseBuilder(readBuffer, bvlcPayloadLength);
+      builder =
+          BVLCDistributeBroadcastToNetwork.staticParseBVLCBuilder(readBuffer, bvlcPayloadLength);
     } else if (EvaluationHelper.equals(bvlcFunction, (short) 0x0A)) {
-      builder = BVLCOriginalUnicastNPDU.staticParseBuilder(readBuffer, bvlcPayloadLength);
+      builder = BVLCOriginalUnicastNPDU.staticParseBVLCBuilder(readBuffer, bvlcPayloadLength);
     } else if (EvaluationHelper.equals(bvlcFunction, (short) 0x0B)) {
-      builder = BVLCOriginalBroadcastNPDU.staticParseBuilder(readBuffer, bvlcPayloadLength);
+      builder = BVLCOriginalBroadcastNPDU.staticParseBVLCBuilder(readBuffer, bvlcPayloadLength);
     } else if (EvaluationHelper.equals(bvlcFunction, (short) 0x0C)) {
-      builder = BVLCSecureBVLL.staticParseBuilder(readBuffer, bvlcPayloadLength);
+      builder = BVLCSecureBVLL.staticParseBVLCBuilder(readBuffer, bvlcPayloadLength);
     }
     if (builder == null) {
       throw new ParseException(
@@ -203,7 +205,7 @@ public abstract class BVLC implements Message {
     return _bVLC;
   }
 
-  public static interface BVLCBuilder {
+  public interface BVLCBuilder {
     BVLC build();
   }
 

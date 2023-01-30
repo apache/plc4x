@@ -82,7 +82,7 @@ public class SALDataTelephonyStatusAndControl extends SALData implements Message
     return lengthInBits;
   }
 
-  public static SALDataTelephonyStatusAndControlBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataTelephonyStatusAndControl");
     PositionAware positionAware = readBuffer;
@@ -97,14 +97,14 @@ public class SALDataTelephonyStatusAndControl extends SALData implements Message
 
     readBuffer.closeContext("SALDataTelephonyStatusAndControl");
     // Create the instance
-    return new SALDataTelephonyStatusAndControlBuilder(telephonyData);
+    return new SALDataTelephonyStatusAndControlBuilderImpl(telephonyData);
   }
 
-  public static class SALDataTelephonyStatusAndControlBuilder implements SALData.SALDataBuilder {
+  public static class SALDataTelephonyStatusAndControlBuilderImpl
+      implements SALData.SALDataBuilder {
     private final TelephonyData telephonyData;
 
-    public SALDataTelephonyStatusAndControlBuilder(TelephonyData telephonyData) {
-
+    public SALDataTelephonyStatusAndControlBuilderImpl(TelephonyData telephonyData) {
       this.telephonyData = telephonyData;
     }
 

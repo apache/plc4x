@@ -113,9 +113,9 @@ public abstract class BACnetOptionalREAL implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetOptionalREALBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetOptionalREALNull.staticParseBuilder(readBuffer);
+      builder = BACnetOptionalREALNull.staticParseBACnetOptionalREALBuilder(readBuffer);
     } else if (true) {
-      builder = BACnetOptionalREALValue.staticParseBuilder(readBuffer);
+      builder = BACnetOptionalREALValue.staticParseBACnetOptionalREALBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -132,7 +132,7 @@ public abstract class BACnetOptionalREAL implements Message {
     return _bACnetOptionalREAL;
   }
 
-  public static interface BACnetOptionalREALBuilder {
+  public interface BACnetOptionalREALBuilder {
     BACnetOptionalREAL build(BACnetTagHeader peekedTagHeader);
   }
 

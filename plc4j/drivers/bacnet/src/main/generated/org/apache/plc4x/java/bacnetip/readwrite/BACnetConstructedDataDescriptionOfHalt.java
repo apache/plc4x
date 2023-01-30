@@ -111,7 +111,7 @@ public class BACnetConstructedDataDescriptionOfHalt extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDescriptionOfHaltBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,21 +137,20 @@ public class BACnetConstructedDataDescriptionOfHalt extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataDescriptionOfHalt");
     // Create the instance
-    return new BACnetConstructedDataDescriptionOfHaltBuilder(
+    return new BACnetConstructedDataDescriptionOfHaltBuilderImpl(
         descriptionForHalt, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDescriptionOfHaltBuilder
+  public static class BACnetConstructedDataDescriptionOfHaltBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString descriptionForHalt;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDescriptionOfHaltBuilder(
+    public BACnetConstructedDataDescriptionOfHaltBuilderImpl(
         BACnetApplicationTagCharacterString descriptionForHalt,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.descriptionForHalt = descriptionForHalt;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

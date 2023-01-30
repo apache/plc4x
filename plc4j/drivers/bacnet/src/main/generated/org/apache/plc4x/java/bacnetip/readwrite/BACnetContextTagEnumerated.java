@@ -98,11 +98,11 @@ public class BACnetContextTagEnumerated extends BACnetContextTag implements Mess
     return lengthInBits;
   }
 
-  public static BACnetContextTagEnumeratedBuilder staticParseBuilder(
+  public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer,
+      BACnetTagHeader header,
       Short tagNumberArgument,
-      BACnetDataType dataType,
-      BACnetTagHeader header)
+      BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagEnumerated");
     PositionAware positionAware = readBuffer;
@@ -121,17 +121,16 @@ public class BACnetContextTagEnumerated extends BACnetContextTag implements Mess
 
     readBuffer.closeContext("BACnetContextTagEnumerated");
     // Create the instance
-    return new BACnetContextTagEnumeratedBuilder(payload, tagNumberArgument);
+    return new BACnetContextTagEnumeratedBuilderImpl(payload, tagNumberArgument);
   }
 
-  public static class BACnetContextTagEnumeratedBuilder
+  public static class BACnetContextTagEnumeratedBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadEnumerated payload;
     private final Short tagNumberArgument;
 
-    public BACnetContextTagEnumeratedBuilder(
+    public BACnetContextTagEnumeratedBuilderImpl(
         BACnetTagPayloadEnumerated payload, Short tagNumberArgument) {
-
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

@@ -45,8 +45,6 @@ public class ConnectionRequestInformationTunnelConnection extends ConnectionRequ
 
   // Properties.
   protected final KnxLayer knxLayer;
-  // Reserved Fields
-  private Short reservedField0;
 
   public ConnectionRequestInformationTunnelConnection(KnxLayer knxLayer) {
     super();
@@ -73,10 +71,7 @@ public class ConnectionRequestInformationTunnelConnection extends ConnectionRequ
             KnxLayer::getValue, KnxLayer::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("ConnectionRequestInformationTunnelConnection");
   }
@@ -100,7 +95,7 @@ public class ConnectionRequestInformationTunnelConnection extends ConnectionRequ
     return lengthInBits;
   }
 
-  public static ConnectionRequestInformationTunnelConnectionBuilder staticParseBuilder(
+  public static ConnectionRequestInformationBuilder staticParseConnectionRequestInformationBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ConnectionRequestInformationTunnelConnection");
     PositionAware positionAware = readBuffer;
@@ -118,24 +113,20 @@ public class ConnectionRequestInformationTunnelConnection extends ConnectionRequ
 
     readBuffer.closeContext("ConnectionRequestInformationTunnelConnection");
     // Create the instance
-    return new ConnectionRequestInformationTunnelConnectionBuilder(knxLayer, reservedField0);
+    return new ConnectionRequestInformationTunnelConnectionBuilderImpl(knxLayer);
   }
 
-  public static class ConnectionRequestInformationTunnelConnectionBuilder
+  public static class ConnectionRequestInformationTunnelConnectionBuilderImpl
       implements ConnectionRequestInformation.ConnectionRequestInformationBuilder {
     private final KnxLayer knxLayer;
-    private final Short reservedField0;
 
-    public ConnectionRequestInformationTunnelConnectionBuilder(
-        KnxLayer knxLayer, Short reservedField0) {
+    public ConnectionRequestInformationTunnelConnectionBuilderImpl(KnxLayer knxLayer) {
       this.knxLayer = knxLayer;
-      this.reservedField0 = reservedField0;
     }
 
     public ConnectionRequestInformationTunnelConnection build() {
       ConnectionRequestInformationTunnelConnection connectionRequestInformationTunnelConnection =
           new ConnectionRequestInformationTunnelConnection(knxLayer);
-      connectionRequestInformationTunnelConnection.reservedField0 = reservedField0;
       return connectionRequestInformationTunnelConnection;
     }
   }

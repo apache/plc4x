@@ -39,8 +39,6 @@ public class NodeId implements Message {
 
   // Properties.
   protected final NodeIdTypeDefinition nodeId;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public NodeId(NodeIdTypeDefinition nodeId) {
     super();
@@ -61,10 +59,7 @@ public class NodeId implements Message {
     writeBuffer.pushContext("NodeId");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeSignedByte(writeBuffer, 2));
+    writeReservedField("reserved", (byte) 0x00, writeSignedByte(writeBuffer, 2));
 
     // Simple Field (nodeId)
     writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
@@ -121,7 +116,6 @@ public class NodeId implements Message {
     // Create the instance
     NodeId _nodeId;
     _nodeId = new NodeId(nodeId);
-    _nodeId.reservedField0 = reservedField0;
     return _nodeId;
   }
 

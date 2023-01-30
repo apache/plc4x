@@ -1259,4 +1259,12 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         return baseTypeReference.isPresent() && baseTypeReference.get().isIntegerTypeReference() && baseTypeReference.get().asIntegerTypeReference().orElseThrow().getSizeInBits() >= 32;
     }
 
+    public boolean isGeneratePropertiesForParserArguments() {
+        return options.getOrDefault("generate-properties-for-parser-arguments", "false").equals("true");
+    }
+
+    public boolean isGeneratePropertiesForReservedFields() {
+        return options.getOrDefault("generate-properties-for-reserved-fields", "false").equals("true");
+    }
+
 }

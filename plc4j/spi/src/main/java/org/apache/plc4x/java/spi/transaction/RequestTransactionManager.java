@@ -32,6 +32,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 /**
  * This is a limited Queue of Requests, a Protocol can use.
@@ -48,7 +49,14 @@ public class RequestTransactionManager {
     private static final Logger logger = LoggerFactory.getLogger(RequestTransactionManager.class);
 
     /** Executor that performs all operations */
-    static final ExecutorService executor = Executors.newScheduledThreadPool(4);
+    //static final ExecutorService executor = Executors.newScheduledThreadPool(4);
+
+    final ExecutorService executor = Executors.newFixedThreadPool(4, new BasicThreadFactory.Builder()
+                                                    .namingPattern("plc4x-tm-thread-%d")
+                                                    .daemon(true)
+                                                    .priority(Thread.MAX_PRIORITY)
+                                                    .build());    
+    
     private final Set<RequestTransaction> runningRequests;
     /** How many Transactions are allowed to run at the same time? */
     private int numberOfConcurrentRequests;
@@ -83,6 +91,13 @@ public class RequestTransactionManager {
         // As we might have increased the number, try to send some more requests.
         processWorklog();
     }
+    
+    /*
+    * It allows the sequential shutdown of the associated driver.
+    */
+    public void shutdown(){
+        executor.shutdown();
+    }    
 
     public void submit(Consumer<RequestTransaction> context) {
         RequestTransaction transaction = startRequest();
@@ -204,12 +219,16 @@ public class RequestTransactionManager {
             this.delegate = delegate;
         }
 
+        //TODO: Check MDC used. Created exception in Hop application        
         @Override
         public void run() {
-            try (final MDC.MDCCloseable closeable = MDC.putCloseable("plc4x.transactionId", Integer.toString(transactionId))) {
+            //try (final MDC.MDCCloseable closeable = MDC.putCloseable("plc4x.transactionId", Integer.toString(transactionId))) {
+            try{    
                 logger.trace("Start execution of transaction {}", transactionId);
                 delegate.run();
                 logger.trace("Completed execution of transaction {}", transactionId);
+            }  catch (Exception ex) {
+                logger.info(ex.getMessage());
             }
         }
     }

@@ -86,7 +86,7 @@ public class BACnetPropertyStatesAccessCredentialDisableReason extends BACnetPro
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesAccessCredentialDisableReasonBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesAccessCredentialDisableReason");
     PositionAware positionAware = readBuffer;
@@ -106,17 +106,16 @@ public class BACnetPropertyStatesAccessCredentialDisableReason extends BACnetPro
 
     readBuffer.closeContext("BACnetPropertyStatesAccessCredentialDisableReason");
     // Create the instance
-    return new BACnetPropertyStatesAccessCredentialDisableReasonBuilder(
+    return new BACnetPropertyStatesAccessCredentialDisableReasonBuilderImpl(
         accessCredentialDisableReason);
   }
 
-  public static class BACnetPropertyStatesAccessCredentialDisableReasonBuilder
+  public static class BACnetPropertyStatesAccessCredentialDisableReasonBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetAccessCredentialDisableReasonTagged accessCredentialDisableReason;
 
-    public BACnetPropertyStatesAccessCredentialDisableReasonBuilder(
+    public BACnetPropertyStatesAccessCredentialDisableReasonBuilderImpl(
         BACnetAccessCredentialDisableReasonTagged accessCredentialDisableReason) {
-
       this.accessCredentialDisableReason = accessCredentialDisableReason;
     }
 

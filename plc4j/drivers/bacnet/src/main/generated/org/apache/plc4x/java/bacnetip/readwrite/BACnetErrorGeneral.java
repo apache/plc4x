@@ -82,7 +82,7 @@ public class BACnetErrorGeneral extends BACnetError implements Message {
     return lengthInBits;
   }
 
-  public static BACnetErrorGeneralBuilder staticParseBuilder(
+  public static BACnetErrorBuilder staticParseBACnetErrorBuilder(
       ReadBuffer readBuffer, BACnetConfirmedServiceChoice errorChoice) throws ParseException {
     readBuffer.pullContext("BACnetErrorGeneral");
     PositionAware positionAware = readBuffer;
@@ -96,14 +96,13 @@ public class BACnetErrorGeneral extends BACnetError implements Message {
 
     readBuffer.closeContext("BACnetErrorGeneral");
     // Create the instance
-    return new BACnetErrorGeneralBuilder(error);
+    return new BACnetErrorGeneralBuilderImpl(error);
   }
 
-  public static class BACnetErrorGeneralBuilder implements BACnetError.BACnetErrorBuilder {
+  public static class BACnetErrorGeneralBuilderImpl implements BACnetError.BACnetErrorBuilder {
     private final Error error;
 
-    public BACnetErrorGeneralBuilder(Error error) {
-
+    public BACnetErrorGeneralBuilderImpl(Error error) {
       this.error = error;
     }
 

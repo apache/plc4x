@@ -110,7 +110,7 @@ public class APDUReject extends APDU implements Message {
     return lengthInBits;
   }
 
-  public static APDURejectBuilder staticParseBuilder(ReadBuffer readBuffer, Integer apduLength)
+  public static APDUBuilder staticParseAPDUBuilder(ReadBuffer readBuffer, Integer apduLength)
       throws ParseException {
     readBuffer.pullContext("APDUReject");
     PositionAware positionAware = readBuffer;
@@ -130,16 +130,16 @@ public class APDUReject extends APDU implements Message {
 
     readBuffer.closeContext("APDUReject");
     // Create the instance
-    return new APDURejectBuilder(originalInvokeId, rejectReason, apduLength, reservedField0);
+    return new APDURejectBuilderImpl(originalInvokeId, rejectReason, apduLength, reservedField0);
   }
 
-  public static class APDURejectBuilder implements APDU.APDUBuilder {
+  public static class APDURejectBuilderImpl implements APDU.APDUBuilder {
     private final short originalInvokeId;
     private final BACnetRejectReasonTagged rejectReason;
     private final Integer apduLength;
     private final Byte reservedField0;
 
-    public APDURejectBuilder(
+    public APDURejectBuilderImpl(
         short originalInvokeId,
         BACnetRejectReasonTagged rejectReason,
         Integer apduLength,

@@ -107,8 +107,8 @@ public class NLMInitalizeRoutingTableAck extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMInitalizeRoutingTableAckBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMInitalizeRoutingTableAck");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -125,19 +125,18 @@ public class NLMInitalizeRoutingTableAck extends NLM implements Message {
 
     readBuffer.closeContext("NLMInitalizeRoutingTableAck");
     // Create the instance
-    return new NLMInitalizeRoutingTableAckBuilder(numberOfPorts, portMappings, apduLength);
+    return new NLMInitalizeRoutingTableAckBuilderImpl(numberOfPorts, portMappings, apduLength);
   }
 
-  public static class NLMInitalizeRoutingTableAckBuilder implements NLM.NLMBuilder {
+  public static class NLMInitalizeRoutingTableAckBuilderImpl implements NLM.NLMBuilder {
     private final short numberOfPorts;
     private final List<NLMInitalizeRoutingTablePortMapping> portMappings;
     private final Integer apduLength;
 
-    public NLMInitalizeRoutingTableAckBuilder(
+    public NLMInitalizeRoutingTableAckBuilderImpl(
         short numberOfPorts,
         List<NLMInitalizeRoutingTablePortMapping> portMappings,
         Integer apduLength) {
-
       this.numberOfPorts = numberOfPorts;
       this.portMappings = portMappings;
       this.apduLength = apduLength;

@@ -219,17 +219,17 @@ func CALDataParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestC
 	case commandType == CALCommandType_GET_STATUS: // CALDataGetStatus
 		_childTemp, typeSwitchError = CALDataGetStatusParseWithBuffer(readBuffer, requestContext)
 	case commandType == CALCommandType_WRITE: // CALDataWrite
-		_childTemp, typeSwitchError = CALDataWriteParseWithBuffer(readBuffer, requestContext, commandTypeContainer)
+		_childTemp, typeSwitchError = CALDataWriteParseWithBuffer(readBuffer, commandTypeContainer, requestContext)
 	case commandType == CALCommandType_REPLY && sendIdentifyRequestBefore == bool(true): // CALDataIdentifyReply
-		_childTemp, typeSwitchError = CALDataIdentifyReplyParseWithBuffer(readBuffer, requestContext, commandTypeContainer)
+		_childTemp, typeSwitchError = CALDataIdentifyReplyParseWithBuffer(readBuffer, commandTypeContainer, requestContext)
 	case commandType == CALCommandType_REPLY: // CALDataReply
-		_childTemp, typeSwitchError = CALDataReplyParseWithBuffer(readBuffer, requestContext, commandTypeContainer)
+		_childTemp, typeSwitchError = CALDataReplyParseWithBuffer(readBuffer, commandTypeContainer, requestContext)
 	case commandType == CALCommandType_ACKNOWLEDGE: // CALDataAcknowledge
 		_childTemp, typeSwitchError = CALDataAcknowledgeParseWithBuffer(readBuffer, requestContext)
 	case commandType == CALCommandType_STATUS: // CALDataStatus
-		_childTemp, typeSwitchError = CALDataStatusParseWithBuffer(readBuffer, requestContext, commandTypeContainer)
+		_childTemp, typeSwitchError = CALDataStatusParseWithBuffer(readBuffer, commandTypeContainer, requestContext)
 	case commandType == CALCommandType_STATUS_EXTENDED: // CALDataStatusExtended
-		_childTemp, typeSwitchError = CALDataStatusExtendedParseWithBuffer(readBuffer, requestContext, commandTypeContainer)
+		_childTemp, typeSwitchError = CALDataStatusExtendedParseWithBuffer(readBuffer, commandTypeContainer, requestContext)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v, sendIdentifyRequestBefore=%v]", commandType, sendIdentifyRequestBefore)
 	}

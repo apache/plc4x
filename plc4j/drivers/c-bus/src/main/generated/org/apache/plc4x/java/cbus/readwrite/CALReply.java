@@ -137,9 +137,9 @@ public abstract class CALReply implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     CALReplyBuilder builder = null;
     if (EvaluationHelper.equals(calType, (byte) 0x86)) {
-      builder = CALReplyLong.staticParseBuilder(readBuffer, cBusOptions, requestContext);
+      builder = CALReplyLong.staticParseCALReplyBuilder(readBuffer, cBusOptions, requestContext);
     } else {
-      builder = CALReplyShort.staticParseBuilder(readBuffer, cBusOptions, requestContext);
+      builder = CALReplyShort.staticParseCALReplyBuilder(readBuffer, cBusOptions, requestContext);
     }
     if (builder == null) {
       throw new ParseException(
@@ -159,7 +159,7 @@ public abstract class CALReply implements Message {
     return _cALReply;
   }
 
-  public static interface CALReplyBuilder {
+  public interface CALReplyBuilder {
     CALReply build(
         byte calType, CALData calData, CBusOptions cBusOptions, RequestContext requestContext);
   }

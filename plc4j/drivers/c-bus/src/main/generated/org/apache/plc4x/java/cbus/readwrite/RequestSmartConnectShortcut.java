@@ -116,7 +116,7 @@ public class RequestSmartConnectShortcut extends Request implements Message {
     return lengthInBits;
   }
 
-  public static RequestSmartConnectShortcutBuilder staticParseBuilder(
+  public static RequestBuilder staticParseRequestBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("RequestSmartConnectShortcut");
     PositionAware positionAware = readBuffer;
@@ -139,17 +139,16 @@ public class RequestSmartConnectShortcut extends Request implements Message {
 
     readBuffer.closeContext("RequestSmartConnectShortcut");
     // Create the instance
-    return new RequestSmartConnectShortcutBuilder(pipePeek, secondPipe, cBusOptions);
+    return new RequestSmartConnectShortcutBuilderImpl(pipePeek, secondPipe, cBusOptions);
   }
 
-  public static class RequestSmartConnectShortcutBuilder implements Request.RequestBuilder {
+  public static class RequestSmartConnectShortcutBuilderImpl implements Request.RequestBuilder {
     private final RequestType pipePeek;
     private final Byte secondPipe;
     private final CBusOptions cBusOptions;
 
-    public RequestSmartConnectShortcutBuilder(
+    public RequestSmartConnectShortcutBuilderImpl(
         RequestType pipePeek, Byte secondPipe, CBusOptions cBusOptions) {
-
       this.pipePeek = pipePeek;
       this.secondPipe = secondPipe;
       this.cBusOptions = cBusOptions;

@@ -90,8 +90,9 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+      staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -105,19 +106,18 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder(
+    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilderImpl(
         dateTimeValue, tagNumber);
   }
 
-  public static class BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder
+  public static class BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilderImpl
       implements BACnetNotificationParametersChangeOfDiscreteValueNewValue
           .BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
     private final BACnetDateTimeEnclosed dateTimeValue;
     private final Short tagNumber;
 
-    public BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder(
+    public BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilderImpl(
         BACnetDateTimeEnclosed dateTimeValue, Short tagNumber) {
-
       this.dateTimeValue = dateTimeValue;
       this.tagNumber = tagNumber;
     }

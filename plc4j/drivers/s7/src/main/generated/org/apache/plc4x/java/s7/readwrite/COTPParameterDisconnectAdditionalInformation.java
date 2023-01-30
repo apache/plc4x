@@ -45,13 +45,9 @@ public class COTPParameterDisconnectAdditionalInformation extends COTPParameter 
   // Properties.
   protected final byte[] data;
 
-  // Arguments.
-  protected final Short rest;
-
-  public COTPParameterDisconnectAdditionalInformation(byte[] data, Short rest) {
-    super(rest);
+  public COTPParameterDisconnectAdditionalInformation(byte[] data) {
+    super();
     this.data = data;
-    this.rest = rest;
   }
 
   public byte[] getData() {
@@ -89,7 +85,7 @@ public class COTPParameterDisconnectAdditionalInformation extends COTPParameter 
     return lengthInBits;
   }
 
-  public static COTPParameterDisconnectAdditionalInformationBuilder staticParseBuilder(
+  public static COTPParameterBuilder staticParseCOTPParameterBuilder(
       ReadBuffer readBuffer, Short rest) throws ParseException {
     readBuffer.pullContext("COTPParameterDisconnectAdditionalInformation");
     PositionAware positionAware = readBuffer;
@@ -100,24 +96,20 @@ public class COTPParameterDisconnectAdditionalInformation extends COTPParameter 
 
     readBuffer.closeContext("COTPParameterDisconnectAdditionalInformation");
     // Create the instance
-    return new COTPParameterDisconnectAdditionalInformationBuilder(data, rest);
+    return new COTPParameterDisconnectAdditionalInformationBuilderImpl(data);
   }
 
-  public static class COTPParameterDisconnectAdditionalInformationBuilder
+  public static class COTPParameterDisconnectAdditionalInformationBuilderImpl
       implements COTPParameter.COTPParameterBuilder {
     private final byte[] data;
-    private final Short rest;
 
-    public COTPParameterDisconnectAdditionalInformationBuilder(byte[] data, Short rest) {
-
+    public COTPParameterDisconnectAdditionalInformationBuilderImpl(byte[] data) {
       this.data = data;
-      this.rest = rest;
     }
 
-    public COTPParameterDisconnectAdditionalInformation build(Short rest) {
-
+    public COTPParameterDisconnectAdditionalInformation build() {
       COTPParameterDisconnectAdditionalInformation cOTPParameterDisconnectAdditionalInformation =
-          new COTPParameterDisconnectAdditionalInformation(data, rest);
+          new COTPParameterDisconnectAdditionalInformation(data);
       return cOTPParameterDisconnectAdditionalInformation;
     }
   }

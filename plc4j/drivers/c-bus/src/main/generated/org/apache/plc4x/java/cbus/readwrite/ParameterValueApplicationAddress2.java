@@ -101,7 +101,7 @@ public class ParameterValueApplicationAddress2 extends ParameterValue implements
     return lengthInBits;
   }
 
-  public static ParameterValueApplicationAddress2Builder staticParseBuilder(
+  public static ParameterValueBuilder staticParseParameterValueBuilder(
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueApplicationAddress2");
     PositionAware positionAware = readBuffer;
@@ -122,18 +122,17 @@ public class ParameterValueApplicationAddress2 extends ParameterValue implements
 
     readBuffer.closeContext("ParameterValueApplicationAddress2");
     // Create the instance
-    return new ParameterValueApplicationAddress2Builder(value, data, numBytes);
+    return new ParameterValueApplicationAddress2BuilderImpl(value, data, numBytes);
   }
 
-  public static class ParameterValueApplicationAddress2Builder
+  public static class ParameterValueApplicationAddress2BuilderImpl
       implements ParameterValue.ParameterValueBuilder {
     private final ApplicationAddress2 value;
     private final byte[] data;
     private final Short numBytes;
 
-    public ParameterValueApplicationAddress2Builder(
+    public ParameterValueApplicationAddress2BuilderImpl(
         ApplicationAddress2 value, byte[] data, Short numBytes) {
-
       this.value = value;
       this.data = data;
       this.numBytes = numBytes;

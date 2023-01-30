@@ -144,7 +144,7 @@ public class AirConditioningDataZoneHvacPlantStatus extends AirConditioningData 
     return lengthInBits;
   }
 
-  public static AirConditioningDataZoneHvacPlantStatusBuilder staticParseBuilder(
+  public static AirConditioningDataBuilder staticParseAirConditioningDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataZoneHvacPlantStatus");
     PositionAware positionAware = readBuffer;
@@ -178,11 +178,11 @@ public class AirConditioningDataZoneHvacPlantStatus extends AirConditioningData 
 
     readBuffer.closeContext("AirConditioningDataZoneHvacPlantStatus");
     // Create the instance
-    return new AirConditioningDataZoneHvacPlantStatusBuilder(
+    return new AirConditioningDataZoneHvacPlantStatusBuilderImpl(
         zoneGroup, zoneList, hvacType, hvacStatus, hvacErrorCode);
   }
 
-  public static class AirConditioningDataZoneHvacPlantStatusBuilder
+  public static class AirConditioningDataZoneHvacPlantStatusBuilderImpl
       implements AirConditioningData.AirConditioningDataBuilder {
     private final byte zoneGroup;
     private final HVACZoneList zoneList;
@@ -190,13 +190,12 @@ public class AirConditioningDataZoneHvacPlantStatus extends AirConditioningData 
     private final HVACStatusFlags hvacStatus;
     private final HVACError hvacErrorCode;
 
-    public AirConditioningDataZoneHvacPlantStatusBuilder(
+    public AirConditioningDataZoneHvacPlantStatusBuilderImpl(
         byte zoneGroup,
         HVACZoneList zoneList,
         HVACType hvacType,
         HVACStatusFlags hvacStatus,
         HVACError hvacErrorCode) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.hvacType = hvacType;

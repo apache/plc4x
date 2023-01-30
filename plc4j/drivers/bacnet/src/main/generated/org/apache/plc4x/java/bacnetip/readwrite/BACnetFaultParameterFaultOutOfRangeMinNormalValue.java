@@ -171,20 +171,24 @@ public abstract class BACnetFaultParameterFaultOutOfRangeMinNormalValue implemen
     BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0x4)) {
       builder =
-          BACnetFaultParameterFaultOutOfRangeMinNormalValueReal.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetFaultParameterFaultOutOfRangeMinNormalValueReal
+              .staticParseBACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder(
+                  readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x2)) {
       builder =
-          BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
+              .staticParseBACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder(
+                  readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x5)) {
       builder =
-          BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble
+              .staticParseBACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder(
+                  readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x3)) {
       builder =
-          BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger
+              .staticParseBACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder(
+                  readBuffer, tagNumber);
     }
     if (builder == null) {
       throw new ParseException(
@@ -209,7 +213,7 @@ public abstract class BACnetFaultParameterFaultOutOfRangeMinNormalValue implemen
     return _bACnetFaultParameterFaultOutOfRangeMinNormalValue;
   }
 
-  public static interface BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder {
+  public interface BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder {
     BACnetFaultParameterFaultOutOfRangeMinNormalValue build(
         BACnetOpeningTag openingTag,
         BACnetTagHeader peekedTagHeader,

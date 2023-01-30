@@ -94,7 +94,7 @@ public class S7PayloadAlarm8 extends S7PayloadUserDataItem implements Message {
     return lengthInBits;
   }
 
-  public static S7PayloadAlarm8Builder staticParseBuilder(
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
       ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadAlarm8");
     PositionAware positionAware = readBuffer;
@@ -109,15 +109,14 @@ public class S7PayloadAlarm8 extends S7PayloadUserDataItem implements Message {
 
     readBuffer.closeContext("S7PayloadAlarm8");
     // Create the instance
-    return new S7PayloadAlarm8Builder(alarmMessage);
+    return new S7PayloadAlarm8BuilderImpl(alarmMessage);
   }
 
-  public static class S7PayloadAlarm8Builder
+  public static class S7PayloadAlarm8BuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
     private final AlarmMessagePushType alarmMessage;
 
-    public S7PayloadAlarm8Builder(AlarmMessagePushType alarmMessage) {
-
+    public S7PayloadAlarm8BuilderImpl(AlarmMessagePushType alarmMessage) {
       this.alarmMessage = alarmMessage;
     }
 

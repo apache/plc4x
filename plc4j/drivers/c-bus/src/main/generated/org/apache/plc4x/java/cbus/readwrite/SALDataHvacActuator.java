@@ -83,7 +83,7 @@ public class SALDataHvacActuator extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataHvacActuatorBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataHvacActuator");
     PositionAware positionAware = readBuffer;
@@ -97,14 +97,13 @@ public class SALDataHvacActuator extends SALData implements Message {
 
     readBuffer.closeContext("SALDataHvacActuator");
     // Create the instance
-    return new SALDataHvacActuatorBuilder(hvacActuatorData);
+    return new SALDataHvacActuatorBuilderImpl(hvacActuatorData);
   }
 
-  public static class SALDataHvacActuatorBuilder implements SALData.SALDataBuilder {
+  public static class SALDataHvacActuatorBuilderImpl implements SALData.SALDataBuilder {
     private final LightingData hvacActuatorData;
 
-    public SALDataHvacActuatorBuilder(LightingData hvacActuatorData) {
-
+    public SALDataHvacActuatorBuilderImpl(LightingData hvacActuatorData) {
       this.hvacActuatorData = hvacActuatorData;
     }
 

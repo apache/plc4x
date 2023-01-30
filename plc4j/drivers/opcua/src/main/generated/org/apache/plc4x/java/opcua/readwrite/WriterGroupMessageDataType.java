@@ -69,7 +69,7 @@ public class WriterGroupMessageDataType extends ExtensionObjectDefinition implem
     return lengthInBits;
   }
 
-  public static WriterGroupMessageDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("WriterGroupMessageDataType");
     PositionAware positionAware = readBuffer;
@@ -78,13 +78,13 @@ public class WriterGroupMessageDataType extends ExtensionObjectDefinition implem
 
     readBuffer.closeContext("WriterGroupMessageDataType");
     // Create the instance
-    return new WriterGroupMessageDataTypeBuilder();
+    return new WriterGroupMessageDataTypeBuilderImpl();
   }
 
-  public static class WriterGroupMessageDataTypeBuilder
+  public static class WriterGroupMessageDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public WriterGroupMessageDataTypeBuilder() {}
+    public WriterGroupMessageDataTypeBuilderImpl() {}
 
     public WriterGroupMessageDataType build() {
       WriterGroupMessageDataType writerGroupMessageDataType = new WriterGroupMessageDataType();

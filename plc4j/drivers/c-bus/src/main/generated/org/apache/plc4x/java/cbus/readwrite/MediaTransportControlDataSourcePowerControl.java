@@ -104,7 +104,7 @@ public class MediaTransportControlDataSourcePowerControl extends MediaTransportC
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataSourcePowerControlBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataSourcePowerControl");
     PositionAware positionAware = readBuffer;
@@ -118,15 +118,14 @@ public class MediaTransportControlDataSourcePowerControl extends MediaTransportC
 
     readBuffer.closeContext("MediaTransportControlDataSourcePowerControl");
     // Create the instance
-    return new MediaTransportControlDataSourcePowerControlBuilder(state);
+    return new MediaTransportControlDataSourcePowerControlBuilderImpl(state);
   }
 
-  public static class MediaTransportControlDataSourcePowerControlBuilder
+  public static class MediaTransportControlDataSourcePowerControlBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte state;
 
-    public MediaTransportControlDataSourcePowerControlBuilder(byte state) {
-
+    public MediaTransportControlDataSourcePowerControlBuilderImpl(byte state) {
       this.state = state;
     }
 

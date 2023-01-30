@@ -49,8 +49,6 @@ public class PnDcp_Block_DevicePropertiesDeviceInstance extends PnDcp_Block impl
   // Properties.
   protected final short deviceInstanceHigh;
   protected final short deviceInstanceLow;
-  // Reserved Fields
-  private Integer reservedField0;
 
   public PnDcp_Block_DevicePropertiesDeviceInstance(
       short deviceInstanceHigh, short deviceInstanceLow) {
@@ -74,10 +72,7 @@ public class PnDcp_Block_DevicePropertiesDeviceInstance extends PnDcp_Block impl
     writeBuffer.pushContext("PnDcp_Block_DevicePropertiesDeviceInstance");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+    writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (deviceInstanceHigh)
     writeSimpleField("deviceInstanceHigh", deviceInstanceHigh, writeUnsignedShort(writeBuffer, 8));
@@ -110,8 +105,8 @@ public class PnDcp_Block_DevicePropertiesDeviceInstance extends PnDcp_Block impl
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DevicePropertiesDeviceInstanceBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DevicePropertiesDeviceInstance");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -128,27 +123,24 @@ public class PnDcp_Block_DevicePropertiesDeviceInstance extends PnDcp_Block impl
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesDeviceInstance");
     // Create the instance
-    return new PnDcp_Block_DevicePropertiesDeviceInstanceBuilder(
-        deviceInstanceHigh, deviceInstanceLow, reservedField0);
+    return new PnDcp_Block_DevicePropertiesDeviceInstanceBuilderImpl(
+        deviceInstanceHigh, deviceInstanceLow);
   }
 
-  public static class PnDcp_Block_DevicePropertiesDeviceInstanceBuilder
+  public static class PnDcp_Block_DevicePropertiesDeviceInstanceBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final short deviceInstanceHigh;
     private final short deviceInstanceLow;
-    private final Integer reservedField0;
 
-    public PnDcp_Block_DevicePropertiesDeviceInstanceBuilder(
-        short deviceInstanceHigh, short deviceInstanceLow, Integer reservedField0) {
+    public PnDcp_Block_DevicePropertiesDeviceInstanceBuilderImpl(
+        short deviceInstanceHigh, short deviceInstanceLow) {
       this.deviceInstanceHigh = deviceInstanceHigh;
       this.deviceInstanceLow = deviceInstanceLow;
-      this.reservedField0 = reservedField0;
     }
 
     public PnDcp_Block_DevicePropertiesDeviceInstance build() {
       PnDcp_Block_DevicePropertiesDeviceInstance pnDcp_Block_DevicePropertiesDeviceInstance =
           new PnDcp_Block_DevicePropertiesDeviceInstance(deviceInstanceHigh, deviceInstanceLow);
-      pnDcp_Block_DevicePropertiesDeviceInstance.reservedField0 = reservedField0;
       return pnDcp_Block_DevicePropertiesDeviceInstance;
     }
   }

@@ -110,7 +110,7 @@ public class BACnetConstructedDataDefaultRampRate extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDefaultRampRateBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -133,21 +133,20 @@ public class BACnetConstructedDataDefaultRampRate extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataDefaultRampRate");
     // Create the instance
-    return new BACnetConstructedDataDefaultRampRateBuilder(
+    return new BACnetConstructedDataDefaultRampRateBuilderImpl(
         defaultRampRate, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDefaultRampRateBuilder
+  public static class BACnetConstructedDataDefaultRampRateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal defaultRampRate;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDefaultRampRateBuilder(
+    public BACnetConstructedDataDefaultRampRateBuilderImpl(
         BACnetApplicationTagReal defaultRampRate,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.defaultRampRate = defaultRampRate;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

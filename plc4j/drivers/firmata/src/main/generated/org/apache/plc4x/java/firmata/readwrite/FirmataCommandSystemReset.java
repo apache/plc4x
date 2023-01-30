@@ -42,12 +42,8 @@ public class FirmataCommandSystemReset extends FirmataCommand implements Message
     return (byte) 0xF;
   }
 
-  // Arguments.
-  protected final Boolean response;
-
-  public FirmataCommandSystemReset(Boolean response) {
-    super(response);
-    this.response = response;
+  public FirmataCommandSystemReset() {
+    super();
   }
 
   @Override
@@ -73,7 +69,7 @@ public class FirmataCommandSystemReset extends FirmataCommand implements Message
     return lengthInBits;
   }
 
-  public static FirmataCommandSystemResetBuilder staticParseBuilder(
+  public static FirmataCommandBuilder staticParseFirmataCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataCommandSystemReset");
     PositionAware positionAware = readBuffer;
@@ -82,22 +78,16 @@ public class FirmataCommandSystemReset extends FirmataCommand implements Message
 
     readBuffer.closeContext("FirmataCommandSystemReset");
     // Create the instance
-    return new FirmataCommandSystemResetBuilder(response);
+    return new FirmataCommandSystemResetBuilderImpl();
   }
 
-  public static class FirmataCommandSystemResetBuilder
+  public static class FirmataCommandSystemResetBuilderImpl
       implements FirmataCommand.FirmataCommandBuilder {
-    private final Boolean response;
 
-    public FirmataCommandSystemResetBuilder(Boolean response) {
+    public FirmataCommandSystemResetBuilderImpl() {}
 
-      this.response = response;
-    }
-
-    public FirmataCommandSystemReset build(Boolean response) {
-
-      FirmataCommandSystemReset firmataCommandSystemReset = new FirmataCommandSystemReset(response);
-
+    public FirmataCommandSystemReset build() {
+      FirmataCommandSystemReset firmataCommandSystemReset = new FirmataCommandSystemReset();
       return firmataCommandSystemReset;
     }
   }

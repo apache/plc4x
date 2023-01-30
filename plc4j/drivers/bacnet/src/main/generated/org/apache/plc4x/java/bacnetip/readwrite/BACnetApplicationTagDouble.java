@@ -90,8 +90,8 @@ public class BACnetApplicationTagDouble extends BACnetApplicationTag implements 
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagDoubleBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagDouble");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -106,15 +106,14 @@ public class BACnetApplicationTagDouble extends BACnetApplicationTag implements 
 
     readBuffer.closeContext("BACnetApplicationTagDouble");
     // Create the instance
-    return new BACnetApplicationTagDoubleBuilder(payload);
+    return new BACnetApplicationTagDoubleBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagDoubleBuilder
+  public static class BACnetApplicationTagDoubleBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadDouble payload;
 
-    public BACnetApplicationTagDoubleBuilder(BACnetTagPayloadDouble payload) {
-
+    public BACnetApplicationTagDoubleBuilderImpl(BACnetTagPayloadDouble payload) {
       this.payload = payload;
     }
 

@@ -114,9 +114,11 @@ public abstract class MonitoredSAL implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     MonitoredSALBuilder builder = null;
     if (EvaluationHelper.equals(salType, (byte) 0x05)) {
-      builder = MonitoredSALLongFormSmartMode.staticParseBuilder(readBuffer, cBusOptions);
+      builder =
+          MonitoredSALLongFormSmartMode.staticParseMonitoredSALBuilder(readBuffer, cBusOptions);
     } else if (true) {
-      builder = MonitoredSALShortFormBasicMode.staticParseBuilder(readBuffer, cBusOptions);
+      builder =
+          MonitoredSALShortFormBasicMode.staticParseMonitoredSALBuilder(readBuffer, cBusOptions);
     }
     if (builder == null) {
       throw new ParseException(
@@ -129,7 +131,7 @@ public abstract class MonitoredSAL implements Message {
     return _monitoredSAL;
   }
 
-  public static interface MonitoredSALBuilder {
+  public interface MonitoredSALBuilder {
     MonitoredSAL build(byte salType, CBusOptions cBusOptions);
   }
 

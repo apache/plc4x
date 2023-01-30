@@ -83,7 +83,7 @@ public class BACnetPropertyStatesNetworkNumberQuality extends BACnetPropertyStat
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesNetworkNumberQualityBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesNetworkNumberQuality");
     PositionAware positionAware = readBuffer;
@@ -103,16 +103,15 @@ public class BACnetPropertyStatesNetworkNumberQuality extends BACnetPropertyStat
 
     readBuffer.closeContext("BACnetPropertyStatesNetworkNumberQuality");
     // Create the instance
-    return new BACnetPropertyStatesNetworkNumberQualityBuilder(networkNumberQuality);
+    return new BACnetPropertyStatesNetworkNumberQualityBuilderImpl(networkNumberQuality);
   }
 
-  public static class BACnetPropertyStatesNetworkNumberQualityBuilder
+  public static class BACnetPropertyStatesNetworkNumberQualityBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetNetworkNumberQualityTagged networkNumberQuality;
 
-    public BACnetPropertyStatesNetworkNumberQualityBuilder(
+    public BACnetPropertyStatesNetworkNumberQualityBuilderImpl(
         BACnetNetworkNumberQualityTagged networkNumberQuality) {
-
       this.networkNumberQuality = networkNumberQuality;
     }
 

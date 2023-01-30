@@ -125,7 +125,7 @@ public class APDUAbort extends APDU implements Message {
     return lengthInBits;
   }
 
-  public static APDUAbortBuilder staticParseBuilder(ReadBuffer readBuffer, Integer apduLength)
+  public static APDUBuilder staticParseAPDUBuilder(ReadBuffer readBuffer, Integer apduLength)
       throws ParseException {
     readBuffer.pullContext("APDUAbort");
     PositionAware positionAware = readBuffer;
@@ -147,17 +147,18 @@ public class APDUAbort extends APDU implements Message {
 
     readBuffer.closeContext("APDUAbort");
     // Create the instance
-    return new APDUAbortBuilder(server, originalInvokeId, abortReason, apduLength, reservedField0);
+    return new APDUAbortBuilderImpl(
+        server, originalInvokeId, abortReason, apduLength, reservedField0);
   }
 
-  public static class APDUAbortBuilder implements APDU.APDUBuilder {
+  public static class APDUAbortBuilderImpl implements APDU.APDUBuilder {
     private final boolean server;
     private final short originalInvokeId;
     private final BACnetAbortReasonTagged abortReason;
     private final Integer apduLength;
     private final Byte reservedField0;
 
-    public APDUAbortBuilder(
+    public APDUAbortBuilderImpl(
         boolean server,
         short originalInvokeId,
         BACnetAbortReasonTagged abortReason,

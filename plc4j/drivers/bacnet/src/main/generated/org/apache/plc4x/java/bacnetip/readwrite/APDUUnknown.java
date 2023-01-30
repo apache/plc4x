@@ -100,7 +100,7 @@ public class APDUUnknown extends APDU implements Message {
     return lengthInBits;
   }
 
-  public static APDUUnknownBuilder staticParseBuilder(ReadBuffer readBuffer, Integer apduLength)
+  public static APDUBuilder staticParseAPDUBuilder(ReadBuffer readBuffer, Integer apduLength)
       throws ParseException {
     readBuffer.pullContext("APDUUnknown");
     PositionAware positionAware = readBuffer;
@@ -115,16 +115,15 @@ public class APDUUnknown extends APDU implements Message {
 
     readBuffer.closeContext("APDUUnknown");
     // Create the instance
-    return new APDUUnknownBuilder(unknownTypeRest, unknownBytes, apduLength);
+    return new APDUUnknownBuilderImpl(unknownTypeRest, unknownBytes, apduLength);
   }
 
-  public static class APDUUnknownBuilder implements APDU.APDUBuilder {
+  public static class APDUUnknownBuilderImpl implements APDU.APDUBuilder {
     private final byte unknownTypeRest;
     private final byte[] unknownBytes;
     private final Integer apduLength;
 
-    public APDUUnknownBuilder(byte unknownTypeRest, byte[] unknownBytes, Integer apduLength) {
-
+    public APDUUnknownBuilderImpl(byte unknownTypeRest, byte[] unknownBytes, Integer apduLength) {
       this.unknownTypeRest = unknownTypeRest;
       this.unknownBytes = unknownBytes;
       this.apduLength = apduLength;

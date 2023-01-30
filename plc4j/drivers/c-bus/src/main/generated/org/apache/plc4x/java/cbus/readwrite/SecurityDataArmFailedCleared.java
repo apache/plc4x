@@ -66,7 +66,7 @@ public class SecurityDataArmFailedCleared extends SecurityData implements Messag
     return lengthInBits;
   }
 
-  public static SecurityDataArmFailedClearedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataArmFailedCleared");
     PositionAware positionAware = readBuffer;
@@ -75,13 +75,13 @@ public class SecurityDataArmFailedCleared extends SecurityData implements Messag
 
     readBuffer.closeContext("SecurityDataArmFailedCleared");
     // Create the instance
-    return new SecurityDataArmFailedClearedBuilder();
+    return new SecurityDataArmFailedClearedBuilderImpl();
   }
 
-  public static class SecurityDataArmFailedClearedBuilder
+  public static class SecurityDataArmFailedClearedBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataArmFailedClearedBuilder() {}
+    public SecurityDataArmFailedClearedBuilderImpl() {}
 
     public SecurityDataArmFailedCleared build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

@@ -116,7 +116,7 @@ public class DeleteNodesRequest extends ExtensionObjectDefinition implements Mes
     return lengthInBits;
   }
 
-  public static DeleteNodesRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DeleteNodesRequest");
     PositionAware positionAware = readBuffer;
@@ -142,20 +142,19 @@ public class DeleteNodesRequest extends ExtensionObjectDefinition implements Mes
 
     readBuffer.closeContext("DeleteNodesRequest");
     // Create the instance
-    return new DeleteNodesRequestBuilder(requestHeader, noOfNodesToDelete, nodesToDelete);
+    return new DeleteNodesRequestBuilderImpl(requestHeader, noOfNodesToDelete, nodesToDelete);
   }
 
-  public static class DeleteNodesRequestBuilder
+  public static class DeleteNodesRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfNodesToDelete;
     private final List<ExtensionObjectDefinition> nodesToDelete;
 
-    public DeleteNodesRequestBuilder(
+    public DeleteNodesRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfNodesToDelete,
         List<ExtensionObjectDefinition> nodesToDelete) {
-
       this.requestHeader = requestHeader;
       this.noOfNodesToDelete = noOfNodesToDelete;
       this.nodesToDelete = nodesToDelete;

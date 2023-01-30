@@ -96,7 +96,8 @@ public abstract class S7ParameterUserDataItem implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     S7ParameterUserDataItemBuilder builder = null;
     if (EvaluationHelper.equals(itemType, (short) 0x12)) {
-      builder = S7ParameterUserDataItemCPUFunctions.staticParseBuilder(readBuffer);
+      builder =
+          S7ParameterUserDataItemCPUFunctions.staticParseS7ParameterUserDataItemBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -113,7 +114,7 @@ public abstract class S7ParameterUserDataItem implements Message {
     return _s7ParameterUserDataItem;
   }
 
-  public static interface S7ParameterUserDataItemBuilder {
+  public interface S7ParameterUserDataItemBuilder {
     S7ParameterUserDataItem build();
   }
 

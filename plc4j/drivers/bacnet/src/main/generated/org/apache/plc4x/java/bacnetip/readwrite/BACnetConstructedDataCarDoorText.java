@@ -135,7 +135,7 @@ public class BACnetConstructedDataCarDoorText extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCarDoorTextBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -173,23 +173,22 @@ public class BACnetConstructedDataCarDoorText extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataCarDoorText");
     // Create the instance
-    return new BACnetConstructedDataCarDoorTextBuilder(
+    return new BACnetConstructedDataCarDoorTextBuilderImpl(
         numberOfDataElements, carDoorText, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCarDoorTextBuilder
+  public static class BACnetConstructedDataCarDoorTextBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagCharacterString> carDoorText;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCarDoorTextBuilder(
+    public BACnetConstructedDataCarDoorTextBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagCharacterString> carDoorText,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.carDoorText = carDoorText;
       this.tagNumber = tagNumber;

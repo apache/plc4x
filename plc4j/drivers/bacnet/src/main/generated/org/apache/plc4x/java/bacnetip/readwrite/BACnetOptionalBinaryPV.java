@@ -113,9 +113,9 @@ public abstract class BACnetOptionalBinaryPV implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetOptionalBinaryPVBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetOptionalBinaryPVNull.staticParseBuilder(readBuffer);
+      builder = BACnetOptionalBinaryPVNull.staticParseBACnetOptionalBinaryPVBuilder(readBuffer);
     } else if (true) {
-      builder = BACnetOptionalBinaryPVValue.staticParseBuilder(readBuffer);
+      builder = BACnetOptionalBinaryPVValue.staticParseBACnetOptionalBinaryPVBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -132,7 +132,7 @@ public abstract class BACnetOptionalBinaryPV implements Message {
     return _bACnetOptionalBinaryPV;
   }
 
-  public static interface BACnetOptionalBinaryPVBuilder {
+  public interface BACnetOptionalBinaryPVBuilder {
     BACnetOptionalBinaryPV build(BACnetTagHeader peekedTagHeader);
   }
 

@@ -80,7 +80,7 @@ public class BACnetHostAddressNull extends BACnetHostAddress implements Message 
     return lengthInBits;
   }
 
-  public static BACnetHostAddressNullBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetHostAddressBuilder staticParseBACnetHostAddressBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetHostAddressNull");
     PositionAware positionAware = readBuffer;
@@ -99,15 +99,14 @@ public class BACnetHostAddressNull extends BACnetHostAddress implements Message 
 
     readBuffer.closeContext("BACnetHostAddressNull");
     // Create the instance
-    return new BACnetHostAddressNullBuilder(none);
+    return new BACnetHostAddressNullBuilderImpl(none);
   }
 
-  public static class BACnetHostAddressNullBuilder
+  public static class BACnetHostAddressNullBuilderImpl
       implements BACnetHostAddress.BACnetHostAddressBuilder {
     private final BACnetContextTagNull none;
 
-    public BACnetHostAddressNullBuilder(BACnetContextTagNull none) {
-
+    public BACnetHostAddressNullBuilderImpl(BACnetContextTagNull none) {
       this.none = none;
     }
 

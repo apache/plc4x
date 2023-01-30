@@ -72,7 +72,7 @@ public class SysexCommandExtendedAnalog extends SysexCommand implements Message 
     return lengthInBits;
   }
 
-  public static SysexCommandExtendedAnalogBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandExtendedAnalog");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class SysexCommandExtendedAnalog extends SysexCommand implements Message 
 
     readBuffer.closeContext("SysexCommandExtendedAnalog");
     // Create the instance
-    return new SysexCommandExtendedAnalogBuilder();
+    return new SysexCommandExtendedAnalogBuilderImpl();
   }
 
-  public static class SysexCommandExtendedAnalogBuilder
+  public static class SysexCommandExtendedAnalogBuilderImpl
       implements SysexCommand.SysexCommandBuilder {
 
-    public SysexCommandExtendedAnalogBuilder() {}
+    public SysexCommandExtendedAnalogBuilderImpl() {}
 
     public SysexCommandExtendedAnalog build() {
       SysexCommandExtendedAnalog sysexCommandExtendedAnalog = new SysexCommandExtendedAnalog();

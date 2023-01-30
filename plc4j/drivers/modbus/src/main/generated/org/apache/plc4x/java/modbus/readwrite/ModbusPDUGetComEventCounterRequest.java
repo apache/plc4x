@@ -76,7 +76,7 @@ public class ModbusPDUGetComEventCounterRequest extends ModbusPDU implements Mes
     return lengthInBits;
   }
 
-  public static ModbusPDUGetComEventCounterRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUGetComEventCounterRequest");
     PositionAware positionAware = readBuffer;
@@ -85,13 +85,13 @@ public class ModbusPDUGetComEventCounterRequest extends ModbusPDU implements Mes
 
     readBuffer.closeContext("ModbusPDUGetComEventCounterRequest");
     // Create the instance
-    return new ModbusPDUGetComEventCounterRequestBuilder();
+    return new ModbusPDUGetComEventCounterRequestBuilderImpl();
   }
 
-  public static class ModbusPDUGetComEventCounterRequestBuilder
+  public static class ModbusPDUGetComEventCounterRequestBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
 
-    public ModbusPDUGetComEventCounterRequestBuilder() {}
+    public ModbusPDUGetComEventCounterRequestBuilderImpl() {}
 
     public ModbusPDUGetComEventCounterRequest build() {
       ModbusPDUGetComEventCounterRequest modbusPDUGetComEventCounterRequest =

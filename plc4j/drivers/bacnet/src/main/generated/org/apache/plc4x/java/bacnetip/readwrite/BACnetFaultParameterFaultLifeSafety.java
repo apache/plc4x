@@ -125,8 +125,8 @@ public class BACnetFaultParameterFaultLifeSafety extends BACnetFaultParameter im
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultLifeSafetyBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetFaultParameterBuilder staticParseBACnetFaultParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultLifeSafety");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -164,23 +164,22 @@ public class BACnetFaultParameterFaultLifeSafety extends BACnetFaultParameter im
 
     readBuffer.closeContext("BACnetFaultParameterFaultLifeSafety");
     // Create the instance
-    return new BACnetFaultParameterFaultLifeSafetyBuilder(
+    return new BACnetFaultParameterFaultLifeSafetyBuilderImpl(
         openingTag, listOfFaultValues, modePropertyReference, closingTag);
   }
 
-  public static class BACnetFaultParameterFaultLifeSafetyBuilder
+  public static class BACnetFaultParameterFaultLifeSafetyBuilderImpl
       implements BACnetFaultParameter.BACnetFaultParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetFaultParameterFaultLifeSafetyListOfFaultValues listOfFaultValues;
     private final BACnetDeviceObjectPropertyReferenceEnclosed modePropertyReference;
     private final BACnetClosingTag closingTag;
 
-    public BACnetFaultParameterFaultLifeSafetyBuilder(
+    public BACnetFaultParameterFaultLifeSafetyBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetFaultParameterFaultLifeSafetyListOfFaultValues listOfFaultValues,
         BACnetDeviceObjectPropertyReferenceEnclosed modePropertyReference,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.listOfFaultValues = listOfFaultValues;
       this.modePropertyReference = modePropertyReference;

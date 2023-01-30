@@ -316,7 +316,7 @@ const (
 	KnxManufacturer_M_BELCOM_CABLES_LTD_                                 KnxManufacturer = 277
 	KnxManufacturer_M_GUANGZHOU_SEAWIN_ELECTRICAL_TECHNOLOGIES_CO___LTD_ KnxManufacturer = 278
 	KnxManufacturer_M_ACREL                                              KnxManufacturer = 279
-	KnxManufacturer_M_FRANKE_AQUAROTTER_GMBH                             KnxManufacturer = 280
+	KnxManufacturer_M_KWC_AQUAROTTER_GMBH                                KnxManufacturer = 280
 	KnxManufacturer_M_ORION_SYSTEMS                                      KnxManufacturer = 281
 	KnxManufacturer_M_SCHRACK_TECHNIK_GMBH                               KnxManufacturer = 282
 	KnxManufacturer_M_INSPRID                                            KnxManufacturer = 283
@@ -426,7 +426,7 @@ const (
 	KnxManufacturer_M_CODESYS_GMBH                                       KnxManufacturer = 387
 	KnxManufacturer_M_MOORGEN_DEUTSCHLAND_GMBH                           KnxManufacturer = 388
 	KnxManufacturer_M_CULLMANN_TECH                                      KnxManufacturer = 389
-	KnxManufacturer_M_MERCK_WINDOW_TECHNOLOGIES_B_V_                     KnxManufacturer = 390
+	KnxManufacturer_M_EYRISE_B_V                                         KnxManufacturer = 390
 	KnxManufacturer_M_ABEGO                                              KnxManufacturer = 391
 	KnxManufacturer_M_MYGEKKO                                            KnxManufacturer = 392
 	KnxManufacturer_M_ERGO3_SARL                                         KnxManufacturer = 393
@@ -937,7 +937,7 @@ func init() {
 		KnxManufacturer_M_BELCOM_CABLES_LTD_,
 		KnxManufacturer_M_GUANGZHOU_SEAWIN_ELECTRICAL_TECHNOLOGIES_CO___LTD_,
 		KnxManufacturer_M_ACREL,
-		KnxManufacturer_M_FRANKE_AQUAROTTER_GMBH,
+		KnxManufacturer_M_KWC_AQUAROTTER_GMBH,
 		KnxManufacturer_M_ORION_SYSTEMS,
 		KnxManufacturer_M_SCHRACK_TECHNIK_GMBH,
 		KnxManufacturer_M_INSPRID,
@@ -1047,7 +1047,7 @@ func init() {
 		KnxManufacturer_M_CODESYS_GMBH,
 		KnxManufacturer_M_MOORGEN_DEUTSCHLAND_GMBH,
 		KnxManufacturer_M_CULLMANN_TECH,
-		KnxManufacturer_M_MERCK_WINDOW_TECHNOLOGIES_B_V_,
+		KnxManufacturer_M_EYRISE_B_V,
 		KnxManufacturer_M_ABEGO,
 		KnxManufacturer_M_MYGEKKO,
 		KnxManufacturer_M_ERGO3_SARL,
@@ -4560,7 +4560,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 280:
 		{ /* '280' */
-			return "Franke Aquarotter GmbH"
+			return "KWC Aquarotter GmbH"
 		}
 	case 281:
 		{ /* '281' */
@@ -5048,7 +5048,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 390:
 		{ /* '390' */
-			return "Merck Window Technologies B.V."
+			return "eyrise B.V"
 		}
 	case 391:
 		{ /* '391' */
@@ -6628,7 +6628,7 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 28:
 		return KnxManufacturer_M_VIMAR, true
 	case 280:
-		return KnxManufacturer_M_FRANKE_AQUAROTTER_GMBH, true
+		return KnxManufacturer_M_KWC_AQUAROTTER_GMBH, true
 	case 281:
 		return KnxManufacturer_M_ORION_SYSTEMS, true
 	case 282:
@@ -6872,7 +6872,7 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 39:
 		return KnxManufacturer_M_HERMANN_KLEINHUIS, true
 	case 390:
-		return KnxManufacturer_M_MERCK_WINDOW_TECHNOLOGIES_B_V_, true
+		return KnxManufacturer_M_EYRISE_B_V, true
 	case 391:
 		return KnxManufacturer_M_ABEGO, true
 	case 392:
@@ -7861,8 +7861,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_ACREL, true
 	case "M_VIMAR":
 		return KnxManufacturer_M_VIMAR, true
-	case "M_FRANKE_AQUAROTTER_GMBH":
-		return KnxManufacturer_M_FRANKE_AQUAROTTER_GMBH, true
+	case "M_KWC_AQUAROTTER_GMBH":
+		return KnxManufacturer_M_KWC_AQUAROTTER_GMBH, true
 	case "M_ORION_SYSTEMS":
 		return KnxManufacturer_M_ORION_SYSTEMS, true
 	case "M_SCHRACK_TECHNIK_GMBH":
@@ -8105,8 +8105,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_CULLMANN_TECH, true
 	case "M_HERMANN_KLEINHUIS":
 		return KnxManufacturer_M_HERMANN_KLEINHUIS, true
-	case "M_MERCK_WINDOW_TECHNOLOGIES_B_V_":
-		return KnxManufacturer_M_MERCK_WINDOW_TECHNOLOGIES_B_V_, true
+	case "M_EYRISE_B_V":
+		return KnxManufacturer_M_EYRISE_B_V, true
 	case "M_ABEGO":
 		return KnxManufacturer_M_ABEGO, true
 	case "M_MYGEKKO":
@@ -9152,8 +9152,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_ACREL"
 	case KnxManufacturer_M_VIMAR:
 		return "M_VIMAR"
-	case KnxManufacturer_M_FRANKE_AQUAROTTER_GMBH:
-		return "M_FRANKE_AQUAROTTER_GMBH"
+	case KnxManufacturer_M_KWC_AQUAROTTER_GMBH:
+		return "M_KWC_AQUAROTTER_GMBH"
 	case KnxManufacturer_M_ORION_SYSTEMS:
 		return "M_ORION_SYSTEMS"
 	case KnxManufacturer_M_SCHRACK_TECHNIK_GMBH:
@@ -9396,8 +9396,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_CULLMANN_TECH"
 	case KnxManufacturer_M_HERMANN_KLEINHUIS:
 		return "M_HERMANN_KLEINHUIS"
-	case KnxManufacturer_M_MERCK_WINDOW_TECHNOLOGIES_B_V_:
-		return "M_MERCK_WINDOW_TECHNOLOGIES_B_V_"
+	case KnxManufacturer_M_EYRISE_B_V:
+		return "M_EYRISE_B_V"
 	case KnxManufacturer_M_ABEGO:
 		return "M_ABEGO"
 	case KnxManufacturer_M_MYGEKKO:

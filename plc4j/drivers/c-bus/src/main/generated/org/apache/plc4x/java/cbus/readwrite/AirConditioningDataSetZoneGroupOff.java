@@ -81,8 +81,8 @@ public class AirConditioningDataSetZoneGroupOff extends AirConditioningData impl
     return lengthInBits;
   }
 
-  public static AirConditioningDataSetZoneGroupOffBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static AirConditioningDataBuilder staticParseAirConditioningDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataSetZoneGroupOff");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -92,15 +92,14 @@ public class AirConditioningDataSetZoneGroupOff extends AirConditioningData impl
 
     readBuffer.closeContext("AirConditioningDataSetZoneGroupOff");
     // Create the instance
-    return new AirConditioningDataSetZoneGroupOffBuilder(zoneGroup);
+    return new AirConditioningDataSetZoneGroupOffBuilderImpl(zoneGroup);
   }
 
-  public static class AirConditioningDataSetZoneGroupOffBuilder
+  public static class AirConditioningDataSetZoneGroupOffBuilderImpl
       implements AirConditioningData.AirConditioningDataBuilder {
     private final byte zoneGroup;
 
-    public AirConditioningDataSetZoneGroupOffBuilder(byte zoneGroup) {
-
+    public AirConditioningDataSetZoneGroupOffBuilderImpl(byte zoneGroup) {
       this.zoneGroup = zoneGroup;
     }
 

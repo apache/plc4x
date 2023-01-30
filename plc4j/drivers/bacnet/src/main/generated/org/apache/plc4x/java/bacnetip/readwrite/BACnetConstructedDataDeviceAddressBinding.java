@@ -104,7 +104,7 @@ public class BACnetConstructedDataDeviceAddressBinding extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDeviceAddressBindingBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -128,21 +128,20 @@ public class BACnetConstructedDataDeviceAddressBinding extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataDeviceAddressBinding");
     // Create the instance
-    return new BACnetConstructedDataDeviceAddressBindingBuilder(
+    return new BACnetConstructedDataDeviceAddressBindingBuilderImpl(
         deviceAddressBinding, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDeviceAddressBindingBuilder
+  public static class BACnetConstructedDataDeviceAddressBindingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetAddressBinding> deviceAddressBinding;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDeviceAddressBindingBuilder(
+    public BACnetConstructedDataDeviceAddressBindingBuilderImpl(
         List<BACnetAddressBinding> deviceAddressBinding,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.deviceAddressBinding = deviceAddressBinding;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

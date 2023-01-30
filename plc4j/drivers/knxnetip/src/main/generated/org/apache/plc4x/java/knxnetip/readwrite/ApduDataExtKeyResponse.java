@@ -42,12 +42,8 @@ public class ApduDataExtKeyResponse extends ApduDataExt implements Message {
     return (short) 0x14;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtKeyResponse(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtKeyResponse() {
+    super();
   }
 
   @Override
@@ -72,7 +68,7 @@ public class ApduDataExtKeyResponse extends ApduDataExt implements Message {
     return lengthInBits;
   }
 
-  public static ApduDataExtKeyResponseBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtKeyResponse");
     PositionAware positionAware = readBuffer;
@@ -81,21 +77,15 @@ public class ApduDataExtKeyResponse extends ApduDataExt implements Message {
 
     readBuffer.closeContext("ApduDataExtKeyResponse");
     // Create the instance
-    return new ApduDataExtKeyResponseBuilder(length);
+    return new ApduDataExtKeyResponseBuilderImpl();
   }
 
-  public static class ApduDataExtKeyResponseBuilder implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
+  public static class ApduDataExtKeyResponseBuilderImpl implements ApduDataExt.ApduDataExtBuilder {
 
-    public ApduDataExtKeyResponseBuilder(Short length) {
+    public ApduDataExtKeyResponseBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtKeyResponse build(Short length) {
-
-      ApduDataExtKeyResponse apduDataExtKeyResponse = new ApduDataExtKeyResponse(length);
-
+    public ApduDataExtKeyResponse build() {
+      ApduDataExtKeyResponse apduDataExtKeyResponse = new ApduDataExtKeyResponse();
       return apduDataExtKeyResponse;
     }
   }

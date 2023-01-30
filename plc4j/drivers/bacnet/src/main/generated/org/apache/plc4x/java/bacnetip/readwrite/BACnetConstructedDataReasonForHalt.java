@@ -109,7 +109,7 @@ public class BACnetConstructedDataReasonForHalt extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataReasonForHaltBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataReasonForHalt extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataReasonForHalt");
     // Create the instance
-    return new BACnetConstructedDataReasonForHaltBuilder(
+    return new BACnetConstructedDataReasonForHaltBuilderImpl(
         programError, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataReasonForHaltBuilder
+  public static class BACnetConstructedDataReasonForHaltBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetProgramErrorTagged programError;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataReasonForHaltBuilder(
+    public BACnetConstructedDataReasonForHaltBuilderImpl(
         BACnetProgramErrorTagged programError,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.programError = programError;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

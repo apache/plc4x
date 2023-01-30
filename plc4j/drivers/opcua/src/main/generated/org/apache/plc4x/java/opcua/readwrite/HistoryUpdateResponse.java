@@ -148,7 +148,7 @@ public class HistoryUpdateResponse extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static HistoryUpdateResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryUpdateResponse");
     PositionAware positionAware = readBuffer;
@@ -183,11 +183,11 @@ public class HistoryUpdateResponse extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("HistoryUpdateResponse");
     // Create the instance
-    return new HistoryUpdateResponseBuilder(
+    return new HistoryUpdateResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class HistoryUpdateResponseBuilder
+  public static class HistoryUpdateResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -195,13 +195,12 @@ public class HistoryUpdateResponse extends ExtensionObjectDefinition implements 
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public HistoryUpdateResponseBuilder(
+    public HistoryUpdateResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<ExtensionObjectDefinition> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

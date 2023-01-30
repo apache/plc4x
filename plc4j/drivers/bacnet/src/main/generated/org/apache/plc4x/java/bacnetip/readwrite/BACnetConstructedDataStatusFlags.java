@@ -109,7 +109,7 @@ public class BACnetConstructedDataStatusFlags extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataStatusFlagsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,20 @@ public class BACnetConstructedDataStatusFlags extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataStatusFlags");
     // Create the instance
-    return new BACnetConstructedDataStatusFlagsBuilder(statusFlags, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataStatusFlagsBuilderImpl(
+        statusFlags, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataStatusFlagsBuilder
+  public static class BACnetConstructedDataStatusFlagsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetStatusFlagsTagged statusFlags;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataStatusFlagsBuilder(
+    public BACnetConstructedDataStatusFlagsBuilderImpl(
         BACnetStatusFlagsTagged statusFlags,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.statusFlags = statusFlags;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

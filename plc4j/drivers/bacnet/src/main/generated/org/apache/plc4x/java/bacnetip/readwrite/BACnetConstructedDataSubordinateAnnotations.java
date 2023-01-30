@@ -136,7 +136,7 @@ public class BACnetConstructedDataSubordinateAnnotations extends BACnetConstruct
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSubordinateAnnotationsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -174,23 +174,22 @@ public class BACnetConstructedDataSubordinateAnnotations extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataSubordinateAnnotations");
     // Create the instance
-    return new BACnetConstructedDataSubordinateAnnotationsBuilder(
+    return new BACnetConstructedDataSubordinateAnnotationsBuilderImpl(
         numberOfDataElements, subordinateAnnotations, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSubordinateAnnotationsBuilder
+  public static class BACnetConstructedDataSubordinateAnnotationsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagCharacterString> subordinateAnnotations;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSubordinateAnnotationsBuilder(
+    public BACnetConstructedDataSubordinateAnnotationsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagCharacterString> subordinateAnnotations,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.subordinateAnnotations = subordinateAnnotations;
       this.tagNumber = tagNumber;

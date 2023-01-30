@@ -66,7 +66,7 @@ public class SecurityDataExitDelayStarted extends SecurityData implements Messag
     return lengthInBits;
   }
 
-  public static SecurityDataExitDelayStartedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataExitDelayStarted");
     PositionAware positionAware = readBuffer;
@@ -75,13 +75,13 @@ public class SecurityDataExitDelayStarted extends SecurityData implements Messag
 
     readBuffer.closeContext("SecurityDataExitDelayStarted");
     // Create the instance
-    return new SecurityDataExitDelayStartedBuilder();
+    return new SecurityDataExitDelayStartedBuilderImpl();
   }
 
-  public static class SecurityDataExitDelayStartedBuilder
+  public static class SecurityDataExitDelayStartedBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataExitDelayStartedBuilder() {}
+    public SecurityDataExitDelayStartedBuilderImpl() {}
 
     public SecurityDataExitDelayStarted build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

@@ -183,29 +183,33 @@ public abstract class CALData implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     CALDataBuilder builder = null;
     if (EvaluationHelper.equals(commandType, CALCommandType.RESET)) {
-      builder = CALDataReset.staticParseBuilder(readBuffer, requestContext);
+      builder = CALDataReset.staticParseCALDataBuilder(readBuffer, requestContext);
     } else if (EvaluationHelper.equals(commandType, CALCommandType.RECALL)) {
-      builder = CALDataRecall.staticParseBuilder(readBuffer, requestContext);
+      builder = CALDataRecall.staticParseCALDataBuilder(readBuffer, requestContext);
     } else if (EvaluationHelper.equals(commandType, CALCommandType.IDENTIFY)) {
-      builder = CALDataIdentify.staticParseBuilder(readBuffer, requestContext);
+      builder = CALDataIdentify.staticParseCALDataBuilder(readBuffer, requestContext);
     } else if (EvaluationHelper.equals(commandType, CALCommandType.GET_STATUS)) {
-      builder = CALDataGetStatus.staticParseBuilder(readBuffer, requestContext);
+      builder = CALDataGetStatus.staticParseCALDataBuilder(readBuffer, requestContext);
     } else if (EvaluationHelper.equals(commandType, CALCommandType.WRITE)) {
-      builder = CALDataWrite.staticParseBuilder(readBuffer, requestContext, commandTypeContainer);
+      builder =
+          CALDataWrite.staticParseCALDataBuilder(readBuffer, commandTypeContainer, requestContext);
     } else if (EvaluationHelper.equals(commandType, CALCommandType.REPLY)
         && EvaluationHelper.equals(sendIdentifyRequestBefore, (boolean) true)) {
       builder =
-          CALDataIdentifyReply.staticParseBuilder(readBuffer, requestContext, commandTypeContainer);
+          CALDataIdentifyReply.staticParseCALDataBuilder(
+              readBuffer, commandTypeContainer, requestContext);
     } else if (EvaluationHelper.equals(commandType, CALCommandType.REPLY)) {
-      builder = CALDataReply.staticParseBuilder(readBuffer, requestContext, commandTypeContainer);
+      builder =
+          CALDataReply.staticParseCALDataBuilder(readBuffer, commandTypeContainer, requestContext);
     } else if (EvaluationHelper.equals(commandType, CALCommandType.ACKNOWLEDGE)) {
-      builder = CALDataAcknowledge.staticParseBuilder(readBuffer, requestContext);
+      builder = CALDataAcknowledge.staticParseCALDataBuilder(readBuffer, requestContext);
     } else if (EvaluationHelper.equals(commandType, CALCommandType.STATUS)) {
-      builder = CALDataStatus.staticParseBuilder(readBuffer, requestContext, commandTypeContainer);
+      builder =
+          CALDataStatus.staticParseCALDataBuilder(readBuffer, commandTypeContainer, requestContext);
     } else if (EvaluationHelper.equals(commandType, CALCommandType.STATUS_EXTENDED)) {
       builder =
-          CALDataStatusExtended.staticParseBuilder(
-              readBuffer, requestContext, commandTypeContainer);
+          CALDataStatusExtended.staticParseCALDataBuilder(
+              readBuffer, commandTypeContainer, requestContext);
     }
     if (builder == null) {
       throw new ParseException(
@@ -231,7 +235,7 @@ public abstract class CALData implements Message {
     return _cALData;
   }
 
-  public static interface CALDataBuilder {
+  public interface CALDataBuilder {
     CALData build(
         CALCommandTypeContainer commandTypeContainer,
         CALData additionalData,

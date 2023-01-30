@@ -72,7 +72,7 @@ public class SysexCommandReportFirmwareRequest extends SysexCommand implements M
     return lengthInBits;
   }
 
-  public static SysexCommandReportFirmwareRequestBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandReportFirmwareRequest");
     PositionAware positionAware = readBuffer;
@@ -81,13 +81,13 @@ public class SysexCommandReportFirmwareRequest extends SysexCommand implements M
 
     readBuffer.closeContext("SysexCommandReportFirmwareRequest");
     // Create the instance
-    return new SysexCommandReportFirmwareRequestBuilder();
+    return new SysexCommandReportFirmwareRequestBuilderImpl();
   }
 
-  public static class SysexCommandReportFirmwareRequestBuilder
+  public static class SysexCommandReportFirmwareRequestBuilderImpl
       implements SysexCommand.SysexCommandBuilder {
 
-    public SysexCommandReportFirmwareRequestBuilder() {}
+    public SysexCommandReportFirmwareRequestBuilderImpl() {}
 
     public SysexCommandReportFirmwareRequest build() {
       SysexCommandReportFirmwareRequest sysexCommandReportFirmwareRequest =

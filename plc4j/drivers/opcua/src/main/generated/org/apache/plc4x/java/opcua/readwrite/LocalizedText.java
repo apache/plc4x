@@ -42,8 +42,6 @@ public class LocalizedText implements Message {
   protected final boolean localeSpecified;
   protected final PascalString locale;
   protected final PascalString text;
-  // Reserved Fields
-  private Short reservedField0;
 
   public LocalizedText(
       boolean textSpecified, boolean localeSpecified, PascalString locale, PascalString text) {
@@ -76,10 +74,7 @@ public class LocalizedText implements Message {
     writeBuffer.pushContext("LocalizedText");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 6));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 6));
 
     // Simple Field (textSpecified)
     writeSimpleField("textSpecified", textSpecified, writeBoolean(writeBuffer));
@@ -88,12 +83,10 @@ public class LocalizedText implements Message {
     writeSimpleField("localeSpecified", localeSpecified, writeBoolean(writeBuffer));
 
     // Optional Field (locale) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "locale", locale, new DataWriterComplexDefault<>(writeBuffer), getLocaleSpecified());
+    writeOptionalField("locale", locale, new DataWriterComplexDefault<>(writeBuffer));
 
     // Optional Field (text) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "text", text, new DataWriterComplexDefault<>(writeBuffer), getTextSpecified());
+    writeOptionalField("text", text, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("LocalizedText");
   }
@@ -165,7 +158,6 @@ public class LocalizedText implements Message {
     // Create the instance
     LocalizedText _localizedText;
     _localizedText = new LocalizedText(textSpecified, localeSpecified, locale, text);
-    _localizedText.reservedField0 = reservedField0;
     return _localizedText;
   }
 

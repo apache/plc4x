@@ -109,7 +109,7 @@ public class BACnetConstructedDataEffectivePeriod extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEffectivePeriodBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -130,21 +130,20 @@ public class BACnetConstructedDataEffectivePeriod extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataEffectivePeriod");
     // Create the instance
-    return new BACnetConstructedDataEffectivePeriodBuilder(
+    return new BACnetConstructedDataEffectivePeriodBuilderImpl(
         dateRange, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEffectivePeriodBuilder
+  public static class BACnetConstructedDataEffectivePeriodBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateRange dateRange;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEffectivePeriodBuilder(
+    public BACnetConstructedDataEffectivePeriodBuilderImpl(
         BACnetDateRange dateRange,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.dateRange = dateRange;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

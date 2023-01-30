@@ -83,8 +83,8 @@ public class TriggerControlDataTriggerEvent extends TriggerControlData implement
     return lengthInBits;
   }
 
-  public static TriggerControlDataTriggerEventBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static TriggerControlDataBuilder staticParseTriggerControlDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TriggerControlDataTriggerEvent");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -94,15 +94,14 @@ public class TriggerControlDataTriggerEvent extends TriggerControlData implement
 
     readBuffer.closeContext("TriggerControlDataTriggerEvent");
     // Create the instance
-    return new TriggerControlDataTriggerEventBuilder(actionSelector);
+    return new TriggerControlDataTriggerEventBuilderImpl(actionSelector);
   }
 
-  public static class TriggerControlDataTriggerEventBuilder
+  public static class TriggerControlDataTriggerEventBuilderImpl
       implements TriggerControlData.TriggerControlDataBuilder {
     private final byte actionSelector;
 
-    public TriggerControlDataTriggerEventBuilder(byte actionSelector) {
-
+    public TriggerControlDataTriggerEventBuilderImpl(byte actionSelector) {
       this.actionSelector = actionSelector;
     }
 

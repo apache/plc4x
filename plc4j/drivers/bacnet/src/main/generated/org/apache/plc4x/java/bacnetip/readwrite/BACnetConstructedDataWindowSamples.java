@@ -109,7 +109,7 @@ public class BACnetConstructedDataWindowSamples extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataWindowSamplesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataWindowSamples extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataWindowSamples");
     // Create the instance
-    return new BACnetConstructedDataWindowSamplesBuilder(
+    return new BACnetConstructedDataWindowSamplesBuilderImpl(
         windowSamples, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataWindowSamplesBuilder
+  public static class BACnetConstructedDataWindowSamplesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger windowSamples;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataWindowSamplesBuilder(
+    public BACnetConstructedDataWindowSamplesBuilderImpl(
         BACnetApplicationTagUnsignedInteger windowSamples,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.windowSamples = windowSamples;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -88,7 +88,7 @@ public class SysexCommandExtendedId extends SysexCommand implements Message {
     return lengthInBits;
   }
 
-  public static SysexCommandExtendedIdBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandExtendedId");
     PositionAware positionAware = readBuffer;
@@ -99,14 +99,14 @@ public class SysexCommandExtendedId extends SysexCommand implements Message {
 
     readBuffer.closeContext("SysexCommandExtendedId");
     // Create the instance
-    return new SysexCommandExtendedIdBuilder(id);
+    return new SysexCommandExtendedIdBuilderImpl(id);
   }
 
-  public static class SysexCommandExtendedIdBuilder implements SysexCommand.SysexCommandBuilder {
+  public static class SysexCommandExtendedIdBuilderImpl
+      implements SysexCommand.SysexCommandBuilder {
     private final List<Byte> id;
 
-    public SysexCommandExtendedIdBuilder(List<Byte> id) {
-
+    public SysexCommandExtendedIdBuilderImpl(List<Byte> id) {
       this.id = id;
     }
 

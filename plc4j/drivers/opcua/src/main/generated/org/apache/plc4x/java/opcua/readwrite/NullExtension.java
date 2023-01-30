@@ -69,8 +69,8 @@ public class NullExtension extends ExtensionObjectDefinition implements Message 
     return lengthInBits;
   }
 
-  public static NullExtensionBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("NullExtension");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -78,13 +78,13 @@ public class NullExtension extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("NullExtension");
     // Create the instance
-    return new NullExtensionBuilder();
+    return new NullExtensionBuilderImpl();
   }
 
-  public static class NullExtensionBuilder
+  public static class NullExtensionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public NullExtensionBuilder() {}
+    public NullExtensionBuilderImpl() {}
 
     public NullExtension build() {
       NullExtension nullExtension = new NullExtension();

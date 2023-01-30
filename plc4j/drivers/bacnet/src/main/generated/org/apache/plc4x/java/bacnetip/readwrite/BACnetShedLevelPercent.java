@@ -81,7 +81,7 @@ public class BACnetShedLevelPercent extends BACnetShedLevel implements Message {
     return lengthInBits;
   }
 
-  public static BACnetShedLevelPercentBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetShedLevelBuilder staticParseBACnetShedLevelBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetShedLevelPercent");
     PositionAware positionAware = readBuffer;
@@ -102,15 +102,14 @@ public class BACnetShedLevelPercent extends BACnetShedLevel implements Message {
 
     readBuffer.closeContext("BACnetShedLevelPercent");
     // Create the instance
-    return new BACnetShedLevelPercentBuilder(percent);
+    return new BACnetShedLevelPercentBuilderImpl(percent);
   }
 
-  public static class BACnetShedLevelPercentBuilder
+  public static class BACnetShedLevelPercentBuilderImpl
       implements BACnetShedLevel.BACnetShedLevelBuilder {
     private final BACnetContextTagUnsignedInteger percent;
 
-    public BACnetShedLevelPercentBuilder(BACnetContextTagUnsignedInteger percent) {
-
+    public BACnetShedLevelPercentBuilderImpl(BACnetContextTagUnsignedInteger percent) {
       this.percent = percent;
     }
 

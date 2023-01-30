@@ -128,7 +128,7 @@ public class SamplingIntervalDiagnosticsDataType extends ExtensionObjectDefiniti
     return lengthInBits;
   }
 
-  public static SamplingIntervalDiagnosticsDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SamplingIntervalDiagnosticsDataType");
     PositionAware positionAware = readBuffer;
@@ -148,23 +148,22 @@ public class SamplingIntervalDiagnosticsDataType extends ExtensionObjectDefiniti
 
     readBuffer.closeContext("SamplingIntervalDiagnosticsDataType");
     // Create the instance
-    return new SamplingIntervalDiagnosticsDataTypeBuilder(
+    return new SamplingIntervalDiagnosticsDataTypeBuilderImpl(
         samplingInterval, monitoredItemCount, maxMonitoredItemCount, disabledMonitoredItemCount);
   }
 
-  public static class SamplingIntervalDiagnosticsDataTypeBuilder
+  public static class SamplingIntervalDiagnosticsDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final double samplingInterval;
     private final long monitoredItemCount;
     private final long maxMonitoredItemCount;
     private final long disabledMonitoredItemCount;
 
-    public SamplingIntervalDiagnosticsDataTypeBuilder(
+    public SamplingIntervalDiagnosticsDataTypeBuilderImpl(
         double samplingInterval,
         long monitoredItemCount,
         long maxMonitoredItemCount,
         long disabledMonitoredItemCount) {
-
       this.samplingInterval = samplingInterval;
       this.monitoredItemCount = monitoredItemCount;
       this.maxMonitoredItemCount = maxMonitoredItemCount;

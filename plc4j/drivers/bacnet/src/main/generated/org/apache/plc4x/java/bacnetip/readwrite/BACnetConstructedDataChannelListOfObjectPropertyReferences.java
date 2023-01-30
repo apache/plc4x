@@ -136,14 +136,13 @@ public class BACnetConstructedDataChannelListOfObjectPropertyReferences
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder
-      staticParseBuilder(
-          ReadBuffer readBuffer,
-          Short tagNumber,
-          BACnetObjectType objectTypeArgument,
-          BACnetPropertyIdentifier propertyIdentifierArgument,
-          BACnetTagPayloadUnsignedInteger arrayIndexArgument)
-          throws ParseException {
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
+      ReadBuffer readBuffer,
+      Short tagNumber,
+      BACnetObjectType objectTypeArgument,
+      BACnetPropertyIdentifier propertyIdentifierArgument,
+      BACnetTagPayloadUnsignedInteger arrayIndexArgument)
+      throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataChannelListOfObjectPropertyReferences");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -172,23 +171,22 @@ public class BACnetConstructedDataChannelListOfObjectPropertyReferences
 
     readBuffer.closeContext("BACnetConstructedDataChannelListOfObjectPropertyReferences");
     // Create the instance
-    return new BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder(
+    return new BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilderImpl(
         numberOfDataElements, references, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder
+  public static class BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetDeviceObjectPropertyReference> references;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilder(
+    public BACnetConstructedDataChannelListOfObjectPropertyReferencesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetDeviceObjectPropertyReference> references,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.references = references;
       this.tagNumber = tagNumber;

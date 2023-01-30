@@ -210,8 +210,8 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
     return lengthInBits;
   }
 
-  public static ErrorReportingDataGenericBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static ErrorReportingDataBuilder staticParseErrorReportingDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ErrorReportingDataGeneric");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -253,7 +253,7 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
 
     readBuffer.closeContext("ErrorReportingDataGeneric");
     // Create the instance
-    return new ErrorReportingDataGenericBuilder(
+    return new ErrorReportingDataGenericBuilderImpl(
         systemCategory,
         mostRecent,
         acknowledge,
@@ -264,7 +264,7 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
         errorData2);
   }
 
-  public static class ErrorReportingDataGenericBuilder
+  public static class ErrorReportingDataGenericBuilderImpl
       implements ErrorReportingData.ErrorReportingDataBuilder {
     private final ErrorReportingSystemCategory systemCategory;
     private final boolean mostRecent;
@@ -275,7 +275,7 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
     private final short errorData1;
     private final short errorData2;
 
-    public ErrorReportingDataGenericBuilder(
+    public ErrorReportingDataGenericBuilderImpl(
         ErrorReportingSystemCategory systemCategory,
         boolean mostRecent,
         boolean acknowledge,
@@ -284,7 +284,6 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
         short deviceId,
         short errorData1,
         short errorData2) {
-
       this.systemCategory = systemCategory;
       this.mostRecent = mostRecent;
       this.acknowledge = acknowledge;

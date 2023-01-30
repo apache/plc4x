@@ -160,11 +160,11 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersFloatingLimitBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersFloatingLimit");
     PositionAware positionAware = readBuffer;
@@ -226,7 +226,7 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
 
     readBuffer.closeContext("BACnetNotificationParametersFloatingLimit");
     // Create the instance
-    return new BACnetNotificationParametersFloatingLimitBuilder(
+    return new BACnetNotificationParametersFloatingLimitBuilderImpl(
         innerOpeningTag,
         referenceValue,
         statusFlags,
@@ -237,7 +237,7 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
         objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersFloatingLimitBuilder
+  public static class BACnetNotificationParametersFloatingLimitBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final BACnetContextTagReal referenceValue;
@@ -248,7 +248,7 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersFloatingLimitBuilder(
+    public BACnetNotificationParametersFloatingLimitBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetContextTagReal referenceValue,
         BACnetStatusFlagsTagged statusFlags,
@@ -257,7 +257,6 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
         BACnetClosingTag innerClosingTag,
         Short tagNumber,
         BACnetObjectType objectTypeArgument) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.referenceValue = referenceValue;
       this.statusFlags = statusFlags;

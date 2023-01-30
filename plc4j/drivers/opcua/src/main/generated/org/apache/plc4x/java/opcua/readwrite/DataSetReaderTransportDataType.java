@@ -69,7 +69,7 @@ public class DataSetReaderTransportDataType extends ExtensionObjectDefinition im
     return lengthInBits;
   }
 
-  public static DataSetReaderTransportDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DataSetReaderTransportDataType");
     PositionAware positionAware = readBuffer;
@@ -78,13 +78,13 @@ public class DataSetReaderTransportDataType extends ExtensionObjectDefinition im
 
     readBuffer.closeContext("DataSetReaderTransportDataType");
     // Create the instance
-    return new DataSetReaderTransportDataTypeBuilder();
+    return new DataSetReaderTransportDataTypeBuilderImpl();
   }
 
-  public static class DataSetReaderTransportDataTypeBuilder
+  public static class DataSetReaderTransportDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public DataSetReaderTransportDataTypeBuilder() {}
+    public DataSetReaderTransportDataTypeBuilderImpl() {}
 
     public DataSetReaderTransportDataType build() {
       DataSetReaderTransportDataType dataSetReaderTransportDataType =

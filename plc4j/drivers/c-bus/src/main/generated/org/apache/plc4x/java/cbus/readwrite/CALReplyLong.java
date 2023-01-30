@@ -193,7 +193,7 @@ public class CALReplyLong extends CALReply implements Message {
     return lengthInBits;
   }
 
-  public static CALReplyLongBuilder staticParseBuilder(
+  public static CALReplyBuilder staticParseCALReplyBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("CALReplyLong");
@@ -239,7 +239,7 @@ public class CALReplyLong extends CALReply implements Message {
 
     readBuffer.closeContext("CALReplyLong");
     // Create the instance
-    return new CALReplyLongBuilder(
+    return new CALReplyLongBuilderImpl(
         terminatingByte,
         unitAddress,
         bridgeAddress,
@@ -251,7 +251,7 @@ public class CALReplyLong extends CALReply implements Message {
         reservedField0);
   }
 
-  public static class CALReplyLongBuilder implements CALReply.CALReplyBuilder {
+  public static class CALReplyLongBuilderImpl implements CALReply.CALReplyBuilder {
     private final long terminatingByte;
     private final UnitAddress unitAddress;
     private final BridgeAddress bridgeAddress;
@@ -262,7 +262,7 @@ public class CALReplyLong extends CALReply implements Message {
     private final RequestContext requestContext;
     private final Byte reservedField0;
 
-    public CALReplyLongBuilder(
+    public CALReplyLongBuilderImpl(
         long terminatingByte,
         UnitAddress unitAddress,
         BridgeAddress bridgeAddress,

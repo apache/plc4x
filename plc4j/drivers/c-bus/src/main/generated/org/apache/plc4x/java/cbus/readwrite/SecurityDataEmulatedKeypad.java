@@ -190,7 +190,7 @@ public class SecurityDataEmulatedKeypad extends SecurityData implements Message 
     return lengthInBits;
   }
 
-  public static SecurityDataEmulatedKeypadBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataEmulatedKeypad");
     PositionAware positionAware = readBuffer;
@@ -213,15 +213,14 @@ public class SecurityDataEmulatedKeypad extends SecurityData implements Message 
 
     readBuffer.closeContext("SecurityDataEmulatedKeypad");
     // Create the instance
-    return new SecurityDataEmulatedKeypadBuilder(key);
+    return new SecurityDataEmulatedKeypadBuilderImpl(key);
   }
 
-  public static class SecurityDataEmulatedKeypadBuilder
+  public static class SecurityDataEmulatedKeypadBuilderImpl
       implements SecurityData.SecurityDataBuilder {
     private final byte key;
 
-    public SecurityDataEmulatedKeypadBuilder(byte key) {
-
+    public SecurityDataEmulatedKeypadBuilderImpl(byte key) {
       this.key = key;
     }
 

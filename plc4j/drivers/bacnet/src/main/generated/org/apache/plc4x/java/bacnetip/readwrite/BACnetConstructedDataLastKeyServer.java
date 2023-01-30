@@ -109,7 +109,7 @@ public class BACnetConstructedDataLastKeyServer extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLastKeyServerBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,21 +131,20 @@ public class BACnetConstructedDataLastKeyServer extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataLastKeyServer");
     // Create the instance
-    return new BACnetConstructedDataLastKeyServerBuilder(
+    return new BACnetConstructedDataLastKeyServerBuilderImpl(
         lastKeyServer, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLastKeyServerBuilder
+  public static class BACnetConstructedDataLastKeyServerBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAddressBinding lastKeyServer;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLastKeyServerBuilder(
+    public BACnetConstructedDataLastKeyServerBuilderImpl(
         BACnetAddressBinding lastKeyServer,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastKeyServer = lastKeyServer;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

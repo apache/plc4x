@@ -69,7 +69,7 @@ public class ConnectionTransportDataType extends ExtensionObjectDefinition imple
     return lengthInBits;
   }
 
-  public static ConnectionTransportDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ConnectionTransportDataType");
     PositionAware positionAware = readBuffer;
@@ -78,13 +78,13 @@ public class ConnectionTransportDataType extends ExtensionObjectDefinition imple
 
     readBuffer.closeContext("ConnectionTransportDataType");
     // Create the instance
-    return new ConnectionTransportDataTypeBuilder();
+    return new ConnectionTransportDataTypeBuilderImpl();
   }
 
-  public static class ConnectionTransportDataTypeBuilder
+  public static class ConnectionTransportDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public ConnectionTransportDataTypeBuilder() {}
+    public ConnectionTransportDataTypeBuilderImpl() {}
 
     public ConnectionTransportDataType build() {
       ConnectionTransportDataType connectionTransportDataType = new ConnectionTransportDataType();

@@ -87,7 +87,7 @@ func (m *_BACnetConfirmedServiceRequestAuthenticate) GetBytesOfRemovedService() 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestAuthenticate factory function for _BACnetConfirmedServiceRequestAuthenticate
-func NewBACnetConfirmedServiceRequestAuthenticate(bytesOfRemovedService []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) *_BACnetConfirmedServiceRequestAuthenticate {
+func NewBACnetConfirmedServiceRequestAuthenticate(bytesOfRemovedService []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAuthenticate {
 	_result := &_BACnetConfirmedServiceRequestAuthenticate{
 		BytesOfRemovedService:          bytesOfRemovedService,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -130,11 +130,11 @@ func (m *_BACnetConfirmedServiceRequestAuthenticate) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAuthenticateParse(theBytes []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestAuthenticate, error) {
-	return BACnetConfirmedServiceRequestAuthenticateParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength, serviceRequestPayloadLength)
+func BACnetConfirmedServiceRequestAuthenticateParse(theBytes []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAuthenticate, error) {
+	return BACnetConfirmedServiceRequestAuthenticateParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestPayloadLength, serviceRequestLength)
 }
 
-func BACnetConfirmedServiceRequestAuthenticateParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestAuthenticate, error) {
+func BACnetConfirmedServiceRequestAuthenticateParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAuthenticate, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAuthenticate"); pullErr != nil {

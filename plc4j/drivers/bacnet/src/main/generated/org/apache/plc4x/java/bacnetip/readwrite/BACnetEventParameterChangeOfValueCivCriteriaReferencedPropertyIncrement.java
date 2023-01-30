@@ -95,8 +95,9 @@ public class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncre
     return lengthInBits;
   }
 
-  public static BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetEventParameterChangeOfValueCivCriteriaBuilder
+      staticParseBACnetEventParameterChangeOfValueCivCriteriaBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext(
         "BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement");
     PositionAware positionAware = readBuffer;
@@ -116,19 +117,19 @@ public class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncre
     readBuffer.closeContext(
         "BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement");
     // Create the instance
-    return new BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder(
+    return new BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilderImpl(
         referencedPropertyIncrement, tagNumber);
   }
 
-  public static class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
+  public static
+  class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilderImpl
       implements BACnetEventParameterChangeOfValueCivCriteria
           .BACnetEventParameterChangeOfValueCivCriteriaBuilder {
     private final BACnetContextTagReal referencedPropertyIncrement;
     private final Short tagNumber;
 
-    public BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder(
+    public BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilderImpl(
         BACnetContextTagReal referencedPropertyIncrement, Short tagNumber) {
-
       this.referencedPropertyIncrement = referencedPropertyIncrement;
       this.tagNumber = tagNumber;
     }

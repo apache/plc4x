@@ -90,8 +90,9 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+      staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -106,19 +107,18 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder(
+    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilderImpl(
         booleanValue, tagNumber);
   }
 
-  public static class BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder
+  public static class BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilderImpl
       implements BACnetNotificationParametersChangeOfDiscreteValueNewValue
           .BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
     private final BACnetApplicationTagBoolean booleanValue;
     private final Short tagNumber;
 
-    public BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder(
+    public BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilderImpl(
         BACnetApplicationTagBoolean booleanValue, Short tagNumber) {
-
       this.booleanValue = booleanValue;
       this.tagNumber = tagNumber;
     }

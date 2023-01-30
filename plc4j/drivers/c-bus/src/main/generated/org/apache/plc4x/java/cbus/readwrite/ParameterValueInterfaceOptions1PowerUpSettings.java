@@ -89,7 +89,7 @@ public class ParameterValueInterfaceOptions1PowerUpSettings extends ParameterVal
     return lengthInBits;
   }
 
-  public static ParameterValueInterfaceOptions1PowerUpSettingsBuilder staticParseBuilder(
+  public static ParameterValueBuilder staticParseParameterValueBuilder(
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueInterfaceOptions1PowerUpSettings");
     PositionAware positionAware = readBuffer;
@@ -108,17 +108,16 @@ public class ParameterValueInterfaceOptions1PowerUpSettings extends ParameterVal
 
     readBuffer.closeContext("ParameterValueInterfaceOptions1PowerUpSettings");
     // Create the instance
-    return new ParameterValueInterfaceOptions1PowerUpSettingsBuilder(value, numBytes);
+    return new ParameterValueInterfaceOptions1PowerUpSettingsBuilderImpl(value, numBytes);
   }
 
-  public static class ParameterValueInterfaceOptions1PowerUpSettingsBuilder
+  public static class ParameterValueInterfaceOptions1PowerUpSettingsBuilderImpl
       implements ParameterValue.ParameterValueBuilder {
     private final InterfaceOptions1PowerUpSettings value;
     private final Short numBytes;
 
-    public ParameterValueInterfaceOptions1PowerUpSettingsBuilder(
+    public ParameterValueInterfaceOptions1PowerUpSettingsBuilderImpl(
         InterfaceOptions1PowerUpSettings value, Short numBytes) {
-
       this.value = value;
       this.numBytes = numBytes;
     }

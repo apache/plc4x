@@ -82,7 +82,7 @@ public class BACnetLogDataLogDataEntryIntegerValue extends BACnetLogDataLogDataE
     return lengthInBits;
   }
 
-  public static BACnetLogDataLogDataEntryIntegerValueBuilder staticParseBuilder(
+  public static BACnetLogDataLogDataEntryBuilder staticParseBACnetLogDataLogDataEntryBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryIntegerValue");
     PositionAware positionAware = readBuffer;
@@ -103,16 +103,15 @@ public class BACnetLogDataLogDataEntryIntegerValue extends BACnetLogDataLogDataE
 
     readBuffer.closeContext("BACnetLogDataLogDataEntryIntegerValue");
     // Create the instance
-    return new BACnetLogDataLogDataEntryIntegerValueBuilder(integerValue);
+    return new BACnetLogDataLogDataEntryIntegerValueBuilderImpl(integerValue);
   }
 
-  public static class BACnetLogDataLogDataEntryIntegerValueBuilder
+  public static class BACnetLogDataLogDataEntryIntegerValueBuilderImpl
       implements BACnetLogDataLogDataEntry.BACnetLogDataLogDataEntryBuilder {
     private final BACnetContextTagSignedInteger integerValue;
 
-    public BACnetLogDataLogDataEntryIntegerValueBuilder(
+    public BACnetLogDataLogDataEntryIntegerValueBuilderImpl(
         BACnetContextTagSignedInteger integerValue) {
-
       this.integerValue = integerValue;
     }
 

@@ -81,7 +81,7 @@ public class BACnetPropertyStatesShedState extends BACnetPropertyStates implemen
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesShedStateBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesShedState");
     PositionAware positionAware = readBuffer;
@@ -101,15 +101,14 @@ public class BACnetPropertyStatesShedState extends BACnetPropertyStates implemen
 
     readBuffer.closeContext("BACnetPropertyStatesShedState");
     // Create the instance
-    return new BACnetPropertyStatesShedStateBuilder(shedState);
+    return new BACnetPropertyStatesShedStateBuilderImpl(shedState);
   }
 
-  public static class BACnetPropertyStatesShedStateBuilder
+  public static class BACnetPropertyStatesShedStateBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetShedStateTagged shedState;
 
-    public BACnetPropertyStatesShedStateBuilder(BACnetShedStateTagged shedState) {
-
+    public BACnetPropertyStatesShedStateBuilderImpl(BACnetShedStateTagged shedState) {
       this.shedState = shedState;
     }
 

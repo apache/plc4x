@@ -45,8 +45,6 @@ public class TimeZoneDataType extends ExtensionObjectDefinition implements Messa
   // Properties.
   protected final short offset;
   protected final boolean daylightSavingInOffset;
-  // Reserved Fields
-  private Short reservedField0;
 
   public TimeZoneDataType(short offset, boolean daylightSavingInOffset) {
     super();
@@ -73,10 +71,7 @@ public class TimeZoneDataType extends ExtensionObjectDefinition implements Messa
     writeSimpleField("offset", offset, writeSignedShort(writeBuffer, 16));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (daylightSavingInOffset)
     writeSimpleField("daylightSavingInOffset", daylightSavingInOffset, writeBoolean(writeBuffer));
@@ -106,8 +101,8 @@ public class TimeZoneDataType extends ExtensionObjectDefinition implements Messa
     return lengthInBits;
   }
 
-  public static TimeZoneDataTypeBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("TimeZoneDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -123,25 +118,21 @@ public class TimeZoneDataType extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("TimeZoneDataType");
     // Create the instance
-    return new TimeZoneDataTypeBuilder(offset, daylightSavingInOffset, reservedField0);
+    return new TimeZoneDataTypeBuilderImpl(offset, daylightSavingInOffset);
   }
 
-  public static class TimeZoneDataTypeBuilder
+  public static class TimeZoneDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final short offset;
     private final boolean daylightSavingInOffset;
-    private final Short reservedField0;
 
-    public TimeZoneDataTypeBuilder(
-        short offset, boolean daylightSavingInOffset, Short reservedField0) {
+    public TimeZoneDataTypeBuilderImpl(short offset, boolean daylightSavingInOffset) {
       this.offset = offset;
       this.daylightSavingInOffset = daylightSavingInOffset;
-      this.reservedField0 = reservedField0;
     }
 
     public TimeZoneDataType build() {
       TimeZoneDataType timeZoneDataType = new TimeZoneDataType(offset, daylightSavingInOffset);
-      timeZoneDataType.reservedField0 = reservedField0;
       return timeZoneDataType;
     }
   }

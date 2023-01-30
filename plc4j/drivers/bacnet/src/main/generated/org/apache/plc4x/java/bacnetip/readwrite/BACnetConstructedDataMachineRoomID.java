@@ -109,7 +109,7 @@ public class BACnetConstructedDataMachineRoomID extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMachineRoomIDBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataMachineRoomID extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataMachineRoomID");
     // Create the instance
-    return new BACnetConstructedDataMachineRoomIDBuilder(
+    return new BACnetConstructedDataMachineRoomIDBuilderImpl(
         machineRoomId, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMachineRoomIDBuilder
+  public static class BACnetConstructedDataMachineRoomIDBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagObjectIdentifier machineRoomId;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMachineRoomIDBuilder(
+    public BACnetConstructedDataMachineRoomIDBuilderImpl(
         BACnetApplicationTagObjectIdentifier machineRoomId,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.machineRoomId = machineRoomId;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

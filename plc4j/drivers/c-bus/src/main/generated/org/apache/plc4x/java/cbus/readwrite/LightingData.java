@@ -133,15 +133,15 @@ public abstract class LightingData implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     LightingDataBuilder builder = null;
     if (EvaluationHelper.equals(commandType, LightingCommandType.OFF)) {
-      builder = LightingDataOff.staticParseBuilder(readBuffer);
+      builder = LightingDataOff.staticParseLightingDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, LightingCommandType.ON)) {
-      builder = LightingDataOn.staticParseBuilder(readBuffer);
+      builder = LightingDataOn.staticParseLightingDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, LightingCommandType.RAMP_TO_LEVEL)) {
-      builder = LightingDataRampToLevel.staticParseBuilder(readBuffer);
+      builder = LightingDataRampToLevel.staticParseLightingDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, LightingCommandType.TERMINATE_RAMP)) {
-      builder = LightingDataTerminateRamp.staticParseBuilder(readBuffer);
+      builder = LightingDataTerminateRamp.staticParseLightingDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, LightingCommandType.LABEL)) {
-      builder = LightingDataLabel.staticParseBuilder(readBuffer, commandTypeContainer);
+      builder = LightingDataLabel.staticParseLightingDataBuilder(readBuffer, commandTypeContainer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -158,7 +158,7 @@ public abstract class LightingData implements Message {
     return _lightingData;
   }
 
-  public static interface LightingDataBuilder {
+  public interface LightingDataBuilder {
     LightingData build(LightingCommandTypeContainer commandTypeContainer);
   }
 

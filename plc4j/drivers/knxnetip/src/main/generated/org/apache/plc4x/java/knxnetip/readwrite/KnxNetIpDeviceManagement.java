@@ -82,7 +82,7 @@ public class KnxNetIpDeviceManagement extends ServiceId implements Message {
     return lengthInBits;
   }
 
-  public static KnxNetIpDeviceManagementBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static ServiceIdBuilder staticParseServiceIdBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("KnxNetIpDeviceManagement");
     PositionAware positionAware = readBuffer;
@@ -93,14 +93,13 @@ public class KnxNetIpDeviceManagement extends ServiceId implements Message {
 
     readBuffer.closeContext("KnxNetIpDeviceManagement");
     // Create the instance
-    return new KnxNetIpDeviceManagementBuilder(version);
+    return new KnxNetIpDeviceManagementBuilderImpl(version);
   }
 
-  public static class KnxNetIpDeviceManagementBuilder implements ServiceId.ServiceIdBuilder {
+  public static class KnxNetIpDeviceManagementBuilderImpl implements ServiceId.ServiceIdBuilder {
     private final short version;
 
-    public KnxNetIpDeviceManagementBuilder(short version) {
-
+    public KnxNetIpDeviceManagementBuilderImpl(short version) {
       this.version = version;
     }
 

@@ -109,7 +109,7 @@ public class BACnetConstructedDataTimerResolution extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTimerResolutionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,21 +134,20 @@ public class BACnetConstructedDataTimerResolution extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataTimerResolution");
     // Create the instance
-    return new BACnetConstructedDataTimerResolutionBuilder(
+    return new BACnetConstructedDataTimerResolutionBuilderImpl(
         resolution, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTimerResolutionBuilder
+  public static class BACnetConstructedDataTimerResolutionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger resolution;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTimerResolutionBuilder(
+    public BACnetConstructedDataTimerResolutionBuilderImpl(
         BACnetApplicationTagUnsignedInteger resolution,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.resolution = resolution;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

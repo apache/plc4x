@@ -49,8 +49,6 @@ public class S7AddressAny extends S7Address implements Message {
   protected final MemoryArea area;
   protected final int byteAddress;
   protected final byte bitAddress;
-  // Reserved Fields
-  private Short reservedField0;
 
   public S7AddressAny(
       TransportSize transportSize,
@@ -121,10 +119,7 @@ public class S7AddressAny extends S7Address implements Message {
             MemoryArea::getValue, MemoryArea::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 5));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 5));
 
     // Simple Field (byteAddress)
     writeSimpleField("byteAddress", byteAddress, writeUnsignedInt(writeBuffer, 16));
@@ -169,7 +164,7 @@ public class S7AddressAny extends S7Address implements Message {
     return lengthInBits;
   }
 
-  public static S7AddressAnyBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static S7AddressBuilder staticParseS7AddressBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("S7AddressAny");
     PositionAware positionAware = readBuffer;
@@ -202,41 +197,37 @@ public class S7AddressAny extends S7Address implements Message {
 
     readBuffer.closeContext("S7AddressAny");
     // Create the instance
-    return new S7AddressAnyBuilder(
-        transportSize, numberOfElements, dbNumber, area, byteAddress, bitAddress, reservedField0);
+    return new S7AddressAnyBuilderImpl(
+        transportSize, numberOfElements, dbNumber, area, byteAddress, bitAddress);
   }
 
-  public static class S7AddressAnyBuilder implements S7Address.S7AddressBuilder {
+  public static class S7AddressAnyBuilderImpl implements S7Address.S7AddressBuilder {
     private final TransportSize transportSize;
     private final int numberOfElements;
     private final int dbNumber;
     private final MemoryArea area;
     private final int byteAddress;
     private final byte bitAddress;
-    private final Short reservedField0;
 
-    public S7AddressAnyBuilder(
+    public S7AddressAnyBuilderImpl(
         TransportSize transportSize,
         int numberOfElements,
         int dbNumber,
         MemoryArea area,
         int byteAddress,
-        byte bitAddress,
-        Short reservedField0) {
+        byte bitAddress) {
       this.transportSize = transportSize;
       this.numberOfElements = numberOfElements;
       this.dbNumber = dbNumber;
       this.area = area;
       this.byteAddress = byteAddress;
       this.bitAddress = bitAddress;
-      this.reservedField0 = reservedField0;
     }
 
     public S7AddressAny build() {
       S7AddressAny s7AddressAny =
           new S7AddressAny(
               transportSize, numberOfElements, dbNumber, area, byteAddress, bitAddress);
-      s7AddressAny.reservedField0 = reservedField0;
       return s7AddressAny;
     }
   }

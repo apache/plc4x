@@ -110,7 +110,7 @@ public class BACnetConstructedDataIntegerValueDeadband extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIntegerValueDeadbandBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,21 +135,20 @@ public class BACnetConstructedDataIntegerValueDeadband extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataIntegerValueDeadband");
     // Create the instance
-    return new BACnetConstructedDataIntegerValueDeadbandBuilder(
+    return new BACnetConstructedDataIntegerValueDeadbandBuilderImpl(
         deadband, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIntegerValueDeadbandBuilder
+  public static class BACnetConstructedDataIntegerValueDeadbandBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger deadband;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIntegerValueDeadbandBuilder(
+    public BACnetConstructedDataIntegerValueDeadbandBuilderImpl(
         BACnetApplicationTagUnsignedInteger deadband,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.deadband = deadband;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

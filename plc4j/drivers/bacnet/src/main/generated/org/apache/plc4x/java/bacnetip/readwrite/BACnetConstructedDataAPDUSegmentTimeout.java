@@ -111,7 +111,7 @@ public class BACnetConstructedDataAPDUSegmentTimeout extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAPDUSegmentTimeoutBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -137,21 +137,20 @@ public class BACnetConstructedDataAPDUSegmentTimeout extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataAPDUSegmentTimeout");
     // Create the instance
-    return new BACnetConstructedDataAPDUSegmentTimeoutBuilder(
+    return new BACnetConstructedDataAPDUSegmentTimeoutBuilderImpl(
         apduSegmentTimeout, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAPDUSegmentTimeoutBuilder
+  public static class BACnetConstructedDataAPDUSegmentTimeoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger apduSegmentTimeout;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAPDUSegmentTimeoutBuilder(
+    public BACnetConstructedDataAPDUSegmentTimeoutBuilderImpl(
         BACnetApplicationTagUnsignedInteger apduSegmentTimeout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.apduSegmentTimeout = apduSegmentTimeout;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

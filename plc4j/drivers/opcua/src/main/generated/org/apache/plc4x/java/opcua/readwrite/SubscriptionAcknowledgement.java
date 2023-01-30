@@ -95,7 +95,7 @@ public class SubscriptionAcknowledgement extends ExtensionObjectDefinition imple
     return lengthInBits;
   }
 
-  public static SubscriptionAcknowledgementBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SubscriptionAcknowledgement");
     PositionAware positionAware = readBuffer;
@@ -108,16 +108,15 @@ public class SubscriptionAcknowledgement extends ExtensionObjectDefinition imple
 
     readBuffer.closeContext("SubscriptionAcknowledgement");
     // Create the instance
-    return new SubscriptionAcknowledgementBuilder(subscriptionId, sequenceNumber);
+    return new SubscriptionAcknowledgementBuilderImpl(subscriptionId, sequenceNumber);
   }
 
-  public static class SubscriptionAcknowledgementBuilder
+  public static class SubscriptionAcknowledgementBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long subscriptionId;
     private final long sequenceNumber;
 
-    public SubscriptionAcknowledgementBuilder(long subscriptionId, long sequenceNumber) {
-
+    public SubscriptionAcknowledgementBuilderImpl(long subscriptionId, long sequenceNumber) {
       this.subscriptionId = subscriptionId;
       this.sequenceNumber = sequenceNumber;
     }

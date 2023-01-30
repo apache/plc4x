@@ -111,7 +111,7 @@ public class BACnetConstructedDataAuthorizationMode extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAuthorizationModeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -136,21 +136,20 @@ public class BACnetConstructedDataAuthorizationMode extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataAuthorizationMode");
     // Create the instance
-    return new BACnetConstructedDataAuthorizationModeBuilder(
+    return new BACnetConstructedDataAuthorizationModeBuilderImpl(
         authorizationMode, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAuthorizationModeBuilder
+  public static class BACnetConstructedDataAuthorizationModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAuthorizationModeTagged authorizationMode;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAuthorizationModeBuilder(
+    public BACnetConstructedDataAuthorizationModeBuilderImpl(
         BACnetAuthorizationModeTagged authorizationMode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.authorizationMode = authorizationMode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

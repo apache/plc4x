@@ -113,7 +113,7 @@ public class BACnetConstructedDataDaylightSavingsStatus extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDaylightSavingsStatusBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -136,21 +136,20 @@ public class BACnetConstructedDataDaylightSavingsStatus extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataDaylightSavingsStatus");
     // Create the instance
-    return new BACnetConstructedDataDaylightSavingsStatusBuilder(
+    return new BACnetConstructedDataDaylightSavingsStatusBuilderImpl(
         daylightSavingsStatus, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDaylightSavingsStatusBuilder
+  public static class BACnetConstructedDataDaylightSavingsStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean daylightSavingsStatus;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDaylightSavingsStatusBuilder(
+    public BACnetConstructedDataDaylightSavingsStatusBuilderImpl(
         BACnetApplicationTagBoolean daylightSavingsStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.daylightSavingsStatus = daylightSavingsStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

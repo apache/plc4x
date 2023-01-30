@@ -104,7 +104,7 @@ public class BACnetConstructedDataTimerAlarmValues extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTimerAlarmValuesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,21 +131,20 @@ public class BACnetConstructedDataTimerAlarmValues extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataTimerAlarmValues");
     // Create the instance
-    return new BACnetConstructedDataTimerAlarmValuesBuilder(
+    return new BACnetConstructedDataTimerAlarmValuesBuilderImpl(
         alarmValues, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTimerAlarmValuesBuilder
+  public static class BACnetConstructedDataTimerAlarmValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetTimerStateTagged> alarmValues;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTimerAlarmValuesBuilder(
+    public BACnetConstructedDataTimerAlarmValuesBuilderImpl(
         List<BACnetTimerStateTagged> alarmValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.alarmValues = alarmValues;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

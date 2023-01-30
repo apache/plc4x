@@ -79,7 +79,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse extends S7P
     return lengthInBits;
   }
 
-  public static S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder staticParseBuilder(
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
       ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse");
     PositionAware positionAware = readBuffer;
@@ -88,13 +88,13 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse extends S7P
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse");
     // Create the instance
-    return new S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder();
+    return new S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilderImpl();
   }
 
-  public static class S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder
+  public static class S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
 
-    public S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder() {}
+    public S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilderImpl() {}
 
     public S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse build(
         DataTransportErrorCode returnCode, DataTransportSize transportSize) {

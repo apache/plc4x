@@ -113,11 +113,11 @@ public abstract class BACnetValueSource implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetValueSourceBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetValueSourceNone.staticParseBuilder(readBuffer);
+      builder = BACnetValueSourceNone.staticParseBACnetValueSourceBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetValueSourceObject.staticParseBuilder(readBuffer);
+      builder = BACnetValueSourceObject.staticParseBACnetValueSourceBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetValueSourceAddress.staticParseBuilder(readBuffer);
+      builder = BACnetValueSourceAddress.staticParseBACnetValueSourceBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -134,7 +134,7 @@ public abstract class BACnetValueSource implements Message {
     return _bACnetValueSource;
   }
 
-  public static interface BACnetValueSourceBuilder {
+  public interface BACnetValueSourceBuilder {
     BACnetValueSource build(BACnetTagHeader peekedTagHeader);
   }
 

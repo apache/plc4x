@@ -82,8 +82,9 @@ public class BACnetLandingCallStatusCommandDestination extends BACnetLandingCall
     return lengthInBits;
   }
 
-  public static BACnetLandingCallStatusCommandDestinationBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetLandingCallStatusCommandBuilder
+      staticParseBACnetLandingCallStatusCommandBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetLandingCallStatusCommandDestination");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -103,16 +104,15 @@ public class BACnetLandingCallStatusCommandDestination extends BACnetLandingCall
 
     readBuffer.closeContext("BACnetLandingCallStatusCommandDestination");
     // Create the instance
-    return new BACnetLandingCallStatusCommandDestinationBuilder(destination);
+    return new BACnetLandingCallStatusCommandDestinationBuilderImpl(destination);
   }
 
-  public static class BACnetLandingCallStatusCommandDestinationBuilder
+  public static class BACnetLandingCallStatusCommandDestinationBuilderImpl
       implements BACnetLandingCallStatusCommand.BACnetLandingCallStatusCommandBuilder {
     private final BACnetContextTagUnsignedInteger destination;
 
-    public BACnetLandingCallStatusCommandDestinationBuilder(
+    public BACnetLandingCallStatusCommandDestinationBuilderImpl(
         BACnetContextTagUnsignedInteger destination) {
-
       this.destination = destination;
     }
 

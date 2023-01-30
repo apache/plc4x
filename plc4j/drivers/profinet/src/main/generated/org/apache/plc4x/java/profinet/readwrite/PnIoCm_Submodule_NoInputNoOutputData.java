@@ -127,8 +127,8 @@ public class PnIoCm_Submodule_NoInputNoOutputData extends PnIoCm_Submodule imple
     return lengthInBits;
   }
 
-  public static PnIoCm_Submodule_NoInputNoOutputDataBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnIoCm_SubmoduleBuilder staticParsePnIoCm_SubmoduleBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnIoCm_Submodule_NoInputNoOutputData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -160,13 +160,13 @@ public class PnIoCm_Submodule_NoInputNoOutputData extends PnIoCm_Submodule imple
 
     readBuffer.closeContext("PnIoCm_Submodule_NoInputNoOutputData");
     // Create the instance
-    return new PnIoCm_Submodule_NoInputNoOutputDataBuilder();
+    return new PnIoCm_Submodule_NoInputNoOutputDataBuilderImpl();
   }
 
-  public static class PnIoCm_Submodule_NoInputNoOutputDataBuilder
+  public static class PnIoCm_Submodule_NoInputNoOutputDataBuilderImpl
       implements PnIoCm_Submodule.PnIoCm_SubmoduleBuilder {
 
-    public PnIoCm_Submodule_NoInputNoOutputDataBuilder() {}
+    public PnIoCm_Submodule_NoInputNoOutputDataBuilderImpl() {}
 
     public PnIoCm_Submodule_NoInputNoOutputData build(
         int slotNumber,

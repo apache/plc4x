@@ -120,7 +120,7 @@ public class RequestObsolete extends Request implements Message {
     return lengthInBits;
   }
 
-  public static RequestObsoleteBuilder staticParseBuilder(
+  public static RequestBuilder staticParseRequestBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("RequestObsolete");
     PositionAware positionAware = readBuffer;
@@ -144,16 +144,15 @@ public class RequestObsolete extends Request implements Message {
 
     readBuffer.closeContext("RequestObsolete");
     // Create the instance
-    return new RequestObsoleteBuilder(calData, alpha, cBusOptions);
+    return new RequestObsoleteBuilderImpl(calData, alpha, cBusOptions);
   }
 
-  public static class RequestObsoleteBuilder implements Request.RequestBuilder {
+  public static class RequestObsoleteBuilderImpl implements Request.RequestBuilder {
     private final CALData calData;
     private final Alpha alpha;
     private final CBusOptions cBusOptions;
 
-    public RequestObsoleteBuilder(CALData calData, Alpha alpha, CBusOptions cBusOptions) {
-
+    public RequestObsoleteBuilderImpl(CALData calData, Alpha alpha, CBusOptions cBusOptions) {
       this.calData = calData;
       this.alpha = alpha;
       this.cBusOptions = cBusOptions;

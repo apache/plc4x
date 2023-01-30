@@ -42,12 +42,8 @@ public class MPropWriteReq extends CEMI implements Message {
     return (short) 0xF6;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public MPropWriteReq(Integer size) {
-    super(size);
-    this.size = size;
+  public MPropWriteReq() {
+    super();
   }
 
   @Override
@@ -72,7 +68,7 @@ public class MPropWriteReq extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static MPropWriteReqBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("MPropWriteReq");
     PositionAware positionAware = readBuffer;
@@ -81,21 +77,15 @@ public class MPropWriteReq extends CEMI implements Message {
 
     readBuffer.closeContext("MPropWriteReq");
     // Create the instance
-    return new MPropWriteReqBuilder(size);
+    return new MPropWriteReqBuilderImpl();
   }
 
-  public static class MPropWriteReqBuilder implements CEMI.CEMIBuilder {
-    private final Integer size;
+  public static class MPropWriteReqBuilderImpl implements CEMI.CEMIBuilder {
 
-    public MPropWriteReqBuilder(Integer size) {
+    public MPropWriteReqBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public MPropWriteReq build(Integer size) {
-
-      MPropWriteReq mPropWriteReq = new MPropWriteReq(size);
-
+    public MPropWriteReq build() {
+      MPropWriteReq mPropWriteReq = new MPropWriteReq();
       return mPropWriteReq;
     }
   }

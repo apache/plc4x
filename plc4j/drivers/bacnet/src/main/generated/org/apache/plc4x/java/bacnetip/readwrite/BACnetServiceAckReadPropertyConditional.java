@@ -46,15 +46,15 @@ public class BACnetServiceAckReadPropertyConditional extends BACnetServiceAck im
   protected final byte[] bytesOfRemovedService;
 
   // Arguments.
-  protected final Long serviceAckLength;
   protected final Long serviceAckPayloadLength;
+  protected final Long serviceAckLength;
 
   public BACnetServiceAckReadPropertyConditional(
-      byte[] bytesOfRemovedService, Long serviceAckLength, Long serviceAckPayloadLength) {
+      byte[] bytesOfRemovedService, Long serviceAckPayloadLength, Long serviceAckLength) {
     super(serviceAckLength);
     this.bytesOfRemovedService = bytesOfRemovedService;
-    this.serviceAckLength = serviceAckLength;
     this.serviceAckPayloadLength = serviceAckPayloadLength;
+    this.serviceAckLength = serviceAckLength;
   }
 
   public byte[] getBytesOfRemovedService() {
@@ -93,8 +93,8 @@ public class BACnetServiceAckReadPropertyConditional extends BACnetServiceAck im
     return lengthInBits;
   }
 
-  public static BACnetServiceAckReadPropertyConditionalBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceAckLength, Long serviceAckPayloadLength)
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
+      ReadBuffer readBuffer, Long serviceAckPayloadLength, Long serviceAckLength)
       throws ParseException {
     readBuffer.pullContext("BACnetServiceAckReadPropertyConditional");
     PositionAware positionAware = readBuffer;
@@ -106,29 +106,28 @@ public class BACnetServiceAckReadPropertyConditional extends BACnetServiceAck im
 
     readBuffer.closeContext("BACnetServiceAckReadPropertyConditional");
     // Create the instance
-    return new BACnetServiceAckReadPropertyConditionalBuilder(
-        bytesOfRemovedService, serviceAckLength, serviceAckPayloadLength);
+    return new BACnetServiceAckReadPropertyConditionalBuilderImpl(
+        bytesOfRemovedService, serviceAckPayloadLength, serviceAckLength);
   }
 
-  public static class BACnetServiceAckReadPropertyConditionalBuilder
+  public static class BACnetServiceAckReadPropertyConditionalBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final byte[] bytesOfRemovedService;
-    private final Long serviceAckLength;
     private final Long serviceAckPayloadLength;
+    private final Long serviceAckLength;
 
-    public BACnetServiceAckReadPropertyConditionalBuilder(
-        byte[] bytesOfRemovedService, Long serviceAckLength, Long serviceAckPayloadLength) {
-
+    public BACnetServiceAckReadPropertyConditionalBuilderImpl(
+        byte[] bytesOfRemovedService, Long serviceAckPayloadLength, Long serviceAckLength) {
       this.bytesOfRemovedService = bytesOfRemovedService;
-      this.serviceAckLength = serviceAckLength;
       this.serviceAckPayloadLength = serviceAckPayloadLength;
+      this.serviceAckLength = serviceAckLength;
     }
 
     public BACnetServiceAckReadPropertyConditional build(Long serviceAckLength) {
 
       BACnetServiceAckReadPropertyConditional bACnetServiceAckReadPropertyConditional =
           new BACnetServiceAckReadPropertyConditional(
-              bytesOfRemovedService, serviceAckLength, serviceAckPayloadLength);
+              bytesOfRemovedService, serviceAckPayloadLength, serviceAckLength);
       return bACnetServiceAckReadPropertyConditional;
     }
   }

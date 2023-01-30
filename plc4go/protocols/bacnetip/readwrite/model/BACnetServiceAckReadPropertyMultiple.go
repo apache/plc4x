@@ -86,7 +86,7 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetData() []BACnetReadAccessResu
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckReadPropertyMultiple factory function for _BACnetServiceAckReadPropertyMultiple
-func NewBACnetServiceAckReadPropertyMultiple(data []BACnetReadAccessResult, serviceAckLength uint32, serviceAckPayloadLength uint32) *_BACnetServiceAckReadPropertyMultiple {
+func NewBACnetServiceAckReadPropertyMultiple(data []BACnetReadAccessResult, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckReadPropertyMultiple {
 	_result := &_BACnetServiceAckReadPropertyMultiple{
 		Data:              data,
 		_BACnetServiceAck: NewBACnetServiceAck(serviceAckLength),
@@ -131,11 +131,11 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyMultipleParse(theBytes []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyMultiple, error) {
-	return BACnetServiceAckReadPropertyMultipleParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckLength, serviceAckPayloadLength)
+func BACnetServiceAckReadPropertyMultipleParse(theBytes []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckReadPropertyMultiple, error) {
+	return BACnetServiceAckReadPropertyMultipleParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckPayloadLength, serviceAckLength)
 }
 
-func BACnetServiceAckReadPropertyMultipleParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyMultiple, error) {
+func BACnetServiceAckReadPropertyMultipleParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckReadPropertyMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyMultiple"); pullErr != nil {

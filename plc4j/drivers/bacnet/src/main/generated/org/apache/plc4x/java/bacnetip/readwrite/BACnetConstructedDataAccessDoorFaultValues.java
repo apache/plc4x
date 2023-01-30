@@ -104,7 +104,7 @@ public class BACnetConstructedDataAccessDoorFaultValues extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessDoorFaultValuesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -131,21 +131,20 @@ public class BACnetConstructedDataAccessDoorFaultValues extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataAccessDoorFaultValues");
     // Create the instance
-    return new BACnetConstructedDataAccessDoorFaultValuesBuilder(
+    return new BACnetConstructedDataAccessDoorFaultValuesBuilderImpl(
         faultValues, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessDoorFaultValuesBuilder
+  public static class BACnetConstructedDataAccessDoorFaultValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDoorAlarmStateTagged> faultValues;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessDoorFaultValuesBuilder(
+    public BACnetConstructedDataAccessDoorFaultValuesBuilderImpl(
         List<BACnetDoorAlarmStateTagged> faultValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.faultValues = faultValues;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

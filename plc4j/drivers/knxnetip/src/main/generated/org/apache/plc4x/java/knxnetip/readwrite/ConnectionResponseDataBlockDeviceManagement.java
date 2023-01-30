@@ -70,7 +70,7 @@ public class ConnectionResponseDataBlockDeviceManagement extends ConnectionRespo
     return lengthInBits;
   }
 
-  public static ConnectionResponseDataBlockDeviceManagementBuilder staticParseBuilder(
+  public static ConnectionResponseDataBlockBuilder staticParseConnectionResponseDataBlockBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ConnectionResponseDataBlockDeviceManagement");
     PositionAware positionAware = readBuffer;
@@ -79,13 +79,13 @@ public class ConnectionResponseDataBlockDeviceManagement extends ConnectionRespo
 
     readBuffer.closeContext("ConnectionResponseDataBlockDeviceManagement");
     // Create the instance
-    return new ConnectionResponseDataBlockDeviceManagementBuilder();
+    return new ConnectionResponseDataBlockDeviceManagementBuilderImpl();
   }
 
-  public static class ConnectionResponseDataBlockDeviceManagementBuilder
+  public static class ConnectionResponseDataBlockDeviceManagementBuilderImpl
       implements ConnectionResponseDataBlock.ConnectionResponseDataBlockBuilder {
 
-    public ConnectionResponseDataBlockDeviceManagementBuilder() {}
+    public ConnectionResponseDataBlockDeviceManagementBuilderImpl() {}
 
     public ConnectionResponseDataBlockDeviceManagement build() {
       ConnectionResponseDataBlockDeviceManagement connectionResponseDataBlockDeviceManagement =

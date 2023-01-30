@@ -109,7 +109,7 @@ public class BACnetConstructedDataDoorStatus extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDoorStatusBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -134,20 +134,20 @@ public class BACnetConstructedDataDoorStatus extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataDoorStatus");
     // Create the instance
-    return new BACnetConstructedDataDoorStatusBuilder(doorStatus, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDoorStatusBuilderImpl(
+        doorStatus, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDoorStatusBuilder
+  public static class BACnetConstructedDataDoorStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDoorStatusTagged doorStatus;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDoorStatusBuilder(
+    public BACnetConstructedDataDoorStatusBuilderImpl(
         BACnetDoorStatusTagged doorStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.doorStatus = doorStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

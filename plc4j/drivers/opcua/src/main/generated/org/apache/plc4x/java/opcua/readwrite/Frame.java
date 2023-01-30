@@ -69,8 +69,8 @@ public class Frame extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static FrameBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("Frame");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -78,13 +78,13 @@ public class Frame extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("Frame");
     // Create the instance
-    return new FrameBuilder();
+    return new FrameBuilderImpl();
   }
 
-  public static class FrameBuilder
+  public static class FrameBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public FrameBuilder() {}
+    public FrameBuilderImpl() {}
 
     public Frame build() {
       Frame frame = new Frame();

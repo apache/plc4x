@@ -39,8 +39,6 @@ public class AmsTCPPacket implements Message {
 
   // Properties.
   protected final AmsPacket userdata;
-  // Reserved Fields
-  private Integer reservedField0;
 
   public AmsTCPPacket(AmsPacket userdata) {
     super();
@@ -59,7 +57,7 @@ public class AmsTCPPacket implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (int) 0x0000,
+        (int) 0x0000,
         writeUnsignedInt(writeBuffer, 16),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
@@ -139,7 +137,6 @@ public class AmsTCPPacket implements Message {
     // Create the instance
     AmsTCPPacket _amsTCPPacket;
     _amsTCPPacket = new AmsTCPPacket(userdata);
-    _amsTCPPacket.reservedField0 = reservedField0;
     return _amsTCPPacket;
   }
 

@@ -136,8 +136,9 @@ public class BACnetConfirmedServiceRequestLifeSafetyOperation extends BACnetConf
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestLifeSafetyOperationBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestLifeSafetyOperation");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -190,7 +191,7 @@ public class BACnetConfirmedServiceRequestLifeSafetyOperation extends BACnetConf
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestLifeSafetyOperation");
     // Create the instance
-    return new BACnetConfirmedServiceRequestLifeSafetyOperationBuilder(
+    return new BACnetConfirmedServiceRequestLifeSafetyOperationBuilderImpl(
         requestingProcessIdentifier,
         requestingSource,
         request,
@@ -198,7 +199,7 @@ public class BACnetConfirmedServiceRequestLifeSafetyOperation extends BACnetConf
         serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
+  public static class BACnetConfirmedServiceRequestLifeSafetyOperationBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagUnsignedInteger requestingProcessIdentifier;
     private final BACnetContextTagCharacterString requestingSource;
@@ -206,13 +207,12 @@ public class BACnetConfirmedServiceRequestLifeSafetyOperation extends BACnetConf
     private final BACnetContextTagObjectIdentifier objectIdentifier;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestLifeSafetyOperationBuilder(
+    public BACnetConfirmedServiceRequestLifeSafetyOperationBuilderImpl(
         BACnetContextTagUnsignedInteger requestingProcessIdentifier,
         BACnetContextTagCharacterString requestingSource,
         BACnetLifeSafetyOperationTagged request,
         BACnetContextTagObjectIdentifier objectIdentifier,
         Long serviceRequestLength) {
-
       this.requestingProcessIdentifier = requestingProcessIdentifier;
       this.requestingSource = requestingSource;
       this.request = request;

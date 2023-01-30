@@ -78,7 +78,7 @@ public class AdsDeviceNotificationResponse extends AmsPacket implements Message 
     return lengthInBits;
   }
 
-  public static AdsDeviceNotificationResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsDeviceNotificationResponse");
     PositionAware positionAware = readBuffer;
@@ -87,12 +87,13 @@ public class AdsDeviceNotificationResponse extends AmsPacket implements Message 
 
     readBuffer.closeContext("AdsDeviceNotificationResponse");
     // Create the instance
-    return new AdsDeviceNotificationResponseBuilder();
+    return new AdsDeviceNotificationResponseBuilderImpl();
   }
 
-  public static class AdsDeviceNotificationResponseBuilder implements AmsPacket.AmsPacketBuilder {
+  public static class AdsDeviceNotificationResponseBuilderImpl
+      implements AmsPacket.AmsPacketBuilder {
 
-    public AdsDeviceNotificationResponseBuilder() {}
+    public AdsDeviceNotificationResponseBuilderImpl() {}
 
     public AdsDeviceNotificationResponse build(
         AmsNetId targetAmsNetId,

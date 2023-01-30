@@ -109,7 +109,7 @@ public class BACnetConstructedDataIPSubnetMask extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIPSubnetMaskBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -133,21 +133,20 @@ public class BACnetConstructedDataIPSubnetMask extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataIPSubnetMask");
     // Create the instance
-    return new BACnetConstructedDataIPSubnetMaskBuilder(
+    return new BACnetConstructedDataIPSubnetMaskBuilderImpl(
         ipSubnetMask, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIPSubnetMaskBuilder
+  public static class BACnetConstructedDataIPSubnetMaskBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagOctetString ipSubnetMask;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIPSubnetMaskBuilder(
+    public BACnetConstructedDataIPSubnetMaskBuilderImpl(
         BACnetApplicationTagOctetString ipSubnetMask,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipSubnetMask = ipSubnetMask;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

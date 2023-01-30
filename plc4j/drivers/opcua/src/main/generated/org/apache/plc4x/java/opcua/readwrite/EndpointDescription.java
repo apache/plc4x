@@ -205,7 +205,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static EndpointDescriptionBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("EndpointDescription");
     PositionAware positionAware = readBuffer;
@@ -262,7 +262,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("EndpointDescription");
     // Create the instance
-    return new EndpointDescriptionBuilder(
+    return new EndpointDescriptionBuilderImpl(
         endpointUrl,
         server,
         serverCertificate,
@@ -274,7 +274,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
         securityLevel);
   }
 
-  public static class EndpointDescriptionBuilder
+  public static class EndpointDescriptionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString endpointUrl;
     private final ExtensionObjectDefinition server;
@@ -286,7 +286,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
     private final PascalString transportProfileUri;
     private final short securityLevel;
 
-    public EndpointDescriptionBuilder(
+    public EndpointDescriptionBuilderImpl(
         PascalString endpointUrl,
         ExtensionObjectDefinition server,
         PascalByteString serverCertificate,
@@ -296,7 +296,6 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
         List<ExtensionObjectDefinition> userIdentityTokens,
         PascalString transportProfileUri,
         short securityLevel) {
-
       this.endpointUrl = endpointUrl;
       this.server = server;
       this.serverCertificate = serverCertificate;

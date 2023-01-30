@@ -45,13 +45,9 @@ public class ApduDataDeviceDescriptorRead extends ApduData implements Message {
   // Properties.
   protected final short descriptorType;
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataDeviceDescriptorRead(short descriptorType, Short dataLength) {
-    super(dataLength);
+  public ApduDataDeviceDescriptorRead(short descriptorType) {
+    super();
     this.descriptorType = descriptorType;
-    this.dataLength = dataLength;
   }
 
   public short getDescriptorType() {
@@ -86,8 +82,8 @@ public class ApduDataDeviceDescriptorRead extends ApduData implements Message {
     return lengthInBits;
   }
 
-  public static ApduDataDeviceDescriptorReadBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short dataLength) throws ParseException {
+  public static ApduDataBuilder staticParseApduDataBuilder(ReadBuffer readBuffer, Short dataLength)
+      throws ParseException {
     readBuffer.pullContext("ApduDataDeviceDescriptorRead");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -97,23 +93,19 @@ public class ApduDataDeviceDescriptorRead extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataDeviceDescriptorRead");
     // Create the instance
-    return new ApduDataDeviceDescriptorReadBuilder(descriptorType, dataLength);
+    return new ApduDataDeviceDescriptorReadBuilderImpl(descriptorType);
   }
 
-  public static class ApduDataDeviceDescriptorReadBuilder implements ApduData.ApduDataBuilder {
+  public static class ApduDataDeviceDescriptorReadBuilderImpl implements ApduData.ApduDataBuilder {
     private final short descriptorType;
-    private final Short dataLength;
 
-    public ApduDataDeviceDescriptorReadBuilder(short descriptorType, Short dataLength) {
-
+    public ApduDataDeviceDescriptorReadBuilderImpl(short descriptorType) {
       this.descriptorType = descriptorType;
-      this.dataLength = dataLength;
     }
 
-    public ApduDataDeviceDescriptorRead build(Short dataLength) {
-
+    public ApduDataDeviceDescriptorRead build() {
       ApduDataDeviceDescriptorRead apduDataDeviceDescriptorRead =
-          new ApduDataDeviceDescriptorRead(descriptorType, dataLength);
+          new ApduDataDeviceDescriptorRead(descriptorType);
       return apduDataDeviceDescriptorRead;
     }
   }

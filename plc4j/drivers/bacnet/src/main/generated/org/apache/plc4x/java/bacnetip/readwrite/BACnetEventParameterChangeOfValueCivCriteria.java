@@ -167,12 +167,14 @@ public abstract class BACnetEventParameterChangeOfValueCivCriteria implements Me
     BACnetEventParameterChangeOfValueCivCriteriaBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
       builder =
-          BACnetEventParameterChangeOfValueCivCriteriaBitmask.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetEventParameterChangeOfValueCivCriteriaBitmask
+              .staticParseBACnetEventParameterChangeOfValueCivCriteriaBuilder(
+                  readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
           BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
-              .staticParseBuilder(readBuffer, tagNumber);
+              .staticParseBACnetEventParameterChangeOfValueCivCriteriaBuilder(
+                  readBuffer, tagNumber);
     }
     if (builder == null) {
       throw new ParseException(
@@ -196,7 +198,7 @@ public abstract class BACnetEventParameterChangeOfValueCivCriteria implements Me
     return _bACnetEventParameterChangeOfValueCivCriteria;
   }
 
-  public static interface BACnetEventParameterChangeOfValueCivCriteriaBuilder {
+  public interface BACnetEventParameterChangeOfValueCivCriteriaBuilder {
     BACnetEventParameterChangeOfValueCivCriteria build(
         BACnetOpeningTag openingTag,
         BACnetTagHeader peekedTagHeader,

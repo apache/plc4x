@@ -47,16 +47,11 @@ public class ApduDataExtPropertyDescriptionRead extends ApduDataExt implements M
   protected final short propertyId;
   protected final short index;
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtPropertyDescriptionRead(
-      short objectIndex, short propertyId, short index, Short length) {
-    super(length);
+  public ApduDataExtPropertyDescriptionRead(short objectIndex, short propertyId, short index) {
+    super();
     this.objectIndex = objectIndex;
     this.propertyId = propertyId;
     this.index = index;
-    this.length = length;
   }
 
   public short getObjectIndex() {
@@ -111,7 +106,7 @@ public class ApduDataExtPropertyDescriptionRead extends ApduDataExt implements M
     return lengthInBits;
   }
 
-  public static ApduDataExtPropertyDescriptionReadBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtPropertyDescriptionRead");
     PositionAware positionAware = readBuffer;
@@ -126,29 +121,25 @@ public class ApduDataExtPropertyDescriptionRead extends ApduDataExt implements M
 
     readBuffer.closeContext("ApduDataExtPropertyDescriptionRead");
     // Create the instance
-    return new ApduDataExtPropertyDescriptionReadBuilder(objectIndex, propertyId, index, length);
+    return new ApduDataExtPropertyDescriptionReadBuilderImpl(objectIndex, propertyId, index);
   }
 
-  public static class ApduDataExtPropertyDescriptionReadBuilder
+  public static class ApduDataExtPropertyDescriptionReadBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
     private final short objectIndex;
     private final short propertyId;
     private final short index;
-    private final Short length;
 
-    public ApduDataExtPropertyDescriptionReadBuilder(
-        short objectIndex, short propertyId, short index, Short length) {
-
+    public ApduDataExtPropertyDescriptionReadBuilderImpl(
+        short objectIndex, short propertyId, short index) {
       this.objectIndex = objectIndex;
       this.propertyId = propertyId;
       this.index = index;
-      this.length = length;
     }
 
-    public ApduDataExtPropertyDescriptionRead build(Short length) {
-
+    public ApduDataExtPropertyDescriptionRead build() {
       ApduDataExtPropertyDescriptionRead apduDataExtPropertyDescriptionRead =
-          new ApduDataExtPropertyDescriptionRead(objectIndex, propertyId, index, length);
+          new ApduDataExtPropertyDescriptionRead(objectIndex, propertyId, index);
       return apduDataExtPropertyDescriptionRead;
     }
   }

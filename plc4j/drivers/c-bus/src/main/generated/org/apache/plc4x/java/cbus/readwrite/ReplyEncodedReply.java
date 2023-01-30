@@ -132,7 +132,7 @@ public class ReplyEncodedReply extends Reply implements Message {
     return lengthInBits;
   }
 
-  public static ReplyEncodedReplyBuilder staticParseBuilder(
+  public static ReplyBuilder staticParseReplyBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("ReplyEncodedReply");
@@ -164,21 +164,20 @@ public class ReplyEncodedReply extends Reply implements Message {
 
     readBuffer.closeContext("ReplyEncodedReply");
     // Create the instance
-    return new ReplyEncodedReplyBuilder(encodedReply, chksum, cBusOptions, requestContext);
+    return new ReplyEncodedReplyBuilderImpl(encodedReply, chksum, cBusOptions, requestContext);
   }
 
-  public static class ReplyEncodedReplyBuilder implements Reply.ReplyBuilder {
+  public static class ReplyEncodedReplyBuilderImpl implements Reply.ReplyBuilder {
     private final EncodedReply encodedReply;
     private final Checksum chksum;
     private final CBusOptions cBusOptions;
     private final RequestContext requestContext;
 
-    public ReplyEncodedReplyBuilder(
+    public ReplyEncodedReplyBuilderImpl(
         EncodedReply encodedReply,
         Checksum chksum,
         CBusOptions cBusOptions,
         RequestContext requestContext) {
-
       this.encodedReply = encodedReply;
       this.chksum = chksum;
       this.cBusOptions = cBusOptions;

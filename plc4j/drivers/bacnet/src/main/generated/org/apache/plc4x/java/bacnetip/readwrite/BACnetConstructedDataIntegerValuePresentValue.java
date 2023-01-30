@@ -110,7 +110,7 @@ public class BACnetConstructedDataIntegerValuePresentValue extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIntegerValuePresentValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -135,21 +135,20 @@ public class BACnetConstructedDataIntegerValuePresentValue extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataIntegerValuePresentValue");
     // Create the instance
-    return new BACnetConstructedDataIntegerValuePresentValueBuilder(
+    return new BACnetConstructedDataIntegerValuePresentValueBuilderImpl(
         presentValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIntegerValuePresentValueBuilder
+  public static class BACnetConstructedDataIntegerValuePresentValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger presentValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIntegerValuePresentValueBuilder(
+    public BACnetConstructedDataIntegerValuePresentValueBuilderImpl(
         BACnetApplicationTagSignedInteger presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.presentValue = presentValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

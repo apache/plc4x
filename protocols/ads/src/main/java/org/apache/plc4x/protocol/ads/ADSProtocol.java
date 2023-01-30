@@ -18,12 +18,16 @@
  */
 package org.apache.plc4x.protocol.ads;
 
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ProtocolHelpers;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.protocol.ValidatableTypeContext;
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ADSProtocol implements Protocol, ProtocolHelpers {
 
